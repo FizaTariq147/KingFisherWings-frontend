@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+/* ================================================
+   FRESA GOLD — THEME TOKENS
+   Default: Forest Green
+   Alternatives: Ocean Blue, Crimson Red
+   To switch tenant theme: change class on <html>
+   e.g. <html class="theme-blue"> or "theme-red"
+================================================ */
+
+/* === DEFAULT: Forest Green === */
+:root {
+  /* Primary */
+  --color-primary-50:  #F0FDF4;
+  --color-primary-100: #DCFCE7;
+  --color-primary-200: #BBF7D0;
+  --color-primary-500: #22C55E;
+  --color-primary-600: #16A34A;
+  --color-primary-700: #15803D;
+  --color-primary-900: #14532D;
+
+  /* Neutral */
+  --color-neutral-50:  #F8FAFC;
+  --color-neutral-100: #F1F5F9;
+  --color-neutral-200: #E2E8F0;
+  --color-neutral-400: #94A3B8;
+  --color-neutral-600: #475569;
+  --color-neutral-800: #1E293B;
+  --color-neutral-900: #0F172A;
+
+  /* Semantic — same across all themes */
+  --color-success-100: #DCFCE7;
+  --color-success-500: #22C55E;
+  --color-success-700: #15803D;
+  --color-warning-100: #FEF3C7;
+  --color-warning-500: #F59E0B;
+  --color-warning-700: #B45309;
+  --color-danger-100:  #FEE2E2;
+  --color-danger-500:  #EF4444;
+  --color-danger-700:  #B91C1C;
+  --color-info-100:    #CFFAFE;
+  --color-info-500:    #06B6D4;
+
+  /* Transport modes */
+  --color-mode-sea:    #0EA5E9;
+  --color-mode-air:    #8B5CF6;
+  --color-mode-road:   #F97316;
+
+  /* Typography */
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Sidebar */
+  --color-sidebar-bg:   #14532D;
+  --color-sidebar-text: #DCFCE7;
+}
+
+/* === ALTERNATIVE: Ocean Blue === */
+.theme-blue {
+  --color-primary-50:  #EFF6FF;
+  --color-primary-100: #DBEAFE;
+  --color-primary-200: #BFDBFE;
+  --color-primary-500: #3B82F6;
+  --color-primary-600: #2563EB;
+  --color-primary-700: #1D4ED8;
+  --color-primary-900: #1E3A8A;
+  --color-sidebar-bg:   #1E3A8A;
+  --color-sidebar-text: #DBEAFE;
+}
+
+/* === ALTERNATIVE: Crimson Red === */
+.theme-red {
+  --color-primary-50:  #FFF1F2;
+  --color-primary-100: #FFE4E6;
+  --color-primary-200: #FECDD3;
+  --color-primary-500: #F43F5E;
+  --color-primary-600: #E11D48;
+  --color-primary-700: #BE123C;
+  --color-primary-900: #881337;
+  --color-sidebar-bg:   #881337;
+  --color-sidebar-text: #FFE4E6;
+}
