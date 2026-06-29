@@ -4,8 +4,6 @@
    FRESA GOLD — THEME TOKENS
    Default: Forest Green
    Alternatives: Ocean Blue, Crimson Red
-   To switch tenant theme: change class on <html>
-   e.g. <html class="theme-blue"> or "theme-red"
 ================================================ */
 
 /* === DEFAULT: Forest Green === */
@@ -28,7 +26,7 @@
   --color-neutral-800: #1E293B;
   --color-neutral-900: #0F172A;
 
-  /* Semantic — same across all themes */
+  /* Semantic */
   --color-success-100: #DCFCE7;
   --color-success-500: #22C55E;
   --color-success-700: #15803D;
@@ -79,4 +77,55 @@
   --color-primary-900: #881337;
   --color-sidebar-bg:   #881337;
   --color-sidebar-text: #FFE4E6;
+}
+
+/* ── Global base styles ─────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-neutral-900);
+  background: var(--color-neutral-50);
+  margin: 0;
+}
+
+/* ── Headings ────────────────────────────────────────────────────── */
+h1 { font-size: 2.5rem;  font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; }
+h2 { font-size: 1.875rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+h3 { font-size: 1.25rem;  font-weight: 600; line-height: 1.3; }
+h4 { font-size: 1rem;     font-weight: 600; line-height: 1.4; }
+
+/* ── Marketing hero override — larger on big screens ─────────────── */
+.hero-h1 {
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+/* ── Marketing stats ─────────────────────────────────────────────── */
+.stat-value {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+/* ── Code / mono ─────────────────────────────────────────────────── */
+code, kbd, pre, samp {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
 }

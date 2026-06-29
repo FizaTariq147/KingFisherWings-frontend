@@ -134,9 +134,9 @@ export default function QuotationList() {
             ))}
             {filtered.length === 0 && (
               <TableRow>
-                <TableCell colSpan={8} className="text-center text-[var(--color-neutral-400)] py-8">
+                <td colSpan={8} className="text-center text-[var(--color-neutral-400)] py-8">
                   No quotations found.
-                </TableCell>
+                </td>
               </TableRow>
             )}
           </TableBody>
