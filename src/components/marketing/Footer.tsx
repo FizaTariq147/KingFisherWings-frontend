@@ -11,7 +11,7 @@ export default function Footer() {
           {/* Col 1 — Logo + tagline */}
           <div>
             <Link to="/home" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-[#1a6e38] rounded-lg flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 bg-[#0EA5E9] rounded-lg flex items-center justify-center shrink-0">
                 <Cloud size={16} className="text-white" aria-hidden="true" />
               </div>
               <span className="font-medium text-gray-900 text-sm">Fresa Gold</span>
@@ -86,7 +86,7 @@ export default function Footer() {
             </h3>
             <a
               href="mailto:sales@fresatechnologies.com"
-              className="text-sm text-gray-500 hover:text-[#1a6e38] transition-colors block mb-6"
+              className="text-sm text-gray-500 hover:text-[#0EA5E9] transition-colors block mb-6"
             >
               sales@fresatechnologies.com
             </a>

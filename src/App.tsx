@@ -7,6 +7,7 @@ import LoginPage from '@/features/auth/pages/LoginPage';
 import ForgotPasswordPage from '@/features/auth/pages/ForgotPasswordPage';
 import ResetPasswordPage from '@/features/auth/pages/ResetPasswordPage';
 import NavShell from '@/components/layout/NavShell';
+import { useApplyTheme } from '@/hooks/useApplyTheme'
 
 // ── Protected route wrapper ────────────────────────────────────────────────
 function PrivateRoute() {
@@ -34,7 +35,7 @@ function DashboardPage() {
 // ── App ───────────────────────────────────────────────────────────────────
 export default function App() {
   const { theme } = useUIStore();
-
+ useApplyTheme(); 
   // Theme switching — your existing logic preserved exactly
   useEffect(() => {
     document.documentElement.classList.remove('theme-blue', 'theme-red');
@@ -55,7 +56,7 @@ export default function App() {
 
         {/* ── Protected routes (authenticated only) ── */}
         <Route element={<PrivateRoute />}>
-          <Route element={<NavShell><Outlet /></NavShell>}>
+          <Route element={<NavShell />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             {/* Add module routes here as you build each week:   */}
             {/* <Route path="/jobs"       element={<JobsPage />} />        */}

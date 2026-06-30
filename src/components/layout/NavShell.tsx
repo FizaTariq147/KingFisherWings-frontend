@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
   Briefcase,
@@ -18,6 +18,7 @@ import {
   Menu,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
+import { useThemeStore } from '../../store/themeStore'
 
 // ── Lightweight tooltip fallback ────────────────────────────────────────
 function Tooltip({ children }: { children: ReactNode }) {
@@ -52,7 +53,7 @@ function TooltipContent({
 interface NavItem {
   label: string
   to: string
-  Icon: React.ElementType
+  Icon: React.ComponentType<{ size?: number; className?: string }>
   permission: string | null
 }
 
@@ -102,18 +103,19 @@ function initials(name: string): string {
     .toUpperCase()
 }
 
-// ── Props ──────────────────────────────────────────────────────────────────
-interface NavShellProps {
-  children: ReactNode
-}
-
 // ── Component ──────────────────────────────────────────────────────────────
-export default function NavShell({ children }: NavShellProps) {
+export default function NavShell() {
   const { user, logout }          = useAuthStore()
+  const theme                     = useThemeStore((s) => s.theme)
   const navigate                  = useNavigate()
   const { isFullscreen, toggle }  = useFullscreen()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
+
+  // Apply tenant theme to <html data-theme="...">
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+  }, [theme])
 
   const permissions: Record<string, boolean> =
     (user as { permissions?: Record<string, boolean> })?.permissions ?? {}
@@ -131,9 +133,12 @@ export default function NavShell({ children }: NavShellProps) {
     [
       'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
       isActive
-        ? 'bg-blue-50 text-blue-700'
+        ? 'text-[var(--accent)]'
         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
     ].join(' ')
+
+  const navLinkStyle = ({ isActive }: { isActive: boolean }) =>
+    isActive ? { backgroundColor: 'var(--accent-light)' } : undefined
 
   const Sidebar = (
     <aside className="flex flex-col h-full w-56 bg-white border-r border-gray-200 py-4 px-3">
@@ -143,7 +148,10 @@ export default function NavShell({ children }: NavShellProps) {
         className="flex items-center gap-2 px-1 mb-6"
         onClick={() => setSidebarOpen(false)}
       >
-        <div className="w-7 h-7 rounded bg-blue-500 flex items-center justify-center flex-shrink-0">
+        <div
+          className="w-7 h-7 rounded flex items-center justify-center flex-shrink-0"
+          style={{ backgroundColor: 'var(--accent)' }}
+        >
           <span className="text-white font-bold text-xs">F</span>
         </div>
         <span className="text-gray-900 font-semibold text-base tracking-tight">
@@ -158,6 +166,7 @@ export default function NavShell({ children }: NavShellProps) {
             key={to}
             to={to}
             className={navLinkClass}
+            style={navLinkStyle}
             onClick={() => setSidebarOpen(false)}
           >
             <Icon size={16} className="flex-shrink-0" />
@@ -170,7 +179,10 @@ export default function NavShell({ children }: NavShellProps) {
       {user && (
         <div className="mt-4 pt-4 border-t border-gray-100">
           <div className="flex items-center gap-2 px-1">
-            <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
+            <div
+              className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: 'var(--accent)' }}
+            >
               <span className="text-white text-xs font-semibold">
                 {initials(user.name)}
               </span>
@@ -257,7 +269,10 @@ export default function NavShell({ children }: NavShellProps) {
                   aria-label="User menu"
                   className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition-colors"
                 >
-                  <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center">
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: 'var(--accent)' }}
+                  >
                     <span className="text-white text-xs font-semibold">
                       {user ? initials(user.name) : '?'}
                     </span>
@@ -322,7 +337,7 @@ export default function NavShell({ children }: NavShellProps) {
 
           {/* Page content */}
           <main className="flex-1 overflow-auto p-4 md:p-6">
-            {children}
+            <Outlet />
           </main>
         </div>
       </div>

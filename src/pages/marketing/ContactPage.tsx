@@ -40,7 +40,7 @@ export default function ContactPage() {
         <section className="bg-[#F7F8FA] py-24">
           <div className="max-w-[1200px] mx-auto px-6">
             <div className="text-center mb-14">
-              <p className="text-xs font-semibold text-[#1a6e38] uppercase tracking-widest mb-3">
+              <p className="text-xs font-semibold text-[#0EA5E9] uppercase tracking-widest mb-3">
                 Contact
               </p>
               <h1 className="text-4xl font-medium text-gray-900 mb-4">
@@ -57,7 +57,7 @@ export default function ContactPage() {
               <div className="bg-white border border-gray-200 rounded-xl p-8">
                 {submitted ? (
                   <div className="flex flex-col items-center text-center py-8">
-                    <CheckCircle2 size={40} className="text-[#1a6e38] mb-4" />
+                    <CheckCircle2 size={40} className="text-[#0EA5E9] mb-4" />
                     <h2 className="text-xl font-medium text-gray-900 mb-2">
                       Thanks, we'll be in touch!
                     </h2>
@@ -79,7 +79,7 @@ export default function ContactPage() {
                         disabled={isLoading}
                         aria-invalid={!!errors.name}
                         {...register('name')}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#1a6e38] focus:ring-1 focus:ring-[#1a6e38] disabled:opacity-50 transition-colors"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] disabled:opacity-50 transition-colors"
                       />
                       {errors.name && (
                         <p role="alert" className="mt-1 text-xs text-red-600">{errors.name.message}</p>
@@ -98,7 +98,7 @@ export default function ContactPage() {
                         disabled={isLoading}
                         aria-invalid={!!errors.email}
                         {...register('email')}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#1a6e38] focus:ring-1 focus:ring-[#1a6e38] disabled:opacity-50 transition-colors"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] disabled:opacity-50 transition-colors"
                       />
                       {errors.email && (
                         <p role="alert" className="mt-1 text-xs text-red-600">{errors.email.message}</p>
@@ -118,7 +118,7 @@ export default function ContactPage() {
                           disabled={isLoading}
                           aria-invalid={!!errors.company}
                           {...register('company')}
-                          className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#1a6e38] focus:ring-1 focus:ring-[#1a6e38] disabled:opacity-50 transition-colors"
+                          className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] disabled:opacity-50 transition-colors"
                         />
                         {errors.company && (
                           <p role="alert" className="mt-1 text-xs text-red-600">{errors.company.message}</p>
@@ -135,7 +135,7 @@ export default function ContactPage() {
                           disabled={isLoading}
                           aria-invalid={!!errors.country}
                           {...register('country')}
-                          className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#1a6e38] focus:ring-1 focus:ring-[#1a6e38] disabled:opacity-50 transition-colors"
+                          className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] disabled:opacity-50 transition-colors"
                         />
                         {errors.country && (
                           <p role="alert" className="mt-1 text-xs text-red-600">{errors.country.message}</p>
@@ -155,7 +155,7 @@ export default function ContactPage() {
                         disabled={isLoading}
                         aria-invalid={!!errors.message}
                         {...register('message')}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#1a6e38] focus:ring-1 focus:ring-[#1a6e38] disabled:opacity-50 transition-colors resize-none"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] disabled:opacity-50 transition-colors resize-none"
                       />
                       {errors.message && (
                         <p role="alert" className="mt-1 text-xs text-red-600">{errors.message.message}</p>
@@ -166,7 +166,7 @@ export default function ContactPage() {
                       type="submit"
                       disabled={isLoading}
                       aria-busy={isLoading}
-                      className="w-full bg-[#1a6e38] hover:bg-[#145530] disabled:opacity-60 text-white text-sm font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                      className="w-full bg-[#0EA5E9] hover:bg-[#0284C7] disabled:opacity-60 text-white text-sm font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
                     >
                       {isLoading && <Loader2 size={14} className="animate-spin" />}
                       {isLoading ? 'Sending…' : 'Send message'}
@@ -182,16 +182,16 @@ export default function ContactPage() {
                   <div className="flex flex-col gap-4">
                     <a
                       href="mailto:sales@fresatechnologies.com"
-                      className="flex items-center gap-3 text-sm text-gray-600 hover:text-[#1a6e38] transition-colors"
+                      className="flex items-center gap-3 text-sm text-gray-600 hover:text-[#0EA5E9] transition-colors"
                     >
-                      <div className="w-9 h-9 bg-[#e8f5ee] rounded-lg flex items-center justify-center shrink-0">
-                        <Mail size={15} className="text-[#1a6e38]" />
+                      <div className="w-9 h-9 bg-[#E0F2FE] rounded-lg flex items-center justify-center shrink-0">
+                        <Mail size={15} className="text-[#0EA5E9]" />
                       </div>
                       sales@fresatechnologies.com
                     </a>
                     <div className="flex items-center gap-3 text-sm text-gray-600">
-                      <div className="w-9 h-9 bg-[#e8f5ee] rounded-lg flex items-center justify-center shrink-0">
-                        <MapPin size={15} className="text-[#1a6e38]" />
+                      <div className="w-9 h-9 bg-[#E0F2FE] rounded-lg flex items-center justify-center shrink-0">
+                        <MapPin size={15} className="text-[#0EA5E9]" />
                       </div>
                       Dubai, UAE — Singapore — India — USA — UK
                     </div>
@@ -211,12 +211,12 @@ export default function ContactPage() {
                         rel="noreferrer"
                         className="flex items-center gap-3 group"
                       >
-                        <div className="w-8 h-8 bg-[#e8f5ee] rounded-lg flex items-center justify-center shrink-0">
-                          <Phone size={13} className="text-[#1a6e38]" />
+                        <div className="w-8 h-8 bg-[#E0F2FE] rounded-lg flex items-center justify-center shrink-0">
+                          <Phone size={13} className="text-[#0EA5E9]" />
                         </div>
                         <div>
                           <span className="text-xs text-gray-400 mr-1.5">{flag}</span>
-                          <span className="text-sm text-gray-700 group-hover:text-[#1a6e38] transition-colors font-medium">
+                          <span className="text-sm text-gray-700 group-hover:text-[#0EA5E9] transition-colors font-medium">
                             {country}
                           </span>
                           <span className="text-sm text-gray-400 ml-2">{phone}</span>

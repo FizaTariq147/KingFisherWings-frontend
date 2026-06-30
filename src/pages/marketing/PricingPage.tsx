@@ -72,7 +72,7 @@ export default function PricingPage() {
         <section className="bg-[#F7F8FA] py-24">
           <div className="max-w-[1200px] mx-auto px-6">
             <div className="text-center mb-14">
-              <p className="text-xs font-semibold text-[#1a6e38] uppercase tracking-widest mb-3">
+              <p className="text-xs font-semibold text-[#0EA5E9] uppercase tracking-widest mb-3">
                 Pricing
               </p>
               <h1 className="text-4xl font-medium text-gray-900 mb-4">
@@ -90,19 +90,19 @@ export default function PricingPage() {
                   className={[
                     'bg-white rounded-xl p-7 relative',
                     plan.featured
-                      ? 'border-2 border-[#1a6e38]'
+                      ? 'border-2 border-[#0EA5E9]'
                       : 'border border-gray-200',
                   ].join(' ')}
                 >
                   {plan.featured && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="bg-[#1a6e38] text-white text-xs font-semibold px-4 py-1 rounded-full whitespace-nowrap">
+                      <span className="bg-[#0EA5E9] text-white text-xs font-semibold px-4 py-1 rounded-full whitespace-nowrap">
                         Most popular
                       </span>
                     </div>
                   )}
 
-                  <p className="text-xs font-semibold text-[#1a6e38] tracking-widest mb-2">
+                  <p className="text-xs font-semibold text-[#0EA5E9] tracking-widest mb-2">
                     {plan.tier}
                   </p>
                   <h2 className="text-xl font-medium text-gray-900 mb-2">{plan.name}</h2>
@@ -116,7 +116,7 @@ export default function PricingPage() {
                   <ul className="flex flex-col gap-3 mb-7">
                     {plan.features.map(({ text }) => (
                       <li key={text} className="flex items-start gap-2.5 text-sm text-gray-600">
-                        <Check size={15} className="text-[#1a6e38] mt-0.5 shrink-0" aria-hidden="true" />
+                        <Check size={15} className="text-[#0EA5E9] mt-0.5 shrink-0" aria-hidden="true" />
                         {text}
                       </li>
                     ))}
@@ -127,8 +127,8 @@ export default function PricingPage() {
                     className={[
                       'block text-center text-sm font-medium py-2.5 rounded-lg transition-colors',
                       plan.featured
-                        ? 'bg-[#1a6e38] hover:bg-[#145530] text-white'
-                        : 'border border-[#1a6e38] text-[#1a6e38] hover:bg-[#e8f5ee]',
+                        ? 'bg-[#0EA5E9] hover:bg-[#0284C7] text-white'
+                        : 'border border-[#0EA5E9] text-[#0EA5E9] hover:bg-[#E0F2FE]',
                     ].join(' ')}
                   >
                     {plan.cta}

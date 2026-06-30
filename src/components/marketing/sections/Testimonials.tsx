@@ -24,7 +24,7 @@ export default function Testimonials() {
               className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col"
             >
               <span
-                className="text-4xl text-[#1a6e38] font-serif leading-none mb-4 select-none"
+                className="text-4xl text-[#0EA5E9] font-serif leading-none mb-4 select-none"
                 aria-hidden="true"
               >
                 "
@@ -33,8 +33,8 @@ export default function Testimonials() {
                 {quote}
               </p>
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#e8f5ee] flex items-center justify-center shrink-0">
-                  <span className="text-xs font-semibold text-[#1a6e38]">
+                <div className="w-9 h-9 rounded-full bg-[#E0F2FE] flex items-center justify-center shrink-0">
+                  <span className="text-xs font-semibold text-[#0EA5E9]">
                     {initials(name)}
                   </span>
                 </div>

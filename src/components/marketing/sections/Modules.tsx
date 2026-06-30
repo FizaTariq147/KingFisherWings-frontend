@@ -55,11 +55,11 @@ export default function Modules() {
             return (
               <div
                 key={name}
-                className="bg-white border border-gray-200 rounded-xl p-6 hover:border-[#1a6e38] transition-colors"
+                className="bg-white border border-gray-200 rounded-xl p-6 hover:border-[#0EA5E9] transition-colors"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-9 h-9 bg-[#e8f5ee] rounded-lg flex items-center justify-center shrink-0">
-                    <Icon size={16} className="text-[#1a6e38]" aria-hidden="true" />
+                  <div className="w-9 h-9 bg-[#E0F2FE] rounded-lg flex items-center justify-center shrink-0">
+                    <Icon size={16} className="text-[#0EA5E9]" aria-hidden="true" />
                   </div>
                   <h3 className="text-sm font-semibold text-gray-900">{name}</h3>
                 </div>

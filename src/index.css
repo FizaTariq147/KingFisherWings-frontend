@@ -2,11 +2,11 @@
 
 /* ================================================
    FRESA GOLD — THEME TOKENS
-   Default: Forest Green
-   Alternatives: Ocean Blue, Crimson Red
+   App theme (Default: Forest Green, Alternatives: Ocean Blue, Crimson Red)
+   Marketing theme (separate scheme — see bottom of file)
 ================================================ */
 
-/* === DEFAULT: Forest Green === */
+/* === DEFAULT: Forest Green (app/dashboard) === */
 :root {
   /* Primary */
   --color-primary-50:  #F0FDF4;
@@ -51,9 +51,17 @@
   /* Sidebar */
   --color-sidebar-bg:   #14532D;
   --color-sidebar-text: #DCFCE7;
+
+  /* ── Marketing site — sky blue scheme ──────────────────────────── */
+  --mkt-primary:       #0EA5E9;
+  --mkt-primary-glow:  rgba(14, 165, 233, 0.25);
+  --mkt-dark-base:     #0B1120;
+  --mkt-secondary:     #38BDF8;
+  --mkt-text-on-dark:  #94A3B8;
+  --mkt-light-section: #FAFAFA;
 }
 
-/* === ALTERNATIVE: Ocean Blue === */
+/* === ALTERNATIVE: Ocean Blue (app/dashboard) === */
 .theme-blue {
   --color-primary-50:  #EFF6FF;
   --color-primary-100: #DBEAFE;
@@ -66,7 +74,7 @@
   --color-sidebar-text: #DBEAFE;
 }
 
-/* === ALTERNATIVE: Crimson Red === */
+/* === ALTERNATIVE: Crimson Red (app/dashboard) === */
 .theme-red {
   --color-primary-50:  #FFF1F2;
   --color-primary-100: #FFE4E6;
@@ -116,7 +124,7 @@ h4 { font-size: 1rem;     font-weight: 600; line-height: 1.4; }
   letter-spacing: -0.04em;
 }
 
-/* ── Marketing stats ─────────────────────────────────────────────── */
+/* ── Marketing stats — used by CountUpStat.tsx ────────────────────── */
 .stat-value {
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 800;

@@ -12,7 +12,7 @@ export default function FeaturesPage() {
         {/* Page hero */}
         <section className="bg-[#F7F8FA] py-20 text-center">
           <div className="max-w-[1200px] mx-auto px-6">
-            <p className="text-xs font-semibold text-[#1a6e38] uppercase tracking-widest mb-3">
+            <p className="text-xs font-semibold text-[#0EA5E9] uppercase tracking-widest mb-3">
               Features
             </p>
             <h1 className="text-4xl font-medium text-gray-900 mb-4">

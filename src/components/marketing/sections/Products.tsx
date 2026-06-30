@@ -39,7 +39,7 @@ export default function Products() {
     <section className="bg-[#F7F8FA] py-24">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="text-center mb-14">
-          <p className="text-xs font-semibold text-[#1a6e38] uppercase tracking-widest mb-3">
+          <p className="text-xs font-semibold text-[#0EA5E9] uppercase tracking-widest mb-3">
             Our products
           </p>
           <h2 className="text-3xl font-medium text-gray-900">
@@ -51,13 +51,13 @@ export default function Products() {
           {PRODUCTS.map(({ name, tagline, description, Icon }) => (
             <div
               key={name}
-              className="bg-white border border-gray-200 rounded-xl p-6 hover:border-[#1a6e38] transition-colors"
+              className="bg-white border border-gray-200 rounded-xl p-6 hover:border-[#0EA5E9] transition-colors"
             >
-              <div className="w-10 h-10 bg-[#e8f5ee] rounded-lg flex items-center justify-center mb-4">
-                <Icon size={18} className="text-[#1a6e38]" aria-hidden="true" />
+              <div className="w-10 h-10 bg-[#E0F2FE] rounded-lg flex items-center justify-center mb-4">
+                <Icon size={18} className="text-[#0EA5E9]" aria-hidden="true" />
               </div>
               <h3 className="text-sm font-semibold text-gray-900">{name}</h3>
-              <p className="text-xs text-[#1a6e38] font-medium mt-0.5 mb-3">{tagline}</p>
+              <p className="text-xs text-[#0EA5E9] font-medium mt-0.5 mb-3">{tagline}</p>
               <p className="text-sm text-gray-500 leading-relaxed">{description}</p>
             </div>
           ))}

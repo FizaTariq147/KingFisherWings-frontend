@@ -1,8 +1,11 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
+import { useApplyTheme } from '../../hooks/useApplyTheme';
 
 export function AppShell({ title }: { title: string }) {
+  useApplyTheme();
+
   return (
     <div className="flex h-screen bg-[var(--color-neutral-50)] overflow-hidden">
       <Sidebar />
