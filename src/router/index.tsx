@@ -1,86 +1,89 @@
-import { createBrowserRouter } from 'react-router-dom';
-import { AppShell } from '../components/layout/AppShell';
-import LoginPage from '../features/auth/pages/LoginPage';
-import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage';
-import { MasterListPage } from '../components/layout/MasterListPage';
-import QuotationList from '../pages/quotations/QuotationList';
-import QuotationDetail from '../pages/quotations/QuotationDetail';
-import CreateQuotationForm from '../pages/quotations/CreateQuotationForm';
-import JobList from '../pages/jobs/JobList';
-import AirExportJobDetail from '../pages/jobs/AirExportJobDetail';
-import SeaFCLJobDetail from '../pages/jobs/SeaFCLJobDetail';
-import CreateJobForm from '../pages/jobs/CreateJobForm';
-import CustomerList from '../pages/customers/CustomerList';
-import CustomerProfile from '../pages/customers/CustomerProfile';
-import DocumentLibrary from '../pages/documents/DocumentLibrary';
-import InvoiceList from '../pages/invoices/InvoiceList';
-import InvoiceDetail from '../pages/invoices/InvoiceDetail';
-import FinancialDashboard from '../pages/finance/FinancialDashboard';
-import WMSDashboard from '../pages/wms/WMSDashboard';
-import EmployeeList from '../pages/hr/EmployeeList';
-import EmployeeProfile from '../pages/hr/EmployeeProfile';
-import LeaveCalendar from '../pages/hr/LeaveCalendar';
-import ManagementDashboard from '../pages/management/ManagementDashboard';
-import SettingsCompany from '../pages/settings/SettingsCompany';
-import SettingsUsers from '../pages/settings/SettingsUsers';
-import ReportsList from '../pages/reports/ReportsList';
-import NotificationsCenter from '../pages/notifications/NotificationsCenter';
+import { createBrowserRouter } from 'react-router-dom'
+import { AppShell } from '../components/layout/AppShell'
+import ProtectedRoute from '../components/routing/ProtectedRoute'
+import LoginPage from '../features/auth/pages/LoginPage'
+import ForgotPasswordPage from '../features/auth/pages/ForgotPasswordPage'
+import ResetPasswordPage from '../features/auth/pages/ResetPasswordPage'
+import Forbidden from '../pages/errors/Forbidden'
+import NotFound from '../pages/errors/NotFound'
+import DashboardLayout from '../components/dashboard/DashboardLayout'
+import Home         from '../pages/marketing/Home'
+import FeaturesPage from '../pages/marketing/FeaturesPage'
+import PricingPage  from '../pages/marketing/PricingPage'
+import ContactPage  from '../pages/marketing/ContactPage'
+import ModulesPage  from '../pages/marketing/ModulesPage'
 
-// ── Marketing pages (public, no auth guard) ─────────────────────────────
-import Home         from '../pages/marketing/Home';
-import FeaturesPage from '../pages/marketing/FeaturesPage';
-import PricingPage  from '../pages/marketing/PricingPage';
-import ContactPage  from '../pages/marketing/ContactPage';
-import ModulesPage  from '../pages/marketing/ModulesPage';
-import Forbidden from '../pages/errors/Forbidden';
-import NotFound  from '../pages/errors/NotFound';
+function Placeholder({ title }: { title: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center h-64 gap-2">
+      <p className="text-base font-semibold text-[var(--color-neutral-700)]">{title}</p>
+      <p className="text-sm text-[var(--color-neutral-400)]">Coming soon</p>
+    </div>
+  )
+}
 
 export const router = createBrowserRouter([
-  // ── Public marketing routes ───────────────────────────────────────────
   { path: '/',      element: <Home /> },
   { path: '/features',  element: <FeaturesPage /> },
   { path: '/pricing',   element: <PricingPage /> },
   { path: '/contact',   element: <ContactPage /> },
   { path: '/modules',   element: <ModulesPage /> },
-
-  // ── Auth ───────────────────────────────────────────────────────────────
-  { path: '/login', element: <LoginPage /> },
-
-  // ── Error pages — top-level, NOT nested under /dashboard ───────────────
-  { path: '/403', element: <Forbidden /> },
-
-  // ── Protected app routes (unchanged) ────────────────────────────────────
+  { path: '/login',           element: <LoginPage /> },
+  { path: '/forgot-password', element: <ForgotPasswordPage /> },
+  { path: '/reset-password',  element: <ResetPasswordPage /> },
+  { path: '/403',             element: <Forbidden /> },
   {
-    path: '/dashboard',
-    element: <AppShell title='Fresa Gold' />,
+    element: <ProtectedRoute />,
     children: [
-      { index: true,                        element: <DashboardPage /> },
-      { path: 'quotations',                 element: <QuotationList /> },
-      { path: 'quotations/new',             element: <CreateQuotationForm /> },
-      { path: 'quotations/:id',             element: <QuotationDetail /> },
-      { path: 'jobs',                       element: <JobList /> },
-      { path: 'jobs/new',                   element: <CreateJobForm /> },
-      { path: 'jobs/air-export/:id',        element: <AirExportJobDetail /> },
-      { path: 'jobs/sea-fcl/:id',           element: <SeaFCLJobDetail /> },
-      { path: 'customers',                  element: <CustomerList /> },
-      { path: 'customers/:id',              element: <CustomerProfile /> },
-      { path: 'documents',                  element: <DocumentLibrary /> },
-      { path: 'invoices',                   element: <InvoiceList /> },
-      { path: 'invoices/:id',               element: <InvoiceDetail /> },
-      { path: 'finance',                    element: <FinancialDashboard /> },
-      { path: 'wms',                        element: <WMSDashboard /> },
-      { path: 'hr/employees',               element: <EmployeeList /> },
-      { path: 'hr/employees/:id',           element: <EmployeeProfile /> },
-      { path: 'hr/leave',                   element: <LeaveCalendar /> },
-      { path: 'management',                 element: <ManagementDashboard /> },
-      { path: 'settings',                   element: <SettingsCompany /> },
-      { path: 'settings/users',             element: <SettingsUsers /> },
-      { path: 'reports',                    element: <ReportsList /> },
-      { path: 'notifications',              element: <NotificationsCenter /> },
-      { path: 'masters/airlines',           element: <MasterListPage title='Airlines' columns={[{key:'code',label:'Code',mono:true},{key:'name',label:'Name'},{key:'country',label:'Country'},{key:'iata',label:'IATA',mono:true}]} rows={[{code:'EK',name:'Emirates',country:'UAE',iata:'EK'},{code:'QR',name:'Qatar Airways',country:'Qatar',iata:'QR'}]} /> },
+      {
+        element: <AppShell title="Fresa Gold" />,
+        children: [
+          { path: '/dashboard',         element: <DashboardLayout /> },
+          { path: '/customers',         element: <Placeholder title="Customers" /> },
+          { path: '/customers/:id',     element: <Placeholder title="Customer Profile" /> },
+          { path: '/quotations',        element: <Placeholder title="Quotations" /> },
+          { path: '/quotations/new',    element: <Placeholder title="New Quotation" /> },
+          { path: '/quotations/:id',    element: <Placeholder title="Quotation Detail" /> },
+          { path: '/jobs/air-export',      element: <Placeholder title="Air Export Jobs" /> },
+          { path: '/jobs/air-export/new',  element: <Placeholder title="New Air Export" /> },
+          { path: '/jobs/air-export/:id',  element: <Placeholder title="Air Export Detail" /> },
+          { path: '/jobs/sea-export',      element: <Placeholder title="Sea Export Jobs" /> },
+          { path: '/jobs/sea-export/new',  element: <Placeholder title="New Sea Export" /> },
+          { path: '/jobs/sea-export/:id',  element: <Placeholder title="Sea Export Detail" /> },
+          { path: '/jobs/sea-import',      element: <Placeholder title="Sea Import Jobs" /> },
+          { path: '/jobs/sea-import/new',  element: <Placeholder title="New Sea Import" /> },
+          { path: '/jobs/sea-import/:id',  element: <Placeholder title="Sea Import Detail" /> },
+          { path: '/documentation',     element: <Placeholder title="Documentation" /> },
+          { path: '/nvocc',             element: <Placeholder title="NVOCC" /> },
+          { path: '/nvocc/:id',         element: <Placeholder title="NVOCC Detail" /> },
+          { path: '/hr',                element: <Placeholder title="HR & Payroll" /> },
+          { path: '/hr/employees',      element: <Placeholder title="Employees" /> },
+          { path: '/hr/employees/:id',  element: <Placeholder title="Employee Profile" /> },
+          { path: '/hr/leave',          element: <Placeholder title="Leave Calendar" /> },
+          { path: '/reports',           element: <Placeholder title="Reports" /> },
+          { path: '/settings',          element: <Placeholder title="Settings" /> },
+          { path: '/settings/users',    element: <Placeholder title="Users" /> },
+          { path: '/profile',           element: <Placeholder title="My Profile" /> },
+          { path: '/notifications',     element: <Placeholder title="Notifications" /> },
+          { path: '/wms',               element: <Placeholder title="Warehouse" /> },
+          {
+            element: <ProtectedRoute requirePermissions={['menu_finance']} />,
+            children: [
+              { path: '/finance',      element: <Placeholder title="Finance Dashboard" /> },
+              { path: '/invoices',     element: <Placeholder title="Invoices" /> },
+              { path: '/invoices/:id', element: <Placeholder title="Invoice Detail" /> },
+            ],
+          },
+          {
+            element: <ProtectedRoute requireRole="admin" />,
+            children: [
+              { path: '/masters',          element: <Placeholder title="Masters" /> },
+              { path: '/masters/airlines', element: <Placeholder title="Airlines" /> },
+            ],
+          },
+        ],
+      },
     ],
   },
-
-  // ── Catch-all 404 — must be LAST top-level route ────────────────────────
   { path: '*', element: <NotFound /> },
-]);
+])
