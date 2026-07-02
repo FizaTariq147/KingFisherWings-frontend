@@ -535,7 +535,7 @@ export default function CreateQuotationForm() {
                 <div className="w-12 h-12 rounded-xl bg-[var(--color-primary-900)] flex items-center justify-center text-white font-bold text-sm mb-3">
                   FG
                 </div>
-                <p className="text-lg font-bold text-[var(--color-neutral-800)]">Fresa Gold</p>
+                <p className="text-lg font-bold text-[var(--color-neutral-800)]">KingFisher Tech Gold</p>
                 <p className="text-sm text-[var(--color-neutral-400)]">Kingfisher Wings Logistic LLC</p>
               </div>
               <div className="text-right">

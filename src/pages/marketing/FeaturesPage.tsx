@@ -19,7 +19,7 @@ export default function FeaturesPage() {
               Built for every step of the shipment lifecycle
             </h1>
             <p className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
-              From the first enquiry to final payment — Fresa Gold covers every workflow
+              From the first enquiry to final payment — KingFisher Tech Gold covers every workflow
               your team needs, without stitching together multiple tools.
             </p>
           </div>

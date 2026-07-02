@@ -36,7 +36,7 @@ export const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        element: <AppShell title="Fresa Gold" />,
+        element: <AppShell title="KingFisher Tech Gold" />,
         children: [
           { path: '/dashboard',         element: <DashboardLayout /> },
           { path: '/customers',         element: <Placeholder title="Customers" /> },

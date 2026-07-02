@@ -29,6 +29,6 @@ export const useUIStore = create<UIStore>()(
         set({ theme });
       },
     }),
-    { name: 'fresa-ui' }
+    { name: 'KingFisher Tech-ui' }
   )
 );

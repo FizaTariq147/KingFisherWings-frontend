@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Menu, Search, Bell, ChevronDown, User, Settings, LogOut } from 'lucide-react'
+import { Menu, Search, Bell, ChevronDown, User, Settings } from 'lucide-react'
 import { useUIStore } from '../../store/uiStore'
 import { useAuth } from '../../hooks/useAuth'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { RoleBadge } from '../ui/RoleBadge'
 import { FinancialVisibilityIndicator } from '../ui/FinancialVisibilityIndicator'
+import { LogoutButton } from './LogoutButton'
 import type { FinancialVisibility } from '../../types/homepage.types'
 
-// ── Avatar ─────────────────────────────────────────────────────────────────
 function Avatar({ name, size = 'sm' }: { name: string; size?: 'sm' | 'md' }) {
   const dim = size === 'md' ? 'w-10 h-10 text-sm' : 'w-8 h-8 text-xs'
   const initials = name
@@ -29,14 +29,12 @@ function Avatar({ name, size = 'sm' }: { name: string; size?: 'sm' | 'md' }) {
   )
 }
 
-// ── Topbar ─────────────────────────────────────────────────────────────────
 export function Topbar({ title }: { title: string }) {
-  const { toggleSidebar }           = useUIStore()
-  const { user, logout }            = useAuth()
+  const { toggleSidebar }             = useUIStore()
+  const { user }                      = useAuth()
   const [profileOpen, setProfileOpen] = useState(false)
   const dropdownRef                   = useRef<HTMLDivElement>(null)
 
-  // Close on outside click
   useEffect(() => {
     if (!profileOpen) return
     const handler = (e: MouseEvent) => {
@@ -48,7 +46,6 @@ export function Topbar({ title }: { title: string }) {
     return () => document.removeEventListener('mousedown', handler)
   }, [profileOpen])
 
-  // Close on Escape
   useEffect(() => {
     if (!profileOpen) return
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setProfileOpen(false) }
@@ -56,12 +53,6 @@ export function Topbar({ title }: { title: string }) {
     return () => document.removeEventListener('keydown', handler)
   }, [profileOpen])
 
-  const handleLogout = async () => {
-    setProfileOpen(false)
-    await logout()
-  }
-
-  // Build FinancialVisibility from user object
   const financialVisibility: FinancialVisibility = {
     canSeeRevenue:   (user as unknown as Record<string, boolean>)?.canSeeRevenue   ?? false,
     canSeeGP:        (user as unknown as Record<string, boolean>)?.canSeeGP        ?? false,
@@ -195,17 +186,9 @@ export function Topbar({ title }: { title: string }) {
                 <ThemeSwitcher />
               </div>
 
-              {/* Logout */}
+              {/* Logout — now uses LogoutButton for spinner state */}
               <div className="border-t border-[var(--color-neutral-100)] py-1">
-                <button
-                  type="button"
-                  role="menuitem"
-                  onClick={handleLogout}
-                  className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--color-danger-700)] hover:bg-[var(--color-danger-100)] transition-colors"
-                >
-                  <LogOut size={14} aria-hidden="true" />
-                  Sign out
-                </button>
+                <LogoutButton onClick={() => setProfileOpen(false)} />
               </div>
             </div>
           )}

@@ -64,14 +64,23 @@ export default function ForgotPasswordPage() {
 
   const sendResetLink = async (email: string) => {
     setIsLoading(true)
-    setApiError(null)
+    setApiError(null)  // always clear before new attempt
     try {
       await axiosInstance.post('/api/auth/forgot-password', { email })
       setSentTo(email)
       setStep('sent')
       startCountdown()
-    } catch {
-      setApiError('Something went wrong. Please try again.')
+    } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } })?.response?.status
+      if (status === 404) {
+        setApiError('No account found with that email address.')
+      } else if (status === 429) {
+        setApiError('Too many reset requests. Please wait before trying again.')
+      } else if (!status) {
+        setApiError('Unable to reach the server. Please check your connection.')
+      } else {
+        setApiError('Something went wrong. Please try again.')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -89,7 +98,7 @@ export default function ForgotPasswordPage() {
           <div className="w-7 h-7 rounded bg-blue-500 flex items-center justify-center">
             <span className="text-white font-bold text-xs">F</span>
           </div>
-          <span className="text-gray-900 text-lg font-semibold">Fresa Gold</span>
+          <span className="text-gray-900 text-lg font-semibold">KingFisher Tech Gold</span>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 px-6 py-8">
@@ -229,7 +238,7 @@ export default function ForgotPasswordPage() {
 
               <Button
                 type="button"
-                variant="secondary"
+                variant="ghost"
                 disabled={countdown > 0 || isLoading}
                 aria-busy={isLoading}
                 onClick={onResend}

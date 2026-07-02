@@ -155,7 +155,7 @@ export default function NavShell() {
           <span className="text-white font-bold text-xs">F</span>
         </div>
         <span className="text-gray-900 font-semibold text-base tracking-tight">
-          Fresa Gold
+          KingFisher Tech Gold
         </span>
       </Link>
 

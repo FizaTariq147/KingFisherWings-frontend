@@ -18,7 +18,7 @@ export default function ModulesPage() {
               Every department. One system.
             </h1>
             <p className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
-              Fresa Gold covers every team in your freight company — from sales and
+              KingFisher Tech Gold covers every team in your freight company — from sales and
               operations to accounts, HR, and warehouse — all connected in one platform.
             </p>
           </div>

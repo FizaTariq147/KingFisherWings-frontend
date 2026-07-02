@@ -11,6 +11,7 @@ import {
   Building2,
   UserCircle,
   Settings,
+  Shield,
   BarChart3,
   type LucideIcon,
 } from 'lucide-react'
@@ -40,6 +41,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'HR',            path: '/hr',              Icon: UserCircle,      permission: 'menu_hr' },
   { label: 'Masters',       path: '/masters',         Icon: Settings,        permission: 'menu_masters' },
   { label: 'Reports',       path: '/reports',         Icon: BarChart3,       permission: 'menu_reports' },
+  { label: 'Audit Log', path: '/audit-log', Icon: Shield, permission: 'menu_settings' },
 ]
 
 export function Sidebar() {
@@ -84,7 +86,7 @@ export function Sidebar() {
           FG
         </div>
         {!sidebarCollapsed && (
-          <span className="font-semibold text-sm text-white">Fresa Gold</span>
+          <span className="font-semibold text-sm text-white">KingFisher Tech Gold</span>
         )}
       </div>
 

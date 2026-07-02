@@ -32,7 +32,7 @@ export interface AuthUser {
   tenantId: string
   role: Role
   permissions: PermissionKey[]
-  product: 'Fresa Gold' | 'Fresa Global' | 'Fresa App' | 'Fresa Analytics'
+  product: 'KingFisher Tech Gold' | 'KingFisher Tech Global' | 'KingFisher Tech App' | 'KingFisher Tech Analytics'
 }
 
 // Decoded JWT payload shape from NestJS backend

@@ -45,7 +45,7 @@ export default function Modules() {
             Every department. One system.
           </h2>
           <p className="text-gray-500 mt-3 text-base max-w-xl mx-auto">
-            From quotation to final invoice — every team works inside Fresa Gold.
+            From quotation to final invoice — every team works inside KingFisher Tech Gold.
           </p>
         </div>
 

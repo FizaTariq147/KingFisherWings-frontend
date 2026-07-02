@@ -74,6 +74,12 @@ export default function ResetPasswordPage() {
   })
 
   const newPasswordValue = watch('newPassword') ?? ''
+  const confirmValue     = watch('confirmPassword') ?? ''
+
+  // Clear stale API error when user edits either field
+  useEffect(() => {
+    if (apiError) setApiError(null)
+  }, [newPasswordValue, confirmValue]) // eslint-disable-line react-hooks/exhaustive-deps
   const strength         = newPasswordValue.length > 0
     ? getStrength(newPasswordValue)
     : null
@@ -106,6 +112,7 @@ export default function ResetPasswordPage() {
   }, [success, navigate])
 
   const onSubmit = async (values: ResetFormValues) => {
+    if (isLoading) return   // double-submit guard
     setIsLoading(true)
     setApiError(null)
     try {
@@ -114,8 +121,17 @@ export default function ResetPasswordPage() {
         newPassword: values.newPassword,
       })
       setSuccess(true)
-    } catch {
-      setApiError('This link may have expired. Please request a new reset link.')
+    } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } })?.response?.status
+      if (status === 400 || status === 410) {
+        setApiError('This reset link has expired or already been used. Please request a new one.')
+      } else if (status === 404) {
+        setApiError('Invalid reset link. Please request a new one.')
+      } else if (!status) {
+        setApiError('Unable to reach the server. Please check your connection.')
+      } else {
+        setApiError('Something went wrong. Please try again.')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -131,7 +147,7 @@ export default function ResetPasswordPage() {
           <div className="w-7 h-7 rounded bg-blue-500 flex items-center justify-center">
             <span className="text-white font-bold text-xs">F</span>
           </div>
-          <span className="text-gray-900 text-lg font-semibold">Fresa Gold</span>
+          <span className="text-gray-900 text-lg font-semibold">KingFisher Tech Gold</span>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 px-6 py-8">

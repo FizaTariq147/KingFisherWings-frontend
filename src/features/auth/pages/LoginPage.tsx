@@ -15,10 +15,10 @@ type LoginFormValues = z.infer<typeof loginSchema>
 
 // ── Products — distinct brand dots (kept separate from primary theme) ──────
 const PRODUCTS = [
-  { id: 'Fresa Gold'      as Product, label: 'Fresa Gold',      dot: '#0EA5E9' },
-  { id: 'Fresa Global'    as Product, label: 'Fresa Global',    dot: '#6366F1' },
-  { id: 'Fresa App'       as Product, label: 'Fresa App',       dot: '#7C3AED' },
-  { id: 'Fresa Analytics' as Product, label: 'Fresa Analytics', dot: '#D97706' },
+  { id: 'KingFisher Tech Gold'      as Product, label: 'KingFisher Tech Gold',      dot: '#0EA5E9' },
+  { id: 'KingFisher Tech Global'    as Product, label: 'KingFisher Tech Global',    dot: '#6366F1' },
+  { id: 'KingFisher Tech App'       as Product, label: 'KingFisher Tech App',       dot: '#7C3AED' },
+  { id: 'KingFisher Tech Analytics' as Product, label: 'KingFisher Tech Analytics', dot: '#D97706' },
 ]
 
 const TRUST_POINTS = [
@@ -91,7 +91,7 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const { login, isLoading, clearError } = useAuthStore()
 
-  const [selectedProduct, setSelectedProduct] = useState<Product>('Fresa Gold')
+  const [selectedProduct, setSelectedProduct] = useState<Product>('KingFisher Tech Gold')
   const [showPassword, setShowPassword] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
   const [shake, setShake] = useState(false)
@@ -100,12 +100,19 @@ export default function LoginPage() {
   const leftPanelRef = useRef<HTMLDivElement>(null!)
   useParticleCanvas(canvasRef, leftPanelRef)
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>({
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     mode: 'onTouched',
   })
 
+  // Clear stale auth error when user edits any field
+  const emailValue    = watch('email')
+  const passwordValue = watch('password')
+  useEffect(() => { if (authError) setAuthError(null) }, [emailValue, passwordValue]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const onSubmit = async (values: LoginFormValues) => {
+    // Double-submit guard — authStore.isLoading already set during login()
+    if (isLoading) return
     clearError()
     setAuthError(null)
     await login(values.email, values.password, selectedProduct)
@@ -144,8 +151,8 @@ export default function LoginPage() {
               <Cloud size={15} className="text-white" aria-hidden="true" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-white tracking-tight">Fresa Gold</div>
-              <div className="text-[10px] text-[#7B93A8]">by Fresa Technologies</div>
+              <div className="text-sm font-semibold text-white tracking-tight">KingFisher Tech Gold</div>
+              <div className="text-[10px] text-[#7B93A8]">by KingFisher Tech Technologies</div>
             </div>
           </div>
 
@@ -202,7 +209,7 @@ export default function LoginPage() {
             <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: '#0EA5E9' }}>
               <Cloud size={13} className="text-white" aria-hidden="true" />
             </div>
-            <span className="text-sm font-semibold text-gray-900">Fresa Gold</span>
+            <span className="text-sm font-semibold text-gray-900">KingFisher Tech Gold</span>
           </div>
 
           <h2 className="text-[22px] font-bold text-gray-900 tracking-tight mb-1">Welcome back</h2>
@@ -376,11 +383,11 @@ export default function LoginPage() {
               </Link>
             </p>
             <div className="flex justify-center gap-5 mt-4">
-              <a href="https://fresatechnologies.com/privacy" target="_blank" rel="noreferrer"
+              <a href="https://KingFisher Techtechnologies.com/privacy" target="_blank" rel="noreferrer"
                 className="text-[10px] text-gray-300 hover:text-gray-500 transition-colors">
                 Privacy Policy
               </a>
-              <a href="https://fresatechnologies.com/terms" target="_blank" rel="noreferrer"
+              <a href="https://KingFisher Techtechnologies.com/terms" target="_blank" rel="noreferrer"
                 className="text-[10px] text-gray-300 hover:text-gray-500 transition-colors">
                 Usage Policy
               </a>

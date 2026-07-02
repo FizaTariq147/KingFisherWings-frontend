@@ -18,7 +18,7 @@ const preview: Preview = {
   },
   globalTypes: {
     theme: {
-      description: 'Fresa Gold theme',
+      description: 'KingFisher Tech Gold theme',
       defaultValue: 'default',
       toolbar: {
         title: 'Theme',

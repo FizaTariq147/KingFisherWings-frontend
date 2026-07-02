@@ -7,6 +7,7 @@ import ResetPasswordPage from './features/auth/pages/ResetPasswordPage'
 import Forbidden from './pages/errors/Forbidden'
 import NotFound from './pages/errors/NotFound'
 import DashboardLayout from './components/dashboard/DashboardLayout'
+import AuditLogPage from './pages/audit/AuditLogPage'
 
 // ── Marketing pages ────────────────────────────────────────────────────────
 import Home         from './pages/marketing/Home'
@@ -15,7 +16,6 @@ import PricingPage  from './pages/marketing/PricingPage'
 import ContactPage  from './pages/marketing/ContactPage'
 import ModulesPage  from './pages/marketing/ModulesPage'
 
-// ── Placeholder page factory (replace with real pages as built) ────────────
 function Placeholder({ title }: { title: string }) {
   return (
     <div className="flex flex-col items-center justify-center h-64 gap-3">
@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        element: <AppShell title="Fresa Gold" />,
+        element: <AppShell title="KingFisher Tech Gold" />,
         children: [
 
           // Dashboard
@@ -73,7 +73,7 @@ export const router = createBrowserRouter([
           // Documentation
           { path: '/documentation', element: <Placeholder title="Documentation" /> },
 
-          // Finance
+          // Finance (permission-gated)
           {
             element: <ProtectedRoute requirePermissions={['menu_finance']} />,
             children: [
@@ -89,17 +89,18 @@ export const router = createBrowserRouter([
           { path: '/nvocc/:id', element: <Placeholder title="NVOCC Detail" /> },
 
           // HR
-          { path: '/hr',                element: <Placeholder title="HR & Payroll" /> },
-          { path: '/hr/employees',      element: <Placeholder title="Employees" /> },
-          { path: '/hr/employees/:id',  element: <Placeholder title="Employee Profile" /> },
-          { path: '/hr/leave',          element: <Placeholder title="Leave Calendar" /> },
+          { path: '/hr',               element: <Placeholder title="HR & Payroll" /> },
+          { path: '/hr/employees',     element: <Placeholder title="Employees" /> },
+          { path: '/hr/employees/:id', element: <Placeholder title="Employee Profile" /> },
+          { path: '/hr/leave',         element: <Placeholder title="Leave Calendar" /> },
 
-          // Masters (admin only)
+          // Admin-only routes
           {
             element: <ProtectedRoute requireRole="admin" />,
             children: [
               { path: '/masters',          element: <Placeholder title="Masters" /> },
               { path: '/masters/airlines', element: <Placeholder title="Airlines" /> },
+              { path: '/audit-log',        element: <AuditLogPage /> },
             ],
           },
 

@@ -47,7 +47,7 @@ export default function ContactPage() {
                 Book a free demo
               </h1>
               <p className="text-gray-500 text-lg max-w-xl mx-auto">
-                Talk to our team and see how Fresa Gold fits your operation.
+                Talk to our team and see how KingFisher Tech Gold fits your operation.
               </p>
             </div>
 
@@ -181,13 +181,13 @@ export default function ContactPage() {
                   <h2 className="text-lg font-medium text-gray-900 mb-5">Get in touch</h2>
                   <div className="flex flex-col gap-4">
                     <a
-                      href="mailto:sales@fresatechnologies.com"
+                      href="mailto:sales@KingFisher Techtechnologies.com"
                       className="flex items-center gap-3 text-sm text-gray-600 hover:text-[#0EA5E9] transition-colors"
                     >
                       <div className="w-9 h-9 bg-[#E0F2FE] rounded-lg flex items-center justify-center shrink-0">
                         <Mail size={15} className="text-[#0EA5E9]" />
                       </div>
-                      sales@fresatechnologies.com
+                      sales@KingFisher Techtechnologies.com
                     </a>
                     <div className="flex items-center gap-3 text-sm text-gray-600">
                       <div className="w-9 h-9 bg-[#E0F2FE] rounded-lg flex items-center justify-center shrink-0">

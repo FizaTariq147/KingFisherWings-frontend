@@ -39,8 +39,8 @@ Cloud-based Freight Management SaaS for freight forwarders, NVOCCs, and 3PL prov
 ### Installation
 
 ```bash
-git clone https://github.com/FizaTariq147/fresa-gold-frontend.git
-cd fresa-gold-frontend
+git clone https://github.com/FizaTariq147/KingFisher Tech-gold-frontend.git
+cd KingFisher Tech-gold-frontend
 npm install
 ```
 

@@ -9,25 +9,25 @@ interface Product {
 
 const PRODUCTS: Product[] = [
   {
-    name: 'Fresa Global',
+    name: 'KingFisher Tech Global',
     tagline: 'Enterprise freight platform',
     description: 'Full-scale multi-entity ERP for large freight conglomerates with consolidated reporting.',
     Icon: Cloud,
   },
   {
-    name: 'Fresa Gold',
+    name: 'KingFisher Tech Gold',
     tagline: 'Mid-market operations',
     description: 'Complete freight forwarding ERP — sea, air, land — built for growing teams.',
     Icon: Star,
   },
   {
-    name: 'Fresa App',
+    name: 'KingFisher Tech App',
     tagline: 'Mobile sales tool',
     description: 'Track leads, shipments, and quotations on the go for your field sales team.',
     Icon: Smartphone,
   },
   {
-    name: 'Fresa Analytics',
+    name: 'KingFisher Tech Analytics',
     tagline: 'Business intelligence',
     description: 'Deep-dive MIS dashboards, lane profitability, and executive reporting suite.',
     Icon: BarChart2,
@@ -43,7 +43,7 @@ export default function Products() {
             Our products
           </p>
           <h2 className="text-3xl font-medium text-gray-900">
-            The complete Fresa suite
+            The complete KingFisher Tech suite
           </h2>
         </div>
 

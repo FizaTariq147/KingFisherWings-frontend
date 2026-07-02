@@ -34,11 +34,11 @@ export default function Navbar() {
               +91 93449 12004
             </a>
             <a
-              href="mailto:sales@fresatechnologies.com"
+              href="mailto:sales@KingFisher Techtechnologies.com"
               className="hidden sm:flex items-center gap-1.5 text-[#fff] hover:text-white text-xs transition-colors"
             >
               <Mail size={12} aria-hidden="true" />
-              sales@fresatechnologies.com
+              sales@KingFisher Techtechnologies.com
             </a>
           </div>
           <div className="flex items-center gap-5">
@@ -72,8 +72,8 @@ export default function Navbar() {
               </svg>
             </div>
             <div>
-              <div className="text-sm font-semibold text-gray-900 leading-tight">Fresa Gold</div>
-              <div className="text-[10px] text-gray-400 leading-tight">by Fresa Technologies</div>
+              <div className="text-sm font-semibold text-gray-900 leading-tight">KingFisher Tech Gold</div>
+              <div className="text-[10px] text-gray-400 leading-tight">by KingFisher Tech Technologies</div>
             </div>
           </Link>
 

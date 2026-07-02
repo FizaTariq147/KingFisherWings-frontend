@@ -31,7 +31,7 @@ export default function Features() {
           className="text-center mb-14"
         >
           <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#0EA5E9' }}>
-            Why Fresa Gold
+            Why KingFisher Tech Gold
           </p>
           <h2 className="text-3xl font-bold text-white">Everything your freight team needs</h2>
         </motion.div>

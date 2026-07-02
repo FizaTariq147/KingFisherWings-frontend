@@ -13,7 +13,7 @@ export default function CTASection() {
           Ready to modernise your freight operations?
         </h2>
         <p className="text-[#94A3B8] mt-4 text-base max-w-md mx-auto leading-relaxed">
-          Join 1000+ companies using Fresa Gold to run smarter, faster freight businesses.
+          Join 1000+ companies using KingFisher Tech Gold to run smarter, faster freight businesses.
         </p>
         <Link
           to="/contact"

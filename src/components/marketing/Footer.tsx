@@ -14,14 +14,14 @@ export default function Footer() {
               <div className="w-8 h-8 bg-[#0EA5E9] rounded-lg flex items-center justify-center shrink-0">
                 <Cloud size={16} className="text-white" aria-hidden="true" />
               </div>
-              <span className="font-medium text-gray-900 text-sm">Fresa Gold</span>
+              <span className="font-medium text-gray-900 text-sm">KingFisher Tech Gold</span>
             </Link>
             <p className="text-sm text-gray-500 leading-relaxed mb-5 max-w-[200px]">
               Cloud-based freight forwarding ERP for growing teams worldwide.
             </p>
             <div className="flex flex-col gap-2">
               <a
-                href="https://fresatechnologies.com/privacy"
+                href="https://KingFisher Techtechnologies.com/privacy"
                 target="_blank"
                 rel="noreferrer"
                 className="text-xs text-gray-400 hover:text-gray-600 transition-colors w-fit"
@@ -29,7 +29,7 @@ export default function Footer() {
                 Privacy Policy
               </a>
               <a
-                href="https://fresatechnologies.com/terms"
+                href="https://KingFisher Techtechnologies.com/terms"
                 target="_blank"
                 rel="noreferrer"
                 className="text-xs text-gray-400 hover:text-gray-600 transition-colors w-fit"
@@ -85,10 +85,10 @@ export default function Footer() {
               Contact
             </h3>
             <a
-              href="mailto:sales@fresatechnologies.com"
+              href="mailto:sales@KingFisher Techtechnologies.com"
               className="text-sm text-gray-500 hover:text-[#0EA5E9] transition-colors block mb-6"
             >
-              sales@fresatechnologies.com
+              sales@KingFisher Techtechnologies.com
             </a>
             <div className="flex flex-col gap-3">
               {FOOTER_LINKS.social.map(({ label, href }) => (
@@ -110,11 +110,11 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6">
           <p className="text-xs text-gray-400">
-            © {new Date().getFullYear()} Fresa Technologies. All rights reserved.
+            © {new Date().getFullYear()} KingFisher Tech Technologies. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <a
-              href="https://fresatechnologies.com/privacy"
+              href="https://KingFisher Techtechnologies.com/privacy"
               target="_blank"
               rel="noreferrer"
               className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
@@ -122,7 +122,7 @@ export default function Footer() {
               Privacy
             </a>
             <a
-              href="https://fresatechnologies.com/terms"
+              href="https://KingFisher Techtechnologies.com/terms"
               target="_blank"
               rel="noreferrer"
               className="text-xs text-gray-400 hover:text-gray-600 transition-colors"

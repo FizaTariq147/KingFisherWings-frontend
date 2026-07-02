@@ -60,7 +60,7 @@ export const STATS = [
 
 export const TESTIMONIALS = [
   {
-    quote: 'Fresa Gold has greatly improved our efficiency by reducing manual work and providing real-time visibility.',
+    quote: 'KingFisher Tech Gold has greatly improved our efficiency by reducing manual work and providing real-time visibility.',
     name: 'Akhil',
     company: 'MCL Shipping LLC',
   },
@@ -84,16 +84,16 @@ export const FOOTER_LINKS = {
     { label: 'Contact',   to: '/contact' },
   ],
   company: [
-    { label: 'About Fresa',    href: 'https://fresatechnologies.com/about' },
-    { label: 'Certifications', href: 'https://fresatechnologies.com/certifications' },
-    { label: 'Blog',           href: 'https://fresatechnologies.com/blog' },
-    { label: 'Careers',        href: 'https://fresatechnologies.com/careers' },
+    { label: 'About KingFisher Tech',    href: 'https://KingFisher Techtechnologies.com/about' },
+    { label: 'Certifications', href: 'https://KingFisher Techtechnologies.com/certifications' },
+    { label: 'Blog',           href: 'https://KingFisher Techtechnologies.com/blog' },
+    { label: 'Careers',        href: 'https://KingFisher Techtechnologies.com/careers' },
   ],
   // icon field removed — lucide-react has no social brand icons
   social: [
-    { label: 'LinkedIn',  href: 'https://linkedin.com/company/fresatechnologies' },
-    { label: 'YouTube',   href: 'https://youtube.com/@fresatechnologies' },
-    { label: 'Instagram', href: 'https://instagram.com/fresatechnologies' },
-    { label: 'Twitter',   href: 'https://twitter.com/fresatech' },
+    { label: 'LinkedIn',  href: 'https://linkedin.com/company/KingFisher Techtechnologies' },
+    { label: 'YouTube',   href: 'https://youtube.com/@KingFisher Techtechnologies' },
+    { label: 'Instagram', href: 'https://instagram.com/KingFisher Techtechnologies' },
+    { label: 'Twitter',   href: 'https://twitter.com/KingFisher Techtech' },
   ],
 } as const

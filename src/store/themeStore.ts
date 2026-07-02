@@ -14,6 +14,6 @@ export const useThemeStore = create<ThemeState>()(
       theme: 'green',
       setTheme: (t) => set({ theme: t }),
     }),
-    { name: 'fresa-theme' },
+    { name: 'KingFisher Tech-theme' },
   ),
 )
