@@ -15,7 +15,11 @@ const dirname =
 export default defineConfig({
   plugins: [react(), tailwindcss()],
 
-  // ── Path alias — resolves @/ to src/ ──────────────────────────────────
+  server: {
+    host: true,
+    allowedHosts: true, // or ['your-ngrok-domain.ngrok-free.dev']
+  },
+
   resolve: {
     alias: {
       '@': path.resolve(dirname, './src'),
