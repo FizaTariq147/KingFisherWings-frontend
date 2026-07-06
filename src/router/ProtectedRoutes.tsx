@@ -4,7 +4,7 @@ import { AppShellSkeleton } from '@/components/skeletons/AppShellSkeleton'
 import type { PermissionKey } from '@/types/auth.types'
 
 // ── Flip to true ONLY when backend is not running locally ──────────────────
-const DEV_BYPASS_AUTH = import.meta.env.DEV && false
+const DEV_BYPASS_AUTH = import.meta.env.DEV && import.meta.env.VITE_BYPASS_AUTH === 'true'
 
 interface ProtectedRouteProps {
   redirectTo?:           string

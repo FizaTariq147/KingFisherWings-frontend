@@ -32,12 +32,14 @@ export const router = createBrowserRouter([
   { path: '/pricing',   element: <PricingPage /> },
   { path: '/contact',   element: <ContactPage /> },
   { path: '/modules',   element: <ModulesPage /> },
+   
 
   // ── Auth routes ────────────────────────────────────────────────────────
   { path: '/login',           element: <LoginPage /> },
   { path: '/forgot-password', element: <ForgotPasswordPage /> },
   { path: '/reset-password',  element: <ResetPasswordPage /> },
   { path: '/403',             element: <Forbidden /> },
+{ path: '/dashboard', element: <DashboardLayout /> },
 
   // ── Protected app routes ───────────────────────────────────────────────
   {
@@ -48,7 +50,7 @@ export const router = createBrowserRouter([
         children: [
 
           // Dashboard
-          { path: '/dashboard', element: <DashboardLayout /> },
+          // { path: '/dashboard', element: <DashboardLayout /> },
 
           // Customers
           { path: '/customers',     element: <Placeholder title="Customers" /> },

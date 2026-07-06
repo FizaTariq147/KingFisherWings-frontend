@@ -18,13 +18,26 @@ export interface AuthContextValue {
 
 export const AuthContext = createContext<AuthContextValue | null>(null)
 
+// ── DEV-ONLY bypass — mirrors the flag in ProtectedRoute.tsx ───────────────
+const DEV_BYPASS_AUTH = import.meta.env.DEV && import.meta.env.VITE_BYPASS_AUTH === 'true'
+
+const MOCK_USER: AuthUser = {
+  id:          'dev-user-1',
+  name:        'Dev User',
+  email:       'dev@kingfisherwings.com',
+  role:        { slug: 'admin' } as AuthUser['role'],
+  permissions: [] as PermissionKey[], // add specific keys here if you need to test gated menus
+} as AuthUser
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { accessToken, logout: storeLogout } = useAuthStore()
-  const [user, setUser]       = useState<AuthUser | null>(null)
-  const [isLoading, setLoading] = useState(true)
+  const [user, setUser]       = useState<AuthUser | null>(DEV_BYPASS_AUTH ? MOCK_USER : null)
+  const [isLoading, setLoading] = useState(!DEV_BYPASS_AUTH)
   const fetchedRef            = useRef(false)
 
   useEffect(() => {
+    if (DEV_BYPASS_AUTH) return // skip the real /auth/me fetch entirely
+
     if (!accessToken) {
       setUser(null)
       setLoading(false)
@@ -39,8 +52,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .get<AuthUser>('/api/auth/me')
       .then(({ data }) => setUser(data))
       .catch(() => {
-        // /auth/me failed — token invalid or expired
-        // refreshAccessToken already tried via interceptor, still failed
         setUser(null)
         storeLogout()
       })
@@ -48,13 +59,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [accessToken, storeLogout])
 
   const hasPermission    = useCallback((...keys: PermissionKey[]) =>
-    !!user && keys.every((k) => user.permissions.includes(k)), [user])
+    DEV_BYPASS_AUTH ? true : (!!user && keys.every((k) => user.permissions.includes(k))), [user])
 
   const hasAnyPermission = useCallback((...keys: PermissionKey[]) =>
-    !!user && keys.some((k) => user.permissions.includes(k)), [user])
+    DEV_BYPASS_AUTH ? true : (!!user && keys.some((k) => user.permissions.includes(k))), [user])
 
   const hasRole = useCallback((slug: string) =>
-    user?.role.slug === slug, [user])
+    DEV_BYPASS_AUTH ? true : user?.role.slug === slug, [user])
 
   const logout = useCallback(async () => {
     await storeLogout()
@@ -63,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AuthContextValue>(() => ({
     user,
-    isAuthenticated: !!user,
+    isAuthenticated: DEV_BYPASS_AUTH ? true : !!user,
     isLoading,
     hasPermission,
     hasAnyPermission,
