@@ -2,20 +2,38 @@
 
 /* ================================================
    KingFisher Tech GOLD — THEME TOKENS
-   App theme (Default: Forest Green, Alternatives: Ocean Blue, Crimson Red)
+   Default theme derived from the official
+   UI_Colors_.pdf palette (Navy #0A2942 / Orange #FF751F).
+   Blue / Red remain as user-selectable alternates.
+   A Green alternate is preserved below for anyone who
+   still wants the old default as an option.
    Marketing theme (separate scheme — see bottom of file)
 ================================================ */
 
-/* === DEFAULT: Forest Green (app/dashboard) === */
+/* === DEFAULT: Brand Navy / Orange (app/dashboard) === */
 :root {
-  /* Primary */
-  --color-primary-50:  #F0FDF4;
-  --color-primary-100: #DCFCE7;
-  --color-primary-200: #BBF7D0;
-  --color-primary-500: #22C55E;
-  --color-primary-600: #16A34A;
-  --color-primary-700: #15803D;
-  --color-primary-900: #14532D;
+  /* Primary (navy) — official primary is --color-primary-700 */
+  --color-primary-50:  #E9EEF2;
+  --color-primary-100: #D3DEE6;
+  --color-primary-200: #A7BDCD;
+  --color-primary-500: #2C557A;
+  --color-primary-600: #163E60;
+  --color-primary-700: #0A2942; /* = official Primary, UI_Colors_.pdf */
+  --color-primary-900: #051523;
+
+  /* Secondary (orange) — official secondary is --color-secondary-500 */
+  --color-secondary-50:  #FFF1E6;
+  --color-secondary-100: #FFDFC2;
+  --color-secondary-500: #FF751F; /* = official Secondary, UI_Colors_.pdf */
+  --color-secondary-600: #E8650F;
+  --color-secondary-700: #C7590F;
+
+  /* Exact-name aliases — matches UI_Colors_.pdf token names directly,
+     used by Topbar/Sidebar/ColorHeaderCard/dashboard components */
+  --color-primary:   var(--color-primary-700);
+  --color-secondary: var(--color-secondary-500);
+  --color-bg:        #FFFFFF;
+  --color-surface:   #F5F7FA;
 
   /* Neutral */
   --color-neutral-50:  #F8FAFC;
@@ -26,7 +44,7 @@
   --color-neutral-800: #1E293B;
   --color-neutral-900: #0F172A;
 
-  /* Semantic */
+  /* Semantic (functional status colors — unrelated to brand identity, unchanged) */
   --color-success-100: #DCFCE7;
   --color-success-500: #22C55E;
   --color-success-700: #15803D;
@@ -48,9 +66,11 @@
   --font-sans: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Sidebar */
-  --color-sidebar-bg:   #14532D;
-  --color-sidebar-text: #DCFCE7;
+  /* Sidebar — FIXED: was var(--color-primary-900) (#051523, too dark),
+     now the exact official Primary (#0A2942), matching Topbar. */
+  --color-sidebar-bg:   var(--color-primary);
+  --color-sidebar-text: #E9EEF2;
+  --color-topbar-bg:    var(--color-primary);
 
   /* ── Marketing site — sky blue scheme ──────────────────────────── */
   --mkt-primary:       #0EA5E9;
@@ -70,8 +90,11 @@
   --color-primary-600: #2563EB;
   --color-primary-700: #1D4ED8;
   --color-primary-900: #1E3A8A;
-  --color-sidebar-bg:   #1E3A8A;
+  --color-primary:     var(--color-primary-700);
+  /* FIXED: was hardcoded #1E3A8A (the -900 shade) — now matches --color-primary */
+  --color-sidebar-bg:   var(--color-primary);
   --color-sidebar-text: #DBEAFE;
+  --color-topbar-bg:    var(--color-primary);
 }
 
 /* === ALTERNATIVE: Crimson Red (app/dashboard) === */
@@ -83,8 +106,27 @@
   --color-primary-600: #E11D48;
   --color-primary-700: #BE123C;
   --color-primary-900: #881337;
-  --color-sidebar-bg:   #881337;
+  --color-primary:     var(--color-primary-700);
+  /* FIXED: was hardcoded #881337 (the -900 shade) — now matches --color-primary */
+  --color-sidebar-bg:   var(--color-primary);
   --color-sidebar-text: #FFE4E6;
+  --color-topbar-bg:    var(--color-primary);
+}
+
+/* === ALTERNATIVE: Forest Green (preserved for anyone who wants the old default back) === */
+.theme-green {
+  --color-primary-50:  #F0FDF4;
+  --color-primary-100: #DCFCE7;
+  --color-primary-200: #BBF7D0;
+  --color-primary-500: #22C55E;
+  --color-primary-600: #16A34A;
+  --color-primary-700: #15803D;
+  --color-primary-900: #14532D;
+  --color-primary:     var(--color-primary-700);
+  /* FIXED: was hardcoded #14532D (the -900 shade) — now matches --color-primary */
+  --color-sidebar-bg:   var(--color-primary);
+  --color-sidebar-text: #DCFCE7;
+  --color-topbar-bg:    var(--color-primary);
 }
 
 /* ── Global base styles ─────────────────────────────────────────── */
@@ -136,4 +178,13 @@ h4 { font-size: 1rem;     font-weight: 600; line-height: 1.4; }
 code, kbd, pre, samp {
   font-family: var(--font-mono);
   font-size: 0.875em;
+}
+
+/* ── Hide scrollbar while keeping scroll functionality ────────────── */
+.scrollbar-none {
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* IE / old Edge */
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;               /* Chrome, Safari, new Edge */
 }

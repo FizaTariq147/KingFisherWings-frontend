@@ -48,7 +48,7 @@ export default function DashboardLayout() {
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h1 className="text-base font-semibold text-[var(--color-neutral-900)]">Dashboard</h1>
+          <h2 className="text-base font-semibold text-[var(--color-neutral-900)]">Dashboard</h2>
           {error && (
             <p className="text-xs text-[var(--color-danger-500)] mt-0.5">{error}</p>
           )}

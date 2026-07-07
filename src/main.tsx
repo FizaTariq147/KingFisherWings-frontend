@@ -6,6 +6,7 @@ import { queryClient } from './lib/queryClient'
 import { router } from './router'
 import { AuthProvider } from './context/AuthContext'
 import { AuthLoadingGate } from './components/skeletons/AuthLoadingGate'
+import './styles/brand-tokens.css'
 import './index.css'
 
 createRoot(document.getElementById('root')!).render(

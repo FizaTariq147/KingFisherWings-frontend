@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-export type Theme = 'green' | 'blue' | 'red'
+export type Theme = 'default' | 'green' | 'blue' | 'red'
 
 interface ThemeState {
   theme: Theme
@@ -11,9 +11,18 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      theme: 'green',
+      theme: 'default',
       setTheme: (t) => set({ theme: t }),
     }),
-    { name: 'KingFisher Tech-theme' },
+    {
+      name: 'KingFisher Tech-theme',
+
+      migrate: (persisted) => {
+        const state = persisted as ThemeState
+        if (!state?.theme) return { theme: 'default' }
+        return state
+      },
+      version: 1,
+    },
   ),
 )

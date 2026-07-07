@@ -6,7 +6,7 @@ import ForgotPasswordPage from './features/auth/pages/ForgotPasswordPage'
 import ResetPasswordPage from './features/auth/pages/ResetPasswordPage'
 import Forbidden from './pages/errors/Forbidden'
 import NotFound from './pages/errors/NotFound'
-import DashboardLayout from './components/dashboard/DashboardLayout'
+import { DashboardPage } from './features/auth/dashboard/pages/DashboardPage'
 import AuditLogPage from './pages/audit/AuditLogPage'
 
 // ── Marketing pages ────────────────────────────────────────────────────────
@@ -39,7 +39,7 @@ export const router = createBrowserRouter([
   { path: '/forgot-password', element: <ForgotPasswordPage /> },
   { path: '/reset-password',  element: <ResetPasswordPage /> },
   { path: '/403',             element: <Forbidden /> },
-{ path: '/dashboard', element: <DashboardLayout /> },
+{ path: '/dashboard', element: <DashboardPage /> },
 
   // ── Protected app routes ───────────────────────────────────────────────
   {

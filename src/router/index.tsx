@@ -6,7 +6,7 @@ import ForgotPasswordPage from '../features/auth/pages/ForgotPasswordPage'
 import ResetPasswordPage from '../features/auth/pages/ResetPasswordPage'
 import Forbidden from '../pages/errors/Forbidden'
 import NotFound from '../pages/errors/NotFound'
-import DashboardLayout from '../components/dashboard/DashboardLayout'
+import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
 import Home         from '../pages/marketing/Home'
 import FeaturesPage from '../pages/marketing/FeaturesPage'
 import PricingPage  from '../pages/marketing/PricingPage'
@@ -38,7 +38,7 @@ export const router = createBrowserRouter([
       {
         element: <AppShell title="KingFisher Tech Gold" />,
         children: [
-          { path: '/dashboard',         element: <DashboardLayout /> },
+          { path: '/dashboard',         element: <DashboardPage /> },
           { path: '/customers',         element: <Placeholder title="Customers" /> },
           { path: '/customers/:id',     element: <Placeholder title="Customer Profile" /> },
           { path: '/quotations',        element: <Placeholder title="Quotations" /> },
