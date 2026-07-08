@@ -12,7 +12,7 @@ import {
   UserCircle,
   Settings,
   BarChart3,
-  Warehouse,
+  Percent,
   Shield,
   type LucideIcon,
 } from 'lucide-react'
@@ -42,7 +42,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'HR',            path: '/hr',              Icon: UserCircle,      permission: 'menu_hr' },
   { label: 'Masters',       path: '/masters',         Icon: Settings,        permission: 'menu_masters' },
   { label: 'Reports',       path: '/reports',         Icon: BarChart3,       permission: 'menu_reports' },
-  { label: 'Warehouse',     path: '/wms',             Icon: Warehouse,       permission: null },
+  { label: 'Sales',         path: '/sales',             Icon: Percent,       permission: 'menu_sales' as PermissionKey },
   { label: 'Settings',      path: '/settings',        Icon: Settings,        permission: 'menu_settings' },
   { label: 'Audit Log',     path: '/audit-log',       Icon: Shield,          permission: 'menu_settings' },
 ]

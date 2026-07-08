@@ -7,6 +7,7 @@ import ResetPasswordPage from './features/auth/pages/ResetPasswordPage'
 import Forbidden from './pages/errors/Forbidden'
 import NotFound from './pages/errors/NotFound'
 import { DashboardPage } from './features/auth/dashboard/pages/DashboardPage'
+
 import AuditLogPage from './pages/audit/AuditLogPage'
 
 // ── Marketing pages ────────────────────────────────────────────────────────
@@ -118,7 +119,7 @@ export const router = createBrowserRouter([
           { path: '/notifications', element: <Placeholder title="Notifications" /> },
 
           // WMS
-          { path: '/wms', element: <Placeholder title="Warehouse" /> },
+          { path: '/sales', element: <Placeholder title="Sales" /> },
         ],
       },
     ],

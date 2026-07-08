@@ -1,0 +1,69 @@
+import {
+  BookOpen,
+  FileText,
+  BarChart2,
+  CalendarCheck,
+  ListChecks,
+  Search,
+  MapPin,
+} from 'lucide-react';
+import type { MenuTile } from '../types/menu.types';
+
+export const customerServiceMenu: MenuTile[] = [
+  {
+    id: 'all-shipments',
+    title: 'All Shipments',
+    description: 'View all shipments by salesperson, customer, and department.',
+    icon: BookOpen,
+    iconColor: 'bg-sky-500',
+    path: '/customer-service/shipments',
+  },
+  {
+    id: 'enquiry-sheet',
+    title: 'Enquiry Sheet',
+    description: 'Maintain client enquiries regarding cargo movement.',
+    icon: FileText,
+    iconColor: 'bg-sky-500',
+    path: '/customer-service/enquiry-sheet',
+  },
+  {
+    id: 'pricing-dashboard',
+    title: 'Pricing Dashboard',
+    description: 'View open enquiry reports and status-wise statistics.',
+    icon: BarChart2,
+    iconColor: 'bg-emerald-500',
+    path: '/customer-service/pricing-dashboard',
+  },
+  {
+    id: 'sailing-schedule',
+    title: 'Sailing Schedule',
+    description: 'Create weekly or monthly schedules for cargo movement.',
+    icon: CalendarCheck,
+    iconColor: 'bg-emerald-500',
+    path: '/customer-service/sailing-schedule',
+  },
+  {
+    id: 'shipment-agent-edi',
+    title: 'Shipment - Agent EDI',
+    description: 'Generate and download the agent EDI XML file.',
+    icon: ListChecks,
+    iconColor: 'bg-lime-600',
+    path: '/customer-service/agent-edi',
+  },
+  {
+    id: 'shipment-costing-search',
+    title: 'Shipment Costing Search',
+    description: 'View shipments with charges and shipment details.',
+    icon: Search,
+    iconColor: 'bg-amber-500',
+    path: '/customer-service/costing-search',
+  },
+  {
+    id: 'shipment-tracking',
+    title: 'Shipment Tracking',
+    description: 'Track shipment status across the company and partners.',
+    icon: MapPin,
+    iconColor: 'bg-amber-500',
+    path: '/customer-service/tracking',
+  },
+];

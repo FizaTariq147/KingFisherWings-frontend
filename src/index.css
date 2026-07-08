@@ -153,10 +153,10 @@ body {
 }
 
 /* ── Headings ────────────────────────────────────────────────────── */
-h1 { font-size: 2.5rem;  font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; }
-h2 { font-size: 1.875rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
-h3 { font-size: 1.25rem;  font-weight: 600; line-height: 1.3; }
-h4 { font-size: 1rem;     font-weight: 600; line-height: 1.4; }
+h1 { font-family: 'Nunito', sans-serif; font-size: 2.5rem;  font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; }
+h2 { font-family: 'Nunito', sans-serif; font-size: 1.875rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+h3 { font-family: 'Nunito', sans-serif; font-size: 1.25rem;  font-weight: 600; line-height: 1.3; }
+h4 { font-family: 'Nunito', sans-serif; font-size: 1rem;     font-weight: 600; line-height: 1.4; }
 
 /* ── Marketing hero override — larger on big screens ─────────────── */
 .hero-h1 {
