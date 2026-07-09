@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   Users,
   MessageSquare,
+  Shapes,
   Plane,
   Ship,
   FileText,
@@ -14,10 +15,12 @@ import {
   BarChart3,
   Percent,
   Shield,
+  Globe,
   type LucideIcon,
 } from 'lucide-react'
 import { useUIStore } from '@/store/uiStore'
 import { useAuthStore } from '@/store/authStore'
+import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore'
 import { AuthContext } from '@/context/AuthContext'
 import { cn } from '@/lib/utils'
 import type { PermissionKey } from '@/types/auth.types'
@@ -33,6 +36,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard',     path: '/dashboard',       Icon: LayoutDashboard, permission: 'menu_dashboard' },
   { label: 'Customers',     path: '/customers',       Icon: Users,           permission: 'menu_customers' },
   { label: 'Quotations',    path: '/quotations',      Icon: MessageSquare,   permission: 'menu_quotations' },
+  { label: 'Management', path: '/management', Icon: Shapes, permission: 'menu_management' as PermissionKey },
   { label: 'Air Export',    path: '/jobs/air-export', Icon: Plane,           permission: 'menu_jobs_air_export' },
   { label: 'Sea Export',    path: '/jobs/sea-export', Icon: Ship,            permission: 'menu_jobs_sea_export' },
   { label: 'Sea Import',    path: '/jobs/sea-import', Icon: Ship,            permission: 'menu_jobs_sea_import' },
@@ -47,11 +51,17 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Audit Log',     path: '/audit-log',       Icon: Shield,          permission: 'menu_settings' },
 ]
 
+const SUPER_ADMIN_NAV_ITEMS: NavItem[] = [
+  { label: 'Platform', path: '/superadmin/dashboard', Icon: Globe, permission: null },
+  { label: 'Tenants',  path: '/superadmin/tenants',   Icon: Building2, permission: null },
+]
+
 export function Sidebar() {
   const { sidebarCollapsed } = useUIStore()
 
   const authCtx    = useContext(AuthContext)
   const storeUser  = useAuthStore((s) => s.user)
+  const isSuperAdmin = useSuperAdminAuthStore((s) => s.isAuthenticated)
 
   const user        = authCtx?.user ?? storeUser
   const isLoading   = authCtx?.isLoading ?? false
@@ -102,6 +112,34 @@ export function Sidebar() {
             {!sidebarCollapsed && <span>{label}</span>}
           </NavLink>
         ))}
+        {isSuperAdmin && (
+          <>
+            {!sidebarCollapsed && (
+              <p className="px-[18px] pt-4 pb-1 text-[10px] font-semibold uppercase tracking-wider text-white/40">
+                Platform Admin
+              </p>
+            )}
+            {SUPER_ADMIN_NAV_ITEMS.map(({ label, path, Icon }) => (
+              <NavLink
+                key={path}
+                to={path}
+                title={sidebarCollapsed ? label : undefined}
+                className={({ isActive }) =>
+                  cn(
+                    'flex items-center gap-2.5 py-2.5 text-[15.5px] transition-colors border-l-[3px] border-transparent',
+                    sidebarCollapsed ? 'justify-center px-0' : 'pl-[18px] pr-4',
+                    isActive
+                      ? 'bg-white/10 text-white font-medium border-l-[var(--color-secondary)]'
+                      : 'text-white/80 hover:text-white hover:bg-white/5',
+                  )
+                }
+              >
+                <Icon size={20} className="shrink-0 opacity-90" aria-hidden="true" />
+                {!sidebarCollapsed && <span>{label}</span>}
+              </NavLink>
+            ))}
+          </>
+        )}
       </nav>
 
       {user && !sidebarCollapsed && (

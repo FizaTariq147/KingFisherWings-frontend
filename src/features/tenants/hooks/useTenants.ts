@@ -1,0 +1,48 @@
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { tenantService } from '../services/tenant.service';
+import type { TenantListParams } from '../types/tenant.types';
+
+export const tenantKeys = {
+  all: ['superadmin', 'tenants'] as const,
+  list: (params: TenantListParams) => [...tenantKeys.all, 'list', params] as const,
+  detail: (id: string) => [...tenantKeys.all, 'detail', id] as const,
+  statistics: () => [...tenantKeys.all, 'statistics'] as const,
+};
+
+export function useTenants(params: TenantListParams) {
+  return useQuery({
+    queryKey: tenantKeys.list(params),
+    queryFn: () => tenantService.list(params),
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
+  });
+}
+
+/** @alias useTenants */
+export const useTenantsList = useTenants;
+
+export function useTenant(id: string) {
+  return useQuery({
+    queryKey: tenantKeys.detail(id),
+    queryFn: () => tenantService.getById(id),
+    enabled: !!id,
+  });
+}
+
+export function useTenantStatistics() {
+  return useQuery({
+    queryKey: tenantKeys.statistics(),
+    queryFn: () => tenantService.getStatistics(),
+    staleTime: 5 * 60_000,
+  });
+}
+
+export {
+  useCreateTenant,
+  useUpdateTenant,
+  useActivateTenant,
+  useDeactivateTenant,
+  useDeleteTenant,
+  useRestoreTenant,
+  useTenantMutations,
+} from './useTenantMutations';
