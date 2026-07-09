@@ -169,9 +169,9 @@ export default function JobList() {
             ))}
             {filtered.length === 0 && (
               <TableRow>
-                <TableCell colSpan={8} className="text-center text-[var(--color-neutral-400)] py-8">
+                <td colSpan={8} className="text-center text-[var(--color-neutral-400)] py-8">
                   No jobs found.
-                </TableCell>
+                </td>
               </TableRow>
             )}
           </TableBody>

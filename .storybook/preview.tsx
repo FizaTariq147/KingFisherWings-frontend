@@ -1,4 +1,5 @@
 import type { Preview } from '@storybook/react';
+// @ts-ignore
 import '../src/index.css'; // pulls in Tailwind + theme tokens
 
 const preview: Preview = {
@@ -17,7 +18,7 @@ const preview: Preview = {
   },
   globalTypes: {
     theme: {
-      description: 'Fresa Gold theme',
+      description: 'KingFisher Tech Gold theme',
       defaultValue: 'default',
       toolbar: {
         title: 'Theme',

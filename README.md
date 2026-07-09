@@ -1,75 +1,141 @@
-# React + TypeScript + Vite
+Cloud-based Freight Management SaaS for freight forwarders, NVOCCs, and 3PL providers.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Tech Stack
 
-Currently, two official plugins are available:
+| Layer | Technology |
+|---|---|
+| Framework | React 18 + TypeScript |
+| Build Tool | Vite 8 |
+| Styling | Tailwind CSS v4 |
+| Routing | React Router v6 |
+| Server State | TanStack Query v5 |
+| Client State | Zustand |
+| Forms | React Hook Form + Zod |
+| Components | shadcn/ui + Radix UI |
+| Icons | Lucide React |
+| Docs | Storybook |
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Modules
 
-## React Compiler
+- Auth & RBAC
+- Customer Management
+- Quotations
+- Air Export
+- Sea FCL Export
+- Sea FCL Import
+- Documentation (HAWB, MAWB, HBL, MBL)
+- Finance & Accounts
+- NVOCC
+- HR & Leave Management
+- Reports & MIS
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Getting Started
 
-Note: This will impact Vite dev & build performances.
+### Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js 18+
+- npm 9+
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Installation
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/FizaTariq147/KingFisher Tech-gold-frontend.git
+cd KingFisher Tech-gold-frontend
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Environment Setup
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Create a `.env.local` file in the root:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_API_URL=http://localhost:3000/api
 ```
+
+### Running the App
+
+```bash
+# Development server
+npm run dev
+
+# Storybook component docs
+npm run storybook
+
+# Production build
+npm run build
+```
+
+## Project Structure
+src/
+
+├── assets/           # Logos, images, icons
+
+├── components/
+
+│   ├── ui/           # Base components: Button, Input, Badge, Card, Table, Modal
+
+│   └── layout/       # AppShell, Sidebar, Topbar, NavShell
+
+├── features/         # One folder per ERP module
+
+│   ├── auth/
+
+│   ├── customers/
+
+│   ├── quotations/
+
+│   ├── jobs/
+
+│   ├── documentation/
+
+│   ├── finance/
+
+│   ├── nvocc/
+
+│   └── hr/
+
+├── hooks/            # Shared custom hooks
+
+├── lib/              # axios, queryClient, utils
+
+├── pages/            # Route-level page components
+
+├── router/           # React Router v6 config
+
+├── store/            # Zustand stores (auth, ui)
+
+├── types/            # Shared TypeScript interfaces
+
+└── styles/           # Global CSS + theme tokens
+
+## Theming
+
+Three themes are supported via CSS variables:
+
+| Theme | Class | Primary Color |
+|---|---|---|
+| Forest Green (default) | — | #22C55E |
+| Ocean Blue | theme-blue | #3B82F6 |
+| Crimson Red | theme-red | #F43F5E |
+
+Switch themes by adding the class to `<html>`:
+
+```ts
+document.documentElement.classList.add('theme-blue');
+```
+
+## Branching Strategy
+main          — production releases only
+
+develop       — integration branch
+
+feature/*     — one branch per feature/module
+
+hotfix/*      — urgent production fixes
+
+## Team
+
+| Role | Responsibility |
+|---|---|
+| Dev 1 | Backend (NestJS), Database (PostgreSQL), DevOps |
+| Dev 2 | Frontend (React), QA, Component Library |

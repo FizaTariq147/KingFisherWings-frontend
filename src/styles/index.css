@@ -1,0 +1,4 @@
+/* ── Theme accent variables — append to src/styles/index.css ──────── */
+:root[data-theme='green'] { --accent: #1a6e38; --accent-light: #e8f5ee; }
+:root[data-theme='blue']  { --accent: #185FA5; --accent-light: #E6F1FB; }
+:root[data-theme='red']   { --accent: #B91C1C; --accent-light: #FEE2E2; }

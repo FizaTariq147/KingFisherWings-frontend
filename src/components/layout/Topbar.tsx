@@ -1,43 +1,67 @@
-import { useUIStore } from '../../store/uiStore';
-import { useAuthStore } from '../../store/authStore';
+import { Menu, Bell, BookOpen, Search, UserCircle, HelpCircle, ChevronDown, LogOut } from 'lucide-react'
+import { useUIStore } from '@/store/uiStore'
+import { useAuthStore } from '@/store/authStore'
 
-export function Topbar({ title }: { title: string }) {
-  const { toggleSidebar } = useUIStore();
-  const { user } = useAuthStore();
+interface TopbarProps {
+  companyName?: string
+  notificationCount?: number
+  onLogout?: () => void
+}
+
+export function Topbar({ companyName = 'KINGFISHER WINGS LOGISTIC LLC', notificationCount = 0, onLogout }: TopbarProps) {
+  const toggleSidebar = useUIStore((s) => s.toggleSidebar)
+  const user = useAuthStore((s) => s.user)
 
   return (
-    <header className="h-16 bg-white border-b border-[var(--color-neutral-200)] flex items-center justify-between px-6">
-      <div className="flex items-center gap-4">
+    <header
+      className="h-18 flex items-center justify-between px-4 text-white shrink-0"
+      style={{ background: 'var(--color-topbar-bg)' }}
+    >
+      <div className="flex items-center gap-3">
         <button
+          type="button"
           onClick={toggleSidebar}
-          className="text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-800)] transition-colors"
+          aria-label="Toggle sidebar"
+          className="p-1 hover:opacity-80"
         >
-          ☰
+          <Menu size={20} />
         </button>
-        <h1 className="text-sm font-semibold text-[var(--color-neutral-800)]">
-          {title}
-        </h1>
+        <span className="font-bold text-md tracking-wide">{companyName}</span>
       </div>
 
-      <div className="flex items-center gap-4">
-        {/* Search */}
-        <input
-          type="text"
-          placeholder="Search..."
-          className="h-8 w-48 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]"
-        />
-        {/* Notifications */}
-        <button className="relative text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-800)]">
-          🔔
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-[var(--color-danger-500)] text-white text-xs rounded-full flex items-center justify-center">
-            3
-          </span>
+      <div className="flex items-center gap-5 text-xs">
+        <button type="button" aria-label="Notifications" className="relative flex items-center hover:opacity-80">
+          <Bell size={20} />
+          {notificationCount > 0 && (
+            <span
+              className="absolute -top-1.5 -right-2 min-w-[16px] px-1 rounded-full text-[10px] font-bold text-white text-center"
+              style={{ background: 'var(--color-secondary)' }}
+            >
+              {notificationCount}
+            </span>
+          )}
         </button>
-        {/* Avatar */}
-        <div className="w-8 h-8 rounded-full bg-[var(--color-primary-500)] flex items-center justify-center text-white text-xs font-semibold">
-          {user?.name?.[0] ?? 'U'}
-        </div>
+
+        <button type="button" className="flex items-center gap-1.5 hover:opacity-80">
+          <BookOpen size={20} /> Blog
+        </button>
+
+        <button type="button" className="flex items-center gap-1.5 hover:opacity-80">
+          <Search size={20} /> Search
+        </button>
+
+        <span className="flex items-center gap-1.5">
+          <UserCircle size={20} /> {user?.name ?? 'User'}
+        </span>
+
+        <button type="button" className="flex items-center gap-1 hover:opacity-80">
+          <HelpCircle size={20} /> Help <ChevronDown size={12} />
+        </button>
+
+        <button type="button" onClick={onLogout} className="flex items-center gap-1.5 hover:opacity-80">
+          <LogOut size={20} /> Log Out
+        </button>
       </div>
     </header>
-  );
+  )
 }

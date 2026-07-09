@@ -1,0 +1,54 @@
+/**
+ * Brand tokens — single source of truth for colors, per UI_Colors_.pdf.
+ * Import once (e.g. in main.tsx or index.css via @import).
+ *
+ * Only 4 colors are "official": --color-primary, --color-secondary,
+ * --color-bg, --color-surface. Everything else here is a derived
+ * tint/shade of those two so the palette stays centralized — do not
+ * add new hues outside this file without checking with design first.
+ */
+
+:root {
+  /* ── Official tokens (UI_Colors_.pdf) ── */
+  --color-primary: #0A2942;     /* header, main buttons, hero, footer, active states */
+  --color-secondary: #FF751F;   /* CTA buttons, highlights, underlines, icons, active borders */
+  --color-bg: #FFFFFF;          /* main page background, cards, sections */
+  --color-surface: #F5F7FA;     /* card backgrounds, input fields, soft sections */
+
+  /* ── Derived primary (navy) tints/shades ── */
+  --color-primary-900: #061B2C; /* deepest navy — sidebar background */
+  --color-primary-700: #0A2942; /* = --color-primary, alias for scale consistency */
+  --color-primary-600: #123A5C; /* links, active nav text, primary-tinted card header */
+  --color-primary-500: #16456F; /* lighter navy tint — secondary card headers */
+  --color-primary-100: #E6ECF2; /* subtle navy tint for hover/selected backgrounds */
+
+  /* ── Derived secondary (orange) tints/shades ── */
+  --color-secondary-700: #C7590F; /* deep amber — quaternary card header */
+  --color-secondary-600: #E8650F; /* hover state for secondary buttons */
+  --color-secondary-100: #FFEEE0; /* subtle orange tint for badges/backgrounds */
+
+  /* ── Neutrals (derived, for text/border hierarchy) ── */
+  --color-neutral-900: #1F2937;
+  --color-neutral-600: #4B5563;
+  --color-neutral-500: #6B7280;
+  --color-neutral-400: #9CA3AF;
+  --color-neutral-200: #E5E9EF;
+  --color-neutral-100: #F1F4F8;
+  --color-neutral-50:  #FAFBFC;
+
+  /* ── Status colors (derived, kept muted so they don't compete with brand) ── */
+  --color-success-500: #1F8A57;
+  --color-success-50:  #E9F7EF;
+  --color-warning-500: #B7791F;
+  --color-warning-50:  #FBF3E1;
+  --color-danger-600:  #C6303E;
+  --color-danger-500:  #D6404E;
+  --color-danger-50:   #FCEBEC;
+  --color-info-500:    var(--color-primary-500);
+
+  /* ── Layout aliases used by Sidebar / Topbar ── */
+  --color-sidebar-bg: var(--color-primary-900);
+  --color-sidebar-text: rgba(255, 255, 255, 0.85);
+  --color-sidebar-text-muted: rgba(255, 255, 255, 0.55);
+  --color-topbar-bg: var(--color-primary);
+}
