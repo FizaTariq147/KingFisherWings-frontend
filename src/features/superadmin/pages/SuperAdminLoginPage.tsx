@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { ApiError } from '../../../lib/superAdminApiClient';
+import { useAuthStore } from '@/store/authStore';
 import { superAdminAuthService } from '../services/superAdminAuth.service';
 import { useSuperAdminAuthStore } from '../store/superAdminAuthStore';
 
@@ -34,6 +35,13 @@ export default function SuperAdminLoginPage(): JSX.Element {
   const loginMutation = useMutation({
     mutationFn: superAdminAuthService.login,
     onSuccess: ({ user, access_token, refresh_token }) => {
+      // Keep platform and tenant sessions mutually exclusive in the UI.
+      useAuthStore.setState({
+        user: null,
+        accessToken: null,
+        isAuthenticated: false,
+        error: null,
+      });
       setSession(user, access_token, refresh_token);
       const from = (location.state as LocationState | null)?.from?.pathname;
       navigate(from ?? '/superadmin/dashboard', { replace: true });

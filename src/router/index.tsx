@@ -1,17 +1,14 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppShell } from '../components/layout/AppShell'
 import ProtectedRoute from '../components/routing/ProtectedRoute'
+import { SettingsRedirect, LegacySettingsUsersRedirect } from '../components/routing/SettingsRedirect'
 import LoginPage from '../features/auth/pages/LoginPage'
 import ForgotPasswordPage from '../features/auth/pages/ForgotPasswordPage'
 import ResetPasswordPage from '../features/auth/pages/ResetPasswordPage'
 import Forbidden from '../pages/errors/Forbidden'
 import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
-import Home from '../pages/marketing/Home'
-import FeaturesPage from '../pages/marketing/FeaturesPage'
-import PricingPage from '../pages/marketing/PricingPage'
-import ContactPage from '../pages/marketing/ContactPage'
-import ModulesPage from '../pages/marketing/ModulesPage'
+
 import CustomerServiceMenuPage from '../pages/customers/CustomerServiceMenuPage'
 import AllShipmentsPage from '../pages/customers/AllShipments'
 import EnquirySheetPage from '../pages/customers/EnquirySheetPage'
@@ -70,7 +67,15 @@ import TenantListPage from '../features/tenants/pages/TenantListPage'
 import TenantCreatePage from '../features/tenants/pages/TenantCreatePage'
 import TenantEditPage from '../features/tenants/pages/TenantEditPage'
 import TenantDetailPage from '../features/tenants/pages/TenantDetailPage'
-
+import CompanyListPage from '../features/companies/pages/CompanyListPage'
+import CompanyCreatePage from '../features/companies/pages/CompanyCreatePage'
+import CompanyEditPage from '../features/companies/pages/CompanyEditPage'
+import CompanyDetailPage from '../features/companies/pages/CompanyDetailPage'
+import UserListPage from '../features/users/pages/UserListPage'
+import UserCreatePage from '../features/users/pages/UserCreatePage'
+import UserDetailPage from '../features/users/pages/UserDetailPage'
+import UserEditPage from '../features/users/pages/UserEditPage'
+import { TENANT_USER_MANAGER_ROLE_SLUGS } from '../features/users/constants/userPermissions'
 function Placeholder({ title }: { title: string }) {
   return (
     <div className="flex flex-col items-center justify-center h-64 gap-2">
@@ -81,11 +86,8 @@ function Placeholder({ title }: { title: string }) {
 }
 
 export const router = createBrowserRouter([
-  { path: '/', element: <Home /> },
-  { path: '/features', element: <FeaturesPage /> },
-  { path: '/pricing', element: <PricingPage /> },
-  { path: '/contact', element: <ContactPage /> },
-  { path: '/modules', element: <ModulesPage /> },
+
+  { path: '/', element: <Navigate to="/login" replace /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/forgot-password', element: <ForgotPasswordPage /> },
   { path: '/reset-password', element: <ResetPasswordPage /> },
@@ -105,6 +107,11 @@ export const router = createBrowserRouter([
           { path: 'tenants/new', element: <TenantCreatePage /> },
           { path: 'tenants/:id', element: <TenantDetailPage /> },
           { path: 'tenants/:id/edit', element: <TenantEditPage /> },
+          { path: 'companies', element: <CompanyListPage /> },
+          { path: 'companies/new', element: <CompanyCreatePage /> },
+          { path: 'companies/:id', element: <CompanyDetailPage /> },
+          { path: 'companies/:id/edit', element: <CompanyEditPage /> },
+          // Super Admin cannot access tenant user management — Tenant Admin owns that in ERP.
         ],
       },
     ],
@@ -170,8 +177,25 @@ export const router = createBrowserRouter([
           { path: '/hr/pay-roll', element: <PayRollPage /> },
           { path: '/hr/salary-upload', element: <SalaryLedgerPage /> },
           { path: '/reports', element: <Placeholder title="Reports" /> },
-          { path: '/settings', element: <Placeholder title="Settings" /> },
-          { path: '/settings/users', element: <Placeholder title="Users" /> },
+          { path: '/settings', element: <SettingsRedirect /> },
+          {
+            element: (
+              <ProtectedRoute
+                requireAnyRole={[...TENANT_USER_MANAGER_ROLE_SLUGS]}
+              />
+            ),
+            children: [
+              { path: '/admin/users', element: <UserListPage /> },
+              { path: '/admin/users/new', element: <UserCreatePage /> },
+              { path: '/admin/users/:id', element: <UserDetailPage /> },
+              { path: '/admin/users/:id/edit', element: <UserEditPage /> },
+            ],
+          },
+          // Legacy: Users used to live under Settings — send to Admin Users
+          {
+            path: '/settings/users/*',
+            element: <LegacySettingsUsersRedirect />,
+          },
           { path: '/profile', element: <Placeholder title="My Profile" /> },
           { path: '/notifications', element: <Placeholder title="Notifications" /> },
           { path: '/sales', element: <SalesMenuPage /> },

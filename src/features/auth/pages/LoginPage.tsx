@@ -10,8 +10,18 @@ import {
   Menu, Plane, Ship, Truck,
 } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
+import {
+  getErpHomePath,
+  resolveAuthRoleSlug,
+} from '@/features/users/constants/userPermissions'
+import { wakeApi } from '@/lib/wakeApi'
 import heroBg from '@/assets/hero-freight.jpg'
 import logo from '@/assets/logo.png'
+
+function erpHomeFromAuthStore(): string {
+  const { user } = useAuthStore.getState()
+  return getErpHomePath(resolveAuthRoleSlug(user?.role))
+}
 
 // ── Brand tokens ───────────────────────────────────────────────────────────
 const NAVY     = '#0A2942'
@@ -20,11 +30,34 @@ const ORANGE_D = '#DD5F0D'
 const SURFACE  = '#FFFFFF'
 
 // ── Zod schema ────────────────────────────────────────────────────────────
-const schema = z.object({
-  email:    z.string().email('Enter a valid email address'),
+const tenantAdminSchema = z.object({
+  tenant_slug: z.string().trim().min(1, 'Tenant slug is required'),
   password: z.string().min(1, 'Password is required'),
+  remember_me: z.boolean().optional(),
+  // Optional fallback for provisioned TENANT_ADMIN user via /auth/login
+  email: z
+    .string()
+    .trim()
+    .optional()
+    .or(z.literal(''))
+    .refine((v) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), 'Enter a valid email address'),
 })
-type FormValues = z.infer<typeof schema>
+
+const staffSchema = z.object({
+  tenant_slug: z.string().trim().min(1, 'Tenant slug is required'),
+  email: z.string().trim().email('Enter a valid email address'),
+  password: z.string().min(1, 'Password is required'),
+  remember_me: z.boolean().optional(),
+})
+
+type FormValues = z.infer<typeof staffSchema>
+type LoginMode = 'tenant_admin' | 'staff'
+
+function defaultDeviceName(): string {
+  if (typeof navigator === 'undefined') return 'Web'
+  const ua = navigator.userAgent || 'Web'
+  return ua.slice(0, 120)
+}
 
 // -------------------------------------------------------------------------
 // NAVBAR — measured Bézier seam (pixel-fit to reference image)
@@ -309,14 +342,14 @@ function Card({ icon: Icon, title, description, links, delay = 0, onLoginClick }
 // ─────────────────────────────────────────────────────────────────────────
 function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const navigate = useNavigate()
-  const { login, isLoading } = useAuthStore()
+  const { loginTenant, loginStaff, isLoading } = useAuthStore()
   const [step, setStep]       = useState<'signon' | 'credentials'>('signon')
+  const [loginMode, setLoginMode] = useState<LoginMode>('tenant_admin')
   const [showPw, setShowPw]   = useState(false)
   const [apiErr, setApiErr]   = useState<string | null>(null)
+  const [statusMsg, setStatusMsg] = useState<string | null>(null)
   const [agreed, setAgreed]   = useState(false)
   const [agreedTouched, setAgreedTouched] = useState(false)
-  const inputRef              = useRef<HTMLInputElement>(null)
-
 
   const [forgotOpen, setForgotOpen]     = useState(false)
   const [forgotEmail, setForgotEmail]   = useState('')
@@ -325,20 +358,25 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [forgotSent, setForgotSent]     = useState(false)
   const forgotInputRef = useRef<HTMLInputElement>(null)
 
-  const { register, handleSubmit, formState: { errors }, watch, reset } = useForm<FormValues>({
-    resolver: zodResolver(schema), mode: 'onTouched',
+  const schema = loginMode === 'staff' ? staffSchema : tenantAdminSchema
+
+  const { register, handleSubmit, formState: { errors }, watch, reset, setFocus } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    mode: 'onTouched',
+    defaultValues: { tenant_slug: '', email: '', password: '', remember_me: true },
   })
 
-  const ev = watch('email'); const pv = watch('password')
-  useEffect(() => { if (apiErr) setApiErr(null) }, [ev, pv]) // eslint-disable-line
+  const slug = watch('tenant_slug'); const email = watch('email'); const pv = watch('password')
+  useEffect(() => { if (apiErr) setApiErr(null) }, [slug, email, pv, loginMode]) // eslint-disable-line
 
   useEffect(() => {
-    if (open && step === 'credentials') setTimeout(() => inputRef.current?.focus(), 80)
-  }, [open, step])
+    if (open && step === 'credentials') setTimeout(() => setFocus('tenant_slug'), 80)
+  }, [open, step, setFocus])
 
   useEffect(() => {
     if (!open) {
-      reset(); setApiErr(null); setShowPw(false); setStep('signon'); setAgreed(false); setAgreedTouched(false)
+      reset(); setApiErr(null); setStatusMsg(null); setShowPw(false); setStep('signon'); setAgreed(false); setAgreedTouched(false)
+      setLoginMode('tenant_admin')
       setForgotOpen(false); setForgotEmail(''); setForgotErr(null); setForgotSent(false)
     }
   }, [open, reset])
@@ -371,27 +409,56 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
     if (isLoading) return
     if (!agreed) { setAgreedTouched(true); return }
     setApiErr(null)
-    await login(v.email, v.password, 'KingFisher Tech Gold' as never)
+
+    const parsed =
+      loginMode === 'staff' ? staffSchema.safeParse(v) : tenantAdminSchema.safeParse(v)
+    if (!parsed.success) {
+      const first = parsed.error.issues[0]?.message
+      setApiErr(first || 'Please check your credentials.')
+      return
+    }
+
+    const device_name = defaultDeviceName()
+    setStatusMsg('Waking API (Render free tier can take up to ~90s)…')
+    const awake = await wakeApi(90_000)
+    setStatusMsg(awake ? 'Signing in…' : 'API still cold — signing in with retries…')
+
+    if (loginMode === 'staff') {
+      const values = parsed.data as z.infer<typeof staffSchema>
+      await loginStaff({
+        tenant_slug: values.tenant_slug,
+        email: values.email,
+        password: values.password,
+        remember_me: values.remember_me ?? true,
+        device_name,
+      })
+    } else {
+      const values = parsed.data as z.infer<typeof tenantAdminSchema>
+      // AuthController_tenantLogin: tenant_slug + password; optional email enables /auth/login fallback.
+      await loginTenant({
+        tenant_slug: values.tenant_slug,
+        password: values.password,
+        remember_me: values.remember_me ?? true,
+        device_name,
+        ...(values.email?.trim() ? { email: values.email.trim() } : {}),
+      })
+    }
+    setStatusMsg(null)
     const s = useAuthStore.getState()
-    if (s.isAuthenticated) { onClose(); navigate('/dashboard') }
-    else setApiErr(s.error ?? 'Incorrect username or password.')
+    if (s.isAuthenticated) {
+      onClose()
+      navigate(erpHomeFromAuthStore())
+    } else {
+      setApiErr(s.error ?? 'Incorrect credentials. Please try again.')
+    }
   }
 
   const handleForgotSend = async () => {
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(forgotEmail)
-    if (!emailOk) { setForgotErr('Enter a valid email address'); return }
-    setForgotErr(null)
-    setForgotSending(true)
-    try {
-      // TODO: replace with your real forgot-password API call, e.g.
-      // await api.post('/auth/forgot-password', { email: forgotEmail })
-      await new Promise(r => setTimeout(r, 700))
-      setForgotSent(true)
-    } catch {
-      setForgotErr('Something went wrong. Please try again.')
-    } finally {
-      setForgotSending(false)
-    }
+    setForgotErr(
+      'Password reset is not available through the current API. Contact your Tenant Admin or platform support.',
+    )
+    setForgotSending(false)
+    setForgotSent(false)
   }
 
   if (!open) return null
@@ -488,33 +555,106 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
 
               {/* Body */}
               <div className="px-6 sm:px-8 py-6 sm:py-7 space-y-4 overflow-y-auto">
-                {/* Username */}
+                {/* Login mode */}
+                <div className="grid grid-cols-2 gap-2 rounded-lg bg-slate-100 p-1">
+                  <button
+                    type="button"
+                    onClick={() => { setLoginMode('tenant_admin'); setApiErr(null) }}
+                    className="rounded-md px-3 py-2 text-[12px] font-semibold transition-colors"
+                    style={{
+                      background: loginMode === 'tenant_admin' ? NAVY : 'transparent',
+                      color: loginMode === 'tenant_admin' ? '#fff' : '#64748b',
+                    }}
+                  >
+                    Tenant Admin
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setLoginMode('staff'); setApiErr(null) }}
+                    className="rounded-md px-3 py-2 text-[12px] font-semibold transition-colors"
+                    style={{
+                      background: loginMode === 'staff' ? NAVY : 'transparent',
+                      color: loginMode === 'staff' ? '#fff' : '#64748b',
+                    }}
+                  >
+                    Staff / User
+                  </button>
+                </div>
+                {loginMode === 'tenant_admin' && (
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Primary: <span className="font-semibold">slug + password</span> via{' '}
+                    <code className="text-[10px]">POST /auth/tenant-login</code>.
+                    Optional admin email enables fallback to Staff login for the provisioned owner user.
+                    SuperAdmin uses <span className="font-semibold">/superadmin/login</span>.
+                  </p>
+                )}
+
+                {/* Tenant slug */}
                 <div>
                   <div className="relative">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: ORANGE }} aria-hidden="true">
                       <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" />
                       <path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                     </svg>
-                    <input id="kf-email" type="email" autoComplete="username"
-                      placeholder="username" disabled={isLoading} aria-invalid={!!errors.email}
-                      {...register('email')}
-                      className={`${inp} pl-10 h-12 ${errors.email
+                    <input
+                      id="kf-tenant-slug"
+                      type="text"
+                      autoComplete="off"
+                      placeholder="tenant_slug"
+                      disabled={isLoading}
+                      aria-invalid={!!errors.tenant_slug}
+                      {...register('tenant_slug')}
+                      className={`${inp} pl-10 h-12 ${errors.tenant_slug
                         ? 'border-red-300 ring-2 ring-red-100'
-                        : `border-slate-200 focus:border-[${ORANGE}] focus:ring-2 focus:ring-[${ORANGE}]/15`}`} />
+                        : `border-slate-200 focus:border-[${ORANGE}] focus:ring-2 focus:ring-[${ORANGE}]/15`}`}
+                    />
                   </div>
-                  {errors.email && <p role="alert" className="mt-1.5 flex items-center gap-1 text-[11px] text-red-500"><AlertCircle size={11} />{errors.email.message}</p>}
+                  {errors.tenant_slug && <p role="alert" className="mt-1.5 flex items-center gap-1 text-[11px] text-red-500"><AlertCircle size={11} />{errors.tenant_slug.message}</p>}
+                  <p className="mt-1 text-[11px] text-slate-400">Exact Create Tenant slug — not code, not .fresagold.app</p>
                 </div>
+
+                {(loginMode === 'staff' || loginMode === 'tenant_admin') && (
+                  <div>
+                    <div className="relative">
+                      <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+                      <input
+                        id="kf-email"
+                        type="email"
+                        autoComplete="off"
+                        placeholder={loginMode === 'tenant_admin' ? 'admin email (optional fallback)' : 'email'}
+                        disabled={isLoading}
+                        aria-invalid={!!errors.email}
+                        {...register('email')}
+                        className={`${inp} pl-10 h-12 ${errors.email
+                          ? 'border-red-300 ring-2 ring-red-100'
+                          : `border-slate-200 focus:border-[${ORANGE}] focus:ring-2 focus:ring-[${ORANGE}]/15`}`}
+                      />
+                    </div>
+                    {errors.email && <p role="alert" className="mt-1.5 flex items-center gap-1 text-[11px] text-red-500"><AlertCircle size={11} />{errors.email.message}</p>}
+                    {loginMode === 'tenant_admin' && (
+                      <p className="mt-1 text-[11px] text-slate-400">
+                        Leave blank for tenant-login only. Fill with Create Tenant admin email if slug+password alone fails.
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 {/* Password */}
                 <div>
                   <div className="relative">
                     <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
-                    <input id="kf-pw" type={showPw ? 'text' : 'password'} autoComplete="current-password"
-                      placeholder="password" disabled={isLoading} aria-invalid={!!errors.password}
+                    <input
+                      id="kf-pw"
+                      type={showPw ? 'text' : 'password'}
+                      autoComplete="new-password"
+                      placeholder="password"
+                      disabled={isLoading}
+                      aria-invalid={!!errors.password}
                       {...register('password')}
                       className={`${inp} pl-10 pr-10 h-12 [&::-ms-reveal]:hidden ${errors.password
                         ? 'border-red-300 ring-2 ring-red-100'
-                        : `border-slate-200 focus:border-[${ORANGE}] focus:ring-2 focus:ring-[${ORANGE}]/15`}`} />
+                        : `border-slate-200 focus:border-[${ORANGE}] focus:ring-2 focus:ring-[${ORANGE}]/15`}`}
+                    />
                     <button type="button" onClick={() => setShowPw(v => !v)}
                       aria-label={showPw ? 'Hide password' : 'Show password'}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
@@ -523,6 +663,18 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
                   </div>
                   {errors.password && <p role="alert" className="mt-1.5 flex items-center gap-1 text-[11px] text-red-500"><AlertCircle size={11} />{errors.password.message}</p>}
                 </div>
+
+                {/* Remember me */}
+                <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    disabled={isLoading}
+                    className="h-4 w-4 rounded border-slate-300 shrink-0"
+                    style={{ accentColor: NAVY }}
+                    {...register('remember_me')}
+                  />
+                  <span className="text-[12.5px] text-slate-600">Remember me on this device</span>
+                </label>
 
                 {/* Terms checkbox */}
                 <div>
@@ -561,6 +713,13 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
                 >
                   Forget Password
                 </button>
+
+                {statusMsg && (
+                  <div className="flex items-start gap-2.5 rounded-lg px-3.5 py-3 text-[12px] text-slate-600"
+                    style={{ background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                    <Loader2 size={14} className="mt-0.5 shrink-0 animate-spin" /><span>{statusMsg}</span>
+                  </div>
+                )}
 
                 {apiErr && (
                   <div role="alert" className="flex items-start gap-2.5 rounded-lg px-3.5 py-3 text-[12px] text-red-600"
@@ -706,8 +865,16 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
 // PAGE
 // ─────────────────────────────────────────────────────────────────────────
 export default function LoginPage() {
+  const navigate = useNavigate()
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const [loginOpen,    setLoginOpen]    = useState(false)
   const [supportHover, setSupportHover] = useState(false)
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(erpHomeFromAuthStore(), { replace: true })
+    }
+  }, [isAuthenticated, navigate])
 
   return (
     <div className="min-h-screen" style={{ background: SURFACE }}>
@@ -717,33 +884,51 @@ export default function LoginPage() {
 
         {/* ── Hero + scroll cue ─────────────────────────────────────── */}
         <div className="kf-up mt-4 sm:mt-6">
-          <section className="relative overflow-hidden rounded-2xl h-[150px] xs:h-[170px] sm:h-[220px] md:h-[280px] lg:h-[320px]">
-            <img src={heroBg} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover object-center" />
-            <div className="absolute inset-0" style={{ background: `linear-gradient(to right, ${NAVY}E0 0%, ${NAVY}8C 50%, ${NAVY}33 100%)` }} />
+          <section className="relative overflow-hidden rounded-2xl">
+            <img
+              src={heroBg}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full object-cover object-[65%_center] sm:object-center"
+            />
+            <div
+              className="absolute inset-0"
+              style={{ background: `linear-gradient(to right, ${NAVY}E8 0%, ${NAVY}99 55%, ${NAVY}55 100%)` }}
+            />
 
-            <div className="absolute inset-0 flex items-center z-10 px-5 sm:px-8 md:px-14">
+            <div className="relative z-10 px-4 py-7 sm:px-8 sm:py-10 md:px-14 md:py-12">
               <div className="max-w-[600px]">
-                <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.18em] sm:tracking-[0.22em] block" style={{ color: ORANGE }}>
+                <span
+                  className="block text-[10px] sm:text-[11px] font-bold tracking-[0.16em] sm:tracking-[0.22em]"
+                  style={{ color: ORANGE }}
+                >
                   WELCOME TO
                 </span>
-                <h1 className="mt-1.5 sm:mt-2 text-[22px] xs:text-[26px] sm:text-[32px] md:text-[38px] lg:text-[44px] font-extrabold text-white leading-[1.1] sm:leading-[1.05] tracking-tight">
+                <h1 className="mt-1.5 sm:mt-2 text-[1.35rem] sm:text-[2rem] md:text-[2.375rem] lg:text-[2.75rem] font-extrabold text-white leading-[1.12] sm:leading-[1.05] tracking-tight">
                   KINGFISHER WINGS
-                  <br />
-                  <span style={{ color: ORANGE }}>LOGISTICS PORTAL</span>
+                  <span className="block sm:inline sm:ml-2" style={{ color: ORANGE }}>
+                    LOGISTICS PORTAL
+                  </span>
                 </h1>
-                <p className="mt-2 sm:mt-3 text-[12px] sm:text-[14px] leading-relaxed max-w-[460px]" style={{ color: '#B0C4D8' }}>
-                  Your All-in-one Platform for Seamless <br /> Logistics Management & Digital Solutions
+                <p
+                  className="mt-2 sm:mt-3 text-[11px] sm:text-sm leading-relaxed max-w-[460px]"
+                  style={{ color: '#B0C4D8' }}
+                >
+                  Your All-in-one Platform for Seamless Logistics Management &amp; Digital Solutions
                 </p>
 
-                <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-3 sm:gap-4">
-                  <span className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-semibold" style={{ color: '#DCE7F2' }}>
-                    <Ship size={14} className="sm:size-[15px]" style={{ color: ORANGE }} /> Sea Freight
+                <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 sm:gap-x-4 sm:gap-y-0">
+                  <span className="flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold" style={{ color: '#DCE7F2' }}>
+                    <Ship size={13} className="sm:w-[15px] sm:h-[15px] shrink-0" style={{ color: ORANGE }} />
+                    Sea Freight
                   </span>
-                  <span className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-semibold" style={{ color: '#DCE7F2' }}>
-                    <Plane size={14} className="sm:size-[15px]" style={{ color: ORANGE }} /> Air Freight
+                  <span className="flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold" style={{ color: '#DCE7F2' }}>
+                    <Plane size={13} className="sm:w-[15px] sm:h-[15px] shrink-0" style={{ color: ORANGE }} />
+                    Air Freight
                   </span>
-                  <span className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-semibold" style={{ color: '#DCE7F2' }}>
-                    <Truck size={14} className="sm:size-[15px]" style={{ color: ORANGE }} /> Road / Land Freight
+                  <span className="flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold" style={{ color: '#DCE7F2' }}>
+                    <Truck size={13} className="sm:w-[15px] sm:h-[15px] shrink-0" style={{ color: ORANGE }} />
+                    Road / Land Freight
                   </span>
                 </div>
               </div>

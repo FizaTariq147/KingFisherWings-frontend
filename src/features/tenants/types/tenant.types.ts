@@ -9,6 +9,10 @@ export interface Tenant extends CreateTenantFormValues {
   created_at: string;
   updated_at: string;
   deleted_at?: string | null;
+  /** Runtime metrics — present when API provides them */
+  total_users?: number;
+  total_branches?: number;
+  storage_used_gb?: number;
 }
 
 export interface PaginationMeta {

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Menu, Bell, BookOpen, Search, UserCircle, HelpCircle, ChevronDown, LogOut } from 'lucide-react'
 import { useUIStore } from '@/store/uiStore'
 import { useAuthStore } from '@/store/authStore'
@@ -8,29 +9,68 @@ interface TopbarProps {
   onLogout?: () => void
 }
 
-export function Topbar({ companyName = 'KINGFISHER WINGS LOGISTIC LLC', notificationCount = 0, onLogout }: TopbarProps) {
+function ActionButton({
+  children,
+  label,
+  onClick,
+  className = '',
+}: {
+  children: ReactNode
+  label: string
+  onClick?: () => void
+  className?: string
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className={`flex items-center gap-1.5 hover:opacity-80 shrink-0 ${className}`}
+    >
+      {children}
+      <span className="hidden lg:inline">{label}</span>
+    </button>
+  )
+}
+
+export function Topbar({
+  companyName = 'KINGFISHER WINGS LOGISTIC LLC',
+  notificationCount = 0,
+  onLogout,
+}: TopbarProps) {
   const toggleSidebar = useUIStore((s) => s.toggleSidebar)
+  const openMobileSidebar = useUIStore((s) => s.openMobileSidebar)
   const user = useAuthStore((s) => s.user)
+
+  const handleMenuClick = () => {
+    if (window.matchMedia('(max-width: 767px)').matches) {
+      openMobileSidebar()
+      return
+    }
+    toggleSidebar()
+  }
 
   return (
     <header
-      className="h-18 flex items-center justify-between px-4 text-white shrink-0"
+      className="h-14 md:h-16 flex items-center justify-between gap-2 px-3 sm:px-4 text-white shrink-0 min-w-0"
       style={{ background: 'var(--color-topbar-bg)' }}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
         <button
           type="button"
-          onClick={toggleSidebar}
-          aria-label="Toggle sidebar"
-          className="p-1 hover:opacity-80"
+          onClick={handleMenuClick}
+          aria-label="Toggle navigation"
+          className="p-1.5 hover:opacity-80 shrink-0"
         >
           <Menu size={20} />
         </button>
-        <span className="font-bold text-md tracking-wide">{companyName}</span>
+        <span className="font-bold text-sm sm:text-base tracking-wide truncate min-w-0">
+          {companyName}
+        </span>
       </div>
 
-      <div className="flex items-center gap-5 text-xs">
-        <button type="button" aria-label="Notifications" className="relative flex items-center hover:opacity-80">
+      <div className="flex items-center gap-2 sm:gap-3 lg:gap-5 text-xs shrink-0">
+        <button type="button" aria-label="Notifications" className="relative flex items-center hover:opacity-80 p-1">
           <Bell size={20} />
           {notificationCount > 0 && (
             <span
@@ -42,25 +82,28 @@ export function Topbar({ companyName = 'KINGFISHER WINGS LOGISTIC LLC', notifica
           )}
         </button>
 
-        <button type="button" className="flex items-center gap-1.5 hover:opacity-80">
-          <BookOpen size={20} /> Blog
-        </button>
+        <ActionButton label="Blog" className="hidden sm:flex">
+          <BookOpen size={20} />
+        </ActionButton>
 
-        <button type="button" className="flex items-center gap-1.5 hover:opacity-80">
-          <Search size={20} /> Search
-        </button>
+        <ActionButton label="Search" className="hidden md:flex">
+          <Search size={20} />
+        </ActionButton>
 
-        <span className="flex items-center gap-1.5">
-          <UserCircle size={20} /> {user?.name ?? 'User'}
+        <span className="hidden md:flex items-center gap-1.5 max-w-[8rem] lg:max-w-[12rem] min-w-0">
+          <UserCircle size={20} className="shrink-0" />
+          <span className="truncate">{user?.name ?? 'User'}</span>
         </span>
 
-        <button type="button" className="flex items-center gap-1 hover:opacity-80">
-          <HelpCircle size={20} /> Help <ChevronDown size={12} />
+        <button type="button" className="hidden xl:flex items-center gap-1 hover:opacity-80 shrink-0">
+          <HelpCircle size={20} />
+          <span className="hidden lg:inline">Help</span>
+          <ChevronDown size={12} />
         </button>
 
-        <button type="button" onClick={onLogout} className="flex items-center gap-1.5 hover:opacity-80">
-          <LogOut size={20} /> Log Out
-        </button>
+        <ActionButton label="Log Out" onClick={onLogout}>
+          <LogOut size={20} />
+        </ActionButton>
       </div>
     </header>
   )

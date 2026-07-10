@@ -19,7 +19,8 @@ export function TenantOverviewPanel({ tenant }: TenantOverviewPanelProps) {
         </CardHeader>
         <dl className="space-y-0">
           <DetailRow label="Tenant code" value={tenant.code} mono />
-          <DetailRow label="Workspace slug" value={formatTenantSlug(tenant.slug)} />
+          <DetailRow label="Workspace slug" value={formatTenantSlug(tenant.slug)} mono />
+          <DetailRow label="Login tip" value="Use this slug + the temporary password from create" />
           <DetailRow label="Legal name" value={tenant.name} />
           <DetailRow label="Display name" value={tenant.display_name} />
           <DetailRow label="Company code" value={tenant.company_code} mono />
@@ -101,9 +102,30 @@ export function TenantOverviewPanel({ tenant }: TenantOverviewPanelProps) {
           <DetailRow label="Subscription status" value={capitalize(String(tenant.status))} />
           <DetailRow label="Trial ends" value={formatDate(tenant.trial_ends)} />
           <DetailRow label="Subscription ends" value={formatDate(tenant.subscription_ends)} />
+          <DetailRow
+            label="Total users"
+            value={
+              typeof tenant.total_users === 'number' ? String(tenant.total_users) : '—'
+            }
+          />
           <DetailRow label="Max users" value={String(tenant.max_users)} />
-          <DetailRow label="Max branches" value={String(tenant.max_branches)} />
+          <DetailRow
+            label="Total branches"
+            value={
+              typeof tenant.total_branches === 'number' ? String(tenant.total_branches) : '—'
+            }
+          />
+          <DetailRow label="Branch limit" value={String(tenant.max_branches)} />
+          <DetailRow
+            label="Storage usage"
+            value={
+              typeof tenant.storage_used_gb === 'number'
+                ? `${tenant.storage_used_gb} / ${tenant.max_storage_gb} GB`
+                : `0 / ${tenant.max_storage_gb} GB`
+            }
+          />
           <DetailRow label="Storage limit" value={`${tenant.max_storage_gb} GB`} />
+          <DetailRow label="Tenant status" value={tenant.is_active ? 'Active' : 'Inactive'} />
           <DetailRow label="Active flag" value={tenant.is_active ? 'Yes' : 'No'} />
         </dl>
       </Card>

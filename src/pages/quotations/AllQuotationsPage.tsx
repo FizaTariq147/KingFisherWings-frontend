@@ -10,9 +10,9 @@ export default function AllQuotationsPage() {
     <div>
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-4 sm:px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">All Quotations</h2>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => navigate(-1)}
               className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
@@ -97,15 +97,15 @@ export default function AllQuotationsPage() {
         </div>
 
         {/* Search toolbar */}
-        <div className="flex items-center justify-between px-5 py-3 border-t border-b border-gray-200 bg-[#F5F7FA]">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between px-4 sm:px-5 py-3 border-t border-b border-gray-200 bg-[#F5F7FA]">
+          <div className="flex flex-wrap items-center gap-2">
             <button className="flex items-center gap-1 border border-gray-300 rounded px-2.5 py-1.5 text-sm text-gray-600 bg-white">
               <Search size={13} />
               <ChevronDown size={12} />
             </button>
             <input
               type="text"
-              className="border border-gray-300 rounded px-3 py-1.5 text-sm w-56 focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]"
+              className="border border-gray-300 rounded px-3 py-1.5 text-sm w-full sm:w-56 focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]"
             />
             <button className="bg-gray-100 border border-gray-300 hover:bg-gray-200 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors">
               Search
@@ -127,7 +127,7 @@ export default function AllQuotationsPage() {
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity">
               <span className="text-[#FF751F]">➜</span>
               Submit

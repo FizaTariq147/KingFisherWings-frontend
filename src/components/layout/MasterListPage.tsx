@@ -19,30 +19,29 @@ interface MasterListPageProps {
 export function MasterListPage({ title, columns, rows, onAdd }: MasterListPageProps) {
   return (
     <div className="space-y-4">
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">{title}</h2>
-        <Button onClick={onAdd}>+ Add New</Button>
+        <Button onClick={onAdd} className="w-full sm:w-auto">+ Add New</Button>
       </div>
 
-      {/* Filter Row */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
         <input
           type="text"
           placeholder={`Search ${title.toLowerCase()}...`}
-          className="h-9 w-72 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]"
+          className="h-9 w-full sm:flex-1 sm:min-w-[12rem] sm:max-w-md rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]"
         />
-        <Button variant="secondary" size="md">Filter ▾</Button>
-        <Button variant="secondary" size="md">Export</Button>
+        <div className="flex gap-2">
+          <Button variant="secondary" size="md" className="flex-1 sm:flex-none">Filter ▾</Button>
+          <Button variant="secondary" size="md" className="flex-1 sm:flex-none">Export</Button>
+        </div>
       </div>
 
-      {/* Table */}
       <Card padding="none">
         <Table>
           <TableHeader>
             <TableRow>
               {columns.map((col) => (
-                <TableHead key={col.key}>{col.label}</TableHead>
+                <TableHead key={col.key} className="whitespace-nowrap">{col.label}</TableHead>
               ))}
               <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
@@ -71,8 +70,7 @@ export function MasterListPage({ title, columns, rows, onAdd }: MasterListPagePr
         </Table>
       </Card>
 
-      {/* Pagination */}
-      <div className="flex items-center justify-between text-sm text-[var(--color-neutral-400)]">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-sm text-[var(--color-neutral-400)]">
         <span>Showing 1–{rows.length} of {rows.length}</span>
         <div className="flex gap-1">
           <button className="px-3 py-1 rounded border border-[var(--color-neutral-200)] hover:bg-[var(--color-neutral-50)]">←</button>

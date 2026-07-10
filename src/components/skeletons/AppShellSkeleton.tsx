@@ -42,7 +42,7 @@ export function AppShellSkeleton() {
       </aside>
 
       {/* Main area */}
-      <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
 
         {/* Topbar skeleton */}
         <div className="h-16 bg-white border-b border-[var(--color-neutral-200)] flex items-center justify-between px-6">
@@ -58,7 +58,7 @@ export function AppShellSkeleton() {
         </div>
 
         {/* Content skeleton */}
-        <main className="flex-1 overflow-hidden p-6">
+        <main className="flex-1 overflow-hidden p-4 md:p-6">
           <PageContentSkeleton />
         </main>
       </div>

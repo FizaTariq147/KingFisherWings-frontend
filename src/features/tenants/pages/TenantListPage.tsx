@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { NO_COMPANY_BEFORE_TENANT_MESSAGE } from '@/features/platform/constants/onboarding';
+import { usePlatformOnboardingStore } from '@/features/platform/store/platformOnboardingStore';
+import { useCompanyRegistry } from '@/features/companies/hooks/useCompanies';
 import { TenantConfirmModal } from '../components/TenantConfirmModal';
 import { TenantStatsCards } from '../components/TenantStatsCards';
 import { TenantFilters } from '../components/TenantFilters';
@@ -60,6 +63,10 @@ export default function TenantListPage() {
   const { data, isLoading, isFetching, isError, error, refetch } = useTenantsList(listParams);
   const { data: stats, isLoading: statsLoading } = useTenantStatistics();
   const { activateTenant, deactivateTenant, deleteTenant, restoreTenant } = useTenantMutations();
+  const draftCompanies = usePlatformOnboardingStore((s) => s.draftCompanies);
+  const { data: companiesData } = useCompanyRegistry({ limit: 1 });
+  const hasCompany =
+    draftCompanies.length > 0 || (companiesData?.companies.length ?? 0) > 0;
 
   const tenants = data?.tenants ?? [];
   const meta = data?.meta;
@@ -122,15 +129,26 @@ export default function TenantListPage() {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">Tenants</h1>
+          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Tenants</h2>
           <p className="text-sm text-[var(--color-neutral-400)]">
             {totalCount} workspace{totalCount === 1 ? '' : 's'} on KINGFISHER WINGS LOGISTIC
           </p>
         </div>
-        <Button onClick={() => navigate('/superadmin/tenants/new')} className="w-full sm:w-auto">
-          + New Tenant
+        <Button
+          onClick={() =>
+            navigate(hasCompany ? '/superadmin/tenants/new' : '/superadmin/companies/new')
+          }
+          className="w-full sm:w-auto"
+        >
+          {hasCompany ? '+ New Tenant' : '+ Create Company First'}
         </Button>
       </div>
+
+      {!hasCompany && (
+        <Card className="p-4 text-sm text-[var(--color-neutral-600)]">
+          {NO_COMPANY_BEFORE_TENANT_MESSAGE}
+        </Card>
+      )}
 
       <TenantStatsCards
         stats={stats ?? EMPTY_TENANT_STATISTICS}

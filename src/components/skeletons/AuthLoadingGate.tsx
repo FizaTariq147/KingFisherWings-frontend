@@ -1,5 +1,4 @@
-import { type ReactNode } from 'react'
-import { useContext } from 'react'
+import { useEffect, useRef, useState, type ReactNode, useContext } from 'react'
 import { AuthContext } from '@/context/AuthContext'
 import { useAuthStore } from '@/store/authStore'
 import { FullPageSpinner } from './SkeletonPrimitives'
@@ -9,24 +8,32 @@ interface AuthLoadingGateProps {
 }
 
 /**
- * Wraps the root of the app.
- * Shows a full-page spinner during the initial /auth/me check so the
- * user never sees a flash of the login page while a valid session exists.
- *
- * Usage: wrap <RouterProvider /> with this inside main.tsx
- *   <AuthLoadingGate>
- *     <RouterProvider router={router} />
- *   </AuthLoadingGate>
+ * Restores ERP session on boot (refresh token → access token → /auth/me),
+ * and blocks the router until that finishes when a prior session exists.
  */
 export function AuthLoadingGate({ children }: AuthLoadingGateProps) {
-  const authCtx       = useContext(AuthContext)
-  const hasToken      = !!useAuthStore.getState().accessToken
+  const authCtx = useContext(AuthContext)
+  const accessToken = useAuthStore((s) => s.accessToken)
+  const refreshToken = useAuthStore((s) => s.refreshToken)
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const refreshAccessToken = useAuthStore((s) => s.refreshAccessToken)
+  const restoringRef = useRef(false)
+  const [restoring, setRestoring] = useState(false)
 
-  // Only block render if:
-  // 1. There's a token (returning user) AND
-  // 2. AuthContext hasn't finished the /auth/me call yet
-  // Without a token we can render immediately (new visitor → login page)
-  if (hasToken && authCtx?.isLoading) {
+  useEffect(() => {
+    if (restoringRef.current) return
+    if (accessToken) return
+    if (!isAuthenticated && !refreshToken) return
+
+    restoringRef.current = true
+    setRestoring(true)
+    void refreshAccessToken().finally(() => {
+      setRestoring(false)
+    })
+  }, [isAuthenticated, accessToken, refreshToken, refreshAccessToken])
+
+  const waitingForMe = !!accessToken && !!authCtx?.isLoading
+  if (restoring || waitingForMe) {
     return <FullPageSpinner message="Restoring session…" />
   }
 

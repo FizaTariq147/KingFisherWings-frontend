@@ -30,6 +30,7 @@ export interface AuthUser {
   name: string
   email: string
   tenantId: string
+  companyId?: string
   role: Role
   permissions: PermissionKey[]
   product: 'KingFisher Tech Gold' | 'KingFisher Tech Global' | 'KingFisher Tech App' | 'KingFisher Tech Analytics'
@@ -41,6 +42,7 @@ export interface JWTPayload {
   email: string
   name: string
   tenantId: string
+  companyId?: string
   roleId: string
   roleName: string
   roleSlug: string

@@ -1,6 +1,21 @@
-// PASTE THIS AT: src/features/tenants/schemas/tenant.schema.ts
-
 import { z } from 'zod';
+import { isUuid } from '@/lib/isUuid';
+
+export const SUBSCRIPTION_PLANS = [
+  'TRIAL',
+  'BASIC',
+  'STANDARD',
+  'PROFESSIONAL',
+  'ENTERPRISE',
+] as const;
+
+export const TENANT_STATUSES = [
+  'TRIAL',
+  'ACTIVE',
+  'SUSPENDED',
+  'EXPIRED',
+  'ARCHIVED',
+] as const;
 
 export const createTenantSchema = z.object({
   code: z.string().regex(/^[A-Z0-9-]{3,20}$/, 'Uppercase letters, numbers, hyphens only'),
@@ -8,10 +23,7 @@ export const createTenantSchema = z.object({
   display_name: z.string().min(1, 'Required'),
   slug: z
     .string()
-    .regex(
-      /^\/[a-zA-Z0-9-]+\/$/,
-      'Path-style slug with leading and trailing slashes, e.g. /abc-xyz/',
-    ),
+    .regex(/^[a-z0-9-]+$/, 'Lowercase letters, numbers, and hyphens only'),
   password: z.string().min(8, 'At least 8 characters'),
   admin_first_name: z.string().min(1, 'Required'),
   admin_last_name: z.string().min(1, 'Required'),
@@ -30,12 +42,16 @@ export const createTenantSchema = z.object({
   city: z.string().min(1, 'Required'),
   phone: z.string().min(1, 'Required'),
   email: z.string().email('Must be a valid email'),
+  selected_company_id: z
+    .string()
+    .min(1, 'Select a company profile')
+    .refine((value) => isUuid(value), 'Select a valid company'),
   company_code: z.string().min(1, 'Required'),
   company_name: z.string().min(1, 'Required'),
   company_legal_name: z.string().optional().or(z.literal('')),
   company_registration_number: z.string().optional().or(z.literal('')),
-  subscription_plan: z.enum(['starter', 'growth', 'enterprise']),
-  status: z.enum(['trial', 'active']),
+  subscription_plan: z.enum(SUBSCRIPTION_PLANS),
+  status: z.enum(TENANT_STATUSES),
   trial_ends: z.string().optional(),
   subscription_ends: z.string().optional(),
   max_users: z.number().int().min(1),
@@ -46,14 +62,13 @@ export const createTenantSchema = z.object({
 
 export type CreateTenantFormValues = z.infer<typeof createTenantSchema>;
 
-// Edit mode never touches code/slug/password/admin identity — those are
-// set once at provisioning time, not editable afterwards.
 export const updateTenantSchema = createTenantSchema.omit({
   code: true,
   slug: true,
   password: true,
   admin_first_name: true,
   admin_last_name: true,
+  selected_company_id: true,
 });
 
 export type UpdateTenantFormValues = z.infer<typeof updateTenantSchema>;

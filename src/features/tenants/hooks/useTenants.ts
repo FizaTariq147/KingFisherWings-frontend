@@ -1,3 +1,4 @@
+import { isUuid } from '@/lib/isUuid';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { tenantService } from '../services/tenant.service';
 import type { TenantListParams } from '../types/tenant.types';
@@ -25,7 +26,7 @@ export function useTenant(id: string) {
   return useQuery({
     queryKey: tenantKeys.detail(id),
     queryFn: () => tenantService.getById(id),
-    enabled: !!id,
+    enabled: isUuid(id),
   });
 }
 

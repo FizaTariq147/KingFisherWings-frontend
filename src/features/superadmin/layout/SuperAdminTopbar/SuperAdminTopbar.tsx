@@ -1,7 +1,6 @@
-// PASTE THIS AT: src/features/superadmin/layout/SuperAdminTopbar/SuperAdminTopbar.tsx
-
 import { useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
+import { superAdminAuthService } from '@/features/superadmin/services/superAdminAuth.service';
 import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore';
 
 export function SuperAdminTopbar() {
@@ -9,9 +8,15 @@ export function SuperAdminTopbar() {
   const user = useSuperAdminAuthStore((s) => s.user);
   const logout = useSuperAdminAuthStore((s) => s.logout);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/superadmin/login', { replace: true }); // ASSUMPTION: confirm real route
+  const handleLogout = async () => {
+    try {
+      await superAdminAuthService.logout();
+    } catch {
+      // clear local session regardless
+    } finally {
+      logout();
+      navigate('/superadmin/login', { replace: true });
+    }
   };
 
   return (
@@ -22,7 +27,8 @@ export function SuperAdminTopbar() {
           {user ? `${user.firstName} ${user.lastName}` : ''}
         </span>
         <button
-          onClick={handleLogout}
+          type="button"
+          onClick={() => void handleLogout()}
           className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
           title="Log out"
         >

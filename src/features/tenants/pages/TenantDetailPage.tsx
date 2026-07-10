@@ -1,6 +1,6 @@
-import { useState, type ComponentType, type ReactNode } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { AlertCircle, RefreshCw, Users, CreditCard } from 'lucide-react';
+import { useState, type ReactNode } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { AlertCircle, RefreshCw, CreditCard, Gauge } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
@@ -17,10 +17,27 @@ import {
   useRestoreTenant,
 } from '../hooks/useTenants';
 import { formatTenantSlug } from '../utils/formatTenantSlug';
+import { formatStorageUsage } from '../utils/tenantMetrics';
+import type { Tenant } from '../types/tenant.types';
+
+interface TenantCreateLocationState {
+  fromTenantCreate?: boolean;
+  tenantLoginSlug?: string;
+  tenantLoginPassword?: string;
+  tenantLoginEmail?: string;
+  loginVerifyOk?: boolean;
+  loginVerifyVia?: 'staff' | 'tenant';
+  loginVerifyMessage?: string;
+}
 
 export default function TenantDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const createState = (location.state as TenantCreateLocationState | null) ?? null;
+  const [showCreateCreds, setShowCreateCreds] = useState(
+    Boolean(createState?.fromTenantCreate && createState.tenantLoginSlug),
+  );
   const { data: tenant, isLoading, isError, error, refetch } = useTenant(id!);
   const activate = useActivateTenant();
   const deactivate = useDeactivateTenant();
@@ -81,6 +98,16 @@ export default function TenantDetailPage() {
 
   const actions = [
     !isDeleted && {
+      label: 'Companies',
+      onClick: () => navigate('/superadmin/companies'),
+      variant: 'secondary' as const,
+    },
+    !isDeleted && {
+      label: 'Manage subscription',
+      onClick: () => navigate(`/superadmin/tenants/${id}/edit`),
+      variant: 'secondary' as const,
+    },
+    !isDeleted && {
       label: 'Edit',
       onClick: () => navigate(`/superadmin/tenants/${id}/edit`),
       variant: 'secondary' as const,
@@ -107,7 +134,11 @@ export default function TenantDetailPage() {
       onClick: () => requestConfirm('delete', tenant),
       variant: 'danger' as const,
     },
-  ].filter(Boolean) as { label: string; onClick: () => void; variant: 'primary' | 'secondary' | 'danger' }[];
+  ].filter(Boolean) as {
+    label: string;
+    onClick: () => void;
+    variant: 'primary' | 'secondary' | 'danger';
+  }[];
 
   const handleConfirmAction = () => {
     if (!confirm || !id) return;
@@ -124,6 +155,71 @@ export default function TenantDetailPage() {
 
   return (
     <>
+      {showCreateCreds && createState?.tenantLoginSlug && (
+        <Card className="mb-4 p-4 space-y-3 border-[var(--color-primary-200)] bg-[var(--color-primary-50)]">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">
+                Tenant Admin login credentials
+              </h3>
+              <p className="text-xs text-[var(--color-neutral-500)] mt-1">
+                Tenant Admin uses <strong className="font-semibold text-[var(--color-neutral-700)]">slug + password only</strong> (no email) on ERP Login → Tenant Admin. Save the password now — it is not shown again.
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                setShowCreateCreds(false);
+                navigate(location.pathname, { replace: true, state: null });
+              }}
+            >
+              Dismiss
+            </Button>
+          </div>
+
+          {createState.loginVerifyOk === true && (
+            <p className="text-xs text-emerald-700">
+              Verified against API via {createState.loginVerifyVia === 'staff' ? 'admin email login' : 'tenant slug login'}.
+              These credentials work.
+            </p>
+          )}
+          {createState.loginVerifyOk === false && (
+            <p className="text-xs text-[var(--color-danger-700)]">
+              Tenant was created, but API login verification failed
+              {createState.loginVerifyMessage ? `: ${createState.loginVerifyMessage}` : '.'}
+              {' '}This is a backend credential issue — the password was not accepted for login right after create.
+            </p>
+          )}
+
+          <dl className="grid gap-2 text-sm font-mono">
+            <div className="flex flex-wrap gap-2">
+              <dt className="text-[var(--color-neutral-500)] font-sans text-xs w-28">Slug</dt>
+              <dd className="text-[var(--color-neutral-800)]">{createState.tenantLoginSlug}</dd>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <dt className="text-[var(--color-neutral-500)] font-sans text-xs w-28">Password</dt>
+              <dd className="text-[var(--color-neutral-800)]">{createState.tenantLoginPassword || '—'}</dd>
+            </div>
+            {createState.tenantLoginEmail && (
+              <div className="flex flex-wrap gap-2">
+                <dt className="text-[var(--color-neutral-500)] font-sans text-xs w-28">Admin email</dt>
+                <dd className="text-[var(--color-neutral-800)]">
+                  {createState.tenantLoginEmail}
+                  <span className="block font-sans text-[10px] text-[var(--color-neutral-500)] mt-0.5">
+                    For Staff / User login only — not used by Tenant Admin
+                  </span>
+                </dd>
+              </div>
+            )}
+          </dl>
+          <Button type="button" size="sm" onClick={() => navigate('/login')}>
+            Open ERP login
+          </Button>
+        </Card>
+      )}
+
       {actionError && (
         <div
           role="alert"
@@ -141,7 +237,7 @@ export default function TenantDetailPage() {
 
       <DetailPageTemplate
         title={tenant.display_name}
-        subtitle={`${tenant.code} · ${formatTenantSlug(tenant.slug)}`}
+        subtitle={`${tenant.code} · ${formatTenantSlug(tenant.slug)} · ${tenant.company_name || 'No company name'}`}
         statusLabel={isDeleted ? 'Deleted' : tenant.is_active ? 'Active' : 'Inactive'}
         statusTone={statusTone}
         onBack={() => navigate('/superadmin/tenants')}
@@ -157,9 +253,14 @@ export default function TenantDetailPage() {
               <SummaryItem label="Status">
                 <TenantStatusBadge tenant={tenant} />
               </SummaryItem>
+              <SummaryItem label="Company" value={tenant.company_name || '—'} />
               <SummaryItem label="Plan" value={String(tenant.subscription_plan)} />
-              <SummaryItem label="Users allowed" value={String(tenant.max_users)} />
-              <SummaryItem label="Storage" value={`${tenant.max_storage_gb} GB`} />
+              <SummaryItem
+                label="Users"
+                value={`${typeof tenant.total_users === 'number' ? tenant.total_users : '—'} / ${tenant.max_users}`}
+              />
+              <SummaryItem label="Branches" value={String(tenant.max_branches)} />
+              <SummaryItem label="Storage" value={formatStorageUsage(tenant)} />
               <SummaryItem label="Country" value={tenant.country_code} />
             </dl>
           </Card>
@@ -171,14 +272,19 @@ export default function TenantDetailPage() {
             content: <TenantOverviewPanel tenant={tenant} />,
           },
           {
-            key: 'users',
-            label: 'Users',
-            content: <PlaceholderTab icon={Users} title="Tenant users" />,
+            key: 'metrics',
+            label: 'Metrics',
+            content: <TenantMetricsPanel tenant={tenant} />,
           },
           {
-            key: 'billing',
-            label: 'Billing',
-            content: <PlaceholderTab icon={CreditCard} title="Billing" />,
+            key: 'subscription',
+            label: 'Subscription',
+            content: (
+              <SubscriptionTab
+                tenant={tenant}
+                onManage={() => navigate(`/superadmin/tenants/${id}/edit`)}
+              />
+            ),
           },
         ]}
       />
@@ -216,25 +322,108 @@ function SummaryItem({
   );
 }
 
-function PlaceholderTab({
-  icon: Icon,
-  title,
+function TenantMetricsPanel({ tenant }: { tenant: Tenant }) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <MetricCard
+        label="Total users"
+        value={typeof tenant.total_users === 'number' ? String(tenant.total_users) : '—'}
+        hint={`Limit ${tenant.max_users}`}
+      />
+      <MetricCard
+        label="Subscription"
+        value={String(tenant.subscription_plan)}
+        hint={String(tenant.status)}
+      />
+      <MetricCard
+        label="Storage"
+        value={formatStorageUsage(tenant)}
+        hint={`Limit ${tenant.max_storage_gb} GB`}
+      />
+      <MetricCard
+        label="Branch limit"
+        value={String(tenant.max_branches)}
+        hint={
+          typeof tenant.total_branches === 'number'
+            ? `${tenant.total_branches} in use`
+            : 'Usage not reported by API'
+        }
+      />
+      <MetricCard
+        label="Tenant status"
+        value={tenant.is_active ? 'Active' : 'Inactive'}
+        hint={tenant.deleted_at ? 'Soft-deleted' : tenant.domain || 'No custom domain'}
+      />
+    </div>
+  );
+}
+
+function MetricCard({
+  label,
+  value,
+  hint,
 }: {
-  icon: ComponentType<{ size?: number; className?: string }>;
-  title: string;
+  label: string;
+  value: string;
+  hint?: string;
 }) {
   return (
-    <Card className="flex flex-col items-center justify-center py-12 text-center">
-      <div
-        className="w-12 h-12 rounded-full flex items-center justify-center mb-3"
-        style={{ background: 'var(--color-neutral-100)' }}
-      >
-        <Icon size={20} className="text-[var(--color-neutral-400)]" />
+    <Card className="p-4">
+      <div className="flex items-start gap-3">
+        <div
+          className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+          style={{ background: 'var(--color-neutral-100)' }}
+        >
+          <Gauge size={16} className="text-[var(--color-neutral-500)]" />
+        </div>
+        <div>
+          <p className="text-xs text-[var(--color-neutral-500)]">{label}</p>
+          <p className="text-sm font-semibold text-[var(--color-neutral-800)] mt-0.5 capitalize">
+            {value}
+          </p>
+          {hint && <p className="text-xs text-[var(--color-neutral-400)] mt-1">{hint}</p>}
+        </div>
       </div>
-      <p className="text-sm font-medium text-[var(--color-neutral-700)]">{title}</p>
-      <p className="text-xs text-[var(--color-neutral-400)] mt-1 max-w-sm">
-        This section will be available once the backend API is implemented.
-      </p>
+    </Card>
+  );
+}
+
+function SubscriptionTab({
+  tenant,
+  onManage,
+}: {
+  tenant: Tenant;
+  onManage: () => void;
+}) {
+  return (
+    <Card className="p-6 space-y-4">
+      <div className="flex items-start gap-3">
+        <div
+          className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+          style={{ background: 'var(--color-neutral-100)' }}
+        >
+          <CreditCard size={20} className="text-[var(--color-neutral-400)]" />
+        </div>
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-[var(--color-neutral-800)]">
+            {String(tenant.subscription_plan)} · {String(tenant.status)}
+          </p>
+          <p className="text-xs text-[var(--color-neutral-500)]">
+            Trial ends: {tenant.trial_ends ? new Date(tenant.trial_ends).toLocaleDateString() : '—'}
+            {' · '}
+            Subscription ends:{' '}
+            {tenant.subscription_ends
+              ? new Date(tenant.subscription_ends).toLocaleDateString()
+              : '—'}
+          </p>
+          <p className="text-xs text-[var(--color-neutral-400)]">
+            Update plan, limits, and dates from the tenant edit form.
+          </p>
+        </div>
+      </div>
+      <Button variant="secondary" onClick={onManage}>
+        Manage subscription
+      </Button>
     </Card>
   );
 }
