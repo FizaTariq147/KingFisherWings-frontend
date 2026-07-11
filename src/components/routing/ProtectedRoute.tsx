@@ -1,7 +1,10 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { AppShellSkeleton } from '@/components/skeletons/AppShellSkeleton'
+import { useAuthStore } from '@/store/authStore'
 import type { PermissionKey } from '@/types/auth.types'
+
+const CHANGE_PASSWORD_PATH = '/change-password'
 
 interface ProtectedRouteProps {
   redirectTo?:           string
@@ -20,6 +23,7 @@ export default function ProtectedRoute({
   requireAnyRole,
 }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading, hasPermission, hasAnyPermission, hasRole } = useAuth()
+  const mustChangePassword = useAuthStore((s) => Boolean(s.user?.mustChangePassword))
   const location = useLocation()
 
   // ── Auth still resolving — show full shell skeleton so layout doesn't flash
@@ -30,6 +34,11 @@ export default function ProtectedRoute({
   // ── Not authenticated
   if (!isAuthenticated) {
     return <Navigate to={redirectTo} state={{ from: location }} replace />
+  }
+
+  // Staff with a temporary password must set their own before using the app.
+  if (mustChangePassword && location.pathname !== CHANGE_PASSWORD_PATH) {
+    return <Navigate to={CHANGE_PASSWORD_PATH} replace />
   }
 
   const roleDenied = requireAnyRole

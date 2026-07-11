@@ -15,7 +15,8 @@ export function useTenants(params: TenantListParams) {
     queryKey: tenantKeys.list(params),
     queryFn: () => tenantService.list(params),
     placeholderData: keepPreviousData,
-    staleTime: 30_000,
+    // Deleted list is local-registry backed — always refetch after delete/restore.
+    staleTime: params.status === 'deleted' ? 0 : 30_000,
   });
 }
 

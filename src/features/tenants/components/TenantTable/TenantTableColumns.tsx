@@ -23,7 +23,7 @@ export const TENANT_TABLE_COLUMNS: TenantTableColumn[] = [
   { key: 'domain', label: 'Domain', className: 'hidden xl:table-cell' },
   { key: 'plan', label: 'Subscription Plan', className: 'hidden md:table-cell' },
   { key: 'status', label: 'Status' },
-  { key: 'total_users', label: 'Total Users', className: 'hidden lg:table-cell' },
+  { key: 'total_users', label: 'Created Users', className: 'min-w-[110px] text-center' },
   { key: 'max_users', label: 'Max Users', sortable: true, className: 'hidden lg:table-cell' },
   { key: 'total_branches', label: 'Total Branches', className: 'hidden xl:table-cell' },
   { key: 'storage_usage', label: 'Storage Usage', className: 'hidden xl:table-cell' },

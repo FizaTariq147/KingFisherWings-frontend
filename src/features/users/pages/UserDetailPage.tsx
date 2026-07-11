@@ -16,6 +16,7 @@ import {
   useRestoreUser,
   useUpdateUserStatus,
 } from '../hooks/useUsers';
+import { userService } from '../services/user.service';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { formatUserRole } from '../utils/formatUserRole';
 import { formatUserLabel } from '../utils/userToFormValues';
@@ -31,6 +32,7 @@ export default function UserDetailPage() {
   const { confirm, requestConfirm, closeConfirm } = useUserConfirmState();
   const [actionError, setActionError] = useState<string | null>(null);
   const [pendingAction, setPendingAction] = useState(false);
+  const [resetPassword, setResetPassword] = useState<string | null>(null);
 
   const scopeTenantId = tenantId || 'session';
 
@@ -98,6 +100,25 @@ export default function UserDetailPage() {
       onClick: () => navigate(userPath(`/${id}/edit`)),
       variant: 'secondary' as const,
     },
+    !isDeleted && {
+      label: 'Reset password',
+      onClick: () =>
+        runAction(async () => {
+          const result = await userService.adminResetPassword(scopeTenantId, user.id);
+          if (!result.temporary_password) {
+            throw new Error('API did not return a temporary password.');
+          }
+          setResetPassword(result.temporary_password);
+          if (user.status !== 'ACTIVE') {
+            await updateUserStatus.mutateAsync({
+              tenantId: scopeTenantId,
+              id: user.id,
+              dto: { status: 'ACTIVE' },
+            });
+          }
+        }),
+      variant: 'secondary' as const,
+    },
     isDeleted
       ? {
           label: 'Restore',
@@ -133,7 +154,12 @@ export default function UserDetailPage() {
     if (!confirm) return;
     const mutation =
       confirm.action === 'delete'
-        ? () => deleteUser.mutateAsync({ tenantId: scopeTenantId, id: user.id })
+        ? () =>
+            deleteUser.mutateAsync({
+              tenantId: scopeTenantId,
+              id: user.id,
+              user,
+            })
         : confirm.action === 'deactivate'
           ? () =>
               updateUserStatus.mutateAsync({
@@ -141,7 +167,14 @@ export default function UserDetailPage() {
                 id: user.id,
                 dto: { status: 'INACTIVE' },
               })
-          : () => restoreUser.mutateAsync({ tenantId: scopeTenantId, id: user.id });
+          : confirm.action === 'restore'
+            ? () => restoreUser.mutateAsync({ tenantId: scopeTenantId, id: user.id })
+            : () =>
+                updateUserStatus.mutateAsync({
+                  tenantId: scopeTenantId,
+                  id: user.id,
+                  dto: { status: 'ACTIVE' },
+                });
     runAction(mutation);
   };
 
@@ -149,6 +182,22 @@ export default function UserDetailPage() {
 
   return (
     <>
+      {resetPassword && (
+        <Card className="mb-4 p-4 space-y-2 border-[var(--color-primary-200)] bg-[var(--color-primary-50)]">
+          <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">
+            New Staff / User password
+          </h3>
+          <p className="text-xs text-[var(--color-neutral-500)]">
+            ERP Login → Staff / User with slug + <code className="font-mono">{user.email}</code> +
+            this temporary password. On first login they must set their own password.
+          </p>
+          <p className="font-mono text-sm text-[var(--color-neutral-800)]">{resetPassword}</p>
+          <Button type="button" size="sm" variant="secondary" onClick={() => setResetPassword(null)}>
+            Dismiss
+          </Button>
+        </Card>
+      )}
+
       {actionError && (
         <div
           role="alert"

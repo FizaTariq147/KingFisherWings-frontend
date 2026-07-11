@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { MoreVertical, Eye, Pencil, Power, PowerOff, Trash2, RotateCcw } from 'lucide-react';
 import type { User } from '../../types/user.types';
+import { isDeletedUser } from '../../utils/deletedUsersRegistry';
 
 interface UserActionMenuProps {
   user: User;
@@ -25,7 +26,7 @@ export function UserActionMenu({
 }: UserActionMenuProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const isDeleted = !!user.deleted_at;
+  const isDeleted = isDeletedUser(user);
   const isActive = user.status === 'ACTIVE';
 
   useEffect(() => {

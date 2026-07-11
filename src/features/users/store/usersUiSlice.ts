@@ -1,12 +1,13 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { UserLifecycleFilter } from '../components/UserFilters/UserFilters';
+import type { UserRole, UserSortField, UserSortOrder } from '../constants/user.constants';
 import type { UserListParams } from '../types/user.types';
-import type { UserRole, UserSortField, UserSortOrder, UserStatus } from '../constants/user.constants';
 
 export interface UsersUiState {
   tenantId: string;
   search: string;
   role: UserRole | 'all';
-  status: UserStatus | 'all';
+  status: UserLifecycleFilter;
   sortBy: UserSortField;
   order: UserSortOrder;
   page: number;
@@ -40,7 +41,7 @@ export const usersUiSlice = createSlice({
       state.role = action.payload;
       state.page = 1;
     },
-    setUsersStatusFilter(state, action: PayloadAction<UserStatus | 'all'>) {
+    setUsersStatusFilter(state, action: PayloadAction<UserLifecycleFilter>) {
       state.status = action.payload;
       state.page = 1;
     },
@@ -85,7 +86,7 @@ export function selectUsersListParams(state: { usersUi: UsersUiState }): UserLis
     tenantId,
     search: search.trim() || undefined,
     role: role === 'all' ? undefined : role,
-    status: status === 'all' ? undefined : status,
+    lifecycle: status,
     sortBy,
     order,
     page,

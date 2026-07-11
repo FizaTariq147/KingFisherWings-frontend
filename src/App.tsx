@@ -101,7 +101,7 @@ export const router = createBrowserRouter([
 
           // Settings
           { path: '/settings',       element: <Placeholder title="Settings" /> },
-          { path: '/settings/users', element: <Placeholder title="Users" /> },
+         
 
           // Profile & notifications
           { path: '/profile',       element: <Placeholder title="My Profile" /> },

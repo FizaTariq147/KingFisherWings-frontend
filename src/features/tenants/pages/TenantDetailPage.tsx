@@ -16,7 +16,7 @@ import {
   useDeleteTenant,
   useRestoreTenant,
 } from '../hooks/useTenants';
-import { formatTenantSlug } from '../utils/formatTenantSlug';
+import { formatTenantLabel, formatTenantSlug } from '../utils/formatTenantSlug';
 import { formatStorageUsage } from '../utils/tenantMetrics';
 import type { Tenant } from '../types/tenant.types';
 
@@ -144,10 +144,16 @@ export default function TenantDetailPage() {
     if (!confirm || !id) return;
     const mutation =
       confirm.action === 'delete'
-        ? () => del.mutateAsync(id)
+        ? async () => {
+            await del.mutateAsync({ id, tenant });
+            navigate('/superadmin/tenants');
+          }
         : confirm.action === 'deactivate'
           ? () => deactivate.mutateAsync(id)
-          : () => restore.mutateAsync(id);
+          : async () => {
+              await restore.mutateAsync(id);
+              navigate('/superadmin/tenants');
+            };
     runAction(mutation);
   };
 
@@ -181,7 +187,7 @@ export default function TenantDetailPage() {
 
           {createState.loginVerifyOk === true && (
             <p className="text-xs text-emerald-700">
-              Verified against API via {createState.loginVerifyVia === 'staff' ? 'admin email login' : 'tenant slug login'}.
+              Verified against API via tenant-login (slug + password).
               These credentials work.
             </p>
           )}
@@ -293,7 +299,7 @@ export default function TenantDetailPage() {
         <TenantConfirmModal
           open
           action={confirm.action}
-          tenantName={confirm.tenant.display_name}
+          tenantName={formatTenantLabel(confirm.tenant)}
           isPending={pendingAction}
           onConfirm={handleConfirmAction}
           onClose={closeConfirm}

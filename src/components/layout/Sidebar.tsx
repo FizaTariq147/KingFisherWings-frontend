@@ -94,7 +94,6 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
   const isSuperAdmin = useSuperAdminAuthStore((s) => s.isAuthenticated)
 
   const user = authCtx?.user ?? storeUser
-  const isLoading = authCtx?.isLoading ?? false
 
   const roleSlug =
     resolveAuthRoleSlug(authCtx?.user?.role) ||
@@ -107,18 +106,12 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
   const visibleItems = (() => {
     if (isSuperAdminArea) return []
 
-    // Dashboard / ops nav — never includes Users (same for all ERP roles)
-    return OPS_NAV_ITEMS.filter((item) => {
-      if (item.path === '/dashboard') return true
-      if (item.permission === null) return true
-      if (authCtx && !isLoading && authCtx.user) {
-        return authCtx.hasPermission(item.permission)
-      }
-      return item.path === '/dashboard'
-    })
+    // Tenant Admin and staff/customer users: full ops dashboard.
+    // Users management is added separately for Tenant Admin only.
+    return OPS_NAV_ITEMS
   })()
 
-  // Users only for Tenant Admin — separate from dashboard/ops nav
+  // Users only for Tenant Admin — staff created by Tenant Admin do not see this.
   const showTenantAdminUsers = !isSuperAdminArea && isTenantAdmin
 
   const displayName = user?.name ?? 'User'

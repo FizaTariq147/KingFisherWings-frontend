@@ -5,6 +5,7 @@ import { SettingsRedirect, LegacySettingsUsersRedirect } from '../components/rou
 import LoginPage from '../features/auth/pages/LoginPage'
 import ForgotPasswordPage from '../features/auth/pages/ForgotPasswordPage'
 import ResetPasswordPage from '../features/auth/pages/ResetPasswordPage'
+import ChangePasswordPage from '../features/auth/pages/ChangePasswordPage'
 import Forbidden from '../pages/errors/Forbidden'
 import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
@@ -58,6 +59,8 @@ import BulkCostEntryPage from '../pages/documentation/BulkCostEntryPage'
 import CcnFwbFhlEdiJobListPage from '../pages/documentation/CcnFwbFhlEdiJobListPage'
 import CgmEdiVesselListPage from '../pages/documentation/CgmEdiVesselListPage'
 import AirCargoTrackingPage from '../pages/documentation/AirCargoTrackingPage'
+import MastersMenuPage from '../pages/masters/MastersMenuPage'
+
 
 
 import { SuperAdminProtectedRoute } from '../features/superadmin/components/SuperAdminProtectedRoute/SuperAdminProtectedRoute'
@@ -120,6 +123,7 @@ export const router = createBrowserRouter([
   {
     element: <ProtectedRoute />,
     children: [
+      { path: '/change-password', element: <ChangePasswordPage /> },
       {
         element: <AppShell title="KingFisher Tech Gold" />,
         children: [
@@ -155,6 +159,9 @@ export const router = createBrowserRouter([
           {path: '/documentation/ccn-fwb-fhl-edi-job-list', element: <CcnFwbFhlEdiJobListPage />},
           {path: '/documentation/cgm-edi-vessel-list', element: <CgmEdiVesselListPage />},
           {path: '/documentation/cargo-tracking-air', element: <AirCargoTrackingPage />},
+          
+
+          {path: '/masters', element: <MastersMenuPage />},
 
           { path: '/management', element: <ManagementMenuPage /> },
           {path: '/management/all-jobs-mis', element: <AllJobMisPage />},

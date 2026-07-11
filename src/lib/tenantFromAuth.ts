@@ -15,6 +15,63 @@ export function decodeJwtPayload(token: string): Record<string, unknown> | null 
   }
 }
 
+/** Session id from JWT claims used by POST /auth/sessions/{sessionId}/revoke. */
+export function sessionIdFromAccessToken(token?: string | null): string {
+  if (!token) return '';
+  const payload = decodeJwtPayload(token);
+  if (!payload) return '';
+  for (const key of ['session_id', 'sessionId', 'sid', 'jti'] as const) {
+    const value = payload[key];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+  }
+  const nested = payload.session;
+  if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
+    const record = nested as Record<string, unknown>;
+    for (const key of ['id', 'session_id', 'sessionId'] as const) {
+      const value = record[key];
+      if (typeof value === 'string' && value.trim()) return value.trim();
+    }
+  }
+  return '';
+}
+
+/** Unix ms when the access token expires (`exp` claim). Null if missing/invalid. */
+export function accessTokenExpiresAtMs(token?: string | null): number | null {
+  if (!token) return null;
+  const payload = decodeJwtPayload(token);
+  const exp = payload?.exp;
+  if (typeof exp === 'number' && Number.isFinite(exp)) return exp * 1000;
+  if (typeof exp === 'string' && exp.trim()) {
+    const n = Number(exp);
+    if (Number.isFinite(n)) return n * 1000;
+  }
+  return null;
+}
+
+/** Workspace slug from JWT (tenant-login / staff tokens). */
+export function tenantSlugFromAccessToken(token?: string | null): string {
+  if (!token) return '';
+  const payload = decodeJwtPayload(token);
+  if (!payload) return '';
+  for (const key of ['tenant_slug', 'slug', 'tenantSlug'] as const) {
+    const value = payload[key];
+    if (typeof value === 'string' && value.trim()) {
+      return value.trim().toLowerCase();
+    }
+  }
+  const nested = payload.tenant;
+  if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
+    const record = nested as Record<string, unknown>;
+    for (const key of ['slug', 'tenant_slug'] as const) {
+      const value = record[key];
+      if (typeof value === 'string' && value.trim()) {
+        return value.trim().toLowerCase();
+      }
+    }
+  }
+  return '';
+}
+
 function pickUuid(value: unknown): string | undefined {
   if (typeof value === 'string' && isUuid(value)) return value;
   return undefined;

@@ -12,25 +12,37 @@ export const axiosInstance = axios.create({
   timeout: 120_000,
 })
 
-const AUTH_NO_RETRY = [
+const AUTH_PUBLIC_URLS = [
   '/auth/login',
   '/auth/tenant-login',
   '/auth/refresh',
-  '/auth/logout',
-  '/auth/logout-all',
   '/auth/super-admin/login',
   '/auth/super-admin/signup',
 ]
 
-function isAuthBootstrapUrl(url?: string): boolean {
+/** Logout needs Bearer — do not strip Authorization. Still skip 401 refresh retry. */
+const AUTH_NO_REFRESH_RETRY = [
+  ...AUTH_PUBLIC_URLS,
+  '/auth/logout',
+  '/auth/logout-all',
+]
+
+function isAuthPublicUrl(url?: string): boolean {
   if (!url) return false
-  return AUTH_NO_RETRY.some((path) => url.includes(path))
+  return AUTH_PUBLIC_URLS.some((path) => url.includes(path))
 }
 
-// ── Request: attach access token (never on login/bootstrap) ────────────────
+function isAuthNoRefreshRetryUrl(url?: string): boolean {
+  if (!url) return false
+  // POST /auth/sessions/{id}/revoke — do not refresh-loop when the session is already dead.
+  if (url.includes('/auth/sessions/') && url.includes('/revoke')) return true
+  return AUTH_NO_REFRESH_RETRY.some((path) => url.includes(path))
+}
+
+// ── Request: attach access token (never on public login/refresh) ───────────
 axiosInstance.interceptors.request.use(async (config) => {
-  if (isAuthBootstrapUrl(config.url)) {
-    // Login must be unauthenticated — a leftover Bearer token can break credential checks.
+  if (isAuthPublicUrl(config.url)) {
+    // Login/refresh must be unauthenticated — a leftover Bearer can break credential checks.
     if (config.headers) {
       delete config.headers.Authorization
       delete config.headers.authorization
@@ -59,7 +71,7 @@ axiosInstance.interceptors.response.use(
     const original = error.config as RetryConfig | undefined
 
     if (!original || original._retry) return Promise.reject(error)
-    if (isAuthBootstrapUrl(original.url)) return Promise.reject(error)
+    if (isAuthNoRefreshRetryUrl(original.url)) return Promise.reject(error)
 
     if (error.response?.status !== 401) return Promise.reject(error)
 
@@ -84,6 +96,7 @@ axiosInstance.interceptors.response.use(
       return axiosInstance(original)
     } catch (refreshError) {
       processQueue(refreshError, null)
+      useAuthStore.getState().markSessionExpired()
       return Promise.reject(refreshError)
     } finally {
       isRefreshing = false

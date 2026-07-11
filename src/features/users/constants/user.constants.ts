@@ -48,10 +48,10 @@ export const DEFAULT_USER_LIST_SORT: UserSortField = 'created_at';
 export const DEFAULT_USER_LIST_ORDER: UserSortOrder = 'desc';
 export const DEFAULT_USER_PAGE_SIZE = 20;
 
-/** Super Admin user module — assignable roles (excludes SUPER_ADMIN for tenant users). */
+/** Roles Tenant Admin may assign when creating staff/customer users (not workspace owner). */
 export const ASSIGNABLE_USER_ROLES = USER_ROLES.filter(
-  (role) => role !== 'SUPER_ADMIN',
-) as Exclude<UserRole, 'SUPER_ADMIN'>[];
+  (role) => role !== 'SUPER_ADMIN' && role !== 'TENANT_ADMIN',
+) as Exclude<UserRole, 'SUPER_ADMIN' | 'TENANT_ADMIN'>[];
 
 export const ACTIVE_USER_STATUSES: UserStatus[] = ['ACTIVE'];
 export const INACTIVE_USER_STATUSES: UserStatus[] = ['INACTIVE', 'SUSPENDED', 'LOCKED'];

@@ -3,6 +3,7 @@ import {
   useMemo, useRef, useState, type ReactNode,
 } from 'react'
 import { authService } from '@/features/auth/services/auth.service'
+import { pickMustChangePassword, hasMustChangePasswordFlag } from '@/features/auth/utils/normalizeAuthResponse'
 import {
   companyIdFromAccessToken,
   resolveCompanyIdFromUserLike,
@@ -108,6 +109,11 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     ? (record.permissions.filter((p) => typeof p === 'string') as PermissionKey[])
     : []
 
+  // undefined = /me omitted the flag (keep login-session value); boolean = trust /me
+  const mustChangePassword = hasMustChangePasswordFlag(record)
+    ? pickMustChangePassword(record)
+    : undefined
+
   return {
     id: id || email,
     name,
@@ -117,6 +123,7 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     role,
     permissions,
     product: (record.product as AuthUser['product']) || 'KingFisher Tech Gold',
+    mustChangePassword,
   }
 }
 
@@ -168,6 +175,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(normalized)
         // Keep Zustand in sync so services (user.service) can resolve tenant without AuthContext.
         // Never overwrite a known tenantId with an empty /me payload.
+        // Preserve mustChangePassword from login when /me omits the flag.
+        const priorMustChange = Boolean(useAuthStore.getState().user?.mustChangePassword)
         patchSessionUser({
           id: normalized.id,
           name: normalized.name,
@@ -175,6 +184,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           role: normalized.role.slug || normalized.role.name || 'TENANT_ADMIN',
           ...(normalized.tenantId ? { tenantId: normalized.tenantId } : {}),
           ...(normalized.companyId ? { companyId: normalized.companyId } : {}),
+          mustChangePassword:
+            normalized.mustChangePassword === undefined
+              ? priorMustChange
+              : Boolean(normalized.mustChangePassword),
         })
       })
       .catch(() => {

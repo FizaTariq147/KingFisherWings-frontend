@@ -3,10 +3,12 @@ import { isUuid } from '@/lib/isUuid';
 import { resolveSessionTenantIdFromAuth } from '@/lib/tenantFromAuth';
 import { useAuthStore } from '@/store/authStore';
 import { userService } from '../services/user.service';
+import { rememberDeletedUser } from '../utils/deletedUsersRegistry';
 import type {
   CreateUserDto,
   UpdateUserDto,
   UpdateUserStatusDto,
+  User,
   UserListParams,
 } from '../types/user.types';
 
@@ -35,7 +37,8 @@ export function useUsers(params: UserListParams) {
     // List is JWT-scoped; allow when authenticated even if tenant UUID is not in claims.
     enabled: Boolean(accessToken) || (!!resolvedTenantId && isUuid(resolvedTenantId)),
     placeholderData: keepPreviousData,
-    staleTime: 30_000,
+    // Deleted list is local-registry backed — always refetch after delete/restore.
+    staleTime: queryParams.lifecycle === 'deleted' ? 0 : 30_000,
   });
 }
 
@@ -80,9 +83,25 @@ export function useUpdateUser(tenantId: string, id: string) {
 export function useDeleteUser() {
   const invalidate = useInvalidateUsers();
   return useMutation({
-    mutationFn: ({ tenantId, id }: { tenantId: string; id: string }) =>
-      userService.softDelete(tenantId, id),
-    onSuccess: (_data, { tenantId, id }) => invalidate(tenantId, id),
+    mutationFn: ({
+      tenantId,
+      id,
+      user,
+    }: {
+      tenantId: string;
+      id: string;
+      user?: User;
+    }) => userService.softDelete(tenantId, id, user),
+    onSuccess: (_data, { tenantId, id, user }) => {
+      // Ensure snapshot is stored even if service path used a different tenant key.
+      if (user) {
+        rememberDeletedUser(tenantId, {
+          ...user,
+          deleted_at: user.deleted_at || new Date().toISOString(),
+        });
+      }
+      invalidate(tenantId, id);
+    },
   });
 }
 

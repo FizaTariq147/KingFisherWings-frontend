@@ -21,6 +21,7 @@ import {
   type TenantListSortBy,
   type TenantListSortOrder,
 } from '../types/tenant.types';
+import { formatTenantLabel } from '../utils/formatTenantSlug';
 import { EMPTY_TENANT_STATISTICS } from '../utils/normalizeTenantStatistics';
 
 const PAGE_SIZE = 20;
@@ -104,7 +105,7 @@ export default function TenantListPage() {
     const { action, tenant } = confirm;
     const mutation =
       action === 'delete'
-        ? () => deleteTenant.mutateAsync(tenant.id)
+        ? () => deleteTenant.mutateAsync({ id: tenant.id, tenant })
         : action === 'deactivate'
           ? () => deactivateTenant.mutateAsync(tenant.id)
           : () => restoreTenant.mutateAsync(tenant.id);
@@ -114,6 +115,8 @@ export default function TenantListPage() {
     try {
       await mutation();
       closeConfirm();
+      if (action === 'delete') setStatus('deleted');
+      if (action === 'restore') setStatus('all');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Action failed. Please try again.';
       setActionError(message);
@@ -131,7 +134,8 @@ export default function TenantListPage() {
         <div>
           <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Tenants</h2>
           <p className="text-sm text-[var(--color-neutral-400)]">
-            {totalCount} workspace{totalCount === 1 ? '' : 's'} on KINGFISHER WINGS LOGISTIC
+            {totalCount} workspace{totalCount === 1 ? '' : 's'}
+            {status === 'deleted' ? ' deleted' : ''} on KINGFISHER WINGS LOGISTIC
           </p>
         </div>
         <Button
@@ -223,7 +227,7 @@ export default function TenantListPage() {
         <TenantConfirmModal
           open
           action={confirm.action}
-          tenantName={confirm.tenant.display_name}
+          tenantName={formatTenantLabel(confirm.tenant)}
           isPending={pendingActionId === confirm.tenant.id}
           onConfirm={handleConfirmAction}
           onClose={closeConfirm}

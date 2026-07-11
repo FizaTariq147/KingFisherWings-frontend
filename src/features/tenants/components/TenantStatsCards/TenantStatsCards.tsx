@@ -47,6 +47,11 @@ export function TenantStatsCards({ stats, isLoading }: TenantStatsCardsProps) {
           <p className={`text-xl font-bold ${STAT_COLORS[item.label] ?? 'text-[var(--color-neutral-800)]'}`}>
             {item.value}
           </p>
+          {item.label === 'Trial' && (
+            <p className="mt-0.5 text-[10px] text-[var(--color-neutral-400)]">
+              Subscription plan Trial
+            </p>
+          )}
         </Card>
       ))}
     </div>

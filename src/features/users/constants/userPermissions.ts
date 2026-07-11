@@ -26,11 +26,13 @@ export const USER_FUNCTIONAL_FLAGS = [
 export type UserFunctionalFlag = (typeof USER_FUNCTIONAL_FLAGS)[number];
 
 /**
- * Roles that may be assigned by Super Admin when provisioning tenant users.
- * Platform SUPER_ADMIN accounts are managed outside this module.
+ * Roles that may be assigned when provisioning tenant staff/customer users.
+ * Platform SUPER_ADMIN and workspace TENANT_ADMIN are not assignable here.
  */
-export function isAssignableUserRole(role: string): role is Exclude<UserRole, 'SUPER_ADMIN'> {
-  return role !== 'SUPER_ADMIN';
+export function isAssignableUserRole(
+  role: string,
+): role is Exclude<UserRole, 'SUPER_ADMIN' | 'TENANT_ADMIN'> {
+  return role !== 'SUPER_ADMIN' && role !== 'TENANT_ADMIN';
 }
 
 /**
@@ -46,6 +48,8 @@ export const TENANT_USER_MANAGER_ROLE_SLUGS = [
   'admin',
   'tenant_admin',
   'tenant-admin',
+  'tenant_owner',
+  'tenant',
   'TENANT_ADMIN',
 ] as const;
 
@@ -55,6 +59,8 @@ export function isTenantUserManagerRole(roleSlug?: string | null): boolean {
   return (
     normalized === 'admin' ||
     normalized === 'tenant_admin' ||
+    normalized === 'tenant_owner' ||
+    normalized === 'tenant' ||
     roleSlug === 'TENANT_ADMIN'
   );
 }

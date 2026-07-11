@@ -16,7 +16,7 @@ const ACTION_CONFIG: Record<
   delete: {
     title: 'Delete user?',
     description: (name) =>
-      `${name} will be removed from this tenant. You can restore the account later if supported.`,
+      `${name} will be soft-deleted from this tenant. You can restore the account later with Restore.`,
     confirmLabel: 'Delete user',
     variant: 'danger',
   },
@@ -35,7 +35,8 @@ const ACTION_CONFIG: Record<
   },
   restore: {
     title: 'Restore user?',
-    description: (name) => `${name} will be restored and available again.`,
+    description: (name) =>
+      `${name} will be restored and available again in this tenant.`,
     confirmLabel: 'Restore user',
     variant: 'primary',
   },

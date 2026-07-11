@@ -3,8 +3,16 @@ import { axiosInstance } from '@/lib/axios';
 import { useAuthStore } from '@/store/authStore';
 import { resolveSessionTenantIdFromAuth } from '@/lib/tenantFromAuth';
 import { USER_API } from '../api/user.api';
+import {
+  forgetDeletedUser,
+  isDeletedUser,
+  listRememberedDeletedUsers,
+  rememberDeletedUser,
+  resolveDeletedUsersTenantKey,
+} from '../utils/deletedUsersRegistry';
 import { normalizeUser, normalizeUsers } from '../utils/normalizeUser';
 import { prepareUserPayload } from '../utils/prepareUserPayload';
+import { pickTemporaryPassword } from '../utils/pickTemporaryPassword';
 import type {
   AdminResetPasswordResult,
   CreateUserDto,
@@ -81,11 +89,20 @@ function buildListQuery(params: UserListParams): Record<string, string | number>
 
   if (params.search?.trim()) query.search = params.search.trim();
   if (params.role) query.role = params.role;
-  if (params.status) query.status = params.status;
   if (params.branch_id) query.branch_id = params.branch_id;
   if (params.department_id) query.department_id = params.department_id;
   if (params.sortBy) query.sortBy = params.sortBy;
   if (params.order) query.order = params.order;
+
+  const lifecycle = params.lifecycle ?? 'all';
+  // Swagger only allows status enum values — never send include_deleted / with_deleted / deleted.
+  if (lifecycle === 'active') {
+    query.status = 'ACTIVE';
+  } else if (lifecycle === 'inactive') {
+    query.status = 'INACTIVE';
+  } else if (lifecycle !== 'deleted' && params.status) {
+    query.status = params.status;
+  }
 
   return query;
 }
@@ -114,6 +131,16 @@ function formatAxiosError(error: unknown): Error {
   return new Error(axiosErr.message || 'Request failed');
 }
 
+function summarizeUnknownKeys(raw: unknown): string {
+  if (!raw || typeof raw !== 'object') return String(raw);
+  const top = Object.keys(raw as object).slice(0, 20).join(', ');
+  const data = (raw as { data?: unknown }).data;
+  if (data && typeof data === 'object') {
+    return `${top} → data:[${Object.keys(data as object).slice(0, 20).join(', ')}]`;
+  }
+  return top || '(empty)';
+}
+
 /**
  * Tenant Admin user service — uses ERP `axiosInstance`.
  * All users are created/listed for the authenticated tenant only.
@@ -123,18 +150,41 @@ export const userService = {
     const tenantId = resolveSessionTenantId();
     assertSameTenant(params.tenantId, tenantId);
 
+    const lifecycle = params.lifecycle ?? 'all';
+    const tenantKey = resolveDeletedUsersTenantKey(tenantId || params.tenantId);
+
+    // Soft-deleted users are omitted from GET /users — Deleted tab uses the local registry
+    // filled when Tenant Admin soft-deletes a user (so Restore remains available).
+    if (lifecycle === 'deleted') {
+      const users = listRememberedDeletedUsers(tenantKey);
+      return { users, meta: defaultMeta(params, users.length) };
+    }
+
     try {
       const res = await axiosInstance.get<ApiEnvelope<User[], PaginationMeta>>(USER_API.list, {
         params: buildListQuery(params),
       });
 
-      const users = normalizeUsers(res.data?.data).filter(
+      let users = normalizeUsers(res.data?.data).filter(
         (user) => !tenantId || !user.tenant_id || user.tenant_id === tenantId,
       );
 
+      users = users.filter((user) => !isDeletedUser(user));
+      if (lifecycle === 'active') {
+        users = users.filter((user) => user.status === 'ACTIVE');
+      } else if (lifecycle === 'inactive') {
+        users = users.filter((user) => user.status !== 'ACTIVE');
+      }
+
       return {
         users,
-        meta: res.data?.meta ?? defaultMeta(params, users.length),
+        meta: res.data?.meta
+          ? {
+              ...res.data.meta,
+              total: users.length,
+              totalPages: Math.max(1, Math.ceil(users.length / (params.limit ?? 20))),
+            }
+          : defaultMeta(params, users.length),
       };
     } catch (error) {
       throw formatAxiosError(error);
@@ -161,35 +211,62 @@ export const userService = {
   async create(dto: CreateUserDto): Promise<CreateUserResult> {
     const tenantId = resolveSessionTenantId();
     assertSameTenant(dto.tenant_id, tenantId);
-    // Bind to session tenant when known. For tenant-scoped JWTs, API ignores tenant_id.
+    // CreateUserDto has no password — API generates a temporary password.
     const body = prepareUserPayload({
       ...dto,
+      status: 'ACTIVE',
       ...(tenantId ? { tenant_id: tenantId } : { tenant_id: undefined }),
     });
+    // Never send undocumented password fields (API ignores / may reject them).
+    delete (body as Record<string, unknown>).password;
 
     try {
-      const res = await axiosInstance.post<ApiEnvelope<User> & { temporary_password?: string }>(
-        USER_API.list,
-        body,
-      );
-
-      const payload = res.data as ApiEnvelope<User> & {
-        temporary_password?: string;
-        data?: (User & { temporary_password?: string }) | User;
-      };
-      const userPayload = extractUserPayload(payload);
+      const res = await axiosInstance.post<unknown>(USER_API.list, body);
+      const userPayload = extractUserPayload(res.data);
       const user = normalizeUser(userPayload);
-      const nestedPassword =
-        typeof userPayload.temporary_password === 'string'
-          ? userPayload.temporary_password
-          : undefined;
+
+      let temporaryPassword = pickTemporaryPassword(res.data);
+
+      // Always ensure we have the real API password for Staff / User login.
+      if (user.id) {
+        try {
+          // Activate if create left user INVITED.
+          if (user.status && user.status !== 'ACTIVE') {
+            await this.updateStatus(tenantId || user.tenant_id || '', user.id, {
+              status: 'ACTIVE',
+              reason: 'Activate for staff login',
+            });
+          }
+        } catch {
+          // Non-fatal — login may still work if already ACTIVE.
+        }
+
+        // Prefer admin-reset so require_password_change is set (first login → set own password).
+        try {
+          const reset = await this.adminResetPassword(tenantId || user.tenant_id || '', user.id);
+          if (reset.temporary_password) {
+            temporaryPassword = reset.temporary_password;
+          }
+        } catch (resetErr) {
+          if (!temporaryPassword) {
+            throw new Error(
+              `User was created, but no temporary password was returned. ` +
+                `Open the user and click “Reset password”. ` +
+                `(${resetErr instanceof Error ? resetErr.message : 'reset failed'})`,
+            );
+          }
+        }
+      }
+
+      if (!temporaryPassword) {
+        throw new Error(
+          'User was created, but the API did not return a temporary password. Open the user and reset password.',
+        );
+      }
 
       return {
         user,
-        temporary_password:
-          typeof payload.temporary_password === 'string'
-            ? payload.temporary_password
-            : nestedPassword,
+        temporary_password: temporaryPassword,
       };
     } catch (error) {
       throw formatAxiosError(error);
@@ -212,13 +289,45 @@ export const userService = {
     }
   },
 
-  async softDelete(tenantId: string, id: string): Promise<void> {
+  async softDelete(tenantId: string, id: string, snapshot?: User): Promise<void> {
     const sessionTenantId = resolveSessionTenantId();
     assertSameTenant(tenantId, sessionTenantId);
     assertUserId(id);
 
     try {
       await axiosInstance.delete(USER_API.byId(id));
+      const tenantKey = resolveDeletedUsersTenantKey(sessionTenantId || tenantId);
+      if (snapshot) {
+        rememberDeletedUser(tenantKey, snapshot);
+      } else {
+        rememberDeletedUser(tenantKey, {
+          id,
+          tenant_id: sessionTenantId || tenantId || '',
+          email: '',
+          first_name: 'Deleted',
+          last_name: 'User',
+          role: 'READ_ONLY',
+          status: 'INACTIVE',
+          deleted_at: new Date().toISOString(),
+          is_salesperson: false,
+          is_cs_rep: false,
+          is_operations: false,
+          is_finance: false,
+          can_see_sales: false,
+          can_see_cost: false,
+          can_see_gp: false,
+          can_see_invoices: false,
+          can_see_payments: false,
+          can_see_bank_balances: false,
+          can_see_ar_ap: false,
+          can_see_mgmt_reports: false,
+          can_see_job_pnl: false,
+          two_factor_enabled: false,
+          allowed_ips: [],
+          allowed_mac_addresses: [],
+          max_concurrent_sessions: 3,
+        });
+      }
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -241,14 +350,20 @@ export const userService = {
     }
   },
 
+  /** POST /users/{id}/restore — Restore a soft-deleted user. */
   async restore(tenantId: string, id: string): Promise<User> {
     const sessionTenantId = resolveSessionTenantId();
     assertSameTenant(tenantId, sessionTenantId);
     assertUserId(id);
 
     try {
-      const res = await axiosInstance.patch<ApiEnvelope<User>>(USER_API.restore(id));
-      return normalizeUser(extractUserPayload(res.data));
+      const res = await axiosInstance.post<unknown>(USER_API.restore(id));
+      const user = normalizeUser(extractUserPayload(res.data));
+      forgetDeletedUser(resolveDeletedUsersTenantKey(sessionTenantId || tenantId), id);
+      return {
+        ...user,
+        deleted_at: null,
+      };
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -260,13 +375,17 @@ export const userService = {
     assertUserId(id);
 
     try {
-      const res = await axiosInstance.post<ApiEnvelope<{ temporary_password?: string }>>(
-        USER_API.adminResetPassword(id),
-      );
-      const payload = extractUserPayload(res.data);
+      // AdminResetPasswordDto — require_password_change so staff must set their own password after first login.
+      const res = await axiosInstance.post<unknown>(USER_API.adminResetPassword(id), {
+        require_password_change: true,
+        send_email: false,
+      });
+      const temporaryPassword = pickTemporaryPassword(res.data);
+      if (!temporaryPassword && import.meta.env.DEV) {
+        console.warn('[users] admin-reset-password response keys:', summarizeUnknownKeys(res.data));
+      }
       return {
-        temporary_password:
-          typeof payload.temporary_password === 'string' ? payload.temporary_password : '',
+        temporary_password: temporaryPassword,
       };
     } catch (error) {
       throw formatAxiosError(error);

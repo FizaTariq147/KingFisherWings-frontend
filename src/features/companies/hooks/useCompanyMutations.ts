@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { companyService } from '../services/company.service';
+import { companyService, type CompanyDeleteSnapshot } from '../services/company.service';
 import type { CreateCompanyDto, UpdateCompanyDto } from '../types/company.types';
 import { companyKeys } from './useCompanies';
 
@@ -29,8 +29,9 @@ export function useCompanyMutations(tenantId: string) {
   });
 
   const deleteCompany = useMutation({
-    mutationFn: (id: string) => companyService.softDelete(tenantId, id),
-    onSuccess: (_, id) => invalidate(tenantId, id),
+    mutationFn: ({ id, company }: { id: string; company?: CompanyDeleteSnapshot }) =>
+      companyService.softDelete(tenantId, id, company),
+    onSuccess: (_, { id }) => invalidate(tenantId, id),
   });
 
   return { createCompany, updateCompany, deleteCompany };

@@ -17,7 +17,7 @@ export function useCompanyRegistry(params: Omit<CompanyListParams, 'tenantId'> =
     queryKey: companyKeys.registry(params),
     queryFn: () => companyRegistryService.list(params),
     placeholderData: keepPreviousData,
-    staleTime: 30_000,
+    staleTime: params.status === 'deleted' ? 0 : 30_000,
   });
 }
 

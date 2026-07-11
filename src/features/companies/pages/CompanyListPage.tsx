@@ -12,6 +12,7 @@ import { useSetCompanyActive } from '../hooks/useCompanyMutations';
 import { useCompanyTenantScope } from '../hooks/useCompanyTenantScope';
 import type { RegistryCompany } from '../services/companyRegistry.service';
 import { mergeDraftCompaniesIntoList, type CompanyListItem } from '../utils/mergeDraftCompanies';
+import { formatCompanyLabel } from '../utils/deletedCompaniesRegistry';
 import type { CompanyStatusFilter } from '../utils/filterCompanies';
 import type { CompanyConfirmAction } from '../components/CompanyConfirmModal';
 
@@ -95,7 +96,8 @@ export default function CompanyListPage() {
           setConfirmTarget(null);
           return;
         }
-        await deleteCompany.mutateAsync(company.id);
+        await deleteCompany.mutateAsync({ id: company.id, company });
+        setStatus('deleted');
       } else if (!company.is_draft) {
         await setCompanyActive.mutateAsync({
           id: company.id,
@@ -215,7 +217,7 @@ export default function CompanyListPage() {
         <CompanyConfirmModal
           open
           action={confirmTarget.action}
-          companyName={confirmTarget.company.name}
+          companyName={formatCompanyLabel(confirmTarget.company)}
           isDefault={confirmTarget.company.is_default}
           isPending={pendingActionId === confirmTarget.company.id}
           onConfirm={handleConfirmAction}

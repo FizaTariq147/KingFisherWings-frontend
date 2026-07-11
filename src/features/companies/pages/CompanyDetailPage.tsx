@@ -11,6 +11,7 @@ import { useCompany, useDeleteCompany } from '../hooks/useCompanies';
 import { useSetCompanyActive } from '../hooks/useCompanyMutations';
 import { useCompanyTenantScope } from '../hooks/useCompanyTenantScope';
 import type { CompanyConfirmAction } from '../components/CompanyConfirmModal';
+import { formatCompanyLabel } from '../utils/deletedCompaniesRegistry';
 
 export default function CompanyDetailPage() {
   const { id } = useParams();
@@ -78,7 +79,15 @@ export default function CompanyDetailPage() {
     setPending(true);
     try {
       if (confirmAction === 'delete') {
-        await deleteCompany.mutateAsync(id!);
+        await deleteCompany.mutateAsync({
+          id: id!,
+          company: {
+            ...company,
+            tenant_id: tenantId,
+            tenant_name: '',
+            tenant_code: '',
+          },
+        });
         setConfirmAction(null);
         navigate(companiesBasePath);
         return;
@@ -186,7 +195,7 @@ export default function CompanyDetailPage() {
         <CompanyConfirmModal
           open
           action={confirmAction}
-          companyName={company.name}
+          companyName={formatCompanyLabel(company)}
           isDefault={company.is_default}
           isPending={pending}
           onConfirm={handleConfirm}

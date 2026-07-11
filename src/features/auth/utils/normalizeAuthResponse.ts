@@ -1,5 +1,6 @@
 import {
   resolveTenantIdFromUserLike,
+  sessionIdFromAccessToken,
   tenantIdFromAccessToken,
 } from '@/lib/tenantFromAuth';
 import type {
@@ -195,7 +196,30 @@ export function normalizeLoginUser(
     role,
     tenantId: tenantId || undefined,
     companyId: pickString(record.companyId, record.company_id) || undefined,
+    mustChangePassword: pickMustChangePassword(record),
   };
+}
+
+export function hasMustChangePasswordFlag(record: Record<string, unknown>): boolean {
+  return (
+    'must_change_password' in record ||
+    'mustChangePassword' in record ||
+    'require_password_change' in record ||
+    'requirePasswordChange' in record ||
+    'password_change_required' in record ||
+    'passwordChangeRequired' in record
+  )
+}
+
+export function pickMustChangePassword(record: Record<string, unknown>): boolean {
+  const value =
+    record.must_change_password ??
+    record.mustChangePassword ??
+    record.require_password_change ??
+    record.requirePasswordChange ??
+    record.password_change_required ??
+    record.passwordChangeRequired;
+  return value === true || value === 'true' || value === 1;
 }
 
 /** Summarize response keys for debugging incomplete login payloads. */
@@ -212,6 +236,21 @@ export function summarizeAuthPayloadKeys(raw: unknown): string {
   return `${top} → data:[${Object.keys(nested).slice(0, 12).join(', ')}]`;
 }
 
+function pickSessionId(
+  record: Record<string, unknown>,
+  accessToken?: string | null,
+): string {
+  const direct = pickString(
+    record.session_id,
+    record.sessionId,
+    record.sid,
+    asRecord(record.session)?.id,
+    asRecord(record.session)?.session_id,
+  );
+  if (direct) return direct;
+  return sessionIdFromAccessToken(accessToken) || '';
+}
+
 /** Normalize login / refresh responses into a stable token + user shape. */
 export function normalizeAuthLoginResponse(
   raw: unknown,
@@ -225,11 +264,16 @@ export function normalizeAuthLoginResponse(
     pickRefreshToken(record) || pickRefreshToken(asRecord(raw) ?? {});
   const userSource = pickUserSource(record);
   const user = normalizeLoginUser(userSource, fallbackRole, accessToken);
+  // Flag may sit on the envelope root or on the nested user.
+  const mustChangePassword =
+    user.mustChangePassword || pickMustChangePassword(record);
+  const sessionId = pickSessionId(record, accessToken) || pickSessionId(asRecord(raw) ?? {}, accessToken);
 
   return {
     accessToken,
     refreshToken,
-    user,
+    sessionId: sessionId || undefined,
+    user: { ...user, mustChangePassword },
   };
 }
 
@@ -237,8 +281,10 @@ export function normalizeTokenPair(raw: unknown): AuthTokenPair | null {
   const record = unwrapEnvelope(raw);
   const accessToken = pickAccessToken(record) || pickAccessToken(asRecord(raw) ?? {});
   if (!accessToken) return null;
+  const sessionId = pickSessionId(record, accessToken) || pickSessionId(asRecord(raw) ?? {}, accessToken);
   return {
     accessToken,
     refreshToken: pickRefreshToken(record) || pickRefreshToken(asRecord(raw) ?? {}),
+    sessionId: sessionId || undefined,
   };
 }

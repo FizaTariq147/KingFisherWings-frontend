@@ -1,1 +1,1 @@
-export { UserFilters } from './UserFilters';
+export { UserFilters, type UserLifecycleFilter } from './UserFilters';

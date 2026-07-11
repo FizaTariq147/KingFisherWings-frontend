@@ -137,7 +137,7 @@ export function TenantTable({
               <TableCell>
                 <TenantStatusBadge tenant={t} />
               </TableCell>
-              <TableCell className="hidden lg:table-cell">
+              <TableCell className="text-center tabular-nums">
                 {getTenantMetric(t, 'total_users')}
               </TableCell>
               <TableCell className="hidden lg:table-cell">{t.max_users}</TableCell>

@@ -34,6 +34,11 @@ const BOOLEAN_DEFAULTS: Pick<
 };
 
 export function normalizeUser(raw: Record<string, unknown>): User {
+  const deletedAt =
+    (typeof raw.deleted_at === 'string' && raw.deleted_at) ||
+    (typeof raw.deletedAt === 'string' && raw.deletedAt) ||
+    (raw.is_deleted === true || raw.isDeleted === true ? new Date().toISOString() : null);
+
   return {
     ...BOOLEAN_DEFAULTS,
     ...(raw as unknown as User),
@@ -45,6 +50,7 @@ export function normalizeUser(raw: Record<string, unknown>): User {
     permission_ids: Array.isArray(raw.permission_ids) ? (raw.permission_ids as string[]) : [],
     max_concurrent_sessions:
       typeof raw.max_concurrent_sessions === 'number' ? raw.max_concurrent_sessions : 3,
+    deleted_at: deletedAt,
   };
 }
 

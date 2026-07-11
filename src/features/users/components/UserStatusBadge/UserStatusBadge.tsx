@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/Badge';
 import type { User } from '../../types/user.types';
+import { isDeletedUser } from '../../utils/deletedUsersRegistry';
 
 const STATUS_VARIANT: Record<
   User['status'],
@@ -17,7 +18,7 @@ interface UserStatusBadgeProps {
 }
 
 export function UserStatusBadge({ user }: UserStatusBadgeProps) {
-  if (user.deleted_at) {
+  if (isDeletedUser(user)) {
     return <Badge variant="neutral">Deleted</Badge>;
   }
 

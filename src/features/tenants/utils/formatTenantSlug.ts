@@ -13,3 +13,24 @@ export function formatTenantWorkspaceHost(slug: string): string {
   if (bare === '—') return bare;
   return `${bare}.fresagold.app`;
 }
+
+/** Human label for confirm dialogs / titles when display_name may be missing. */
+export function formatTenantLabel(tenant: {
+  display_name?: string | null;
+  name?: string | null;
+  company_name?: string | null;
+  code?: string | null;
+  slug?: string | null;
+}): string {
+  const candidates = [
+    tenant.display_name,
+    tenant.name,
+    tenant.company_name,
+    tenant.code,
+    tenant.slug,
+  ];
+  for (const value of candidates) {
+    if (typeof value === 'string' && value.trim()) return value.trim();
+  }
+  return 'This tenant';
+}

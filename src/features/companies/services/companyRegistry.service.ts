@@ -4,6 +4,11 @@ import { normalizeTenants } from '@/features/tenants/utils/normalizeTenant';
 import type { Tenant } from '@/features/tenants/types/tenant.types';
 import { COMPANY_API } from '../api/company.api';
 import {
+  isDeletedCompany,
+  isRememberedDeletedCompany,
+  listRememberedDeletedCompanies,
+} from '../utils/deletedCompaniesRegistry';
+import {
   filterCompaniesBySearch,
   filterCompaniesByStatus,
   paginateCompanies,
@@ -23,13 +28,26 @@ export interface CompanyRegistryResult {
 }
 
 function normalizeCompany(raw: Record<string, unknown>): Company {
+  const deletedAt =
+    typeof raw.deleted_at === 'string' && raw.deleted_at
+      ? raw.deleted_at
+      : typeof raw.deletedAt === 'string' && raw.deletedAt
+        ? raw.deletedAt
+        : raw.is_deleted === true || raw.isDeleted === true
+          ? new Date().toISOString()
+          : null;
+
   return {
     ...(raw as unknown as Company),
-    legal_name: (raw.legal_name as string) ?? '',
-    registration_number: (raw.registration_number as string) ?? '',
-    vat_number: (raw.vat_number as string) ?? '',
-    is_default: Boolean(raw.is_default),
-    is_active: raw.is_active !== false,
+    name: typeof raw.name === 'string' ? raw.name : '',
+    code: typeof raw.code === 'string' ? raw.code : '',
+    legal_name: (raw.legal_name as string) ?? (raw.legalName as string) ?? '',
+    registration_number:
+      (raw.registration_number as string) ?? (raw.registrationNumber as string) ?? '',
+    vat_number: (raw.vat_number as string) ?? (raw.vatNumber as string) ?? '',
+    is_default: Boolean(raw.is_default ?? raw.isDefault),
+    is_active: deletedAt ? false : raw.is_active !== false && raw.isActive !== false,
+    deleted_at: deletedAt,
   };
 }
 
@@ -48,6 +66,17 @@ async function fetchTenants(): Promise<Tenant[]> {
 /** Companies API is tenant-scoped — aggregate across all tenants for the platform registry. */
 export const companyRegistryService = {
   async list(params: CompanyListParams = {}): Promise<CompanyRegistryResult> {
+    // Soft-deleted companies are omitted from GET /companies — Deleted tab uses local registry.
+    if (params.status === 'deleted') {
+      let companies = listRememberedDeletedCompanies() as RegistryCompany[];
+      companies = filterCompaniesBySearch(companies, params.search);
+      companies.sort((a, b) => a.name.localeCompare(b.name));
+      const page = params.page ?? 1;
+      const limit = params.limit ?? 20;
+      const { items, meta } = paginateCompanies(companies, page, limit);
+      return { companies: items, meta };
+    }
+
     const tenants = await fetchTenants();
 
     const results = await Promise.allSettled(
@@ -56,7 +85,9 @@ export const companyRegistryService = {
           headers: { 'X-Tenant-Id': tenant.id },
           params: { limit: 200 },
         });
-        const companies = normalizeCompanies(res.data?.data);
+        const companies = normalizeCompanies(res.data?.data).filter(
+          (company) => !isDeletedCompany(company) && !isRememberedDeletedCompany(company.id),
+        );
         return companies.map<RegistryCompany>((company) => {
           const raw = company as Company & { tenant_id?: string };
           const resolvedTenantId =

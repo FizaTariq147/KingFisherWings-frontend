@@ -37,24 +37,31 @@ function isUnauthorized(error: unknown): boolean {
 }
 
 /**
- * ERP Auth service — Swagger tag "Auth".
- * Uses `axiosInstance` (Bearer + credentials).
+ * ERP Auth — Swagger tag "Auth"
+ * https://kingfisherwings.onrender.com/docs
+ *
+ * Hierarchy:
+ *   SuperAdmin → Company → Tenant → Tenant Admin → Users (staff)
+ *   - Tenant Admin: POST /auth/tenant-login (slug + password)
+ *   - Users/staff:  POST /auth/login (slug + email + password)
  */
 export const authService = {
+  /** AuthController_login — Staff / employee users */
   async loginStaff(dto: LoginDto): Promise<AuthLoginResult> {
-    const { data } = await axiosInstance.post<unknown>(AUTH_API.login, {
+    const body: LoginDto = {
       tenant_slug: normalizeTenantSlugInput(dto.tenant_slug),
       email: dto.email.trim().toLowerCase(),
       password: dto.password,
       remember_me: dto.remember_me ?? false,
-      device_name: dto.device_name?.trim() || undefined,
-    });
-    return requireLoginResult(data, 'user');
+      device_name: dto.device_name?.trim() || 'Web',
+    };
+    const { data } = await axiosInstance.post<unknown>(AUTH_API.login, body);
+    return requireLoginResult(data, '');
   },
 
-  /** AuthController_tenantLogin — body: tenant_slug, password, remember_me, device_name */
+  /** AuthController_tenantLogin — Tenant Admin (workspace owner) */
   async loginTenant(dto: TenantLoginDto): Promise<AuthLoginResult> {
-    const body = {
+    const body: TenantLoginDto = {
       tenant_slug: normalizeTenantSlugInput(dto.tenant_slug),
       password: dto.password,
       remember_me: dto.remember_me ?? false,
@@ -64,91 +71,53 @@ export const authService = {
     return requireLoginResult(data, 'TENANT_ADMIN');
   },
 
-  /**
-   * Tenant Admin sign-in.
-   * 1) AuthController_tenantLogin — slug + password
-   * 2) If that 401s and email is present — AuthController_login (provisioned TENANT_ADMIN user)
-   */
-  async loginTenantAdmin(dto: LoginDto): Promise<AuthLoginResult> {
-    const slug = normalizeTenantSlugInput(dto.tenant_slug);
-    const email = dto.email?.trim().toLowerCase() || '';
-
-    try {
-      return await this.loginTenant({
-        tenant_slug: slug,
-        password: dto.password,
-        remember_me: dto.remember_me,
-        device_name: dto.device_name,
-      });
-    } catch (tenantError) {
-      if (!isUnauthorized(tenantError) || !email) throw tenantError;
-    }
-
-    try {
-      const result = await this.loginStaff({
-        ...dto,
-        tenant_slug: slug,
-        email,
-      });
-      return {
-        ...result,
-        user: { ...result.user, role: result.user.role || 'TENANT_ADMIN' },
-      };
-    } catch (staffError) {
-      if (!isUnauthorized(staffError)) throw staffError;
-    }
-
-    throw new Error(
-      `Incorrect credentials for slug "${slug}". ` +
-        `Tried POST /auth/tenant-login (slug + password)` +
-        (email ? ` and POST /auth/login (slug + ${email} + password)` : '') +
-        `. Create a new tenant and copy the credentials card, or use SuperAdmin at /superadmin/login.`,
-    );
-  },
-
-  /** Used after SuperAdmin creates a tenant — confirms tenant-login accepts the password. */
+  /** Post-create check for tenant-login credentials only. */
   async verifyTenantCredentials(input: {
     tenant_slug: string;
-    email?: string;
     password: string;
-  }): Promise<{ ok: true; via: 'staff' | 'tenant' } | { ok: false; message: string }> {
-    const device_name = 'post-create-verify';
+  }): Promise<{ ok: true; via: 'tenant' } | { ok: false; message: string }> {
     try {
       await this.loginTenant({
         tenant_slug: input.tenant_slug,
         password: input.password,
         remember_me: false,
-        device_name,
+        device_name: 'post-create-verify',
       });
       return { ok: true, via: 'tenant' };
-    } catch (tenantError) {
-      if (!isUnauthorized(tenantError)) {
-        const message =
-          tenantError instanceof Error ? tenantError.message : 'Tenant login verify failed';
-        return { ok: false, message };
+    } catch (err) {
+      if (!isUnauthorized(err)) {
+        return {
+          ok: false,
+          message: err instanceof Error ? err.message : 'Tenant login verify failed',
+        };
       }
-    }
-
-    if (!input.email?.trim()) {
       return {
         ok: false,
         message: 'Tenant-login rejected these credentials (slug + password).',
       };
     }
+  },
 
+  /** Post-create check for staff /auth/login credentials. */
+  async verifyStaffCredentials(input: {
+    tenant_slug: string;
+    email: string;
+    password: string;
+  }): Promise<{ ok: true } | { ok: false; message: string }> {
     try {
       await this.loginStaff({
         tenant_slug: input.tenant_slug,
         email: input.email,
         password: input.password,
         remember_me: false,
-        device_name,
+        device_name: 'post-create-verify',
       });
-      return { ok: true, via: 'staff' };
-    } catch (staffError) {
-      const message =
-        staffError instanceof Error ? staffError.message : 'Staff login verify failed';
-      return { ok: false, message };
+      return { ok: true };
+    } catch (err) {
+      return {
+        ok: false,
+        message: err instanceof Error ? err.message : 'Staff login verify failed',
+      };
     }
   },
 
@@ -192,10 +161,19 @@ export const authService = {
   },
 
   async changePassword(dto: ChangePasswordDto): Promise<void> {
-    await axiosInstance.post(AUTH_API.changePassword, dto);
+    await axiosInstance.post(AUTH_API.changePassword, {
+      current_password: dto.current_password,
+      new_password: dto.new_password,
+      confirm_password: dto.confirm_password,
+    });
   },
 
+  /** AuthController_tenantChangePassword — Tenant Admin workspace password */
   async changeTenantPassword(dto: TenantChangePasswordDto): Promise<void> {
-    await axiosInstance.post(AUTH_API.tenantChangePassword, dto);
+    await axiosInstance.post(AUTH_API.tenantChangePassword, {
+      current_password: dto.current_password,
+      new_password: dto.new_password,
+      confirm_password: dto.confirm_password,
+    });
   },
 };

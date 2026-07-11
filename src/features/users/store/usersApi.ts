@@ -76,10 +76,10 @@ export const usersApi = superAdminApi.injectEndpoints({
       ],
     }),
 
-    deleteUser: builder.mutation<void, { tenantId: string; id: string }>({
-      async queryFn({ tenantId, id }) {
+    deleteUser: builder.mutation<void, { tenantId: string; id: string; user?: User }>({
+      async queryFn({ tenantId, id, user }) {
         try {
-          await userService.softDelete(tenantId, id);
+          await userService.softDelete(tenantId, id, user);
           return { data: undefined };
         } catch (error) {
           return { error: serializeApiError(error) };

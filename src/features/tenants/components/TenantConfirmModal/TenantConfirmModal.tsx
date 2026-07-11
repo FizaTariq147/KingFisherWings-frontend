@@ -49,6 +49,8 @@ export function TenantConfirmModal({
   onClose,
 }: TenantConfirmModalProps) {
   const config = ACTION_CONFIG[action];
+  const label =
+    typeof tenantName === 'string' && tenantName.trim() ? tenantName.trim() : 'This tenant';
 
   return (
     <Modal
@@ -92,7 +94,7 @@ export function TenantConfirmModal({
           />
         </div>
         <p className="text-sm text-[var(--color-neutral-600)] leading-relaxed">
-          {config.description(tenantName)}
+          {config.description(label)}
         </p>
       </div>
     </Modal>

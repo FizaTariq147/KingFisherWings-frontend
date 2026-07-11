@@ -99,7 +99,6 @@ export default function TenantCreatePage() {
                 if (loginSlug && loginPassword) {
                   const verify = await authService.verifyTenantCredentials({
                     tenant_slug: loginSlug,
-                    email: loginEmail || undefined,
                     password: loginPassword,
                   });
                   loginVerifyOk = verify.ok;

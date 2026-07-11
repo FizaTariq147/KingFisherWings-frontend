@@ -5,7 +5,10 @@ import type {
   LoginDto,
   TenantLoginDto,
 } from '@/features/auth/types/auth.api.types'
-import { resolveSessionTenantIdFromAuth } from '@/lib/tenantFromAuth'
+import {
+  resolveSessionTenantIdFromAuth,
+  sessionIdFromAccessToken,
+} from '@/lib/tenantFromAuth'
 import { withGatewayRetry } from '@/lib/wakeApi'
 import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore'
 
@@ -23,6 +26,8 @@ export interface AuthUser {
   product: Product
   tenantId?: string
   companyId?: string
+  /** Staff users with a temporary password must set their own before using the app. */
+  mustChangePassword?: boolean
 }
 
 // ── Backend error response shape from NestJS ──────────────────────────────
@@ -55,7 +60,7 @@ function extractErrorMessage(err: unknown): string {
       if (typeof msg === 'string' && msg.toLowerCase().includes('locked'))
         return 'Your account has been locked due to too many failed attempts. Please contact your administrator.'
       if (typeof msg === 'string' && (msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('credentials')))
-        return 'Incorrect credentials. Use the Create Tenant workspace slug + temporary password (Tenant Admin tab). If you lost the password, create a new tenant — it is only shown once. Alternate: Staff / User tab with slug + admin email + same password. SuperAdmin: /superadmin/login.'
+        return 'Incorrect credentials. Staff / User: POST /auth/login needs slug + email + password. Tenant Admin: POST /auth/tenant-login needs slug + password only. SuperAdmin: /superadmin/login.'
       if (typeof msg === 'string' && (msg.toLowerCase().includes('outside') || msg.toLowerCase().includes('hours')))
         return 'Login is not permitted outside your configured office hours.'
       if (typeof msg === 'string' && msg.toLowerCase().includes('ip'))
@@ -92,6 +97,7 @@ function toStoreUser(user: {
   role: string
   tenantId?: string
   companyId?: string
+  mustChangePassword?: boolean
 }): AuthUser {
   return {
     id: user.id,
@@ -101,6 +107,7 @@ function toStoreUser(user: {
     product: 'KingFisher Tech Gold',
     tenantId: user.tenantId,
     companyId: user.companyId,
+    mustChangePassword: Boolean(user.mustChangePassword),
   }
 }
 
@@ -108,9 +115,15 @@ interface AuthState {
   user: AuthUser | null
   accessToken: string | null
   refreshToken: string | null
+  /** Current auth session id for POST /auth/sessions/{sessionId}/revoke */
+  sessionId: string | null
+  /** Epoch ms of last user activity — idle timeout is based on this, not login. */
+  lastActiveAt: number | null
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
+  /** True when idle timeout or refresh failed — show SessionExpiredModal. */
+  sessionExpired: boolean
 }
 
 interface AuthActions {
@@ -123,9 +136,24 @@ interface AuthActions {
   setAccessToken: (token: string) => void
   setTokens: (accessToken: string, refreshToken?: string | null) => void
   patchSessionUser: (partial: Partial<AuthUser>) => void
+  clearMustChangePassword: () => void
+  touchSessionActivity: () => void
+  markSessionExpired: () => void
+  /** Continue after idle expiry — refresh tokens, stay signed in (no login). */
+  continueExpiredSession: () => Promise<void>
+  /** POST /auth/sessions/{id}/revoke then clear and go to login. */
+  revokeExpiredSessionAndLogin: () => Promise<void>
 }
 
 type AuthStore = AuthState & AuthActions
+
+/** Idle timeout — inactivity only (not counted from login). */
+export const SESSION_IDLE_MS = 60 * 60 * 1000
+
+export function isSessionIdleExpired(lastActiveAt: number | null | undefined): boolean {
+  if (!lastActiveAt || !Number.isFinite(lastActiveAt)) return false
+  return Date.now() - lastActiveAt >= SESSION_IDLE_MS
+}
 
 async function applyLoginSuccess(
   set: (partial: Partial<AuthState>) => void,
@@ -139,14 +167,32 @@ async function applyLoginSuccess(
       user: result.user,
     }) ||
     undefined
+  const sessionId =
+    result.sessionId || sessionIdFromAccessToken(result.accessToken) || null
   set({
     user: toStoreUser({ ...result.user, tenantId }),
     accessToken: result.accessToken,
     refreshToken: result.refreshToken || null,
+    sessionId,
+    lastActiveAt: Date.now(),
     isAuthenticated: true,
     isLoading: false,
     error: null,
+    sessionExpired: false,
   })
+}
+
+function clearAuthState(): Partial<AuthState> {
+  return {
+    user: null,
+    accessToken: null,
+    refreshToken: null,
+    sessionId: null,
+    lastActiveAt: null,
+    isAuthenticated: false,
+    error: null,
+    sessionExpired: false,
+  }
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -155,42 +201,37 @@ export const useAuthStore = create<AuthStore>()(
       user: null,
       accessToken: null,
       refreshToken: null,
+      sessionId: null,
+      lastActiveAt: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
+      sessionExpired: false,
 
       loginTenant: async (dto) => {
-        set({ isLoading: true, error: null })
-        // Drop any stale ERP session before credential login.
+        set({ isLoading: true, error: null, sessionExpired: false })
         set({
           accessToken: null,
           refreshToken: null,
+          sessionId: null,
+          lastActiveAt: null,
           isAuthenticated: false,
           user: null,
         })
         try {
-          // Prefer tenant-login; if optional email is present and that 401s, fall back to staff login.
-          // Retry on Render 502 cold-starts.
+          // AuthController_tenantLogin — slug + password only (Swagger TenantLoginDto)
           const result = await withGatewayRetry(() =>
-            dto.email?.trim()
-              ? authService.loginTenantAdmin({
-                  tenant_slug: dto.tenant_slug,
-                  email: dto.email,
-                  password: dto.password,
-                  remember_me: dto.remember_me,
-                  device_name: dto.device_name,
-                })
-              : authService.loginTenant({
-                  tenant_slug: dto.tenant_slug,
-                  password: dto.password,
-                  remember_me: dto.remember_me,
-                  device_name: dto.device_name,
-                }),
+            authService.loginTenant({
+              tenant_slug: dto.tenant_slug,
+              password: dto.password,
+              remember_me: dto.remember_me,
+              device_name: dto.device_name,
+            }),
           )
           await applyLoginSuccess(set, result)
         } catch (err) {
           const slugHint = dto.tenant_slug?.trim()
-            ? ` (tried slug "${dto.tenant_slug.trim().toLowerCase()}")`
+            ? ` (Tenant Admin — tried slug "${dto.tenant_slug.trim().toLowerCase()}")`
             : ''
           set({
             isLoading: false,
@@ -201,55 +242,68 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       loginStaff: async (dto) => {
-        set({ isLoading: true, error: null })
+        set({ isLoading: true, error: null, sessionExpired: false })
         set({
           accessToken: null,
           refreshToken: null,
+          sessionId: null,
+          lastActiveAt: null,
           isAuthenticated: false,
           user: null,
         })
         try {
-          const result = await withGatewayRetry(() => authService.loginStaff(dto))
+          // AuthController_login — slug + email + password (Swagger LoginDto)
+          const result = await withGatewayRetry(() =>
+            authService.loginStaff({
+              tenant_slug: dto.tenant_slug,
+              email: dto.email,
+              password: dto.password,
+              remember_me: dto.remember_me,
+              device_name: dto.device_name,
+            }),
+          )
           await applyLoginSuccess(set, result)
         } catch (err) {
+          const slug = dto.tenant_slug?.trim().toLowerCase() || ''
+          const email = dto.email?.trim().toLowerCase() || ''
+          const hint =
+            slug || email
+              ? ` (Staff / User — tried slug "${slug}"` +
+                (email ? `, email "${email}"` : '') +
+                ')'
+              : ' (Staff / User)'
           set({
             isLoading: false,
-            error: extractErrorMessage(err),
+            error: `${extractErrorMessage(err)}${hint}`,
             isAuthenticated: false,
           })
         }
       },
 
       logout: async () => {
+        const accessToken = get().accessToken
         try {
-          await authService.logout()
+          if (accessToken) {
+            await authService.logout()
+          }
         } catch {
           // Always clear local state regardless of server response
         } finally {
-          set({
-            user: null,
-            accessToken: null,
-            refreshToken: null,
-            isAuthenticated: false,
-            error: null,
-          })
+          set(clearAuthState())
           window.location.href = '/login'
         }
       },
 
       logoutAll: async () => {
+        const accessToken = get().accessToken
         try {
-          await authService.logoutAll()
+          if (accessToken) {
+            await authService.logoutAll()
+          }
         } catch {
           // fall through to local clear
         } finally {
-          set({
-            user: null,
-            accessToken: null,
-            refreshToken: null,
-            isAuthenticated: false,
-            error: null,
-          })
+          set(clearAuthState())
           window.location.href = '/login'
         }
       },
@@ -257,26 +311,39 @@ export const useAuthStore = create<AuthStore>()(
       refreshAccessToken: async () => {
         const refreshToken = get().refreshToken
         if (!refreshToken) {
-          await get().logout()
-          return
+          get().markSessionExpired()
+          throw new Error('Session expired. Please sign in again.')
         }
         try {
           const pair = await authService.refresh({ refresh_token: refreshToken })
+          const sessionId =
+            pair.sessionId ||
+            sessionIdFromAccessToken(pair.accessToken) ||
+            get().sessionId
           set({
             accessToken: pair.accessToken,
             refreshToken: pair.refreshToken || refreshToken,
+            sessionId,
+            sessionExpired: false,
           })
-        } catch {
-          await get().logout()
+        } catch (err) {
+          if (get().sessionExpired) throw err
+          get().markSessionExpired()
+          throw new Error('Session expired. Please sign in again.')
         }
       },
 
       clearError: () => set({ error: null }),
-      setAccessToken: (token) => set({ accessToken: token }),
+      setAccessToken: (token) =>
+        set({
+          accessToken: token,
+          sessionId: sessionIdFromAccessToken(token) || get().sessionId,
+        }),
       setTokens: (accessToken, refreshToken) =>
         set({
           accessToken,
           ...(refreshToken !== undefined ? { refreshToken: refreshToken || null } : {}),
+          sessionId: sessionIdFromAccessToken(accessToken) || get().sessionId,
         }),
       patchSessionUser: (partial) => {
         const current = get().user
@@ -291,6 +358,7 @@ export const useAuthStore = create<AuthStore>()(
               product: partial.product || 'KingFisher Tech Gold',
               tenantId: partial.tenantId,
               companyId: partial.companyId,
+              mustChangePassword: Boolean(partial.mustChangePassword),
             },
           })
           return
@@ -303,6 +371,69 @@ export const useAuthStore = create<AuthStore>()(
           },
         })
       },
+
+      clearMustChangePassword: () => {
+        const current = get().user
+        if (!current?.mustChangePassword) return
+        set({ user: { ...current, mustChangePassword: false } })
+      },
+
+      touchSessionActivity: () => {
+        if (!get().isAuthenticated || get().sessionExpired) return
+        set({ lastActiveAt: Date.now() })
+      },
+
+      markSessionExpired: () => {
+        if (get().sessionExpired) return
+        set({
+          sessionExpired: true,
+          // Keep tokens/sessionId so Continue / Revoke can run without login.
+        })
+      },
+
+      continueExpiredSession: async () => {
+        const refreshToken = get().refreshToken
+        if (!refreshToken) {
+          throw new Error('Session cannot be continued. Sign in again.')
+        }
+        const pair = await authService.refresh({ refresh_token: refreshToken })
+        const sessionId =
+          pair.sessionId ||
+          sessionIdFromAccessToken(pair.accessToken) ||
+          get().sessionId
+        set({
+          accessToken: pair.accessToken,
+          refreshToken: pair.refreshToken || refreshToken,
+          sessionId,
+          lastActiveAt: Date.now(),
+          sessionExpired: false,
+          isAuthenticated: true,
+        })
+      },
+
+      revokeExpiredSessionAndLogin: async () => {
+        const { sessionId, accessToken, refreshToken } = get()
+        try {
+          if (sessionId) {
+            if (!accessToken && refreshToken) {
+              try {
+                const pair = await authService.refresh({ refresh_token: refreshToken })
+                set({ accessToken: pair.accessToken })
+              } catch {
+                // Continue — revoke may still fail; local clear happens below.
+              }
+            }
+            await authService.revokeSession(sessionId)
+          } else if (accessToken || refreshToken) {
+            await authService.logout()
+          }
+        } catch {
+          // Token may already be dead; still clear local session.
+        } finally {
+          set(clearAuthState())
+          window.location.href = '/login'
+        }
+      },
     }),
     {
       name: 'KingFisher Tech-auth',
@@ -312,6 +443,9 @@ export const useAuthStore = create<AuthStore>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
         refreshToken: state.refreshToken,
+        sessionId: state.sessionId,
+        lastActiveAt: state.lastActiveAt,
+        sessionExpired: state.sessionExpired,
       }),
     },
   ),

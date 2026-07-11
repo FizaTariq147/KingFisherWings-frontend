@@ -81,7 +81,10 @@ export interface UserListParams {
   tenantId: string;
   search?: string;
   role?: UserRole;
+  /** API status filter (ACTIVE, INACTIVE, …). Ignored when lifecycle is `deleted`. */
   status?: UserStatus;
+  /** UI lifecycle bar: all / active / inactive / deleted */
+  lifecycle?: 'all' | 'active' | 'inactive' | 'deleted';
   branch_id?: string;
   department_id?: string;
   sortBy?: UserSortField;

@@ -4,35 +4,6 @@ import { Modal } from '@/components/ui/Modal';
 
 export type CompanyConfirmAction = 'delete' | 'activate' | 'deactivate';
 
-const ACTION_CONFIG: Record<
-  CompanyConfirmAction,
-  {
-    title: string;
-    description: (name: string) => string;
-    confirmLabel: string;
-    variant: 'danger' | 'primary';
-  }
-> = {
-  delete: {
-    title: 'Delete company?',
-    description: (name) => `${name} will be soft-deleted.`,
-    confirmLabel: 'Delete company',
-    variant: 'danger',
-  },
-  activate: {
-    title: 'Activate company?',
-    description: (name) => `${name} will be marked active.`,
-    confirmLabel: 'Activate',
-    variant: 'primary',
-  },
-  deactivate: {
-    title: 'Deactivate company?',
-    description: (name) => `${name} will be marked inactive.`,
-    confirmLabel: 'Deactivate',
-    variant: 'danger',
-  },
-};
-
 interface CompanyConfirmModalProps {
   open: boolean;
   action?: CompanyConfirmAction;
@@ -52,24 +23,53 @@ export function CompanyConfirmModal({
   onConfirm,
   onClose,
 }: CompanyConfirmModalProps) {
-  const config = ACTION_CONFIG[action];
+  const label =
+    typeof companyName === 'string' && companyName.trim() ? companyName.trim() : 'This company';
+
+  const isBlockedDefaultDelete = action === 'delete' && Boolean(isDefault);
+
+  const title = isBlockedDefaultDelete
+    ? 'Cannot delete company'
+    : action === 'delete'
+      ? 'Delete company?'
+      : action === 'activate'
+        ? 'Activate company?'
+        : 'Deactivate company?';
+
+  const description = isBlockedDefaultDelete
+    ? `${label} is the default company. Soft-delete is blocked until another company is set as default.`
+    : action === 'delete'
+      ? `${label} will be soft-deleted.`
+      : action === 'activate'
+        ? `${label} will be marked active.`
+        : `${label} will be marked inactive.`;
+
+  const confirmLabel =
+    action === 'delete' ? 'Delete company' : action === 'activate' ? 'Activate' : 'Deactivate';
+  const confirmVariant = action === 'activate' ? 'primary' : 'danger';
 
   return (
     <Modal
       open={open}
       onClose={isPending ? () => {} : onClose}
-      title={config.title}
+      title={title}
       size="sm"
       footer={
-        <>
-          <Button variant="secondary" onClick={onClose} disabled={isPending}>
-            Cancel
+        isBlockedDefaultDelete ? (
+          <Button variant="secondary" onClick={onClose}>
+            Close
           </Button>
-          <Button variant={config.variant} onClick={onConfirm} disabled={isPending}>
-            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-            {isPending ? 'Working…' : config.confirmLabel}
-          </Button>
-        </>
+        ) : (
+          <>
+            <Button variant="secondary" onClick={onClose} disabled={isPending}>
+              Cancel
+            </Button>
+            <Button variant={confirmVariant} onClick={onConfirm} disabled={isPending}>
+              {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+              {isPending ? 'Working…' : confirmLabel}
+            </Button>
+          </>
+        )
       }
     >
       <div className="flex items-start gap-3">
@@ -80,16 +80,11 @@ export function CompanyConfirmModal({
           <AlertTriangle size={18} style={{ color: 'var(--color-danger-700)' }} aria-hidden="true" />
         </div>
         <div className="space-y-2 text-sm text-[var(--color-neutral-600)] leading-relaxed">
-          <p>
-            <strong>{companyName}</strong> — {config.description(companyName)}
-          </p>
-          {action === 'delete' && isDefault && (
-            <p className="text-[var(--color-danger-700)]">
-              This is the default company — deletion may be blocked by the API.
+          <p>{description}</p>
+          {action === 'delete' && !isBlockedDefaultDelete && (
+            <p className="text-xs text-[var(--color-neutral-400)]">
+              The API also blocks delete if this is the only company in the tenant.
             </p>
-          )}
-          {action === 'delete' && (
-            <p>Deletion is blocked if this is the only company in your tenant.</p>
           )}
         </div>
       </div>

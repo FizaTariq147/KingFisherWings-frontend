@@ -1,5 +1,6 @@
-/** Swagger Auth DTOs and response shapes (kingfisherwings OpenAPI). */
+/** Swagger Auth DTOs — https://kingfisherwings.onrender.com/docs (tag: Auth) */
 
+/** POST /auth/login — Staff login: tenant slug + email + password */
 export interface LoginDto {
   tenant_slug: string;
   email: string;
@@ -8,19 +9,12 @@ export interface LoginDto {
   device_name?: string;
 }
 
+/** POST /auth/tenant-login — Tenant admin: tenant slug + tenant password (no email) */
 export interface TenantLoginDto {
-  /** Maps to AuthController_tenantLogin.tenant_slug */
   tenant_slug: string;
-  /** Maps to AuthController_tenantLogin.password (set on Create Tenant) */
   password: string;
   remember_me?: boolean;
   device_name?: string;
-  /**
-   * Not part of TenantLoginDto in Swagger.
-   * When set, frontend falls back to POST /auth/login after tenant-login 401
-   * (provisioned TENANT_ADMIN owner user from Create Tenant).
-   */
-  email?: string;
 }
 
 export interface RefreshTokenDto {
@@ -55,6 +49,8 @@ export interface SuperAdminSignupDto {
 export interface AuthTokenPair {
   accessToken: string;
   refreshToken: string;
+  /** Present when API/JWT includes a session id for revoke. */
+  sessionId?: string;
 }
 
 /** Minimal user snapshot returned with login (before /auth/me). */
@@ -65,6 +61,8 @@ export interface AuthLoginUser {
   role: string;
   tenantId?: string;
   companyId?: string;
+  /** True when API requires changing the temporary password after first login. */
+  mustChangePassword?: boolean;
 }
 
 export interface AuthLoginResult extends AuthTokenPair {

@@ -20,6 +20,7 @@ import logo from '@/assets/logo.png'
 
 function erpHomeFromAuthStore(): string {
   const { user } = useAuthStore.getState()
+  if (user?.mustChangePassword) return '/change-password'
   return getErpHomePath(resolveAuthRoleSlug(user?.role))
 }
 
@@ -29,18 +30,11 @@ const ORANGE   = '#FF751F'
 const ORANGE_D = '#DD5F0D'
 const SURFACE  = '#FFFFFF'
 
-// ── Zod schema ────────────────────────────────────────────────────────────
+// ── Zod schemas — match Swagger LoginDto / TenantLoginDto ─────────────────
 const tenantAdminSchema = z.object({
   tenant_slug: z.string().trim().min(1, 'Tenant slug is required'),
   password: z.string().min(1, 'Password is required'),
   remember_me: z.boolean().optional(),
-  // Optional fallback for provisioned TENANT_ADMIN user via /auth/login
-  email: z
-    .string()
-    .trim()
-    .optional()
-    .or(z.literal(''))
-    .refine((v) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), 'Enter a valid email address'),
 })
 
 const staffSchema = z.object({
@@ -50,7 +44,9 @@ const staffSchema = z.object({
   remember_me: z.boolean().optional(),
 })
 
-type FormValues = z.infer<typeof staffSchema>
+type StaffFormValues = z.infer<typeof staffSchema>
+type TenantAdminFormValues = z.infer<typeof tenantAdminSchema>
+type FormValues = StaffFormValues
 type LoginMode = 'tenant_admin' | 'staff'
 
 function defaultDeviceName(): string {
@@ -344,7 +340,7 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const navigate = useNavigate()
   const { loginTenant, loginStaff, isLoading } = useAuthStore()
   const [step, setStep]       = useState<'signon' | 'credentials'>('signon')
-  const [loginMode, setLoginMode] = useState<LoginMode>('tenant_admin')
+  const [loginMode, setLoginMode] = useState<LoginMode>('staff')
   const [showPw, setShowPw]   = useState(false)
   const [apiErr, setApiErr]   = useState<string | null>(null)
   const [statusMsg, setStatusMsg] = useState<string | null>(null)
@@ -424,7 +420,8 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
     setStatusMsg(awake ? 'Signing in…' : 'API still cold — signing in with retries…')
 
     if (loginMode === 'staff') {
-      const values = parsed.data as z.infer<typeof staffSchema>
+      const values = parsed.data as StaffFormValues
+      // AuthController_login (LoginDto): tenant_slug + email + password
       await loginStaff({
         tenant_slug: values.tenant_slug,
         email: values.email,
@@ -433,14 +430,13 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
         device_name,
       })
     } else {
-      const values = parsed.data as z.infer<typeof tenantAdminSchema>
-      // AuthController_tenantLogin: tenant_slug + password; optional email enables /auth/login fallback.
+      const values = parsed.data as TenantAdminFormValues
+      // AuthController_tenantLogin (TenantLoginDto): tenant_slug + password only
       await loginTenant({
         tenant_slug: values.tenant_slug,
         password: values.password,
         remember_me: values.remember_me ?? true,
         device_name,
-        ...(values.email?.trim() ? { email: values.email.trim() } : {}),
       })
     }
     setStatusMsg(null)
@@ -582,10 +578,16 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
                 </div>
                 {loginMode === 'tenant_admin' && (
                   <p className="text-[11px] text-slate-500 leading-relaxed">
-                    Primary: <span className="font-semibold">slug + password</span> via{' '}
-                    <code className="text-[10px]">POST /auth/tenant-login</code>.
-                    Optional admin email enables fallback to Staff login for the provisioned owner user.
-                    SuperAdmin uses <span className="font-semibold">/superadmin/login</span>.
+                    Tenant Admin (workspace owner): <span className="font-semibold">slug + password</span> from Create Tenant{' '}(<code className="text-[10px]">POST /auth/tenant-login</code>).
+                    No email. Staff employees use the <span className="font-semibold">Staff / User</span> tab.
+                  </p>
+                )}
+                {loginMode === 'staff' && (
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Employees (Sales, Ops, Finance, etc.) created by Tenant Admin:{' '}
+                    <span className="font-semibold">slug + email + temporary password</span>{' '}
+                    (<code className="text-[10px]">POST /auth/login</code>).
+                    On first login you will be asked to set your own password for next time.
                   </p>
                 )}
 
@@ -613,7 +615,7 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
                   <p className="mt-1 text-[11px] text-slate-400">Exact Create Tenant slug — not code, not .fresagold.app</p>
                 </div>
 
-                {(loginMode === 'staff' || loginMode === 'tenant_admin') && (
+                {loginMode === 'staff' && (
                   <div>
                     <div className="relative">
                       <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
@@ -621,7 +623,7 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
                         id="kf-email"
                         type="email"
                         autoComplete="off"
-                        placeholder={loginMode === 'tenant_admin' ? 'admin email (optional fallback)' : 'email'}
+                        placeholder="user email"
                         disabled={isLoading}
                         aria-invalid={!!errors.email}
                         {...register('email')}
@@ -631,13 +633,11 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
                       />
                     </div>
                     {errors.email && <p role="alert" className="mt-1.5 flex items-center gap-1 text-[11px] text-red-500"><AlertCircle size={11} />{errors.email.message}</p>}
-                    {loginMode === 'tenant_admin' && (
-                      <p className="mt-1 text-[11px] text-slate-400">
-                        Leave blank for tenant-login only. Fill with Create Tenant admin email if slug+password alone fails.
-                      </p>
-                    )}
+                    <p className="mt-1 text-[11px] text-slate-400">Email from Add user — required for Staff / User login</p>
                   </div>
                 )}
+
+                
 
                 {/* Password */}
                 <div>
@@ -647,7 +647,7 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
                       id="kf-pw"
                       type={showPw ? 'text' : 'password'}
                       autoComplete="new-password"
-                      placeholder="password"
+                      placeholder={loginMode === 'staff' ? 'temporary password' : 'password'}
                       disabled={isLoading}
                       aria-invalid={!!errors.password}
                       {...register('password')}

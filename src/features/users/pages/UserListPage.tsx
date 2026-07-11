@@ -4,7 +4,7 @@ import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { UserConfirmModal } from '../components/UserConfirmModal';
-import { UserFilters } from '../components/UserFilters';
+import { UserFilters, type UserLifecycleFilter } from '../components/UserFilters/UserFilters';
 import { UserTable } from '../components/UserTable';
 import { UserTableSkeleton } from '../components/UserTableSkeleton';
 import {
@@ -12,7 +12,7 @@ import {
   DEFAULT_USER_LIST_SORT,
   DEFAULT_USER_PAGE_SIZE,
 } from '../constants/user.constants';
-import type { UserRole, UserSortField, UserSortOrder, UserStatus } from '../constants/user.constants';
+import type { UserRole, UserSortField, UserSortOrder } from '../constants/user.constants';
 import { useUserConfirmState } from '../hooks/useUserConfirmState';
 import { useUserTenantScope } from '../hooks/useUserTenantScope';
 import {
@@ -38,7 +38,7 @@ export default function UserListPage() {
   const navigate = useNavigate();
   const { tenantId, sessionScoped, userPath } = useUserTenantScope();
   const [search, setSearch] = useState('');
-  const [status, setStatus] = useState<UserStatus | 'all'>('all');
+  const [status, setStatus] = useState<UserLifecycleFilter>('all');
   const [role, setRole] = useState<UserRole | 'all'>('all');
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<UserSortField>(DEFAULT_USER_LIST_SORT);
@@ -61,7 +61,7 @@ export default function UserListPage() {
     page,
     limit: DEFAULT_USER_PAGE_SIZE,
     search: debouncedSearch.trim() || undefined,
-    status: status === 'all' ? undefined : status,
+    lifecycle: status,
     role: role === 'all' ? undefined : role,
     sortBy,
     order,
@@ -116,7 +116,12 @@ export default function UserListPage() {
 
     const mutation =
       action === 'delete'
-        ? () => deleteUser.mutateAsync({ tenantId: scopeTenantId, id: user.id })
+        ? () =>
+            deleteUser.mutateAsync({
+              tenantId: scopeTenantId,
+              id: user.id,
+              user,
+            })
         : action === 'deactivate'
           ? () =>
               updateUserStatus.mutateAsync({
@@ -138,6 +143,8 @@ export default function UserListPage() {
     try {
       await mutation();
       closeConfirm();
+      if (action === 'delete') setStatus('deleted');
+      if (action === 'restore') setStatus('all');
     } catch (err) {
       setActionError(getErrorMessage(err) || 'Action failed. Please try again.');
     } finally {
@@ -162,7 +169,8 @@ export default function UserListPage() {
         <div>
           <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Users</h2>
           <p className="text-sm text-[var(--color-neutral-400)]">
-            {totalCount} user{totalCount === 1 ? '' : 's'} in your tenant workspace
+            {totalCount} user{totalCount === 1 ? '' : 's'}
+            {status === 'deleted' ? ' deleted' : ''} in your tenant workspace
           </p>
         </div>
         <Button onClick={() => navigate(userPath('/new'))} className="w-full sm:w-auto">
@@ -235,7 +243,9 @@ export default function UserListPage() {
             onRestore={handleRestore}
             emptyMessage={
               debouncedSearch || status !== 'all' || role !== 'all'
-                ? 'No users match your search or filters.'
+                ? status === 'deleted'
+                  ? 'No deleted users found.'
+                  : 'No users match your search or filters.'
                 : 'No users in your tenant yet.'
             }
             onEmptyAction={
