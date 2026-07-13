@@ -11,6 +11,8 @@ export const ROUTE_LABELS: Record<string, string> = {
   // ── Top-level ────────────────────────────────────────────────────────
   dashboard:     'Dashboard',
   customers:     'Customers',
+  parties:       'Parties',
+  organization:  'Organization',
   quotations:    'Quotations',
   documentation: 'Documentation',
   finance:       'Finance',
@@ -36,6 +38,8 @@ export const ROUTE_LABELS: Record<string, string> = {
   leave:         'Leave Calendar',
   airlines:      'Airlines',
   users:         'Users',
+  'bank-accounts': 'Bank Accounts',
+  'number-formats': 'Number Formats',
 }
 
 /**
@@ -52,6 +56,7 @@ export const ROUTE_LABEL_RESOLVERS: Record<string, SegmentResolver> = {
     // return data.name
     return null   // falls back to raw id until implemented
   },
+  parties: async (_id) => null,
   quotations: async (_id) => null,
   jobs:       async (_id) => null,
   invoices:   async (_id) => null,

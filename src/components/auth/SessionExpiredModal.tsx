@@ -45,7 +45,8 @@ export function SessionExpiredModal() {
     setError(null)
     try {
       await revokeSession()
-    } finally {
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to revoke session.')
       setBusy(null)
     }
   }

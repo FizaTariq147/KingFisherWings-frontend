@@ -180,6 +180,11 @@ async function applyLoginSuccess(
     error: null,
     sessionExpired: false,
   })
+
+  // Best-effort: bind real sessions-table id for POST /auth/sessions/{id}/revoke
+  void authService.resolveCurrentSessionId().then((resolved) => {
+    if (resolved) useAuthStore.setState({ sessionId: resolved })
+  })
 }
 
 function clearAuthState(): Partial<AuthState> {
@@ -397,7 +402,7 @@ export const useAuthStore = create<AuthStore>()(
           throw new Error('Session cannot be continued. Sign in again.')
         }
         const pair = await authService.refresh({ refresh_token: refreshToken })
-        const sessionId =
+        let sessionId =
           pair.sessionId ||
           sessionIdFromAccessToken(pair.accessToken) ||
           get().sessionId
@@ -409,30 +414,40 @@ export const useAuthStore = create<AuthStore>()(
           sessionExpired: false,
           isAuthenticated: true,
         })
+        try {
+          const resolved = await authService.resolveCurrentSessionId()
+          if (resolved) set({ sessionId: resolved })
+        } catch {
+          // Keep JWT/login session id.
+        }
       },
 
       revokeExpiredSessionAndLogin: async () => {
         const { sessionId, accessToken, refreshToken } = get()
         try {
-          if (sessionId) {
-            if (!accessToken && refreshToken) {
-              try {
-                const pair = await authService.refresh({ refresh_token: refreshToken })
-                set({ accessToken: pair.accessToken })
-              } catch {
-                // Continue — revoke may still fail; local clear happens below.
-              }
-            }
-            await authService.revokeSession(sessionId)
-          } else if (accessToken || refreshToken) {
-            await authService.logout()
+          // Ensure Bearer is available — revoke requires auth.
+          if (!accessToken && refreshToken) {
+            const pair = await authService.refresh({ refresh_token: refreshToken })
+            set({
+              accessToken: pair.accessToken,
+              refreshToken: pair.refreshToken || refreshToken,
+              sessionId:
+                pair.sessionId ||
+                sessionIdFromAccessToken(pair.accessToken) ||
+                sessionId,
+            })
           }
-        } catch {
-          // Token may already be dead; still clear local session.
-        } finally {
-          set(clearAuthState())
-          window.location.href = '/login'
+
+          await authService.revokeCurrentSession(get().sessionId)
+        } catch (error) {
+          // Surface failure to the modal; do not pretend revoke succeeded.
+          const message =
+            error instanceof Error ? error.message : 'Failed to revoke session.'
+          throw new Error(message)
         }
+
+        set(clearAuthState())
+        window.location.href = '/login'
       },
     }),
     {

@@ -34,8 +34,6 @@ function isAuthPublicUrl(url?: string): boolean {
 
 function isAuthNoRefreshRetryUrl(url?: string): boolean {
   if (!url) return false
-  // POST /auth/sessions/{id}/revoke — do not refresh-loop when the session is already dead.
-  if (url.includes('/auth/sessions/') && url.includes('/revoke')) return true
   return AUTH_NO_REFRESH_RETRY.some((path) => url.includes(path))
 }
 

@@ -20,10 +20,13 @@ export function sessionIdFromAccessToken(token?: string | null): string {
   if (!token) return '';
   const payload = decodeJwtPayload(token);
   if (!payload) return '';
-  for (const key of ['session_id', 'sessionId', 'sid', 'jti'] as const) {
+
+  // Prefer explicit session claims. Avoid treating random `jti` as session id unless it looks like a UUID.
+  for (const key of ['session_id', 'sessionId', 'sid'] as const) {
     const value = payload[key];
     if (typeof value === 'string' && value.trim()) return value.trim();
   }
+
   const nested = payload.session;
   if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
     const record = nested as Record<string, unknown>;
@@ -32,6 +35,10 @@ export function sessionIdFromAccessToken(token?: string | null): string {
       if (typeof value === 'string' && value.trim()) return value.trim();
     }
   }
+
+  const jti = payload.jti;
+  if (typeof jti === 'string' && isUuid(jti)) return jti.trim();
+
   return '';
 }
 

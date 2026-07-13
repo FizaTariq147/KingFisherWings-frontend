@@ -57,17 +57,41 @@ const OPS_NAV_ITEMS: NavItem[] = [
   { label: 'Finance', path: '/finance', Icon: Wallet, permission: 'menu_finance' },
   { label: 'NVOCC', path: '/nvocc', Icon: Building2, permission: 'menu_nvocc' },
   { label: 'HR', path: '/hr', Icon: UserCircle, permission: 'menu_hr' },
-  { label: 'Masters', path: '/masters', Icon: Settings, permission: 'menu_masters' },
   { label: 'Reports', path: '/reports', Icon: BarChart3, permission: 'menu_reports' },
   { label: 'Sales', path: '/sales', Icon: Percent, permission: 'menu_sales' as PermissionKey },
   { label: 'Settings', path: '/settings', Icon: Settings, permission: 'menu_settings' },
   { label: 'Audit Log', path: '/audit-log', Icon: Shield, permission: 'menu_settings' },
 ]
 
+/** Tenant Admin only — not shown to User/Customer staff. */
+const ADMIN_MASTERS_NAV_ITEM: NavItem = {
+  label: 'Masters',
+  path: '/masters',
+  Icon: Settings,
+  permission: null,
+  adminOnly: true,
+}
+
 const ADMIN_USERS_NAV_ITEM: NavItem = {
   label: 'Users',
   path: '/admin/users',
   Icon: UserCog,
+  permission: null,
+  adminOnly: true,
+}
+
+const ADMIN_PARTIES_NAV_ITEM: NavItem = {
+  label: 'Parties',
+  path: '/parties',
+  Icon: Briefcase,
+  permission: null,
+  adminOnly: true,
+}
+
+const ADMIN_ORGANIZATION_NAV_ITEM: NavItem = {
+  label: 'Organization',
+  path: '/organization',
+  Icon: Building2,
   permission: null,
   adminOnly: true,
 }
@@ -111,8 +135,8 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
     return OPS_NAV_ITEMS
   })()
 
-  // Users only for Tenant Admin — staff created by Tenant Admin do not see this.
-  const showTenantAdminUsers = !isSuperAdminArea && isTenantAdmin
+  // Users + Masters only for Tenant Admin — staff/customer do not see these.
+  const showTenantAdminNav = !isSuperAdminArea && isTenantAdmin
 
   const displayName = user?.name ?? 'User'
   const roleName =
@@ -134,6 +158,9 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
 
   const showPlatformNav = isSuperAdminArea && isSuperAdmin
   const UsersNavIcon = ADMIN_USERS_NAV_ITEM.Icon
+  const MastersNavIcon = ADMIN_MASTERS_NAV_ITEM.Icon
+  const PartiesNavIcon = ADMIN_PARTIES_NAV_ITEM.Icon
+  const OrganizationNavIcon = ADMIN_ORGANIZATION_NAV_ITEM.Icon
 
   return (
     <aside
@@ -157,13 +184,44 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
           </NavLink>
         ))}
 
-        {showTenantAdminUsers && (
+        {showTenantAdminNav && (
           <>
             {!collapsed && (
               <p className="px-[18px] pt-4 pb-1 text-[10px] font-semibold uppercase tracking-wider text-white/40">
                 Tenant Admin
               </p>
             )}
+            <NavLink
+              to={ADMIN_MASTERS_NAV_ITEM.path}
+              title={collapsed ? ADMIN_MASTERS_NAV_ITEM.label : undefined}
+              onClick={onNavigate}
+              className={({ isActive }) => linkClass(isActive)}
+            >
+              <MastersNavIcon size={20} className="shrink-0 opacity-90" aria-hidden="true" />
+              {!collapsed && <span>{ADMIN_MASTERS_NAV_ITEM.label}</span>}
+            </NavLink>
+            <NavLink
+              to={ADMIN_ORGANIZATION_NAV_ITEM.path}
+              title={collapsed ? ADMIN_ORGANIZATION_NAV_ITEM.label : undefined}
+              onClick={onNavigate}
+              className={({ isActive }) =>
+                linkClass(
+                  isActive || location.pathname.startsWith('/organization'),
+                )
+              }
+            >
+              <OrganizationNavIcon size={20} className="shrink-0 opacity-90" aria-hidden="true" />
+              {!collapsed && <span>{ADMIN_ORGANIZATION_NAV_ITEM.label}</span>}
+            </NavLink>
+            <NavLink
+              to={ADMIN_PARTIES_NAV_ITEM.path}
+              title={collapsed ? ADMIN_PARTIES_NAV_ITEM.label : undefined}
+              onClick={onNavigate}
+              className={({ isActive }) => linkClass(isActive)}
+            >
+              <PartiesNavIcon size={20} className="shrink-0 opacity-90" aria-hidden="true" />
+              {!collapsed && <span>{ADMIN_PARTIES_NAV_ITEM.label}</span>}
+            </NavLink>
             <NavLink
               to={ADMIN_USERS_NAV_ITEM.path}
               title={collapsed ? ADMIN_USERS_NAV_ITEM.label : undefined}

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { authService } from '@/features/auth/services/auth.service'
+import { normalizeActiveSessions } from '@/features/auth/utils/normalizeSessions'
 import { useAuthStore } from '@/store/authStore'
-import type { ActiveSession, SessionListResponse } from '@/types/session.types'
+import type { ActiveSession } from '@/types/session.types'
 
 interface UseSessionsReturn {
   sessions: ActiveSession[]
@@ -14,19 +15,17 @@ interface UseSessionsReturn {
   loggingOutAll: boolean
 }
 
-function normalizeSessions(raw: unknown): ActiveSession[] {
-  if (!raw) return []
-  if (Array.isArray(raw)) return raw as ActiveSession[]
-  if (typeof raw === 'object') {
-    const record = raw as Record<string, unknown>
-    if (Array.isArray(record.sessions)) return record.sessions as ActiveSession[]
-    if (Array.isArray(record.data)) return record.data as ActiveSession[]
-    if (record.data && typeof record.data === 'object') {
-      const nested = record.data as SessionListResponse
-      if (Array.isArray(nested.sessions)) return nested.sessions
-    }
+function getErrorMessage(error: unknown): string {
+  if (!error || typeof error !== 'object') return 'Request failed.'
+  const axiosErr = error as {
+    response?: { data?: { message?: string | string[] }; status?: number }
+    message?: string
   }
-  return []
+  const dataMessage = axiosErr.response?.data?.message
+  if (Array.isArray(dataMessage) && dataMessage[0]) return String(dataMessage[0])
+  if (typeof dataMessage === 'string' && dataMessage.trim()) return dataMessage
+  if (typeof axiosErr.message === 'string' && axiosErr.message.trim()) return axiosErr.message
+  return 'Request failed.'
 }
 
 export function useSessions(): UseSessionsReturn {
@@ -48,10 +47,16 @@ export function useSessions(): UseSessionsReturn {
     authService
       .listSessions()
       .then((data) => {
-        if (!cancelled) setSessions(normalizeSessions(data))
+        if (cancelled) return
+        const normalized = normalizeActiveSessions(data)
+        setSessions(normalized)
+        const current = normalized.find((session) => session.isCurrent)
+        if (current?.id) {
+          useAuthStore.setState({ sessionId: current.id })
+        }
       })
-      .catch(() => {
-        if (!cancelled) setError('Failed to load sessions.')
+      .catch((err) => {
+        if (!cancelled) setError(getErrorMessage(err) || 'Failed to load sessions.')
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
@@ -64,11 +69,13 @@ export function useSessions(): UseSessionsReturn {
 
   const revokeById = useCallback(async (id: string) => {
     setRevoking(id)
+    setError(null)
     try {
       await authService.revokeSession(id)
       setSessions((prev) => prev.filter((s) => s.id !== id))
-    } catch {
-      setError('Failed to revoke session. Please try again.')
+    } catch (err) {
+      setError(getErrorMessage(err) || 'Failed to revoke session. Please try again.')
+      throw err
     } finally {
       setRevoking(null)
     }
@@ -78,8 +85,8 @@ export function useSessions(): UseSessionsReturn {
     setLoggingOutAll(true)
     try {
       await storeLogoutAll()
-    } catch {
-      setError('Failed to log out of all devices.')
+    } catch (err) {
+      setError(getErrorMessage(err) || 'Failed to log out of all devices.')
       setLoggingOutAll(false)
     }
   }, [storeLogoutAll])

@@ -15,6 +15,7 @@ import {
   normalizeTokenPair,
   summarizeAuthPayloadKeys,
 } from '../utils/normalizeAuthResponse';
+import { normalizeActiveSessions, pickCurrentSessionId } from '../utils/normalizeSessions';
 import { normalizeTenantSlugInput } from '../utils/normalizeTenantSlugInput';
 
 function requireLoginResult(raw: unknown, fallbackRole: string): AuthLoginResult {
@@ -156,8 +157,54 @@ export const authService = {
     return data;
   },
 
+  /**
+   * Resolve the current device session id from GET /auth/sessions.
+   * Prefer this over JWT `jti` — revoke expects the sessions-table id.
+   */
+  async resolveCurrentSessionId(): Promise<string> {
+    const raw = await this.listSessions();
+    return pickCurrentSessionId(normalizeActiveSessions(raw));
+  },
+
+  /** POST /auth/sessions/{sessionId}/revoke */
   async revokeSession(sessionId: string): Promise<void> {
-    await axiosInstance.post(AUTH_API.revokeSession(sessionId));
+    const id = sessionId.trim();
+    if (!id) {
+      throw new Error('Missing session id for revoke.');
+    }
+    await axiosInstance.post(AUTH_API.revokeSession(encodeURIComponent(id)));
+  },
+
+  /**
+   * Revoke the current browser session.
+   * 1) Resolve id from GET /auth/sessions
+   * 2) POST /auth/sessions/{id}/revoke
+   * 3) Fall back to POST /auth/logout (Swagger: "Revoke the current session")
+   */
+  async revokeCurrentSession(preferredSessionId?: string | null): Promise<void> {
+    let sessionId = preferredSessionId?.trim() || '';
+
+    try {
+      const resolved = await this.resolveCurrentSessionId();
+      if (resolved) sessionId = resolved;
+    } catch {
+      // Keep preferred / JWT session id if list fails.
+    }
+
+    if (sessionId) {
+      try {
+        await this.revokeSession(sessionId);
+        return;
+      } catch (error) {
+        // Fall through to logout — some backends only accept logout for current session.
+        const status = (error as { response?: { status?: number } })?.response?.status;
+        if (status && status !== 404 && status !== 400) {
+          throw error;
+        }
+      }
+    }
+
+    await this.logout();
   },
 
   async changePassword(dto: ChangePasswordDto): Promise<void> {

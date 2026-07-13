@@ -1,0 +1,1 @@
+export { PartyTable } from './PartyTable';

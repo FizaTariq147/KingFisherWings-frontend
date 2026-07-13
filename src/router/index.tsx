@@ -20,8 +20,20 @@ import CostingSearchPage from '../pages/customers/CostingSearchPage'
 import ShipmentTrackingPage from '../pages/customers/ShipmentTrackingPage'
 import  QuotationsMenuPage  from '../pages/quotations/QuotationsMenuPage'
 import AllQuotationsPage from '../pages/quotations/AllQuotationsPage'
-import OnlineTariffMasterPage from '../pages/quotations/OnlineTariffMasterPage'
-import ZipDistanceMasterPage from '../pages/quotations/ZipDistanceMasterPage'
+import {
+  OnlineTariffCreatePage,
+  OnlineTariffDetailPage,
+  OnlineTariffEditPage,
+  OnlineTariffListPage,
+} from '../pages/quotations/OnlineTariffMasterPage'
+import RedirectMastersTariffsToQuotations from '../pages/quotations/RedirectMastersTariffsToQuotations'
+import RedirectMastersZipDistancesToQuotations from '../pages/quotations/RedirectMastersZipDistancesToQuotations'
+import {
+  ZipDistanceCreatePage,
+  ZipDistanceDetailPage,
+  ZipDistanceEditPage,
+  ZipDistanceListPage,
+} from '../pages/quotations/ZipDistanceMasterPage'
 import SalesMenuPage from '../pages/sales/SalesMenuPage'
 import CallSheetPage from '../pages/sales/CallSheetPage'
 import ClientRequestListPage from '../pages/sales/ClientRequestListPage'
@@ -60,8 +72,9 @@ import CcnFwbFhlEdiJobListPage from '../pages/documentation/CcnFwbFhlEdiJobListP
 import CgmEdiVesselListPage from '../pages/documentation/CgmEdiVesselListPage'
 import AirCargoTrackingPage from '../pages/documentation/AirCargoTrackingPage'
 import MastersMenuPage from '../pages/masters/MastersMenuPage'
-
-
+import MasterResourceListPage from '../features/masters/pages/MasterResourceListPage'
+import MasterResourceFormPage from '../features/masters/pages/MasterResourceFormPage'
+import MasterResourceDetailPage from '../features/masters/pages/MasterResourceDetailPage'
 
 import { SuperAdminProtectedRoute } from '../features/superadmin/components/SuperAdminProtectedRoute/SuperAdminProtectedRoute'
 import SuperAdminLoginPage from '../features/superadmin/pages/SuperAdminLoginPage'
@@ -78,6 +91,14 @@ import UserListPage from '../features/users/pages/UserListPage'
 import UserCreatePage from '../features/users/pages/UserCreatePage'
 import UserDetailPage from '../features/users/pages/UserDetailPage'
 import UserEditPage from '../features/users/pages/UserEditPage'
+import PartyListPage from '../features/parties/pages/PartyListPage'
+import PartyCreatePage from '../features/parties/pages/PartyCreatePage'
+import PartyDetailPage from '../features/parties/pages/PartyDetailPage'
+import PartyEditPage from '../features/parties/pages/PartyEditPage'
+import OrganizationShell from '../features/organization/pages/OrganizationShell'
+import OrganizationProfilePage from '../features/organization/pages/OrganizationProfilePage'
+import BankAccountsPage from '../features/organization/pages/BankAccountsPage'
+import NumberFormatsPage from '../features/organization/pages/NumberFormatsPage'
 import { TENANT_USER_MANAGER_ROLE_SLUGS } from '../features/users/constants/userPermissions'
 function Placeholder({ title }: { title: string }) {
   return (
@@ -130,6 +151,28 @@ export const router = createBrowserRouter([
           { path: '/dashboard', element: <DashboardPage /> },
           { path: '/customers', element: <CustomerServiceMenuPage /> },
           { path: '/customers/:id', element: <Placeholder title="Customer Profile" /> },
+          {
+            element: (
+              <ProtectedRoute
+                requireAnyRole={[...TENANT_USER_MANAGER_ROLE_SLUGS]}
+              />
+            ),
+            children: [
+              { path: '/parties', element: <PartyListPage /> },
+              { path: '/parties/new', element: <PartyCreatePage /> },
+              { path: '/parties/:id', element: <PartyDetailPage /> },
+              { path: '/parties/:id/edit', element: <PartyEditPage /> },
+              {
+                path: '/organization',
+                element: <OrganizationShell />,
+                children: [
+                  { index: true, element: <OrganizationProfilePage /> },
+                  { path: 'bank-accounts', element: <BankAccountsPage /> },
+                  { path: 'number-formats', element: <NumberFormatsPage /> },
+                ],
+              },
+            ],
+          },
           { path: '/customer-service/shipments', element: <AllShipmentsPage /> },
           { path: '/customer-service/enquiry-sheet', element: <EnquirySheetPage /> },
           { path: '/customer-service/pricing-dashboard', element: <PricingDashboardPage /> },
@@ -139,8 +182,14 @@ export const router = createBrowserRouter([
           { path: '/customer-service/tracking', element: <ShipmentTrackingPage /> },
           { path: '/quotations', element: <QuotationsMenuPage /> },
           { path: '/quotations/all', element: <AllQuotationsPage /> },
-          { path: '/quotations/tariff-master', element: <OnlineTariffMasterPage /> },
-          { path: '/quotations/zip-distance-master', element: <ZipDistanceMasterPage /> },
+          { path: '/quotations/tariff-master', element: <OnlineTariffListPage /> },
+          { path: '/quotations/tariff-master/new', element: <OnlineTariffCreatePage /> },
+          { path: '/quotations/tariff-master/:id/edit', element: <OnlineTariffEditPage /> },
+          { path: '/quotations/tariff-master/:id', element: <OnlineTariffDetailPage /> },
+          { path: '/quotations/zip-distance-master', element: <ZipDistanceListPage /> },
+          { path: '/quotations/zip-distance-master/new', element: <ZipDistanceCreatePage /> },
+          { path: '/quotations/zip-distance-master/:id/edit', element: <ZipDistanceEditPage /> },
+          { path: '/quotations/zip-distance-master/:id', element: <ZipDistanceDetailPage /> },
           { path: '/jobs/air-export', element: <Placeholder title="Air Export Jobs" /> },
           { path: '/jobs/air-export/new', element: <Placeholder title="New Air Export" /> },
           { path: '/jobs/air-export/:id', element: <Placeholder title="Air Export Detail" /> },
@@ -161,7 +210,28 @@ export const router = createBrowserRouter([
           {path: '/documentation/cargo-tracking-air', element: <AirCargoTrackingPage />},
           
 
-          {path: '/masters', element: <MastersMenuPage />},
+          {
+            element: (
+              <ProtectedRoute
+                requireAnyRole={[...TENANT_USER_MANAGER_ROLE_SLUGS]}
+              />
+            ),
+            children: [
+              { path: '/masters', element: <MastersMenuPage /> },
+              { path: '/masters/tariffs/new', element: <RedirectMastersTariffsToQuotations /> },
+              { path: '/masters/tariffs/:id/edit', element: <RedirectMastersTariffsToQuotations /> },
+              { path: '/masters/tariffs/:id', element: <RedirectMastersTariffsToQuotations /> },
+              { path: '/masters/tariffs', element: <RedirectMastersTariffsToQuotations /> },
+              { path: '/masters/zip-distances/new', element: <RedirectMastersZipDistancesToQuotations /> },
+              { path: '/masters/zip-distances/:id/edit', element: <RedirectMastersZipDistancesToQuotations /> },
+              { path: '/masters/zip-distances/:id', element: <RedirectMastersZipDistancesToQuotations /> },
+              { path: '/masters/zip-distances', element: <RedirectMastersZipDistancesToQuotations /> },
+              { path: '/masters/:resourceKey', element: <MasterResourceListPage /> },
+              { path: '/masters/:resourceKey/new', element: <MasterResourceFormPage /> },
+              { path: '/masters/:resourceKey/:id', element: <MasterResourceDetailPage /> },
+              { path: '/masters/:resourceKey/:id/edit', element: <MasterResourceFormPage /> },
+            ],
+          },
 
           { path: '/management', element: <ManagementMenuPage /> },
           {path: '/management/all-jobs-mis', element: <AllJobMisPage />},
@@ -223,13 +293,6 @@ export const router = createBrowserRouter([
               { path: '/finance', element: <Placeholder title="Finance Dashboard" /> },
               { path: '/invoices', element: <Placeholder title="Invoices" /> },
               { path: '/invoices/:id', element: <Placeholder title="Invoice Detail" /> },
-            ],
-          },
-          {
-            element: <ProtectedRoute requireRole="admin" />,
-            children: [
-              { path: '/masters', element: <Placeholder title="Masters" /> },
-              { path: '/masters/airlines', element: <Placeholder title="Airlines" /> },
             ],
           },
         ],
