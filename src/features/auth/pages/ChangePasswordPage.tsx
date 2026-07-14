@@ -2,6 +2,7 @@ import { useEffect, useState, type InputHTMLAttributes } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { softPasswordField, V, withAppFormDefaults } from '@/lib/validation'
 import { Link, useNavigate } from 'react-router-dom'
 import { AlertCircle, Eye, EyeOff, Loader2, Lock, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -19,19 +20,15 @@ const ORANGE = '#FF751F'
 const schema = z
   .object({
     current_password: z.string().min(1, 'Current password is required'),
-    new_password: z
-      .string()
-      .min(8, 'New password must be at least 8 characters')
-      .regex(/[A-Za-z]/, 'Include at least one letter')
-      .regex(/[0-9]/, 'Include at least one number'),
+    new_password: softPasswordField(8),
     confirm_password: z.string().min(1, 'Confirm your new password'),
   })
   .refine((data) => data.new_password === data.confirm_password, {
-    message: 'Passwords do not match',
+    message: V.passwordMatch,
     path: ['confirm_password'],
   })
   .refine((data) => data.current_password !== data.new_password, {
-    message: 'New password must be different from the current password',
+    message: V.passwordDifferent,
     path: ['new_password'],
   })
 
@@ -74,10 +71,9 @@ export default function ChangePasswordPage() {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<FormValues>({
+  } = useForm<FormValues>(withAppFormDefaults({
     resolver: zodResolver(schema),
-    mode: 'onTouched',
-  })
+  }))
 
   const current = watch('current_password')
   const next = watch('new_password')

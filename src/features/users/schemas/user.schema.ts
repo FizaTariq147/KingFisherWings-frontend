@@ -1,5 +1,12 @@
 import { z } from 'zod';
 import {
+  optionalPhone,
+  optionalText,
+  optionalUrlOrEmpty,
+  requiredEmail,
+  requiredName,
+} from '@/lib/validation';
+import {
   USER_ROLES,
   USER_SORT_FIELDS,
   USER_SORT_ORDERS,
@@ -8,9 +15,8 @@ import {
 
 const officeHoursRegex = /^([01]\d|2[0-3]):[0-5]\d$/;
 
-const optionalUuid = z.string().uuid().optional().or(z.literal(''));
-const optionalUrl = z.string().url().optional().or(z.literal(''));
-const optionalString = z.string().optional().or(z.literal(''));
+const optionalUuidOrEmpty = z.string().uuid().optional().or(z.literal(''));
+const optionalPhoneOrEmpty = z.union([z.literal(''), optionalPhone()]);
 
 const userFlagsSchema = z.object({
   is_salesperson: z.boolean().default(false),
@@ -41,25 +47,24 @@ const userSecuritySchema = z.object({
     .regex(officeHoursRegex, 'Use 24h HH:mm format')
     .optional()
     .or(z.literal('')),
-  office_hours_timezone: z.string().optional().or(z.literal('')),
+  office_hours_timezone: optionalText({ max: 64 }),
   two_factor_enabled: z.boolean().default(false),
   max_concurrent_sessions: z.number().int().min(1).max(20).default(3),
 });
 
 const userOrganizationSchema = z.object({
-  // Optional for Tenant Admin sessions — API scopes by JWT and ignores tenant_id.
   tenant_id: z.string().uuid('Select a tenant workspace').optional().or(z.literal('')),
-  company_id: optionalUuid,
-  branch_id: optionalUuid,
-  department_id: optionalUuid,
+  company_id: optionalUuidOrEmpty,
+  branch_id: optionalUuidOrEmpty,
+  department_id: optionalUuidOrEmpty,
 });
 
 const userBasicSchema = z.object({
-  email: z.string().email('Must be a valid email'),
-  first_name: z.string().min(2, 'At least 2 characters').max(100),
-  last_name: z.string().min(2, 'At least 2 characters').max(100),
-  phone: optionalString,
-  avatar_url: optionalUrl,
+  email: requiredEmail(),
+  first_name: requiredName(),
+  last_name: requiredName(),
+  phone: optionalPhoneOrEmpty.optional(),
+  avatar_url: optionalUrlOrEmpty(),
 });
 
 const userRoleSchema = z.object({
@@ -85,7 +90,7 @@ export const updateUserSchema = createUserSchema
 
 export const updateUserStatusSchema = z.object({
   status: z.enum(USER_STATUSES),
-  reason: z.string().max(255).optional().or(z.literal('')),
+  reason: optionalText({ max: 255 }),
 });
 
 export const userListParamsSchema = z.object({

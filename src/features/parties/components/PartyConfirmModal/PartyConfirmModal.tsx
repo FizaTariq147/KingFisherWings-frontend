@@ -7,6 +7,7 @@ import {
   CREDIT_STATUS_LABELS,
   type CreditStatus,
 } from '../../constants/party.constants';
+import { updateCreditStatusSchema } from '../../schemas/party.schema';
 
 export type PartyConfirmAction =
   | 'delete'
@@ -62,6 +63,7 @@ export function PartyConfirmModal({
 }: PartyConfirmModalProps) {
   const [creditStatus, setCreditStatus] = useState<CreditStatus>('ON_HOLD');
   const [reason, setReason] = useState('');
+  const [creditError, setCreditError] = useState<string | null>(null);
 
   if (action === 'credit_status') {
     return (
@@ -76,12 +78,21 @@ export function PartyConfirmModal({
               Cancel
             </Button>
             <Button
-              onClick={() =>
-                onConfirm({
+              onClick={() => {
+                const parsed = updateCreditStatusSchema.safeParse({
                   credit_status: creditStatus,
                   reason: reason.trim() || undefined,
-                })
-              }
+                });
+                if (!parsed.success) {
+                  setCreditError(parsed.error.issues[0]?.message ?? 'Invalid credit status');
+                  return;
+                }
+                setCreditError(null);
+                onConfirm({
+                  credit_status: parsed.data.credit_status,
+                  reason: parsed.data.reason,
+                });
+              }}
               disabled={isPending}
             >
               {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
@@ -94,12 +105,18 @@ export function PartyConfirmModal({
           <p className="text-sm text-[var(--color-neutral-600)]">
             Update credit status for <strong>{partyName}</strong>.
           </p>
+          {creditError && (
+            <p className="text-xs text-[var(--color-danger-700)]">{creditError}</p>
+          )}
           <label className="block text-xs font-medium text-[var(--color-neutral-500)]">
             Credit status
             <select
               className="mt-1 h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
               value={creditStatus}
-              onChange={(e) => setCreditStatus(e.target.value as CreditStatus)}
+              onChange={(e) => {
+                setCreditStatus(e.target.value as CreditStatus);
+                setCreditError(null);
+              }}
             >
               {CREDIT_STATUSES.map((s) => (
                 <option key={s} value={s}>
@@ -113,7 +130,10 @@ export function PartyConfirmModal({
             <input
               className="mt-1 h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
               value={reason}
-              onChange={(e) => setReason(e.target.value)}
+              onChange={(e) => {
+                setReason(e.target.value);
+                setCreditError(null);
+              }}
               maxLength={255}
               placeholder="e.g. Overdue 90+ days"
             />

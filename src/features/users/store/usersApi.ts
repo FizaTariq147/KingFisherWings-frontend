@@ -55,7 +55,7 @@ export const usersApi = superAdminApi.injectEndpoints({
           return { error: serializeApiError(error) };
         }
       },
-      invalidatesTags: (_result, _error, dto) => [USER_API_TAGS.list(dto.tenant_id)],
+      invalidatesTags: (_result, _error, dto) => [USER_API_TAGS.list(dto.tenant_id || 'unknown')],
     }),
 
     updateUser: builder.mutation<

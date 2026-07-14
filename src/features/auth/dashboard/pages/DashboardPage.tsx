@@ -3,21 +3,16 @@ import { WelcomeBanner } from '../../../../components/dashboard/WelcomeBanner'
 import { QuickAccessToolbar } from '../../../../components/dashboard/QuickAccessToolbar'
 import { DashboardCard } from '../../../../components/dashboard/DashboardCard'
 import { TodoDetailCell } from '../../../../components/dashboard/TodoDetailCell'
+import { CurrentActiveJobsWidget } from '../../../../components/widgets/CurrentActiveJobsWidget'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../../../components/ui/Table'
 import { Badge } from '../../../../components/ui/Badge'
-import type { ShipmentRow, JobRow, InvoiceRow, TodoRow, Priority } from '@/types/dashboard.types'
+import type { ShipmentRow, InvoiceRow, TodoRow, Priority } from '@/types/dashboard.types'
 
 // ── Mock data — typed as drop-in replacements for real API responses ──────
 const activeShipments: ShipmentRow[] = [
   { id: 's1', shipmentNo: 'KFW/AE/06/26/B/00024', client: 'ABDO OTHAM BY AIR SHIPPMENTS MR ABDULLAH', jobNo: 'KFW/AE/06/26/00144', por: 'DXB', pof: 'BAH' },
   { id: 's2', shipmentNo: 'KFW/AE/06/26/B/00023', client: 'ABDO OTHAM BY AIR SHIPPMENTS MR ABDULLAH', jobNo: 'KFW/AE/06/26/00143', por: 'DXB', pof: 'BAH' },
   { id: 's3', shipmentNo: 'KFW/NI/06/26/B/00022', client: 'BPA WORLD LOGISTIC LLC', jobNo: 'KFW/NI/06/26/00140', por: 'PKKHI', pof: 'AEJEA' },
-]
-
-const activeJobs: JobRow[] = [
-  { id: 'j1', jobNo: 'KFW/AE/07/26/00159', client: 'ABDO OTHAM BY AIR SHIPPMENTS MR ABDULLAH', pol: 'DXB', pod: 'BAH', etd: '05-JUL-26', eta: '' },
-  { id: 'j2', jobNo: 'KFW/AI/07/26/00158', client: 'INTELLECT SHIPPING LLC', pol: 'DEL', pod: 'DXB', etd: '01-JUL-26', eta: '02-JUL-26' },
-  { id: 'j3', jobNo: 'KFW/FI/07/26/00157', client: 'INTELLECT SHIPPING LLC', pol: 'INMUN', pod: 'INMUN', etd: '19-MAY-26', eta: '02-JUL-26' },
 ]
 
 const recentInvoices: InvoiceRow[] = [
@@ -84,38 +79,7 @@ export function DashboardPage() {
             </Table>
           </DashboardCard>
 
-          <DashboardCard
-            title="Current Active Jobs"
-            accent="secondary"
-            isLoading={isLoading}
-            isEmpty={!isLoading && activeJobs.length === 0}
-            emptyMessage="No active jobs right now."
-          >
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Job No.</TableHead>
-                  <TableHead>Client</TableHead>
-                  <TableHead>POL</TableHead>
-                  <TableHead>POD</TableHead>
-                  <TableHead>ETD</TableHead>
-                  <TableHead>ETA</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {activeJobs.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell mono className="text-[var(--color-primary)]">{row.jobNo}</TableCell>
-                    <TableCell className="max-w-[220px] truncate"><div title={row.client}>{row.client}</div></TableCell>
-                    <TableCell>{row.pol}</TableCell>
-                    <TableCell>{row.pod}</TableCell>
-                    <TableCell>{row.etd}</TableCell>
-                    <TableCell>{row.eta || '—'}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </DashboardCard>
+          <CurrentActiveJobsWidget />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

@@ -1,19 +1,16 @@
 import { useState } from 'react';
-import { useForm, type Resolver } from 'react-hook-form';
+import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { CountrySelect } from '@/components/ui/CountrySelect';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
+import { resolveLocaleCatalog } from '@/lib/locale';
+import { getServerErrorMessage, useAppForm } from '@/lib/validation';
 import { createPartyAddressSchema } from '../../schemas/party.schema';
 import type { CreatePartyAddressFormValues, PartyAddress } from '../../types/party.types';
 import { usePartyAddressMutations } from '../../hooks/useParties';
-import { getErrorMessage } from '../../utils/getErrorMessage';
-import { loadPartyCountryOptions } from '../../utils/partyCountryOptions';
-
-const selectClass =
-  'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm';
 
 interface PartyAddressesSectionProps {
   partyId: string;
@@ -26,13 +23,7 @@ export function PartyAddressesSection({ partyId, addresses }: PartyAddressesSect
   const [editing, setEditing] = useState<PartyAddress | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const { data: countries = [] } = useQuery({
-    queryKey: ['tenant', 'parties', 'country-options'],
-    queryFn: loadPartyCountryOptions,
-    staleTime: 60_000,
-  });
-
-  const form = useForm<CreatePartyAddressFormValues>({
+  const form = useAppForm<CreatePartyAddressFormValues>({
     resolver: zodResolver(createPartyAddressSchema) as unknown as Resolver<CreatePartyAddressFormValues>,
     defaultValues: { label: '', address_line1: '', country_code: 'AE', is_default: false },
   });
@@ -75,6 +66,8 @@ export function PartyAddressesSection({ partyId, addresses }: PartyAddressesSect
   };
 
   const pending = add.isPending || update.isPending || remove.isPending;
+  const addressCountry = form.watch('country_code') ?? '';
+  const addressLocale = resolveLocaleCatalog(addressCountry || undefined);
 
   return (
     <Card>
@@ -120,7 +113,7 @@ export function PartyAddressesSection({ partyId, addresses }: PartyAddressesSect
                     try {
                       await remove.mutateAsync(a.id);
                     } catch (err) {
-                      setError(getErrorMessage(err));
+                      setError(getServerErrorMessage(err));
                     }
                   }}
                 >
@@ -145,7 +138,7 @@ export function PartyAddressesSection({ partyId, addresses }: PartyAddressesSect
             </Button>
             <Button
               disabled={pending}
-              onClick={form.handleSubmit(async (values) => {
+              onClick={form.handleValidatedSubmit(async (values) => {
                 setError(null);
                 try {
                   if (editing) {
@@ -155,7 +148,7 @@ export function PartyAddressesSection({ partyId, addresses }: PartyAddressesSect
                   }
                   close();
                 } catch (err) {
-                  setError(getErrorMessage(err));
+                  setError(getServerErrorMessage(err));
                 }
               })}
             >
@@ -166,16 +159,17 @@ export function PartyAddressesSection({ partyId, addresses }: PartyAddressesSect
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input label="Label *" {...form.register('label')} error={form.formState.errors.label?.message} />
-          <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1">
-            Country *
-            <select className={selectClass} {...form.register('country_code')}>
-              {countries.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <CountrySelect
+            label="Country"
+            required
+            allowEmpty={false}
+            name="country_code"
+            value={form.watch('country_code') ?? 'AE'}
+            error={form.formState.errors.country_code?.message}
+            onChange={(iso) =>
+              form.setValue('country_code', iso, { shouldValidate: true, shouldDirty: true })
+            }
+          />
           <div className="sm:col-span-2">
             <Input
               label="Address line 1 *"
@@ -188,7 +182,12 @@ export function PartyAddressesSection({ partyId, addresses }: PartyAddressesSect
           </div>
           <Input label="City" {...form.register('city')} />
           <Input label="State" {...form.register('state')} />
-          <Input label="Postal code" {...form.register('postal_code')} />
+          <Input
+            label={addressLocale?.postalLabel ?? 'Postal code'}
+            placeholder={addressLocale?.postalPlaceholder || addressLocale?.postalExample}
+            {...form.register('postal_code')}
+            error={form.formState.errors.postal_code?.message}
+          />
           <label className="flex items-center gap-2 text-sm sm:col-span-2">
             <input type="checkbox" {...form.register('is_default')} /> Default address
           </label>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useForm, type Resolver } from 'react-hook-form';
+import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertCircle, Eye, Plus, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table';
+import { getServerErrorMessage, useAppForm } from '@/lib/validation';
 import {
   DOCUMENT_TYPE_LABELS,
   DOCUMENT_TYPES,
@@ -31,7 +32,6 @@ import {
 } from '../hooks/useNumberFormats';
 import { createNumberFormatSchema } from '../schemas/organization.schema';
 import type { NumberFormat, NumberFormatFormValues } from '../types/organization.types';
-import { getErrorMessage } from '../utils/getErrorMessage';
 import { numberFormatToFormValues } from '../utils/prepareOrganizationPayload';
 
 const selectClass =
@@ -67,9 +67,9 @@ function NumberFormatEditorForm({
 }) {
   const {
     register,
-    handleSubmit,
+    handleValidatedSubmit,
     formState: { errors },
-  } = useForm<NumberFormatFormValues>({
+  } = useAppForm<NumberFormatFormValues>({
     resolver: zodResolver(createNumberFormatSchema) as Resolver<NumberFormatFormValues>,
     defaultValues: { ...CREATE_DEFAULTS, ...defaultValues },
   });
@@ -80,7 +80,7 @@ function NumberFormatEditorForm({
       : DOCUMENT_TYPES.filter((t) => !usedTypes.has(t));
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit((v) => onSubmit(v))}>
+    <form className="space-y-4" onSubmit={handleValidatedSubmit((v) => onSubmit(v))}>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-[var(--color-neutral-600)]">
@@ -208,7 +208,7 @@ export default function NumberFormatsPage() {
       closeEditor();
       setSuccessMessage('Number format created');
     } catch (err) {
-      setActionError(getErrorMessage(err));
+      setActionError(getServerErrorMessage(err));
     }
   };
 
@@ -219,7 +219,7 @@ export default function NumberFormatsPage() {
       closeEditor();
       setSuccessMessage('Number format updated');
     } catch (err) {
-      setActionError(getErrorMessage(err));
+      setActionError(getServerErrorMessage(err));
     }
   };
 
@@ -232,7 +232,7 @@ export default function NumberFormatsPage() {
         [documentType]: result.preview || '—',
       }));
     } catch (err) {
-      setActionError(getErrorMessage(err));
+      setActionError(getServerErrorMessage(err));
     }
   };
 
@@ -286,7 +286,7 @@ export default function NumberFormatsPage() {
         {isError ? (
           <div className="space-y-3 py-4 text-center">
             <p className="text-sm text-[var(--color-danger-700)]">
-              {getErrorMessage(error) || 'Failed to load number formats.'}
+              {getServerErrorMessage(error) || 'Failed to load number formats.'}
             </p>
             <Button type="button" variant="secondary" onClick={() => refetch()}>
               Retry

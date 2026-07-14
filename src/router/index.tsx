@@ -6,6 +6,7 @@ import LoginPage from '../features/auth/pages/LoginPage'
 import ForgotPasswordPage from '../features/auth/pages/ForgotPasswordPage'
 import ResetPasswordPage from '../features/auth/pages/ResetPasswordPage'
 import ChangePasswordPage from '../features/auth/pages/ChangePasswordPage'
+import MyProfilePage from '../features/auth/pages/MyProfilePage'
 import Forbidden from '../pages/errors/Forbidden'
 import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
@@ -19,7 +20,11 @@ import AgentEdiPage from '../pages/customers/AgentEdiPage'
 import CostingSearchPage from '../pages/customers/CostingSearchPage'
 import ShipmentTrackingPage from '../pages/customers/ShipmentTrackingPage'
 import  QuotationsMenuPage  from '../pages/quotations/QuotationsMenuPage'
-import AllQuotationsPage from '../pages/quotations/AllQuotationsPage'
+import QuotationListPage from '../features/quotations/pages/QuotationListPage'
+import QuotationCreatePage from '../features/quotations/pages/QuotationCreatePage'
+import QuotationDetailPage from '../features/quotations/pages/QuotationDetailPage'
+import QuotationEditPage from '../features/quotations/pages/QuotationEditPage'
+import QuotationReportsPage from '../features/quotations/pages/QuotationReportsPage'
 import {
   OnlineTariffCreatePage,
   OnlineTariffDetailPage,
@@ -34,6 +39,14 @@ import {
   ZipDistanceEditPage,
   ZipDistanceListPage,
 } from '../pages/quotations/ZipDistanceMasterPage'
+import JobListPage from '../features/jobs/pages/JobListPage'
+import JobCreatePage from '../features/jobs/pages/JobCreatePage'
+import JobDetailPage from '../features/jobs/pages/JobDetailPage'
+import JobEditPage from '../features/jobs/pages/JobEditPage'
+import AwbStockListPage from '../features/awbStock/pages/AwbStockListPage'
+import AwbStockCreatePage from '../features/awbStock/pages/AwbStockCreatePage'
+import AwbStockDetailPage from '../features/awbStock/pages/AwbStockDetailPage'
+import AwbStockEditPage from '../features/awbStock/pages/AwbStockEditPage'
 import SalesMenuPage from '../pages/sales/SalesMenuPage'
 import CallSheetPage from '../pages/sales/CallSheetPage'
 import ClientRequestListPage from '../pages/sales/ClientRequestListPage'
@@ -181,7 +194,9 @@ export const router = createBrowserRouter([
           { path: '/customer-service/costing-search', element: <CostingSearchPage /> },
           { path: '/customer-service/tracking', element: <ShipmentTrackingPage /> },
           { path: '/quotations', element: <QuotationsMenuPage /> },
-          { path: '/quotations/all', element: <AllQuotationsPage /> },
+          { path: '/quotations/all', element: <QuotationListPage /> },
+          { path: '/quotations/new', element: <QuotationCreatePage /> },
+          { path: '/quotations/reports', element: <QuotationReportsPage /> },
           { path: '/quotations/tariff-master', element: <OnlineTariffListPage /> },
           { path: '/quotations/tariff-master/new', element: <OnlineTariffCreatePage /> },
           { path: '/quotations/tariff-master/:id/edit', element: <OnlineTariffEditPage /> },
@@ -190,15 +205,21 @@ export const router = createBrowserRouter([
           { path: '/quotations/zip-distance-master/new', element: <ZipDistanceCreatePage /> },
           { path: '/quotations/zip-distance-master/:id/edit', element: <ZipDistanceEditPage /> },
           { path: '/quotations/zip-distance-master/:id', element: <ZipDistanceDetailPage /> },
-          { path: '/jobs/air-export', element: <Placeholder title="Air Export Jobs" /> },
-          { path: '/jobs/air-export/new', element: <Placeholder title="New Air Export" /> },
-          { path: '/jobs/air-export/:id', element: <Placeholder title="Air Export Detail" /> },
-          { path: '/jobs/sea-export', element: <Placeholder title="Sea Export Jobs" /> },
-          { path: '/jobs/sea-export/new', element: <Placeholder title="New Sea Export" /> },
-          { path: '/jobs/sea-export/:id', element: <Placeholder title="Sea Export Detail" /> },
-          { path: '/jobs/sea-import', element: <Placeholder title="Sea Import Jobs" /> },
-          { path: '/jobs/sea-import/new', element: <Placeholder title="New Sea Import" /> },
-          { path: '/jobs/sea-import/:id', element: <Placeholder title="Sea Import Detail" /> },
+          { path: '/quotations/:id/edit', element: <QuotationEditPage /> },
+          { path: '/quotations/:id', element: <QuotationDetailPage /> },
+          { path: '/jobs/new', element: <JobCreatePage /> },
+          { path: '/jobs/air-export', element: <JobListPage /> },
+          { path: '/jobs/air-export/new', element: <JobCreatePage /> },
+          { path: '/jobs/air-export/:id/edit', element: <JobEditPage /> },
+          { path: '/jobs/air-export/:id', element: <JobDetailPage /> },
+          { path: '/jobs/sea-export', element: <JobListPage /> },
+          { path: '/jobs/sea-export/new', element: <JobCreatePage /> },
+          { path: '/jobs/sea-export/:id/edit', element: <JobEditPage /> },
+          { path: '/jobs/sea-export/:id', element: <JobDetailPage /> },
+          { path: '/jobs/sea-import', element: <JobListPage /> },
+          { path: '/jobs/sea-import/new', element: <JobCreatePage /> },
+          { path: '/jobs/sea-import/:id/edit', element: <JobEditPage /> },
+          { path: '/jobs/sea-import/:id', element: <JobDetailPage /> },
           { path: '/documentation', element: <DocumentationMenuPage /> },
           {path: '/documentation/all-jobs', element: <AllJobsPageDocumentation />},
           {path: '/documentation/boe-dashboard', element: <BoeDashboardPage />},
@@ -218,6 +239,10 @@ export const router = createBrowserRouter([
             ),
             children: [
               { path: '/masters', element: <MastersMenuPage /> },
+              { path: '/masters/awb-stock-master', element: <AwbStockListPage /> },
+              { path: '/masters/awb-stock-master/new', element: <AwbStockCreatePage /> },
+              { path: '/masters/awb-stock-master/:id/edit', element: <AwbStockEditPage /> },
+              { path: '/masters/awb-stock-master/:id', element: <AwbStockDetailPage /> },
               { path: '/masters/tariffs/new', element: <RedirectMastersTariffsToQuotations /> },
               { path: '/masters/tariffs/:id/edit', element: <RedirectMastersTariffsToQuotations /> },
               { path: '/masters/tariffs/:id', element: <RedirectMastersTariffsToQuotations /> },
@@ -273,7 +298,7 @@ export const router = createBrowserRouter([
             path: '/settings/users/*',
             element: <LegacySettingsUsersRedirect />,
           },
-          { path: '/profile', element: <Placeholder title="My Profile" /> },
+          { path: '/profile', element: <MyProfilePage /> },
           { path: '/notifications', element: <Placeholder title="Notifications" /> },
           { path: '/sales', element: <SalesMenuPage /> },
           {path: '/sales/call-sheet', element: <CallSheetPage />},

@@ -17,6 +17,7 @@ export interface OrganizationProfile {
   website: string;
   address: string;
   city: string;
+  country_code: string;
   phone: string;
   email: string;
   language: string;
@@ -40,6 +41,7 @@ export interface UpdateOrganizationProfileDto {
   website?: string;
   address?: string;
   city?: string;
+  country_code?: string | null;
   phone?: string;
   email?: string;
   language?: string;
@@ -61,6 +63,7 @@ export type OrganizationProfileFormValues = {
   website: string;
   address: string;
   city: string;
+  country_code: string;
   phone: string;
   email: string;
   language: string;

@@ -1,9 +1,14 @@
-import { useForm, type Resolver } from 'react-hook-form';
+import { useEffect, useRef } from 'react';
+import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { CountrySelect } from '@/components/ui/CountrySelect';
 import { Input } from '@/components/ui/Input';
+import { PhoneInput } from '@/components/ui/PhoneInput';
+import { resolveLocaleCatalog } from '@/lib/locale';
+import { useAppForm } from '@/lib/validation';
 import { createCompanySchema, updateCompanySchema } from '../../schemas/company.schema';
 import type { CreateCompanyFormValues, UpdateCompanyFormValues } from '../../types/company.types';
 
@@ -17,6 +22,7 @@ interface CompanyFormProps {
 
 const CREATE_DEFAULTS: Partial<CreateCompanyFormValues> = {
   country_code: 'AE',
+  phone: '',
   is_default: false,
   is_active: true,
   legal_name: '',
@@ -32,7 +38,7 @@ export function CompanyForm({
   submitLabel,
 }: CompanyFormProps) {
   const schema = mode === 'create' ? createCompanySchema : updateCompanySchema;
-  const form = useForm<CreateCompanyFormValues>({
+  const form = useAppForm<CreateCompanyFormValues>({
     resolver: zodResolver(schema) as unknown as Resolver<CreateCompanyFormValues>,
     defaultValues: {
       ...(mode === 'create' ? CREATE_DEFAULTS : {}),
@@ -42,14 +48,30 @@ export function CompanyForm({
 
   const {
     register,
-    handleSubmit,
+    handleValidatedSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = form;
 
   const fieldError = (name: keyof CreateCompanyFormValues) => errors[name]?.message;
+  const countryCode = watch('country_code') ?? '';
+  const phone = watch('phone') ?? '';
+  const locale = resolveLocaleCatalog(countryCode);
+  const skipPhoneClear = useRef(true);
+
+  useEffect(() => {
+    if (skipPhoneClear.current) {
+      skipPhoneClear.current = false;
+      return;
+    }
+    if (!(phone || '').trim()) {
+      setValue('phone', '', { shouldDirty: true });
+    }
+  }, [countryCode, phone, setValue]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleValidatedSubmit(onSubmit)} className="space-y-4">
       <Card>
         <CardHeader className="mb-0 pb-3">
           <CardTitle>Company details</CardTitle>
@@ -71,7 +93,12 @@ export function CompanyForm({
             error={fieldError('registration_number')}
             {...register('registration_number')}
           />
-          <Input label="VAT / TRN" error={fieldError('vat_number')} {...register('vat_number')} />
+          <Input
+            label={locale?.taxIdLabel ?? 'VAT / TRN'}
+            hint={locale?.taxIdExample ? `e.g. ${locale.taxIdExample}` : undefined}
+            error={fieldError('vat_number')}
+            {...register('vat_number')}
+          />
         </Grid>
       </Card>
 
@@ -82,14 +109,30 @@ export function CompanyForm({
         <Grid>
           <Input label="Address" error={fieldError('address')} {...register('address')} />
           <Input label="City" error={fieldError('city')} {...register('city')} />
-          <Input
-            label="Country code"
-            maxLength={2}
-            className="uppercase"
+          <CountrySelect
+            label="Country"
+            required
+            allowEmpty={false}
+            name="country_code"
+            value={countryCode}
             error={fieldError('country_code')}
-            {...register('country_code')}
+            onChange={(iso) => {
+              setValue('country_code', iso, { shouldValidate: true, shouldDirty: true });
+            }}
           />
-          <Input label="Phone" type="tel" error={fieldError('phone')} {...register('phone')} />
+          <PhoneInput
+            label="Phone"
+            required
+            name="phone"
+            value={phone}
+            countryIso={countryCode || undefined}
+            hint={locale ? `Dial ${locale.dialCode}` : 'Any valid international number (+…)'}
+            error={fieldError('phone')}
+            onChange={(v) => setValue('phone', v, { shouldValidate: true, shouldDirty: true })}
+            onCountryChange={(iso) =>
+              setValue('country_code', iso, { shouldValidate: true, shouldDirty: true })
+            }
+          />
           <Input label="Email" type="email" error={fieldError('email')} {...register('email')} />
         </Grid>
       </Card>

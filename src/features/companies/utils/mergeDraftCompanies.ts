@@ -26,7 +26,7 @@ export function mergeDraftCompaniesIntoList(
   let registered = registryCompanies.map((company) => ({ ...company, is_draft: false }));
 
   if (params.status) {
-    registered = filterCompaniesByStatus(registered, params.status) as CompanyListItem[];
+    registered = filterCompaniesByStatus(registered, params.status);
     if (params.status === 'active') {
       drafts = drafts.filter((company) => company.is_active !== false);
     } else if (params.status === 'inactive') {
@@ -36,8 +36,8 @@ export function mergeDraftCompaniesIntoList(
     }
   }
 
-  drafts = filterCompaniesBySearch(drafts, params.search) as CompanyListItem[];
-  registered = filterCompaniesBySearch(registered, params.search) as CompanyListItem[];
+  drafts = filterCompaniesBySearch(drafts, params.search);
+  registered = filterCompaniesBySearch(registered, params.search);
 
   return [...drafts, ...registered].sort((a, b) => a.name.localeCompare(b.name));
 }

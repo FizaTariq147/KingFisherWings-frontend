@@ -1,12 +1,21 @@
-import { useEffect } from 'react';
-import { useForm, type Resolver } from 'react-hook-form';
+import { useEffect, useRef } from 'react';
+import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { ReactNode, SelectHTMLAttributes } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { CountrySelect } from '@/components/ui/CountrySelect';
 import { Input } from '@/components/ui/Input';
+import { PhoneInput } from '@/components/ui/PhoneInput';
+import {
+  applyLocaleFromCountry,
+  resolveLocaleCatalog,
+  type LocaleCatalog,
+} from '@/lib/locale';
 import { cn } from '@/lib/utils';
+import { useAppForm } from '@/lib/validation';
+import { TIMEZONE_OPTIONS } from '@/features/organization/constants/organization.constants';
 import { usePlatformOnboardingStore } from '@/features/platform/store/platformOnboardingStore';
 import { useCompanyRegistry } from '@/features/companies/hooks/useCompanies';
 import { createTenantSchema, updateTenantSchema, SUBSCRIPTION_PLANS, TENANT_STATUSES } from '../../schemas/tenant.schema';
@@ -25,7 +34,8 @@ const CREATE_DEFAULTS: Partial<CreateTenantFormValues> = {
   language: 'en',
   base_currency: 'AED',
   timezone: 'Asia/Dubai',
-  country_code: 'AE',
+  country_code: '',
+  phone: '',
   financial_year_start: 1,
   subscription_plan: 'STANDARD',
   status: 'ACTIVE',
@@ -50,7 +60,7 @@ const selectClass =
 
 export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: TenantFormProps) {
   const schema = mode === 'create' ? createTenantSchema : updateTenantSchema;
-  const form = useForm<CreateTenantFormValues>({
+  const form = useAppForm<CreateTenantFormValues>({
     resolver: zodResolver(schema) as unknown as Resolver<CreateTenantFormValues>,
     defaultValues: {
       ...(mode === 'create' ? CREATE_DEFAULTS : {}),
@@ -60,8 +70,9 @@ export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: Tena
 
   const {
     register,
-    handleSubmit,
+    handleValidatedSubmit,
     setValue,
+    getValues,
     watch,
     formState: { errors },
   } = form;
@@ -71,12 +82,55 @@ export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: Tena
   const registryCompanies = companiesData?.companies ?? [];
   const companies = [...draftCompanies, ...registryCompanies];
   const selectedCompanyId = watch('selected_company_id');
+  const countryCode = watch('country_code') ?? '';
+  const phone = watch('phone') ?? '';
+  const timezone = watch('timezone') ?? '';
   const isDraftSelection = draftCompanies.some((company) => company.id === selectedCompanyId);
+  const locale = resolveLocaleCatalog(countryCode);
+  const prevLocaleRef = useRef<LocaleCatalog | null>(null);
+  const skipLocaleApply = useRef(true);
 
   useEffect(() => {
     if (mode !== 'create' || draftCompanies.length === 0 || selectedCompanyId) return;
     applyCompanyToTenantForm(draftCompanies[0], setValue);
   }, [mode, draftCompanies, selectedCompanyId, setValue]);
+
+  // Locale catalog resolve only when country_code is set.
+  useEffect(() => {
+    if (skipLocaleApply.current) {
+      skipLocaleApply.current = false;
+      prevLocaleRef.current = countryCode ? resolveLocaleCatalog(countryCode) : null;
+      return;
+    }
+    if (!countryCode) {
+      prevLocaleRef.current = null;
+      return;
+    }
+    const current = getValues();
+    const applied = applyLocaleFromCountry(countryCode, {
+      previousCatalog: prevLocaleRef.current,
+      current: {
+        base_currency: current.base_currency,
+        timezone: current.timezone,
+        language: current.language,
+      },
+      applyLanguage: true,
+    });
+    if (!applied) return;
+    prevLocaleRef.current = applied.catalog;
+    if (applied.base_currency) {
+      setValue('base_currency', applied.base_currency, { shouldDirty: true, shouldValidate: true });
+    }
+    if (applied.timezone) {
+      setValue('timezone', applied.timezone, { shouldDirty: true, shouldValidate: true });
+    }
+    if (applied.language) {
+      setValue('language', applied.language, { shouldDirty: true, shouldValidate: true });
+    }
+    if (!(current.phone || '').trim()) {
+      setValue('phone', '', { shouldDirty: true });
+    }
+  }, [countryCode, getValues, setValue]);
 
   const handleCompanySelect = (companyId: string) => {
     const draft = draftCompanies.find((company) => company.id === companyId);
@@ -97,7 +151,7 @@ export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: Tena
     errors[name]?.message;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleValidatedSubmit(onSubmit)} className="space-y-4">
       <Card>
         <CardHeader className="mb-0 pb-3">
           <CardTitle>1. Basic Information</CardTitle>
@@ -265,19 +319,59 @@ export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: Tena
             />
           </Grid>
           <Grid cols={4}>
-            <Input
-              label="Country code"
-              maxLength={2}
-              className="uppercase"
+            <CountrySelect
+              label="Country"
+              allowEmpty
+              name="country_code"
+              value={countryCode}
+              hint="Optional — sets dial, currency, timezone, and tax patterns when selected"
               error={fieldError('country_code')}
-              {...register('country_code')}
+              onChange={(iso) =>
+                setValue('country_code', iso, { shouldValidate: true, shouldDirty: true })
+              }
             />
-            <Input label="Currency" error={fieldError('base_currency')} {...register('base_currency')} />
-            <Input label="Timezone" error={fieldError('timezone')} {...register('timezone')} />
+            <Input
+              label="Base currency"
+              hint={
+                locale
+                  ? `Suggested for ${locale.iso2}: ${locale.defaultCurrency}`
+                  : 'Set independently when no country is selected'
+              }
+              error={fieldError('base_currency')}
+              {...register('base_currency')}
+            />
+            {locale ? (
+              <FormSelect label="Timezone" error={fieldError('timezone')} {...register('timezone')}>
+                {locale.timezones.map((tz) => (
+                  <option key={tz} value={tz}>
+                    {tz}
+                  </option>
+                ))}
+                {timezone && !locale.timezones.includes(timezone) ? (
+                  <option value={timezone}>{timezone} (current)</option>
+                ) : null}
+              </FormSelect>
+            ) : (
+              <FormSelect label="Timezone" error={fieldError('timezone')} {...register('timezone')}>
+                {TIMEZONE_OPTIONS.map((tz) => (
+                  <option key={tz} value={tz}>
+                    {tz}
+                  </option>
+                ))}
+                {timezone && !TIMEZONE_OPTIONS.includes(timezone as (typeof TIMEZONE_OPTIONS)[number]) ? (
+                  <option value={timezone}>{timezone} (current)</option>
+                ) : null}
+              </FormSelect>
+            )}
             <Input label="Language" error={fieldError('language')} {...register('language')} />
           </Grid>
           <Grid>
-            <Input label="VAT / TRN" {...register('vat_number')} />
+            <Input
+              label={locale?.taxIdLabel ?? 'VAT / Tax number'}
+              hint={locale?.taxIdExample ? `e.g. ${locale.taxIdExample}` : undefined}
+              error={fieldError('vat_number')}
+              {...register('vat_number')}
+            />
             <Input label="CR number" {...register('cr_number')} />
             <Input
               label="Financial year start (month)"
@@ -299,7 +393,18 @@ export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: Tena
           <Grid>
             <Input label="Address" error={fieldError('address')} {...register('address')} />
             <Input label="City" error={fieldError('city')} {...register('city')} />
-            <Input label="Phone" type="tel" error={fieldError('phone')} {...register('phone')} />
+            <PhoneInput
+              label="Phone"
+              required
+              name="phone"
+              value={phone}
+              countryIso={countryCode || undefined}
+              error={fieldError('phone')}
+              onChange={(v) => setValue('phone', v, { shouldValidate: true, shouldDirty: true })}
+              onCountryChange={(iso) =>
+                setValue('country_code', iso, { shouldValidate: true, shouldDirty: true })
+              }
+            />
           </Grid>
         </div>
       </Card>

@@ -1,15 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 import { MoreVertical, Eye, Pencil, Trash2, Power, PowerOff } from 'lucide-react';
-import type { Company } from '../../types/company.types';
+import type { CompanyListItem } from '../../utils/mergeDraftCompanies';
 
 interface CompanyActionMenuProps {
-  company: Company;
+  company: CompanyListItem;
   disabled?: boolean;
-  onView: (c: Company) => void;
-  onEdit: (c: Company) => void;
-  onDelete: (c: Company) => void;
-  onActivate?: (c: Company) => void;
-  onDeactivate?: (c: Company) => void;
+  onView: (c: CompanyListItem) => void;
+  onEdit: (c: CompanyListItem) => void;
+  onDelete: (c: CompanyListItem) => void;
+  onActivate?: (c: CompanyListItem) => void;
+  onDeactivate?: (c: CompanyListItem) => void;
 }
 
 export function CompanyActionMenu({

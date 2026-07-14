@@ -31,10 +31,24 @@ export function useMasterDetail(resourceKey: string, basePath: string, id: strin
 }
 
 /** Compact list for select dropdowns. */
-export function useMasterOptions(resourceKey: string, basePath: string, enabled = true) {
+export function useMasterOptions(
+  resourceKey: string,
+  basePath: string,
+  enabled = true,
+  /** When true, include inactive rows (e.g. departments must list everything). */
+  includeInactive = false,
+) {
   return useQuery({
-    queryKey: masterKeys.options(resourceKey),
+    queryKey: [...masterKeys.options(resourceKey), includeInactive ? 'all' : 'active'] as const,
     queryFn: async () => {
+      if (includeInactive) {
+        return (
+          await masterService.list(basePath, {
+            page: 1,
+            limit: 500,
+          })
+        ).items;
+      }
       // Prefer active rows; if none, fall back to any so dependent selects are usable.
       const active = await masterService.list(basePath, {
         page: 1,

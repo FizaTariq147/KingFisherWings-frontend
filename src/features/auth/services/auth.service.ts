@@ -9,6 +9,7 @@ import type {
   RefreshTokenDto,
   TenantChangePasswordDto,
   TenantLoginDto,
+  UpdateMeDto,
 } from '../types/auth.api.types';
 import {
   normalizeAuthLoginResponse,
@@ -143,6 +144,23 @@ export const authService = {
 
   async me(): Promise<AuthMeResponse> {
     const { data } = await axiosInstance.get<unknown>(AUTH_API.me);
+    if (data && typeof data === 'object' && 'data' in data) {
+      const envelope = data as { data: unknown };
+      if (envelope.data && typeof envelope.data === 'object') {
+        return envelope.data as AuthMeResponse;
+      }
+    }
+    return (data ?? {}) as AuthMeResponse;
+  },
+
+  /** PATCH /auth/me — staff user locale preference (preferred_country_code). */
+  async updateMe(dto: UpdateMeDto): Promise<AuthMeResponse> {
+    const body: UpdateMeDto = {};
+    if ('preferred_country_code' in dto) {
+      const cc = String(dto.preferred_country_code ?? '').trim().toUpperCase();
+      body.preferred_country_code = cc || null;
+    }
+    const { data } = await axiosInstance.patch<unknown>(AUTH_API.me, body);
     if (data && typeof data === 'object' && 'data' in data) {
       const envelope = data as { data: unknown };
       if (envelope.data && typeof envelope.data === 'object') {

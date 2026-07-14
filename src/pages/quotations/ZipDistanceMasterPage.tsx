@@ -1,30 +1,23 @@
-import MasterResourceListPage from '@/features/masters/pages/MasterResourceListPage';
-import MasterResourceFormPage from '@/features/masters/pages/MasterResourceFormPage';
-import MasterResourceDetailPage from '@/features/masters/pages/MasterResourceDetailPage';
-import type { MasterPageRouteProps } from '@/features/masters/hooks/useMasterPageRoute';
+import FeatureZipDistanceListPage from '@/features/zipDistances/pages/ZipDistanceListPage';
+import FeatureZipDistanceCreatePage from '@/features/zipDistances/pages/ZipDistanceCreatePage';
+import FeatureZipDistanceDetailPage from '@/features/zipDistances/pages/ZipDistanceDetailPage';
+import FeatureZipDistanceEditPage from '@/features/zipDistances/pages/ZipDistanceEditPage';
 
-const zipRoute: MasterPageRouteProps = {
-  resourceKey: 'zip-distances',
-  routePrefix: '/quotations/zip-distance-master',
-  backHref: '/quotations',
-  backLabel: 'Quotations',
-};
-
-/** Quotations → Zip Distance Master (same API as Masters → zip-distances). */
+/** Quotations → Zip Distance Master — dedicated feature module. */
 export function ZipDistanceListPage() {
-  return <MasterResourceListPage {...zipRoute} />;
+  return <FeatureZipDistanceListPage />;
 }
 
 export function ZipDistanceCreatePage() {
-  return <MasterResourceFormPage {...zipRoute} />;
+  return <FeatureZipDistanceCreatePage />;
 }
 
 export function ZipDistanceDetailPage() {
-  return <MasterResourceDetailPage {...zipRoute} />;
+  return <FeatureZipDistanceDetailPage />;
 }
 
 export function ZipDistanceEditPage() {
-  return <MasterResourceFormPage {...zipRoute} />;
+  return <FeatureZipDistanceEditPage />;
 }
 
 /** @deprecated Prefer named pages; kept for older imports. */

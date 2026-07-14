@@ -4,6 +4,8 @@ export function prepareMasterPayload(
 ): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(values)) {
+    // Internal form helpers (e.g. _selected_currency_code) are never sent to the API.
+    if (key.startsWith('_')) continue;
     if (value === undefined || value === null) continue;
 
     // Swagger: applicable_modes is string[] (ShipmentMode)

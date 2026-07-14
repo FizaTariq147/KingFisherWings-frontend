@@ -73,7 +73,7 @@ function normalizeCompany(raw: Record<string, unknown>): Company {
 
 function normalizeCompanies(raw: unknown): Company[] {
   if (!Array.isArray(raw)) return [];
-  return raw.map((item) => normalizeCompany(item as Record<string, unknown>));
+  return raw.map((item) => normalizeCompany(item as unknown as Record<string, unknown>));
 }
 
 function buildListQuery(params: CompanyListParams): Record<string, string | number | boolean> {
@@ -135,7 +135,7 @@ export const companyService = {
     const res = await superAdminApiClient.get<ApiEnvelope<Company>>(COMPANY_API.byId(id), {
       ...tenantHeaders(tenantId),
     });
-    return normalizeCompany((res.data?.data ?? res.data) as Record<string, unknown>);
+    return normalizeCompany((res.data?.data ?? res.data) as unknown as Record<string, unknown>);
   },
 
   async create(tenantId: string, dto: CreateCompanyDto): Promise<Company> {
@@ -146,7 +146,7 @@ export const companyService = {
       prepareCompanyPayload(dto),
       tenantHeaders(tenantId),
     );
-    return normalizeCompany((res.data?.data ?? res.data) as Record<string, unknown>);
+    return normalizeCompany((res.data?.data ?? res.data) as unknown as Record<string, unknown>);
   },
 
   async update(tenantId: string, id: string, dto: UpdateCompanyDto): Promise<Company> {
@@ -158,7 +158,7 @@ export const companyService = {
       prepareCompanyPayload(dto),
       tenantHeaders(tenantId),
     );
-    return normalizeCompany((res.data?.data ?? res.data) as Record<string, unknown>);
+    return normalizeCompany((res.data?.data ?? res.data) as unknown as Record<string, unknown>);
   },
 
   /** DELETE /companies/{id} — Soft-delete (blocked if only company or currently default). Returns 204. */

@@ -68,7 +68,7 @@ export const companyRegistryService = {
   async list(params: CompanyListParams = {}): Promise<CompanyRegistryResult> {
     // Soft-deleted companies are omitted from GET /companies — Deleted tab uses local registry.
     if (params.status === 'deleted') {
-      let companies = listRememberedDeletedCompanies() as RegistryCompany[];
+      let companies = listRememberedDeletedCompanies() as unknown as RegistryCompany[];
       companies = filterCompaniesBySearch(companies, params.search);
       companies.sort((a, b) => a.name.localeCompare(b.name));
       const page = params.page ?? 1;

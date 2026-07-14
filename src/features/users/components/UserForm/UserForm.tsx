@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { useForm, type Resolver } from 'react-hook-form';
+import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { PhoneInput } from '@/components/ui/PhoneInput';
+import { useAppForm } from '@/lib/validation';
 import { ASSIGNABLE_USER_ROLES } from '../../constants/user.constants';
 import {
   USER_FUNCTIONAL_FLAGS,
@@ -80,7 +82,7 @@ export function UserForm({
   const schema = mode === 'create' ? createUserSchema : updateUserSchema;
   const { data: companies = [] } = useTenantCompanies(!!tenantId);
 
-  const form = useForm<CreateUserFormValues>({
+  const form = useAppForm<CreateUserFormValues>({
     resolver: zodResolver(schema) as unknown as Resolver<CreateUserFormValues>,
     defaultValues: {
       ...FORM_DEFAULTS,
@@ -91,7 +93,9 @@ export function UserForm({
 
   const {
     register,
-    handleSubmit,
+    handleValidatedSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = form;
 
@@ -102,8 +106,9 @@ export function UserForm({
   );
 
   const fieldError = (name: keyof CreateUserFormValues) => errors[name]?.message;
+  const phone = watch('phone') ?? '';
 
-  const handleFormSubmit = handleSubmit((values) => {
+  const handleFormSubmit = handleValidatedSubmit((values) => {
     onSubmit({
       ...values,
       ...(mode === 'create'
@@ -135,7 +140,14 @@ export function UserForm({
           <Input label="Email" type="email" error={fieldError('email')} {...register('email')} />
           <Input label="First name" error={fieldError('first_name')} {...register('first_name')} />
           <Input label="Last name" error={fieldError('last_name')} {...register('last_name')} />
-          <Input label="Phone" type="tel" error={fieldError('phone')} {...register('phone')} />
+          <PhoneInput
+            label="Phone"
+            name="phone"
+            value={phone}
+            countryIso="AE"
+            error={fieldError('phone')}
+            onChange={(v) => setValue('phone', v, { shouldValidate: true, shouldDirty: true })}
+          />
         </Grid>
         {mode === 'create' && (
           <p className="mt-3 text-xs text-[var(--color-neutral-500)]">

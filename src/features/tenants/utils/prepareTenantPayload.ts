@@ -48,6 +48,9 @@ const OPTIONAL_STRING_FIELDS = [
   'company_registration_number',
 ] as const;
 
+/** Sent as `null` when cleared in the form (PATCH clearable fields). */
+const CLEARABLE_NULL_FIELDS = new Set(['country_code']);
+
 const DATE_FIELDS = ['trial_ends', 'subscription_ends'] as const;
 
 const ENUM_FIELDS = ['subscription_plan', 'status'] as const;
@@ -58,6 +61,10 @@ export function prepareTenantPayload<T extends Record<string, unknown>>(dto: T):
 
   for (const [key, value] of Object.entries(dto as Record<string, unknown>)) {
     if (!ALLOWED_TENANT_FIELDS.has(key)) continue;
+    if (CLEARABLE_NULL_FIELDS.has(key) && (value === '' || value == null)) {
+      out[key] = null;
+      continue;
+    }
     out[key] = value;
   }
 
@@ -76,6 +83,7 @@ export function prepareTenantPayload<T extends Record<string, unknown>>(dto: T):
 
   for (const key of Object.keys(out)) {
     const value = out[key];
+    if (CLEARABLE_NULL_FIELDS.has(key) && value === null) continue;
     if (value === '' || value === null || value === undefined) {
       delete out[key];
     }

@@ -82,6 +82,7 @@ export function normalizeOrganizationProfile(raw: unknown): OrganizationProfile 
     website: str(data.website),
     address: str(data.address),
     city: str(data.city),
+    country_code: str(data.country_code ?? data.countryCode).toUpperCase(),
     phone: str(data.phone),
     email: str(data.email),
     language: str(data.language, 'en'),

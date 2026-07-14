@@ -1,7 +1,8 @@
-import { useForm, type Resolver } from 'react-hook-form';
+import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { useAppForm } from '@/lib/validation';
 import { CURRENCY_OPTIONS } from '../../constants/organization.constants';
 import { createBankAccountSchema } from '../../schemas/organization.schema';
 import type { BankAccountFormValues } from '../../types/organization.types';
@@ -38,9 +39,9 @@ export function BankAccountForm({
 }: BankAccountFormProps) {
   const {
     register,
-    handleSubmit,
+    handleValidatedSubmit,
     formState: { errors },
-  } = useForm<BankAccountFormValues>({
+  } = useAppForm<BankAccountFormValues>({
     resolver: zodResolver(createBankAccountSchema) as Resolver<BankAccountFormValues>,
     defaultValues: { ...DEFAULTS, ...defaultValues },
   });
@@ -48,7 +49,7 @@ export function BankAccountForm({
   return (
     <form
       className="space-y-4"
-      onSubmit={handleSubmit(async (values) => {
+      onSubmit={handleValidatedSubmit(async (values) => {
         await onSubmit(values);
       })}
     >

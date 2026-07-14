@@ -61,7 +61,7 @@ export const tenantService = {
       TENANT_API.list,
       prepareTenantPayload(dto),
     );
-    return normalizeTenant(res.data.data as Record<string, unknown>);
+    return normalizeTenant(res.data.data as unknown as Record<string, unknown>);
   },
 
   /** GET /tenants — query: search (Swagger); status/page/sort applied client-side */
@@ -135,7 +135,7 @@ export const tenantService = {
     }
     try {
       const res = await superAdminApiClient.get<ApiEnvelope<Tenant>>(TENANT_API.byId(id));
-      const tenant = normalizeTenant(res.data.data as Record<string, unknown>);
+      const tenant = normalizeTenant(res.data.data as unknown as Record<string, unknown>);
       const [enriched] = await enrichTenantListMetrics([tenant]);
       return enriched;
     } catch (error) {
@@ -151,7 +151,7 @@ export const tenantService = {
       TENANT_API.byId(id),
       prepareTenantPayload(dto),
     );
-    return normalizeTenant(res.data.data as Record<string, unknown>);
+    return normalizeTenant(res.data.data as unknown as Record<string, unknown>);
   },
 
   /** DELETE /tenants/{id} — Soft delete tenant. */
@@ -176,7 +176,7 @@ export const tenantService = {
     }
     const res = await superAdminApiClient.patch<ApiEnvelope<Tenant>>(TENANT_API.restore(id));
     forgetDeletedTenant(id);
-    const tenant = normalizeTenant((res.data?.data ?? { id }) as Record<string, unknown>);
+    const tenant = normalizeTenant((res.data?.data ?? { id }) as unknown as Record<string, unknown>);
     return {
       ...tenant,
       id: tenant.id || id,
@@ -187,13 +187,13 @@ export const tenantService = {
   /** PATCH /tenants/{id}/activate */
   async activate(id: string): Promise<Tenant> {
     const res = await superAdminApiClient.patch<ApiEnvelope<Tenant>>(TENANT_API.activate(id));
-    return normalizeTenant(res.data.data as Record<string, unknown>);
+    return normalizeTenant(res.data.data as unknown as Record<string, unknown>);
   },
 
   /** PATCH /tenants/{id}/deactivate */
   async deactivate(id: string): Promise<Tenant> {
     const res = await superAdminApiClient.patch<ApiEnvelope<Tenant>>(TENANT_API.deactivate(id));
-    return normalizeTenant(res.data.data as Record<string, unknown>);
+    return normalizeTenant(res.data.data as unknown as Record<string, unknown>);
   },
 };
 

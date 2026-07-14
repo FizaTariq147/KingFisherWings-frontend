@@ -1,11 +1,20 @@
-import { useForm, type Resolver } from 'react-hook-form';
+import { useEffect, useRef } from 'react';
+import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { CountrySelect } from '@/components/ui/CountrySelect';
 import { Input } from '@/components/ui/Input';
+import { PhoneInput } from '@/components/ui/PhoneInput';
 import { isUuid } from '@/lib/isUuid';
+import {
+  applyLocaleFromCountry,
+  resolveLocaleCatalog,
+  type LocaleCatalog,
+} from '@/lib/locale';
 import { axiosInstance } from '@/lib/axios';
+import { useAppForm } from '@/lib/validation';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import {
   PARTY_TYPES,
@@ -13,7 +22,6 @@ import {
 } from '../../constants/party.constants';
 import { createPartySchema, updatePartySchema } from '../../schemas/party.schema';
 import type { CreatePartyFormValues, UpdatePartyFormValues } from '../../types/party.types';
-import { loadPartyCountryOptions } from '../../utils/partyCountryOptions';
 import { loadPartyCurrencyOptions } from '../../utils/partyCurrencyOptions';
 
 const selectClass =
@@ -59,12 +67,6 @@ export function PartyForm({
   const schema = mode === 'create' ? createPartySchema : updatePartySchema;
   const { data: companies = [] } = useTenantCompanies(true);
 
-  const { data: countries = [] } = useQuery({
-    queryKey: ['tenant', 'parties', 'country-options'],
-    queryFn: loadPartyCountryOptions,
-    staleTime: 60_000,
-  });
-
   const { data: currencies = [] } = useQuery({
     queryKey: ['tenant', 'parties', 'currency-options'],
     queryFn: loadPartyCurrencyOptions,
@@ -99,7 +101,7 @@ export function PartyForm({
     staleTime: 60_000,
   });
 
-  const form = useForm<CreatePartyFormValues>({
+  const form = useAppForm<CreatePartyFormValues>({
     resolver: zodResolver(schema) as unknown as Resolver<CreatePartyFormValues>,
     defaultValues: {
       ...FORM_DEFAULTS,
@@ -109,14 +111,44 @@ export function PartyForm({
 
   const {
     register,
-    handleSubmit,
+    handleValidatedSubmit,
     watch,
     setValue,
+    getValues,
     formState: { errors },
   } = form;
 
   const partyType = watch('party_type');
   const tagsText = (watch('tags') ?? []).join(', ');
+  const countryCode = watch('country_code') ?? '';
+  const phone = watch('phone') ?? '';
+  const locale = resolveLocaleCatalog(countryCode);
+  const prevLocaleRef = useRef<LocaleCatalog | null>(null);
+  const skipLocaleApply = useRef(true);
+
+  useEffect(() => {
+    if (!countryCode) return;
+    if (skipLocaleApply.current) {
+      skipLocaleApply.current = false;
+      prevLocaleRef.current = resolveLocaleCatalog(countryCode);
+      return;
+    }
+    const current = getValues();
+    const applied = applyLocaleFromCountry(countryCode, {
+      previousCatalog: prevLocaleRef.current,
+      current: { base_currency: current.currency_code },
+      applyTimezone: false,
+      applyLanguage: false,
+    });
+    if (!applied) return;
+    prevLocaleRef.current = applied.catalog;
+    if (applied.base_currency) {
+      setValue('currency_code', applied.base_currency, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    }
+  }, [countryCode, getValues, setValue]);
 
   const fieldError = (name: keyof CreatePartyFormValues) => {
     const err = errors[name];
@@ -126,7 +158,7 @@ export function PartyForm({
   return (
     <form
       className="space-y-4"
-      onSubmit={handleSubmit(async (values) => {
+      onSubmit={handleValidatedSubmit(async (values) => {
         await onSubmit(values);
       })}
     >
@@ -162,7 +194,12 @@ export function PartyForm({
               ))}
             </select>
           </label>
-          <Input label="VAT number" {...register('vat_number')} />
+          <Input
+            label={locale?.taxIdLabel ?? 'VAT number'}
+            hint={locale?.taxIdExample ? `e.g. ${locale.taxIdExample}` : undefined}
+            error={fieldError('vat_number')}
+            {...register('vat_number')}
+          />
           <Input label="CR number" {...register('cr_number')} />
         </div>
       </Card>
@@ -172,20 +209,15 @@ export function PartyForm({
           <CardTitle>Location & contact</CardTitle>
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
-          <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1">
-            Country
-            <select className={selectClass} {...register('country_code')}>
-              <option value="">Select…</option>
-              {countries.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-            {fieldError('country_code') && (
-              <span className="text-[var(--color-danger-600)]">{fieldError('country_code')}</span>
-            )}
-          </label>
+          <CountrySelect
+            label="Country"
+            name="country_code"
+            value={countryCode}
+            error={fieldError('country_code')}
+            onChange={(iso) =>
+              setValue('country_code', iso, { shouldValidate: true, shouldDirty: true })
+            }
+          />
           <Input label="City" {...register('city')} />
           <div className="sm:col-span-2">
             <label className="text-xs font-medium text-[var(--color-neutral-500)]">Address</label>
@@ -194,7 +226,19 @@ export function PartyForm({
               {...register('address')}
             />
           </div>
-          <Input label="Phone" {...register('phone')} />
+          <PhoneInput
+            label="Phone"
+            name="phone"
+            value={phone}
+            countryIso={countryCode || undefined}
+            error={fieldError('phone')}
+            onChange={(v) => setValue('phone', v, { shouldValidate: true, shouldDirty: true })}
+            onCountryChange={(iso) => {
+              if (!countryCode) {
+                setValue('country_code', iso, { shouldValidate: true, shouldDirty: true });
+              }
+            }}
+          />
           <Input label="Email" error={fieldError('email')} {...register('email')} />
         </div>
       </Card>
@@ -220,6 +264,10 @@ export function PartyForm({
             Currency
             <select className={selectClass} {...register('currency_code')}>
               <option value="">Select…</option>
+              {!locale?.defaultCurrency ||
+              currencies.some((c) => c.value === locale.defaultCurrency) ? null : (
+                <option value={locale.defaultCurrency}>{locale.defaultCurrency}</option>
+              )}
               {currencies.map((c) => (
                 <option key={c.value} value={c.value}>
                   {c.label}

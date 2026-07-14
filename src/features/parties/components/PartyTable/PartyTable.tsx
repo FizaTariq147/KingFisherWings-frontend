@@ -57,7 +57,7 @@ export function PartyTable({
             <TableHead>Country</TableHead>
             <TableHead>Credit</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead className="w-12" />
+            <TableHead className="w-12">{' '}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

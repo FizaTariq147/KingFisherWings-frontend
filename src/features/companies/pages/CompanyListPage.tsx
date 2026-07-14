@@ -203,7 +203,7 @@ export default function CompanyListPage() {
             onDelete={handleDelete}
             onActivate={handleActivate}
             onDeactivate={handleDeactivate}
-            onContinueSetup={(c) => navigate('/superadmin/tenants/new')}
+            onContinueSetup={() => navigate('/superadmin/tenants/new')}
             detailPath={(id) => {
               const company = companies.find((c) => c.id === id);
               if (!company || company.is_draft) return '/superadmin/companies/new';

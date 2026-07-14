@@ -1,0 +1,1 @@
+export { JobCargoPanel } from './JobCargoPanel';

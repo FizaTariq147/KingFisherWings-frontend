@@ -45,6 +45,11 @@ export function prepareProfilePayload(
   const city = trimOrOmit(values.city);
   if (city) payload.city = city;
 
+  if ('country_code' in values) {
+    const cc = trimOrOmit(values.country_code);
+    payload.country_code = cc ? cc.toUpperCase() : null;
+  }
+
   const phone = trimOrOmit(values.phone);
   if (phone) payload.phone = phone;
 
@@ -185,6 +190,7 @@ export function profileToFormValues(
     website: profile.website,
     address: profile.address,
     city: profile.city,
+    country_code: profile.country_code ?? '',
     phone: profile.phone,
     email: profile.email,
     language: profile.language || 'en',

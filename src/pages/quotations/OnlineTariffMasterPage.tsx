@@ -1,30 +1,23 @@
-import MasterResourceListPage from '@/features/masters/pages/MasterResourceListPage';
-import MasterResourceFormPage from '@/features/masters/pages/MasterResourceFormPage';
-import MasterResourceDetailPage from '@/features/masters/pages/MasterResourceDetailPage';
-import type { MasterPageRouteProps } from '@/features/masters/hooks/useMasterPageRoute';
+import TariffListPage from '@/features/tariffs/pages/TariffListPage';
+import TariffCreatePage from '@/features/tariffs/pages/TariffCreatePage';
+import TariffDetailPage from '@/features/tariffs/pages/TariffDetailPage';
+import TariffEditPage from '@/features/tariffs/pages/TariffEditPage';
 
-const tariffRoute: MasterPageRouteProps = {
-  resourceKey: 'tariffs',
-  routePrefix: '/quotations/tariff-master',
-  backHref: '/quotations',
-  backLabel: 'Quotations',
-};
-
-/** Quotations → Online Tariff Master (same API as Masters → tariffs). */
+/** Quotations → Online Tariff Master — dedicated feature module. */
 export function OnlineTariffListPage() {
-  return <MasterResourceListPage {...tariffRoute} />;
+  return <TariffListPage />;
 }
 
 export function OnlineTariffCreatePage() {
-  return <MasterResourceFormPage {...tariffRoute} />;
+  return <TariffCreatePage />;
 }
 
 export function OnlineTariffDetailPage() {
-  return <MasterResourceDetailPage {...tariffRoute} />;
+  return <TariffDetailPage />;
 }
 
 export function OnlineTariffEditPage() {
-  return <MasterResourceFormPage {...tariffRoute} />;
+  return <TariffEditPage />;
 }
 
 /** @deprecated Prefer named pages; kept for older imports. */

@@ -2,10 +2,10 @@ import type { Company } from '../types/company.types';
 
 export type CompanyStatusFilter = 'active' | 'inactive' | 'deleted';
 
-export function filterCompaniesByStatus(
-  companies: Company[],
+export function filterCompaniesByStatus<T extends Company>(
+  companies: T[],
   status: CompanyStatusFilter,
-): Company[] {
+): T[] {
   switch (status) {
     case 'active':
       return companies.filter((c) => !c.deleted_at && c.is_active);
@@ -18,7 +18,7 @@ export function filterCompaniesByStatus(
   }
 }
 
-export function filterCompaniesBySearch(companies: Company[], search?: string): Company[] {
+export function filterCompaniesBySearch<T extends Company>(companies: T[], search?: string): T[] {
   const q = search?.trim().toLowerCase();
   if (!q) return companies;
 
@@ -30,8 +30,8 @@ export function filterCompaniesBySearch(companies: Company[], search?: string): 
   );
 }
 
-export function paginateCompanies(
-  companies: Company[],
+export function paginateCompanies<T extends Company>(
+  companies: T[],
   page: number,
   limit: number,
 ) {

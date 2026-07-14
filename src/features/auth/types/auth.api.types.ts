@@ -85,5 +85,11 @@ export interface AuthMeResponse {
   role?: string | { id?: string; name?: string; slug?: string };
   permissions?: string[];
   product?: string;
+  preferred_country_code?: string | null;
+  preferredCountryCode?: string | null;
   [key: string]: unknown;
+}
+
+export interface UpdateMeDto {
+  preferred_country_code?: string | null;
 }

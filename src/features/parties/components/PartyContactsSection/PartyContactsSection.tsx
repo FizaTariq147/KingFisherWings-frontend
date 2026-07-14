@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { useForm, type Resolver } from 'react-hook-form';
+import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
+import { PhoneInput } from '@/components/ui/PhoneInput';
+import { getServerErrorMessage, useAppForm } from '@/lib/validation';
 import { createPartyContactSchema } from '../../schemas/party.schema';
 import type { CreatePartyContactFormValues, PartyContact } from '../../types/party.types';
 import { usePartyContactMutations } from '../../hooks/useParties';
-import { getErrorMessage } from '../../utils/getErrorMessage';
 
 interface PartyContactsSectionProps {
   partyId: string;
@@ -21,7 +22,7 @@ export function PartyContactsSection({ partyId, contacts }: PartyContactsSection
   const [editing, setEditing] = useState<PartyContact | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const form = useForm<CreatePartyContactFormValues>({
+  const form = useAppForm<CreatePartyContactFormValues>({
     resolver: zodResolver(createPartyContactSchema) as unknown as Resolver<CreatePartyContactFormValues>,
     defaultValues: { name: '', is_primary: false },
   });
@@ -98,7 +99,7 @@ export function PartyContactsSection({ partyId, contacts }: PartyContactsSection
                     try {
                       await remove.mutateAsync(c.id);
                     } catch (err) {
-                      setError(getErrorMessage(err));
+                      setError(getServerErrorMessage(err));
                     }
                   }}
                 >
@@ -123,7 +124,7 @@ export function PartyContactsSection({ partyId, contacts }: PartyContactsSection
             </Button>
             <Button
               disabled={pending}
-              onClick={form.handleSubmit(async (values) => {
+              onClick={form.handleValidatedSubmit(async (values) => {
                 setError(null);
                 try {
                   if (editing) {
@@ -133,7 +134,7 @@ export function PartyContactsSection({ partyId, contacts }: PartyContactsSection
                   }
                   close();
                 } catch (err) {
-                  setError(getErrorMessage(err));
+                  setError(getServerErrorMessage(err));
                 }
               })}
             >
@@ -145,8 +146,22 @@ export function PartyContactsSection({ partyId, contacts }: PartyContactsSection
         <div className="space-y-3">
           <Input label="Name *" {...form.register('name')} error={form.formState.errors.name?.message} />
           <Input label="Designation" {...form.register('designation')} />
-          <Input label="Phone" {...form.register('phone')} />
-          <Input label="Mobile" {...form.register('mobile')} />
+          <PhoneInput
+            label="Phone"
+            name="phone"
+            value={form.watch('phone') ?? ''}
+            countryIso="AE"
+            error={form.formState.errors.phone?.message}
+            onChange={(v) => form.setValue('phone', v, { shouldValidate: true, shouldDirty: true })}
+          />
+          <PhoneInput
+            label="Mobile"
+            name="mobile"
+            value={form.watch('mobile') ?? ''}
+            countryIso="AE"
+            error={form.formState.errors.mobile?.message}
+            onChange={(v) => form.setValue('mobile', v, { shouldValidate: true, shouldDirty: true })}
+          />
           <Input label="Email" {...form.register('email')} error={form.formState.errors.email?.message} />
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" {...form.register('is_primary')} /> Primary contact

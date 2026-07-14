@@ -32,9 +32,9 @@ export const mastersMenu: MenuTile[] = [
   { id: 'units-of-measure', title: 'Units of Measure', description: 'UOM codes and categories.', icon: Ruler, iconColor: 'bg-slate-500', path: '/masters/units-of-measure' },
   { id: 'vessels', title: 'Vessel List', description: 'To maintain vessel details such as name, IMO, type and flag.', icon: ShipWheel, iconColor: 'bg-blue-500', path: '/masters/vessels' },
   { id: 'warehouses', title: 'Warehouses', description: 'Warehouse locations and capacity.', icon: Warehouse, iconColor: 'bg-teal-500', path: '/masters/warehouses' },
+  { id: 'awb-stock-master', title: 'AWB Stock Master', description: 'To maintain airline AWB number stock and generate a series of numbers.', icon: Barcode, iconColor: 'bg-sky-500', path: '/masters/awb-stock-master' },
 
   // No Master API yet — keep tiles as placeholders
-  { id: 'awb-stock-master', title: 'AWB Stock Master', description: 'To maintain airline AWB number stock and generate a series of numbers.', icon: Barcode, iconColor: 'bg-sky-500', path: '/masters/awb-stock-master' },
   { id: 'activity-master', title: 'Activity Master', description: 'To maintain all the activities like container activity, documentation, customer service and etc.', icon: Activity, iconColor: 'bg-teal-500', path: '/masters/activity-master' },
   { id: 'address-search', title: 'Address Search', description: 'To maintain address details for all the master address where ever we need such as area, building no, street and type of', icon: Home, iconColor: 'bg-emerald-400', path: '/masters/address-search' },
   { id: 'attachments-search', title: 'Attachments Search', description: 'To maintain all the Job & shipments related documents such as IATA code, VAT no, TIN no and etc.', icon: Paperclip, iconColor: 'bg-green-500', path: '/masters/attachments-search' },

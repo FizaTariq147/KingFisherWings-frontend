@@ -2,7 +2,7 @@ export type { CreateCompanyFormValues, UpdateCompanyFormValues } from '../schema
 import type { CreateCompanyFormValues, UpdateCompanyFormValues } from '../schemas/company.schema';
 
 export type CreateCompanyDto = CreateCompanyFormValues;
-export type UpdateCompanyDto = UpdateCompanyFormValues;
+export type UpdateCompanyDto = Partial<UpdateCompanyFormValues>;
 
 export interface Company extends CreateCompanyFormValues {
   id: string;
