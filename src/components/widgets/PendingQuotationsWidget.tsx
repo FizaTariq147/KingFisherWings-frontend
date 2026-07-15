@@ -1,28 +1,42 @@
+import { useQuery } from '@tanstack/react-query';
 import { FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PENDING_QUOTATION_STATUSES } from '@/features/quotations/constants/quotation.constants';
-import { useQuotations } from '@/features/quotations/hooks/useQuotations';
+import { quotationService } from '@/features/quotations/services/quotation.service';
 
 export default function PendingQuotationsWidget() {
-  const { data, isLoading } = useQuotations({
-    page: 1,
-    limit: 100,
-    order: 'desc',
-  });
+  const { data, isLoading } = useQuery({
+    queryKey: ['quotations', 'pending-widget', PENDING_QUOTATION_STATUSES],
+    queryFn: async () => {
+      const pages = await Promise.all(
+        PENDING_QUOTATION_STATUSES.map((status) =>
+          quotationService.list({ page: 1, limit: 1, status, order: 'desc' }),
+        ),
+      );
+      const totalPending = pages.reduce((sum, page) => sum + (page.meta.total || 0), 0);
 
-  const quotations = data?.quotations ?? [];
-  const pending = quotations.filter((q) =>
-    PENDING_QUOTATION_STATUSES.includes(q.status),
-  );
-  const now = Date.now();
-  const in48h = 48 * 60 * 60 * 1000;
-  const expiring = pending.filter((q) => {
-    if (!q.valid_until) return false;
-    const ts = Date.parse(q.valid_until);
-    if (Number.isNaN(ts)) return false;
-    const delta = ts - now;
-    return delta >= 0 && delta <= in48h;
-  }).length;
+      // Sample recent pending rows for “expiring within 48h”
+      const samples = await Promise.all(
+        PENDING_QUOTATION_STATUSES.map((status) =>
+          quotationService.list({ page: 1, limit: 20, status, order: 'desc' }),
+        ),
+      );
+      const now = Date.now();
+      const in48h = 48 * 60 * 60 * 1000;
+      const expiring = samples
+        .flatMap((p) => p.quotations)
+        .filter((q) => {
+          if (!q.valid_until) return false;
+          const ts = Date.parse(q.valid_until);
+          if (Number.isNaN(ts)) return false;
+          const delta = ts - now;
+          return delta >= 0 && delta <= in48h;
+        }).length;
+
+      return { totalPending, expiring };
+    },
+    staleTime: 60_000,
+  });
 
   return (
     <Link
@@ -45,11 +59,11 @@ export default function PendingQuotationsWidget() {
       ) : (
         <>
           <div className="text-2xl font-bold text-[var(--color-neutral-900)] leading-none">
-            {pending.length}
+            {data?.totalPending ?? 0}
           </div>
-          {expiring > 0 && (
+          {(data?.expiring ?? 0) > 0 && (
             <div className="mt-2 text-[11px] font-medium text-[var(--color-warning-700)]">
-              {expiring} expiring within 48h
+              {data?.expiring} expiring within 48h
             </div>
           )}
         </>

@@ -5,13 +5,13 @@ import {
   Menu,
   Bell,
   BookOpen,
-  Search,
   UserCircle,
   HelpCircle,
   ChevronDown,
   LogOut,
   Loader2,
   KeyRound,
+  Shield,
 } from 'lucide-react'
 import { useUIStore } from '@/store/uiStore'
 import { useAuthStore } from '@/store/authStore'
@@ -19,6 +19,7 @@ import {
   isTenantUserManagerRole,
   resolveAuthRoleSlug,
 } from '@/features/users/constants/userPermissions'
+import { GlobalSearch } from '@/features/search/components/GlobalSearch'
 
 interface TopbarProps {
   companyName?: string
@@ -129,14 +130,25 @@ export function Topbar({
           <BookOpen size={20} />
         </ActionButton>
 
-        <ActionButton label="Search" className="hidden md:flex">
-          <Search size={20} />
-        </ActionButton>
+        {isAuthenticated ? <GlobalSearch /> : null}
 
-        <span className="hidden md:flex items-center gap-1.5 max-w-[8rem] lg:max-w-[12rem] min-w-0">
-          <UserCircle size={20} className="shrink-0" />
-          <span className="truncate">{user?.name ?? 'User'}</span>
-        </span>
+        {isAuthenticated && (
+          <Link
+            to="/profile"
+            className="hidden md:flex items-center gap-1.5 max-w-[8rem] lg:max-w-[12rem] min-w-0 hover:opacity-80"
+            aria-label="My profile"
+            title="My profile"
+          >
+            <UserCircle size={20} className="shrink-0" />
+            <span className="truncate">{user?.name ?? 'User'}</span>
+          </Link>
+        )}
+        {!isAuthenticated && (
+          <span className="hidden md:flex items-center gap-1.5 max-w-[8rem] lg:max-w-[12rem] min-w-0">
+            <UserCircle size={20} className="shrink-0" />
+            <span className="truncate">User</span>
+          </span>
+        )}
 
         <button type="button" className="hidden xl:flex items-center gap-1 hover:opacity-80 shrink-0">
           <HelpCircle size={20} />
@@ -152,6 +164,18 @@ export function Topbar({
           >
             <KeyRound size={18} />
             <span className="hidden lg:inline">{passwordLabel}</span>
+          </Link>
+        )}
+
+        {isAuthenticated && (
+          <Link
+            to="/settings/sessions"
+            className="hidden lg:flex items-center gap-1.5 hover:opacity-80 shrink-0"
+            aria-label="Sessions"
+            title="Active sessions"
+          >
+            <Shield size={18} />
+            <span className="hidden xl:inline">Sessions</span>
           </Link>
         )}
 

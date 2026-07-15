@@ -49,7 +49,7 @@ export default function ZipDistanceCreatePage() {
           setError(null);
           try {
             const created = await create.mutateAsync(values as CreateZipDistanceFormValues);
-            navigate(`${ZIP_DISTANCE_ROUTE_PREFIX}/${created.id}`);
+            navigate(ZIP_DISTANCE_ROUTE_PREFIX, { state: { createdZipDistance: created } });
           } catch (err) {
             setError(getErrorMessage(err));
           }

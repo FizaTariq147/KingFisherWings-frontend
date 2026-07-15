@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { StoredFileLink } from '@/features/files/components/StoredFileLink';
+import { useFileDownload } from '@/features/files/hooks/useFileDownload';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -38,6 +40,23 @@ const GENERATORS = [
   { key: 'job-card', label: 'Job card', fn: 'generateJobCard' as const },
   { key: 'job-pnl', label: 'Job P&L', fn: 'generateJobPnl' as const },
   { key: 'proforma', label: 'Proforma invoice', fn: 'generateProformaInvoice' as const },
+  { key: 'delivery-order', label: 'Delivery order', fn: 'generateDeliveryOrder' as const },
+  { key: 'pre-can', label: 'Pre-CAN', fn: 'generatePreCan' as const },
+  { key: 'can', label: 'CAN', fn: 'generateCan' as const },
+  { key: 'exchange', label: 'Exchange letter', fn: 'generateExchangeLetter' as const },
+  { key: 'undertake', label: 'Undertake letter', fn: 'generateUndertakeLetter' as const },
+  { key: 'transport', label: 'Transport request', fn: 'generateTransportRequest' as const },
+  { key: 'shipping-advice', label: 'Shipping advice', fn: 'generateShippingAdvice' as const },
+  { key: 'pod-doc', label: 'Proof of delivery', fn: 'generateProofOfDelivery' as const },
+  { key: 'e-awb', label: 'E-AWB', fn: 'generateEAwb' as const },
+  { key: 'barcode', label: 'Barcode label', fn: 'generateBarcodeLabel' as const },
+  { key: 'consignee-label', label: 'Consignee label', fn: 'generateConsigneeLabel' as const },
+  { key: 'job-costing', label: 'Job costing', fn: 'generateJobCosting' as const },
+  {
+    key: 'freight-cert',
+    label: 'Freight certificate',
+    fn: 'generateFreightCertificate' as const,
+  },
 ];
 
 export function JobDocumentsPanel({ jobId }: JobDocumentsPanelProps) {
@@ -53,6 +72,10 @@ export function JobDocumentsPanel({ jobId }: JobDocumentsPanelProps) {
   const [fileUrl, setFileUrl] = useState('');
   const [preAlertEmail, setPreAlertEmail] = useState('');
   const [preAlertMsg, setPreAlertMsg] = useState('');
+  const [scheduleAt, setScheduleAt] = useState('');
+  const [whatsAppPhone, setWhatsAppPhone] = useState('');
+  const [whatsAppMsg, setWhatsAppMsg] = useState('');
+  const fileDownload = useFileDownload();
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
     setError(null);
@@ -91,6 +114,7 @@ export function JobDocumentsPanel({ jobId }: JobDocumentsPanelProps) {
                 id: string;
                 document_type?: string;
                 file_name?: string;
+                file_url?: string;
                 status?: string;
                 is_finalized?: boolean;
               };
@@ -106,7 +130,28 @@ export function JobDocumentsPanel({ jobId }: JobDocumentsPanelProps) {
                       {d.is_finalized ? ' · Final' : ''}
                     </p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
+                    {d.file_url && (
+                      <>
+                        <StoredFileLink
+                          url={d.file_url}
+                          label="View"
+                          displayName={d.file_name}
+                          className="text-sm text-[var(--color-primary-600)] underline"
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="secondary"
+                          disabled={fileDownload.isPending}
+                          onClick={() =>
+                            void fileDownload.downloadStoredFile(d.file_url!, d.file_name)
+                          }
+                        >
+                          Download
+                        </Button>
+                      </>
+                    )}
                     {!d.is_finalized && (
                       <>
                         <Button
@@ -131,7 +176,11 @@ export function JobDocumentsPanel({ jobId }: JobDocumentsPanelProps) {
                           size="sm"
                           onClick={() =>
                             run(
-                              () => docs.finalizeDocument.mutateAsync(d.id),
+                              () =>
+                                docs.finalizeDocument.mutateAsync({
+                                  documentId: d.id,
+                                  dto: { is_finalized: true },
+                                }),
                               'Document finalized.',
                             )
                           }
@@ -224,21 +273,85 @@ export function JobDocumentsPanel({ jobId }: JobDocumentsPanelProps) {
             value={preAlertMsg}
             onChange={(e) => setPreAlertMsg(e.target.value)}
           />
+          <Input
+            type="datetime-local"
+            placeholder="Schedule at"
+            value={scheduleAt}
+            onChange={(e) => setScheduleAt(e.target.value)}
+          />
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              disabled={!preAlertEmail || actions.sendPreAlert.isPending}
+              onClick={() =>
+                run(
+                  () =>
+                    actions.sendPreAlert.mutateAsync({
+                      to_email: preAlertEmail,
+                      message: preAlertMsg || undefined,
+                    }),
+                  'Pre-alert sent.',
+                )
+              }
+            >
+              Send pre-alert
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={
+                !preAlertEmail || !scheduleAt || actions.schedulePreAlert.isPending
+              }
+              onClick={() =>
+                run(
+                  () =>
+                    actions.schedulePreAlert.mutateAsync({
+                      to_email: preAlertEmail,
+                      scheduled_at: new Date(scheduleAt).toISOString(),
+                      message: preAlertMsg || undefined,
+                    }),
+                  'Pre-alert scheduled.',
+                )
+              }
+            >
+              Schedule pre-alert
+            </Button>
+          </div>
+        </div>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>WhatsApp status</CardTitle>
+        </CardHeader>
+        <div className="px-4 pb-4 grid gap-2 sm:grid-cols-2">
+          <Input
+            placeholder="Phone (+971…)"
+            value={whatsAppPhone}
+            onChange={(e) => setWhatsAppPhone(e.target.value)}
+          />
+          <Input
+            placeholder="Message *"
+            value={whatsAppMsg}
+            onChange={(e) => setWhatsAppMsg(e.target.value)}
+          />
           <Button
             type="button"
-            disabled={!preAlertEmail || actions.sendPreAlert.isPending}
+            disabled={
+              !whatsAppPhone || !whatsAppMsg || actions.sendWhatsAppStatus.isPending
+            }
             onClick={() =>
               run(
                 () =>
-                  actions.sendPreAlert.mutateAsync({
-                    to_email: preAlertEmail,
-                    message: preAlertMsg || undefined,
+                  actions.sendWhatsAppStatus.mutateAsync({
+                    to_phone: whatsAppPhone.trim(),
+                    message: whatsAppMsg.trim(),
                   }),
-                'Pre-alert sent.',
+                'WhatsApp status sent.',
               )
             }
           >
-            Send pre-alert
+            Send WhatsApp status
           </Button>
         </div>
       </Card>

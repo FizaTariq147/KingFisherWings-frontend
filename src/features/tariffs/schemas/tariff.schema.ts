@@ -50,6 +50,17 @@ export const createTariffSchema = z
         message: 'Valid to must be on or after valid from',
       });
     }
+    if (
+      data.origin_port_id &&
+      data.dest_port_id &&
+      data.origin_port_id === data.dest_port_id
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['dest_port_id'],
+        message: 'Destination must differ from origin',
+      });
+    }
   });
 
 export const updateTariffSchema = z
@@ -74,6 +85,17 @@ export const updateTariffSchema = z
         code: 'custom',
         path: ['valid_to'],
         message: 'Valid to must be on or after valid from',
+      });
+    }
+    if (
+      data.origin_port_id &&
+      data.dest_port_id &&
+      data.origin_port_id === data.dest_port_id
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['dest_port_id'],
+        message: 'Destination must differ from origin',
       });
     }
   });

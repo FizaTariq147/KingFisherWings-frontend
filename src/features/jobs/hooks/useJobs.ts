@@ -20,6 +20,12 @@ export const jobKeys = {
   cutoffs: (id: string) => [...jobKeys.all, 'cutoffs', id] as const,
   billsOfLading: (id: string) => [...jobKeys.all, 'bills-of-lading', id] as const,
   stuffing: (id: string) => [...jobKeys.all, 'stuffing', id] as const,
+  deposits: (id: string) => [...jobKeys.all, 'deposits', id] as const,
+  freeDays: (id: string) => [...jobKeys.all, 'free-days', id] as const,
+  damageReports: (id: string) => [...jobKeys.all, 'damage-reports', id] as const,
+  partDeliveries: (id: string) => [...jobKeys.all, 'part-deliveries', id] as const,
+  pods: (id: string) => [...jobKeys.all, 'pods', id] as const,
+  subJobs: (id: string) => [...jobKeys.all, 'sub-jobs', id] as const,
 };
 
 export function useInvalidateJobs() {
@@ -184,6 +190,73 @@ export function useJobContainersFill(id: string, enabled = true) {
   return useQuery({
     queryKey: jobKeys.containersFill(id),
     queryFn: () => jobService.listContainersFill(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+export function useJobContainerFill(
+  id: string,
+  containerId: string,
+  enabled = true,
+) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: [...jobKeys.containersFill(id), containerId] as const,
+    queryFn: () => jobService.getContainerFill(id, containerId),
+    enabled: Boolean(accessToken) && isUuid(id) && isUuid(containerId) && enabled,
+  });
+}
+
+export function useJobDeposits(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.deposits(id),
+    queryFn: () => jobService.listDeposits(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+export function useJobFreeDays(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.freeDays(id),
+    queryFn: () => jobService.listFreeDays(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+export function useJobDamageReports(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.damageReports(id),
+    queryFn: () => jobService.listDamageReports(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+export function useJobPartDeliveries(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.partDeliveries(id),
+    queryFn: () => jobService.listPartDeliveries(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+export function useJobPods(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.pods(id),
+    queryFn: () => jobService.listPods(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+export function useJobSubJobs(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.subJobs(id),
+    queryFn: () => jobService.listSubJobs(id),
     enabled: Boolean(accessToken) && isUuid(id) && enabled,
   });
 }

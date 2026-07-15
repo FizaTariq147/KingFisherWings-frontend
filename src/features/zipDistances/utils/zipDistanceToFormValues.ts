@@ -1,9 +1,12 @@
 import type { CreateZipDistanceFormValues, ZipDistance } from '../types/zipDistance.types';
 
-export const ZIP_DISTANCE_FORM_DEFAULTS: CreateZipDistanceFormValues = {
+/** Create defaults leave required fields empty so validation runs on submit. */
+export const ZIP_DISTANCE_FORM_DEFAULTS: Partial<CreateZipDistanceFormValues> = {
   from_zip: '',
+  from_city: undefined,
   to_zip: '',
-  distance: 0,
+  to_city: undefined,
+  distance: undefined,
   unit: 'KM',
   is_active: true,
 };

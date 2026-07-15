@@ -50,9 +50,7 @@ type FormValues = StaffFormValues
 type LoginMode = 'tenant_admin' | 'staff'
 
 function defaultDeviceName(): string {
-  if (typeof navigator === 'undefined') return 'Web'
-  const ua = navigator.userAgent || 'Web'
-  return ua.slice(0, 120)
+  return 'Web'
 }
 
 // -------------------------------------------------------------------------
@@ -426,7 +424,8 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
         tenant_slug: values.tenant_slug,
         email: values.email,
         password: values.password,
-        remember_me: values.remember_me ?? true,
+        // Same optional fields Swagger typically leaves empty unless checked.
+        ...(values.remember_me ? { remember_me: true } : {}),
         device_name,
       })
     } else {
@@ -435,7 +434,7 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
       await loginTenant({
         tenant_slug: values.tenant_slug,
         password: values.password,
-        remember_me: values.remember_me ?? true,
+        ...(values.remember_me ? { remember_me: true } : {}),
         device_name,
       })
     }

@@ -83,6 +83,7 @@ export default function QuotationEditPage() {
             navigate(`/quotations/${id}`);
           } catch (err) {
             setFormError(getErrorMessage(err));
+            throw err;
           }
         }}
       />

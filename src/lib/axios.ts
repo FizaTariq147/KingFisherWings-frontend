@@ -18,6 +18,7 @@ const AUTH_PUBLIC_URLS = [
   '/auth/refresh',
   '/auth/super-admin/login',
   '/auth/super-admin/signup',
+  '/health',
 ]
 
 /** Logout needs Bearer — do not strip Authorization. Still skip 401 refresh retry. */
@@ -40,10 +41,13 @@ function isAuthNoRefreshRetryUrl(url?: string): boolean {
 // ── Request: attach access token (never on public login/refresh) ───────────
 axiosInstance.interceptors.request.use(async (config) => {
   if (isAuthPublicUrl(config.url)) {
-    // Login/refresh must be unauthenticated — a leftover Bearer can break credential checks.
+    // Login/refresh must be unauthenticated — leftover Bearer/Cookie can break
+    // credential checks or crash Auth (Swagger Try-it-out does not send these).
     if (config.headers) {
       delete config.headers.Authorization
       delete config.headers.authorization
+      delete config.headers.Cookie
+      delete config.headers.cookie
     }
     return config
   }

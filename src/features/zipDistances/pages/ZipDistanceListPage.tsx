@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AlertCircle, Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -30,9 +30,11 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 
 export default function ZipDistanceListPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [pinnedCreated, setPinnedCreated] = useState<ZipDistance | null>(null);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<'all' | 'active' | 'inactive'>('all');
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -41,6 +43,15 @@ export default function ZipDistanceListPage() {
     action: ZipDistanceConfirmAction;
     item: ZipDistance;
   } | null>(null);
+
+  useEffect(() => {
+    const created = (location.state as { createdZipDistance?: ZipDistance } | null)
+      ?.createdZipDistance;
+    if (!created) return;
+    setPinnedCreated(created);
+    setActionMessage('Zip distance created.');
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.state, location.pathname, navigate]);
 
   const debouncedSearch = useDebouncedValue(search, 300);
   useEffect(() => {
@@ -59,7 +70,12 @@ export default function ZipDistanceListPage() {
   const setActive = useSetZipDistanceActive();
   const remove = useDeleteZipDistance();
 
-  const items = data?.items ?? [];
+  const items = useMemo(() => {
+    const list = data?.items ?? [];
+    if (!pinnedCreated) return list;
+    if (list.some((z) => z.id === pinnedCreated.id)) return list;
+    return [pinnedCreated, ...list];
+  }, [data?.items, pinnedCreated]);
   const meta = data?.meta;
 
   const run = async (item: ZipDistance, fn: () => Promise<unknown>) => {

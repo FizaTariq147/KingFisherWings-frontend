@@ -7,6 +7,11 @@ export interface LoginDto {
   password: string;
   remember_me?: boolean;
   device_name?: string;
+  /** Optional when MAC allow-list is configured. */
+  mac_address?: string;
+  /** Optional when 2FA is enabled. */
+  totp_code?: string;
+  backup_code?: string;
 }
 
 /** POST /auth/tenant-login — Tenant admin: tenant slug + tenant password (no email) */
@@ -41,8 +46,8 @@ export interface SuperAdminLoginDto {
 export interface SuperAdminSignupDto {
   email: string;
   password: string;
-  first_name?: string;
-  last_name?: string;
+  first_name: string;
+  last_name: string;
 }
 
 /** Normalized token pair after login/refresh. */

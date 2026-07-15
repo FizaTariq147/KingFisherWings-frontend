@@ -16,6 +16,7 @@ import {
 } from '../../constants/tariff.constants';
 import { createTariffSchema, updateTariffSchema } from '../../schemas/tariff.schema';
 import type { CreateTariffFormValues, UpdateTariffFormValues } from '../../types/tariff.types';
+import { buildTariffDemoValues } from '../../utils/tariffDemoData';
 import { TARIFF_FORM_DEFAULTS } from '../../utils/tariffToFormValues';
 
 const selectClass =
@@ -43,6 +44,7 @@ export function TariffForm({
 }: TariffFormProps) {
   const schema = mode === 'create' ? createTariffSchema : updateTariffSchema;
   const { data: ports = [] } = useMasterOptions('ports', MASTER_PATHS.ports, true);
+  const { data: airports = [] } = useMasterOptions('airports', MASTER_PATHS.airports, true);
   const { data: containers = [] } = useMasterOptions(
     'container-types',
     MASTER_PATHS['container-types'],
@@ -74,28 +76,73 @@ export function TariffForm({
 
   const {
     register,
-    handleSubmit,
-    formState: { errors },
+    handleValidatedSubmit,
+    reset,
+    watch,
+    formState: { errors, isSubmitted, isValid },
   } = useAppForm<CreateTariffFormValues>({
     resolver: zodResolver(schema) as Resolver<CreateTariffFormValues>,
     defaultValues: { ...TARIFF_FORM_DEFAULTS, ...defaultValues },
   });
 
+  const serviceType = watch('service_type');
+  const isAir = String(serviceType ?? '').startsWith('AIR_');
+
   const fieldError = (name: keyof CreateTariffFormValues) =>
     errors[name]?.message as string | undefined;
 
-  const portOptions = ports
-    .filter((p) => isUuid(String(p.id)))
-    .map((p) => ({
-      value: String(p.id),
-      label: [p.code, p.name].filter(Boolean).join(' — ') || String(p.id),
-    }));
+  const showFormErrors = isSubmitted && !isValid;
+
+  const locationRows = (isAir && airports.length > 0 ? airports : ports).filter((p) =>
+    isUuid(String(p.id)),
+  );
+  const locationOptions = locationRows.map((p) => ({
+    value: String(p.id),
+    label: [p.code, p.name].filter(Boolean).join(' — ') || String(p.id),
+  }));
+
+  const fillDemo = () => {
+    const chargeCodeId = chargeCodes.map((c) => String(c.id)).find((id) => isUuid(id));
+    if (!chargeCodeId) return;
+    reset(
+      buildTariffDemoValues({
+        chargeCodeId,
+        // Do not send optional FKs on create — backend often 500s on bad/mismatched refs.
+        // Lane fields can be edited after create.
+        currencyCode: String(currencies[0]?.value ?? 'AED'),
+      }),
+    );
+  };
+
+  const uuidSelect = {
+    setValueAs: (v: unknown) => {
+      if (v == null) return undefined;
+      const s = String(v).trim();
+      return s && isUuid(s) ? s : undefined;
+    },
+  };
 
   return (
     <form
-      onSubmit={handleSubmit((values) => onSubmit(values))}
+      onSubmit={handleValidatedSubmit(async (values) => {
+        await onSubmit(values);
+      })}
       className="space-y-4 max-w-4xl"
+      noValidate
     >
+      {showFormErrors && (
+        <div
+          role="alert"
+          className="rounded-lg border px-3 py-2 text-sm"
+          style={{
+            background: 'var(--color-danger-100)',
+            borderColor: '#FECACA',
+            color: 'var(--color-danger-700)',
+          }}
+        >
+          Please fix the highlighted fields before saving.
+        </div>
+      )}
       <Card>
         <CardHeader>
           <CardTitle>Basic information</CardTitle>
@@ -118,7 +165,7 @@ export function TariffForm({
             <label className="text-xs font-medium text-[var(--color-neutral-500)]">
               Charge code *
             </label>
-            <select className={selectClass} {...register('charge_code_id')}>
+            <select className={selectClass} {...register('charge_code_id', uuidSelect)}>
               <option value="">Select…</option>
               {chargeCodes
                 .filter((c) => isUuid(String(c.id)))
@@ -134,7 +181,7 @@ export function TariffForm({
             <label className="text-xs font-medium text-[var(--color-neutral-500)]">
               Customer (optional — omit for general rate)
             </label>
-            <select className={selectClass} {...register('customer_id')}>
+            <select className={selectClass} {...register('customer_id', uuidSelect)}>
               <option value="">All customers</option>
               {customers.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -157,11 +204,11 @@ export function TariffForm({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">
             <label className="text-xs font-medium text-[var(--color-neutral-500)]">
-              Origin port
+              {isAir ? 'Origin airport' : 'Origin port'}
             </label>
-            <select className={selectClass} {...register('origin_port_id')}>
+            <select className={selectClass} {...register('origin_port_id', uuidSelect)}>
               <option value="">Select…</option>
-              {portOptions.map((o) => (
+              {locationOptions.map((o) => (
                 <option key={o.value} value={o.value}>
                   {o.label}
                 </option>
@@ -170,22 +217,23 @@ export function TariffForm({
           </div>
           <div className="space-y-1">
             <label className="text-xs font-medium text-[var(--color-neutral-500)]">
-              Destination port
+              {isAir ? 'Destination airport' : 'Destination port'}
             </label>
-            <select className={selectClass} {...register('dest_port_id')}>
+            <select className={selectClass} {...register('dest_port_id', uuidSelect)}>
               <option value="">Select…</option>
-              {portOptions.map((o) => (
+              {locationOptions.map((o) => (
                 <option key={o.value} value={o.value}>
                   {o.label}
                 </option>
               ))}
             </select>
+            <FieldError message={fieldError('dest_port_id')} />
           </div>
           <div className="space-y-1">
             <label className="text-xs font-medium text-[var(--color-neutral-500)]">
               Container type
             </label>
-            <select className={selectClass} {...register('container_type_id')}>
+            <select className={selectClass} {...register('container_type_id', uuidSelect)}>
               <option value="">Select…</option>
               {containers
                 .filter((c) => isUuid(String(c.id)))
@@ -201,6 +249,7 @@ export function TariffForm({
             {uoms.length > 0 ? (
               <select className={selectClass} {...register('unit')}>
                 <option value="">Select…</option>
+                <option value="KG">KG</option>
                 <option value="Per Container">Per Container</option>
                 {uoms.map((u) => {
                   const label = String(u.code ?? u.name ?? u.id);
@@ -212,7 +261,7 @@ export function TariffForm({
                 })}
               </select>
             ) : (
-              <Input placeholder="Per Container" {...register('unit')} />
+              <Input placeholder="KG" {...register('unit')} />
             )}
           </div>
         </div>
@@ -241,14 +290,18 @@ export function TariffForm({
             label="Sale rate *"
             type="number"
             step="any"
+            min={0}
             error={fieldError('sale_rate')}
+            placeholder="e.g. 850"
             {...register('sale_rate', { valueAsNumber: true })}
           />
           <Input
             label="Cost rate *"
             type="number"
             step="any"
+            min={0}
             error={fieldError('cost_rate')}
+            placeholder="e.g. 620"
             {...register('cost_rate', { valueAsNumber: true })}
           />
         </div>
@@ -275,6 +328,16 @@ export function TariffForm({
       </Card>
 
       <div className="flex justify-end gap-2">
+        {mode === 'create' && (
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={fillDemo}
+            disabled={!chargeCodes.some((c) => isUuid(String(c.id)))}
+          >
+            Fill demo data
+          </Button>
+        )}
         <Button type="button" variant="secondary" onClick={onCancel} disabled={isSubmitting}>
           Cancel
         </Button>

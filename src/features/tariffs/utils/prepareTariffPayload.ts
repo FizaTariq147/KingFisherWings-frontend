@@ -25,6 +25,13 @@ const UUID_FIELDS = new Set([
   'customer_id',
 ]);
 
+export const OPTIONAL_TARIFF_UUID_FIELDS = [
+  'origin_port_id',
+  'dest_port_id',
+  'container_type_id',
+  'customer_id',
+] as const;
+
 export function prepareTariffPayload<T extends Record<string, unknown>>(dto: T): T {
   const out: Record<string, unknown> = {};
 
@@ -54,6 +61,12 @@ export function prepareTariffPayload<T extends Record<string, unknown>>(dto: T):
       out[key] = value.trim().slice(0, 10);
       continue;
     }
+    if (key === 'sale_rate' || key === 'cost_rate') {
+      const n = typeof value === 'number' ? value : Number(value);
+      if (!Number.isFinite(n) || n < 0) continue;
+      out[key] = n;
+      continue;
+    }
     if (typeof value === 'string') {
       out[key] = value.trim();
       continue;
@@ -62,4 +75,13 @@ export function prepareTariffPayload<T extends Record<string, unknown>>(dto: T):
   }
 
   return out as T;
+}
+
+/** Required fields only — used as a safe retry when optional FKs crash the backend. */
+export function prepareMinimalTariffPayload<T extends Record<string, unknown>>(dto: T): T {
+  const full = prepareTariffPayload(dto) as Record<string, unknown>;
+  for (const key of OPTIONAL_TARIFF_UUID_FIELDS) {
+    delete full[key];
+  }
+  return full as T;
 }

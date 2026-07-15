@@ -1,11 +1,11 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import { zipDistanceService } from '../services/zipDistance.service';
 import type {
   CreateZipDistanceDto,
   UpdateZipDistanceDto,
   ZipDistanceListParams,
+  ZipDistanceListResult,
 } from '../types/zipDistance.types';
 
 export const zipDistanceKeys = {
@@ -30,7 +30,7 @@ export function useZipDistance(id: string) {
   return useQuery({
     queryKey: zipDistanceKeys.detail(id),
     queryFn: () => zipDistanceService.getById(id),
-    enabled: Boolean(accessToken) && isUuid(id),
+    enabled: Boolean(accessToken) && Boolean(id?.trim()),
   });
 }
 
@@ -45,10 +45,38 @@ function useInvalidateZipDistances() {
 }
 
 export function useCreateZipDistance() {
-  const invalidate = useInvalidateZipDistances();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (dto: CreateZipDistanceDto) => zipDistanceService.create(dto),
-    onSuccess: (item) => invalidate(item.id),
+    onSuccess: (created) => {
+      queryClient.setQueryData(zipDistanceKeys.detail(created.id), created);
+      queryClient.setQueriesData<ZipDistanceListResult>(
+        { queryKey: [...zipDistanceKeys.all, 'list'] },
+        (prev) => {
+          if (!prev) {
+            return {
+              items: [created],
+              meta: { page: 1, limit: 20, total: 1, totalPages: 1 },
+              backendListUnavailable: true,
+            };
+          }
+          if (prev.items.some((z) => z.id === created.id)) return prev;
+          return {
+            ...prev,
+            items: [created, ...prev.items],
+            meta: {
+              ...prev.meta,
+              total: prev.meta.total + 1,
+              totalPages: Math.max(
+                1,
+                Math.ceil((prev.meta.total + 1) / Math.max(prev.meta.limit, 1)),
+              ),
+            },
+          };
+        },
+      );
+      void queryClient.invalidateQueries({ queryKey: zipDistanceKeys.all });
+    },
   });
 }
 

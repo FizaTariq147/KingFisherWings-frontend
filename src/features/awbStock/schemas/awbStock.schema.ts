@@ -19,6 +19,7 @@ export const createAwbStockBatchSchema = z
     low_stock_threshold: integerField({
       required: false,
       min: 1,
+      max: 10000,
       allowNegative: false,
     }),
     notes: optionalTextUndef({ max: 2000 }),
@@ -35,12 +36,24 @@ export const createAwbStockBatchSchema = z
         message: 'End AWB number must be greater than start AWB number',
       });
     }
+    if (
+      typeof data.range_from === 'number' &&
+      typeof data.range_to === 'number' &&
+      data.range_to - data.range_from + 1 > 100_000
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['range_to'],
+        message: 'Range cannot exceed 100,000 AWB numbers',
+      });
+    }
   });
 
 export const updateAwbStockBatchSchema = z.object({
   low_stock_threshold: integerField({
     required: false,
     min: 1,
+    max: 10000,
     allowNegative: false,
   }),
   notes: optionalTextUndef({ max: 2000 }),
@@ -55,7 +68,10 @@ export const transferAwbBatchSchema = z.object({
 });
 
 export const voidAwbAllocationSchema = z.object({
-  void_reason: requiredText({ min: 1, max: 255 }),
+  void_reason: requiredText({ min: 2, max: 255 }).refine(
+    (v) => !/\s{2,}/.test(v),
+    'Remove consecutive spaces',
+  ),
 });
 
 export type CreateAwbStockBatchFormValues = z.infer<typeof createAwbStockBatchSchema>;

@@ -14,12 +14,26 @@ function omitEmpty<T extends Record<string, unknown>>(obj: T): T {
 
 export function prepareCreateBatchPayload(
   values: CreateAwbStockBatchDto,
-): CreateAwbStockBatchDto {
-  return omitEmpty({
-    ...values,
+): Record<string, unknown> {
+  const payload: Record<string, unknown> = {
+    airline_id: values.airline_id,
     prefix: String(values.prefix).trim(),
-    low_stock_threshold: values.low_stock_threshold ?? 10,
-  }) as CreateAwbStockBatchDto;
+    range_from: values.range_from,
+    range_to: values.range_to,
+  };
+  if (values.branch_id && String(values.branch_id).trim()) {
+    payload.branch_id = values.branch_id;
+  }
+  if (
+    typeof values.low_stock_threshold === 'number' &&
+    Number.isFinite(values.low_stock_threshold)
+  ) {
+    payload.low_stock_threshold = values.low_stock_threshold;
+  }
+  if (values.notes && String(values.notes).trim()) {
+    payload.notes = String(values.notes).trim();
+  }
+  return omitEmpty(payload);
 }
 
 export function prepareUpdateBatchPayload(

@@ -49,7 +49,8 @@ export function AwbStockForm({
   const {
     register,
     control,
-    handleSubmit,
+    setValue,
+    handleValidatedSubmit,
     formState: { errors },
   } = useAppForm<CreateAwbStockBatchFormValues>({
     resolver: zodResolver(schema) as Resolver<CreateAwbStockBatchFormValues>,
@@ -71,6 +72,9 @@ export function AwbStockForm({
     .map((a) => ({
       value: String(a.id),
       label: [a.code, a.name].filter(Boolean).join(' — ') || String(a.id),
+      prefixHint: String(a.code || '')
+        .replace(/\D/g, '')
+        .slice(0, 3),
     }));
 
   const branchOpts = branches
@@ -80,8 +84,15 @@ export function AwbStockForm({
       label: [b.code, b.name].filter(Boolean).join(' — ') || String(b.id),
     }));
 
+  const numAs = (v: unknown) =>
+    v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v);
+
   return (
-    <form onSubmit={handleSubmit((values) => onSubmit(values))} className="space-y-4 max-w-3xl">
+    <form
+      onSubmit={handleValidatedSubmit((values) => onSubmit(values))}
+      className="space-y-4 max-w-3xl"
+      noValidate
+    >
       {mode === 'create' && (
         <>
           <Card>
@@ -99,7 +110,13 @@ export function AwbStockForm({
                     required
                     value={field.value ?? ''}
                     options={airlineOpts}
-                    onChange={field.onChange}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      const hint = airlineOpts.find((o) => o.value === value)?.prefixHint;
+                      if (hint && hint.length === 3) {
+                        setValue('prefix', hint, { shouldValidate: true, shouldDirty: true });
+                      }
+                    }}
                     error={fieldError('airline_id')}
                   />
                 )}
@@ -139,7 +156,7 @@ export function AwbStockForm({
                 </label>
                 <Input
                   type="number"
-                  {...register('range_from', { valueAsNumber: true })}
+                  {...register('range_from', { setValueAs: numAs })}
                 />
                 <FieldError message={fieldError('range_from')} />
               </div>
@@ -147,7 +164,7 @@ export function AwbStockForm({
                 <label className="text-xs font-medium text-[var(--color-neutral-500)]">
                   End AWB number <span className="text-[var(--color-danger-500)]">*</span>
                 </label>
-                <Input type="number" {...register('range_to', { valueAsNumber: true })} />
+                <Input type="number" {...register('range_to', { setValueAs: numAs })} />
                 <FieldError message={fieldError('range_to')} />
               </div>
               <div className="sm:col-span-2 text-sm text-[var(--color-neutral-500)]">
@@ -196,7 +213,7 @@ export function AwbStockForm({
             </label>
             <Input
               type="number"
-              {...register('low_stock_threshold', { valueAsNumber: true })}
+              {...register('low_stock_threshold', { setValueAs: numAs })}
             />
             <FieldError message={fieldError('low_stock_threshold')} />
           </div>

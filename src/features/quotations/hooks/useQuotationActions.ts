@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import { quotationService } from '../services/quotation.service';
@@ -13,6 +13,7 @@ import { quotationKeys, useInvalidateQuotations } from './useQuotations';
 /** Detail-page actions bound to a single quotation id. */
 export function useQuotationActions(quotationId: string) {
   const invalidate = useInvalidateQuotations();
+  const queryClient = useQueryClient();
   const id = quotationId;
 
   const submit = useMutation({
@@ -60,6 +61,11 @@ export function useQuotationActions(quotationId: string) {
   });
   const generatePdf = useMutation({
     mutationFn: (dto: GenerateQuotationPdfDto) => quotationService.generatePdf(id, dto),
+    onSuccess: (info) => {
+      queryClient.setQueryData(quotationKeys.pdf(id), info);
+      void queryClient.invalidateQueries({ queryKey: quotationKeys.pdf(id) });
+      void queryClient.invalidateQueries({ queryKey: quotationKeys.pdfStatus(id) });
+    },
   });
 
   return {

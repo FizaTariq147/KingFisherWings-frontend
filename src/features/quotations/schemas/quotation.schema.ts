@@ -46,7 +46,7 @@ const optionalDate = z.preprocess(
     .optional(),
 );
 
-export const createQuotationSchema = z.object({
+const quotationHeaderObject = z.object({
   company_id: optionalUuid(),
   job_type: jobTypeSchema,
   customer_id: requiredUuid('Customer'),
@@ -80,7 +80,49 @@ export const createQuotationSchema = z.object({
   discount_amount: optionalNonNegNumber,
 });
 
-export const updateQuotationSchema = createQuotationSchema.partial();
+function refineQuotationHeader(
+  data: z.infer<typeof quotationHeaderObject>,
+  ctx: z.RefinementCtx,
+) {
+  if (
+    data.origin_port_id &&
+    data.dest_port_id &&
+    data.origin_port_id === data.dest_port_id
+  ) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['dest_port_id'],
+      message: 'Destination must differ from origin',
+    });
+  }
+  if (data.valid_until) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const until = new Date(`${data.valid_until}T00:00:00`);
+    if (Number.isFinite(until.getTime()) && until < today) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['valid_until'],
+        message: 'Validity date cannot be in the past',
+      });
+    }
+  }
+  if (data.is_dg && !(data.dg_class && String(data.dg_class).trim())) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['dg_class'],
+      message: 'DG class is required when Dangerous Goods is checked',
+    });
+  }
+}
+
+export const createQuotationSchema = quotationHeaderObject.superRefine(refineQuotationHeader);
+
+export const updateQuotationSchema = quotationHeaderObject
+  .partial()
+  .superRefine((data, ctx) => {
+    refineQuotationHeader(data as z.infer<typeof quotationHeaderObject>, ctx);
+  });
 
 export const createQuotationLineSchema = z.object({
   charge_code_id: requiredUuid('Charge code'),
@@ -119,23 +161,53 @@ export const sendQuotationEmailSchema = z.object({
   message: z.preprocess(emptyToUndefined, z.string().max(500).optional()),
 });
 
-export const createOnlineQuoteSchema = z.object({
-  tenant_slug: requiredText({ min: 1, max: 100 }),
-  job_type: jobTypeSchema,
-  currency_code: currencyCode(true),
-  customer_id: optionalUuid(),
-  contact_email: optionalEmail(),
-  contact_name: optionalTextUndef({ max: 120 }),
-  origin_port_id: optionalUuid(),
-  dest_port_id: optionalUuid(),
-  commodity: optionalTextUndef({ max: 200 }),
-  gross_weight: optionalNonNegNumber,
-  chargeable_weight: optionalNonNegNumber,
-  volume_cbm: optionalNonNegNumber,
-  pieces: optionalNonNegNumber,
-  special_requirements: optionalTextUndef({ max: 2000 }),
-  valid_until: optionalDate,
-});
+export const createOnlineQuoteSchema = z
+  .object({
+    tenant_slug: requiredText({ min: 1, max: 100 }),
+    job_type: jobTypeSchema,
+    currency_code: currencyCode(true),
+    customer_id: optionalUuid(),
+    contact_email: optionalEmail(),
+    contact_name: optionalTextUndef({ min: 2, max: 100 }),
+    origin_port_id: optionalUuid(),
+    dest_port_id: optionalUuid(),
+    commodity: optionalTextUndef({ max: 200 }),
+    gross_weight: optionalNonNegNumber,
+    chargeable_weight: optionalNonNegNumber,
+    volume_cbm: optionalNonNegNumber,
+    pieces: optionalNonNegNumber,
+    special_requirements: optionalTextUndef({ max: 2000 }),
+    valid_until: optionalDate,
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.origin_port_id &&
+      data.dest_port_id &&
+      data.origin_port_id === data.dest_port_id
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['dest_port_id'],
+        message: 'Destination must differ from origin',
+      });
+    }
+    if (!data.customer_id) {
+      if (!data.contact_name?.trim()) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['contact_name'],
+          message: 'Contact name is required when customer is not selected',
+        });
+      }
+      if (!data.contact_email?.trim()) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['contact_email'],
+          message: 'Contact email is required when customer is not selected',
+        });
+      }
+    }
+  });
 
 export type CreateQuotationFormValues = z.infer<typeof createQuotationSchema>;
 export type UpdateQuotationFormValues = z.infer<typeof updateQuotationSchema>;

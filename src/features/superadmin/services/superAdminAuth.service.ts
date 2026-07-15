@@ -1,6 +1,7 @@
 import { superAdminApiClient, type ApiEnvelope } from '../../../lib/superAdminApiClient';
 import { AUTH_API } from '../../auth/api/auth.api';
 import { normalizeAuthLoginResponse, normalizeTokenPair } from '../../auth/utils/normalizeAuthResponse';
+import type { SuperAdminSignupDto } from '../../auth/types/auth.api.types';
 import type { SuperAdminUser } from '../store/superAdminAuthStore';
 
 export interface SuperAdminLoginDto {
@@ -46,6 +47,16 @@ export const superAdminAuthService = {
       access_token: normalized.accessToken,
       refresh_token: normalized.refreshToken,
     };
+  },
+
+  /** POST /auth/super-admin/signup — platform self-registration */
+  async signup(dto: SuperAdminSignupDto): Promise<void> {
+    await superAdminApiClient.post(AUTH_API.superAdminSignup, {
+      email: dto.email.trim().toLowerCase(),
+      password: dto.password,
+      first_name: dto.first_name.trim(),
+      last_name: dto.last_name.trim(),
+    });
   },
 
   async refresh(refreshToken: string): Promise<{ access_token: string; refresh_token: string }> {

@@ -31,10 +31,15 @@ export const ROUTE_LABELS: Record<string, string> = {
   'sea-export':  'Sea Export',
   'sea-import':  'Sea Import',
   new:           'New',
+  overdue:       'Overdue',
 
   // ── Sub-routes ────────────────────────────────────────────────────────
   invoices:      'Invoices',
+  'purchase-invoices': 'Purchase Invoices',
+  'credit-notes': 'Credit Notes',
+  'payment-requests': 'Payment Requests',
   wms:           'WMS',
+
   employees:     'Employees',
   leave:         'Leave Calendar',
   airlines:      'Airlines',
@@ -62,5 +67,8 @@ export const ROUTE_LABEL_RESOLVERS: Record<string, SegmentResolver> = {
   quotations: async (_id) => null,
   jobs:       async (_id) => null,
   invoices:   async (_id) => null,
+  'purchase-invoices': async (_id) => null,
+  'credit-notes': async (_id) => null,
+  'payment-requests': async (_id) => null,
   employees:  async (_id) => null,
 }

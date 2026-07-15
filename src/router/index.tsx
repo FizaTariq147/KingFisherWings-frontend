@@ -7,6 +7,7 @@ import ForgotPasswordPage from '../features/auth/pages/ForgotPasswordPage'
 import ResetPasswordPage from '../features/auth/pages/ResetPasswordPage'
 import ChangePasswordPage from '../features/auth/pages/ChangePasswordPage'
 import MyProfilePage from '../features/auth/pages/MyProfilePage'
+import SessionManagementPage from '../pages/settings/SessionManagementPage'
 import Forbidden from '../pages/errors/Forbidden'
 import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
@@ -25,6 +26,24 @@ import QuotationCreatePage from '../features/quotations/pages/QuotationCreatePag
 import QuotationDetailPage from '../features/quotations/pages/QuotationDetailPage'
 import QuotationEditPage from '../features/quotations/pages/QuotationEditPage'
 import QuotationReportsPage from '../features/quotations/pages/QuotationReportsPage'
+import QuotationOnlineQuotePage from '../features/quotations/pages/QuotationOnlineQuotePage'
+import FinanceMenuPage from '../pages/finance/FinanceMenuPage'
+import InvoiceListPage from '../features/invoices/pages/InvoiceListPage'
+import InvoiceCreatePage from '../features/invoices/pages/InvoiceCreatePage'
+import InvoiceDetailPage from '../features/invoices/pages/InvoiceDetailPage'
+import InvoiceEditPage from '../features/invoices/pages/InvoiceEditPage'
+import InvoiceOverduePage from '../features/invoices/pages/InvoiceOverduePage'
+import CreditNoteListPage from '../features/creditNotes/pages/CreditNoteListPage'
+import CreditNoteCreatePage from '../features/creditNotes/pages/CreditNoteCreatePage'
+import CreditNoteDetailPage from '../features/creditNotes/pages/CreditNoteDetailPage'
+import PurchaseInvoiceListPage from '../features/purchaseInvoices/pages/PurchaseInvoiceListPage'
+import PurchaseInvoiceCreatePage from '../features/purchaseInvoices/pages/PurchaseInvoiceCreatePage'
+import PurchaseInvoiceEditPage from '../features/purchaseInvoices/pages/PurchaseInvoiceEditPage'
+import PurchaseInvoiceDetailPage from '../features/purchaseInvoices/pages/PurchaseInvoiceDetailPage'
+import PaymentRequestListPage from '../features/paymentRequests/pages/PaymentRequestListPage'
+import PaymentRequestCreatePage from '../features/paymentRequests/pages/PaymentRequestCreatePage'
+import PaymentRequestDetailPage from '../features/paymentRequests/pages/PaymentRequestDetailPage'
+import PaymentRequestEditPage from '../features/paymentRequests/pages/PaymentRequestEditPage'
 import {
   OnlineTariffCreatePage,
   OnlineTariffDetailPage,
@@ -193,20 +212,26 @@ export const router = createBrowserRouter([
           { path: '/customer-service/agent-edi', element: <AgentEdiPage /> },
           { path: '/customer-service/costing-search', element: <CostingSearchPage /> },
           { path: '/customer-service/tracking', element: <ShipmentTrackingPage /> },
-          { path: '/quotations', element: <QuotationsMenuPage /> },
-          { path: '/quotations/all', element: <QuotationListPage /> },
-          { path: '/quotations/new', element: <QuotationCreatePage /> },
-          { path: '/quotations/reports', element: <QuotationReportsPage /> },
-          { path: '/quotations/tariff-master', element: <OnlineTariffListPage /> },
-          { path: '/quotations/tariff-master/new', element: <OnlineTariffCreatePage /> },
-          { path: '/quotations/tariff-master/:id/edit', element: <OnlineTariffEditPage /> },
-          { path: '/quotations/tariff-master/:id', element: <OnlineTariffDetailPage /> },
-          { path: '/quotations/zip-distance-master', element: <ZipDistanceListPage /> },
-          { path: '/quotations/zip-distance-master/new', element: <ZipDistanceCreatePage /> },
-          { path: '/quotations/zip-distance-master/:id/edit', element: <ZipDistanceEditPage /> },
-          { path: '/quotations/zip-distance-master/:id', element: <ZipDistanceDetailPage /> },
-          { path: '/quotations/:id/edit', element: <QuotationEditPage /> },
-          { path: '/quotations/:id', element: <QuotationDetailPage /> },
+          {
+            element: <ProtectedRoute requirePermissions={['menu_quotations']} />,
+            children: [
+              { path: '/quotations', element: <QuotationsMenuPage /> },
+              { path: '/quotations/all', element: <QuotationListPage /> },
+              { path: '/quotations/new', element: <QuotationCreatePage /> },
+              { path: '/quotations/online-quote', element: <QuotationOnlineQuotePage /> },
+              { path: '/quotations/reports', element: <QuotationReportsPage /> },
+              { path: '/quotations/tariff-master', element: <OnlineTariffListPage /> },
+              { path: '/quotations/tariff-master/new', element: <OnlineTariffCreatePage /> },
+              { path: '/quotations/tariff-master/:id/edit', element: <OnlineTariffEditPage /> },
+              { path: '/quotations/tariff-master/:id', element: <OnlineTariffDetailPage /> },
+              { path: '/quotations/zip-distance-master', element: <ZipDistanceListPage /> },
+              { path: '/quotations/zip-distance-master/new', element: <ZipDistanceCreatePage /> },
+              { path: '/quotations/zip-distance-master/:id/edit', element: <ZipDistanceEditPage /> },
+              { path: '/quotations/zip-distance-master/:id', element: <ZipDistanceDetailPage /> },
+              { path: '/quotations/:id/edit', element: <QuotationEditPage /> },
+              { path: '/quotations/:id', element: <QuotationDetailPage /> },
+            ],
+          },
           { path: '/jobs/new', element: <JobCreatePage /> },
           { path: '/jobs/air-export', element: <JobListPage /> },
           { path: '/jobs/air-export/new', element: <JobCreatePage /> },
@@ -280,6 +305,7 @@ export const router = createBrowserRouter([
           { path: '/hr/salary-upload', element: <SalaryLedgerPage /> },
           { path: '/reports', element: <Placeholder title="Reports" /> },
           { path: '/settings', element: <SettingsRedirect /> },
+          { path: '/settings/sessions', element: <SessionManagementPage /> },
           {
             element: (
               <ProtectedRoute
@@ -315,9 +341,23 @@ export const router = createBrowserRouter([
           {
             element: <ProtectedRoute requirePermissions={['menu_finance']} />,
             children: [
-              { path: '/finance', element: <Placeholder title="Finance Dashboard" /> },
-              { path: '/invoices', element: <Placeholder title="Invoices" /> },
-              { path: '/invoices/:id', element: <Placeholder title="Invoice Detail" /> },
+              { path: '/finance', element: <FinanceMenuPage /> },
+              { path: '/invoices', element: <InvoiceListPage /> },
+              { path: '/invoices/new', element: <InvoiceCreatePage /> },
+              { path: '/invoices/overdue', element: <InvoiceOverduePage /> },
+              { path: '/invoices/:id/edit', element: <InvoiceEditPage /> },
+              { path: '/invoices/:id', element: <InvoiceDetailPage /> },
+              { path: '/purchase-invoices', element: <PurchaseInvoiceListPage /> },
+              { path: '/purchase-invoices/new', element: <PurchaseInvoiceCreatePage /> },
+              { path: '/purchase-invoices/:id/edit', element: <PurchaseInvoiceEditPage /> },
+              { path: '/purchase-invoices/:id', element: <PurchaseInvoiceDetailPage /> },
+              { path: '/credit-notes', element: <CreditNoteListPage /> },
+              { path: '/credit-notes/new', element: <CreditNoteCreatePage /> },
+              { path: '/credit-notes/:id', element: <CreditNoteDetailPage /> },
+              { path: '/payment-requests', element: <PaymentRequestListPage /> },
+              { path: '/payment-requests/new', element: <PaymentRequestCreatePage /> },
+              { path: '/payment-requests/:id/edit', element: <PaymentRequestEditPage /> },
+              { path: '/payment-requests/:id', element: <PaymentRequestDetailPage /> },
             ],
           },
         ],

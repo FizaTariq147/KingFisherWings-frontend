@@ -105,10 +105,41 @@ function preparePayload(
   return out;
 }
 
+const ALLOWED_ONLINE_QUOTE_FIELDS = new Set([
+  'tenant_slug',
+  'job_type',
+  'customer_id',
+  'contact_email',
+  'contact_name',
+  'origin_port_id',
+  'dest_port_id',
+  'commodity',
+  'gross_weight',
+  'chargeable_weight',
+  'volume_cbm',
+  'pieces',
+  'container_type_id',
+  'special_requirements',
+  'valid_until',
+  'currency_code',
+]);
+
 export function prepareQuotationPayload<T extends Record<string, unknown>>(dto: T): T {
   return preparePayload(dto, ALLOWED_HEADER_FIELDS) as T;
 }
 
 export function prepareQuotationLinePayload<T extends Record<string, unknown>>(dto: T): T {
   return preparePayload(dto, ALLOWED_LINE_FIELDS) as T;
+}
+
+/** Strip empty/null fields for POST /quotations/online-quote. */
+export function prepareOnlineQuotePayload<T extends Record<string, unknown>>(dto: T): T {
+  const out = preparePayload(dto, ALLOWED_ONLINE_QUOTE_FIELDS);
+  if (typeof out.tenant_slug === 'string') {
+    out.tenant_slug = out.tenant_slug.trim().toLowerCase();
+  }
+  if (typeof out.contact_email === 'string') {
+    out.contact_email = out.contact_email.trim().toLowerCase();
+  }
+  return out as T;
 }

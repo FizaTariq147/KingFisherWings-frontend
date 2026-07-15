@@ -62,9 +62,12 @@ export interface QuotationStatusHistoryEntry {
 export interface QuotationApproval {
   id?: string;
   decision?: string;
+  status?: string;
   comments?: string;
   created_at?: string;
+  decided_at?: string;
   created_by?: string;
+  approver_name?: string;
 }
 
 export interface Quotation {

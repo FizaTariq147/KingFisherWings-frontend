@@ -1,0 +1,1 @@
+export { StoredFileLink } from './StoredFileLink';

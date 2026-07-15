@@ -1,14 +1,23 @@
 import type { CreateTariffFormValues } from '../types/tariff.types';
 import type { Tariff } from '../types/tariff.types';
 
-export const TARIFF_FORM_DEFAULTS: CreateTariffFormValues = {
-  service_type: 'SEA_FCL_EXPORT',
+/**
+ * Create defaults leave required fields empty so Zod/RHF validation runs on submit.
+ * Use Fill demo data for Swagger-shaped samples.
+ */
+export const TARIFF_FORM_DEFAULTS: Partial<CreateTariffFormValues> = {
+  service_type: 'AIR_EXPORT',
+  origin_port_id: undefined,
+  dest_port_id: undefined,
+  container_type_id: undefined,
   charge_code_id: '',
-  sale_rate: 0,
-  cost_rate: 0,
-  currency_code: 'AED',
-  valid_from: new Date().toISOString().slice(0, 10),
-  unit: 'Per Container',
+  customer_id: undefined,
+  unit: undefined,
+  sale_rate: undefined,
+  cost_rate: undefined,
+  currency_code: '',
+  valid_from: '',
+  valid_to: undefined,
   is_active: true,
 };
 

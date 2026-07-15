@@ -43,4 +43,6 @@ export interface PaginationMeta {
 export interface ZipDistanceListResult {
   items: ZipDistance[];
   meta: PaginationMeta;
+  /** True when rows were loaded via GET /quotations/zip-distances/{id} (collection list is shadowed). */
+  backendListUnavailable?: boolean;
 }

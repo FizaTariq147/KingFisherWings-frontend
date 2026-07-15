@@ -1,4 +1,3 @@
-import { isUuid } from '@/lib/isUuid';
 import type { ZipDistance } from '../types/zipDistance.types';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -28,8 +27,11 @@ function bool(value: unknown): boolean | undefined {
 export function normalizeZipDistance(raw: unknown): ZipDistance | null {
   const r = asRecord(raw);
   if (!r) return null;
-  const id = str(r.id);
-  if (!id || !isUuid(id)) return null;
+  const id =
+    str(r.id) ||
+    str(r.zip_distance_id) ||
+    (typeof r.id === 'number' ? String(r.id) : undefined);
+  if (!id) return null;
   const from_zip = str(r.from_zip) ?? '';
   const to_zip = str(r.to_zip) ?? '';
   return {

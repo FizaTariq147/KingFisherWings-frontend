@@ -10,9 +10,11 @@ import {
   normalizeQuotations,
 } from '../utils/normalizeQuotation';
 import {
+  prepareOnlineQuotePayload,
   prepareQuotationLinePayload,
   prepareQuotationPayload,
 } from '../utils/prepareQuotationPayload';
+import { normalizeQuotationPdfInfo } from '../utils/normalizeQuotationPdf';
 import type {
   ApprovalDecisionDto,
   CreateOnlineQuoteDto,
@@ -76,6 +78,51 @@ function unwrapEntity(raw: unknown): unknown {
   const envelope = asRecord(raw);
   if (envelope && 'data' in envelope) return envelope.data;
   return raw;
+}
+
+/** Dig out a quotation-like object from varied online-quote response envelopes. */
+function extractQuotationCandidate(raw: unknown): unknown {
+  const candidates: unknown[] = [raw, unwrapEntity(raw)];
+  const root = asRecord(raw);
+  if (root) {
+    candidates.push(
+      root.data,
+      root.quotation,
+      root.result,
+      root.payload,
+      root.item,
+      asRecord(root.data)?.quotation,
+      asRecord(root.data)?.result,
+      asRecord(root.data)?.item,
+    );
+  }
+  for (const c of candidates) {
+    if (!c) continue;
+    const rec = asRecord(c);
+    if (!rec) continue;
+    if (rec.id || rec.quotation_id || rec.quotation_number || rec.quote_no) return c;
+  }
+  return unwrapEntity(raw);
+}
+
+function extractQuotationId(raw: unknown): string | null {
+  const visited = new Set<unknown>();
+  const stack: unknown[] = [raw, unwrapEntity(raw)];
+  while (stack.length) {
+    const cur = stack.pop();
+    if (!cur || visited.has(cur)) continue;
+    visited.add(cur);
+    const rec = asRecord(cur);
+    if (!rec) continue;
+    for (const key of ['id', 'quotation_id', 'quote_id']) {
+      const v = rec[key];
+      if (typeof v === 'string' && isUuid(v.trim())) return v.trim();
+    }
+    for (const nest of [rec.data, rec.quotation, rec.result, rec.payload, rec.item]) {
+      if (nest) stack.push(nest);
+    }
+  }
+  return null;
 }
 
 function formatAxiosError(error: unknown): Error {
@@ -417,25 +464,48 @@ export const quotationService = {
     assertId(id);
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.get<unknown>(QUOTATION_API.pdf(id)),
+        axiosInstance.get<unknown>(QUOTATION_API.pdf(id), {
+          withCredentials: false,
+        }),
       );
-      const data = unwrapEntity(res.data);
-      return (asRecord(data) ?? {}) as QuotationPdfInfo;
+      return normalizeQuotationPdfInfo(res.data);
     } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      // No PDF yet / backend still processing / opaque 5xx — treat as empty, not a hard failure.
+      if (status === 404 || status === 204 || (typeof status === 'number' && status >= 500)) {
+        return {};
+      }
       throw formatAxiosError(error);
     }
   },
 
   async generatePdf(id: string, dto: GenerateQuotationPdfDto): Promise<QuotationPdfInfo> {
     assertId(id);
+    const mode = String(dto.mode ?? 'CUSTOMER').trim().toUpperCase();
+    if (mode !== 'CUSTOMER' && mode !== 'INTERNAL') {
+      throw new Error('PDF mode must be CUSTOMER or INTERNAL.');
+    }
+    const body: Record<string, unknown> = { mode };
+    const layout = dto.layout_variant?.trim();
+    if (layout) body.layout_variant = layout.slice(0, 50);
+
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.post<unknown>(QUOTATION_API.pdf(id), dto),
+        axiosInstance.post<unknown>(QUOTATION_API.pdf(id), body, {
+          withCredentials: false,
+          headers: { 'Content-Type': 'application/json' },
+        }),
       );
-      const data = unwrapEntity(res.data);
-      return (asRecord(data) ?? {}) as QuotationPdfInfo;
+      return normalizeQuotationPdfInfo(res.data);
     } catch (error) {
-      throw formatAxiosError(error);
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      const formatted = formatAxiosError(error);
+      if (status != null && status >= 500) {
+        throw new Error(
+          `${formatted.message}. PDF generation failed on the server (often missing template, queue, or Chromium on Render). Confirm in Network that POST /quotations/{id}/pdf body is { "mode": "CUSTOMER"|"INTERNAL" }.`,
+        );
+      }
+      throw formatted;
     }
   },
 
@@ -443,10 +513,16 @@ export const quotationService = {
     assertId(id);
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.get<unknown>(QUOTATION_API.pdfStatus(id)),
+        axiosInstance.get<unknown>(QUOTATION_API.pdfStatus(id), {
+          withCredentials: false,
+        }),
       );
       return unwrapEntity(res.data);
     } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 404 || (typeof status === 'number' && status >= 500)) {
+        return { status: status === 404 ? 'NOT_FOUND' : 'ERROR' };
+      }
       throw formatAxiosError(error);
     }
   },
@@ -465,11 +541,40 @@ export const quotationService = {
 
   async createOnlineQuote(dto: CreateOnlineQuoteDto): Promise<Quotation> {
     try {
+      const body = prepareOnlineQuotePayload(dto as Record<string, unknown>);
+      if (!body.tenant_slug || !body.job_type || !body.currency_code) {
+        throw new Error('tenant_slug, job_type, and currency_code are required.');
+      }
+      if (!body.customer_id && !(body.contact_email && body.contact_name)) {
+        throw new Error(
+          'Provide customer_id, or both contact_name and contact_email for online quote.',
+        );
+      }
+
       const res = await withGatewayRetry(() =>
-        axiosInstance.post<unknown>(QUOTATION_API.onlineQuote, dto),
+        axiosInstance.post<unknown>(QUOTATION_API.onlineQuote, body),
       );
-      const quotation = normalizeQuotation(unwrapEntity(res.data));
-      if (!quotation) throw new Error('Online quote created but no quotation was returned.');
+
+      const candidate = extractQuotationCandidate(res.data);
+      let quotation = normalizeQuotation(candidate);
+
+      if (!quotation) {
+        const id = extractQuotationId(res.data) ?? extractQuotationId(candidate);
+        if (id) {
+          try {
+            quotation = await this.getById(id);
+          } catch {
+            // fall through to clearer error below
+          }
+        }
+      }
+
+      if (!quotation) {
+        // Empty / undocumented 201 body — still treat as success if HTTP succeeded.
+        throw new Error(
+          'Online quote was accepted by the server, but the response did not include a quotation object. Open All Quotations to find the new draft, or ask backend to return the created quotation (or its id) in the 201 body.',
+        );
+      }
       return quotation;
     } catch (error) {
       throw formatAxiosError(error);

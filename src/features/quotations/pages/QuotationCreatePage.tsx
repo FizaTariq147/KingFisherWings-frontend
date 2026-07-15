@@ -85,6 +85,7 @@ export default function QuotationCreatePage() {
             navigate(`/quotations/${created.id}`);
           } catch (err) {
             setError(getErrorMessage(err));
+            throw err;
           }
         }}
       />

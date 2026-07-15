@@ -113,6 +113,23 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
                     <Button
                       type="button"
                       size="sm"
+                      variant="secondary"
+                      onClick={() =>
+                        run(
+                          () =>
+                            mutations.returnContainer.mutateAsync({
+                              containerId: c.id,
+                              dto: {},
+                            }),
+                          'Container returned.',
+                        )
+                      }
+                    >
+                      Return
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
                       variant="danger"
                       onClick={() =>
                         run(

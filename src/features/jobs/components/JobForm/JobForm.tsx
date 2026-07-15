@@ -85,7 +85,7 @@ export function JobForm({
     register,
     control,
     watch,
-    handleSubmit,
+    handleValidatedSubmit,
     formState: { errors },
   } = useAppForm<CreateJobFormValues>({
     resolver: zodResolver(schema) as Resolver<CreateJobFormValues>,
@@ -97,6 +97,8 @@ export function JobForm({
   });
 
   const selectedJobType = watch('job_type');
+  const originPortId = watch('origin_port_id');
+  const destPortId = watch('dest_port_id');
 
   const fieldError = (name: keyof CreateJobFormValues) =>
     errors[name]?.message as string | undefined;
@@ -108,8 +110,15 @@ export function JobForm({
       label: [p.code, p.name].filter(Boolean).join(' — ') || String(p.id),
     }));
 
+  const destPortOpts = portOpts.filter((p) => p.value !== originPortId);
+  const originPortOpts = portOpts.filter((p) => p.value !== destPortId);
+
   return (
-    <form onSubmit={handleSubmit((values) => onSubmit(values))} className="space-y-4 max-w-4xl">
+    <form
+      onSubmit={handleValidatedSubmit((values) => onSubmit(values))}
+      className="space-y-4 max-w-4xl"
+      noValidate
+    >
       <Card>
         <CardHeader>
           <CardTitle>Basic information</CardTitle>
@@ -239,7 +248,7 @@ export function JobForm({
                 name="origin_port_id"
                 label="Origin port"
                 value={field.value ?? ''}
-                options={portOpts}
+                options={originPortOpts}
                 onChange={field.onChange}
                 error={fieldError('origin_port_id')}
               />
@@ -253,7 +262,7 @@ export function JobForm({
                 name="dest_port_id"
                 label="Destination port"
                 value={field.value ?? ''}
-                options={portOpts}
+                options={destPortOpts}
                 onChange={field.onChange}
                 error={fieldError('dest_port_id')}
               />
@@ -278,13 +287,27 @@ export function JobForm({
           </div>
           <div className="space-y-1">
             <label className="text-xs font-medium text-[var(--color-neutral-500)]">Pieces</label>
-            <Input type="number" step="1" {...register('pieces', { valueAsNumber: true })} />
+            <Input
+              type="number"
+              step="1"
+              {...register('pieces', {
+                setValueAs: (v) =>
+                  v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
+              })}
+            />
           </div>
           <div className="space-y-1">
             <label className="text-xs font-medium text-[var(--color-neutral-500)]">
               Gross weight (kg)
             </label>
-            <Input type="number" step="0.001" {...register('gross_weight', { valueAsNumber: true })} />
+            <Input
+              type="number"
+              step="0.001"
+              {...register('gross_weight', {
+                setValueAs: (v) =>
+                  v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
+              })}
+            />
           </div>
           <div className="space-y-1">
             <label className="text-xs font-medium text-[var(--color-neutral-500)]">
@@ -293,12 +316,22 @@ export function JobForm({
             <Input
               type="number"
               step="0.001"
-              {...register('chargeable_weight', { valueAsNumber: true })}
+              {...register('chargeable_weight', {
+                setValueAs: (v) =>
+                  v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
+              })}
             />
           </div>
           <div className="space-y-1">
             <label className="text-xs font-medium text-[var(--color-neutral-500)]">Volume (CBM)</label>
-            <Input type="number" step="0.001" {...register('volume_cbm', { valueAsNumber: true })} />
+            <Input
+              type="number"
+              step="0.001"
+              {...register('volume_cbm', {
+                setValueAs: (v) =>
+                  v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
+              })}
+            />
           </div>
         </div>
       </Card>
@@ -334,7 +367,10 @@ export function JobForm({
             <Input
               type="number"
               step="1"
-              {...register('container_count', { valueAsNumber: true })}
+              {...register('container_count', {
+                setValueAs: (v) =>
+                  v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
+              })}
             />
           </div>
         </div>

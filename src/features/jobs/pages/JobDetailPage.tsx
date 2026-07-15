@@ -7,6 +7,7 @@ import { JobChargesPanel } from '../components/JobChargesPanel';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import { JobContainersPanel } from '../components/JobContainersPanel';
 import { JobDocumentsPanel } from '../components/JobDocumentsPanel';
+import { JobLogisticsPanel } from '../components/JobLogisticsPanel';
 import { JobMilestonesPanel } from '../components/JobMilestonesPanel';
 import { JobNotesPanel } from '../components/JobNotesPanel';
 import { JobOpsPanel } from '../components/JobOpsPanel';
@@ -75,6 +76,11 @@ export default function JobDetailPage() {
       { key: 'milestones', label: 'Milestones', content: <JobMilestonesPanel jobId={id} /> },
       { key: 'notes', label: 'Notes', content: <JobNotesPanel jobId={id} /> },
       { key: 'documents', label: 'Documents', content: <JobDocumentsPanel jobId={id} /> },
+      {
+        key: 'logistics',
+        label: 'Logistics',
+        content: <JobLogisticsPanel jobId={id} />,
+      },
       ...(houseJobs.length
         ? [
             {

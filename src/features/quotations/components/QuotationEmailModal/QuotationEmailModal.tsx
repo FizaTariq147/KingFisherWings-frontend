@@ -1,16 +1,23 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { type Resolver } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
-import { PDF_MODES, type PdfMode } from '../../constants/quotation.constants';
-import type { SendQuotationEmailDto } from '../../types/quotation.types';
+import { useAppForm } from '@/lib/validation';
+import { PDF_MODES } from '../../constants/quotation.constants';
+import { sendQuotationEmailSchema } from '../../schemas/quotation.schema';
+import type {
+  SendQuotationEmailDto,
+  SendQuotationEmailFormValues,
+} from '../../types/quotation.types';
 
 interface QuotationEmailModalProps {
   open: boolean;
   isPending?: boolean;
   defaultTo?: string;
   onClose: () => void;
-  onSend: (dto: SendQuotationEmailDto) => void;
+  onSend: (dto: SendQuotationEmailDto) => void | Promise<void>;
 }
 
 export function QuotationEmailModal({
@@ -20,32 +27,67 @@ export function QuotationEmailModal({
   onClose,
   onSend,
 }: QuotationEmailModalProps) {
-  const [toEmail, setToEmail] = useState(defaultTo);
-  const [ccEmail, setCcEmail] = useState('');
-  const [pdfMode, setPdfMode] = useState<PdfMode>('CUSTOMER');
-  const [message, setMessage] = useState('');
+  const {
+    register,
+    handleValidatedSubmit,
+    reset,
+    applyApiErrors,
+    formState: { errors },
+  } = useAppForm<SendQuotationEmailFormValues>({
+    resolver: zodResolver(sendQuotationEmailSchema) as Resolver<SendQuotationEmailFormValues>,
+    defaultValues: {
+      to_email: defaultTo,
+      cc_email: '',
+      pdf_mode: 'CUSTOMER',
+      message: '',
+    },
+  });
+
+  useEffect(() => {
+    if (!open) return;
+    reset({
+      to_email: defaultTo,
+      cc_email: '',
+      pdf_mode: 'CUSTOMER',
+      message: '',
+    });
+  }, [open, defaultTo, reset]);
 
   return (
     <Modal open={open} onClose={onClose} title="Email quotation PDF">
-      <div className="space-y-3">
+      <form
+        className="space-y-3"
+        onSubmit={handleValidatedSubmit(async (values) => {
+          try {
+            await onSend({
+              to_email: values.to_email,
+              cc_email: values.cc_email || undefined,
+              pdf_mode: values.pdf_mode,
+              message: values.message || undefined,
+            });
+          } catch (err) {
+            applyApiErrors(err);
+            throw err;
+          }
+        })}
+      >
         <Input
           label="To email *"
           type="email"
-          value={toEmail}
-          onChange={(e) => setToEmail(e.target.value)}
+          error={errors.to_email?.message as string | undefined}
+          {...register('to_email')}
         />
         <Input
           label="CC email"
           type="email"
-          value={ccEmail}
-          onChange={(e) => setCcEmail(e.target.value)}
+          error={errors.cc_email?.message as string | undefined}
+          {...register('cc_email')}
         />
         <label className="block space-y-1">
           <span className="text-xs font-medium text-[var(--color-neutral-500)]">PDF mode</span>
           <select
             className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
-            value={pdfMode}
-            onChange={(e) => setPdfMode(e.target.value as PdfMode)}
+            {...register('pdf_mode')}
           >
             {PDF_MODES.map((m) => (
               <option key={m} value={m}>
@@ -58,31 +100,19 @@ export function QuotationEmailModal({
           <span className="text-xs font-medium text-[var(--color-neutral-500)]">Message</span>
           <textarea
             className="min-h-[80px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
             maxLength={500}
+            {...register('message')}
           />
         </label>
         <div className="flex justify-end gap-2">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
-          <Button
-            type="button"
-            disabled={isPending || !toEmail.trim()}
-            onClick={() =>
-              onSend({
-                to_email: toEmail.trim(),
-                cc_email: ccEmail.trim() || undefined,
-                pdf_mode: pdfMode,
-                message: message.trim() || undefined,
-              })
-            }
-          >
+          <Button type="submit" disabled={isPending}>
             {isPending ? 'Sending…' : 'Send email'}
           </Button>
         </div>
-      </div>
+      </form>
     </Modal>
   );
 }

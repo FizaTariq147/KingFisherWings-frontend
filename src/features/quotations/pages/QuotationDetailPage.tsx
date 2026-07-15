@@ -252,6 +252,33 @@ export default function QuotationDetailPage() {
               </div>
             ),
           },
+          {
+            key: 'approvals',
+            label: 'Approvals',
+            content: (
+              <div className="space-y-2 text-sm">
+                {(quotation.approvals ?? []).length === 0 ? (
+                  <p className="text-[var(--color-neutral-400)]">No approval records.</p>
+                ) : (
+                  (quotation.approvals ?? []).map((a, i) => (
+                    <div
+                      key={a.id ?? i}
+                      className="rounded-md border border-[var(--color-neutral-200)] px-3 py-2"
+                    >
+                      <div className="font-medium">
+                        {a.decision || a.status || 'Decision'}
+                        {a.approver_name ? ` · ${a.approver_name}` : ''}
+                      </div>
+                      <div className="text-xs text-[var(--color-neutral-400)]">
+                        {a.decided_at || a.created_at || ''}
+                        {a.comments ? ` · ${a.comments}` : ''}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            ),
+          },
         ]}
       />
 
@@ -289,7 +316,18 @@ export default function QuotationDetailPage() {
             if (kind === 'duplicate')
               return run(() => actions.duplicate.mutateAsync(), 'Duplicated.');
             if (kind === 'convert')
-              return run(() => actions.convertToJob.mutateAsync(), 'Converted to job.');
+              return run(async () => {
+                const q = await actions.convertToJob.mutateAsync();
+                const jobId =
+                  q && typeof q === 'object' && 'job_id' in q
+                    ? String((q as { job_id?: string }).job_id ?? '')
+                    : '';
+                if (jobId) {
+                  navigate(`/jobs/${jobId}`);
+                  return q;
+                }
+                return q;
+              }, 'Converted to job.');
             if (kind === 'archive') return run(() => actions.archive.mutateAsync(), 'Archived.');
             if (kind === 'expire') return run(() => actions.expire.mutateAsync(), 'Expired.');
             if (kind === 'delete')
@@ -303,19 +341,26 @@ export default function QuotationDetailPage() {
       )}
 
       <QuotationPdfModal
+        quotationId={id}
         open={pdfOpen}
         isPending={actions.generatePdf.isPending}
         pdfInfo={pdfInfo}
+        error={null}
         onClose={() => setPdfOpen(false)}
         onGenerate={async (mode: PdfMode, layout_variant?: string) => {
           setActionError(null);
+          const info = await actions.generatePdf.mutateAsync({
+            mode,
+            ...(layout_variant ? { layout_variant } : {}),
+          });
+          setActionMessage('PDF generation queued.');
+          // Do not fail the generate action if GET /pdf is empty or errors while tasks run.
           try {
-            await actions.generatePdf.mutateAsync({ mode, layout_variant });
-            setActionMessage('PDF generation queued.');
-            refetchPdf();
-          } catch (err) {
-            setActionError(getErrorMessage(err));
+            await refetchPdf();
+          } catch {
+            /* status polling in the modal covers in-progress generation */
           }
+          return info;
         }}
       />
 
@@ -332,6 +377,7 @@ export default function QuotationDetailPage() {
             setEmailOpen(false);
           } catch (err) {
             setActionError(getErrorMessage(err));
+            throw err;
           }
         }}
       />

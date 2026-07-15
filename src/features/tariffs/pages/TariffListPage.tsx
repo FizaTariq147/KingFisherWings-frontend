@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AlertCircle, Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -31,9 +31,11 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 
 export default function TariffListPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [pinnedCreated, setPinnedCreated] = useState<Tariff | null>(null);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<'all' | 'active' | 'inactive'>('all');
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -41,6 +43,14 @@ export default function TariffListPage() {
   const [confirm, setConfirm] = useState<{ action: TariffConfirmAction; tariff: Tariff } | null>(
     null,
   );
+
+  useEffect(() => {
+    const created = (location.state as { createdTariff?: Tariff } | null)?.createdTariff;
+    if (!created) return;
+    setPinnedCreated(created);
+    setActionMessage('Tariff created.');
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.state, location.pathname, navigate]);
 
   const debouncedSearch = useDebouncedValue(search, 300);
   useEffect(() => {
@@ -60,7 +70,14 @@ export default function TariffListPage() {
   const remove = useDeleteTariff();
   const duplicate = useDuplicateTariff();
 
-  const tariffs = data?.tariffs ?? [];
+  const tariffs = useMemo(() => {
+    const list = data?.tariffs ?? [];
+    if (!pinnedCreated) return list;
+    if (list.some((t) => t.id === pinnedCreated.id)) {
+      return list;
+    }
+    return [pinnedCreated, ...list];
+  }, [data?.tariffs, pinnedCreated]);
   const meta = data?.meta;
 
   const run = async (tariff: Tariff, fn: () => Promise<unknown>) => {

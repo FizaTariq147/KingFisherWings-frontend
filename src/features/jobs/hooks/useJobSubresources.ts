@@ -2,21 +2,34 @@ import { useMutation } from '@tanstack/react-query';
 import { jobService } from '../services/job.service';
 import type {
   AssignCargoToContainerDto,
+  CalculateCfsStorageDto,
   CreateBillOfLadingDto,
+  CreateDamageReportDto,
   CreateJobCargoDto,
   CreateJobContainerDto,
+  CreateJobDepositDto,
   CreateJobDocumentDto,
+  CreatePartDeliveryDto,
+  CreatePaymentRequestFromJobDto,
+  CreateProofOfDeliveryDto,
   CreateStuffingRecordDto,
+  CreateSubJobDto,
+  FinalizeJobDocumentDto,
+  LinkTranshipmentDto,
+  ReturnContainerDto,
   SplitContainerDto,
   SubmitSiDto,
   SubmitVgmDto,
   UpdateAirJobDetailDto,
   UpdateBillOfLadingDto,
+  UpdateCustomsStatusDto,
   UpdateJobCargoDto,
   UpdateJobContainerDto,
+  UpdateJobDepositDto,
   UpdateJobDocumentDto,
   UpdateSeaFclJobDetailDto,
   UpdateStuffingRecordDto,
+  UpsertContainerFreeDaysDto,
 } from '../types/job.types';
 import { useInvalidateJobs } from './useJobs';
 
@@ -79,6 +92,16 @@ export function useJobSubresourceMutations(jobId: string) {
         containerId: string;
         dto: SplitContainerDto;
       }) => jobService.splitContainer(jobId, containerId, dto),
+      onSuccess: refresh,
+    }),
+    returnContainer: useMutation({
+      mutationFn: ({
+        containerId,
+        dto,
+      }: {
+        containerId: string;
+        dto?: ReturnContainerDto;
+      }) => jobService.returnContainer(jobId, containerId, dto),
       onSuccess: refresh,
     }),
     createCargo: useMutation({
@@ -145,7 +168,77 @@ export function useJobSubresourceMutations(jobId: string) {
       onSuccess: refresh,
     }),
     finalizeDocument: useMutation({
-      mutationFn: (documentId: string) => jobService.finalizeDocument(jobId, documentId),
+      mutationFn: ({
+        documentId,
+        dto,
+      }: {
+        documentId: string;
+        dto?: FinalizeJobDocumentDto;
+      }) => jobService.finalizeDocument(jobId, documentId, dto),
+      onSuccess: refresh,
+    }),
+    createDeposit: useMutation({
+      mutationFn: (dto: CreateJobDepositDto) => jobService.createDeposit(jobId, dto),
+      onSuccess: refresh,
+    }),
+    updateDeposit: useMutation({
+      mutationFn: ({
+        depositId,
+        dto,
+      }: {
+        depositId: string;
+        dto: UpdateJobDepositDto;
+      }) => jobService.updateDeposit(jobId, depositId, dto),
+      onSuccess: refresh,
+    }),
+    deleteDeposit: useMutation({
+      mutationFn: (depositId: string) => jobService.deleteDeposit(jobId, depositId),
+      onSuccess: refresh,
+    }),
+    upsertFreeDays: useMutation({
+      mutationFn: (dto: UpsertContainerFreeDaysDto) =>
+        jobService.upsertFreeDays(jobId, dto),
+      onSuccess: refresh,
+    }),
+    recalculateFreeDays: useMutation({
+      mutationFn: () => jobService.recalculateFreeDays(jobId),
+      onSuccess: refresh,
+    }),
+    createDamageReport: useMutation({
+      mutationFn: (dto: CreateDamageReportDto) =>
+        jobService.createDamageReport(jobId, dto),
+      onSuccess: refresh,
+    }),
+    createPartDelivery: useMutation({
+      mutationFn: (dto: CreatePartDeliveryDto) =>
+        jobService.createPartDelivery(jobId, dto),
+      onSuccess: refresh,
+    }),
+    createPod: useMutation({
+      mutationFn: (dto: CreateProofOfDeliveryDto) => jobService.createPod(jobId, dto),
+      onSuccess: refresh,
+    }),
+    createPaymentRequest: useMutation({
+      mutationFn: (dto?: CreatePaymentRequestFromJobDto) =>
+        jobService.createPaymentRequest(jobId, dto),
+      onSuccess: refresh,
+    }),
+    createSubJob: useMutation({
+      mutationFn: (dto?: CreateSubJobDto) => jobService.createSubJob(jobId, dto),
+      onSuccess: refresh,
+    }),
+    updateCustomsStatus: useMutation({
+      mutationFn: (dto: UpdateCustomsStatusDto) =>
+        jobService.updateCustomsStatus(jobId, dto),
+      onSuccess: refresh,
+    }),
+    calculateCfsStorage: useMutation({
+      mutationFn: (dto?: CalculateCfsStorageDto) =>
+        jobService.calculateCfsStorage(jobId, dto),
+      onSuccess: refresh,
+    }),
+    linkTranshipment: useMutation({
+      mutationFn: (dto: LinkTranshipmentDto) => jobService.linkTranshipment(jobId, dto),
       onSuccess: refresh,
     }),
   };

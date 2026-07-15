@@ -130,9 +130,18 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
   const visibleItems = (() => {
     if (isSuperAdminArea) return []
 
-    // Tenant Admin and staff/customer users: full ops dashboard.
-    // Users management is added separately for Tenant Admin only.
-    return OPS_NAV_ITEMS
+    // Tenant Admin owns the workspace — show full ops nav (Quotations + Tariffs, etc.).
+    // Staff are filtered by menu_* when /auth/me returns a permissions list.
+    if (isTenantAdmin) return OPS_NAV_ITEMS
+
+    const perms = authCtx?.user?.permissions
+    // When /auth/me omits permissions, keep full ops nav (existing behaviour).
+    if (!perms || perms.length === 0) return OPS_NAV_ITEMS
+
+    return OPS_NAV_ITEMS.filter((item) => {
+      if (!item.permission) return true
+      return authCtx?.hasPermission(item.permission) ?? false
+    })
   })()
 
   // Users + Masters only for Tenant Admin — staff/customer do not see these.

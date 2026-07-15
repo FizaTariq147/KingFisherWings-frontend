@@ -40,8 +40,8 @@ export function ZipDistanceForm({
   const schema = mode === 'create' ? createZipDistanceSchema : updateZipDistanceSchema;
   const {
     register,
-    handleSubmit,
-    formState: { errors },
+    handleValidatedSubmit,
+    formState: { errors, isSubmitted, isValid },
   } = useAppForm<CreateZipDistanceFormValues>({
     resolver: zodResolver(schema) as Resolver<CreateZipDistanceFormValues>,
     defaultValues: { ...ZIP_DISTANCE_FORM_DEFAULTS, ...defaultValues },
@@ -50,11 +50,30 @@ export function ZipDistanceForm({
   const fieldError = (name: keyof CreateZipDistanceFormValues) =>
     errors[name]?.message as string | undefined;
 
+  const showFormErrors = isSubmitted && !isValid;
+
   return (
     <form
-      onSubmit={handleSubmit((values) => onSubmit(values))}
+      onSubmit={handleValidatedSubmit(async (values) => {
+        await onSubmit(values);
+      })}
       className="space-y-4 max-w-3xl"
+      noValidate
     >
+      {showFormErrors && (
+        <div
+          role="alert"
+          className="rounded-lg border px-3 py-2 text-sm"
+          style={{
+            background: 'var(--color-danger-100)',
+            borderColor: '#FECACA',
+            color: 'var(--color-danger-700)',
+          }}
+        >
+          Please fix the highlighted fields before saving.
+        </div>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>Origin</CardTitle>
@@ -64,6 +83,7 @@ export function ZipDistanceForm({
             label="From ZIP *"
             error={fieldError('from_zip')}
             placeholder="e.g. 00000"
+            autoComplete="postal-code"
             {...register('from_zip')}
           />
           <Input
@@ -84,6 +104,7 @@ export function ZipDistanceForm({
             label="To ZIP *"
             error={fieldError('to_zip')}
             placeholder="e.g. 11111"
+            autoComplete="postal-code"
             {...register('to_zip')}
           />
           <Input
@@ -106,10 +127,11 @@ export function ZipDistanceForm({
             step="any"
             min={0}
             error={fieldError('distance')}
+            placeholder="e.g. 140"
             {...register('distance', { valueAsNumber: true })}
           />
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Unit</label>
+            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Unit *</label>
             <select className={selectClass} {...register('unit')}>
               {DISTANCE_UNITS.map((u) => (
                 <option key={u} value={u}>

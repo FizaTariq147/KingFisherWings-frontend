@@ -5,7 +5,9 @@ import type {
   CreateJobNoteDto,
   CreateCustomMilestoneDto,
   GenerateJobDocumentDto,
+  SchedulePreAlertDto,
   SendPreAlertDto,
+  SendWhatsAppStatusDto,
   UpdateJobChargeDto,
   UpdateJobMilestoneDto,
   UpdateJobNoteDto,
@@ -35,6 +37,14 @@ export function useJobActions(jobId: string) {
   });
   const sendPreAlert = useMutation({
     mutationFn: (dto: SendPreAlertDto) => jobService.sendPreAlert(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const schedulePreAlert = useMutation({
+    mutationFn: (dto: SchedulePreAlertDto) => jobService.schedulePreAlert(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const sendWhatsAppStatus = useMutation({
+    mutationFn: (dto: SendWhatsAppStatusDto) => jobService.sendWhatsAppStatus(id, dto),
     onSuccess: () => invalidate(id),
   });
 
@@ -132,6 +142,68 @@ export function useJobActions(jobId: string) {
       jobService.generateProformaInvoice(id, dto),
     onSuccess: () => invalidate(id),
   });
+  const generateDeliveryOrder = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateDeliveryOrder(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generatePreCan = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) => jobService.generatePreCan(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateCan = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) => jobService.generateCan(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateExchangeLetter = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateExchangeLetter(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateUndertakeLetter = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateUndertakeLetter(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateTransportRequest = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateTransportRequest(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateShippingAdvice = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateShippingAdvice(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateProofOfDelivery = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateProofOfDelivery(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateEAwb = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) => jobService.generateEAwb(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateBarcodeLabel = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateBarcodeLabel(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateConsigneeLabel = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateConsigneeLabel(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateJobCosting = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateJobCosting(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateFreightCertificate = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateFreightCertificate(id, dto),
+    onSuccess: () => invalidate(id),
+  });
 
   return {
     cancel,
@@ -139,6 +211,8 @@ export function useJobActions(jobId: string) {
     remove,
     prorateCost,
     sendPreAlert,
+    schedulePreAlert,
+    sendWhatsAppStatus,
     generateHawb,
     generateMawb,
     generateHbl,
@@ -160,6 +234,19 @@ export function useJobActions(jobId: string) {
     generateJobCard,
     generateJobPnl,
     generateProformaInvoice,
+    generateDeliveryOrder,
+    generatePreCan,
+    generateCan,
+    generateExchangeLetter,
+    generateUndertakeLetter,
+    generateTransportRequest,
+    generateShippingAdvice,
+    generateProofOfDelivery,
+    generateEAwb,
+    generateBarcodeLabel,
+    generateConsigneeLabel,
+    generateJobCosting,
+    generateFreightCertificate,
   };
 }
 

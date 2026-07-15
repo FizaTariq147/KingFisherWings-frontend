@@ -11,6 +11,7 @@ import {
   resolveTenantIdFromUserLike,
   tenantIdFromAccessToken,
 } from '@/lib/tenantFromAuth'
+import { isTenantUserManagerRole } from '@/features/users/constants/userPermissions'
 import { useAuthStore } from '@/store/authStore'
 import type { AuthUser, PermissionKey, Role } from '@/types/auth.types'
 
@@ -197,11 +198,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setLoading(false))
   }, [accessToken, storeLogout, patchSessionUser])
 
-  const hasPermission    = useCallback((...keys: PermissionKey[]) =>
-    DEV_BYPASS_AUTH ? true : (!!user && keys.every((k) => user.permissions.includes(k))), [user])
+  const hasPermission    = useCallback((...keys: PermissionKey[]) => {
+    if (DEV_BYPASS_AUTH) return true
+    if (!user) return false
+    // Tenant Admin is the workspace owner — full ERP menus (Quotations, Tariffs, etc.).
+    // Staff are gated by menu_* keys from JWT /auth/me.
+    if (isTenantUserManagerRole(user.role.slug) || isTenantUserManagerRole(user.role.name)) {
+      return true
+    }
+    // When /auth/me omits permissions, avoid locking the app behind menu_* keys.
+    if (user.permissions.length === 0) return true
+    return keys.every((k) => user.permissions.includes(k))
+  }, [user])
 
-  const hasAnyPermission = useCallback((...keys: PermissionKey[]) =>
-    DEV_BYPASS_AUTH ? true : (!!user && keys.some((k) => user.permissions.includes(k))), [user])
+  const hasAnyPermission = useCallback((...keys: PermissionKey[]) => {
+    if (DEV_BYPASS_AUTH) return true
+    if (!user) return false
+    if (isTenantUserManagerRole(user.role.slug) || isTenantUserManagerRole(user.role.name)) {
+      return true
+    }
+    if (user.permissions.length === 0) return true
+    return keys.some((k) => user.permissions.includes(k))
+  }, [user])
 
   const hasRole = useCallback((slug: string) => {
     if (DEV_BYPASS_AUTH) return true

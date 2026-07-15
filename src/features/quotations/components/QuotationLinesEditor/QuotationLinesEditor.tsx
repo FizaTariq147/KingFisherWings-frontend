@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, Trash2, Wand2 } from 'lucide-react';
+import { Pencil, Plus, Trash2, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
@@ -29,9 +29,10 @@ export function QuotationLinesEditor({
   currencyCode,
   editable,
 }: QuotationLinesEditorProps) {
-  const { add, remove, applyTariff } = useQuotationLines(quotationId);
+  const { add, update, remove, applyTariff } = useQuotationLines(quotationId);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [editingLineId, setEditingLineId] = useState<string | null>(null);
   const { data: chargeCodes = [] } = useMasterOptions(
     'charge-codes',
     MASTER_PATHS['charge-codes'],
@@ -41,8 +42,9 @@ export function QuotationLinesEditor({
 
   const {
     register,
-    handleSubmit,
+    handleValidatedSubmit,
     reset,
+    applyApiErrors,
     formState: { errors },
   } = useAppForm<CreateQuotationLineFormValues>({
     resolver: zodResolver(createQuotationLineSchema) as Resolver<CreateQuotationLineFormValues>,
@@ -58,29 +60,60 @@ export function QuotationLinesEditor({
     },
   });
 
-  const onAdd = handleSubmit(async (values) => {
+  const startEdit = (line: QuotationLine) => {
+    setEditingLineId(line.id);
+    setShowForm(true);
+    setError(null);
+    reset({
+      charge_code_id: line.charge_code_id,
+      description: line.description,
+      unit: line.unit,
+      quantity: line.quantity,
+      unit_price: line.unit_price,
+      currency_code: line.currency_code || currencyCode,
+      exchange_rate: line.exchange_rate ?? 1,
+      tax_rate_id: line.tax_rate_id,
+      is_cost: Boolean(line.is_cost),
+      sort_order: line.sort_order ?? 0,
+    });
+  };
+
+  const clearForm = () => {
+    setEditingLineId(null);
+    setShowForm(false);
+    reset({
+      charge_code_id: '',
+      description: '',
+      quantity: 1,
+      unit_price: 0,
+      currency_code: currencyCode,
+      exchange_rate: 1,
+      is_cost: false,
+      sort_order: lines.length,
+    });
+  };
+
+  const onSave = handleValidatedSubmit(async (values) => {
     setError(null);
     try {
-      await add.mutateAsync({
+      const dto = {
         ...values,
         currency_code: values.currency_code || currencyCode,
         quantity: values.quantity ?? 1,
-      });
-      reset({
-        charge_code_id: '',
-        description: '',
-        quantity: 1,
-        unit_price: 0,
-        currency_code: currencyCode,
-        exchange_rate: 1,
-        is_cost: false,
-        sort_order: lines.length + 1,
-      });
-      setShowForm(false);
+      };
+      if (editingLineId) {
+        await update.mutateAsync({ lineId: editingLineId, dto });
+      } else {
+        await add.mutateAsync(dto);
+      }
+      clearForm();
     } catch (err) {
+      applyApiErrors(err);
       setError(getErrorMessage(err));
     }
   });
+
+  const busy = add.isPending || update.isPending || remove.isPending || applyTariff.isPending;
 
   return (
     <div className="space-y-3">
@@ -91,7 +124,7 @@ export function QuotationLinesEditor({
             <Button
               type="button"
               variant="secondary"
-              disabled={applyTariff.isPending}
+              disabled={busy}
               onClick={async () => {
                 setError(null);
                 try {
@@ -104,7 +137,13 @@ export function QuotationLinesEditor({
               <Wand2 className="h-4 w-4" />
               Apply tariff
             </Button>
-            <Button type="button" onClick={() => setShowForm((v) => !v)}>
+            <Button
+              type="button"
+              onClick={() => {
+                setEditingLineId(null);
+                setShowForm((v) => !v);
+              }}
+            >
               <Plus className="h-4 w-4" />
               Add line
             </Button>
@@ -127,7 +166,7 @@ export function QuotationLinesEditor({
               <th className="px-3 py-2">Unit price</th>
               <th className="px-3 py-2">Type</th>
               <th className="px-3 py-2">Total</th>
-              {editable && <th className="px-3 py-2 w-10" />}
+              {editable && <th className="px-3 py-2 w-20" />}
             </tr>
           </thead>
           <tbody>
@@ -163,21 +202,32 @@ export function QuotationLinesEditor({
                   </td>
                   {editable && (
                     <td className="px-3 py-2">
-                      <button
-                        type="button"
-                        className="p-1 text-[var(--color-danger-500)]"
-                        disabled={remove.isPending}
-                        onClick={async () => {
-                          setError(null);
-                          try {
-                            await remove.mutateAsync(line.id);
-                          } catch (err) {
-                            setError(getErrorMessage(err));
-                          }
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      <div className="flex gap-1">
+                        <button
+                          type="button"
+                          className="p-1 text-[var(--color-neutral-500)] hover:text-[var(--color-primary-600)]"
+                          title="Edit line"
+                          disabled={busy}
+                          onClick={() => startEdit(line)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          className="p-1 text-[var(--color-danger-500)]"
+                          disabled={busy}
+                          onClick={async () => {
+                            setError(null);
+                            try {
+                              await remove.mutateAsync(line.id);
+                            } catch (err) {
+                              setError(getErrorMessage(err));
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </td>
                   )}
                 </tr>
@@ -189,7 +239,7 @@ export function QuotationLinesEditor({
 
       {editable && showForm && (
         <form
-          onSubmit={onAdd}
+          onSubmit={onSave}
           className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-lg border border-[var(--color-neutral-200)] p-4"
         >
           <div className="space-y-1 sm:col-span-2">
@@ -208,15 +258,11 @@ export function QuotationLinesEditor({
             </select>
             {errors.charge_code_id && (
               <p className="text-xs text-[var(--color-danger-500)]">
-                {String(errors.charge_code_id.message)}
+                {errors.charge_code_id.message as string}
               </p>
             )}
           </div>
-          <Input
-            label="Description *"
-            error={errors.description?.message as string | undefined}
-            {...register('description')}
-          />
+          <Input label="Description *" error={errors.description?.message as string} {...register('description')} />
           <Input label="Unit" {...register('unit')} />
           <Input
             label="Quantity"
@@ -228,10 +274,16 @@ export function QuotationLinesEditor({
             label="Unit price *"
             type="number"
             step="any"
-            error={errors.unit_price?.message as string | undefined}
+            error={errors.unit_price?.message as string}
             {...register('unit_price', { valueAsNumber: true })}
           />
-          <Input label="Currency *" {...register('currency_code')} />
+          <Input label="Currency" {...register('currency_code')} />
+          <Input
+            label="Exchange rate"
+            type="number"
+            step="any"
+            {...register('exchange_rate', { valueAsNumber: true })}
+          />
           <div className="space-y-1">
             <label className="text-xs font-medium text-[var(--color-neutral-500)]">Tax rate</label>
             <select className={selectClass} {...register('tax_rate_id')}>
@@ -245,16 +297,20 @@ export function QuotationLinesEditor({
                 ))}
             </select>
           </div>
-          <label className="flex items-center gap-2 text-sm mt-6">
+          <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)] sm:col-span-2">
             <input type="checkbox" {...register('is_cost')} />
-            Cost line
+            Cost line (vs revenue)
           </label>
-          <div className="sm:col-span-2 flex justify-end gap-2">
-            <Button type="button" variant="secondary" onClick={() => setShowForm(false)}>
+          <div className="flex justify-end gap-2 sm:col-span-2">
+            <Button type="button" variant="secondary" onClick={clearForm} disabled={busy}>
               Cancel
             </Button>
-            <Button type="submit" disabled={add.isPending}>
-              {add.isPending ? 'Adding…' : 'Add line'}
+            <Button type="submit" disabled={busy}>
+              {busy
+                ? 'Saving…'
+                : editingLineId
+                  ? 'Update line'
+                  : 'Add line'}
             </Button>
           </div>
         </form>

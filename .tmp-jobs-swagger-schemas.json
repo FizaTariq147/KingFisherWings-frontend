@@ -1,0 +1,3753 @@
+{
+  "count": 108,
+  "ops": [
+    {
+      "method": "GET",
+      "path": "/jobs",
+      "operationId": "JobsController_findAll",
+      "summary": "List jobs",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "query",
+          "name": "page",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "limit",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "search",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "status",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "job_type",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "shipper_id",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "salesperson_id",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "branch_id",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "company_id",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "origin_port_id",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "dest_port_id",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "masters_only",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "parent_job_id",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "from_date",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "to_date",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "order",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "container_number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "vessel_id",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "shipping_line_id",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "voyage_number",
+          "required": false
+        },
+        {
+          "in": "query",
+          "name": "container_type_id",
+          "required": false
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs",
+      "operationId": "JobsController_create",
+      "summary": "Create a job (booking). AIR_EXPORT auto-seeds 15 milestones; SEA_FCL_EXPORT auto-seeds 16 FCL milestones + sea_fcl_details. Set parent_job_id for a HOUSE job.",
+      "bodyRef": "CreateJobDto",
+      "params": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/jobs/{id}",
+      "operationId": "JobsController_remove",
+      "summary": "Soft-delete a completed or cancelled job",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}",
+      "operationId": "JobsController_findOne",
+      "summary": "Get a job with air details, charges, milestones, and its house jobs (if a master)",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/jobs/{id}",
+      "operationId": "JobsController_update",
+      "summary": "Update a job (not allowed once COMPLETED or CANCELLED)",
+      "bodyRef": "UpdateJobDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/jobs/{id}/air-details",
+      "operationId": "JobsController_updateAirDetails",
+      "summary": "Update Air Export-specific booking fields (airline, HAWB/MAWB, flight, AWB type, freight type)",
+      "bodyRef": "UpdateAirJobDetailDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/bills-of-lading",
+      "operationId": "JobsController_listBillsOfLading",
+      "summary": "List bills of lading on a Sea FCL job",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/bills-of-lading",
+      "operationId": "JobsController_createBillOfLading",
+      "summary": "Create a bill of lading data record (PDF variants are Week 8)",
+      "bodyRef": "CreateBillOfLadingDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/jobs/{id}/bills-of-lading/{blId}",
+      "operationId": "JobsController_removeBillOfLading",
+      "summary": "Soft-delete a bill of lading",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "blId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/jobs/{id}/bills-of-lading/{blId}",
+      "operationId": "JobsController_updateBillOfLading",
+      "summary": "Update a bill of lading (draft → original / surrendered flags)",
+      "bodyRef": "UpdateBillOfLadingDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "blId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/cancel",
+      "operationId": "JobsController_cancelJob",
+      "summary": "Cancel a job (status -> CANCELLED)",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/cargo",
+      "operationId": "JobsController_listCargo",
+      "summary": "List FCL cargo lines on a job",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/cargo",
+      "operationId": "JobsController_addCargo",
+      "summary": "Add an FCL cargo line (optionally assigned to a container)",
+      "bodyRef": "CreateJobCargoDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/jobs/{id}/cargo/{cargoId}",
+      "operationId": "JobsController_removeCargo",
+      "summary": "Remove an FCL cargo line",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "cargoId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/jobs/{id}/cargo/{cargoId}",
+      "operationId": "JobsController_updateCargo",
+      "summary": "Update an FCL cargo line",
+      "bodyRef": "UpdateJobCargoDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "cargoId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/cfs-storage/calculate",
+      "operationId": "JobsController_calculateCfsStorage",
+      "summary": "Calculate CFS storage: days × rate_per_day from sea-fcl-details",
+      "bodyRef": "CalculateCfsStorageDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/charges",
+      "operationId": "JobsController_addCharge",
+      "summary": "Add a charge line — Job P&L recalculates automatically",
+      "bodyRef": "CreateJobChargeDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/jobs/{id}/charges/{chargeId}",
+      "operationId": "JobsController_removeCharge",
+      "summary": "Remove a charge line",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "chargeId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/jobs/{id}/charges/{chargeId}",
+      "operationId": "JobsController_updateCharge",
+      "summary": "Update a charge line",
+      "bodyRef": "UpdateJobChargeDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "chargeId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/close",
+      "operationId": "JobsController_closeJob",
+      "summary": "Close a job (status -> COMPLETED)",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/containers",
+      "operationId": "JobsController_listContainers",
+      "summary": "List containers on a Sea FCL job",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/containers",
+      "operationId": "JobsController_addContainer",
+      "summary": "Add a container to a Sea FCL job",
+      "bodyRef": "CreateJobContainerDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/jobs/{id}/containers/{containerId}",
+      "operationId": "JobsController_removeContainer",
+      "summary": "Remove a container from a Sea FCL job",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "containerId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/jobs/{id}/containers/{containerId}",
+      "operationId": "JobsController_updateContainer",
+      "summary": "Update a container on a Sea FCL job",
+      "bodyRef": "UpdateJobContainerDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "containerId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/containers/{containerId}/cargo",
+      "operationId": "JobsController_assignCargoToContainer",
+      "summary": "Assign an existing cargo line to a container",
+      "bodyRef": "AssignCargoToContainerDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "containerId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/containers/{containerId}/fill",
+      "operationId": "JobsController_getContainerFill",
+      "summary": "Container fill indicator for one container",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "containerId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/containers/{containerId}/return",
+      "operationId": "JobsController_returnContainer",
+      "summary": "Record container return to shipping line",
+      "bodyRef": "ReturnContainerDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "containerId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/containers/{containerId}/split",
+      "operationId": "JobsController_splitContainer",
+      "summary": "Split one container across multiple house consignees (co-loading)",
+      "bodyRef": "SplitContainerDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "containerId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/containers/fill",
+      "operationId": "JobsController_getContainersFill",
+      "summary": "Container fill indicators — weight % and CBM % for all containers",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/jobs/{id}/customs-status",
+      "operationId": "JobsController_updateCustomsStatus",
+      "summary": "Update customs clearance workflow (PENDING→FILED→QUERY→CLEARED→RELEASED)",
+      "bodyRef": "UpdateCustomsStatusDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/cutoffs",
+      "operationId": "JobsController_getCutoffStatus",
+      "summary": "SI / VGM / CY cutoff traffic-light status (green / amber ≤24h / red past)",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/damage-reports",
+      "operationId": "JobsController_listDamageReports",
+      "summary": "List damage reports",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/damage-reports",
+      "operationId": "JobsController_createDamageReport",
+      "summary": "Create a damage report (description + photo URLs + survey #)",
+      "bodyRef": "CreateDamageReportDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/deposits",
+      "operationId": "JobsController_listDeposits",
+      "summary": "List customs / port deposits with expiry alert bands",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/deposits",
+      "operationId": "JobsController_createDeposit",
+      "summary": "Create a customs or port deposit record",
+      "bodyRef": "CreateJobDepositDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/jobs/{id}/deposits/{depositId}",
+      "operationId": "JobsController_removeDeposit",
+      "summary": "Soft-delete a deposit",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "depositId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/jobs/{id}/deposits/{depositId}",
+      "operationId": "JobsController_updateDeposit",
+      "summary": "Update a deposit",
+      "bodyRef": "UpdateJobDepositDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "depositId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/documents",
+      "operationId": "JobsController_listDocuments",
+      "summary": "List documents attached to a job",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents",
+      "operationId": "JobsController_addDocument",
+      "summary": "Register a document on a job (metadata + file URL)",
+      "bodyRef": "CreateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/jobs/{id}/documents/{documentId}",
+      "operationId": "JobsController_removeDocument",
+      "summary": "Remove a draft document",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "documentId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/jobs/{id}/documents/{documentId}",
+      "operationId": "JobsController_updateDocument",
+      "summary": "Update a draft document metadata",
+      "bodyRef": "UpdateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "documentId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/{documentId}/finalize",
+      "operationId": "JobsController_finalizeDocument",
+      "summary": "Finalize a document (DRAFT -> ORIGINAL, locked)",
+      "bodyRef": "FinalizeJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "documentId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/back-to-back-bl",
+      "operationId": "JobsController_generateBackToBackBl",
+      "summary": "Queue Back-to-Back BL PDF (master + house pair)",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/barcode-label",
+      "operationId": "JobsController_generateBarcodeLabel",
+      "summary": "Queue barcode label PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/can",
+      "operationId": "JobsController_generateCan",
+      "summary": "Queue Cargo Arrival Notice (CAN) PDF and mark CAN_SENT",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/cargo-manifest",
+      "operationId": "JobsController_generateCargoManifest",
+      "summary": "Queue cargo manifest PDF generation",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/consignee-label",
+      "operationId": "JobsController_generateConsigneeLabel",
+      "summary": "Queue consignee label PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/delivery-order",
+      "operationId": "JobsController_generateDeliveryOrder",
+      "summary": "Queue Delivery Order PDF and mark DO_ISSUED",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/e-awb",
+      "operationId": "JobsController_generateEawb",
+      "summary": "Queue E-AWB PDF generation",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/exchange-letter",
+      "operationId": "JobsController_generateExchangeLetter",
+      "summary": "Queue Exchange Letter PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/fiata-bl",
+      "operationId": "JobsController_generateFiataBl",
+      "summary": "Queue FIATA FBL PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/freight-certificate",
+      "operationId": "JobsController_generateFreightCertificate",
+      "summary": "Queue freight certificate PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/freight-manifest",
+      "operationId": "JobsController_generateFreightManifest",
+      "summary": "Queue Freight Manifest PDF (FCL)",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/documents/generation-status",
+      "operationId": "JobsController_getDocumentGenerationStatus",
+      "summary": "List async document generation tasks for a job",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/hawb",
+      "operationId": "JobsController_generateHawb",
+      "summary": "Queue HAWB PDF generation (Puppeteer + BullMQ)",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/hbl",
+      "operationId": "JobsController_generateHbl",
+      "summary": "Queue HBL draft/original PDF (layout_variant: STANDARD | LAYOUT_A | LAYOUT_B)",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/hbl-express-release",
+      "operationId": "JobsController_generateHblExpressRelease",
+      "summary": "Queue Non-Negotiable HBL Express/Telex Release PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/job-card",
+      "operationId": "JobsController_generateJobCard",
+      "summary": "Queue Job Card PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/job-costing",
+      "operationId": "JobsController_generateJobCosting",
+      "summary": "Queue job costing sheet PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/job-pnl",
+      "operationId": "JobsController_generateJobPnl",
+      "summary": "Queue Job P&L Statement PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/mawb",
+      "operationId": "JobsController_generateMawb",
+      "summary": "Queue MAWB PDF generation (Puppeteer + BullMQ)",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/mbl",
+      "operationId": "JobsController_generateMbl",
+      "summary": "Queue Master BL / OBL PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/pre-alert",
+      "operationId": "JobsController_generatePreAlertDoc",
+      "summary": "Queue pre-alert document PDF generation",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/pre-can",
+      "operationId": "JobsController_generatePreCan",
+      "summary": "Queue Pre-CAN (pre-arrival notice) PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/proforma-invoice",
+      "operationId": "JobsController_generateProformaInvoice",
+      "summary": "Queue Proforma Invoice PDF for the job",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/proof-of-delivery",
+      "operationId": "JobsController_generatePodDocument",
+      "summary": "Queue Proof of Delivery PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/proxy-bl",
+      "operationId": "JobsController_generateProxyBl",
+      "summary": "Queue Proxy BL PDF (proxy_forwarder_name / address)",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/rider-bl",
+      "operationId": "JobsController_generateRiderBl",
+      "summary": "Queue Rider/Addendum to BL PDF (pass rider_terms)",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/sailing-confirmation",
+      "operationId": "JobsController_generateSailingConfirmation",
+      "summary": "Queue Sailing Confirmation PDF (uses sailed_at / vessel sailed milestone)",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/shipping-advice",
+      "operationId": "JobsController_generateShippingAdvice",
+      "summary": "Queue Shipping Advice PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/si",
+      "operationId": "JobsController_generateShippingInstruction",
+      "summary": "Queue Shipping Instruction (SI) PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/stuffing-report",
+      "operationId": "JobsController_generateStuffingReport",
+      "summary": "Queue Stuffing Report PDF from stuffing records + containers",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/surrender-notice",
+      "operationId": "JobsController_generateSurrenderNotice",
+      "summary": "Queue BL Surrender Notice PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/switch-bl",
+      "operationId": "JobsController_generateSwitchBl",
+      "summary": "Queue Switch BL PDF (switched_from_bl_number + switch consignee/notify)",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/transhipment-confirmation",
+      "operationId": "JobsController_generateTranshipmentConfirmation",
+      "summary": "Queue Transhipment Confirmation PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/transport-request",
+      "operationId": "JobsController_generateTransportRequest",
+      "summary": "Queue Transport Request PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/documents/undertake-letter",
+      "operationId": "JobsController_generateUndertakeLetter",
+      "summary": "Queue Undertake Letter PDF",
+      "bodyRef": "GenerateJobDocumentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/free-days",
+      "operationId": "JobsController_listFreeDays",
+      "summary": "List per-container free days + demurrage/detention accrual (traffic light)",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/free-days",
+      "operationId": "JobsController_upsertFreeDays",
+      "summary": "Upsert free-days / demurrage rates for a container",
+      "bodyRef": "UpsertContainerFreeDaysDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/free-days/recalculate",
+      "operationId": "JobsController_recalculateDemurrage",
+      "summary": "Recalculate demurrage + detention accruals for all containers on the job",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/house-jobs",
+      "operationId": "JobsController_getHouseJobs",
+      "summary": "List the house jobs consolidated under this master job",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/milestones",
+      "operationId": "JobsController_getMilestones",
+      "summary": "List all milestones for a job",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/milestones",
+      "operationId": "JobsController_addCustomMilestone",
+      "summary": "Add a custom milestone outside the standard taxonomy",
+      "bodyRef": "CreateCustomMilestoneDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/jobs/{id}/milestones/{milestoneId}",
+      "operationId": "JobsController_completeMilestone",
+      "summary": "Update a milestone — set actual_date to mark it complete",
+      "bodyRef": "UpdateJobMilestoneDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "milestoneId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/notes",
+      "operationId": "JobsController_listNotes",
+      "summary": "List notes on a job",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/notes",
+      "operationId": "JobsController_addNote",
+      "summary": "Add a note to a job",
+      "bodyRef": "CreateJobNoteDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/jobs/{id}/notes/{noteId}",
+      "operationId": "JobsController_removeNote",
+      "summary": "Remove a job note",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "noteId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/jobs/{id}/notes/{noteId}",
+      "operationId": "JobsController_updateNote",
+      "summary": "Update a job note",
+      "bodyRef": "UpdateJobNoteDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "noteId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/part-deliveries",
+      "operationId": "JobsController_listPartDeliveries",
+      "summary": "List part deliveries",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/part-deliveries",
+      "operationId": "JobsController_createPartDelivery",
+      "summary": "Record a part delivery (remaining balance auto-calculated from job pieces)",
+      "bodyRef": "CreatePartDeliveryDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/payment-requests",
+      "operationId": "JobsController_createPaymentRequestFromJob",
+      "summary": "Create a payment request from job totals / parties",
+      "bodyRef": "CreatePaymentRequestFromJobDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/pnl",
+      "operationId": "JobsController_getPnl",
+      "summary": "Job P&L breakdown — revenue lines, cost lines, GP summary (Ch.8.2)",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/pods",
+      "operationId": "JobsController_listPods",
+      "summary": "List proofs of delivery",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/pods",
+      "operationId": "JobsController_createPod",
+      "summary": "Record proof of delivery",
+      "bodyRef": "CreateProofOfDeliveryDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/pre-alert/schedule",
+      "operationId": "JobsController_schedulePreAlert",
+      "summary": "Schedule a pre-alert email for a future UTC time (cron delivers it)",
+      "bodyRef": "SchedulePreAlertDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/pre-alert/send",
+      "operationId": "JobsController_sendPreAlert",
+      "summary": "Send pre-alert and mark PRE_ALERT_SENT milestone complete",
+      "bodyRef": "SendPreAlertDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/prorate-cost/{chargeCodeId}",
+      "operationId": "JobsController_prorateMasterCost",
+      "summary": "Distribute a master job's cost line to its house jobs, proportionally by chargeable weight",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "chargeCodeId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/jobs/{id}/sea-fcl-details",
+      "operationId": "JobsController_updateSeaFclDetails",
+      "summary": "Update Sea FCL-specific booking fields (shipping line, BL numbers, cutoffs, VGM/SI)",
+      "bodyRef": "UpdateSeaFclJobDetailDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/sea-fcl-details/si-submission",
+      "operationId": "JobsController_submitSi",
+      "summary": "Record SI submission (date + version) and mark SI_SUBMITTED milestone",
+      "bodyRef": "SubmitSiDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/sea-fcl-details/vgm-submission",
+      "operationId": "JobsController_submitVgm",
+      "summary": "Record VGM submission (date + SM1/SM2) and mark VGM_SUBMITTED milestone",
+      "bodyRef": "SubmitVgmDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/stuffing-records",
+      "operationId": "JobsController_listStuffingRecords",
+      "summary": "List stuffing records on a Sea FCL job",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/stuffing-records",
+      "operationId": "JobsController_createStuffingRecord",
+      "summary": "Create a stuffing record and mark STUFFING_COMPLETED",
+      "bodyRef": "CreateStuffingRecordDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/jobs/{id}/stuffing-records/{recordId}",
+      "operationId": "JobsController_removeStuffingRecord",
+      "summary": "Soft-delete a stuffing record",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "recordId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/jobs/{id}/stuffing-records/{recordId}",
+      "operationId": "JobsController_updateStuffingRecord",
+      "summary": "Update a stuffing record",
+      "bodyRef": "UpdateStuffingRecordDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "recordId",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/{id}/sub-jobs",
+      "operationId": "JobsController_listSubJobs",
+      "summary": "List operational sub-jobs under this parent",
+      "bodyRef": null,
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/sub-jobs",
+      "operationId": "JobsController_createSubJob",
+      "summary": "Create an operational sub-job under this parent",
+      "bodyRef": "CreateSubJobDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/transhipment-link",
+      "operationId": "JobsController_linkTranshipment",
+      "summary": "Link this FCL Import job to an outbound SEA_FCL_EXPORT job",
+      "bodyRef": "LinkTranshipmentDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/{id}/whatsapp/status",
+      "operationId": "JobsController_sendWhatsApp",
+      "summary": "Send WhatsApp status stub (logged until WHATSAPP_ENABLED=true)",
+      "bodyRef": "SendWhatsAppStatusDto",
+      "params": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "schemaNames": [
+    "AssignCargoToContainerDto",
+    "ContainerSplitPortionDto",
+    "CreateBillOfLadingDto",
+    "CreateContainerTypeDto",
+    "CreateCustomMilestoneDto",
+    "CreateJobCargoDto",
+    "CreateJobChargeDto",
+    "CreateJobContainerDto",
+    "CreateJobDepositDto",
+    "CreateJobDocumentDto",
+    "CreateJobDto",
+    "CreateJobNoteDto",
+    "CreatePaymentRequestFromJobDto",
+    "CreateStuffingRecordDto",
+    "CreateSubJobDto",
+    "FinalizeJobDocumentDto",
+    "GenerateJobDocumentDto",
+    "ReturnContainerDto",
+    "SchedulePreAlertDto",
+    "SendPreAlertDto",
+    "SplitContainerDto",
+    "SubmitSiDto",
+    "SubmitVgmDto",
+    "UpdateAirJobDetailDto",
+    "UpdateBillOfLadingDto",
+    "UpdateContainerTypeDto",
+    "UpdateJobCargoDto",
+    "UpdateJobChargeDto",
+    "UpdateJobContainerDto",
+    "UpdateJobDepositDto",
+    "UpdateJobDocumentDto",
+    "UpdateJobDto",
+    "UpdateJobMilestoneDto",
+    "UpdateJobNoteDto",
+    "UpdateSeaFclJobDetailDto",
+    "UpdateStuffingRecordDto",
+    "UpsertContainerFreeDaysDto"
+  ],
+  "schemas": {
+    "AssignCargoToContainerDto": {
+      "required": [
+        "cargo_id"
+      ],
+      "props": {
+        "cargo_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": true
+        }
+      }
+    },
+    "ContainerSplitPortionDto": {
+      "required": [
+        "consignee_id"
+      ],
+      "props": {
+        "consignee_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": true
+        },
+        "packages": {
+          "type": "number",
+          "required": false
+        },
+        "gross_weight": {
+          "type": "number",
+          "required": false
+        },
+        "measurement": {
+          "type": "number",
+          "required": false
+        },
+        "commodity": {
+          "type": "string",
+          "required": false
+        },
+        "marks_numbers": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "CreateBillOfLadingDto": {
+      "required": [
+        "bl_type"
+      ],
+      "props": {
+        "bl_type": {
+          "type": "string",
+          "required": true,
+          "description": "HBL | MBL | FIATA | SWITCH | PROXY | BACK_TO_BACK | Express Release"
+        },
+        "bl_number": {
+          "type": "string",
+          "required": false
+        },
+        "shipper_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "consignee_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "notify_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "pol": {
+          "type": "string",
+          "required": false
+        },
+        "pod": {
+          "type": "string",
+          "required": false
+        },
+        "place_of_receipt": {
+          "type": "string",
+          "required": false
+        },
+        "place_of_delivery": {
+          "type": "string",
+          "required": false
+        },
+        "vessel_name": {
+          "type": "string",
+          "required": false
+        },
+        "voyage_number": {
+          "type": "string",
+          "required": false
+        },
+        "etd": {
+          "type": "string",
+          "required": false
+        },
+        "eta": {
+          "type": "string",
+          "required": false
+        },
+        "description_of_goods": {
+          "type": "string",
+          "required": false
+        },
+        "marks_numbers": {
+          "type": "string",
+          "required": false
+        },
+        "packages": {
+          "type": "number",
+          "required": false
+        },
+        "gross_weight": {
+          "type": "number",
+          "required": false
+        },
+        "measurement": {
+          "type": "number",
+          "required": false
+        },
+        "freight_payable_at": {
+          "type": "string",
+          "required": false
+        },
+        "freight_terms": {
+          "type": "string",
+          "required": false
+        },
+        "number_of_originals": {
+          "type": "number",
+          "required": false
+        },
+        "bl_conditions": {
+          "type": "string",
+          "required": false
+        },
+        "rider_terms": {
+          "type": "string",
+          "required": false
+        },
+        "switched_from_bl_number": {
+          "type": "string",
+          "required": false
+        },
+        "switch_consignee_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "switch_notify_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "proxy_forwarder_name": {
+          "type": "string",
+          "required": false
+        },
+        "proxy_forwarder_address": {
+          "type": "string",
+          "required": false
+        },
+        "paired_bl_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "is_draft": {
+          "type": "boolean",
+          "required": false
+        },
+        "is_original": {
+          "type": "boolean",
+          "required": false
+        },
+        "is_surrendered": {
+          "type": "boolean",
+          "required": false
+        },
+        "is_express_release": {
+          "type": "boolean",
+          "required": false
+        }
+      }
+    },
+    "CreateContainerTypeDto": {
+      "required": [
+        "code",
+        "name",
+        "size"
+      ],
+      "props": {
+        "code": {
+          "type": "string",
+          "required": true
+        },
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "size": {
+          "type": "string",
+          "enum": [
+            "SIZE_20GP",
+            "SIZE_40GP",
+            "SIZE_40HC",
+            "SIZE_45HC",
+            "SIZE_20REEFER",
+            "SIZE_40REEFER",
+            "SIZE_20OT",
+            "SIZE_40OT",
+            "SIZE_20FR",
+            "SIZE_40FR",
+            "SIZE_20TANK",
+            "SIZE_40TANK"
+          ],
+          "required": true
+        },
+        "teu": {
+          "type": "number",
+          "required": false,
+          "description": "Twenty-foot equivalent units"
+        },
+        "max_payload": {
+          "type": "number",
+          "required": false,
+          "description": "Max payload in kg"
+        },
+        "volume_cbm": {
+          "type": "number",
+          "required": false,
+          "description": "Internal volume in CBM"
+        },
+        "is_active": {
+          "type": "boolean",
+          "required": false
+        }
+      }
+    },
+    "CreateCustomMilestoneDto": {
+      "required": [
+        "milestone"
+      ],
+      "props": {
+        "milestone": {
+          "type": "string",
+          "required": true,
+          "description": "Free-form milestone name, for anything outside the standard taxonomy."
+        },
+        "planned_date": {
+          "type": "string",
+          "required": false
+        },
+        "actual_date": {
+          "type": "string",
+          "required": false
+        },
+        "notes": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "CreateJobCargoDto": {
+      "required": [],
+      "props": {
+        "container_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "consignee_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false,
+          "description": "House consignee for co-loading / split"
+        },
+        "commodity": {
+          "type": "string",
+          "required": false
+        },
+        "hs_code": {
+          "type": "string",
+          "required": false
+        },
+        "description": {
+          "type": "string",
+          "required": false
+        },
+        "marks_numbers": {
+          "type": "string",
+          "required": false
+        },
+        "packages": {
+          "type": "number",
+          "required": false
+        },
+        "gross_weight": {
+          "type": "number",
+          "required": false
+        },
+        "measurement": {
+          "type": "number",
+          "required": false,
+          "description": "Measurement in CBM"
+        }
+      }
+    },
+    "CreateJobChargeDto": {
+      "required": [
+        "charge_code_id",
+        "description",
+        "unit_price",
+        "currency_code"
+      ],
+      "props": {
+        "charge_code_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": true
+        },
+        "description": {
+          "type": "string",
+          "required": true
+        },
+        "quantity": {
+          "type": "number",
+          "required": false
+        },
+        "unit_price": {
+          "type": "number",
+          "required": true
+        },
+        "currency_code": {
+          "type": "string",
+          "required": true
+        },
+        "exchange_rate": {
+          "type": "number",
+          "required": false
+        },
+        "tax_rate_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "is_cost": {
+          "type": "boolean",
+          "required": false,
+          "description": "Cost line (to a supplier) if true; revenue line if false."
+        },
+        "is_provisional": {
+          "type": "boolean",
+          "required": false,
+          "description": "Provisional estimate — excluded from confirmed P&L until confirmed."
+        },
+        "is_billable": {
+          "type": "boolean",
+          "required": false
+        },
+        "party_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false,
+          "description": "Supplier Party — only meaningful for cost lines."
+        }
+      }
+    },
+    "CreateJobContainerDto": {
+      "required": [
+        "container_type_id"
+      ],
+      "props": {
+        "container_type_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": true
+        },
+        "container_number": {
+          "type": "string",
+          "required": false
+        },
+        "seal_number": {
+          "type": "string",
+          "required": false
+        },
+        "tare_weight": {
+          "type": "number",
+          "required": false
+        },
+        "max_payload": {
+          "type": "number",
+          "required": false
+        },
+        "cubic_capacity": {
+          "type": "number",
+          "required": false
+        },
+        "gross_weight": {
+          "type": "number",
+          "required": false
+        },
+        "vgm_weight": {
+          "type": "number",
+          "required": false
+        },
+        "cbm": {
+          "type": "number",
+          "required": false
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "EMPTY",
+            "STUFFED",
+            "GATED_IN",
+            "LOADED",
+            "IN_TRANSIT",
+            "DISCHARGED",
+            "RETURNED"
+          ],
+          "required": false
+        },
+        "gate_in_at": {
+          "type": "string",
+          "required": false
+        },
+        "is_soc": {
+          "type": "boolean",
+          "required": false
+        }
+      }
+    },
+    "CreateJobDepositDto": {
+      "required": [
+        "deposit_type",
+        "deposit_amount"
+      ],
+      "props": {
+        "deposit_type": {
+          "type": "string",
+          "enum": [
+            "CUSTOMS",
+            "PORT"
+          ],
+          "required": true
+        },
+        "deposit_amount": {
+          "type": "number",
+          "required": true
+        },
+        "currency_code": {
+          "type": "string",
+          "required": false
+        },
+        "deposit_receipt_number": {
+          "type": "string",
+          "required": false
+        },
+        "deposit_expiry_date": {
+          "type": "string",
+          "required": false
+        },
+        "remarks": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "CreateJobDocumentDto": {
+      "required": [
+        "document_type",
+        "file_name",
+        "file_url"
+      ],
+      "props": {
+        "document_type": {
+          "type": "string",
+          "enum": [
+            "HAWB",
+            "MAWB",
+            "HBL",
+            "MBL",
+            "HBL_EXPRESS_RELEASE",
+            "FIATA_BL",
+            "RIDER_BL",
+            "SWITCH_BL",
+            "PROXY_BL",
+            "BACK_TO_BACK_BL",
+            "SURRENDER_NOTICE",
+            "STUFFING_REPORT",
+            "SAILING_CONFIRMATION",
+            "TRANSHIPMENT_CONFIRMATION",
+            "BOOKING_CONFIRMATION",
+            "CARGO_MANIFEST",
+            "PACKING_LIST",
+            "COMMERCIAL_INVOICE",
+            "CERTIFICATE_OF_ORIGIN",
+            "DELIVERY_ORDER",
+            "ARRIVAL_NOTICE",
+            "PRE_ALERT",
+            "CUSTOMS_ENTRY",
+            "VGM",
+            "SHIPPING_INSTRUCTION",
+            "FREIGHT_MANIFEST",
+            "JOB_CARD",
+            "JOB_PNL",
+            "PROFORMA_INVOICE",
+            "PRE_CAN",
+            "CAN",
+            "EXCHANGE_LETTER",
+            "UNDERTAKE_LETTER",
+            "TRANSPORT_REQUEST",
+            "SHIPPING_ADVICE",
+            "PROOF_OF_DELIVERY",
+            "E_AWB",
+            "BARCODE_LABEL",
+            "CONSIGNEE_LABEL",
+            "JOB_COSTING",
+            "FREIGHT_CERTIFICATE",
+            "OTHER"
+          ],
+          "required": true
+        },
+        "file_name": {
+          "type": "string",
+          "required": true
+        },
+        "file_url": {
+          "type": "string",
+          "required": true,
+          "description": "Public or signed URL where the generated/uploaded file is stored."
+        },
+        "reference_number": {
+          "type": "string",
+          "required": false
+        },
+        "s3_key": {
+          "type": "string",
+          "required": false
+        },
+        "file_size": {
+          "type": "number",
+          "required": false
+        },
+        "mime_type": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "CreateJobDto": {
+      "required": [
+        "job_type",
+        "shipper_id"
+      ],
+      "props": {
+        "job_type": {
+          "type": "string",
+          "enum": [
+            "AIR_EXPORT",
+            "AIR_IMPORT",
+            "SEA_FCL_EXPORT",
+            "SEA_FCL_IMPORT",
+            "SEA_LCL_EXPORT",
+            "SEA_LCL_IMPORT",
+            "LAND",
+            "COURIER",
+            "CUSTOMS_CLEARANCE",
+            "NVOCC_EXPORT",
+            "NVOCC_IMPORT",
+            "SERVICE_JOB",
+            "WAREHOUSE"
+          ],
+          "required": true
+        },
+        "company_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "branch_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "department_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "parent_job_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false,
+          "description": "Set to create this as a HOUSE job under a master."
+        },
+        "shipper_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": true,
+          "description": "Shipper (Party)."
+        },
+        "consignee_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "agent_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "salesperson_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "ops_user_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "origin_port_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "dest_port_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "commodity": {
+          "type": "string",
+          "required": false
+        },
+        "hs_code": {
+          "type": "string",
+          "required": false
+        },
+        "gross_weight": {
+          "type": "number",
+          "required": false
+        },
+        "chargeable_weight": {
+          "type": "number",
+          "required": false
+        },
+        "volume_cbm": {
+          "type": "number",
+          "required": false
+        },
+        "pieces": {
+          "type": "number",
+          "required": false
+        },
+        "container_type_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "container_count": {
+          "type": "number",
+          "required": false
+        },
+        "incoterms": {
+          "type": "string",
+          "required": false
+        },
+        "is_dg": {
+          "type": "boolean",
+          "required": false
+        },
+        "dg_class": {
+          "type": "string",
+          "required": false
+        },
+        "notes": {
+          "type": "string",
+          "required": false
+        },
+        "customer_remarks": {
+          "type": "string",
+          "required": false
+        },
+        "tags": {
+          "type": "array",
+          "required": false,
+          "items": {
+            "type": "string"
+          }
+        },
+        "etd": {
+          "type": "string",
+          "required": false
+        },
+        "eta": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "CreateJobNoteDto": {
+      "required": [
+        "note"
+      ],
+      "props": {
+        "note": {
+          "type": "string",
+          "required": true
+        },
+        "is_private": {
+          "type": "boolean",
+          "required": false
+        },
+        "is_pinned": {
+          "type": "boolean",
+          "required": false
+        }
+      }
+    },
+    "CreatePaymentRequestFromJobDto": {
+      "required": [],
+      "props": {
+        "party_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "remarks": {
+          "type": "string",
+          "required": false
+        },
+        "amount": {
+          "type": "number",
+          "required": false
+        },
+        "currency_code": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "CreateStuffingRecordDto": {
+      "required": [
+        "supervisor_name",
+        "stuffing_date"
+      ],
+      "props": {
+        "container_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "supervisor_name": {
+          "type": "string",
+          "required": true
+        },
+        "stuffing_date": {
+          "type": "string",
+          "required": true,
+          "description": "ISO datetime of stuffing"
+        },
+        "location": {
+          "type": "string",
+          "required": false,
+          "description": "Warehouse / CY location"
+        },
+        "goods_condition": {
+          "type": "string",
+          "required": false
+        },
+        "notes": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "CreateSubJobDto": {
+      "required": [],
+      "props": {
+        "job_type": {
+          "type": "string",
+          "enum": [
+            "AIR_EXPORT",
+            "AIR_IMPORT",
+            "SEA_FCL_EXPORT",
+            "SEA_FCL_IMPORT",
+            "SEA_LCL_EXPORT",
+            "SEA_LCL_IMPORT",
+            "LAND",
+            "COURIER",
+            "CUSTOMS_CLEARANCE",
+            "NVOCC_EXPORT",
+            "NVOCC_IMPORT",
+            "SERVICE_JOB",
+            "WAREHOUSE"
+          ],
+          "required": false,
+          "description": "Defaults to the parent job type."
+        },
+        "shipper_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "consignee_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "agent_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "commodity": {
+          "type": "string",
+          "required": false
+        },
+        "notes": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "FinalizeJobDocumentDto": {
+      "required": [],
+      "props": {
+        "is_finalized": {
+          "type": "boolean",
+          "required": false
+        }
+      }
+    },
+    "GenerateJobDocumentDto": {
+      "required": [],
+      "props": {
+        "layout_variant": {
+          "type": "string",
+          "required": false,
+          "description": "Template layout variant (e.g. STANDARD, LAYOUT_A, LAYOUT_B)"
+        },
+        "is_original": {
+          "type": "boolean",
+          "required": false,
+          "description": "Generate as ORIGINAL (vs DRAFT watermark)"
+        },
+        "bl_id": {
+          "type": "string",
+          "required": false,
+          "description": "Use a specific BillOfLading record; otherwise latest matching type / job defaults"
+        },
+        "number_of_originals": {
+          "type": "number",
+          "required": false,
+          "description": "Number of original BLs shown on header (1–3)"
+        },
+        "rider_terms": {
+          "type": "string",
+          "required": false,
+          "description": "Rider / addendum terms (RIDER_BL)"
+        },
+        "switched_from_bl_number": {
+          "type": "string",
+          "required": false,
+          "description": "Original BL number being switched (SWITCH_BL)"
+        },
+        "switch_consignee_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false,
+          "description": "Replacement consignee for SWITCH_BL"
+        },
+        "switch_notify_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false,
+          "description": "Replacement notify party for SWITCH_BL"
+        },
+        "proxy_forwarder_name": {
+          "type": "string",
+          "required": false,
+          "description": "Proxy forwarder name (PROXY_BL)"
+        },
+        "proxy_forwarder_address": {
+          "type": "string",
+          "required": false,
+          "description": "Proxy forwarder address (PROXY_BL)"
+        },
+        "transhipment_port": {
+          "type": "string",
+          "required": false,
+          "description": "Transhipment port name override"
+        }
+      }
+    },
+    "ReturnContainerDto": {
+      "required": [],
+      "props": {
+        "returned_at": {
+          "type": "string",
+          "required": false,
+          "description": "Defaults to now"
+        },
+        "return_condition": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "SchedulePreAlertDto": {
+      "required": [
+        "to_email",
+        "scheduled_at"
+      ],
+      "props": {
+        "to_email": {
+          "type": "string",
+          "required": true
+        },
+        "scheduled_at": {
+          "type": "string",
+          "required": true
+        },
+        "message": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "SendPreAlertDto": {
+      "required": [
+        "to_email"
+      ],
+      "props": {
+        "to_email": {
+          "type": "string",
+          "required": true
+        },
+        "message": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "SplitContainerDto": {
+      "required": [
+        "portions"
+      ],
+      "props": {
+        "portions": {
+          "type": "array",
+          "required": true,
+          "items": {
+            "$ref": "ContainerSplitPortionDto"
+          }
+        }
+      }
+    },
+    "SubmitSiDto": {
+      "required": [],
+      "props": {
+        "si_submitted_at": {
+          "type": "string",
+          "required": false,
+          "description": "Defaults to now"
+        },
+        "si_version": {
+          "type": "number",
+          "required": false
+        }
+      }
+    },
+    "SubmitVgmDto": {
+      "required": [],
+      "props": {
+        "vgm_submitted_at": {
+          "type": "string",
+          "required": false,
+          "description": "Defaults to now"
+        },
+        "vgm_method": {
+          "type": "string",
+          "enum": [
+            "SM1",
+            "SM2"
+          ],
+          "required": false
+        }
+      }
+    },
+    "UpdateAirJobDetailDto": {
+      "required": [],
+      "props": {
+        "airline_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "origin_airport_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "dest_airport_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "hawb_number": {
+          "type": "string",
+          "required": false
+        },
+        "mawb_number": {
+          "type": "string",
+          "required": false
+        },
+        "flight_number": {
+          "type": "string",
+          "required": false
+        },
+        "flight_date": {
+          "type": "string",
+          "required": false
+        },
+        "screened": {
+          "type": "boolean",
+          "required": false
+        },
+        "screening_ref": {
+          "type": "string",
+          "required": false
+        },
+        "awb_type": {
+          "type": "string",
+          "enum": [
+            "Direct",
+            "Back-to-Back",
+            "Consol"
+          ],
+          "required": false
+        },
+        "freight_type": {
+          "type": "string",
+          "enum": [
+            "Prepaid",
+            "Collect"
+          ],
+          "required": false
+        },
+        "conversion_factor": {
+          "type": "number",
+          "required": false,
+          "description": "kg per CBM; IATA standard is 167."
+        }
+      }
+    },
+    "UpdateBillOfLadingDto": {
+      "required": [],
+      "props": {
+        "bl_type": {
+          "type": "string",
+          "required": false,
+          "description": "HBL | MBL | FIATA | SWITCH | PROXY | BACK_TO_BACK | Express Release"
+        },
+        "bl_number": {
+          "type": "string",
+          "required": false
+        },
+        "shipper_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "consignee_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "notify_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "pol": {
+          "type": "string",
+          "required": false
+        },
+        "pod": {
+          "type": "string",
+          "required": false
+        },
+        "place_of_receipt": {
+          "type": "string",
+          "required": false
+        },
+        "place_of_delivery": {
+          "type": "string",
+          "required": false
+        },
+        "vessel_name": {
+          "type": "string",
+          "required": false
+        },
+        "voyage_number": {
+          "type": "string",
+          "required": false
+        },
+        "etd": {
+          "type": "string",
+          "required": false
+        },
+        "eta": {
+          "type": "string",
+          "required": false
+        },
+        "description_of_goods": {
+          "type": "string",
+          "required": false
+        },
+        "marks_numbers": {
+          "type": "string",
+          "required": false
+        },
+        "packages": {
+          "type": "number",
+          "required": false
+        },
+        "gross_weight": {
+          "type": "number",
+          "required": false
+        },
+        "measurement": {
+          "type": "number",
+          "required": false
+        },
+        "freight_payable_at": {
+          "type": "string",
+          "required": false
+        },
+        "freight_terms": {
+          "type": "string",
+          "required": false
+        },
+        "number_of_originals": {
+          "type": "number",
+          "required": false
+        },
+        "bl_conditions": {
+          "type": "string",
+          "required": false
+        },
+        "rider_terms": {
+          "type": "string",
+          "required": false
+        },
+        "switched_from_bl_number": {
+          "type": "string",
+          "required": false
+        },
+        "switch_consignee_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "switch_notify_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "proxy_forwarder_name": {
+          "type": "string",
+          "required": false
+        },
+        "proxy_forwarder_address": {
+          "type": "string",
+          "required": false
+        },
+        "paired_bl_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "is_draft": {
+          "type": "boolean",
+          "required": false
+        },
+        "is_original": {
+          "type": "boolean",
+          "required": false
+        },
+        "is_surrendered": {
+          "type": "boolean",
+          "required": false
+        },
+        "is_express_release": {
+          "type": "boolean",
+          "required": false
+        }
+      }
+    },
+    "UpdateContainerTypeDto": {
+      "required": [],
+      "props": {
+        "code": {
+          "type": "string",
+          "required": false
+        },
+        "name": {
+          "type": "string",
+          "required": false
+        },
+        "size": {
+          "type": "string",
+          "enum": [
+            "SIZE_20GP",
+            "SIZE_40GP",
+            "SIZE_40HC",
+            "SIZE_45HC",
+            "SIZE_20REEFER",
+            "SIZE_40REEFER",
+            "SIZE_20OT",
+            "SIZE_40OT",
+            "SIZE_20FR",
+            "SIZE_40FR",
+            "SIZE_20TANK",
+            "SIZE_40TANK"
+          ],
+          "required": false
+        },
+        "teu": {
+          "type": "number",
+          "required": false,
+          "description": "Twenty-foot equivalent units"
+        },
+        "max_payload": {
+          "type": "number",
+          "required": false,
+          "description": "Max payload in kg"
+        },
+        "volume_cbm": {
+          "type": "number",
+          "required": false,
+          "description": "Internal volume in CBM"
+        },
+        "is_active": {
+          "type": "boolean",
+          "required": false
+        }
+      }
+    },
+    "UpdateJobCargoDto": {
+      "required": [],
+      "props": {
+        "container_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "consignee_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false,
+          "description": "House consignee for co-loading / split"
+        },
+        "commodity": {
+          "type": "string",
+          "required": false
+        },
+        "hs_code": {
+          "type": "string",
+          "required": false
+        },
+        "description": {
+          "type": "string",
+          "required": false
+        },
+        "marks_numbers": {
+          "type": "string",
+          "required": false
+        },
+        "packages": {
+          "type": "number",
+          "required": false
+        },
+        "gross_weight": {
+          "type": "number",
+          "required": false
+        },
+        "measurement": {
+          "type": "number",
+          "required": false,
+          "description": "Measurement in CBM"
+        }
+      }
+    },
+    "UpdateJobChargeDto": {
+      "required": [],
+      "props": {
+        "charge_code_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "description": {
+          "type": "string",
+          "required": false
+        },
+        "quantity": {
+          "type": "number",
+          "required": false
+        },
+        "unit_price": {
+          "type": "number",
+          "required": false
+        },
+        "currency_code": {
+          "type": "string",
+          "required": false
+        },
+        "exchange_rate": {
+          "type": "number",
+          "required": false
+        },
+        "tax_rate_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "is_cost": {
+          "type": "boolean",
+          "required": false,
+          "description": "Cost line (to a supplier) if true; revenue line if false."
+        },
+        "is_provisional": {
+          "type": "boolean",
+          "required": false,
+          "description": "Provisional estimate — excluded from confirmed P&L until confirmed."
+        },
+        "is_billable": {
+          "type": "boolean",
+          "required": false
+        },
+        "party_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false,
+          "description": "Supplier Party — only meaningful for cost lines."
+        }
+      }
+    },
+    "UpdateJobContainerDto": {
+      "required": [],
+      "props": {
+        "container_type_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "container_number": {
+          "type": "string",
+          "required": false
+        },
+        "seal_number": {
+          "type": "string",
+          "required": false
+        },
+        "tare_weight": {
+          "type": "number",
+          "required": false
+        },
+        "max_payload": {
+          "type": "number",
+          "required": false
+        },
+        "cubic_capacity": {
+          "type": "number",
+          "required": false
+        },
+        "gross_weight": {
+          "type": "number",
+          "required": false
+        },
+        "vgm_weight": {
+          "type": "number",
+          "required": false
+        },
+        "cbm": {
+          "type": "number",
+          "required": false
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "EMPTY",
+            "STUFFED",
+            "GATED_IN",
+            "LOADED",
+            "IN_TRANSIT",
+            "DISCHARGED",
+            "RETURNED"
+          ],
+          "required": false
+        },
+        "gate_in_at": {
+          "type": "string",
+          "required": false
+        },
+        "is_soc": {
+          "type": "boolean",
+          "required": false
+        }
+      }
+    },
+    "UpdateJobDepositDto": {
+      "required": [],
+      "props": {
+        "deposit_type": {
+          "type": "string",
+          "enum": [
+            "CUSTOMS",
+            "PORT"
+          ],
+          "required": false
+        },
+        "deposit_amount": {
+          "type": "number",
+          "required": false
+        },
+        "currency_code": {
+          "type": "string",
+          "required": false
+        },
+        "deposit_receipt_number": {
+          "type": "string",
+          "required": false
+        },
+        "deposit_expiry_date": {
+          "type": "string",
+          "required": false
+        },
+        "remarks": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "UpdateJobDocumentDto": {
+      "required": [],
+      "props": {
+        "document_type": {
+          "type": "string",
+          "enum": [
+            "HAWB",
+            "MAWB",
+            "HBL",
+            "MBL",
+            "HBL_EXPRESS_RELEASE",
+            "FIATA_BL",
+            "RIDER_BL",
+            "SWITCH_BL",
+            "PROXY_BL",
+            "BACK_TO_BACK_BL",
+            "SURRENDER_NOTICE",
+            "STUFFING_REPORT",
+            "SAILING_CONFIRMATION",
+            "TRANSHIPMENT_CONFIRMATION",
+            "BOOKING_CONFIRMATION",
+            "CARGO_MANIFEST",
+            "PACKING_LIST",
+            "COMMERCIAL_INVOICE",
+            "CERTIFICATE_OF_ORIGIN",
+            "DELIVERY_ORDER",
+            "ARRIVAL_NOTICE",
+            "PRE_ALERT",
+            "CUSTOMS_ENTRY",
+            "VGM",
+            "SHIPPING_INSTRUCTION",
+            "FREIGHT_MANIFEST",
+            "JOB_CARD",
+            "JOB_PNL",
+            "PROFORMA_INVOICE",
+            "PRE_CAN",
+            "CAN",
+            "EXCHANGE_LETTER",
+            "UNDERTAKE_LETTER",
+            "TRANSPORT_REQUEST",
+            "SHIPPING_ADVICE",
+            "PROOF_OF_DELIVERY",
+            "E_AWB",
+            "BARCODE_LABEL",
+            "CONSIGNEE_LABEL",
+            "JOB_COSTING",
+            "FREIGHT_CERTIFICATE",
+            "OTHER"
+          ],
+          "required": false
+        },
+        "file_name": {
+          "type": "string",
+          "required": false
+        },
+        "file_url": {
+          "type": "string",
+          "required": false,
+          "description": "Public or signed URL where the generated/uploaded file is stored."
+        },
+        "reference_number": {
+          "type": "string",
+          "required": false
+        },
+        "s3_key": {
+          "type": "string",
+          "required": false
+        },
+        "file_size": {
+          "type": "number",
+          "required": false
+        },
+        "mime_type": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "UpdateJobDto": {
+      "required": [],
+      "props": {
+        "job_type": {
+          "type": "string",
+          "enum": [
+            "AIR_EXPORT",
+            "AIR_IMPORT",
+            "SEA_FCL_EXPORT",
+            "SEA_FCL_IMPORT",
+            "SEA_LCL_EXPORT",
+            "SEA_LCL_IMPORT",
+            "LAND",
+            "COURIER",
+            "CUSTOMS_CLEARANCE",
+            "NVOCC_EXPORT",
+            "NVOCC_IMPORT",
+            "SERVICE_JOB",
+            "WAREHOUSE"
+          ],
+          "required": false
+        },
+        "company_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "branch_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "department_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "parent_job_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false,
+          "description": "Set to create this as a HOUSE job under a master."
+        },
+        "shipper_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false,
+          "description": "Shipper (Party)."
+        },
+        "consignee_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "agent_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "salesperson_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "ops_user_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "origin_port_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "dest_port_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "commodity": {
+          "type": "string",
+          "required": false
+        },
+        "hs_code": {
+          "type": "string",
+          "required": false
+        },
+        "gross_weight": {
+          "type": "number",
+          "required": false
+        },
+        "chargeable_weight": {
+          "type": "number",
+          "required": false
+        },
+        "volume_cbm": {
+          "type": "number",
+          "required": false
+        },
+        "pieces": {
+          "type": "number",
+          "required": false
+        },
+        "container_type_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "container_count": {
+          "type": "number",
+          "required": false
+        },
+        "incoterms": {
+          "type": "string",
+          "required": false
+        },
+        "is_dg": {
+          "type": "boolean",
+          "required": false
+        },
+        "dg_class": {
+          "type": "string",
+          "required": false
+        },
+        "notes": {
+          "type": "string",
+          "required": false
+        },
+        "customer_remarks": {
+          "type": "string",
+          "required": false
+        },
+        "tags": {
+          "type": "array",
+          "required": false,
+          "items": {
+            "type": "string"
+          }
+        },
+        "etd": {
+          "type": "string",
+          "required": false
+        },
+        "eta": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "UpdateJobMilestoneDto": {
+      "required": [],
+      "props": {
+        "actual_date": {
+          "type": "string",
+          "required": false,
+          "description": "Actual completion date — set this to mark the milestone complete."
+        },
+        "planned_date": {
+          "type": "string",
+          "required": false
+        },
+        "notes": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "UpdateJobNoteDto": {
+      "required": [],
+      "props": {
+        "note": {
+          "type": "string",
+          "required": false
+        },
+        "is_private": {
+          "type": "boolean",
+          "required": false
+        },
+        "is_pinned": {
+          "type": "boolean",
+          "required": false
+        }
+      }
+    },
+    "UpdateSeaFclJobDetailDto": {
+      "required": [],
+      "props": {
+        "shipping_line_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "vessel_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "voyage_number": {
+          "type": "string",
+          "required": false
+        },
+        "hbl_number": {
+          "type": "string",
+          "required": false
+        },
+        "mbl_number": {
+          "type": "string",
+          "required": false
+        },
+        "booking_number": {
+          "type": "string",
+          "required": false
+        },
+        "carrier_booking_ref": {
+          "type": "string",
+          "required": false
+        },
+        "place_of_receipt": {
+          "type": "string",
+          "required": false
+        },
+        "place_of_delivery": {
+          "type": "string",
+          "required": false
+        },
+        "etd": {
+          "type": "string",
+          "required": false
+        },
+        "eta": {
+          "type": "string",
+          "required": false
+        },
+        "incoterms": {
+          "type": "string",
+          "required": false
+        },
+        "stuffing_location": {
+          "type": "string",
+          "enum": [
+            "CY",
+            "CFS",
+            "SHIPPER_PREMISES"
+          ],
+          "required": false
+        },
+        "stuffing_date": {
+          "type": "string",
+          "required": false
+        },
+        "si_cutoff": {
+          "type": "string",
+          "required": false
+        },
+        "vgm_cutoff": {
+          "type": "string",
+          "required": false
+        },
+        "cy_cutoff": {
+          "type": "string",
+          "required": false
+        },
+        "si_submitted_at": {
+          "type": "string",
+          "required": false,
+          "description": "SI submission datetime"
+        },
+        "si_version": {
+          "type": "number",
+          "required": false
+        },
+        "vgm_submitted_at": {
+          "type": "string",
+          "required": false,
+          "description": "VGM submission datetime"
+        },
+        "vgm_method": {
+          "type": "string",
+          "enum": [
+            "SM1",
+            "SM2"
+          ],
+          "required": false
+        },
+        "port_of_loading_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "port_of_discharge_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "bl_type": {
+          "type": "string",
+          "enum": [
+            "Original",
+            "Seaway",
+            "Express Release",
+            "Surrendered"
+          ],
+          "required": false
+        },
+        "freight_terms": {
+          "type": "string",
+          "enum": [
+            "Prepaid",
+            "Collect",
+            "Third Party"
+          ],
+          "required": false
+        },
+        "transhipment_port": {
+          "type": "string",
+          "required": false,
+          "description": "Transhipment port name"
+        },
+        "sailed_at": {
+          "type": "string",
+          "required": false,
+          "description": "Actual vessel sailed datetime"
+        },
+        "mbl_number_from_line": {
+          "type": "string",
+          "required": false
+        },
+        "hbl_number_from_agent": {
+          "type": "string",
+          "required": false
+        },
+        "actual_eta": {
+          "type": "string",
+          "required": false
+        },
+        "customs_entry_number": {
+          "type": "string",
+          "required": false
+        },
+        "customs_examination_details": {
+          "type": "string",
+          "required": false
+        },
+        "customs_duty_amount": {
+          "type": "number",
+          "required": false
+        },
+        "customs_tax_amount": {
+          "type": "number",
+          "required": false
+        },
+        "customs_clearance_date": {
+          "type": "string",
+          "required": false
+        },
+        "customs_status": {
+          "type": "string",
+          "enum": [
+            "PENDING",
+            "FILED",
+            "QUERY",
+            "CLEARED",
+            "RELEASED"
+          ],
+          "required": false
+        },
+        "customs_broker_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "linked_export_job_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "cfs_storage_rate_per_day": {
+          "type": "number",
+          "required": false
+        },
+        "cfs_storage_start_date": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "UpdateStuffingRecordDto": {
+      "required": [],
+      "props": {
+        "container_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": false
+        },
+        "supervisor_name": {
+          "type": "string",
+          "required": false
+        },
+        "stuffing_date": {
+          "type": "string",
+          "required": false,
+          "description": "ISO datetime of stuffing"
+        },
+        "location": {
+          "type": "string",
+          "required": false,
+          "description": "Warehouse / CY location"
+        },
+        "goods_condition": {
+          "type": "string",
+          "required": false
+        },
+        "notes": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "UpsertContainerFreeDaysDto": {
+      "required": [
+        "container_id"
+      ],
+      "props": {
+        "container_id": {
+          "type": "string",
+          "format": "uuid",
+          "required": true
+        },
+        "free_days_allowed": {
+          "type": "number",
+          "required": false
+        },
+        "last_free_day_date": {
+          "type": "string",
+          "required": false
+        },
+        "demurrage_start_date": {
+          "type": "string",
+          "required": false
+        },
+        "detention_start_date": {
+          "type": "string",
+          "required": false
+        },
+        "demurrage_rate_per_day": {
+          "type": "number",
+          "required": false
+        },
+        "detention_rate_per_day": {
+          "type": "number",
+          "required": false
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,3 @@
-import { isUuid } from '@/lib/isUuid';
 import {
   TARIFF_SERVICE_TYPES,
   type TariffServiceType,
@@ -39,8 +38,12 @@ function normalizeServiceType(value: unknown): TariffServiceType {
 export function normalizeTariff(raw: unknown): Tariff | null {
   const r = asRecord(raw);
   if (!r) return null;
-  const id = str(r.id);
-  if (!id || !isUuid(id)) return null;
+  // Prefer standard UUID; still accept other id strings so list rows are not dropped.
+  const id =
+    str(r.id) ||
+    str(r.tariff_id) ||
+    (typeof r.id === 'number' ? String(r.id) : undefined);
+  if (!id) return null;
 
   const origin = asRecord(r.origin_port) ?? asRecord(r.origin);
   const dest = asRecord(r.dest_port) ?? asRecord(r.destination);

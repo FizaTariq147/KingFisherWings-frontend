@@ -59,4 +59,6 @@ export interface PaginationMeta {
 export interface TariffListResult {
   tariffs: Tariff[];
   meta: PaginationMeta;
+  /** True when rows were loaded via GET /quotations/tariffs/{id} (collection list is shadowed). */
+  backendListUnavailable?: boolean;
 }

@@ -37,9 +37,11 @@ export async function wakeApi(timeoutMs = 90_000): Promise<boolean> {
       const res = await axiosInstance.get('/health', {
         timeout: Math.min(45_000, remaining),
         validateStatus: () => true,
+        // Never send a leftover session JWT on the wake probe.
+        headers: { Authorization: undefined },
       });
       // Any HTTP response other than gateway errors means the process is up
-      // (/health may be 200 or 401 depending on deployment).
+      // (deployments may return 200 OK or 401 if /health is locked).
       if (res.status !== 502 && res.status !== 503 && res.status !== 504) {
         return true;
       }

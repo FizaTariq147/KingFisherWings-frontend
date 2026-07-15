@@ -7,8 +7,8 @@
 > **Source of truth for progress:** this file + actual `src/` code + your instructions.  
 > Milestone order does **not** imply completion status.
 
-**Last updated:** 2026-07-14  
-**Overall FE completion (Spec-weighted estimate):** ~40%
+**Last updated:** 2026-07-15  
+**Overall FE completion (Spec-weighted estimate):** ~42%
 
 ---
 
@@ -28,14 +28,14 @@
 | Module | Spec / SOW alignment | Evidence | Notes |
 |--------|----------------------|----------|-------|
 | Platform console (Companies, Tenants) | Spec Ch.1 / M1–M2 platform | `src/features/companies`, `tenants`, `superadmin` | SuperAdmin CRUD |
-| Auth & access (login, passwords, Users) | Spec Ch.3 / M1 | `src/features/auth`, `users` | Tenant Admin Users CRUD; role gates exist — fine-grained doc rights may still evolve |
+| Auth & access (login, passwords, Users) | Spec Ch.3 / M1 | `src/features/auth`, `users`, Zustand `authStore`, Axios JWT | All 12 Swagger Auth endpoints wired; sessions UI at `/settings/sessions`; no Redux auth slice (architecture is Zustand + AuthContext) |
 | Organization (profile, banks, number formats) | Spec Ch.2 / Ch.4 | `src/features/organization` | |
 | Parties (Customer/Vendor master) | Spec Ch.4 | `src/features/parties` | Contacts + addresses |
 | API-backed Masters (~20 resources) | Spec Ch.4 / M2–M3 | `masterResources` + `/masters/:resourceKey` | Airlines, airports, ports, currencies, charge codes, vessels, etc. |
 | AWB Stock Master | Spec Ch.8 (AWB stock) | `src/features/awbStock` | All 11 Swagger AWB Stock APIs + UI |
-| Quotations | Spec Ch.7 / M4 | `src/features/quotations` | List/create/edit/detail, workflow, PDF/email |
-| Online Tariff Master | Spec Ch.7 / M4 | `src/features/tariffs` | |
-| Zip Distance Master | Spec Ch.7 related | `src/features/zipDistances` | |
+| Quotations | Spec Ch.7 / M4 | `src/features/quotations` | **41/41** Swagger `/quotations*` APIs integrated (RQ + Zod). Coverage: `docs/quotations-api-coverage.md` |
+| Online Tariff Master | Spec Ch.7 / M4 | `src/features/tariffs` | FE complete. **POST create returns HTTP 500 from backend** even with real charge_code_id from Masters — blocked on server fix |
+| Zip Distance Master | Spec Ch.7 related | `src/features/zipDistances` | Under `/quotations/zip-distances` — included in 41 |
 | Jobs (Air Export, Sea Export, Sea Import) | Spec Ch.8–11 / M6 | `src/features/jobs` | Full job feature module; other job modes may need more nav coverage |
 
 ---
@@ -73,7 +73,9 @@
 | Sales / CRM APIs (leads, call sheet, budget, …) | Stub services / no feature API module | `src/pages/sales/*` shells; placeholder services |
 | HR APIs (employees, leave, payroll) | Stub `employeeService` | `src/pages/hr/*` UI without real API |
 | Management user-access / performance stubs | Placeholder services | `src/pages/management/*` |
-| Password reset (some flows) | API limitation noted in auth UI | Login / forgot-password messaging |
+| Self-service forgot / email reset password | Not in Auth OpenAPI | Forgot/Reset pages explain limitation; admin reset via Users API |
+| Tariff create `POST /quotations/tariffs` | Was HTTP 500 / UUID errors from FE; **verify after backend fix** — FE aligned to Swagger (Bearer-only, required fields) | Compare Network tab vs Swagger Try-it-out with same tenant JWT |
+| Tariff list `GET /quotations/tariffs` | Was `uuid is expected`; **verify after backend fix** | Same JWT as Swagger; path `/backend/quotations/tariffs` |
 
 ---
 

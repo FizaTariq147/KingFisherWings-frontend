@@ -1,10 +1,10 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import { tariffService } from '../services/tariff.service';
 import type {
   CreateTariffDto,
   TariffListParams,
+  TariffListResult,
   UpdateTariffDto,
 } from '../types/tariff.types';
 
@@ -30,7 +30,7 @@ export function useTariff(id: string) {
   return useQuery({
     queryKey: tariffKeys.detail(id),
     queryFn: () => tariffService.getById(id),
-    enabled: Boolean(accessToken) && isUuid(id),
+    enabled: Boolean(accessToken) && Boolean(id?.trim()),
   });
 }
 
@@ -45,10 +45,40 @@ function useInvalidateTariffs() {
 }
 
 export function useCreateTariff() {
-  const invalidate = useInvalidateTariffs();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (dto: CreateTariffDto) => tariffService.create(dto),
-    onSuccess: (t) => invalidate(t.id),
+    onSuccess: (created) => {
+      queryClient.setQueryData(tariffKeys.detail(created.id), created);
+      // Seed list caches so Online Tariff Master shows the row even if list unwrap/API lags.
+      queryClient.setQueriesData<TariffListResult>(
+        { queryKey: [...tariffKeys.all, 'list'] },
+        (prev) => {
+          if (!prev) {
+            return {
+              tariffs: [created],
+              meta: { page: 1, limit: 20, total: 1, totalPages: 1 },
+              backendListUnavailable: true,
+            };
+          }
+          if (prev.tariffs.some((t) => t.id === created.id)) return prev;
+          return {
+            ...prev,
+            tariffs: [created, ...prev.tariffs],
+            meta: {
+              ...prev.meta,
+              total: prev.meta.total + 1,
+              totalPages: Math.max(
+                1,
+                Math.ceil((prev.meta.total + 1) / Math.max(prev.meta.limit, 1)),
+              ),
+            },
+          };
+        },
+      );
+      // Soft invalidate — list may fall back to session registry when API is shadowed.
+      void queryClient.invalidateQueries({ queryKey: tariffKeys.all });
+    },
   });
 }
 

@@ -49,7 +49,14 @@ export default function MyProfilePage() {
       await queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
       window.setTimeout(() => setSuccess(false), 2500);
     } catch (err) {
-      setError(getServerErrorMessage(err));
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      if (status === 404 || status === 405) {
+        setError(
+          'Updating profile preferences is not available on this Auth API (PATCH /auth/me missing).',
+        );
+      } else {
+        setError(getServerErrorMessage(err));
+      }
     } finally {
       setSaving(false);
     }
@@ -61,7 +68,8 @@ export default function MyProfilePage() {
         <div>
           <h1 className="text-lg font-semibold text-[var(--color-neutral-900)]">My profile</h1>
           <p className="text-sm text-[var(--color-neutral-500)]">
-            Locale preference for your staff account (PATCH /auth/me).
+            Account from GET /auth/me. Locale preference uses PATCH /auth/me when the API supports it
+            (not listed in Auth OpenAPI — save may fail until backend adds it).
           </p>
         </div>
         <div className="flex items-center gap-2">

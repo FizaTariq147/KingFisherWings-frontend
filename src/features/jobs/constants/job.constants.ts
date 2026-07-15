@@ -91,8 +91,30 @@ export const JOB_DOCUMENT_TYPES = [
   'JOB_CARD',
   'JOB_PNL',
   'PROFORMA_INVOICE',
+  'PRE_CAN',
+  'CAN',
+  'EXCHANGE_LETTER',
+  'UNDERTAKE_LETTER',
+  'TRANSPORT_REQUEST',
+  'SHIPPING_ADVICE',
+  'PROOF_OF_DELIVERY',
+  'E_AWB',
+  'BARCODE_LABEL',
+  'CONSIGNEE_LABEL',
+  'JOB_COSTING',
+  'FREIGHT_CERTIFICATE',
   'OTHER',
 ] as const;
+
+export const CUSTOMS_STATUSES = [
+  'PENDING',
+  'FILED',
+  'QUERY',
+  'CLEARED',
+  'RELEASED',
+] as const;
+
+export type CustomsStatus = (typeof CUSTOMS_STATUSES)[number];
 
 export type JobDocumentType = (typeof JOB_DOCUMENT_TYPES)[number];
 

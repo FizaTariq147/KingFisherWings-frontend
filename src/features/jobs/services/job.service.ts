@@ -9,38 +9,56 @@ import {
   unwrapEntity,
   unwrapList,
 } from '../utils/normalizeJob';
-import { prepareJobPayload } from '../utils/prepareJobPayload';
+import {
+  prepareJobPayload,
+  prepareMinimalJobCreatePayload,
+} from '../utils/prepareJobPayload';
 import type {
   AssignCargoToContainerDto,
+  CalculateCfsStorageDto,
   CreateBillOfLadingDto,
+  CreateDamageReportDto,
   CreateJobCargoDto,
   CreateJobChargeDto,
   CreateJobContainerDto,
+  CreateJobDepositDto,
   CreateJobDocumentDto,
   CreateJobDto,
   CreateJobNoteDto,
   CreateCustomMilestoneDto,
+  CreatePartDeliveryDto,
+  CreatePaymentRequestFromJobDto,
+  CreateProofOfDeliveryDto,
   CreateStuffingRecordDto,
+  CreateSubJobDto,
+  FinalizeJobDocumentDto,
   GenerateJobDocumentDto,
   Job,
   JobListParams,
   JobListResult,
   JobPnl,
+  LinkTranshipmentDto,
+  ReturnContainerDto,
+  SchedulePreAlertDto,
   SendPreAlertDto,
+  SendWhatsAppStatusDto,
   SplitContainerDto,
   SubmitSiDto,
   SubmitVgmDto,
   UpdateAirJobDetailDto,
   UpdateBillOfLadingDto,
+  UpdateCustomsStatusDto,
   UpdateJobCargoDto,
   UpdateJobChargeDto,
   UpdateJobContainerDto,
+  UpdateJobDepositDto,
   UpdateJobDocumentDto,
   UpdateJobDto,
   UpdateJobMilestoneDto,
   UpdateJobNoteDto,
   UpdateSeaFclJobDetailDto,
   UpdateStuffingRecordDto,
+  UpsertContainerFreeDaysDto,
 } from '../types/job.types';
 
 function formatAxiosError(error: unknown): Error {
@@ -140,10 +158,41 @@ export const jobService = {
   },
 
   async create(dto: CreateJobDto): Promise<Job> {
-    return request(
-      () => axiosInstance.post(JOB_API.list, prepareJobPayload(dto)),
-      normalizeJob,
-    );
+    const primary = prepareJobPayload(dto);
+    try {
+      return await request(
+        () => axiosInstance.post(JOB_API.list, primary),
+        normalizeJob,
+      );
+    } catch (firstError) {
+      const status = (firstError as { response?: { status?: number } })?.response
+        ?.status;
+      const msg =
+        firstError instanceof Error ? firstError.message : String(firstError);
+      const isOpaque500 =
+        status === 500 || /internal server error/i.test(msg);
+
+      // FCL create often seeds sea_fcl_details + milestones; opaque 500s can come
+      // from optional fields. Retry a minimal swagger-valid body once.
+      if (isOpaque500) {
+        const minimal = prepareMinimalJobCreatePayload(dto);
+        try {
+          return await request(
+            () => axiosInstance.post(JOB_API.list, minimal),
+            normalizeJob,
+          );
+        } catch (retryError) {
+          const jobType = String(primary.job_type ?? '');
+          if (/SEA_FCL_/i.test(jobType) && isOpaque500) {
+            throw new Error(
+              `${msg}. FCL create failed on the API (often while seeding sea FCL details/milestones). Confirm JOB_NUMBER is active under Organization → Number Formats, retry with only shipper + job type, and check Render logs for JobsController_create.`,
+            );
+          }
+          throw retryError instanceof Error ? retryError : firstError;
+        }
+      }
+      throw firstError;
+    }
   },
 
   async update(id: string, dto: UpdateJobDto): Promise<Job> {
@@ -267,6 +316,17 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.splitContainer(id, containerId), dto));
   },
 
+  async returnContainer(
+    id: string,
+    containerId: string,
+    dto: ReturnContainerDto = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.post(JOB_API.returnContainer(id, containerId), dto),
+    );
+  },
+
   async listCargo(id: string): Promise<unknown[]> {
     assertId(id);
     const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.cargo(id)));
@@ -331,6 +391,124 @@ export const jobService = {
   async getPnl(id: string): Promise<JobPnl> {
     assertId(id);
     return request(() => axiosInstance.get(JOB_API.pnl(id)));
+  },
+
+  async listDeposits(id: string): Promise<unknown[]> {
+    assertId(id);
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.deposits(id)));
+    return unwrapList(res.data).items;
+  },
+
+  async createDeposit(id: string, dto: CreateJobDepositDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.deposits(id), dto));
+  },
+
+  async updateDeposit(
+    id: string,
+    depositId: string,
+    dto: UpdateJobDepositDto,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.patch(JOB_API.deposit(id, depositId), dto));
+  },
+
+  async deleteDeposit(id: string, depositId: string): Promise<void> {
+    assertId(id);
+    return requestVoid(() => axiosInstance.delete(JOB_API.deposit(id, depositId)));
+  },
+
+  async listFreeDays(id: string): Promise<unknown[]> {
+    assertId(id);
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.freeDays(id)));
+    return unwrapList(res.data).items;
+  },
+
+  async upsertFreeDays(id: string, dto: UpsertContainerFreeDaysDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.freeDays(id), dto));
+  },
+
+  async recalculateFreeDays(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.freeDaysRecalculate(id)));
+  },
+
+  async listDamageReports(id: string): Promise<unknown[]> {
+    assertId(id);
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.damageReports(id)));
+    return unwrapList(res.data).items;
+  },
+
+  async createDamageReport(id: string, dto: CreateDamageReportDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.damageReports(id), dto));
+  },
+
+  async listPartDeliveries(id: string): Promise<unknown[]> {
+    assertId(id);
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.partDeliveries(id)));
+    return unwrapList(res.data).items;
+  },
+
+  async createPartDelivery(id: string, dto: CreatePartDeliveryDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.partDeliveries(id), dto));
+  },
+
+  async listPods(id: string): Promise<unknown[]> {
+    assertId(id);
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.pods(id)));
+    return unwrapList(res.data).items;
+  },
+
+  async createPod(id: string, dto: CreateProofOfDeliveryDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.pods(id), dto));
+  },
+
+  async createPaymentRequest(
+    id: string,
+    dto: CreatePaymentRequestFromJobDto = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.paymentRequests(id), dto));
+  },
+
+  async listSubJobs(id: string): Promise<Job[]> {
+    assertId(id);
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.subJobs(id)));
+    const { items } = unwrapList(res.data);
+    return normalizeJobs(items);
+  },
+
+  async createSubJob(id: string, dto: CreateSubJobDto = {}): Promise<Job> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.subJobs(id), dto), normalizeJob);
+  },
+
+  async updateCustomsStatus(id: string, dto: UpdateCustomsStatusDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.patch(JOB_API.customsStatus(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async calculateCfsStorage(
+    id: string,
+    dto: CalculateCfsStorageDto = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.cfsStorageCalculate(id), dto));
+  },
+
+  async linkTranshipment(id: string, dto: LinkTranshipmentDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.transhipmentLink(id), dto),
+      normalizeJob,
+    );
   },
 
   async listMilestones(id: string): Promise<unknown[]> {
@@ -424,9 +602,15 @@ export const jobService = {
     return requestVoid(() => axiosInstance.delete(JOB_API.document(id, documentId)));
   },
 
-  async finalizeDocument(id: string, documentId: string): Promise<unknown> {
+  async finalizeDocument(
+    id: string,
+    documentId: string,
+    dto?: FinalizeJobDocumentDto,
+  ): Promise<unknown> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.finalizeDocument(id, documentId)));
+    return request(() =>
+      axiosInstance.post(JOB_API.finalizeDocument(id, documentId), dto ?? {}),
+    );
   },
 
   async getDocumentGenerationStatus(id: string): Promise<unknown> {
@@ -485,10 +669,46 @@ export const jobService = {
     jobService.generateDocument(id, JOB_API.generateJobPnl(id), dto),
   generateProformaInvoice: (id: string, dto?: GenerateJobDocumentDto) =>
     jobService.generateDocument(id, JOB_API.generateProformaInvoice(id), dto),
+  generateDeliveryOrder: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateDeliveryOrder(id), dto),
+  generatePreCan: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generatePreCan(id), dto),
+  generateCan: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateCan(id), dto),
+  generateExchangeLetter: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateExchangeLetter(id), dto),
+  generateUndertakeLetter: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateUndertakeLetter(id), dto),
+  generateTransportRequest: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateTransportRequest(id), dto),
+  generateShippingAdvice: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateShippingAdvice(id), dto),
+  generateProofOfDelivery: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateProofOfDelivery(id), dto),
+  generateEAwb: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateEAwb(id), dto),
+  generateBarcodeLabel: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateBarcodeLabel(id), dto),
+  generateConsigneeLabel: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateConsigneeLabel(id), dto),
+  generateJobCosting: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateJobCosting(id), dto),
+  generateFreightCertificate: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateFreightCertificate(id), dto),
 
   async sendPreAlert(id: string, dto: SendPreAlertDto): Promise<unknown> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.sendPreAlert(id), dto));
+  },
+
+  async schedulePreAlert(id: string, dto: SchedulePreAlertDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.schedulePreAlert(id), dto));
+  },
+
+  async sendWhatsAppStatus(id: string, dto: SendWhatsAppStatusDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.whatsappStatus(id), dto));
   },
 
   async convertFromQuotation(quotationId: string): Promise<Job> {

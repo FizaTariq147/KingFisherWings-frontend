@@ -1,3 +1,4 @@
+import { isUuid } from '@/lib/isUuid';
 import type { CreateJobDto, Job, UpdateJobDto } from '../types/job.types';
 
 export const JOB_FORM_DEFAULTS: CreateJobDto = {
@@ -31,22 +32,132 @@ export const JOB_FORM_DEFAULTS: CreateJobDto = {
   eta: '',
 };
 
-function omitEmpty<T extends Record<string, unknown>>(obj: T): T {
+const UUID_OPTIONAL_KEYS = [
+  'company_id',
+  'branch_id',
+  'department_id',
+  'parent_job_id',
+  'consignee_id',
+  'agent_id',
+  'salesperson_id',
+  'ops_user_id',
+  'origin_port_id',
+  'dest_port_id',
+  'container_type_id',
+] as const;
+
+const NUMBER_KEYS = [
+  'gross_weight',
+  'chargeable_weight',
+  'volume_cbm',
+  'pieces',
+  'container_count',
+] as const;
+
+function omitEmpty(obj: Record<string, unknown>): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(obj)) {
     if (value === '' || value === null || value === undefined) continue;
+    if (typeof value === 'number' && !Number.isFinite(value)) continue;
     if (Array.isArray(value) && value.length === 0) continue;
     out[key] = value;
   }
-  return out as T;
+  return out;
 }
 
-export function prepareJobPayload(values: CreateJobDto | UpdateJobDto): CreateJobDto | UpdateJobDto {
+/**
+ * Build Swagger CreateJobDto / UpdateJobDto body.
+ * Strips empty strings, NaN, and invalid optional UUIDs (common FE→500 cause).
+ */
+export function prepareJobPayload(
+  values: CreateJobDto | UpdateJobDto,
+): Record<string, unknown> {
   const payload: Record<string, unknown> = { ...values };
+
   if (typeof payload.incoterms === 'string') {
-    payload.incoterms = payload.incoterms.toUpperCase();
+    payload.incoterms = payload.incoterms.trim().toUpperCase();
   }
+  if (typeof payload.hs_code === 'string') {
+    payload.hs_code = payload.hs_code.trim();
+  }
+  if (typeof payload.commodity === 'string') {
+    payload.commodity = payload.commodity.trim();
+  }
+  if (Array.isArray(payload.tags)) {
+    payload.tags = payload.tags
+      .map((t) => String(t).trim())
+      .filter((t) => t.length > 0)
+      .slice(0, 20);
+  }
+
+  for (const key of UUID_OPTIONAL_KEYS) {
+    const v = payload[key];
+    if (v == null || v === '') {
+      delete payload[key];
+      continue;
+    }
+    if (typeof v === 'string' && !isUuid(v)) {
+      delete payload[key];
+    }
+  }
+
+  if (typeof payload.shipper_id === 'string' && !isUuid(payload.shipper_id)) {
+    // leave for API/validation to reject — required
+  }
+
+  for (const key of NUMBER_KEYS) {
+    const v = payload[key];
+    if (v == null || v === '') {
+      delete payload[key];
+      continue;
+    }
+    if (typeof v === 'number' && !Number.isFinite(v)) {
+      delete payload[key];
+    }
+  }
+
+  // FCL: container_count without a valid type is incomplete — drop count
+  if (payload.container_count != null && !payload.container_type_id) {
+    delete payload.container_count;
+  }
+
+  // DG class only meaningful when flagged
+  if (payload.is_dg !== true) {
+    delete payload.dg_class;
+  }
+
   return omitEmpty(payload);
+}
+
+/** Minimal CreateJobDto for 500 retry (only widely accepted fields). */
+export function prepareMinimalJobCreatePayload(
+  values: CreateJobDto | UpdateJobDto,
+): Record<string, unknown> {
+  const full = prepareJobPayload(values);
+  const keep = [
+    'job_type',
+    'shipper_id',
+    'consignee_id',
+    'origin_port_id',
+    'dest_port_id',
+    'commodity',
+    'hs_code',
+    'pieces',
+    'gross_weight',
+    'chargeable_weight',
+    'volume_cbm',
+    'incoterms',
+    'is_dg',
+    'etd',
+    'eta',
+    'notes',
+    'customer_remarks',
+  ] as const;
+  const out: Record<string, unknown> = {};
+  for (const key of keep) {
+    if (full[key] !== undefined) out[key] = full[key];
+  }
+  return out;
 }
 
 export function jobToFormValues(job: Job) {

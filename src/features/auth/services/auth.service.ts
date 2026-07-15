@@ -50,14 +50,22 @@ function isUnauthorized(error: unknown): boolean {
 export const authService = {
   /** AuthController_login — Staff / employee users */
   async loginStaff(dto: LoginDto): Promise<AuthLoginResult> {
+    // Match Swagger Try-it-out: only required fields + optional flags when set.
+    // Extra cookies / long User-Agent device_name have caused API 500s that Swagger does not hit.
     const body: LoginDto = {
       tenant_slug: normalizeTenantSlugInput(dto.tenant_slug),
       email: dto.email.trim().toLowerCase(),
       password: dto.password,
-      remember_me: dto.remember_me ?? false,
-      device_name: dto.device_name?.trim() || 'Web',
     };
-    const { data } = await axiosInstance.post<unknown>(AUTH_API.login, body);
+    if (dto.remember_me != null) body.remember_me = dto.remember_me;
+    if (dto.device_name?.trim()) body.device_name = dto.device_name.trim().slice(0, 64);
+    if (dto.totp_code?.trim()) body.totp_code = dto.totp_code.trim();
+    if (dto.backup_code?.trim()) body.backup_code = dto.backup_code.trim();
+    if (dto.mac_address?.trim()) body.mac_address = dto.mac_address.trim();
+
+    const { data } = await axiosInstance.post<unknown>(AUTH_API.login, body, {
+      withCredentials: false,
+    });
     return requireLoginResult(data, '');
   },
 
@@ -66,10 +74,13 @@ export const authService = {
     const body: TenantLoginDto = {
       tenant_slug: normalizeTenantSlugInput(dto.tenant_slug),
       password: dto.password,
-      remember_me: dto.remember_me ?? false,
-      device_name: dto.device_name?.trim() || 'Web',
     };
-    const { data } = await axiosInstance.post<unknown>(AUTH_API.tenantLogin, body);
+    if (dto.remember_me != null) body.remember_me = dto.remember_me;
+    if (dto.device_name?.trim()) body.device_name = dto.device_name.trim().slice(0, 64);
+
+    const { data } = await axiosInstance.post<unknown>(AUTH_API.tenantLogin, body, {
+      withCredentials: false,
+    });
     return requireLoginResult(data, 'TENANT_ADMIN');
   },
 
@@ -153,7 +164,10 @@ export const authService = {
     return (data ?? {}) as AuthMeResponse;
   },
 
-  /** PATCH /auth/me — staff user locale preference (preferred_country_code). */
+  /**
+   * PATCH /auth/me — used for preferred_country_code when the backend supports it.
+   * Not documented under Auth OpenAPI; clients must tolerate 404/405.
+   */
   async updateMe(dto: UpdateMeDto): Promise<AuthMeResponse> {
     const body: UpdateMeDto = {};
     if ('preferred_country_code' in dto) {
