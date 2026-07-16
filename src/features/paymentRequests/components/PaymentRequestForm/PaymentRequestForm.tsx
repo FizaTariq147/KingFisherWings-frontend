@@ -132,7 +132,7 @@ export function PaymentRequestForm({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1 sm:col-span-2">
             <label className="text-xs font-medium text-[var(--color-neutral-500)]">Party *</label>
-            <select className={selectClass} {...register('party_id')}>
+            <select className={selectClass} {...register('party_id', uuidSelect)}>
               <option value="">Select…</option>
               {parties.map((p) => (
                 <option key={p.id} value={p.id}>

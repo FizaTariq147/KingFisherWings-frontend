@@ -1,0 +1,1 @@
+export { GlPaymentTable } from './GlPaymentTable';

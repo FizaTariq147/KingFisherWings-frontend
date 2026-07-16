@@ -195,5 +195,21 @@ export const tenantService = {
     const res = await superAdminApiClient.patch<ApiEnvelope<Tenant>>(TENANT_API.deactivate(id));
     return normalizeTenant(res.data.data as unknown as Record<string, unknown>);
   },
+
+  /**
+   * POST /tenants/{id}/sync-permissions
+   * Reconcile one tenant against the current permission/role catalog
+   * (needed after new GL modules add permissions like gl.manage_coa).
+   */
+  async syncPermissions(id: string): Promise<unknown> {
+    const res = await superAdminApiClient.post(TENANT_API.syncPermissions(id));
+    return res.data;
+  },
+
+  /** POST /tenants/sync-permissions — all tenants. */
+  async syncPermissionsAll(): Promise<unknown> {
+    const res = await superAdminApiClient.post(TENANT_API.syncPermissionsAll);
+    return res.data;
+  },
 };
 

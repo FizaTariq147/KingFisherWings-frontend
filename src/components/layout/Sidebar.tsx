@@ -10,6 +10,7 @@ import {
   Ship,
   FileText,
   Wallet,
+  DollarSign,
   Building2,
   UserCircle,
   Settings,
@@ -37,6 +38,8 @@ interface NavItem {
   path: string
   Icon: LucideIcon
   permission: PermissionKey | null
+  /** If set, item is visible when the user has any of these permissions. */
+  permissionAny?: PermissionKey[]
   /** Shown only to Tenant Admin — never to User/Customer. */
   adminOnly?: boolean
 }
@@ -55,6 +58,13 @@ const OPS_NAV_ITEMS: NavItem[] = [
   { label: 'Sea Import', path: '/jobs/sea-import', Icon: Ship, permission: 'menu_jobs_sea_import' },
   { label: 'Documentation', path: '/documentation', Icon: FileText, permission: 'menu_documentation' },
   { label: 'Finance', path: '/finance', Icon: Wallet, permission: 'menu_finance' },
+  {
+    label: 'Accounts',
+    path: '/accounts',
+    Icon: DollarSign,
+    permission: 'menu_accounts',
+    permissionAny: ['menu_accounts', 'menu_finance'],
+  },
   { label: 'NVOCC', path: '/nvocc', Icon: Building2, permission: 'menu_nvocc' },
   { label: 'HR', path: '/hr', Icon: UserCircle, permission: 'menu_hr' },
   { label: 'Reports', path: '/reports', Icon: BarChart3, permission: 'menu_reports' },
@@ -139,8 +149,11 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
     if (!perms || perms.length === 0) return OPS_NAV_ITEMS
 
     return OPS_NAV_ITEMS.filter((item) => {
-      if (!item.permission) return true
-      return authCtx?.hasPermission(item.permission) ?? false
+      if (!item.permission && !item.permissionAny) return true
+      if (item.permissionAny?.length) {
+        return item.permissionAny.some((p) => authCtx?.hasPermission(p) ?? false)
+      }
+      return authCtx?.hasPermission(item.permission!) ?? false
     })
   })()
 

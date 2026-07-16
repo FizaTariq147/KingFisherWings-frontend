@@ -1,0 +1,1 @@
+export { GlPaymentStatusBadge } from './GlPaymentStatusBadge';

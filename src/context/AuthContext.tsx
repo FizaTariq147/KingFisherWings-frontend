@@ -6,6 +6,8 @@ import { authService } from '@/features/auth/services/auth.service'
 import { pickMustChangePassword, hasMustChangePasswordFlag } from '@/features/auth/utils/normalizeAuthResponse'
 import {
   companyIdFromAccessToken,
+  normalizePermissionKeys,
+  permissionsFromAccessToken,
   resolveCompanyIdFromUserLike,
   resolveSessionTenantIdFromAuth,
   resolveTenantIdFromUserLike,
@@ -106,9 +108,9 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     companyIdFromAccessToken(accessToken) ||
     undefined
 
-  const permissions = Array.isArray(record.permissions)
-    ? (record.permissions.filter((p) => typeof p === 'string') as PermissionKey[])
-    : []
+  const fromMe = normalizePermissionKeys(record.permissions)
+  const fromJwt = permissionsFromAccessToken(accessToken)
+  const permissions = [...new Set([...fromMe, ...fromJwt])] as PermissionKey[]
 
   // undefined = /me omitted the flag (keep login-session value); boolean = trust /me
   const mustChangePassword = hasMustChangePasswordFlag(record)

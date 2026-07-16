@@ -1,6 +1,7 @@
 import { FileText, AlertTriangle, Plus, Receipt, ShoppingCart, HandCoins } from 'lucide-react';
 import type { MenuTile } from '../../customers/types/menu.types';
 
+/** Finance hub — AR/AP documents. GL lives under Accounts. */
 export const financeMenu: MenuTile[] = [
   {
     id: 'all-invoices',

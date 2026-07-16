@@ -55,11 +55,16 @@ export const TENANT_USER_MANAGER_ROLE_SLUGS = [
 
 export function isTenantUserManagerRole(roleSlug?: string | null): boolean {
   if (!roleSlug) return false;
-  const normalized = roleSlug.toLowerCase().replace(/-/g, '_');
+  const normalized = roleSlug
+    .toLowerCase()
+    .trim()
+    .replace(/[\s-]+/g, '_');
   return (
     normalized === 'admin' ||
     normalized === 'tenant_admin' ||
+    normalized === 'tenantadmin' ||
     normalized === 'tenant_owner' ||
+    normalized === 'tenantowner' ||
     normalized === 'tenant' ||
     roleSlug === 'TENANT_ADMIN'
   );

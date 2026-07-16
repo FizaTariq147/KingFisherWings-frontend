@@ -1,0 +1,1 @@
+export { VoucherTable } from './VoucherTable';

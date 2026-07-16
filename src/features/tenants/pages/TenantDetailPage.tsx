@@ -15,6 +15,7 @@ import {
   useDeactivateTenant,
   useDeleteTenant,
   useRestoreTenant,
+  useSyncTenantPermissions,
 } from '../hooks/useTenants';
 import { formatTenantLabel, formatTenantSlug } from '../utils/formatTenantSlug';
 import { formatStorageUsage } from '../utils/tenantMetrics';
@@ -43,15 +44,19 @@ export default function TenantDetailPage() {
   const deactivate = useDeactivateTenant();
   const del = useDeleteTenant();
   const restore = useRestoreTenant();
+  const syncPermissions = useSyncTenantPermissions();
   const { confirm, requestConfirm, closeConfirm } = useTenantConfirmState();
   const [actionError, setActionError] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [pendingAction, setPendingAction] = useState(false);
 
-  const runAction = async (action: () => Promise<unknown>) => {
+  const runAction = async (action: () => Promise<unknown>, successMsg?: string) => {
     setActionError(null);
+    setActionMessage(null);
     setPendingAction(true);
     try {
       await action();
+      if (successMsg) setActionMessage(successMsg);
       closeConfirm();
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Action failed. Please try again.';
@@ -110,6 +115,15 @@ export default function TenantDetailPage() {
     !isDeleted && {
       label: 'Edit',
       onClick: () => navigate(`/superadmin/tenants/${id}/edit`),
+      variant: 'secondary' as const,
+    },
+    !isDeleted && {
+      label: 'Sync permissions',
+      onClick: () =>
+        runAction(
+          () => syncPermissions.mutateAsync(id!),
+          'Permissions synced. Have the Tenant Admin sign out and sign back in so gl.manage_coa / gl.manage_payments appear in their token.',
+        ),
       variant: 'secondary' as const,
     },
     isDeleted
@@ -238,6 +252,19 @@ export default function TenantDetailPage() {
         >
           <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
           <span>{actionError}</span>
+        </div>
+      )}
+      {actionMessage && (
+        <div
+          role="status"
+          className="mb-4 rounded-lg border px-4 py-3 text-sm"
+          style={{
+            background: 'var(--color-success-100, #ECFDF5)',
+            borderColor: '#A7F3D0',
+            color: 'var(--color-success-700, #047857)',
+          }}
+        >
+          {actionMessage}
         </div>
       )}
 

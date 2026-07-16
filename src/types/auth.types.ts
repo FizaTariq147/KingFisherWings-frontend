@@ -8,11 +8,25 @@ export type PermissionKey =
   | 'menu_jobs_sea_import'
   | 'menu_documentation'
   | 'menu_finance'
+  | 'menu_accounts'
   | 'menu_nvocc'
   | 'menu_hr'
   | 'menu_masters'
   | 'menu_reports'
   | 'menu_settings'
+  // GL action permissions (backend Guards)
+  | 'gl.manage_coa'
+  | 'gl.view_coa'
+  | 'gl.manage_vouchers'
+  | 'gl.view_vouchers'
+  | 'gl.manage_payments'
+  | 'gl.view_payments'
+  | 'gl.manage_cheques'
+  | 'gl.view_cheques'
+  | 'gl.manage_bank_recon'
+  | 'gl.view_reports'
+  | 'gl.view_mis'
+  | (string & {})
 
 export interface Permission {
   key: PermissionKey

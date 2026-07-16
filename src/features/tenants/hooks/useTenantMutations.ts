@@ -104,3 +104,20 @@ export function useRestoreTenant() {
   return restoreTenant;
 }
 
+export function useSyncTenantPermissions() {
+  const invalidate = useInvalidateTenants();
+  return useMutation({
+    mutationFn: (id: string) => tenantService.syncPermissions(id),
+    onSuccess: (_data, id) => invalidate(id),
+  });
+}
+
+/** Reconcile every tenant against the current permission/role catalog (Super Admin). */
+export function useSyncAllTenantPermissions() {
+  const invalidate = useInvalidateTenants();
+  return useMutation({
+    mutationFn: () => tenantService.syncPermissionsAll(),
+    onSuccess: () => invalidate(),
+  });
+}
+

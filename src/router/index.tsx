@@ -28,6 +28,7 @@ import QuotationEditPage from '../features/quotations/pages/QuotationEditPage'
 import QuotationReportsPage from '../features/quotations/pages/QuotationReportsPage'
 import QuotationOnlineQuotePage from '../features/quotations/pages/QuotationOnlineQuotePage'
 import FinanceMenuPage from '../pages/finance/FinanceMenuPage'
+import AccountsMenuPage from '../pages/accounts/AccountsMenuPage'
 import InvoiceListPage from '../features/invoices/pages/InvoiceListPage'
 import InvoiceCreatePage from '../features/invoices/pages/InvoiceCreatePage'
 import InvoiceDetailPage from '../features/invoices/pages/InvoiceDetailPage'
@@ -44,6 +45,37 @@ import PaymentRequestListPage from '../features/paymentRequests/pages/PaymentReq
 import PaymentRequestCreatePage from '../features/paymentRequests/pages/PaymentRequestCreatePage'
 import PaymentRequestDetailPage from '../features/paymentRequests/pages/PaymentRequestDetailPage'
 import PaymentRequestEditPage from '../features/paymentRequests/pages/PaymentRequestEditPage'
+import ChartOfAccountListPage from '../features/chartOfAccounts/pages/ChartOfAccountListPage'
+import ChartOfAccountCreatePage from '../features/chartOfAccounts/pages/ChartOfAccountCreatePage'
+import ChartOfAccountDetailPage from '../features/chartOfAccounts/pages/ChartOfAccountDetailPage'
+import ChartOfAccountEditPage from '../features/chartOfAccounts/pages/ChartOfAccountEditPage'
+import ChartOfAccountTreePage from '../features/chartOfAccounts/pages/ChartOfAccountTreePage'
+import TrialBalancePage from '../features/chartOfAccounts/pages/TrialBalancePage'
+import VoucherListPage from '../features/vouchers/pages/VoucherListPage'
+import VoucherCreatePage from '../features/vouchers/pages/VoucherCreatePage'
+import VoucherDetailPage from '../features/vouchers/pages/VoucherDetailPage'
+import VoucherEditPage from '../features/vouchers/pages/VoucherEditPage'
+import GlPaymentListPage from '../features/glPayments/pages/GlPaymentListPage'
+import GlPaymentCreatePage from '../features/glPayments/pages/GlPaymentCreatePage'
+import GlPaymentDetailPage from '../features/glPayments/pages/GlPaymentDetailPage'
+import GlPaymentEditPage from '../features/glPayments/pages/GlPaymentEditPage'
+import ChequeListPage from '../features/glCheques/pages/ChequeListPage'
+import ChequeCreatePage from '../features/glCheques/pages/ChequeCreatePage'
+import ChequeDetailPage from '../features/glCheques/pages/ChequeDetailPage'
+import ChequeEditPage from '../features/glCheques/pages/ChequeEditPage'
+import PdcDueReportPage from '../features/glCheques/pages/PdcDueReportPage'
+import BankReconciliationListPage from '../features/glBankReconciliation/pages/BankReconciliationListPage'
+import BankReconciliationCreatePage from '../features/glBankReconciliation/pages/BankReconciliationCreatePage'
+import BankReconciliationDetailPage from '../features/glBankReconciliation/pages/BankReconciliationDetailPage'
+import BankTransferCreatePage from '../features/glBankReconciliation/pages/BankTransferCreatePage'
+import FinancialReportsPage from '../features/glFinancialReports/pages/FinancialReportsPage'
+import GlMisDashboardPage from '../features/glMisDashboard/pages/GlMisDashboardPage'
+import SavedReportListPage from '../features/glSavedReports/pages/SavedReportListPage'
+import SavedReportCreatePage from '../features/glSavedReports/pages/SavedReportCreatePage'
+import SavedReportDetailPage from '../features/glSavedReports/pages/SavedReportDetailPage'
+import SavedReportEditPage from '../features/glSavedReports/pages/SavedReportEditPage'
+import ArAgingPage from '../features/arApAging/pages/ArAgingPage'
+import ApAgingPage from '../features/arApAging/pages/ApAgingPage'
 import {
   OnlineTariffCreatePage,
   OnlineTariffDetailPage,
@@ -358,6 +390,45 @@ export const router = createBrowserRouter([
               { path: '/payment-requests/new', element: <PaymentRequestCreatePage /> },
               { path: '/payment-requests/:id/edit', element: <PaymentRequestEditPage /> },
               { path: '/payment-requests/:id', element: <PaymentRequestDetailPage /> },
+            ],
+          },
+          {
+            element: (
+              <ProtectedRoute requireAnyPermission={['menu_accounts', 'menu_finance']} />
+            ),
+            children: [
+              { path: '/accounts', element: <AccountsMenuPage /> },
+              { path: '/gl/accounts', element: <ChartOfAccountListPage /> },
+              { path: '/gl/accounts/new', element: <ChartOfAccountCreatePage /> },
+              { path: '/gl/accounts/tree', element: <ChartOfAccountTreePage /> },
+              { path: '/gl/accounts/trial-balance', element: <TrialBalancePage /> },
+              { path: '/gl/accounts/:id/edit', element: <ChartOfAccountEditPage /> },
+              { path: '/gl/accounts/:id', element: <ChartOfAccountDetailPage /> },
+              { path: '/gl/vouchers', element: <VoucherListPage /> },
+              { path: '/gl/vouchers/new', element: <VoucherCreatePage /> },
+              { path: '/gl/vouchers/:id/edit', element: <VoucherEditPage /> },
+              { path: '/gl/vouchers/:id', element: <VoucherDetailPage /> },
+              { path: '/gl/payments', element: <GlPaymentListPage /> },
+              { path: '/gl/payments/new', element: <GlPaymentCreatePage /> },
+              { path: '/gl/payments/:id/edit', element: <GlPaymentEditPage /> },
+              { path: '/gl/payments/:id', element: <GlPaymentDetailPage /> },
+              { path: '/gl/cheques', element: <ChequeListPage /> },
+              { path: '/gl/cheques/new', element: <ChequeCreatePage /> },
+              { path: '/gl/cheques/reports/pdc-due', element: <PdcDueReportPage /> },
+              { path: '/gl/cheques/:id/edit', element: <ChequeEditPage /> },
+              { path: '/gl/cheques/:id', element: <ChequeDetailPage /> },
+              { path: '/gl/bank-reconciliations', element: <BankReconciliationListPage /> },
+              { path: '/gl/bank-reconciliations/new', element: <BankReconciliationCreatePage /> },
+              { path: '/gl/bank-reconciliations/:id', element: <BankReconciliationDetailPage /> },
+              { path: '/gl/bank-transfers/new', element: <BankTransferCreatePage /> },
+              { path: '/gl/reports', element: <FinancialReportsPage /> },
+              { path: '/gl/mis/dashboard', element: <GlMisDashboardPage /> },
+              { path: '/gl/saved-reports', element: <SavedReportListPage /> },
+              { path: '/gl/saved-reports/new', element: <SavedReportCreatePage /> },
+              { path: '/gl/saved-reports/:id/edit', element: <SavedReportEditPage /> },
+              { path: '/gl/saved-reports/:id', element: <SavedReportDetailPage /> },
+              { path: '/gl/ar/aging', element: <ArAgingPage /> },
+              { path: '/gl/ap/aging', element: <ApAgingPage /> },
             ],
           },
         ],

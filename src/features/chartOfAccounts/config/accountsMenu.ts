@@ -1,0 +1,96 @@
+import { BookOpen, Network, Scale, FileStack, Banknote, Landmark, BarChart3, LineChart, Bookmark } from 'lucide-react';
+import type { MenuTile } from '../../customers/types/menu.types';
+
+/** Accounts hub tiles — modules only; create actions live on each list page. */
+export const accountsMenu: MenuTile[] = [
+  {
+    id: 'all-payments-ar-ap',
+    title: 'Payments (AR/AP)',
+    description: 'Customer receipts and vendor payments with invoice allocations.',
+    icon: Banknote,
+    iconColor: 'bg-emerald-600',
+    path: '/gl/payments',
+  },
+  {
+    id: 'all-cheques-pdc',
+    title: 'Cheques / PDC',
+    description: 'Register receivable, payable, and post-dated cheques.',
+    icon: Landmark,
+    iconColor: 'bg-violet-600',
+    path: '/gl/cheques',
+  },
+  {
+    id: 'pdc-due-report',
+    title: 'PDC Due Report',
+    description: 'Post-dated cheques due within the next 30 days.',
+    icon: Scale,
+    iconColor: 'bg-fuchsia-600',
+    path: '/gl/cheques/reports/pdc-due',
+  },
+  {
+    id: 'bank-reconciliation',
+    title: 'Bank Reconciliation',
+    description: 'Match bank statement activity with posted GL lines.',
+    icon: Landmark,
+    iconColor: 'bg-indigo-600',
+    path: '/gl/bank-reconciliations',
+  },
+  {
+    id: 'financial-reports',
+    title: 'Financial Reports',
+    description: 'Trial balance, balance sheet, P&L, cash flow, and VAT return.',
+    icon: BarChart3,
+    iconColor: 'bg-orange-600',
+    path: '/gl/reports',
+  },
+  {
+    id: 'mis-dashboard',
+    title: 'MIS Dashboard',
+    description: 'KPI widgets and profitability analytics for management.',
+    icon: LineChart,
+    iconColor: 'bg-rose-600',
+    path: '/gl/mis/dashboard',
+  },
+  {
+    id: 'my-reports',
+    title: 'My Reports',
+    description: 'Save and reuse report configurations with filters.',
+    icon: Bookmark,
+    iconColor: 'bg-cyan-600',
+    path: '/gl/saved-reports',
+  },
+  {
+    id: 'all-vouchers',
+    title: 'All Vouchers',
+    description:
+      'Consult system vouchers such as payment, cash, journal vouchers and more.',
+    icon: FileStack,
+    iconColor: 'bg-sky-600',
+    path: '/gl/vouchers',
+  },
+  {
+    id: 'chart-of-accounts',
+    title: 'Chart of Accounts',
+    description: 'Maintain GL accounts, hierarchy, and classifications.',
+    icon: BookOpen,
+    iconColor: 'bg-amber-500',
+    path: '/gl/accounts',
+  },
+  {
+    id: 'coa-tree',
+    title: 'Account Tree',
+    description: 'Hierarchical view of the chart of accounts.',
+    icon: Network,
+    iconColor: 'bg-slate-500',
+    path: '/gl/accounts/tree',
+  },
+  {
+    id: 'trial-balance',
+    title: 'Trial Balance',
+    description:
+      'View / filter common ledger statements and trial balance from posted vouchers.',
+    icon: Scale,
+    iconColor: 'bg-yellow-600',
+    path: '/gl/accounts/trial-balance',
+  },
+];

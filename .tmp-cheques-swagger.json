@@ -1,0 +1,460 @@
+{
+  "paths": {
+    "/gl/cheques": {
+      "get": {
+        "summary": "List cheques (receivable / payable / PDC)",
+        "operationId": "ChequesController_findAll",
+        "parameters": [
+          {
+            "name": "cheque_type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "RECEIVABLE",
+                "PAYABLE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "PENDING",
+                "DEPOSITED",
+                "CLEARED",
+                "BOUNCED",
+                "CANCELLED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "party_id",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_pdc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "due_before",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "response": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a cheque / PDC",
+        "operationId": "ChequesController_create",
+        "parameters": [],
+        "requestBody": {
+          "type": "object",
+          "properties": {
+            "cheque_number": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "example": "CHK-1001"
+            },
+            "cheque_type": {
+              "type": "string",
+              "enum": [
+                "RECEIVABLE",
+                "PAYABLE"
+              ]
+            },
+            "party_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "amount": {
+              "type": "number",
+              "minimum": 0.0001,
+              "example": 5000
+            },
+            "currency_code": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3,
+              "example": "AED"
+            },
+            "cheque_date": {
+              "type": "string"
+            },
+            "due_date": {
+              "type": "string"
+            },
+            "is_pdc": {
+              "type": "boolean",
+              "default": false
+            },
+            "company_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "bank_account_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "bank_name": {
+              "type": "string"
+            },
+            "remarks": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "cheque_number",
+            "cheque_type",
+            "party_id",
+            "amount",
+            "currency_code",
+            "cheque_date"
+          ]
+        }
+      }
+    },
+    "/gl/cheques/reports/pdc-due": {
+      "get": {
+        "summary": "PDC due within N days (default 30)",
+        "operationId": "ChequesController_pdcDue",
+        "parameters": [
+          {
+            "name": "within_days",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "response": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "/gl/cheques/{id}": {
+      "get": {
+        "summary": "Get cheque by id",
+        "operationId": "ChequesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "response": {
+          "type": "object"
+        }
+      },
+      "patch": {
+        "summary": "Update a pending cheque",
+        "operationId": "ChequesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "type": "object",
+          "properties": {
+            "cheque_number": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "example": "CHK-1001"
+            },
+            "cheque_type": {
+              "type": "string",
+              "enum": [
+                "RECEIVABLE",
+                "PAYABLE"
+              ]
+            },
+            "party_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "amount": {
+              "type": "number",
+              "minimum": 0.0001,
+              "example": 5000
+            },
+            "currency_code": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3,
+              "example": "AED"
+            },
+            "cheque_date": {
+              "type": "string"
+            },
+            "due_date": {
+              "type": "string"
+            },
+            "is_pdc": {
+              "type": "boolean",
+              "default": false
+            },
+            "company_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "bank_account_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "bank_name": {
+              "type": "string"
+            },
+            "remarks": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/gl/cheques/{id}/deposit": {
+      "post": {
+        "summary": "Mark cheque deposited",
+        "operationId": "ChequesController_deposit",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/gl/cheques/{id}/clear": {
+      "post": {
+        "summary": "Mark cheque cleared",
+        "operationId": "ChequesController_clear",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/gl/cheques/{id}/bounce": {
+      "post": {
+        "summary": "Mark cheque bounced",
+        "operationId": "ChequesController_bounce",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            }
+          }
+        }
+      }
+    },
+    "/gl/cheques/{id}/cancel": {
+      "post": {
+        "summary": "Cancel a cheque",
+        "operationId": "ChequesController_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "schemas": {
+    "CreateChequeDto": {
+      "type": "object",
+      "properties": {
+        "cheque_number": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "example": "CHK-1001"
+        },
+        "cheque_type": {
+          "type": "string",
+          "enum": [
+            "RECEIVABLE",
+            "PAYABLE"
+          ]
+        },
+        "party_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "amount": {
+          "type": "number",
+          "minimum": 0.0001,
+          "example": 5000
+        },
+        "currency_code": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 3,
+          "example": "AED"
+        },
+        "cheque_date": {
+          "type": "string"
+        },
+        "due_date": {
+          "type": "string"
+        },
+        "is_pdc": {
+          "type": "boolean",
+          "default": false
+        },
+        "company_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "bank_account_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "bank_name": {
+          "type": "string"
+        },
+        "remarks": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "cheque_number",
+        "cheque_type",
+        "party_id",
+        "amount",
+        "currency_code",
+        "cheque_date"
+      ]
+    },
+    "UpdateChequeDto": {
+      "type": "object",
+      "properties": {
+        "cheque_number": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "example": "CHK-1001"
+        },
+        "cheque_type": {
+          "type": "string",
+          "enum": [
+            "RECEIVABLE",
+            "PAYABLE"
+          ]
+        },
+        "party_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "amount": {
+          "type": "number",
+          "minimum": 0.0001,
+          "example": 5000
+        },
+        "currency_code": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 3,
+          "example": "AED"
+        },
+        "cheque_date": {
+          "type": "string"
+        },
+        "due_date": {
+          "type": "string"
+        },
+        "is_pdc": {
+          "type": "boolean",
+          "default": false
+        },
+        "company_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "bank_account_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "bank_name": {
+          "type": "string"
+        },
+        "remarks": {
+          "type": "string"
+        }
+      }
+    },
+    "BounceChequeDto": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      }
+    }
+  }
+}

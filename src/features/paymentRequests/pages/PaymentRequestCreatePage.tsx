@@ -37,7 +37,8 @@ export default function PaymentRequestCreatePage() {
           New payment request
         </h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Required: party, amount (≥ 0.01), and currency.
+          Required: party, amount (≥ 0.01), and currency. Backend also needs an active{' '}
+          <strong>VOUCHER</strong> number format under Organization → Number Formats.
         </p>
       </div>
 

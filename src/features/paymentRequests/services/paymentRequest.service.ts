@@ -66,6 +66,16 @@ function unwrapEntity(raw: unknown): unknown {
   return raw;
 }
 
+function pickId(raw: unknown): string | undefined {
+  const record = asRecord(raw);
+  if (!record) return undefined;
+  for (const key of ['id', 'payment_request_id', 'paymentRequestId'] as const) {
+    const value = record[key];
+    if (typeof value === 'string' && isUuid(value.trim())) return value.trim();
+  }
+  return undefined;
+}
+
 function formatAxiosError(error: unknown): Error {
   if (error instanceof Error && !(error as { response?: unknown }).response) {
     return error;
@@ -76,10 +86,19 @@ function formatAxiosError(error: unknown): Error {
   };
   const data = axiosErr.response?.data;
   const message = data?.message;
-  if (Array.isArray(message)) return new Error(message.map(String).join('; '));
-  if (typeof message === 'string' && message.trim()) return new Error(message);
-  if (typeof data?.error === 'string' && data.error.trim()) return new Error(data.error);
-  return new Error(axiosErr.message || 'Request failed');
+  const raw =
+    (Array.isArray(message) ? message.map(String).join('; ') : undefined) ||
+    (typeof message === 'string' ? message : undefined) ||
+    (typeof data?.error === 'string' ? data.error : undefined) ||
+    axiosErr.message ||
+    'Request failed';
+
+  if (/no active number format.*voucher/i.test(raw) || /document.?type.*voucher/i.test(raw)) {
+    return new Error(
+      `${raw} Go to Organization → Number Formats and create an active format for document type VOUCHER (e.g. prefix VCH, yearly reset), then retry Create.`,
+    );
+  }
+  return new Error(raw);
 }
 
 function assertId(id: string): asserts id is string {
@@ -145,14 +164,27 @@ export const paymentRequestService = {
 
   async create(dto: CreatePaymentRequestDto): Promise<PaymentRequest> {
     try {
+      const body = preparePaymentRequestPayload(dto as Record<string, unknown>, {
+        requireCreateFields: true,
+      });
       const res = await withGatewayRetry(() =>
-        axiosInstance.post<unknown>(
-          PAYMENT_REQUEST_API.create,
-          preparePaymentRequestPayload(dto as Record<string, unknown>),
-        ),
+        axiosInstance.post<unknown>(PAYMENT_REQUEST_API.create, body),
       );
-      const pr = normalizePaymentRequest(unwrapEntity(res.data));
-      if (!pr) throw new Error('Create succeeded but no payment request was returned.');
+      let pr = normalizePaymentRequest(unwrapEntity(res.data));
+      if (!pr) {
+        const id =
+          pickId(unwrapEntity(res.data)) ||
+          pickId(res.data) ||
+          pickId(asRecord(res.data)?.data);
+        if (id) {
+          pr = await this.getById(id);
+        }
+      }
+      if (!pr) {
+        throw new Error(
+          'Create succeeded but the API response had no payment request id. Check Network → POST /payment-requests response body.',
+        );
+      }
       return pr;
     } catch (error) {
       throw formatAxiosError(error);

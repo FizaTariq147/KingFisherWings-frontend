@@ -257,6 +257,37 @@ export function companyIdFromAccessToken(token: string | null | undefined): stri
   );
 }
 
+/** Normalize permission keys from JWT /auth/me payloads (string or { key } objects). */
+export function normalizePermissionKeys(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  const out: string[] = [];
+  for (const item of raw) {
+    if (typeof item === 'string' && item.trim()) {
+      out.push(item.trim());
+      continue;
+    }
+    if (item && typeof item === 'object' && !Array.isArray(item)) {
+      const rec = item as Record<string, unknown>;
+      for (const key of ['key', 'permission', 'code', 'name'] as const) {
+        const value = rec[key];
+        if (typeof value === 'string' && value.trim()) {
+          out.push(value.trim());
+          break;
+        }
+      }
+    }
+  }
+  return [...new Set(out)];
+}
+
+/** Permission keys embedded in the access token. */
+export function permissionsFromAccessToken(token?: string | null): string[] {
+  if (!token) return [];
+  const payload = decodeJwtPayload(token);
+  if (!payload) return [];
+  return normalizePermissionKeys(payload.permissions);
+}
+
 /** Normalize company id from /auth/me-like payloads. */
 export function resolveCompanyIdFromUserLike(raw: unknown): string {
   if (!raw || typeof raw !== 'object') return '';
