@@ -1,3 +1,4 @@
+import { isUuid } from '@/lib/isUuid';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { tenantService } from '../services/tenant.service';
 import type { TenantListParams } from '../types/tenant.types';
@@ -14,7 +15,8 @@ export function useTenants(params: TenantListParams) {
     queryKey: tenantKeys.list(params),
     queryFn: () => tenantService.list(params),
     placeholderData: keepPreviousData,
-    staleTime: 30_000,
+    // Deleted list is local-registry backed — always refetch after delete/restore.
+    staleTime: params.status === 'deleted' ? 0 : 30_000,
   });
 }
 
@@ -25,7 +27,7 @@ export function useTenant(id: string) {
   return useQuery({
     queryKey: tenantKeys.detail(id),
     queryFn: () => tenantService.getById(id),
-    enabled: !!id,
+    enabled: isUuid(id),
   });
 }
 
@@ -44,5 +46,6 @@ export {
   useDeactivateTenant,
   useDeleteTenant,
   useRestoreTenant,
+  useSyncTenantPermissions,
   useTenantMutations,
 } from './useTenantMutations';

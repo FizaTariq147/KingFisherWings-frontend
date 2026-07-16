@@ -5,7 +5,10 @@ type Theme = 'default' | 'theme-blue' | 'theme-red';
 
 interface UIStore {
   sidebarCollapsed: boolean;
+  mobileSidebarOpen: boolean;
   toggleSidebar: () => void;
+  openMobileSidebar: () => void;
+  closeMobileSidebar: () => void;
   activeModule: string;
   setActiveModule: (module: string) => void;
   theme: Theme;
@@ -16,7 +19,10 @@ export const useUIStore = create<UIStore>()(
   persist(
     (set) => ({
       sidebarCollapsed: false,
+      mobileSidebarOpen: false,
       toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+      openMobileSidebar: () => set({ mobileSidebarOpen: true }),
+      closeMobileSidebar: () => set({ mobileSidebarOpen: false }),
       activeModule: 'dashboard',
       setActiveModule: (module) => set({ activeModule: module }),
       theme: 'default',

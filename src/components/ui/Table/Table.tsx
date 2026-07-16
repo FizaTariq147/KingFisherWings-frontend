@@ -49,13 +49,16 @@ export function TableHead({ children, className }: { children: React.ReactNode; 
   );
 }
 
-export function TableCell({ children, mono, className }: {
+export function TableCell({ children, mono, className, colSpan }: {
   children: React.ReactNode;
   mono?: boolean;
   className?: string;
+  colSpan?: number;
 }) {
   return (
-    <td className={cn(
+    <td
+      colSpan={colSpan}
+      className={cn(
       'px-4 py-3 text-[var(--color-neutral-800)]',
       mono && 'font-mono text-xs',
       className

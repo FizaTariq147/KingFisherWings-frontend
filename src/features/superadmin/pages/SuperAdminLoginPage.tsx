@@ -1,10 +1,12 @@
 import type { JSX } from 'react';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { ApiError } from '../../../lib/superAdminApiClient';
+import { useAuthStore } from '@/store/authStore';
 import { superAdminAuthService } from '../services/superAdminAuth.service';
 import { useSuperAdminAuthStore } from '../store/superAdminAuthStore';
 
@@ -13,7 +15,15 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
+const signupSchema = z.object({
+  email: z.string().trim().email('Invalid email'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  first_name: z.string().trim().min(2, 'First name is required').max(100),
+  last_name: z.string().trim().min(2, 'Last name is required').max(100),
+});
+
 type LoginFormValues = z.infer<typeof loginSchema>;
+type SignupFormValues = z.infer<typeof signupSchema>;
 
 interface LocationState {
   from?: { pathname: string };
@@ -23,24 +33,42 @@ export default function SuperAdminLoginPage(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
   const setSession = useSuperAdminAuthStore((s) => s.setSession);
+  const [mode, setMode] = useState<'login' | 'signup'>('login');
 
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors },
-  } = useForm<LoginFormValues>({ resolver: zodResolver(loginSchema) });
+  const loginForm = useForm<LoginFormValues>({ resolver: zodResolver(loginSchema) });
+  const signupForm = useForm<SignupFormValues>({ resolver: zodResolver(signupSchema) });
 
   const loginMutation = useMutation({
     mutationFn: superAdminAuthService.login,
     onSuccess: ({ user, access_token, refresh_token }) => {
+      useAuthStore.setState({
+        user: null,
+        accessToken: null,
+        isAuthenticated: false,
+        error: null,
+      });
       setSession(user, access_token, refresh_token);
       const from = (location.state as LocationState | null)?.from?.pathname;
       navigate(from ?? '/superadmin/dashboard', { replace: true });
     },
     onError: (error: unknown) => {
       const message = error instanceof ApiError ? error.message : 'Login failed. Try again.';
-      setError('root', { message });
+      loginForm.setError('root', { message });
+    },
+  });
+
+  const signupMutation = useMutation({
+    mutationFn: superAdminAuthService.signup,
+    onSuccess: () => {
+      setMode('login');
+      loginForm.setValue('email', signupForm.getValues('email'));
+      loginForm.setError('root', {
+        message: 'Account created. Sign in with your new credentials.',
+      });
+    },
+    onError: (error: unknown) => {
+      const message = error instanceof ApiError ? error.message : 'Signup failed. Try again.';
+      signupForm.setError('root', { message });
     },
   });
 
@@ -52,51 +80,174 @@ export default function SuperAdminLoginPage(): JSX.Element {
           <p className="mt-1 text-sm text-gray-500">Super Admin Portal</p>
         </div>
 
-        {errors.root && (
-          <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
-            {errors.root.message}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit((values) => loginMutation.mutate(values))} noValidate>
-          <div className="mb-4">
-            <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              autoComplete="username"
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
-              {...register('email')}
-            />
-            {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
-          </div>
-
-          <div className="mb-6">
-            <label htmlFor="password" className="mb-1 block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
-              {...register('password')}
-            />
-            {errors.password && (
-              <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>
-            )}
-          </div>
-
+        <div className="mb-6 flex rounded-md border border-gray-200 p-1 text-sm">
           <button
-            type="submit"
-            disabled={loginMutation.isPending}
-            className="w-full rounded-md bg-[var(--color-primary)] py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
+            type="button"
+            className={`flex-1 rounded py-1.5 font-medium ${
+              mode === 'login' ? 'bg-[var(--color-primary)] text-white' : 'text-gray-600'
+            }`}
+            onClick={() => setMode('login')}
           >
-            {loginMutation.isPending ? 'Signing in…' : 'Sign in'}
+            Sign in
           </button>
-        </form>
+          <button
+            type="button"
+            className={`flex-1 rounded py-1.5 font-medium ${
+              mode === 'signup' ? 'bg-[var(--color-primary)] text-white' : 'text-gray-600'
+            }`}
+            onClick={() => setMode('signup')}
+          >
+            Register
+          </button>
+        </div>
+
+        {mode === 'login' ? (
+          <>
+            {loginForm.formState.errors.root && (
+              <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+                {loginForm.formState.errors.root.message}
+              </div>
+            )}
+
+            <form
+              onSubmit={loginForm.handleSubmit((values) => loginMutation.mutate(values))}
+              noValidate
+            >
+              <div className="mb-4">
+                <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  autoComplete="username"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+                  {...loginForm.register('email')}
+                />
+                {loginForm.formState.errors.email && (
+                  <p className="mt-1 text-xs text-red-600">{loginForm.formState.errors.email.message}</p>
+                )}
+              </div>
+
+              <div className="mb-6">
+                <label htmlFor="password" className="mb-1 block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  autoComplete="current-password"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+                  {...loginForm.register('password')}
+                />
+                {loginForm.formState.errors.password && (
+                  <p className="mt-1 text-xs text-red-600">
+                    {loginForm.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                disabled={loginMutation.isPending}
+                className="w-full rounded-md bg-[var(--color-primary)] py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
+              >
+                {loginMutation.isPending ? 'Signing in…' : 'Sign in'}
+              </button>
+            </form>
+          </>
+        ) : (
+          <>
+            {signupForm.formState.errors.root && (
+              <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+                {signupForm.formState.errors.root.message}
+              </div>
+            )}
+
+            <form
+              onSubmit={signupForm.handleSubmit((values) => signupMutation.mutate(values))}
+              noValidate
+            >
+              <div className="mb-4 grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="first_name" className="mb-1 block text-sm font-medium text-gray-700">
+                    First name
+                  </label>
+                  <input
+                    id="first_name"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+                    {...signupForm.register('first_name')}
+                  />
+                  {signupForm.formState.errors.first_name && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {signupForm.formState.errors.first_name.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label htmlFor="last_name" className="mb-1 block text-sm font-medium text-gray-700">
+                    Last name
+                  </label>
+                  <input
+                    id="last_name"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+                    {...signupForm.register('last_name')}
+                  />
+                  {signupForm.formState.errors.last_name && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {signupForm.formState.errors.last_name.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="signup_email" className="mb-1 block text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <input
+                  id="signup_email"
+                  type="email"
+                  autoComplete="username"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+                  {...signupForm.register('email')}
+                />
+                {signupForm.formState.errors.email && (
+                  <p className="mt-1 text-xs text-red-600">{signupForm.formState.errors.email.message}</p>
+                )}
+              </div>
+
+              <div className="mb-6">
+                <label
+                  htmlFor="signup_password"
+                  className="mb-1 block text-sm font-medium text-gray-700"
+                >
+                  Password
+                </label>
+                <input
+                  id="signup_password"
+                  type="password"
+                  autoComplete="new-password"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+                  {...signupForm.register('password')}
+                />
+                {signupForm.formState.errors.password && (
+                  <p className="mt-1 text-xs text-red-600">
+                    {signupForm.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                disabled={signupMutation.isPending}
+                className="w-full rounded-md bg-[var(--color-primary)] py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
+              >
+                {signupMutation.isPending ? 'Creating…' : 'Create platform account'}
+              </button>
+            </form>
+          </>
+        )}
       </div>
     </div>
   );

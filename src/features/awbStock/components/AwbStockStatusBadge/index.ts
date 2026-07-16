@@ -1,0 +1,1 @@
+export { AwbStockStatusBadge } from './AwbStockStatusBadge';

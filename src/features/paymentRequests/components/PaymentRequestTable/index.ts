@@ -1,0 +1,1 @@
+export { PaymentRequestTable } from './PaymentRequestTable';

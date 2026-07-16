@@ -1,0 +1,138 @@
+{
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 20
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200
+    },
+    "slug": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 100,
+      "pattern": "/^[a-z0-9-]+$/"
+    },
+    "password": {
+      "type": "string"
+    },
+    "admin_first_name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "admin_last_name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "domain": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "primary_color": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string"
+    },
+    "base_currency": {
+      "type": "string"
+    },
+    "timezone": {
+      "type": "string"
+    },
+    "country_code": {
+      "type": "string"
+    },
+    "financial_year_start": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 12
+    },
+    "vat_number": {
+      "type": "string"
+    },
+    "cr_number": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "company_code": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 20
+    },
+    "company_name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 300
+    },
+    "company_legal_name": {
+      "type": "string"
+    },
+    "company_registration_number": {
+      "type": "string"
+    },
+    "subscription_plan": {
+      "type": "object"
+    },
+    "status": {
+      "type": "object"
+    },
+    "trial_ends": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "subscription_ends": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "max_users": {
+      "type": "number",
+      "minimum": 1
+    },
+    "max_branches": {
+      "type": "number",
+      "minimum": 1
+    },
+    "max_storage_gb": {
+      "type": "number",
+      "minimum": 1
+    },
+    "is_active": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "code",
+    "name",
+    "slug",
+    "password",
+    "email"
+  ]
+}

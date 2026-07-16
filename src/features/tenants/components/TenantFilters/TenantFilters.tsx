@@ -1,4 +1,4 @@
-import type { TenantStatusFilter } from '../utils/filterTenants';
+import type { TenantStatusFilter } from '../../utils/filterTenants';
 
 const STATUS_OPTIONS: { value: TenantStatusFilter | 'all'; label: string }[] = [
   { value: 'all', label: 'All' },

@@ -1,0 +1,1 @@
+export { AwbAllocationsPanel } from './AwbAllocationsPanel';

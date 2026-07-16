@@ -11,13 +11,25 @@ export const ROUTE_LABELS: Record<string, string> = {
   // ── Top-level ────────────────────────────────────────────────────────
   dashboard:     'Dashboard',
   customers:     'Customers',
+  parties:       'Parties',
+  organization:  'Organization',
   quotations:    'Quotations',
+  all:           'All Quotations',
   documentation: 'Documentation',
   finance:       'Finance',
+  accounts:      'Accounts',
+  gl:            'General Ledger',
+  vouchers:      'Vouchers',
+  payments:      'Payments',
+  cheques:       'Cheques',
+  'bank-reconciliations': 'Bank Reconciliation',
+  'bank-transfers': 'Bank Transfers',
   nvocc:         'NVOCC',
   hr:            'HR & Payroll',
   masters:       'Masters',
   reports:       'Reports',
+  mis:           'MIS Dashboard',
+  'saved-reports': 'My Reports',
   settings:      'Settings',
   notifications: 'Notifications',
   profile:       'My Profile',
@@ -28,14 +40,22 @@ export const ROUTE_LABELS: Record<string, string> = {
   'sea-export':  'Sea Export',
   'sea-import':  'Sea Import',
   new:           'New',
+  overdue:       'Overdue',
 
   // ── Sub-routes ────────────────────────────────────────────────────────
   invoices:      'Invoices',
+  'purchase-invoices': 'Purchase Invoices',
+  'credit-notes': 'Credit Notes',
+  'payment-requests': 'Payment Requests',
   wms:           'WMS',
+
   employees:     'Employees',
   leave:         'Leave Calendar',
   airlines:      'Airlines',
+  'awb-stock-master': 'AWB Stock',
   users:         'Users',
+  'bank-accounts': 'Bank Accounts',
+  'number-formats': 'Number Formats',
 }
 
 /**
@@ -52,8 +72,12 @@ export const ROUTE_LABEL_RESOLVERS: Record<string, SegmentResolver> = {
     // return data.name
     return null   // falls back to raw id until implemented
   },
+  parties: async (_id) => null,
   quotations: async (_id) => null,
   jobs:       async (_id) => null,
   invoices:   async (_id) => null,
+  'purchase-invoices': async (_id) => null,
+  'credit-notes': async (_id) => null,
+  'payment-requests': async (_id) => null,
   employees:  async (_id) => null,
 }

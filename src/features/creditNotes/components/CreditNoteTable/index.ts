@@ -1,0 +1,1 @@
+export { CreditNoteTable } from './CreditNoteTable';

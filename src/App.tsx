@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppShell } from './components/layout/AppShell'
 import ProtectedRoute from './components/routing/ProtectedRoute'
 import LoginPage from './features/auth/pages/LoginPage'
@@ -10,12 +10,7 @@ import { DashboardPage } from './features/auth/dashboard/pages/DashboardPage'
 
 import AuditLogPage from './pages/audit/AuditLogPage'
 
-// ── Marketing pages ────────────────────────────────────────────────────────
-import Home         from './pages/marketing/Home'
-import FeaturesPage from './pages/marketing/FeaturesPage'
-import PricingPage  from './pages/marketing/PricingPage'
-import ContactPage  from './pages/marketing/ContactPage'
-import ModulesPage  from './pages/marketing/ModulesPage'
+
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -27,13 +22,7 @@ function Placeholder({ title }: { title: string }) {
 }
 
 export const router = createBrowserRouter([
-  // ── Public marketing routes ────────────────────────────────────────────
-  { path: '/home',      element: <Home /> },
-  { path: '/features',  element: <FeaturesPage /> },
-  { path: '/pricing',   element: <PricingPage /> },
-  { path: '/contact',   element: <ContactPage /> },
-  { path: '/modules',   element: <ModulesPage /> },
-   
+ { path: '/', element: <Navigate to="/login" replace /> },
 
   // ── Auth routes ────────────────────────────────────────────────────────
   { path: '/login',           element: <LoginPage /> },
@@ -112,7 +101,7 @@ export const router = createBrowserRouter([
 
           // Settings
           { path: '/settings',       element: <Placeholder title="Settings" /> },
-          { path: '/settings/users', element: <Placeholder title="Users" /> },
+         
 
           // Profile & notifications
           { path: '/profile',       element: <Placeholder title="My Profile" /> },

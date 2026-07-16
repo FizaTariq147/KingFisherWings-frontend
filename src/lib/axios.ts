@@ -6,20 +6,58 @@ interface RetryConfig extends InternalAxiosRequestConfig {
 }
 
 export const axiosInstance = axios.create({
-  baseURL:         import.meta.env.VITE_API_URL,
-  withCredentials: true,   // sends httpOnly refresh-token cookie
-  timeout:         15_000,
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,
+  // Render free tier can cold-start for 30–90s+.
+  timeout: 120_000,
 })
 
-// ── Request: attach access token ───────────────────────────────────────────
+const AUTH_PUBLIC_URLS = [
+  '/auth/login',
+  '/auth/tenant-login',
+  '/auth/refresh',
+  '/auth/super-admin/login',
+  '/auth/super-admin/signup',
+  '/health',
+]
+
+/** Logout needs Bearer — do not strip Authorization. Still skip 401 refresh retry. */
+const AUTH_NO_REFRESH_RETRY = [
+  ...AUTH_PUBLIC_URLS,
+  '/auth/logout',
+  '/auth/logout-all',
+]
+
+function isAuthPublicUrl(url?: string): boolean {
+  if (!url) return false
+  return AUTH_PUBLIC_URLS.some((path) => url.includes(path))
+}
+
+function isAuthNoRefreshRetryUrl(url?: string): boolean {
+  if (!url) return false
+  return AUTH_NO_REFRESH_RETRY.some((path) => url.includes(path))
+}
+
+// ── Request: attach access token (never on public login/refresh) ───────────
 axiosInstance.interceptors.request.use(async (config) => {
+  if (isAuthPublicUrl(config.url)) {
+    // Login/refresh must be unauthenticated — leftover Bearer/Cookie can break
+    // credential checks or crash Auth (Swagger Try-it-out does not send these).
+    if (config.headers) {
+      delete config.headers.Authorization
+      delete config.headers.authorization
+      delete config.headers.Cookie
+      delete config.headers.cookie
+    }
+    return config
+  }
   const token = useAuthStore.getState().accessToken
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
 // ── Response: silent refresh on 401 ───────────────────────────────────────
-let isRefreshing   = false
+let isRefreshing = false
 let pendingQueue: { resolve: (t: string) => void; reject: (e: unknown) => void }[] = []
 
 const processQueue = (error: unknown, token: string | null) => {
@@ -34,11 +72,8 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const original = error.config as RetryConfig | undefined
 
-    // Don't retry auth endpoints or already-retried requests
     if (!original || original._retry) return Promise.reject(error)
-    if (original.url?.includes('/auth/login'))   return Promise.reject(error)
-    if (original.url?.includes('/auth/refresh')) return Promise.reject(error)
-    if (original.url?.includes('/auth/logout'))  return Promise.reject(error)
+    if (isAuthNoRefreshRetryUrl(original.url)) return Promise.reject(error)
 
     if (error.response?.status !== 401) return Promise.reject(error)
 
@@ -52,16 +87,18 @@ axiosInstance.interceptors.response.use(
     }
 
     original._retry = true
-    isRefreshing    = true
+    isRefreshing = true
 
     try {
       await useAuthStore.getState().refreshAccessToken()
-      const newToken = useAuthStore.getState().accessToken!
+      const newToken = useAuthStore.getState().accessToken
+      if (!newToken) throw new Error('No access token after refresh')
       processQueue(null, newToken)
       original.headers.Authorization = `Bearer ${newToken}`
       return axiosInstance(original)
     } catch (refreshError) {
       processQueue(refreshError, null)
+      useAuthStore.getState().markSessionExpired()
       return Promise.reject(refreshError)
     } finally {
       isRefreshing = false
@@ -70,16 +107,10 @@ axiosInstance.interceptors.response.use(
 )
 
 // ── DEV-ONLY: mock unreachable backend so frontend work isn't blocked ──────
-// Activate by setting VITE_MOCK_API=true in your .env.local (gitignored).
-// import.meta.env.DEV is stripped to false in production builds, so this
-// block never runs outside local dev regardless of the env var.
 if (import.meta.env.DEV && import.meta.env.VITE_MOCK_API === 'true') {
   axiosInstance.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
-      // Only intercept true network failures (server unreachable) —
-      // real 401s, 403s, validation errors etc. still reject normally
-      // so your login/permission UI keeps behaving correctly.
       const isUnreachable = !error.response
 
       if (!isUnreachable) return Promise.reject(error)
@@ -88,33 +119,88 @@ if (import.meta.env.DEV && import.meta.env.VITE_MOCK_API === 'true') {
       console.warn(`[mock] backend unreachable — returning fixture data for ${url}`)
 
       return Promise.resolve({
-        data:       getMockResponse(url),
-        status:     200,
+        data: getMockResponse(url),
+        status: 200,
         statusText: 'OK (mocked)',
-        headers:    {},
-        config:     error.config,
+        headers: {},
+        config: error.config,
       })
     },
   )
 }
 
 function getMockResponse(url: string): unknown {
+  // Auth fixtures — never return [] for login (that surfaces as "no access token").
+  if (url.includes('/auth/tenant-login') || url.includes('/auth/login') || url.includes('/auth/super-admin/login')) {
+    const header = btoa(JSON.stringify({ alg: 'none', typ: 'JWT' }))
+    const payload = btoa(
+      JSON.stringify({
+        sub: '00000000-0000-4000-8000-000000000001',
+        role: 'TENANT_ADMIN',
+        type: 'tenant',
+        slug: 'demo-tenant',
+        tenant_slug: 'demo-tenant',
+      }),
+    )
+    const access = `${header}.${payload}.mock`
+    const refresh = `${header}.${btoa(JSON.stringify({ typ: 'refresh' }))}.mock`
+    return {
+      data: {
+        access_token: access,
+        refresh_token: refresh,
+        user: {
+          id: '00000000-0000-4000-8000-000000000001',
+          email: 'admin@demo.local',
+          first_name: 'Demo',
+          last_name: 'Admin',
+          role: 'TENANT_ADMIN',
+          tenant_id: '00000000-0000-4000-8000-000000000001',
+        },
+      },
+    }
+  }
+
+  if (url.includes('/auth/refresh')) {
+    const header = btoa(JSON.stringify({ alg: 'none', typ: 'JWT' }))
+    const payload = btoa(JSON.stringify({ sub: '00000000-0000-4000-8000-000000000001', role: 'TENANT_ADMIN' }))
+    return {
+      data: {
+        access_token: `${header}.${payload}.mock`,
+        refresh_token: `${header}.${btoa(JSON.stringify({ typ: 'refresh' }))}.mock`,
+      },
+    }
+  }
+
+  if (url.includes('/auth/me')) {
+    return {
+      data: {
+        id: '00000000-0000-4000-8000-000000000001',
+        email: 'admin@demo.local',
+        first_name: 'Demo',
+        last_name: 'Admin',
+        role: { slug: 'TENANT_ADMIN', name: 'Tenant Admin' },
+        tenant_id: '00000000-0000-4000-8000-000000000001',
+        permissions: [],
+      },
+    }
+  }
+
   if (url.includes('homepage-config')) {
     return {
       config: {
         userId: 'dev-user-1',
         columns: 3,
         widgets: [
-          { id: 'open_jobs',           visible: true, position: 0 },
-          { id: 'pending_quotations',  visible: true, position: 1 },
-          { id: 'shipments_by_mode',   visible: true, position: 2 },
-          { id: 'upcoming_etds',       visible: true, position: 3 },
-          { id: 'pending_tasks',       visible: true, position: 4 },
-          { id: 'recent_jobs',         visible: true, position: 5 },
+          { id: 'open_jobs', visible: true, position: 0 },
+          { id: 'pending_quotations', visible: true, position: 1 },
+          { id: 'shipments_by_mode', visible: true, position: 2 },
+          { id: 'upcoming_etds', visible: true, position: 3 },
+          { id: 'pending_tasks', visible: true, position: 4 },
+          { id: 'recent_jobs', visible: true, position: 5 },
         ],
         financialVisibility: {
-          canSeeRevenue:   false,
-          canSeeGP:        false,
+          canSeeRevenue: false,
+          canSeeGP: false,
           canSeeARBalance: false,
           canSeeAPBalance: false,
         },

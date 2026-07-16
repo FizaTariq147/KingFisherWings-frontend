@@ -1,0 +1,1 @@
+export { QuotationTotalsSummary } from './QuotationTotalsSummary';

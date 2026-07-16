@@ -1,17 +1,17 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppShell } from '../components/layout/AppShell'
 import ProtectedRoute from '../components/routing/ProtectedRoute'
+import { SettingsRedirect, LegacySettingsUsersRedirect } from '../components/routing/SettingsRedirect'
 import LoginPage from '../features/auth/pages/LoginPage'
 import ForgotPasswordPage from '../features/auth/pages/ForgotPasswordPage'
 import ResetPasswordPage from '../features/auth/pages/ResetPasswordPage'
+import ChangePasswordPage from '../features/auth/pages/ChangePasswordPage'
+import MyProfilePage from '../features/auth/pages/MyProfilePage'
+import SessionManagementPage from '../pages/settings/SessionManagementPage'
 import Forbidden from '../pages/errors/Forbidden'
 import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
-import Home from '../pages/marketing/Home'
-import FeaturesPage from '../pages/marketing/FeaturesPage'
-import PricingPage from '../pages/marketing/PricingPage'
-import ContactPage from '../pages/marketing/ContactPage'
-import ModulesPage from '../pages/marketing/ModulesPage'
+
 import CustomerServiceMenuPage from '../pages/customers/CustomerServiceMenuPage'
 import AllShipmentsPage from '../pages/customers/AllShipments'
 import EnquirySheetPage from '../pages/customers/EnquirySheetPage'
@@ -21,9 +21,83 @@ import AgentEdiPage from '../pages/customers/AgentEdiPage'
 import CostingSearchPage from '../pages/customers/CostingSearchPage'
 import ShipmentTrackingPage from '../pages/customers/ShipmentTrackingPage'
 import  QuotationsMenuPage  from '../pages/quotations/QuotationsMenuPage'
-import AllQuotationsPage from '../pages/quotations/AllQuotationsPage'
-import OnlineTariffMasterPage from '../pages/quotations/OnlineTariffMasterPage'
-import ZipDistanceMasterPage from '../pages/quotations/ZipDistanceMasterPage'
+import QuotationListPage from '../features/quotations/pages/QuotationListPage'
+import QuotationCreatePage from '../features/quotations/pages/QuotationCreatePage'
+import QuotationDetailPage from '../features/quotations/pages/QuotationDetailPage'
+import QuotationEditPage from '../features/quotations/pages/QuotationEditPage'
+import QuotationReportsPage from '../features/quotations/pages/QuotationReportsPage'
+import QuotationOnlineQuotePage from '../features/quotations/pages/QuotationOnlineQuotePage'
+import FinanceMenuPage from '../pages/finance/FinanceMenuPage'
+import AccountsMenuPage from '../pages/accounts/AccountsMenuPage'
+import InvoiceListPage from '../features/invoices/pages/InvoiceListPage'
+import InvoiceCreatePage from '../features/invoices/pages/InvoiceCreatePage'
+import InvoiceDetailPage from '../features/invoices/pages/InvoiceDetailPage'
+import InvoiceEditPage from '../features/invoices/pages/InvoiceEditPage'
+import InvoiceOverduePage from '../features/invoices/pages/InvoiceOverduePage'
+import CreditNoteListPage from '../features/creditNotes/pages/CreditNoteListPage'
+import CreditNoteCreatePage from '../features/creditNotes/pages/CreditNoteCreatePage'
+import CreditNoteDetailPage from '../features/creditNotes/pages/CreditNoteDetailPage'
+import PurchaseInvoiceListPage from '../features/purchaseInvoices/pages/PurchaseInvoiceListPage'
+import PurchaseInvoiceCreatePage from '../features/purchaseInvoices/pages/PurchaseInvoiceCreatePage'
+import PurchaseInvoiceEditPage from '../features/purchaseInvoices/pages/PurchaseInvoiceEditPage'
+import PurchaseInvoiceDetailPage from '../features/purchaseInvoices/pages/PurchaseInvoiceDetailPage'
+import PaymentRequestListPage from '../features/paymentRequests/pages/PaymentRequestListPage'
+import PaymentRequestCreatePage from '../features/paymentRequests/pages/PaymentRequestCreatePage'
+import PaymentRequestDetailPage from '../features/paymentRequests/pages/PaymentRequestDetailPage'
+import PaymentRequestEditPage from '../features/paymentRequests/pages/PaymentRequestEditPage'
+import ChartOfAccountListPage from '../features/chartOfAccounts/pages/ChartOfAccountListPage'
+import ChartOfAccountCreatePage from '../features/chartOfAccounts/pages/ChartOfAccountCreatePage'
+import ChartOfAccountDetailPage from '../features/chartOfAccounts/pages/ChartOfAccountDetailPage'
+import ChartOfAccountEditPage from '../features/chartOfAccounts/pages/ChartOfAccountEditPage'
+import ChartOfAccountTreePage from '../features/chartOfAccounts/pages/ChartOfAccountTreePage'
+import TrialBalancePage from '../features/chartOfAccounts/pages/TrialBalancePage'
+import VoucherListPage from '../features/vouchers/pages/VoucherListPage'
+import VoucherCreatePage from '../features/vouchers/pages/VoucherCreatePage'
+import VoucherDetailPage from '../features/vouchers/pages/VoucherDetailPage'
+import VoucherEditPage from '../features/vouchers/pages/VoucherEditPage'
+import GlPaymentListPage from '../features/glPayments/pages/GlPaymentListPage'
+import GlPaymentCreatePage from '../features/glPayments/pages/GlPaymentCreatePage'
+import GlPaymentDetailPage from '../features/glPayments/pages/GlPaymentDetailPage'
+import GlPaymentEditPage from '../features/glPayments/pages/GlPaymentEditPage'
+import ChequeListPage from '../features/glCheques/pages/ChequeListPage'
+import ChequeCreatePage from '../features/glCheques/pages/ChequeCreatePage'
+import ChequeDetailPage from '../features/glCheques/pages/ChequeDetailPage'
+import ChequeEditPage from '../features/glCheques/pages/ChequeEditPage'
+import PdcDueReportPage from '../features/glCheques/pages/PdcDueReportPage'
+import BankReconciliationListPage from '../features/glBankReconciliation/pages/BankReconciliationListPage'
+import BankReconciliationCreatePage from '../features/glBankReconciliation/pages/BankReconciliationCreatePage'
+import BankReconciliationDetailPage from '../features/glBankReconciliation/pages/BankReconciliationDetailPage'
+import BankTransferCreatePage from '../features/glBankReconciliation/pages/BankTransferCreatePage'
+import FinancialReportsPage from '../features/glFinancialReports/pages/FinancialReportsPage'
+import GlMisDashboardPage from '../features/glMisDashboard/pages/GlMisDashboardPage'
+import SavedReportListPage from '../features/glSavedReports/pages/SavedReportListPage'
+import SavedReportCreatePage from '../features/glSavedReports/pages/SavedReportCreatePage'
+import SavedReportDetailPage from '../features/glSavedReports/pages/SavedReportDetailPage'
+import SavedReportEditPage from '../features/glSavedReports/pages/SavedReportEditPage'
+import ArAgingPage from '../features/arApAging/pages/ArAgingPage'
+import ApAgingPage from '../features/arApAging/pages/ApAgingPage'
+import {
+  OnlineTariffCreatePage,
+  OnlineTariffDetailPage,
+  OnlineTariffEditPage,
+  OnlineTariffListPage,
+} from '../pages/quotations/OnlineTariffMasterPage'
+import RedirectMastersTariffsToQuotations from '../pages/quotations/RedirectMastersTariffsToQuotations'
+import RedirectMastersZipDistancesToQuotations from '../pages/quotations/RedirectMastersZipDistancesToQuotations'
+import {
+  ZipDistanceCreatePage,
+  ZipDistanceDetailPage,
+  ZipDistanceEditPage,
+  ZipDistanceListPage,
+} from '../pages/quotations/ZipDistanceMasterPage'
+import JobListPage from '../features/jobs/pages/JobListPage'
+import JobCreatePage from '../features/jobs/pages/JobCreatePage'
+import JobDetailPage from '../features/jobs/pages/JobDetailPage'
+import JobEditPage from '../features/jobs/pages/JobEditPage'
+import AwbStockListPage from '../features/awbStock/pages/AwbStockListPage'
+import AwbStockCreatePage from '../features/awbStock/pages/AwbStockCreatePage'
+import AwbStockDetailPage from '../features/awbStock/pages/AwbStockDetailPage'
+import AwbStockEditPage from '../features/awbStock/pages/AwbStockEditPage'
 import SalesMenuPage from '../pages/sales/SalesMenuPage'
 import CallSheetPage from '../pages/sales/CallSheetPage'
 import ClientRequestListPage from '../pages/sales/ClientRequestListPage'
@@ -61,7 +135,10 @@ import BulkCostEntryPage from '../pages/documentation/BulkCostEntryPage'
 import CcnFwbFhlEdiJobListPage from '../pages/documentation/CcnFwbFhlEdiJobListPage'
 import CgmEdiVesselListPage from '../pages/documentation/CgmEdiVesselListPage'
 import AirCargoTrackingPage from '../pages/documentation/AirCargoTrackingPage'
-
+import MastersMenuPage from '../pages/masters/MastersMenuPage'
+import MasterResourceListPage from '../features/masters/pages/MasterResourceListPage'
+import MasterResourceFormPage from '../features/masters/pages/MasterResourceFormPage'
+import MasterResourceDetailPage from '../features/masters/pages/MasterResourceDetailPage'
 
 import { SuperAdminProtectedRoute } from '../features/superadmin/components/SuperAdminProtectedRoute/SuperAdminProtectedRoute'
 import SuperAdminLoginPage from '../features/superadmin/pages/SuperAdminLoginPage'
@@ -70,7 +147,23 @@ import TenantListPage from '../features/tenants/pages/TenantListPage'
 import TenantCreatePage from '../features/tenants/pages/TenantCreatePage'
 import TenantEditPage from '../features/tenants/pages/TenantEditPage'
 import TenantDetailPage from '../features/tenants/pages/TenantDetailPage'
-
+import CompanyListPage from '../features/companies/pages/CompanyListPage'
+import CompanyCreatePage from '../features/companies/pages/CompanyCreatePage'
+import CompanyEditPage from '../features/companies/pages/CompanyEditPage'
+import CompanyDetailPage from '../features/companies/pages/CompanyDetailPage'
+import UserListPage from '../features/users/pages/UserListPage'
+import UserCreatePage from '../features/users/pages/UserCreatePage'
+import UserDetailPage from '../features/users/pages/UserDetailPage'
+import UserEditPage from '../features/users/pages/UserEditPage'
+import PartyListPage from '../features/parties/pages/PartyListPage'
+import PartyCreatePage from '../features/parties/pages/PartyCreatePage'
+import PartyDetailPage from '../features/parties/pages/PartyDetailPage'
+import PartyEditPage from '../features/parties/pages/PartyEditPage'
+import OrganizationShell from '../features/organization/pages/OrganizationShell'
+import OrganizationProfilePage from '../features/organization/pages/OrganizationProfilePage'
+import BankAccountsPage from '../features/organization/pages/BankAccountsPage'
+import NumberFormatsPage from '../features/organization/pages/NumberFormatsPage'
+import { TENANT_USER_MANAGER_ROLE_SLUGS } from '../features/users/constants/userPermissions'
 function Placeholder({ title }: { title: string }) {
   return (
     <div className="flex flex-col items-center justify-center h-64 gap-2">
@@ -81,11 +174,8 @@ function Placeholder({ title }: { title: string }) {
 }
 
 export const router = createBrowserRouter([
-  { path: '/', element: <Home /> },
-  { path: '/features', element: <FeaturesPage /> },
-  { path: '/pricing', element: <PricingPage /> },
-  { path: '/contact', element: <ContactPage /> },
-  { path: '/modules', element: <ModulesPage /> },
+
+  { path: '/', element: <Navigate to="/login" replace /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/forgot-password', element: <ForgotPasswordPage /> },
   { path: '/reset-password', element: <ResetPasswordPage /> },
@@ -105,6 +195,11 @@ export const router = createBrowserRouter([
           { path: 'tenants/new', element: <TenantCreatePage /> },
           { path: 'tenants/:id', element: <TenantDetailPage /> },
           { path: 'tenants/:id/edit', element: <TenantEditPage /> },
+          { path: 'companies', element: <CompanyListPage /> },
+          { path: 'companies/new', element: <CompanyCreatePage /> },
+          { path: 'companies/:id', element: <CompanyDetailPage /> },
+          { path: 'companies/:id/edit', element: <CompanyEditPage /> },
+          // Super Admin cannot access tenant user management — Tenant Admin owns that in ERP.
         ],
       },
     ],
@@ -113,12 +208,35 @@ export const router = createBrowserRouter([
   {
     element: <ProtectedRoute />,
     children: [
+      { path: '/change-password', element: <ChangePasswordPage /> },
       {
         element: <AppShell title="KingFisher Tech Gold" />,
         children: [
           { path: '/dashboard', element: <DashboardPage /> },
           { path: '/customers', element: <CustomerServiceMenuPage /> },
           { path: '/customers/:id', element: <Placeholder title="Customer Profile" /> },
+          {
+            element: (
+              <ProtectedRoute
+                requireAnyRole={[...TENANT_USER_MANAGER_ROLE_SLUGS]}
+              />
+            ),
+            children: [
+              { path: '/parties', element: <PartyListPage /> },
+              { path: '/parties/new', element: <PartyCreatePage /> },
+              { path: '/parties/:id', element: <PartyDetailPage /> },
+              { path: '/parties/:id/edit', element: <PartyEditPage /> },
+              {
+                path: '/organization',
+                element: <OrganizationShell />,
+                children: [
+                  { index: true, element: <OrganizationProfilePage /> },
+                  { path: 'bank-accounts', element: <BankAccountsPage /> },
+                  { path: 'number-formats', element: <NumberFormatsPage /> },
+                ],
+              },
+            ],
+          },
           { path: '/customer-service/shipments', element: <AllShipmentsPage /> },
           { path: '/customer-service/enquiry-sheet', element: <EnquirySheetPage /> },
           { path: '/customer-service/pricing-dashboard', element: <PricingDashboardPage /> },
@@ -126,19 +244,39 @@ export const router = createBrowserRouter([
           { path: '/customer-service/agent-edi', element: <AgentEdiPage /> },
           { path: '/customer-service/costing-search', element: <CostingSearchPage /> },
           { path: '/customer-service/tracking', element: <ShipmentTrackingPage /> },
-          { path: '/quotations', element: <QuotationsMenuPage /> },
-          { path: '/quotations/all', element: <AllQuotationsPage /> },
-          { path: '/quotations/tariff-master', element: <OnlineTariffMasterPage /> },
-          { path: '/quotations/zip-distance-master', element: <ZipDistanceMasterPage /> },
-          { path: '/jobs/air-export', element: <Placeholder title="Air Export Jobs" /> },
-          { path: '/jobs/air-export/new', element: <Placeholder title="New Air Export" /> },
-          { path: '/jobs/air-export/:id', element: <Placeholder title="Air Export Detail" /> },
-          { path: '/jobs/sea-export', element: <Placeholder title="Sea Export Jobs" /> },
-          { path: '/jobs/sea-export/new', element: <Placeholder title="New Sea Export" /> },
-          { path: '/jobs/sea-export/:id', element: <Placeholder title="Sea Export Detail" /> },
-          { path: '/jobs/sea-import', element: <Placeholder title="Sea Import Jobs" /> },
-          { path: '/jobs/sea-import/new', element: <Placeholder title="New Sea Import" /> },
-          { path: '/jobs/sea-import/:id', element: <Placeholder title="Sea Import Detail" /> },
+          {
+            element: <ProtectedRoute requirePermissions={['menu_quotations']} />,
+            children: [
+              { path: '/quotations', element: <QuotationsMenuPage /> },
+              { path: '/quotations/all', element: <QuotationListPage /> },
+              { path: '/quotations/new', element: <QuotationCreatePage /> },
+              { path: '/quotations/online-quote', element: <QuotationOnlineQuotePage /> },
+              { path: '/quotations/reports', element: <QuotationReportsPage /> },
+              { path: '/quotations/tariff-master', element: <OnlineTariffListPage /> },
+              { path: '/quotations/tariff-master/new', element: <OnlineTariffCreatePage /> },
+              { path: '/quotations/tariff-master/:id/edit', element: <OnlineTariffEditPage /> },
+              { path: '/quotations/tariff-master/:id', element: <OnlineTariffDetailPage /> },
+              { path: '/quotations/zip-distance-master', element: <ZipDistanceListPage /> },
+              { path: '/quotations/zip-distance-master/new', element: <ZipDistanceCreatePage /> },
+              { path: '/quotations/zip-distance-master/:id/edit', element: <ZipDistanceEditPage /> },
+              { path: '/quotations/zip-distance-master/:id', element: <ZipDistanceDetailPage /> },
+              { path: '/quotations/:id/edit', element: <QuotationEditPage /> },
+              { path: '/quotations/:id', element: <QuotationDetailPage /> },
+            ],
+          },
+          { path: '/jobs/new', element: <JobCreatePage /> },
+          { path: '/jobs/air-export', element: <JobListPage /> },
+          { path: '/jobs/air-export/new', element: <JobCreatePage /> },
+          { path: '/jobs/air-export/:id/edit', element: <JobEditPage /> },
+          { path: '/jobs/air-export/:id', element: <JobDetailPage /> },
+          { path: '/jobs/sea-export', element: <JobListPage /> },
+          { path: '/jobs/sea-export/new', element: <JobCreatePage /> },
+          { path: '/jobs/sea-export/:id/edit', element: <JobEditPage /> },
+          { path: '/jobs/sea-export/:id', element: <JobDetailPage /> },
+          { path: '/jobs/sea-import', element: <JobListPage /> },
+          { path: '/jobs/sea-import/new', element: <JobCreatePage /> },
+          { path: '/jobs/sea-import/:id/edit', element: <JobEditPage /> },
+          { path: '/jobs/sea-import/:id', element: <JobDetailPage /> },
           { path: '/documentation', element: <DocumentationMenuPage /> },
           {path: '/documentation/all-jobs', element: <AllJobsPageDocumentation />},
           {path: '/documentation/boe-dashboard', element: <BoeDashboardPage />},
@@ -148,6 +286,34 @@ export const router = createBrowserRouter([
           {path: '/documentation/ccn-fwb-fhl-edi-job-list', element: <CcnFwbFhlEdiJobListPage />},
           {path: '/documentation/cgm-edi-vessel-list', element: <CgmEdiVesselListPage />},
           {path: '/documentation/cargo-tracking-air', element: <AirCargoTrackingPage />},
+          
+
+          {
+            element: (
+              <ProtectedRoute
+                requireAnyRole={[...TENANT_USER_MANAGER_ROLE_SLUGS]}
+              />
+            ),
+            children: [
+              { path: '/masters', element: <MastersMenuPage /> },
+              { path: '/masters/awb-stock-master', element: <AwbStockListPage /> },
+              { path: '/masters/awb-stock-master/new', element: <AwbStockCreatePage /> },
+              { path: '/masters/awb-stock-master/:id/edit', element: <AwbStockEditPage /> },
+              { path: '/masters/awb-stock-master/:id', element: <AwbStockDetailPage /> },
+              { path: '/masters/tariffs/new', element: <RedirectMastersTariffsToQuotations /> },
+              { path: '/masters/tariffs/:id/edit', element: <RedirectMastersTariffsToQuotations /> },
+              { path: '/masters/tariffs/:id', element: <RedirectMastersTariffsToQuotations /> },
+              { path: '/masters/tariffs', element: <RedirectMastersTariffsToQuotations /> },
+              { path: '/masters/zip-distances/new', element: <RedirectMastersZipDistancesToQuotations /> },
+              { path: '/masters/zip-distances/:id/edit', element: <RedirectMastersZipDistancesToQuotations /> },
+              { path: '/masters/zip-distances/:id', element: <RedirectMastersZipDistancesToQuotations /> },
+              { path: '/masters/zip-distances', element: <RedirectMastersZipDistancesToQuotations /> },
+              { path: '/masters/:resourceKey', element: <MasterResourceListPage /> },
+              { path: '/masters/:resourceKey/new', element: <MasterResourceFormPage /> },
+              { path: '/masters/:resourceKey/:id', element: <MasterResourceDetailPage /> },
+              { path: '/masters/:resourceKey/:id/edit', element: <MasterResourceFormPage /> },
+            ],
+          },
 
           { path: '/management', element: <ManagementMenuPage /> },
           {path: '/management/all-jobs-mis', element: <AllJobMisPage />},
@@ -170,9 +336,27 @@ export const router = createBrowserRouter([
           { path: '/hr/pay-roll', element: <PayRollPage /> },
           { path: '/hr/salary-upload', element: <SalaryLedgerPage /> },
           { path: '/reports', element: <Placeholder title="Reports" /> },
-          { path: '/settings', element: <Placeholder title="Settings" /> },
-          { path: '/settings/users', element: <Placeholder title="Users" /> },
-          { path: '/profile', element: <Placeholder title="My Profile" /> },
+          { path: '/settings', element: <SettingsRedirect /> },
+          { path: '/settings/sessions', element: <SessionManagementPage /> },
+          {
+            element: (
+              <ProtectedRoute
+                requireAnyRole={[...TENANT_USER_MANAGER_ROLE_SLUGS]}
+              />
+            ),
+            children: [
+              { path: '/admin/users', element: <UserListPage /> },
+              { path: '/admin/users/new', element: <UserCreatePage /> },
+              { path: '/admin/users/:id', element: <UserDetailPage /> },
+              { path: '/admin/users/:id/edit', element: <UserEditPage /> },
+            ],
+          },
+          // Legacy: Users used to live under Settings — send to Admin Users
+          {
+            path: '/settings/users/*',
+            element: <LegacySettingsUsersRedirect />,
+          },
+          { path: '/profile', element: <MyProfilePage /> },
           { path: '/notifications', element: <Placeholder title="Notifications" /> },
           { path: '/sales', element: <SalesMenuPage /> },
           {path: '/sales/call-sheet', element: <CallSheetPage />},
@@ -189,16 +373,62 @@ export const router = createBrowserRouter([
           {
             element: <ProtectedRoute requirePermissions={['menu_finance']} />,
             children: [
-              { path: '/finance', element: <Placeholder title="Finance Dashboard" /> },
-              { path: '/invoices', element: <Placeholder title="Invoices" /> },
-              { path: '/invoices/:id', element: <Placeholder title="Invoice Detail" /> },
+              { path: '/finance', element: <FinanceMenuPage /> },
+              { path: '/invoices', element: <InvoiceListPage /> },
+              { path: '/invoices/new', element: <InvoiceCreatePage /> },
+              { path: '/invoices/overdue', element: <InvoiceOverduePage /> },
+              { path: '/invoices/:id/edit', element: <InvoiceEditPage /> },
+              { path: '/invoices/:id', element: <InvoiceDetailPage /> },
+              { path: '/purchase-invoices', element: <PurchaseInvoiceListPage /> },
+              { path: '/purchase-invoices/new', element: <PurchaseInvoiceCreatePage /> },
+              { path: '/purchase-invoices/:id/edit', element: <PurchaseInvoiceEditPage /> },
+              { path: '/purchase-invoices/:id', element: <PurchaseInvoiceDetailPage /> },
+              { path: '/credit-notes', element: <CreditNoteListPage /> },
+              { path: '/credit-notes/new', element: <CreditNoteCreatePage /> },
+              { path: '/credit-notes/:id', element: <CreditNoteDetailPage /> },
+              { path: '/payment-requests', element: <PaymentRequestListPage /> },
+              { path: '/payment-requests/new', element: <PaymentRequestCreatePage /> },
+              { path: '/payment-requests/:id/edit', element: <PaymentRequestEditPage /> },
+              { path: '/payment-requests/:id', element: <PaymentRequestDetailPage /> },
             ],
           },
           {
-            element: <ProtectedRoute requireRole="admin" />,
+            element: (
+              <ProtectedRoute requireAnyPermission={['menu_accounts', 'menu_finance']} />
+            ),
             children: [
-              { path: '/masters', element: <Placeholder title="Masters" /> },
-              { path: '/masters/airlines', element: <Placeholder title="Airlines" /> },
+              { path: '/accounts', element: <AccountsMenuPage /> },
+              { path: '/gl/accounts', element: <ChartOfAccountListPage /> },
+              { path: '/gl/accounts/new', element: <ChartOfAccountCreatePage /> },
+              { path: '/gl/accounts/tree', element: <ChartOfAccountTreePage /> },
+              { path: '/gl/accounts/trial-balance', element: <TrialBalancePage /> },
+              { path: '/gl/accounts/:id/edit', element: <ChartOfAccountEditPage /> },
+              { path: '/gl/accounts/:id', element: <ChartOfAccountDetailPage /> },
+              { path: '/gl/vouchers', element: <VoucherListPage /> },
+              { path: '/gl/vouchers/new', element: <VoucherCreatePage /> },
+              { path: '/gl/vouchers/:id/edit', element: <VoucherEditPage /> },
+              { path: '/gl/vouchers/:id', element: <VoucherDetailPage /> },
+              { path: '/gl/payments', element: <GlPaymentListPage /> },
+              { path: '/gl/payments/new', element: <GlPaymentCreatePage /> },
+              { path: '/gl/payments/:id/edit', element: <GlPaymentEditPage /> },
+              { path: '/gl/payments/:id', element: <GlPaymentDetailPage /> },
+              { path: '/gl/cheques', element: <ChequeListPage /> },
+              { path: '/gl/cheques/new', element: <ChequeCreatePage /> },
+              { path: '/gl/cheques/reports/pdc-due', element: <PdcDueReportPage /> },
+              { path: '/gl/cheques/:id/edit', element: <ChequeEditPage /> },
+              { path: '/gl/cheques/:id', element: <ChequeDetailPage /> },
+              { path: '/gl/bank-reconciliations', element: <BankReconciliationListPage /> },
+              { path: '/gl/bank-reconciliations/new', element: <BankReconciliationCreatePage /> },
+              { path: '/gl/bank-reconciliations/:id', element: <BankReconciliationDetailPage /> },
+              { path: '/gl/bank-transfers/new', element: <BankTransferCreatePage /> },
+              { path: '/gl/reports', element: <FinancialReportsPage /> },
+              { path: '/gl/mis/dashboard', element: <GlMisDashboardPage /> },
+              { path: '/gl/saved-reports', element: <SavedReportListPage /> },
+              { path: '/gl/saved-reports/new', element: <SavedReportCreatePage /> },
+              { path: '/gl/saved-reports/:id/edit', element: <SavedReportEditPage /> },
+              { path: '/gl/saved-reports/:id', element: <SavedReportDetailPage /> },
+              { path: '/gl/ar/aging', element: <ArAgingPage /> },
+              { path: '/gl/ap/aging', element: <ApAgingPage /> },
             ],
           },
         ],

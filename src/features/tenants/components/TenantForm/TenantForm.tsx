@@ -1,11 +1,26 @@
-import { useForm, type Resolver } from 'react-hook-form';
+import { useEffect, useRef } from 'react';
+import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { ReactNode, SelectHTMLAttributes } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { CountrySelect } from '@/components/ui/CountrySelect';
 import { Input } from '@/components/ui/Input';
-import { createTenantSchema, updateTenantSchema } from '../../schemas/tenant.schema';
+import { PhoneInput } from '@/components/ui/PhoneInput';
+import {
+  applyLocaleFromCountry,
+  resolveLocaleCatalog,
+  type LocaleCatalog,
+} from '@/lib/locale';
+import { cn } from '@/lib/utils';
+import { useAppForm } from '@/lib/validation';
+import { TIMEZONE_OPTIONS } from '@/features/organization/constants/organization.constants';
+import { usePlatformOnboardingStore } from '@/features/platform/store/platformOnboardingStore';
+import { useCompanyRegistry } from '@/features/companies/hooks/useCompanies';
+import { createTenantSchema, updateTenantSchema, SUBSCRIPTION_PLANS, TENANT_STATUSES } from '../../schemas/tenant.schema';
 import type { CreateTenantFormValues, UpdateTenantFormValues } from '../../types/tenant.types';
+import { applyCompanyToTenantForm, companyOptionLabel } from '../../utils/applyCompanyToTenantForm';
 
 interface TenantFormProps {
   mode: 'create' | 'edit';
@@ -19,10 +34,11 @@ const CREATE_DEFAULTS: Partial<CreateTenantFormValues> = {
   language: 'en',
   base_currency: 'AED',
   timezone: 'Asia/Dubai',
-  country_code: 'AE',
+  country_code: '',
+  phone: '',
   financial_year_start: 1,
-  subscription_plan: 'starter',
-  status: 'trial',
+  subscription_plan: 'STANDARD',
+  status: 'ACTIVE',
   max_users: 10,
   max_branches: 3,
   max_storage_gb: 50,
@@ -36,6 +52,7 @@ const CREATE_DEFAULTS: Partial<CreateTenantFormValues> = {
   company_name: '',
   company_legal_name: '',
   company_registration_number: '',
+  selected_company_id: '',
 };
 
 const selectClass =
@@ -43,7 +60,7 @@ const selectClass =
 
 export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: TenantFormProps) {
   const schema = mode === 'create' ? createTenantSchema : updateTenantSchema;
-  const form = useForm<CreateTenantFormValues>({
+  const form = useAppForm<CreateTenantFormValues>({
     resolver: zodResolver(schema) as unknown as Resolver<CreateTenantFormValues>,
     defaultValues: {
       ...(mode === 'create' ? CREATE_DEFAULTS : {}),
@@ -53,15 +70,88 @@ export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: Tena
 
   const {
     register,
-    handleSubmit,
+    handleValidatedSubmit,
+    setValue,
+    getValues,
+    watch,
     formState: { errors },
   } = form;
+
+  const { data: companiesData, isLoading: companiesLoading, isError: companiesError } = useCompanyRegistry({ limit: 200 });
+  const draftCompanies = usePlatformOnboardingStore((s) => s.draftCompanies);
+  const registryCompanies = companiesData?.companies ?? [];
+  const companies = [...draftCompanies, ...registryCompanies];
+  const selectedCompanyId = watch('selected_company_id');
+  const countryCode = watch('country_code') ?? '';
+  const phone = watch('phone') ?? '';
+  const timezone = watch('timezone') ?? '';
+  const isDraftSelection = draftCompanies.some((company) => company.id === selectedCompanyId);
+  const locale = resolveLocaleCatalog(countryCode);
+  const prevLocaleRef = useRef<LocaleCatalog | null>(null);
+  const skipLocaleApply = useRef(true);
+
+  useEffect(() => {
+    if (mode !== 'create' || draftCompanies.length === 0 || selectedCompanyId) return;
+    applyCompanyToTenantForm(draftCompanies[0], setValue);
+  }, [mode, draftCompanies, selectedCompanyId, setValue]);
+
+  // Locale catalog resolve only when country_code is set.
+  useEffect(() => {
+    if (skipLocaleApply.current) {
+      skipLocaleApply.current = false;
+      prevLocaleRef.current = countryCode ? resolveLocaleCatalog(countryCode) : null;
+      return;
+    }
+    if (!countryCode) {
+      prevLocaleRef.current = null;
+      return;
+    }
+    const current = getValues();
+    const applied = applyLocaleFromCountry(countryCode, {
+      previousCatalog: prevLocaleRef.current,
+      current: {
+        base_currency: current.base_currency,
+        timezone: current.timezone,
+        language: current.language,
+      },
+      applyLanguage: true,
+    });
+    if (!applied) return;
+    prevLocaleRef.current = applied.catalog;
+    if (applied.base_currency) {
+      setValue('base_currency', applied.base_currency, { shouldDirty: true, shouldValidate: true });
+    }
+    if (applied.timezone) {
+      setValue('timezone', applied.timezone, { shouldDirty: true, shouldValidate: true });
+    }
+    if (applied.language) {
+      setValue('language', applied.language, { shouldDirty: true, shouldValidate: true });
+    }
+    if (!(current.phone || '').trim()) {
+      setValue('phone', '', { shouldDirty: true });
+    }
+  }, [countryCode, getValues, setValue]);
+
+  const handleCompanySelect = (companyId: string) => {
+    const draft = draftCompanies.find((company) => company.id === companyId);
+    if (draft) {
+      applyCompanyToTenantForm(draft, setValue);
+      return;
+    }
+
+    const company = registryCompanies.find((c) => c.id === companyId);
+    if (!company) {
+      setValue('selected_company_id', '', { shouldValidate: true });
+      return;
+    }
+    applyCompanyToTenantForm(company, setValue);
+  };
 
   const fieldError = (name: keyof CreateTenantFormValues) =>
     errors[name]?.message;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleValidatedSubmit(onSubmit)} className="space-y-4">
       <Card>
         <CardHeader className="mb-0 pb-3">
           <CardTitle>1. Basic Information</CardTitle>
@@ -80,9 +170,9 @@ export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: Tena
               />
               <Input
                 label="Workspace slug"
-                hint="Path-style slug with leading and trailing slashes, e.g. /abc-xyz/"
+                hint="Lowercase letters, numbers, and hyphens only (e.g. oceanic-dxb)"
                 error={fieldError('slug')}
-                className="font-mono"
+                className="font-mono lowercase"
                 {...register('slug')}
               />
             </>
@@ -117,7 +207,7 @@ export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: Tena
               label="Temporary password"
               type="password"
               autoComplete="new-password"
-              hint="Minimum 8 characters"
+              hint="Used for Tenant Admin login with the workspace slug (not SuperAdmin login)"
               error={fieldError('password')}
               {...register('password')}
             />
@@ -127,29 +217,93 @@ export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: Tena
 
       <Card>
         <CardHeader className="mb-0 pb-3">
-          <CardTitle>{mode === 'create' ? '3. Company Information' : '2. Company Information'}</CardTitle>
+          <CardTitle>{mode === 'create' ? '3. Company reference' : '2. Company Information'}</CardTitle>
         </CardHeader>
         <div className="space-y-4">
+          {mode === 'create' && (
+            <div className="space-y-2">
+              <FormSelect
+                label="Company profile"
+                error={fieldError('selected_company_id')}
+                value={selectedCompanyId ?? ''}
+                onChange={(e) => handleCompanySelect(e.target.value)}
+                disabled={companiesLoading}
+              >
+                <option value="">
+                  {companiesLoading ? 'Loading companies…' : 'Select a company profile…'}
+                </option>
+                {companies.map((company) => (
+                  <option key={company.id} value={company.id}>
+                    {companyOptionLabel(company)}
+                  </option>
+                ))}
+              </FormSelect>
+              {!companiesLoading && companiesError && (
+                <p className="text-xs text-[var(--color-danger-500)]">
+                  Could not load registered companies. You can still use a company profile from step 1.
+                </p>
+              )}
+              {!companiesLoading && !companiesError && companies.length === 0 && (
+                <p className="text-xs text-[var(--color-neutral-500)]">
+                  Please create a company before creating a tenant.{' '}
+                  <Link
+                    to="/superadmin/companies/new"
+                    className="font-medium text-[var(--color-primary-500)] hover:underline"
+                  >
+                    Create company
+                  </Link>
+                </p>
+              )}
+              {isDraftSelection && (
+                <p className="text-xs text-[var(--color-neutral-500)]">
+                  Using a draft company profile from step 1. The tenant will be provisioned with these details.
+                </p>
+              )}
+            </div>
+          )}
+
           <Grid>
             <Input
               label="Company code"
               error={fieldError('company_code')}
-              className="font-mono uppercase"
+              className={cn(
+                'font-mono uppercase',
+                mode === 'create' && selectedCompanyId && !isDraftSelection && 'bg-[var(--color-neutral-50)]',
+              )}
+              readOnly={mode === 'create' && !!selectedCompanyId && !isDraftSelection}
               {...register('company_code')}
             />
             <Input
               label="Company name"
               error={fieldError('company_name')}
+              className={
+                mode === 'create' && selectedCompanyId && !isDraftSelection
+                  ? 'bg-[var(--color-neutral-50)]'
+                  : undefined
+              }
+              readOnly={mode === 'create' && !!selectedCompanyId && !isDraftSelection}
               {...register('company_name')}
             />
             <Input
               label="Company legal name"
               error={fieldError('company_legal_name')}
+              className={
+                mode === 'create' && selectedCompanyId && !isDraftSelection
+                  ? 'bg-[var(--color-neutral-50)]'
+                  : undefined
+              }
+              readOnly={mode === 'create' && !!selectedCompanyId && !isDraftSelection}
               {...register('company_legal_name')}
             />
             <Input
               label="Company registration number"
               error={fieldError('company_registration_number')}
+              className={
+                mode === 'create' && selectedCompanyId && !isDraftSelection
+                  ? 'bg-[var(--color-neutral-50)]'
+                  : undefined
+              }
+              readOnly={mode === 'create' && !!selectedCompanyId && !isDraftSelection}
               {...register('company_registration_number')}
             />
           </Grid>
@@ -165,19 +319,59 @@ export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: Tena
             />
           </Grid>
           <Grid cols={4}>
-            <Input
-              label="Country code"
-              maxLength={2}
-              className="uppercase"
+            <CountrySelect
+              label="Country"
+              allowEmpty
+              name="country_code"
+              value={countryCode}
+              hint="Optional — sets dial, currency, timezone, and tax patterns when selected"
               error={fieldError('country_code')}
-              {...register('country_code')}
+              onChange={(iso) =>
+                setValue('country_code', iso, { shouldValidate: true, shouldDirty: true })
+              }
             />
-            <Input label="Currency" error={fieldError('base_currency')} {...register('base_currency')} />
-            <Input label="Timezone" error={fieldError('timezone')} {...register('timezone')} />
+            <Input
+              label="Base currency"
+              hint={
+                locale
+                  ? `Suggested for ${locale.iso2}: ${locale.defaultCurrency}`
+                  : 'Set independently when no country is selected'
+              }
+              error={fieldError('base_currency')}
+              {...register('base_currency')}
+            />
+            {locale ? (
+              <FormSelect label="Timezone" error={fieldError('timezone')} {...register('timezone')}>
+                {locale.timezones.map((tz) => (
+                  <option key={tz} value={tz}>
+                    {tz}
+                  </option>
+                ))}
+                {timezone && !locale.timezones.includes(timezone) ? (
+                  <option value={timezone}>{timezone} (current)</option>
+                ) : null}
+              </FormSelect>
+            ) : (
+              <FormSelect label="Timezone" error={fieldError('timezone')} {...register('timezone')}>
+                {TIMEZONE_OPTIONS.map((tz) => (
+                  <option key={tz} value={tz}>
+                    {tz}
+                  </option>
+                ))}
+                {timezone && !TIMEZONE_OPTIONS.includes(timezone as (typeof TIMEZONE_OPTIONS)[number]) ? (
+                  <option value={timezone}>{timezone} (current)</option>
+                ) : null}
+              </FormSelect>
+            )}
             <Input label="Language" error={fieldError('language')} {...register('language')} />
           </Grid>
           <Grid>
-            <Input label="VAT / TRN" {...register('vat_number')} />
+            <Input
+              label={locale?.taxIdLabel ?? 'VAT / Tax number'}
+              hint={locale?.taxIdExample ? `e.g. ${locale.taxIdExample}` : undefined}
+              error={fieldError('vat_number')}
+              {...register('vat_number')}
+            />
             <Input label="CR number" {...register('cr_number')} />
             <Input
               label="Financial year start (month)"
@@ -199,7 +393,18 @@ export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: Tena
           <Grid>
             <Input label="Address" error={fieldError('address')} {...register('address')} />
             <Input label="City" error={fieldError('city')} {...register('city')} />
-            <Input label="Phone" type="tel" error={fieldError('phone')} {...register('phone')} />
+            <PhoneInput
+              label="Phone"
+              required
+              name="phone"
+              value={phone}
+              countryIso={countryCode || undefined}
+              error={fieldError('phone')}
+              onChange={(v) => setValue('phone', v, { shouldValidate: true, shouldDirty: true })}
+              onCountryChange={(iso) =>
+                setValue('country_code', iso, { shouldValidate: true, shouldDirty: true })
+              }
+            />
           </Grid>
         </div>
       </Card>
@@ -211,13 +416,18 @@ export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: Tena
         <div className="space-y-4">
           <Grid cols={3}>
             <FormSelect label="Plan" error={fieldError('subscription_plan')} {...register('subscription_plan')}>
-              <option value="starter">Starter</option>
-              <option value="growth">Growth</option>
-              <option value="enterprise">Enterprise</option>
+              {SUBSCRIPTION_PLANS.map((plan) => (
+                <option key={plan} value={plan}>
+                  {plan.charAt(0) + plan.slice(1).toLowerCase()}
+                </option>
+              ))}
             </FormSelect>
             <FormSelect label="Status" error={fieldError('status')} {...register('status')}>
-              <option value="trial">Trial</option>
-              <option value="active">Active</option>
+              {TENANT_STATUSES.map((s) => (
+                <option key={s} value={s}>
+                  {s.charAt(0) + s.slice(1).toLowerCase()}
+                </option>
+              ))}
             </FormSelect>
             <Input
               label="Trial ends"

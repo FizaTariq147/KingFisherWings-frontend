@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { LogOut } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { InlineSpinner } from '@/components/skeletons/SkeletonPrimitives'
 
@@ -13,16 +12,15 @@ interface LogoutButtonProps {
  * Shows an inline spinner during the logout API call.
  */
 export function LogoutButton({ onClick }: LogoutButtonProps) {
-  const { logout }          = useAuth()
-  const navigate            = useNavigate()
+  const { logout } = useAuth()
   const [loading, setLoading] = useState(false)
 
   const handleLogout = async () => {
     setLoading(true)
     try {
+      // POST /auth/logout via authStore (Bearer + clear session + redirect)
       await logout()
       onClick?.()
-      navigate('/login', { replace: true })
     } finally {
       setLoading(false)
     }

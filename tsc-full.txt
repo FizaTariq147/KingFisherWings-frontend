@@ -1,0 +1,645 @@
+﻿node.exe : npm warn Unknown env config "devdir". This will stop working in the next major version of npm.
+At C:\Users\Star\AppData\Roaming\npm\npx.ps1:24 char:5
++     & "node$exe"  "$basedir/node_modules/npm/bin/npx-cli.js" $args
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm warn Unknow...version of npm.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+src/components/audit/AuditFilters.tsx(3,64): error TS2307: Cannot find module '@/types/audit.types' or its corresponding type declarations.
+src/components/audit/AuditTable.tsx(4,63): error TS2307: Cannot find module '@/types/audit.types' or its corresponding type declarations.
+src/components/audit/AuditTable.tsx(201,30): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+src/components/auth/SessionExpiredModal.tsx(3,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/components/auth/SessionExpiredModal.tsx(4,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/components/auth/SessionExpiredModal.tsx(12,40): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/auth/SessionExpiredModal.tsx(13,41): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/auth/SessionExpiredModal.tsx(14,39): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/auth/SessionExpiryWatcher.tsx(2,40): error TS2307: Cannot find module '@/lib/tenantFromAuth' or its corresponding type declarations.
+src/components/auth/SessionExpiryWatcher.tsx(7,8): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/components/auth/SessionExpiryWatcher.tsx(23,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/auth/SessionExpiryWatcher.tsx(24,38): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/auth/SessionExpiryWatcher.tsx(25,41): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/auth/SessionExpiryWatcher.tsx(26,40): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/dashboard/DashboardLayout.tsx(3,35): error TS2307: Cannot find module '@/hooks/useHomepageConfig' or its corresponding type declarations.
+src/components/dashboard/DashboardLayout.tsx(37,14): error TS7006: Parameter 'w' implicitly has an 'any' type.
+src/components/dashboard/DashboardLayout.tsx(44,12): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/components/dashboard/DashboardLayout.tsx(44,15): error TS7006: Parameter 'b' implicitly has an 'any' type.
+src/components/dashboard/DashboardLayout.tsx(68,33): error TS7006: Parameter 'w' implicitly has an 'any' type.
+src/components/dashboard/defaultConfig.ts(1,37): error TS2307: Cannot find module '@/types/homepage.types' or its corresponding type declarations.
+src/components/dashboard/widgetRegistry.ts(2,52): error TS2307: Cannot find module '@/types/homepage.types' or its corresponding type declarations.
+src/components/dashboard/WidgetSettingsPanel.tsx(3,35): error TS2307: Cannot find module '@/hooks/useHomepageConfig' or its corresponding type declarations.
+src/components/dashboard/WidgetSettingsPanel.tsx(5,51): error TS2307: Cannot find module '@/types/homepage.types' or its corresponding type declarations.
+src/components/dashboard/WidgetSettingsPanel.tsx(138,48): error TS7006: Parameter 'w' implicitly has an 'any' type.
+src/components/dashboard/WidgetSettingsPanel.tsx(218,53): error TS7006: Parameter 'w' implicitly has an 'any' type.
+src/components/layout/AppShell.tsx(7,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/components/layout/AppShell.tsx(8,28): error TS2307: Cannot find module '@/store/uiStore' or its corresponding type declarations.
+src/components/layout/AppShell.tsx(9,33): error TS2307: Cannot find module '@/features/platform/components/OnboardingSteps' or its corresponding type declarations.
+src/components/layout/AppShell.tsx(13,30): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/layout/AppShell.tsx(14,41): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/layout/AppShell.tsx(15,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/layout/Breadcrumb.tsx(4,53): error TS2307: Cannot find module '@/config/routeLabels' or its corresponding type declarations.
+src/components/layout/FooterStatusBar.tsx(1,42): error TS2307: Cannot find module '@/types/dashboard.types' or its corresponding type declarations.
+src/components/layout/LogoutButton.tsx(3,25): error TS2307: Cannot find module '@/hooks/useAuth' or its corresponding type declarations.
+src/components/layout/LogoutButton.tsx(4,31): error TS2307: Cannot find module '@/components/skeletons/SkeletonPrimitives' or its corresponding type declarations.
+src/components/layout/ProfileDropdown.tsx(4,25): error TS2307: Cannot find module '@/hooks/useAuth' or its corresponding type declarations.
+src/components/layout/ProfileDropdown.tsx(5,27): error TS2307: Cannot find module '@/components/ui/RoleBadge' or its corresponding type declarations.
+src/components/layout/ProfileDropdown.tsx(6,46): error TS2307: Cannot find module '@/components/ui/FinancialVisibilityIndicator' or its corresponding type declarations.
+src/components/layout/ProfileDropdown.tsx(7,42): error TS2307: Cannot find module '@/types/homepage.types' or its corresponding type declarations.
+src/components/layout/Sidebar.tsx(23,28): error TS2307: Cannot find module '@/store/uiStore' or its corresponding type declarations.
+src/components/layout/Sidebar.tsx(24,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/components/layout/Sidebar.tsx(25,40): error TS2307: Cannot find module '@/features/superadmin/store/superAdminAuthStore' or its corresponding type declarations.
+src/components/layout/Sidebar.tsx(26,29): error TS2307: Cannot find module '@/context/AuthContext' or its corresponding type declarations.
+src/components/layout/Sidebar.tsx(27,20): error TS2307: Cannot find module '@/lib/utils' or its corresponding type declarations.
+src/components/layout/Sidebar.tsx(32,8): error TS2307: Cannot find module '@/features/users/constants/userPermissions' or its corresponding type declarations.
+src/components/layout/Sidebar.tsx(33,36): error TS2307: Cannot find module '@/types/auth.types' or its corresponding type declarations.
+src/components/layout/Sidebar.tsx(102,35): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/layout/Sidebar.tsx(103,48): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/layout/Sidebar.tsx(105,25): error TS2339: Property 'user' does not exist on type '{}'.
+src/components/layout/Sidebar.tsx(108,34): error TS2339: Property 'user' does not exist on type '{}'.
+src/components/layout/Sidebar.tsx(113,53): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/layout/Sidebar.tsx(113,67): error TS2339: Property 'hasRole' does not exist on type '{}'.
+src/components/layout/Topbar.tsx(16,28): error TS2307: Cannot find module '@/store/uiStore' or its corresponding type declarations.
+src/components/layout/Topbar.tsx(17,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/components/layout/Topbar.tsx(21,8): error TS2307: Cannot find module '@/features/users/constants/userPermissions' or its corresponding type declarations.
+src/components/layout/Topbar.tsx(61,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/layout/Topbar.tsx(62,41): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/layout/Topbar.tsx(63,30): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/layout/Topbar.tsx(64,41): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/layout/Topbar.tsx(65,32): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/loginSecurity/LoginSecurityForm.tsx(2,10): error TS6133: 'Shield' is declared but its value is never read.
+src/components/loginSecurity/LoginSecurityForm.tsx(3,34): error TS2307: Cannot find module '@/hooks/useLoginSecurity' or its corresponding type declarations.
+src/components/loginSecurity/LoginSecurityForm.tsx(7,59): error TS2307: Cannot find module '@/types/loginSecurity.types' or its corresponding type declarations.
+src/components/loginSecurity/OfficeHoursEditor.tsx(1,51): error TS2307: Cannot find module '@/types/loginSecurity.types' or its corresponding type declarations.
+src/components/loginSecurity/OfficeHoursEditor.tsx(24,28): error TS7031: Binding element 'day' implicitly has an 'any' type.
+src/components/loginSecurity/OfficeHoursEditor.tsx(24,33): error TS7031: Binding element 'label' implicitly has an 'any' type.
+src/components/marketing/Footer.tsx(3,30): error TS2307: Cannot find module '@/constants/marketingData' or its corresponding type declarations.
+src/components/marketing/Footer.tsx(48,44): error TS7031: Binding element 'label' implicitly has an 'any' type.
+src/components/marketing/Footer.tsx(48,51): error TS7031: Binding element 'to' implicitly has an 'any' type.
+src/components/marketing/Footer.tsx(67,44): error TS7031: Binding element 'label' implicitly has an 'any' type.
+src/components/marketing/Footer.tsx(67,51): error TS7031: Binding element 'href' implicitly has an 'any' type.
+src/components/marketing/Footer.tsx(94,43): error TS7031: Binding element 'label' implicitly has an 'any' type.
+src/components/marketing/Footer.tsx(94,50): error TS7031: Binding element 'href' implicitly has an 'any' type.
+src/components/marketing/Navbar.tsx(4,27): error TS2307: Cannot find module '@/constants/marketingData' or its corresponding type declarations.
+src/components/marketing/Navbar.tsx(82,31): error TS7031: Binding element 'label' implicitly has an 'any' type.
+src/components/marketing/Navbar.tsx(82,38): error TS7031: Binding element 'to' implicitly has an 'any' type.
+src/components/marketing/Navbar.tsx(143,33): error TS7031: Binding element 'label' implicitly has an 'any' type.
+src/components/marketing/Navbar.tsx(143,40): error TS7031: Binding element 'to' implicitly has an 'any' type.
+src/components/marketing/sections/Features.tsx(3,26): error TS2307: Cannot find module '@/constants/marketingData' or its corresponding type declarations.
+src/components/marketing/sections/Features.tsx(46,28): error TS7031: Binding element 'title' implicitly has an 'any' type.
+src/components/marketing/sections/Features.tsx(46,35): error TS7031: Binding element 'icon' implicitly has an 'any' type.
+src/components/marketing/sections/Features.tsx(46,41): error TS7031: Binding element 'desc' implicitly has an 'any' type.
+src/components/marketing/sections/Hero.tsx(4,32): error TS2307: Cannot find module '@/hooks/useCanRender3D' or its corresponding type declarations.
+src/components/marketing/sections/Modules.tsx(13,25): error TS2307: Cannot find module '@/constants/marketingData' or its corresponding type declarations.
+src/components/marketing/sections/Modules.tsx(53,27): error TS7031: Binding element 'name' implicitly has an 'any' type.
+src/components/marketing/sections/Modules.tsx(53,33): error TS7031: Binding element 'icon' implicitly has an 'any' type.
+src/components/marketing/sections/Stats.tsx(1,23): error TS2307: Cannot find module '@/constants/marketingData' or its corresponding type declarations.
+src/components/marketing/sections/Stats.tsx(13,25): error TS7031: Binding element 'value' implicitly has an 'any' type.
+src/components/marketing/sections/Stats.tsx(13,32): error TS7031: Binding element 'label' implicitly has an 'any' type.
+src/components/marketing/sections/Testimonials.tsx(1,30): error TS2307: Cannot find module '@/constants/marketingData' or its corresponding type declarations.
+src/components/marketing/sections/Testimonials.tsx(21,32): error TS7031: Binding element 'quote' implicitly has an 'any' type.
+src/components/marketing/sections/Testimonials.tsx(21,39): error TS7031: Binding element 'name' implicitly has an 'any' type.
+src/components/marketing/sections/Testimonials.tsx(21,45): error TS7031: Binding element 'company' implicitly has an 'any' type.
+src/components/routing/ProtectedRoute.tsx(2,25): error TS2307: Cannot find module '@/hooks/useAuth' or its corresponding type declarations.
+src/components/routing/ProtectedRoute.tsx(3,34): error TS2307: Cannot find module '@/components/skeletons/AppShellSkeleton' or its corresponding type declarations.
+src/components/routing/ProtectedRoute.tsx(4,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/components/routing/ProtectedRoute.tsx(5,36): error TS2307: Cannot find module '@/types/auth.types' or its corresponding type declarations.
+src/components/routing/ProtectedRoute.tsx(26,44): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/sessions/SessionList.tsx(6,29): error TS2307: Cannot find module '@/hooks/useSessions' or its corresponding type declarations.
+src/components/sessions/SessionList.tsx(8,36): error TS2307: Cannot find module '@/types/session.types' or its corresponding type declarations.
+src/components/sessions/SessionList.tsx(138,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/sessions/SessionList.tsx(139,44): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/sessions/SessionList.tsx(219,35): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/skeletons/AuthLoadingGate.tsx(2,29): error TS2307: Cannot find module '@/context/AuthContext' or its corresponding type declarations.
+src/components/skeletons/AuthLoadingGate.tsx(3,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/components/skeletons/AuthLoadingGate.tsx(16,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/skeletons/AuthLoadingGate.tsx(17,38): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/skeletons/AuthLoadingGate.tsx(18,41): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/skeletons/AuthLoadingGate.tsx(19,44): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/components/skeletons/AuthLoadingGate.tsx(35,52): error TS2339: Property 'isLoading' does not exist on type '{}'.
+src/components/templates/DetailPageTemplate.tsx(3,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/components/ui/FinancialVisibilityIndicator.tsx(1,42): error TS2307: Cannot find module '@/types/homepage.types' or its corresponding type declarations.
+src/components/ui/FinancialVisibilityIndicator.tsx(34,15): error TS2322: Type 'string | number | symbol' is not assignable to type 'Key | null | undefined'.
+  Type 'symbol' is not assignable to type 'Key | null | undefined'.
+src/components/ui/RoleBadge.tsx(1,27): error TS2307: Cannot find module '@/types/auth.types' or its corresponding type declarations.
+src/components/widgets/OpenJobsWidget.tsx(3,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/components/widgets/OpenJobsWidget.tsx(19,16): error TS7031: Binding element 'data' implicitly has an 'any' type.
+src/components/widgets/PendingQuotationsWidget.tsx(3,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/components/widgets/PendingQuotationsWidget.tsx(17,16): error TS7031: Binding element 'data' implicitly has an 'any' type.
+src/components/widgets/PendingTasksWidget.tsx(3,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/components/widgets/PendingTasksWidget.tsx(25,16): error TS7031: Binding element 'data' implicitly has an 'any' type.
+src/components/widgets/RecentJobsWidget.tsx(3,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/components/widgets/RecentJobsWidget.tsx(27,16): error TS7031: Binding element 'data' implicitly has an 'any' type.
+src/components/widgets/RevenueMTDWidget.tsx(3,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/components/widgets/RevenueMTDWidget.tsx(19,16): error TS7031: Binding element 'data' implicitly has an 'any' type.
+src/components/widgets/ShipmentsByModeWidget.tsx(3,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/components/widgets/ShipmentsByModeWidget.tsx(30,16): error TS7031: Binding element 'data' implicitly has an 'any' type.
+src/components/widgets/UpcomingEtdsWidget.tsx(3,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/components/widgets/UpcomingEtdsWidget.tsx(20,16): error TS7031: Binding element 'data' implicitly has an 'any' type.
+src/context/AuthContext.tsx(5,29): error TS2307: Cannot find module '@/features/auth/services/auth.service' or its corresponding type declarations.
+src/context/AuthContext.tsx(6,67): error TS2307: Cannot find module '@/features/auth/utils/normalizeAuthResponse' or its corresponding type declarations.
+src/context/AuthContext.tsx(13,8): error TS2307: Cannot find module '@/lib/tenantFromAuth' or its corresponding type declarations.
+src/context/AuthContext.tsx(14,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/context/AuthContext.tsx(15,52): error TS2307: Cannot find module '@/types/auth.types' or its corresponding type declarations.
+src/context/AuthContext.tsx(131,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/context/AuthContext.tsx(132,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/context/AuthContext.tsx(133,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/context/AuthContext.tsx(153,14): error TS7006: Parameter 'data' implicitly has an 'any' type.
+src/features/auth/dashboard/pages/DashboardPage.tsx(8,73): error TS2307: Cannot find module '@/types/dashboard.types' or its corresponding type declarations.
+src/features/auth/pages/ChangePasswordPage.tsx(7,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/auth/pages/ChangePasswordPage.tsx(8,29): error TS2307: Cannot find module '@/features/auth/services/auth.service' or its corresponding type declarations.
+src/features/auth/pages/ChangePasswordPage.tsx(13,8): error TS2307: Cannot find module '@/features/users/constants/userPermissions' or its corresponding type declarations.
+src/features/auth/pages/ChangePasswordPage.tsx(14,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/features/auth/pages/ChangePasswordPage.tsx(60,30): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/auth/pages/ChangePasswordPage.tsx(61,41): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/auth/pages/ChangePasswordPage.tsx(62,49): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/auth/pages/ForgotPasswordPage.tsx(13,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/auth/pages/ForgotPasswordPage.tsx(14,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/features/auth/pages/LoginPage.tsx(12,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/features/auth/pages/LoginPage.tsx(16,8): error TS2307: Cannot find module '@/features/users/constants/userPermissions' or its corresponding type declarations.
+src/features/auth/pages/LoginPage.tsx(17,25): error TS2307: Cannot find module '@/lib/wakeApi' or its corresponding type declarations.
+src/features/auth/pages/LoginPage.tsx(360,5): error TS2322: Type 'Resolver<{ tenant_slug: string; password: string; remember_me?: boolean | undefined; }, any, { tenant_slug: string; password: string; remember_me?: boolean | undefined; }>' is not assignable to type 'Resolver<{ tenant_slug: string; email: string; password: string; remember_me?: boolean | undefined; }, any, { tenant_slug: string; email: string; password: string; remember_me?: boolean | undefined; }>'.
+  Types of parameters 'options' and 'options' are incompatible.
+    Type 'ResolverOptions<{ tenant_slug: string; email: string; password: string; remember_me?: boolean | undefined; }>' is not assignable to type 'ResolverOptions<{ tenant_slug: string; password: string; remember_me?: boolean | undefined; }>'.
+      Types of property 'names' are incompatible.
+        Type '("tenant_slug" | "password" | "remember_me" | "email")[] | undefined' is not assignable to type '("tenant_slug" | "password" | "remember_me")[] | undefined'.
+          Type '("tenant_slug" | "password" | "remember_me" | "email")[]' is not assignable to type '("tenant_slug" | "password" | "remember_me")[]'.
+            Type '"tenant_slug" | "password" | "remember_me" | "email"' is not assignable to type '"tenant_slug" | "password" | "remember_me"'.
+              Type '"email"' is not assignable to type '"tenant_slug" | "password" | "remember_me"'.
+src/features/auth/pages/LoginPage.tsx(540,42): error TS2345: Argument of type '(v: FormValues) => Promise<void>' is not assignable to parameter of type 'SubmitHandler<TFieldValues>'.
+  Types of parameters 'v' and 'data' are incompatible.
+    Type 'TFieldValues' is not assignable to type '{ tenant_slug: string; email: string; password: string; remember_me?: boolean | undefined; }'.
+      Type 'FieldValues' is missing the following properties from type '{ tenant_slug: string; email: string; password: string; remember_me?: boolean | undefined; }': tenant_slug, email, password
+src/features/auth/pages/LoginPage.tsx(869,41): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/auth/pages/LoginPage.tsx(1045,10): error TS6133: 'KfWordmark' is declared but its value is never read.
+src/features/auth/pages/ResetPasswordPage.tsx(14,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/auth/pages/ResetPasswordPage.tsx(15,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/features/auth/services/auth.service.ts(1,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/features/auth/utils/normalizeAuthResponse.ts(5,8): error TS2307: Cannot find module '@/lib/tenantFromAuth' or its corresponding type declarations.
+src/features/auth/utils/normalizeSessions.ts(1,36): error TS2307: Cannot find module '@/types/session.types' or its corresponding type declarations.
+src/features/companies/components/CompanyConfirmModal/CompanyConfirmModal.tsx(2,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/companies/components/CompanyConfirmModal/CompanyConfirmModal.tsx(3,23): error TS2307: Cannot find module '@/components/ui/Modal' or its corresponding type declarations.
+src/features/companies/components/CompanyForm/CompanyForm.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/companies/components/CompanyForm/CompanyForm.tsx(5,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/companies/components/CompanyForm/CompanyForm.tsx(6,23): error TS2307: Cannot find module '@/components/ui/Input' or its corresponding type declarations.
+src/features/companies/components/CompanyOverviewPanel/CompanyOverviewPanel.tsx(2,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/companies/components/CompanyStatusBadge/CompanyStatusBadge.tsx(1,23): error TS2307: Cannot find module '@/components/ui/Badge' or its corresponding type declarations.
+src/features/companies/components/CompanyTable/CompanyTable.tsx(9,8): error TS2307: Cannot find module '@/components/ui/Table' or its corresponding type declarations.
+src/features/companies/components/CompanyTable/CompanyTable.tsx(10,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/companies/components/CompanyTable/CompanyTable.tsx(111,23): error TS2322: Type '(c: CompanyListItem) => void' is not assignable to type '(c: Company) => void'.
+  Types of parameters 'c' and 'c' are incompatible.
+    Type 'Company' is not assignable to type 'CompanyListItem'.
+      Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/components/CompanyTable/CompanyTable.tsx(112,23): error TS2322: Type '(c: CompanyListItem) => void' is not assignable to type '(c: Company) => void'.
+  Types of parameters 'c' and 'c' are incompatible.
+    Type 'Company' is not assignable to type 'CompanyListItem'.
+      Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/components/CompanyTable/CompanyTable.tsx(113,23): error TS2322: Type '(c: CompanyListItem) => void' is not assignable to type '(c: Company) => void'.
+  Types of parameters 'c' and 'c' are incompatible.
+    Type 'Company' is not assignable to type 'CompanyListItem'.
+      Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/components/CompanyTable/CompanyTable.tsx(114,23): error TS2322: Type '((c: CompanyListItem) => void) | undefined' is not assignable to type '((c: Company) => void) | undefined'.
+  Type '(c: CompanyListItem) => void' is not assignable to type '(c: Company) => void'.
+    Types of parameters 'c' and 'c' are incompatible.
+      Type 'Company' is not assignable to type 'CompanyListItem'.
+        Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/components/CompanyTable/CompanyTable.tsx(115,23): error TS2322: Type '((c: CompanyListItem) => void) | undefined' is not assignable to type '((c: Company) => void) | undefined'.
+  Type '(c: CompanyListItem) => void' is not assignable to type '(c: Company) => void'.
+    Types of parameters 'c' and 'c' are incompatible.
+      Type 'Company' is not assignable to type 'CompanyListItem'.
+        Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/components/CompanyTable/CompanyTable.tsx(122,21): error TS2322: Type '(c: CompanyListItem) => void' is not assignable to type '(c: Company) => void'.
+  Types of parameters 'c' and 'c' are incompatible.
+    Type 'Company' is not assignable to type 'CompanyListItem'.
+      Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/components/CompanyTable/CompanyTable.tsx(123,21): error TS2322: Type '(c: CompanyListItem) => void' is not assignable to type '(c: Company) => void'.
+  Types of parameters 'c' and 'c' are incompatible.
+    Type 'Company' is not assignable to type 'CompanyListItem'.
+      Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/components/CompanyTable/CompanyTable.tsx(124,21): error TS2322: Type '(c: CompanyListItem) => void' is not assignable to type '(c: Company) => void'.
+  Types of parameters 'c' and 'c' are incompatible.
+    Type 'Company' is not assignable to type 'CompanyListItem'.
+      Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/components/CompanyTable/CompanyTable.tsx(125,21): error TS2322: Type '((c: CompanyListItem) => void) | undefined' is not assignable to type '((c: Company) => void) | undefined'.
+  Type '(c: CompanyListItem) => void' is not assignable to type '(c: Company) => void'.
+    Types of parameters 'c' and 'c' are incompatible.
+      Type 'Company' is not assignable to type 'CompanyListItem'.
+        Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/components/CompanyTable/CompanyTable.tsx(126,21): error TS2322: Type '((c: CompanyListItem) => void) | undefined' is not assignable to type '((c: Company) => void) | undefined'.
+  Type '(c: CompanyListItem) => void' is not assignable to type '(c: Company) => void'.
+    Types of parameters 'c' and 'c' are incompatible.
+      Type 'Company' is not assignable to type 'CompanyListItem'.
+        Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/components/CompanyTenantSelector/CompanyTenantSelector.tsx(1,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/companies/components/CompanyTenantSelector/CompanyTenantSelector.tsx(2,32): error TS2307: Cannot find module '@/features/tenants/hooks/useTenants' or its corresponding type declarations.
+src/features/companies/components/CompanyTenantSelector/CompanyTenantSelector.tsx(25,20): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/features/companies/components/CompanyTenantSelector/CompanyTenantSelector.tsx(26,17): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/features/companies/hooks/useCompanies.ts(2,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/companies/hooks/useCompanyMutations.ts(63,43): error TS2345: Argument of type '{ is_active: boolean; }' is not assignable to parameter of type '{ name: string; email: string; address: string; city: string; is_active: boolean; country_code: string; phone: string; is_default: boolean; vat_number?: string | undefined; legal_name?: string | undefined; registration_number?: string | undefined; }'.
+  Type '{ is_active: boolean; }' is missing the following properties from type '{ name: string; email: string; address: string; city: string; is_active: boolean; country_code: string; phone: string; is_default: boolean; vat_number?: string | undefined; legal_name?: string | undefined; registration_number?: string | undefined; }': name, email, address, city, and 3 more.
+src/features/companies/hooks/useCompanyTenantScope.ts(3,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/companies/pages/CompanyCreatePage.tsx(4,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/companies/pages/CompanyCreatePage.tsx(5,44): error TS2307: Cannot find module '@/features/platform/store/platformOnboardingStore' or its corresponding type declarations.
+src/features/companies/pages/CompanyCreatePage.tsx(15,55): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/companies/pages/CompanyCreatePage.tsx(16,54): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/companies/pages/CompanyDetailPage.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/companies/pages/CompanyDetailPage.tsx(5,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/companies/pages/CompanyDetailPage.tsx(13,15): error TS2305: Module '"../components/CompanyConfirmModal"' has no exported member 'CompanyConfirmAction'.
+src/features/companies/pages/CompanyEditPage.tsx(4,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/companies/pages/CompanyListPage.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/companies/pages/CompanyListPage.tsx(5,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/companies/pages/CompanyListPage.tsx(6,44): error TS2307: Cannot find module '@/features/platform/store/platformOnboardingStore' or its corresponding type declarations.
+src/features/companies/pages/CompanyListPage.tsx(17,15): error TS2305: Module '"../components/CompanyConfirmModal"' has no exported member 'CompanyConfirmAction'.
+src/features/companies/pages/CompanyListPage.tsx(37,54): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/companies/pages/CompanyListPage.tsx(38,58): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/companies/pages/CompanyListPage.tsx(206,31): error TS6133: 'c' is declared but its value is never read.
+src/features/companies/services/company.service.ts(1,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/companies/services/company.service.ts(2,65): error TS2307: Cannot find module '@/lib/superAdminApiClient' or its corresponding type declarations.
+src/features/companies/services/company.service.ts(183,26): error TS7006: Parameter 'status' implicitly has an 'any' type.
+src/features/companies/services/companyRegistry.service.ts(1,55): error TS2307: Cannot find module '@/lib/superAdminApiClient' or its corresponding type declarations.
+src/features/companies/services/companyRegistry.service.ts(2,28): error TS2307: Cannot find module '@/features/tenants/api/tenant.api' or its corresponding type declarations.
+src/features/companies/services/companyRegistry.service.ts(3,34): error TS2307: Cannot find module '@/features/tenants/utils/normalizeTenant' or its corresponding type declarations.
+src/features/companies/services/companyRegistry.service.ts(4,29): error TS2307: Cannot find module '@/features/tenants/types/tenant.types' or its corresponding type declarations.
+src/features/companies/services/companyRegistry.service.ts(72,7): error TS2322: Type 'Company[]' is not assignable to type 'RegistryCompany[]'.
+  Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/services/companyRegistry.service.ts(77,16): error TS2322: Type 'Company[]' is not assignable to type 'RegistryCompany[]'.
+  Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/services/companyRegistry.service.ts(113,7): error TS2322: Type 'Company[]' is not assignable to type 'RegistryCompany[]'.
+  Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/services/companyRegistry.service.ts(116,5): error TS2322: Type 'Company[]' is not assignable to type 'RegistryCompany[]'.
+  Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/services/companyRegistry.service.ts(123,14): error TS2322: Type 'Company[]' is not assignable to type 'RegistryCompany[]'.
+  Type 'Company' is missing the following properties from type 'RegistryCompany': tenant_id, tenant_name, tenant_code
+src/features/companies/utils/mergeDraftCompanies.ts(1,35): error TS2307: Cannot find module '@/features/platform/store/platformOnboardingStore' or its corresponding type declarations.
+src/features/companies/utils/mergeDraftCompanies.ts(29,5): error TS2322: Type 'CompanyListItem[]' is not assignable to type '{ is_draft: boolean; tenant_id: string; tenant_name: string; tenant_code: string; id: string; created_at?: string | undefined; updated_at?: string | undefined; deleted_at?: string | null | undefined; ... 11 more ...; vat_number?: string | undefined; }[]'.
+  Type 'CompanyListItem' is not assignable to type '{ is_draft: boolean; tenant_id: string; tenant_name: string; tenant_code: string; id: string; created_at?: string; updated_at?: string; deleted_at?: string | null; code: string; name: string; ... 9 more ...; vat_number?: string | undefined; }'.
+    Types of property 'is_draft' are incompatible.
+      Type 'boolean | undefined' is not assignable to type 'boolean'.
+        Type 'undefined' is not assignable to type 'boolean'.
+src/features/companies/utils/mergeDraftCompanies.ts(40,3): error TS2322: Type 'CompanyListItem[]' is not assignable to type '{ is_draft: boolean; tenant_id: string; tenant_name: string; tenant_code: string; id: string; created_at?: string | undefined; updated_at?: string | undefined; deleted_at?: string | null | undefined; ... 11 more ...; vat_number?: string | undefined; }[]'.
+  Type 'CompanyListItem' is not assignable to type '{ is_draft: boolean; tenant_id: string; tenant_name: string; tenant_code: string; id: string; created_at?: string; updated_at?: string; deleted_at?: string | null; code: string; name: string; ... 9 more ...; vat_number?: string | undefined; }'.
+    Types of property 'is_draft' are incompatible.
+      Type 'boolean | undefined' is not assignable to type 'boolean'.
+        Type 'undefined' is not assignable to type 'boolean'.
+src/features/masters/hooks/useMasterResource.ts(2,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/masters/pages/MasterResourceDetailPage.tsx(3,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/masters/pages/MasterResourceDetailPage.tsx(4,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/masters/pages/MasterResourceDetailPage.tsx(5,23): error TS2307: Cannot find module '@/components/ui/Badge' or its corresponding type declarations.
+src/features/masters/pages/MasterResourceFormPage.tsx(3,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/masters/pages/MasterResourceFormPage.tsx(4,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/masters/pages/MasterResourceFormPage.tsx(5,23): error TS2307: Cannot find module '@/components/ui/Input' or its corresponding type declarations.
+src/features/masters/pages/MasterResourceFormPage.tsx(6,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/masters/pages/MasterResourceFormPage.tsx(7,36): error TS2307: Cannot find module '@/features/users/hooks/useTenantCompanies' or its corresponding type declarations.
+src/features/masters/pages/MasterResourceFormPage.tsx(161,18): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/features/masters/pages/MasterResourceFormPage.tsx(187,18): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/features/masters/pages/MasterResourceFormPage.tsx(188,15): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/features/masters/pages/MasterResourceListPage.tsx(3,32): error TS2307: Cannot find module '@/components/layout/MasterListPage' or its corresponding type declarations.
+src/features/masters/pages/MasterResourceListPage.tsx(4,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/masters/pages/MasterResourceListPage.tsx(152,16): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/features/masters/pages/MasterResourceListPage.tsx(164,16): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/features/masters/pages/MasterResourceListPage.tsx(176,16): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/features/masters/pages/MasterResourceListPage.tsx(189,16): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/features/masters/pages/MasterResourceListPage.tsx(189,23): error TS7006: Parameter 'nextActive' implicitly has an 'any' type.
+src/features/masters/schemas/master.schema.ts(2,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/masters/services/master.service.ts(1,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/features/masters/services/master.service.ts(2,34): error TS2307: Cannot find module '@/lib/apiEnvelope' or its corresponding type declarations.
+src/features/masters/services/master.service.ts(3,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/masters/services/master.service.ts(4,34): error TS2307: Cannot find module '@/lib/wakeApi' or its corresponding type declarations.
+src/features/masters/services/master.service.ts(541,28): error TS7006: Parameter 'status' implicitly has an 'any' type.
+src/features/parties/components/PartyAddressesSection/PartyAddressesSection.tsx(5,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/parties/components/PartyAddressesSection/PartyAddressesSection.tsx(6,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/parties/components/PartyAddressesSection/PartyAddressesSection.tsx(7,23): error TS2307: Cannot find module '@/components/ui/Input' or its corresponding type declarations.
+src/features/parties/components/PartyAddressesSection/PartyAddressesSection.tsx(8,23): error TS2307: Cannot find module '@/components/ui/Modal' or its corresponding type declarations.
+src/features/parties/components/PartyAddressesSection/PartyAddressesSection.tsx(9,30): error TS2307: Cannot find module '@/features/masters/api/masterPaths' or its corresponding type declarations.
+src/features/parties/components/PartyAddressesSection/PartyAddressesSection.tsx(10,31): error TS2307: Cannot find module '@/features/masters/services/master.service' or its corresponding type declarations.
+src/features/parties/components/PartyAddressesSection/PartyAddressesSection.tsx(11,36): error TS2307: Cannot find module '@/features/masters/utils/normalizeMasterRecord' or its corresponding type declarations.
+src/features/parties/components/PartyAddressesSection/PartyAddressesSection.tsx(40,15): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/features/parties/components/PartyAddressesSection/PartyAddressesSection.tsx(45,18): error TS7006: Parameter 'o' implicitly has an 'any' type.
+src/features/parties/components/PartyAddressesSection/PartyAddressesSection.tsx(51,5): error TS2322: Type 'Resolver<{ label: string; address_line1: string; country_code: string; address_line2?: unknown; city?: unknown; state?: unknown; postal_code?: unknown; is_default?: boolean | undefined; }, any, { label: string; address_line1: string; ... 5 more ...; is_default?: boolean | undefined; }>' is not assignable to type 'Resolver<{ label: string; address_line1: string; country_code: string; address_line2?: string | undefined; city?: string | undefined; state?: string | undefined; postal_code?: string | undefined; is_default?: boolean | undefined; }, any, { ...; }>'.
+  Types of parameters 'options' and 'options' are incompatible.
+    Type 'ResolverOptions<{ label: string; address_line1: string; country_code: string; address_line2?: string | undefined; city?: string | undefined; state?: string | undefined; postal_code?: string | undefined; is_default?: boolean | undefined; }>' is not assignable to type 'ResolverOptions<{ label: string; address_line1: string; country_code: string; address_line2?: unknown; city?: unknown; state?: unknown; postal_code?: unknown; is_default?: boolean | undefined; }>'.
+      Type 'unknown' is not assignable to type 'string | undefined'.
+src/features/parties/components/PartyAddressesSection/PartyAddressesSection.tsx(169,43): error TS2345: Argument of type 'TFieldValues' is not assignable to parameter of type '{ label: string; address_line1: string; country_code: string; address_line2?: string | undefined; city?: string | undefined; state?: string | undefined; postal_code?: string | undefined; is_default?: boolean | undefined; }'.
+  Type 'FieldValues' is missing the following properties from type '{ label: string; address_line1: string; country_code: string; address_line2?: string | undefined; city?: string | undefined; state?: string | undefined; postal_code?: string | undefined; is_default?: boolean | undefined; }': label, address_line1, country_code
+src/features/parties/components/PartyAddressesSection/PartyAddressesSection.tsx(187,31): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/features/parties/components/PartyConfirmModal/PartyConfirmModal.tsx(3,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/parties/components/PartyConfirmModal/PartyConfirmModal.tsx(4,23): error TS2307: Cannot find module '@/components/ui/Modal' or its corresponding type declarations.
+src/features/parties/components/PartyContactsSection/PartyContactsSection.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/parties/components/PartyContactsSection/PartyContactsSection.tsx(5,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/parties/components/PartyContactsSection/PartyContactsSection.tsx(6,23): error TS2307: Cannot find module '@/components/ui/Input' or its corresponding type declarations.
+src/features/parties/components/PartyContactsSection/PartyContactsSection.tsx(7,23): error TS2307: Cannot find module '@/components/ui/Modal' or its corresponding type declarations.
+src/features/parties/components/PartyContactsSection/PartyContactsSection.tsx(25,5): error TS2322: Type 'Resolver<{ name: string; designation?: unknown; phone?: unknown; mobile?: unknown; email?: unknown; is_primary?: boolean | undefined; }, any, { name: string; designation?: string | undefined; phone?: string | undefined; mobile?: string | undefined; email?: string | undefined; is_primary?: boolean | undefined; }>' is not assignable to type 'Resolver<{ name: string; designation?: string | undefined; phone?: string | undefined; mobile?: string | undefined; email?: string | undefined; is_primary?: boolean | undefined; }, any, { name: string; ... 4 more ...; is_primary?: boolean | undefined; }>'.
+  Types of parameters 'options' and 'options' are incompatible.
+    Type 'ResolverOptions<{ name: string; designation?: string | undefined; phone?: string | undefined; mobile?: string | undefined; email?: string | undefined; is_primary?: boolean | undefined; }>' is not assignable to type 'ResolverOptions<{ name: string; designation?: unknown; phone?: unknown; mobile?: unknown; email?: unknown; is_primary?: boolean | undefined; }>'.
+      Type 'unknown' is not assignable to type 'string | undefined'.
+src/features/parties/components/PartyContactsSection/PartyContactsSection.tsx(132,43): error TS2345: Argument of type 'TFieldValues' is not assignable to parameter of type '{ name: string; designation?: string | undefined; phone?: string | undefined; mobile?: string | undefined; email?: string | undefined; is_primary?: boolean | undefined; }'.
+  Property 'name' is missing in type 'FieldValues' but required in type '{ name: string; designation?: string | undefined; phone?: string | undefined; mobile?: string | undefined; email?: string | undefined; is_primary?: boolean | undefined; }'.
+src/features/parties/components/PartyCreditBadge/PartyCreditBadge.tsx(1,23): error TS2307: Cannot find module '@/components/ui/Badge' or its corresponding type declarations.
+src/features/parties/components/PartyFilters/PartyFilters.tsx(9,42): error TS2307: Cannot find module '@/features/users/hooks/useTenantCompanies' or its corresponding type declarations.
+src/features/parties/components/PartyForm/PartyForm.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/parties/components/PartyForm/PartyForm.tsx(5,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/parties/components/PartyForm/PartyForm.tsx(6,23): error TS2307: Cannot find module '@/components/ui/Input' or its corresponding type declarations.
+src/features/parties/components/PartyForm/PartyForm.tsx(7,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/parties/components/PartyForm/PartyForm.tsx(8,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/features/parties/components/PartyForm/PartyForm.tsx(9,36): error TS2307: Cannot find module '@/features/users/hooks/useTenantCompanies' or its corresponding type declarations.
+src/features/parties/components/PartyForm/PartyForm.tsx(10,31): error TS2307: Cannot find module '@/features/masters/services/master.service' or its corresponding type declarations.
+src/features/parties/components/PartyForm/PartyForm.tsx(11,30): error TS2307: Cannot find module '@/features/masters/api/masterPaths' or its corresponding type declarations.
+src/features/parties/components/PartyForm/PartyForm.tsx(12,36): error TS2307: Cannot find module '@/features/masters/utils/normalizeMasterRecord' or its corresponding type declarations.
+src/features/parties/components/PartyForm/PartyForm.tsx(68,15): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/features/parties/components/PartyForm/PartyForm.tsx(74,18): error TS7006: Parameter 'o' implicitly has an 'any' type.
+src/features/parties/components/PartyForm/PartyForm.tsx(84,15): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/features/parties/components/PartyForm/PartyForm.tsx(89,18): error TS7006: Parameter 'o' implicitly has an 'any' type.
+src/features/parties/components/PartyForm/PartyForm.tsx(178,31): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/features/parties/components/PartyForm/PartyForm.tsx(199,31): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/features/parties/components/PartyForm/PartyForm.tsx(243,32): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/features/parties/components/PartyOverviewPanel/PartyOverviewPanel.tsx(1,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/parties/components/PartyStatusBadge/PartyStatusBadge.tsx(1,23): error TS2307: Cannot find module '@/components/ui/Badge' or its corresponding type declarations.
+src/features/parties/components/PartyTable/PartyTable.tsx(8,8): error TS2307: Cannot find module '@/components/ui/Table' or its corresponding type declarations.
+src/features/parties/hooks/useParties.ts(2,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/parties/hooks/useParties.ts(3,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/features/parties/hooks/useParties.ts(23,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/parties/hooks/useParties.ts(34,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/parties/pages/PartyDetailPage.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/parties/pages/PartyDetailPage.tsx(5,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/parties/pages/PartyDetailPage.tsx(6,36): error TS2307: Cannot find module '@/components/templates/DetailPageTemplate' or its corresponding type declarations.
+src/features/parties/pages/PartyDetailPage.tsx(7,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/parties/pages/PartyEditPage.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/parties/pages/PartyEditPage.tsx(5,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/parties/pages/PartyEditPage.tsx(6,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/parties/pages/PartyListPage.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/parties/pages/PartyListPage.tsx(5,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/parties/pages/PartyListPage.tsx(6,36): error TS2307: Cannot find module '@/features/users/hooks/useTenantCompanies' or its corresponding type declarations.
+src/features/parties/schemas/party.schema.ts(2,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/parties/services/party.service.ts(1,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/features/parties/services/party.service.ts(2,34): error TS2307: Cannot find module '@/lib/apiEnvelope' or its corresponding type declarations.
+src/features/parties/services/party.service.ts(3,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/parties/services/party.service.ts(4,34): error TS2307: Cannot find module '@/lib/wakeApi' or its corresponding type declarations.
+src/features/parties/services/party.service.ts(169,28): error TS7006: Parameter 'status' implicitly has an 'any' type.
+src/features/parties/services/party.service.ts(242,28): error TS7006: Parameter 'status' implicitly has an 'any' type.
+src/features/parties/services/party.service.ts(289,28): error TS7006: Parameter 'status' implicitly has an 'any' type.
+src/features/parties/utils/normalizeParty.ts(1,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/parties/utils/preparePartyPayload.ts(1,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/platform/components/OnboardingSteps/OnboardingSteps.tsx(4,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/platform/components/OnboardingSteps/OnboardingSteps.tsx(5,20): error TS2307: Cannot find module '@/lib/utils' or its corresponding type declarations.
+src/features/platform/components/OnboardingSteps/OnboardingSteps.tsx(6,36): error TS2307: Cannot find module '@/features/companies/hooks/useCompanies' or its corresponding type declarations.
+src/features/platform/components/OnboardingSteps/OnboardingSteps.tsx(7,28): error TS2307: Cannot find module '@/features/tenants/hooks/useTenants' or its corresponding type declarations.
+src/features/platform/store/platformOnboardingStore.ts(3,46): error TS2307: Cannot find module '@/features/companies/types/company.types' or its corresponding type declarations.
+src/features/platform/store/platformOnboardingStore.ts(42,59): error TS2339: Property 'code' does not exist on type 'DraftCompany'.
+src/features/platform/utils/mapPendingCompanyToTenantForm.ts(1,35): error TS2307: Cannot find module '@/features/platform/store/platformOnboardingStore' or its corresponding type declarations.
+src/features/platform/utils/mapPendingCompanyToTenantForm.ts(2,45): error TS2307: Cannot find module '@/features/tenants/types/tenant.types' or its corresponding type declarations.
+src/features/superadmin/components/SuperAdminProtectedRoute/SuperAdminProtectedRoute.tsx(8,40): error TS2307: Cannot find module '@/features/superadmin/store/superAdminAuthStore' or its corresponding type declarations.
+src/features/superadmin/components/SuperAdminProtectedRoute/SuperAdminProtectedRoute.tsx(11,51): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/superadmin/layout/SuperAdminTopbar/SuperAdminTopbar.tsx(3,39): error TS2307: Cannot find module '@/features/superadmin/services/superAdminAuth.service' or its corresponding type declarations.
+src/features/superadmin/layout/SuperAdminTopbar/SuperAdminTopbar.tsx(4,40): error TS2307: Cannot find module '@/features/superadmin/store/superAdminAuthStore' or its corresponding type declarations.
+src/features/superadmin/layout/SuperAdminTopbar/SuperAdminTopbar.tsx(8,40): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/superadmin/layout/SuperAdminTopbar/SuperAdminTopbar.tsx(9,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/superadmin/pages/SuperAdminDashboardPage.tsx(3,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/superadmin/pages/SuperAdminDashboardPage.tsx(4,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/superadmin/pages/SuperAdminDashboardPage.tsx(5,44): error TS2307: Cannot find module '@/features/platform/store/platformOnboardingStore' or its corresponding type declarations.
+src/features/superadmin/pages/SuperAdminDashboardPage.tsx(6,36): error TS2307: Cannot find module '@/features/companies/hooks/useCompanies' or its corresponding type declarations.
+src/features/superadmin/pages/SuperAdminDashboardPage.tsx(7,34): error TS2307: Cannot find module '@/features/tenants/components/TenantStatsCards' or its corresponding type declarations.
+src/features/superadmin/pages/SuperAdminDashboardPage.tsx(8,37): error TS2307: Cannot find module '@/features/tenants/hooks/useTenants' or its corresponding type declarations.
+src/features/superadmin/pages/SuperAdminDashboardPage.tsx(13,54): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/superadmin/pages/SuperAdminLoginPage.tsx(8,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/features/tenants/components/TenantConfirmModal/TenantConfirmModal.tsx(2,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/tenants/components/TenantConfirmModal/TenantConfirmModal.tsx(3,23): error TS2307: Cannot find module '@/components/ui/Modal' or its corresponding type declarations.
+src/features/tenants/components/TenantFilters/TenantFilters.tsx(1,41): error TS2307: Cannot find module '../utils/filterTenants' or its corresponding type declarations.
+src/features/tenants/components/TenantForm/TenantForm.tsx(6,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/tenants/components/TenantForm/TenantForm.tsx(7,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/tenants/components/TenantForm/TenantForm.tsx(8,23): error TS2307: Cannot find module '@/components/ui/Input' or its corresponding type declarations.
+src/features/tenants/components/TenantForm/TenantForm.tsx(9,20): error TS2307: Cannot find module '@/lib/utils' or its corresponding type declarations.
+src/features/tenants/components/TenantForm/TenantForm.tsx(10,44): error TS2307: Cannot find module '@/features/platform/store/platformOnboardingStore' or its corresponding type declarations.
+src/features/tenants/components/TenantForm/TenantForm.tsx(11,36): error TS2307: Cannot find module '@/features/companies/hooks/useCompanies' or its corresponding type declarations.
+src/features/tenants/components/TenantForm/TenantForm.tsx(70,54): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/tenants/components/TenantForm/TenantForm.tsx(74,49): error TS7006: Parameter 'company' implicitly has an 'any' type.
+src/features/tenants/components/TenantForm/TenantForm.tsx(82,40): error TS7006: Parameter 'company' implicitly has an 'any' type.
+src/features/tenants/components/TenantForm/TenantForm.tsx(88,45): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/features/tenants/components/TenantOverviewPanel/TenantOverviewPanel.tsx(2,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/tenants/components/TenantStatsCards/TenantStatsCards.tsx(1,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/tenants/components/TenantStatusBadge/TenantStatusBadge.tsx(1,23): error TS2307: Cannot find module '@/components/ui/Badge' or its corresponding type declarations.
+src/features/tenants/components/TenantTable/TenantTable.tsx(10,8): error TS2307: Cannot find module '@/components/ui/Table' or its corresponding type declarations.
+src/features/tenants/hooks/useTenants.ts(1,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/tenants/pages/TenantCreatePage.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/tenants/pages/TenantCreatePage.tsx(5,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/tenants/pages/TenantCreatePage.tsx(6,50): error TS2307: Cannot find module '@/features/platform/constants/onboarding' or its corresponding type declarations.
+src/features/tenants/pages/TenantCreatePage.tsx(7,44): error TS2307: Cannot find module '@/features/platform/store/platformOnboardingStore' or its corresponding type declarations.
+src/features/tenants/pages/TenantCreatePage.tsx(8,45): error TS2307: Cannot find module '@/features/platform/utils/mapPendingCompanyToTenantForm' or its corresponding type declarations.
+src/features/tenants/pages/TenantCreatePage.tsx(9,36): error TS2307: Cannot find module '@/features/companies/hooks/useCompanies' or its corresponding type declarations.
+src/features/tenants/pages/TenantCreatePage.tsx(10,29): error TS2307: Cannot find module '@/features/auth/services/auth.service' or its corresponding type declarations.
+src/features/tenants/pages/TenantCreatePage.tsx(13,25): error TS2307: Cannot find module '@/lib/wakeApi' or its corresponding type declarations.
+src/features/tenants/pages/TenantCreatePage.tsx(19,54): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/tenants/pages/TenantCreatePage.tsx(20,58): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/tenants/pages/TenantCreatePage.tsx(21,66): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/tenants/pages/TenantDetailPage.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/tenants/pages/TenantDetailPage.tsx(5,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/tenants/pages/TenantDetailPage.tsx(6,36): error TS2307: Cannot find module '@/components/templates/DetailPageTemplate' or its corresponding type declarations.
+src/features/tenants/pages/TenantListPage.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/tenants/pages/TenantListPage.tsx(5,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/tenants/pages/TenantListPage.tsx(6,50): error TS2307: Cannot find module '@/features/platform/constants/onboarding' or its corresponding type declarations.
+src/features/tenants/pages/TenantListPage.tsx(7,44): error TS2307: Cannot find module '@/features/platform/store/platformOnboardingStore' or its corresponding type declarations.
+src/features/tenants/pages/TenantListPage.tsx(8,36): error TS2307: Cannot find module '@/features/companies/hooks/useCompanies' or its corresponding type declarations.
+src/features/tenants/pages/TenantListPage.tsx(67,54): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/tenants/schemas/tenant.schema.ts(2,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/tenants/services/tenant.service.ts(1,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/tenants/services/tenant.service.ts(2,55): error TS2307: Cannot find module '@/lib/superAdminApiClient' or its corresponding type declarations.
+src/features/tenants/utils/applyCompanyToTenantForm.ts(1,35): error TS2307: Cannot find module '@/features/platform/store/platformOnboardingStore' or its corresponding type declarations.
+src/features/tenants/utils/applyCompanyToTenantForm.ts(2,38): error TS2307: Cannot find module '@/features/companies/services/companyRegistry.service' or its corresponding type declarations.
+src/features/tenants/utils/enrichTenantListMetrics.ts(1,55): error TS2307: Cannot find module '@/lib/superAdminApiClient' or its corresponding type declarations.
+src/features/tenants/utils/enrichTenantListMetrics.ts(2,29): error TS2307: Cannot find module '@/features/companies/api/company.api' or its corresponding type declarations.
+src/features/tenants/utils/enrichTenantListMetrics.ts(3,26): error TS2307: Cannot find module '@/features/users/api/user.api' or its corresponding type declarations.
+src/features/users/components/UserConfirmModal/UserConfirmModal.tsx(2,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/users/components/UserConfirmModal/UserConfirmModal.tsx(3,23): error TS2307: Cannot find module '@/components/ui/Modal' or its corresponding type declarations.
+src/features/users/components/UserForm/UserForm.tsx(5,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/users/components/UserForm/UserForm.tsx(6,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/users/components/UserForm/UserForm.tsx(7,23): error TS2307: Cannot find module '@/components/ui/Input' or its corresponding type declarations.
+src/features/users/components/UserOverviewPanel/UserOverviewPanel.tsx(2,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/users/components/UserStatusBadge/UserStatusBadge.tsx(1,23): error TS2307: Cannot find module '@/components/ui/Badge' or its corresponding type declarations.
+src/features/users/components/UserTable/UserTable.tsx(10,8): error TS2307: Cannot find module '@/components/ui/Table' or its corresponding type declarations.
+src/features/users/components/UserTableSkeleton/UserTableSkeleton.tsx(1,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/users/components/UserTenantSelector/UserTenantSelector.tsx(1,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/users/components/UserTenantSelector/UserTenantSelector.tsx(2,32): error TS2307: Cannot find module '@/features/tenants/hooks/useTenants' or its corresponding type declarations.
+src/features/users/components/UserTenantSelector/UserTenantSelector.tsx(25,20): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/features/users/components/UserTenantSelector/UserTenantSelector.tsx(26,17): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/features/users/hooks/useTenantCompanies.ts(2,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/features/users/hooks/useTenantCompanies.ts(3,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/users/hooks/useTenantCompanies.ts(4,34): error TS2307: Cannot find module '@/lib/apiEnvelope' or its corresponding type declarations.
+src/features/users/hooks/useTenantCompanies.ts(32,15): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/features/users/hooks/useTenantCompanies.ts(37,18): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/features/users/hooks/useUsers.ts(2,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/users/hooks/useUsers.ts(3,48): error TS2307: Cannot find module '@/lib/tenantFromAuth' or its corresponding type declarations.
+src/features/users/hooks/useUsers.ts(4,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/features/users/hooks/useUsers.ts(22,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/users/hooks/useUsers.ts(23,35): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/users/hooks/useUsers.ts(46,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/users/hooks/useUserTenantScope.ts(2,25): error TS2307: Cannot find module '@/hooks/useAuth' or its corresponding type declarations.
+src/features/users/hooks/useUserTenantScope.ts(3,48): error TS2307: Cannot find module '@/lib/tenantFromAuth' or its corresponding type declarations.
+src/features/users/hooks/useUserTenantScope.ts(4,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/features/users/hooks/useUserTenantScope.ts(14,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/users/hooks/useUserTenantScope.ts(15,35): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/users/pages/UserCreatePage.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/users/pages/UserCreatePage.tsx(5,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/users/pages/UserCreatePage.tsx(6,43): error TS2307: Cannot find module '@/lib/tenantFromAuth' or its corresponding type declarations.
+src/features/users/pages/UserCreatePage.tsx(7,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/features/users/pages/UserCreatePage.tsx(45,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/users/pages/UserDetailPage.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/users/pages/UserDetailPage.tsx(5,45): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/users/pages/UserDetailPage.tsx(6,36): error TS2307: Cannot find module '@/components/templates/DetailPageTemplate' or its corresponding type declarations.
+src/features/users/pages/UserListPage.tsx(4,24): error TS2307: Cannot find module '@/components/ui/Button' or its corresponding type declarations.
+src/features/users/pages/UserListPage.tsx(5,22): error TS2307: Cannot find module '@/components/ui/Card' or its corresponding type declarations.
+src/features/users/services/user.service.ts(1,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/features/users/services/user.service.ts(2,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/features/users/services/user.service.ts(3,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/features/users/services/user.service.ts(4,48): error TS2307: Cannot find module '@/lib/tenantFromAuth' or its corresponding type declarations.
+src/features/users/store/usersApi.ts(1,31): error TS2307: Cannot find module '@/store/api/superAdminBaseApi' or its corresponding type declarations.
+src/features/users/store/usersApi.ts(2,35): error TS2307: Cannot find module '@/store/api/axiosBaseQuery' or its corresponding type declarations.
+src/features/users/store/usersApi.ts(16,15): error TS7006: Parameter 'builder' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(17,15): error TS2347: Untyped function calls may not accept type arguments.
+src/features/users/store/usersApi.ts(18,21): error TS7006: Parameter 'params' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(26,22): error TS7006: Parameter 'result' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(26,30): error TS7006: Parameter '_error' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(26,38): error TS7006: Parameter 'params' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(30,36): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(37,18): error TS2347: Untyped function calls may not accept type arguments.
+src/features/users/store/usersApi.ts(38,23): error TS7031: Binding element 'tenantId' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(38,33): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(46,22): error TS7006: Parameter '_result' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(46,31): error TS7006: Parameter '_error' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(46,41): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(49,17): error TS2347: Untyped function calls may not accept type arguments.
+src/features/users/store/usersApi.ts(50,21): error TS7006: Parameter 'dto' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(58,25): error TS7006: Parameter '_result' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(58,34): error TS7006: Parameter '_error' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(58,42): error TS7006: Parameter 'dto' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(61,17): error TS2347: Untyped function calls may not accept type arguments.
+src/features/users/store/usersApi.ts(65,23): error TS7031: Binding element 'tenantId' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(65,33): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(65,37): error TS7031: Binding element 'dto' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(73,25): error TS7006: Parameter '_result' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(73,34): error TS7006: Parameter '_error' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(73,44): error TS7031: Binding element 'tenantId' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(73,54): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(79,17): error TS2347: Untyped function calls may not accept type arguments.
+src/features/users/store/usersApi.ts(80,23): error TS7031: Binding element 'tenantId' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(80,33): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(80,37): error TS7031: Binding element 'user' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(88,25): error TS7006: Parameter '_result' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(88,34): error TS7006: Parameter '_error' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(88,44): error TS7031: Binding element 'tenantId' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(88,54): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(94,23): error TS2347: Untyped function calls may not accept type arguments.
+src/features/users/store/usersApi.ts(98,23): error TS7031: Binding element 'tenantId' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(98,33): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(98,37): error TS7031: Binding element 'dto' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(106,25): error TS7006: Parameter '_result' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(106,34): error TS7006: Parameter '_error' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(106,44): error TS7031: Binding element 'tenantId' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(106,54): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(112,18): error TS2347: Untyped function calls may not accept type arguments.
+src/features/users/store/usersApi.ts(113,23): error TS7031: Binding element 'tenantId' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(113,33): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(121,25): error TS7006: Parameter '_result' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(121,34): error TS7006: Parameter '_error' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(121,44): error TS7031: Binding element 'tenantId' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(121,54): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(127,29): error TS2347: Untyped function calls may not accept type arguments.
+src/features/users/store/usersApi.ts(131,23): error TS7031: Binding element 'tenantId' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(131,33): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(139,25): error TS7006: Parameter '_result' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(139,34): error TS7006: Parameter '_error' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(139,44): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(142,22): error TS2347: Untyped function calls may not accept type arguments.
+src/features/users/store/usersApi.ts(143,23): error TS7031: Binding element 'tenantId' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(143,33): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(151,25): error TS7006: Parameter '_result' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(151,34): error TS7006: Parameter '_error' implicitly has an 'any' type.
+src/features/users/store/usersApi.ts(151,44): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/features/users/utils/prepareUserPayload.ts(1,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/hooks/useAuditLogs.ts(2,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/hooks/useAuditLogs.ts(3,52): error TS2307: Cannot find module '@/types/audit.types' or its corresponding type declarations.
+src/hooks/useAuditLogs.ts(51,16): error TS7031: Binding element 'data' implicitly has an 'any' type.
+src/hooks/useAuth.ts(2,52): error TS2307: Cannot find module '@/context/AuthContext' or its corresponding type declarations.
+src/hooks/useHomepageConfig.ts(2,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/hooks/useHomepageConfig.ts(3,25): error TS2307: Cannot find module '@/hooks/useAuth' or its corresponding type declarations.
+src/hooks/useHomepageConfig.ts(4,41): error TS2307: Cannot find module '@/components/dashboard/defaultConfig' or its corresponding type declarations.
+src/hooks/useHomepageConfig.ts(10,8): error TS2307: Cannot find module '@/types/homepage.types' or its corresponding type declarations.
+src/hooks/useHomepageConfig.ts(35,16): error TS7031: Binding element 'data' implicitly has an 'any' type.
+src/hooks/useHomepageConfig.ts(57,18): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/hooks/useHomepageConfig.ts(78,50): error TS7006: Parameter 'w' implicitly has an 'any' type.
+src/hooks/useLoginSecurity.ts(2,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/hooks/useLoginSecurity.ts(8,8): error TS2307: Cannot find module '@/types/loginSecurity.types' or its corresponding type declarations.
+src/hooks/useLoginSecurity.ts(34,16): error TS7031: Binding element 'data' implicitly has an 'any' type.
+src/hooks/useSessions.ts(2,29): error TS2307: Cannot find module '@/features/auth/services/auth.service' or its corresponding type declarations.
+src/hooks/useSessions.ts(3,41): error TS2307: Cannot find module '@/features/auth/utils/normalizeSessions' or its corresponding type declarations.
+src/hooks/useSessions.ts(4,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/hooks/useSessions.ts(5,36): error TS2307: Cannot find module '@/types/session.types' or its corresponding type declarations.
+src/hooks/useSessions.ts(38,40): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/hooks/useSessions.ts(49,14): error TS7006: Parameter 'data' implicitly has an 'any' type.
+src/hooks/useSessions.ts(53,42): error TS7006: Parameter 'session' implicitly has an 'any' type.
+src/hooks/useSessions.ts(58,15): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/lib/axios.ts(2,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+src/lib/tenantFromAuth.ts(1,24): error TS2307: Cannot find module '@/lib/isUuid' or its corresponding type declarations.
+src/lib/wakeApi.ts(1,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/pages/audit/AuditLogPage.tsx(2,30): error TS2307: Cannot find module '@/hooks/useAuditLogs' or its corresponding type declarations.
+src/pages/audit/AuditLogPage.tsx(3,30): error TS2307: Cannot find module '@/components/audit/AuditFilters' or its corresponding type declarations.
+src/pages/audit/AuditLogPage.tsx(4,28): error TS2307: Cannot find module '@/components/audit/AuditTable' or its corresponding type declarations.
+src/pages/audit/AuditLogPage.tsx(26,35): error TS6133: 'page' is declared but its value is never read.
+src/pages/documentation/BulkCostEntryPage.tsx(23,21): error TS6133: 'setCharges' is declared but its value is never read.
+src/pages/hr/PayRollPage.tsx(8,10): error TS6133: 'rows' is declared but its value is never read.
+src/pages/hr/PayRollPage.tsx(8,16): error TS6133: 'setRows' is declared but its value is never read.
+src/pages/marketing/ContactPage.tsx(6,20): error TS2307: Cannot find module '@/components/marketing/Navbar' or its corresponding type declarations.
+src/pages/marketing/ContactPage.tsx(7,20): error TS2307: Cannot find module '@/components/marketing/Footer' or its corresponding type declarations.
+src/pages/marketing/ContactPage.tsx(8,35): error TS2307: Cannot find module '@/constants/marketingData' or its corresponding type declarations.
+src/pages/marketing/ContactPage.tsx(206,47): error TS7031: Binding element 'flag' implicitly has an 'any' type.
+src/pages/marketing/ContactPage.tsx(206,53): error TS7031: Binding element 'country' implicitly has an 'any' type.
+src/pages/marketing/ContactPage.tsx(206,62): error TS7031: Binding element 'phone' implicitly has an 'any' type.
+src/pages/marketing/ContactPage.tsx(206,69): error TS7031: Binding element 'href' implicitly has an 'any' type.
+src/pages/marketing/FeaturesPage.tsx(1,20): error TS2307: Cannot find module '@/components/marketing/Navbar' or its corresponding type declarations.
+src/pages/marketing/FeaturesPage.tsx(2,20): error TS2307: Cannot find module '@/components/marketing/Footer' or its corresponding type declarations.
+src/pages/marketing/FeaturesPage.tsx(3,22): error TS2307: Cannot find module '@/components/marketing/sections/Features' or its corresponding type declarations.
+src/pages/marketing/FeaturesPage.tsx(4,22): error TS2307: Cannot find module '@/components/marketing/sections/Products' or its corresponding type declarations.
+src/pages/marketing/FeaturesPage.tsx(5,24): error TS2307: Cannot find module '@/components/marketing/sections/CTASection' or its corresponding type declarations.
+src/pages/marketing/Home.tsx(1,20): error TS2307: Cannot find module '@/components/marketing/Navbar' or its corresponding type declarations.
+src/pages/marketing/Home.tsx(2,20): error TS2307: Cannot find module '@/components/marketing/Footer' or its corresponding type declarations.
+src/pages/marketing/Home.tsx(3,18): error TS2307: Cannot find module '@/components/marketing/sections/Hero' or its corresponding type declarations.
+src/pages/marketing/Home.tsx(4,22): error TS2307: Cannot find module '@/components/marketing/sections/TrustBar' or its corresponding type declarations.
+src/pages/marketing/Home.tsx(5,22): error TS2307: Cannot find module '@/components/marketing/sections/Features' or its corresponding type declarations.
+src/pages/marketing/Home.tsx(6,21): error TS2307: Cannot find module '@/components/marketing/sections/Modules' or its corresponding type declarations.
+src/pages/marketing/Home.tsx(7,19): error TS2307: Cannot find module '@/components/marketing/sections/Stats' or its corresponding type declarations.
+src/pages/marketing/Home.tsx(8,26): error TS2307: Cannot find module '@/components/marketing/sections/Testimonials' or its corresponding type declarations.
+src/pages/marketing/Home.tsx(9,24): error TS2307: Cannot find module '@/components/marketing/sections/CTASection' or its corresponding type declarations.
+src/pages/marketing/ModulesPage.tsx(1,20): error TS2307: Cannot find module '@/components/marketing/Navbar' or its corresponding type declarations.
+src/pages/marketing/ModulesPage.tsx(2,20): error TS2307: Cannot find module '@/components/marketing/Footer' or its corresponding type declarations.
+src/pages/marketing/ModulesPage.tsx(3,21): error TS2307: Cannot find module '@/components/marketing/sections/Modules' or its corresponding type declarations.
+src/pages/marketing/ModulesPage.tsx(4,24): error TS2307: Cannot find module '@/components/marketing/sections/CTASection' or its corresponding type declarations.
+src/pages/marketing/PricingPage.tsx(3,20): error TS2307: Cannot find module '@/components/marketing/Navbar' or its corresponding type declarations.
+src/pages/marketing/PricingPage.tsx(4,20): error TS2307: Cannot find module '@/components/marketing/Footer' or its corresponding type declarations.
+src/pages/marketing/PricingPage.tsx(5,24): error TS2307: Cannot find module '@/components/marketing/sections/CTASection' or its corresponding type declarations.
+src/pages/quotations/OnlineTariffMasterPage.tsx(1,36): error TS2307: Cannot find module '@/features/masters/pages/MasterResourceListPage' or its corresponding type declarations.
+src/pages/quotations/OnlineTariffMasterPage.tsx(2,36): error TS2307: Cannot find module '@/features/masters/pages/MasterResourceFormPage' or its corresponding type declarations.
+src/pages/quotations/OnlineTariffMasterPage.tsx(3,38): error TS2307: Cannot find module '@/features/masters/pages/MasterResourceDetailPage' or its corresponding type declarations.
+src/pages/quotations/OnlineTariffMasterPage.tsx(4,43): error TS2307: Cannot find module '@/features/masters/hooks/useMasterPageRoute' or its corresponding type declarations.
+src/pages/quotations/ZipDistanceMasterPage.tsx(1,36): error TS2307: Cannot find module '@/features/masters/pages/MasterResourceListPage' or its corresponding type declarations.
+src/pages/quotations/ZipDistanceMasterPage.tsx(2,36): error TS2307: Cannot find module '@/features/masters/pages/MasterResourceFormPage' or its corresponding type declarations.
+src/pages/quotations/ZipDistanceMasterPage.tsx(3,38): error TS2307: Cannot find module '@/features/masters/pages/MasterResourceDetailPage' or its corresponding type declarations.
+src/pages/quotations/ZipDistanceMasterPage.tsx(4,43): error TS2307: Cannot find module '@/features/masters/hooks/useMasterPageRoute' or its corresponding type declarations.
+src/pages/settings/LoginSecurityPage.tsx(3,31): error TS2307: Cannot find module '@/lib/axios' or its corresponding type declarations.
+src/pages/settings/LoginSecurityPage.tsx(4,35): error TS2307: Cannot find module '@/components/loginSecurity/LoginSecurityForm' or its corresponding type declarations.
+src/pages/settings/LoginSecurityPage.tsx(20,16): error TS7031: Binding element 'data' implicitly has an 'any' type.
+src/pages/settings/SessionManagementPage.tsx(2,29): error TS2307: Cannot find module '@/components/sessions/SessionList' or its corresponding type declarations.
+src/router/ProtectedRoutes.tsx(2,25): error TS2307: Cannot find module '@/hooks/useAuth' or its corresponding type declarations.
+src/router/ProtectedRoutes.tsx(3,34): error TS2307: Cannot find module '@/components/skeletons/AppShellSkeleton' or its corresponding type declarations.
+src/router/ProtectedRoutes.tsx(4,36): error TS2307: Cannot find module '@/types/auth.types' or its corresponding type declarations.
+src/router/routes/marketingRoutes.tsx(18,26): error TS2307: Cannot find module '@/pages/marketing/Home' or its corresponding type declarations.
+src/router/routes/marketingRoutes.tsx(19,26): error TS2307: Cannot find module '@/pages/marketing/FeaturesPage' or its corresponding type declarations.
+src/router/routes/marketingRoutes.tsx(20,26): error TS2307: Cannot find module '@/pages/marketing/PricingPage' or its corresponding type declarations.
+src/router/routes/marketingRoutes.tsx(21,26): error TS2307: Cannot find module '@/pages/marketing/ContactPage' or its corresponding type declarations.
+src/store/api/axiosBaseQuery.ts(3,37): error TS2307: Cannot find module '@/lib/superAdminApiClient' or its corresponding type declarations.
+src/store/api/axiosBaseQuery.ts(4,26): error TS2307: Cannot find module '@/lib/superAdminApiClient' or its corresponding type declarations.
+src/store/api/axiosBaseQuery.ts(22,22): error TS18046: 'error' is of type 'unknown'.
+src/store/api/axiosBaseQuery.ts(22,45): error TS18046: 'error' is of type 'unknown'.
+src/store/authStore.ts(3,29): error TS2307: Cannot find module '@/features/auth/services/auth.service' or its corresponding type declarations.
+src/store/authStore.ts(7,8): error TS2307: Cannot find module '@/features/auth/types/auth.api.types' or its corresponding type declarations.
+src/store/authStore.ts(11,8): error TS2307: Cannot find module '@/lib/tenantFromAuth' or its corresponding type declarations.
+src/store/authStore.ts(12,34): error TS2307: Cannot find module '@/lib/wakeApi' or its corresponding type declarations.
+src/store/authStore.ts(13,40): error TS2307: Cannot find module '@/features/superadmin/store/superAdminAuthStore' or its corresponding type declarations.
+src/store/authStore.ts(185,52): error TS7006: Parameter 'resolved' implicitly has an 'any' type.
+src/store/index.ts(4,32): error TS2307: Cannot find module '@/features/users/store/usersUiSlice' or its corresponding type declarations.
+src/store/index.ts(6,8): error TS2882: Cannot find module or type declarations for side-effect import of '@/features/users/store/usersApi'.

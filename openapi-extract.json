@@ -1,0 +1,39 @@
+{
+  "/tenants/{id}": [
+    {
+      "method": "get",
+      "summary": "Get tenant by ID"
+    },
+    {
+      "method": "patch",
+      "summary": "Update tenant"
+    },
+    {
+      "method": "delete",
+      "summary": "Soft delete tenant"
+    }
+  ],
+  "/tenants/{id}/restore": [
+    {
+      "method": "patch",
+      "summary": "Restore tenant"
+    }
+  ],
+  "/users/{id}/restore": [
+    {
+      "method": "post",
+      "summary": "Restore a soft-deleted user."
+    }
+  ],
+  "GET /tenants parameters": [
+    {
+      "name": "search",
+      "required": false,
+      "in": "query",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "GET /tenants deleted-related": []
+}
