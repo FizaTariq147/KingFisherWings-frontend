@@ -130,8 +130,8 @@ export function ChequeForm({
             {...register('cheque_number')}
           />
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">Type *</label>
-            <select className={selectClass} {...register('cheque_type')}>
+            <label htmlFor="cheque-type" className="text-sm font-medium text-[var(--color-neutral-700)]">Type *</label>
+            <select id="cheque-type" className={selectClass} {...register('cheque_type')}>
               {CHEQUE_TYPES.map((t) => (
                 <option key={t} value={t}>
                   {CHEQUE_TYPE_LABELS[t]}
@@ -141,8 +141,8 @@ export function ChequeForm({
             <FieldError message={fieldError('cheque_type')} />
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">Party *</label>
-            <select className={selectClass} {...register('party_id', uuidSelect)}>
+            <label htmlFor="cheque-party" className="text-sm font-medium text-[var(--color-neutral-700)]">Party *</label>
+            <select id="cheque-party" className={selectClass} {...register('party_id', uuidSelect)}>
               <option value="">— Select party —</option>
               {parties.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -160,10 +160,10 @@ export function ChequeForm({
             {...register('amount', { valueAsNumber: true })}
           />
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="cheque-currency" className="text-sm font-medium text-[var(--color-neutral-700)]">
               Currency *
             </label>
-            <select className={selectClass} {...register('currency_code')}>
+            <select id="cheque-currency" className={selectClass} {...register('currency_code')}>
               {CHEQUE_CURRENCY_OPTIONS.map((c) => (
                 <option key={c} value={c}>
                   {c}
@@ -185,10 +185,10 @@ export function ChequeForm({
             {...register('due_date')}
           />
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="cheque-bank-account" className="text-sm font-medium text-[var(--color-neutral-700)]">
               Bank account
             </label>
-            <select className={selectClass} {...register('bank_account_id', uuidSelect)}>
+            <select id="cheque-bank-account" className={selectClass} {...register('bank_account_id', uuidSelect)}>
               <option value="">— None —</option>
               {bankAccounts.map((b) => (
                 <option key={b.id} value={b.id}>
@@ -199,12 +199,13 @@ export function ChequeForm({
             </select>
           </div>
           <Input label="Bank name" error={fieldError('bank_name')} {...register('bank_name')} />
-          <label className="flex items-center gap-2 text-sm h-9 sm:col-span-2">
+          <label htmlFor="cheque-is-pdc" className="flex items-center gap-2 text-sm h-9 sm:col-span-2">
             <Controller
               name="is_pdc"
               control={control}
               render={({ field }) => (
                 <input
+                  id="cheque-is-pdc"
                   type="checkbox"
                   className={checkClass}
                   checked={Boolean(field.value)}

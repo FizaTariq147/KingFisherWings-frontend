@@ -45,8 +45,9 @@ export function ChartOfAccountFilters({
         onChange={(e) => onSearchChange(e.target.value)}
       />
       <div className="space-y-1">
-        <label className="text-sm font-medium text-[var(--color-neutral-700)]">Group</label>
+        <label htmlFor="coa-filter-group" className="text-sm font-medium text-[var(--color-neutral-700)]">Group</label>
         <select
+          id="coa-filter-group"
           className={selectClass}
           value={accountGroup}
           onChange={(e) => onAccountGroupChange(e.target.value as AccountGroup | 'all')}
@@ -60,8 +61,9 @@ export function ChartOfAccountFilters({
         </select>
       </div>
       <div className="space-y-1">
-        <label className="text-sm font-medium text-[var(--color-neutral-700)]">Type</label>
+        <label htmlFor="coa-filter-type" className="text-sm font-medium text-[var(--color-neutral-700)]">Type</label>
         <select
+          id="coa-filter-type"
           className={selectClass}
           value={accountType}
           onChange={(e) => onAccountTypeChange(e.target.value as AccountType | 'all')}
@@ -75,8 +77,9 @@ export function ChartOfAccountFilters({
         </select>
       </div>
       <div className="space-y-1">
-        <label className="text-sm font-medium text-[var(--color-neutral-700)]">Postable</label>
+        <label htmlFor="coa-filter-postable" className="text-sm font-medium text-[var(--color-neutral-700)]">Postable</label>
         <select
+          id="coa-filter-postable"
           className={selectClass}
           value={postable}
           onChange={(e) => onPostableChange(e.target.value as 'all' | 'yes' | 'no')}
@@ -87,8 +90,9 @@ export function ChartOfAccountFilters({
         </select>
       </div>
       <div className="space-y-1">
-        <label className="text-sm font-medium text-[var(--color-neutral-700)]">Status</label>
+        <label htmlFor="coa-filter-status" className="text-sm font-medium text-[var(--color-neutral-700)]">Status</label>
         <select
+          id="coa-filter-status"
           className={selectClass}
           value={status}
           onChange={(e) => onStatusChange(e.target.value as 'all' | 'active' | 'inactive')}

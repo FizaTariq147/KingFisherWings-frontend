@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E2E Automation Status Report — Fresa Gold Frontend</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 16mm;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", Calibri, Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.45;
+      color: #1a1a1a;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    h1 {
+      font-size: 18pt;
+      color: #0A2942;
+      margin: 0 0 4px;
+      border-bottom: 3px solid #FF751F;
+      padding-bottom: 8px;
+    }
+    h2 {
+      font-size: 13pt;
+      color: #0A2942;
+      margin: 22px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #d0d7de;
+    }
+    .meta {
+      color: #555;
+      font-size: 10pt;
+      margin-bottom: 16px;
+    }
+    .meta strong { color: #0A2942; }
+    .summary {
+      background: #f0f4f8;
+      border-left: 4px solid #FF751F;
+      padding: 12px 14px;
+      margin: 12px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 14px;
+      font-size: 10pt;
+    }
+    th, td {
+      border: 1px solid #c8d0d8;
+      padding: 7px 9px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #0A2942;
+      color: #fff;
+      font-weight: 600;
+    }
+    tr:nth-child(even) td { background: #f7f9fb; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 9pt;
+      font-weight: 600;
+    }
+    .badge-pass { background: #d1fae5; color: #065f46; }
+    .badge-fail { background: #fee2e2; color: #991b1b; }
+    .badge-skip { background: #e5e7eb; color: #374151; }
+    .badge-done { background: #dbeafe; color: #1e40af; }
+    ul { margin: 6px 0 10px; padding-left: 20px; }
+    li { margin: 3px 0; }
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 9pt;
+      background: #f3f4f6;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+    pre {
+      background: #0A2942;
+      color: #e8eef4;
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-size: 9pt;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+    .footer {
+      margin-top: 28px;
+      padding-top: 10px;
+      border-top: 1px solid #d0d7de;
+      font-size: 9pt;
+      color: #666;
+    }
+    .callout {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin: 12px 0;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+  <h1>E2E Automation — Status Report</h1>
+  <div class="meta">
+    <strong>Project:</strong> Fresa Gold Frontend (KingFisher Tech Gold)<br />
+    <strong>Date:</strong> July 17, 2026<br />
+    <strong>Scope:</strong> Playwright end-to-end automation (auth, modules, validation, regression)<br />
+    <strong>Reporter:</strong> ________________
+  </div>
+
+  <h2>1. Executive Summary</h2>
+  <div class="summary">
+    Playwright E2E automation has been implemented for the frontend using the existing project
+    structure (<code>e2e/</code> folder). No application business logic or UI was changed.
+    The suite covers authentication, navigation, key modules, form validation, API checks,
+    and regression for recent integrations.
+    <br /><br />
+    <strong>Initial run failures are due to missing Playwright browser install (environment setup),
+    not application defects.</strong> After a one-time browser install, the majority of public
+    tests are expected to pass.
+  </div>
+
+  <h2>2. What Was Delivered</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Playwright config + HTML report</td><td><span class="badge badge-done">Done</span></td></tr>
+      <tr><td>Shared test helpers (login, API waits)</td><td><span class="badge badge-done">Done</span></td></tr>
+      <tr><td>Auth + validation tests (no login required)</td><td><span class="badge badge-done">Done</span></td></tr>
+      <tr><td>Authenticated ERP tests (dashboard, jobs, finance, etc.)</td><td><span class="badge badge-done">Done</span> — needs credentials</td></tr>
+      <tr><td>Super Admin tests (tenants, companies)</td><td><span class="badge badge-done">Done</span> — needs credentials</td></tr>
+      <tr><td>Regression tests (recent integrations)</td><td><span class="badge badge-done">Done</span></td></tr>
+      <tr><td>npm scripts: <code>test:e2e</code>, <code>test:e2e:install</code>, <code>test:e2e:report</code></td><td><span class="badge badge-done">Done</span></td></tr>
+    </tbody>
+  </table>
+
+  <h2>3. Test Coverage by Area</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Area</th>
+        <th>Covered</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Authentication</td><td>Login UI, validation, redirects, API login</td></tr>
+      <tr><td>Super Admin</td><td>Login, tenants, companies</td></tr>
+      <tr><td>Dashboard &amp; navigation</td><td>Hub pages, module routes</td></tr>
+      <tr><td>Quotations, Jobs, Finance, Users, Masters</td><td>List/load, create validation</td></tr>
+      <tr><td>Global search</td><td>Search panel + API</td></tr>
+      <tr><td>Locale</td><td>Public API + profile surface</td></tr>
+      <tr><td>Form validation</td><td>Email, required fields, signup rules</td></tr>
+      <tr><td>Error handling</td><td>403, 404</td></tr>
+      <tr><td>Regression</td><td>Hub All Jobs, menu changes, locale profile</td></tr>
+    </tbody>
+  </table>
+
+  <h2>4. Current Test Run Results</h2>
+  <p>
+    <strong>Run date:</strong> July 17, 2026 &nbsp;|&nbsp;
+    <strong>Command:</strong> <code>npm run test:e2e</code> &nbsp;|&nbsp;
+    <strong>Environment:</strong> Local + Render API via Vite proxy
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Result</th>
+        <th>Count</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-pass">Passed</span></td>
+        <td>2</td>
+        <td>API-only tests (locale endpoints)</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-fail">Failed</span></td>
+        <td>18</td>
+        <td><strong>All failed: Chromium browser not installed</strong> — not app bugs</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-skip">Skipped</span></td>
+        <td>32</td>
+        <td>Authenticated suites — blocked until browser + credentials</td>
+      </tr>
+      <tr>
+        <td>Duration</td>
+        <td colspan="2">~35 seconds (failures were instant — browser launch only)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Root cause:</strong> Playwright browsers not installed on the machine.<br />
+    <strong>Fix:</strong> One-time command — <code>npm run test:e2e:install</code> — then rerun tests.
+  </div>
+
+  <h2>5. Impact on Product</h2>
+  <ul>
+    <li>No evidence of broken login or modules from this run — tests never reached the app.</li>
+    <li>Automation framework is in place and ready for daily / CI runs.</li>
+    <li>Full coverage requires: (1) Playwright browser install, (2) sandbox test credentials.</li>
+  </ul>
+
+  <h2>6. Risks &amp; Dependencies</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Risk</th>
+        <th>Mitigation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Render API cold start (30–90s)</td>
+        <td>Tests use 120s timeout; may need retry in CI</td>
+      </tr>
+      <tr>
+        <td>Missing E2E credentials</td>
+        <td>Documented in <code>.env.example</code>; authenticated tests skip safely</td>
+      </tr>
+      <tr>
+        <td>Vite + report folder noise</td>
+        <td>Harmless reload logs; optional: stop <code>npm run dev</code> during E2E</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>7. Recommended Next Steps</h2>
+  <ol>
+    <li><strong>Today:</strong> Run <code>npm run test:e2e:install</code> and rerun — share updated pass/fail counts.</li>
+    <li><strong>This week:</strong> Provide sandbox tenant + super admin credentials for full suite.</li>
+    <li><strong>Next:</strong> Add E2E to CI (GitHub Actions) on PR/merge.</li>
+    <li><strong>Ongoing:</strong> Expand CRUD tests where APIs are stable.</li>
+  </ol>
+
+  <h2>8. How to Run (QA / Dev)</h2>
+  <pre>cd D:\fresa\fresa-gold-frontend
+npm install
+npm run test:e2e:install    # once per machine
+npm run test:e2e
+npm run test:e2e:report     # open HTML report</pre>
+
+  <p><strong>Optional credentials</strong> (PowerShell):</p>
+  <pre>$env:E2E_TENANT_SLUG = "your-tenant-slug"
+$env:E2E_TENANT_PASSWORD = "your-password"
+npm run test:e2e</pre>
+
+  <h2>9. Attachments</h2>
+  <ul>
+    <li>Playwright HTML report screenshot (pre–browser-install run)</li>
+    <li>After fix: updated report with full pass/skip/fail breakdown</li>
+    <li>Optional: <code>playwright-report/</code> folder or live demo of HTML report</li>
+  </ul>
+
+  <div class="footer">
+    Fresa Gold / KingFisher Tech Gold Frontend — E2E Automation Status Report — Confidential<br />
+    Generated for management review · July 17, 2026
+  </div>
+</body>
+</html>

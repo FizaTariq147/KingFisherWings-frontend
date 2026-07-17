@@ -45,8 +45,9 @@ export function VoucherFilters({
         onChange={(e) => onSearchChange(e.target.value)}
       />
       <div className="space-y-1">
-        <label className="text-sm font-medium text-[var(--color-neutral-700)]">Type</label>
+        <label htmlFor="voucher-filter-type" className="text-sm font-medium text-[var(--color-neutral-700)]">Type</label>
         <select
+          id="voucher-filter-type"
           className={selectClass}
           value={voucherType}
           onChange={(e) => onVoucherTypeChange(e.target.value as VoucherType | 'all')}
@@ -60,8 +61,9 @@ export function VoucherFilters({
         </select>
       </div>
       <div className="space-y-1">
-        <label className="text-sm font-medium text-[var(--color-neutral-700)]">Status</label>
+        <label htmlFor="voucher-filter-status" className="text-sm font-medium text-[var(--color-neutral-700)]">Status</label>
         <select
+          id="voucher-filter-status"
           className={selectClass}
           value={status}
           onChange={(e) => onStatusChange(e.target.value as VoucherStatus | 'all')}

@@ -255,8 +255,9 @@ export default function OrganizationProfilePage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Input label="City" error={errors.city?.message} {...register('city')} />
           <div className="sm:col-span-2 flex flex-col gap-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-600)]">Address</label>
+            <label htmlFor="org-address" className="text-xs font-medium text-[var(--color-neutral-600)]">Address</label>
             <textarea
+              id="org-address"
               rows={2}
               className="w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--color-primary-500)] resize-none"
               {...register('address')}
@@ -281,10 +282,10 @@ export default function OrganizationProfilePage() {
           <Input label="Customs code" {...register('customs_code')} />
           <Input label="Customs license no." {...register('customs_license_no')} />
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+            <label htmlFor="org-base-currency" className="text-xs font-medium text-[var(--color-neutral-600)]">
               Base currency
             </label>
-            <select className={selectClass} {...register('base_currency')}>
+            <select id="org-base-currency" className={selectClass} {...register('base_currency')}>
               {locale &&
                 !CURRENCY_OPTIONS.includes(
                   locale.defaultCurrency as (typeof CURRENCY_OPTIONS)[number],
@@ -297,8 +298,8 @@ export default function OrganizationProfilePage() {
             </select>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-600)]">Language</label>
-            <select className={selectClass} {...register('language')}>
+            <label htmlFor="org-language" className="text-xs font-medium text-[var(--color-neutral-600)]">Language</label>
+            <select id="org-language" className={selectClass} {...register('language')}>
               {LANGUAGE_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
                   {o.label}
@@ -307,8 +308,8 @@ export default function OrganizationProfilePage() {
             </select>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-600)]">Timezone</label>
-            <select className={selectClass} {...register('timezone')}>
+            <label htmlFor="org-timezone" className="text-xs font-medium text-[var(--color-neutral-600)]">Timezone</label>
+            <select id="org-timezone" className={selectClass} {...register('timezone')}>
               {(locale?.timezones ?? TIMEZONE_OPTIONS).map((tz) => (
                 <option key={tz} value={tz}>
                   {tz}
@@ -331,10 +332,10 @@ export default function OrganizationProfilePage() {
             )}
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+            <label htmlFor="org-financial-year-start" className="text-xs font-medium text-[var(--color-neutral-600)]">
               Financial year start (month)
             </label>
-            <select className={selectClass} {...register('financial_year_start')}>
+            <select id="org-financial-year-start" className={selectClass} {...register('financial_year_start')}>
               {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
                 <option key={m} value={m}>
                   {m}
@@ -357,12 +358,13 @@ export default function OrganizationProfilePage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Input label="Logo URL" error={errors.logo_url?.message} {...register('logo_url')} />
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+            <label htmlFor="org-primary-color" className="text-xs font-medium text-[var(--color-neutral-600)]">
               Primary color
             </label>
             <div className="flex items-center gap-2">
               <input
                 type="color"
+                aria-label="Primary color picker"
                 className="h-9 w-12 cursor-pointer rounded border border-[var(--color-neutral-200)] bg-white p-1"
                 value={primaryColor || '#0A66C2'}
                 onChange={(e) =>
@@ -370,6 +372,7 @@ export default function OrganizationProfilePage() {
                 }
               />
               <input
+                id="org-primary-color"
                 className={selectClass}
                 {...register('primary_color')}
                 placeholder="#0A66C2"

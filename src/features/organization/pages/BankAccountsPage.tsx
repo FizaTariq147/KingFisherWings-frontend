@@ -192,8 +192,9 @@ export default function BankAccountsPage() {
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-600)]">Status</label>
+            <label htmlFor="bank-accounts-status" className="text-xs font-medium text-[var(--color-neutral-600)]">Status</label>
             <select
+              id="bank-accounts-status"
               className={selectClass}
               value={activeFilter}
               onChange={(e) => setActiveFilter(e.target.value as typeof activeFilter)}
@@ -204,8 +205,9 @@ export default function BankAccountsPage() {
             </select>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-600)]">Sort</label>
+            <label htmlFor="bank-accounts-sort" className="text-xs font-medium text-[var(--color-neutral-600)]">Sort</label>
             <select
+              id="bank-accounts-sort"
               className={selectClass}
               value={order}
               onChange={(e) => setOrder(e.target.value as 'asc' | 'desc')}

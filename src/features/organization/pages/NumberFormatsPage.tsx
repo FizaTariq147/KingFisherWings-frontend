@@ -83,10 +83,11 @@ function NumberFormatEditorForm({
     <form className="space-y-4" onSubmit={handleValidatedSubmit((v) => onSubmit(v))}>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+          <label htmlFor="number-format-document-type" className="text-xs font-medium text-[var(--color-neutral-600)]">
             Document type *
           </label>
           <select
+            id="number-format-document-type"
             className={selectClass}
             disabled={mode === 'edit'}
             {...register('document_type')}
@@ -116,10 +117,10 @@ function NumberFormatEditorForm({
           {...register('year_digits')}
         />
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+          <label htmlFor="number-format-reset-frequency" className="text-xs font-medium text-[var(--color-neutral-600)]">
             Reset frequency
           </label>
-          <select className={selectClass} {...register('reset_frequency')}>
+          <select id="number-format-reset-frequency" className={selectClass} {...register('reset_frequency')}>
             {RESET_FREQUENCIES.map((f) => (
               <option key={f} value={f}>
                 {RESET_FREQUENCY_LABELS[f]}

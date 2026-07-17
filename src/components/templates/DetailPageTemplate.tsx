@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { PageBackLink } from '@/components/ui/PageBackLink';
 
 export interface DetailTab {
   key: string;
@@ -57,13 +58,11 @@ export function DetailPageTemplate({
   return (
     <div>
       {onBack && (
-        <button
-          type="button"
+        <PageBackLink
+          label={backLabel}
           onClick={onBack}
-          className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] mb-3 transition-colors"
-        >
-          ← {backLabel}
-        </button>
+          className="mb-3"
+        />
       )}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-5">

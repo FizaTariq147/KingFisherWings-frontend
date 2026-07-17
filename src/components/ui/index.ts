@@ -6,3 +6,5 @@ export * from './Table';
 export * from './Modal';
 export * from './CountrySelect';
 export * from './PhoneInput';
+export * from './PageBackLink';
+export * from './KebabMenu';

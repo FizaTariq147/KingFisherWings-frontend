@@ -1,26 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, DollarSign, Copy, FileCheck, Upload, Plus, Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { DollarSign, Copy, FileCheck, Upload, Plus, Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
 import { SelectInput, DateInput } from '../../components/widgets/FilterField';
 
 export default function PayRollPage() {
-  const navigate = useNavigate();
   const [rows, setRows] = useState('10');
 
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/hr" label="Back to HR" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 flex-wrap gap-2">
           <h2 className="text-[17px] font-medium text-gray-800">Pay Roll List</h2>
           <div className="flex items-center gap-2 flex-wrap">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-            >
-              <ChevronLeft size={14} />
-              Back
-            </button>
             <button className="flex items-center gap-1.5 bg-green-600 hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
               <DollarSign size={14} />
               Prepare Payroll
@@ -46,26 +40,26 @@ export default function PayRollPage() {
 
         {/* Filter row */}
         <div className="p-5 flex flex-wrap items-start gap-x-8 gap-y-3">
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">Employee Name</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Employee Name</span>
             <div className="w-64">
               <SelectInput options={['Select']} />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">Salary Month</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Salary Month</span>
             <div className="w-40">
               <SelectInput options={['--Select--']} />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">Salary Date</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Salary Date</span>
             <div className="w-40">
               <DateInput value="" />
             </div>
-          </div>
+          </label>
         </div>
 
         {/* Search toolbar */}

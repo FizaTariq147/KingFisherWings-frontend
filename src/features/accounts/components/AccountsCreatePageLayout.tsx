@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { PageBackLink } from '@/components/ui/PageBackLink';
 
 export function AccountsFormAlert({
   variant = 'danger',
@@ -54,17 +54,9 @@ export function AccountsCreatePageLayout({
   children,
   className = 'space-y-4',
 }: AccountsCreatePageLayoutProps) {
-  const navigate = useNavigate();
-
   return (
     <div className={className}>
-      <button
-        type="button"
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-        onClick={() => navigate(backTo)}
-      >
-        {backLabel.startsWith('←') ? backLabel : `← ${backLabel}`}
-      </button>
+      <PageBackLink to={backTo} label={backLabel} />
       <div>
         <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">{title}</h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">{subtitle}</p>

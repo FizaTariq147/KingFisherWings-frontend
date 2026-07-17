@@ -55,31 +55,29 @@ export default function AwbStockListPage() {
   const { data: airlines = [] } = useMasterOptions('airlines', MASTER_PATHS.airlines, true);
   const { data: branches = [] } = useMasterOptions('branches', MASTER_PATHS.branches, true);
 
-  const airlineOptions = useMemo(
-    () => [
-      { value: '', label: 'All airlines' },
-      ...airlines
-        .filter((a) => isUuid(String(a.id)))
-        .map((a) => ({
-          value: String(a.id),
-          label: [a.code, a.name].filter(Boolean).join(' — ') || String(a.id),
-        })),
-    ],
-    [airlines],
-  );
+  const airlineOptions = useMemo(() => {
+    const opts: Array<{ value: string; label: string }> = [{ value: '', label: 'All airlines' }];
+    for (const a of airlines) {
+      if (!isUuid(String(a.id))) continue;
+      opts.push({
+        value: String(a.id),
+        label: [a.code, a.name].filter(Boolean).join(' — ') || String(a.id),
+      });
+    }
+    return opts;
+  }, [airlines]);
 
-  const branchOptions = useMemo(
-    () => [
-      { value: '', label: 'All branches' },
-      ...branches
-        .filter((b) => isUuid(String(b.id)))
-        .map((b) => ({
-          value: String(b.id),
-          label: [b.code, b.name].filter(Boolean).join(' — ') || String(b.id),
-        })),
-    ],
-    [branches],
-  );
+  const branchOptions = useMemo(() => {
+    const opts: Array<{ value: string; label: string }> = [{ value: '', label: 'All branches' }];
+    for (const b of branches) {
+      if (!isUuid(String(b.id))) continue;
+      opts.push({
+        value: String(b.id),
+        label: [b.code, b.name].filter(Boolean).join(' — ') || String(b.id),
+      });
+    }
+    return opts;
+  }, [branches]);
 
   const debouncedSearch = useDebouncedValue(search, 300);
   useEffect(() => {

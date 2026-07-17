@@ -25,19 +25,19 @@ export default function UserWisePerformancePage() {
 
         {/* Date row */}
         <div className="p-5 flex flex-wrap items-start justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">From Date</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">From Date</span>
             <div className="w-40">
               <DateInput value="09-JUN-26" />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">To Date</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">To Date</span>
             <div className="w-40">
               <DateInput value="09-JUL-26" />
             </div>
-          </div>
+          </label>
         </div>
 
         {/* Search toolbar */}

@@ -23,15 +23,16 @@ export default function PendingQuotationsWidget() {
       );
       const now = Date.now();
       const in48h = 48 * 60 * 60 * 1000;
-      const expiring = samples
-        .flatMap((p) => p.quotations)
-        .filter((q) => {
-          if (!q.valid_until) return false;
+      let expiring = 0;
+      for (const p of samples) {
+        for (const q of p.quotations) {
+          if (!q.valid_until) continue;
           const ts = Date.parse(q.valid_until);
-          if (Number.isNaN(ts)) return false;
+          if (Number.isNaN(ts)) continue;
           const delta = ts - now;
-          return delta >= 0 && delta <= in48h;
-        }).length;
+          if (delta >= 0 && delta <= in48h) expiring += 1;
+        }
+      }
 
       return { totalPending, expiring };
     },

@@ -220,8 +220,9 @@ export function PartyForm({
           />
           <Input label="City" {...register('city')} />
           <div className="sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Address</label>
+            <label htmlFor="party-address" className="text-xs font-medium text-[var(--color-neutral-500)]">Address</label>
             <textarea
+              id="party-address"
               className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm min-h-[72px]"
               {...register('address')}
             />
@@ -333,8 +334,9 @@ export function PartyForm({
             />
           </label>
           <div className="sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Notes</label>
+            <label htmlFor="party-notes" className="text-xs font-medium text-[var(--color-neutral-500)]">Notes</label>
             <textarea
+              id="party-notes"
               className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm min-h-[72px]"
               {...register('notes')}
             />

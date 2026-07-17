@@ -53,8 +53,9 @@ export function ChequeFilters({
         onChange={(e) => onSearchChange(e.target.value)}
       />
       <div className="space-y-1">
-        <label className="text-sm font-medium text-[var(--color-neutral-700)]">Type</label>
+        <label htmlFor="cheque-filter-type" className="text-sm font-medium text-[var(--color-neutral-700)]">Type</label>
         <select
+          id="cheque-filter-type"
           className={selectClass}
           value={chequeType}
           onChange={(e) => onChequeTypeChange(e.target.value as ChequeType | 'all')}
@@ -68,8 +69,9 @@ export function ChequeFilters({
         </select>
       </div>
       <div className="space-y-1">
-        <label className="text-sm font-medium text-[var(--color-neutral-700)]">Status</label>
+        <label htmlFor="cheque-filter-status" className="text-sm font-medium text-[var(--color-neutral-700)]">Status</label>
         <select
+          id="cheque-filter-status"
           className={selectClass}
           value={status}
           onChange={(e) => onStatusChange(e.target.value as ChequeStatus | 'all')}
@@ -83,8 +85,9 @@ export function ChequeFilters({
         </select>
       </div>
       <div className="space-y-1">
-        <label className="text-sm font-medium text-[var(--color-neutral-700)]">PDC</label>
+        <label htmlFor="cheque-filter-pdc" className="text-sm font-medium text-[var(--color-neutral-700)]">PDC</label>
         <select
+          id="cheque-filter-pdc"
           className={selectClass}
           value={isPdc}
           onChange={(e) => onIsPdcChange(e.target.value as 'all' | 'yes' | 'no')}

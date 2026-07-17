@@ -28,13 +28,17 @@ export function useTenantCompanies(enabled = true) {
           ? (raw as ApiEnvelope<Array<Record<string, unknown>>>).data
           : [];
 
-      return list
-        .map((item) => ({
-          id: String(item.id ?? ''),
+      const companies: Array<{ id: string; name: string; code: string }> = [];
+      for (const item of list) {
+        const id = String(item.id ?? '');
+        if (!isUuid(id)) continue;
+        companies.push({
+          id,
           name: String(item.name ?? item.legal_name ?? 'Company'),
           code: String(item.code ?? ''),
-        }))
-        .filter((c) => isUuid(c.id));
+        });
+      }
+      return companies;
     },
     enabled,
     staleTime: 60_000,

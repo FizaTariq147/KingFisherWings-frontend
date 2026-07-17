@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, UserPlus, Search, ChevronDown, Pencil, Filter, X, ChevronRight as SortIcon, ArrowUpDown, Heart } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { UserPlus, Search, ChevronDown, Pencil, Filter, X, ChevronRight as SortIcon, ArrowUpDown, Heart } from 'lucide-react';
 import { userService } from '../../features/management/services/userService';
 import type { UserRow } from '../../features/management/types/user.types';
 
@@ -11,7 +12,6 @@ function Pagination({ count }: { count: number }) {
 }
 
 export default function UserAccessPage() {
-  const navigate = useNavigate();
   const [rows, setRows] = useState('10');
   const [users, setUsers] = useState<UserRow[]>([]);
   const [subscriptionKey, setSubscriptionKey] = useState('');
@@ -33,19 +33,13 @@ export default function UserAccessPage() {
   }, []);
 
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/management" label="Back to Management" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">List of Users</h2>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-            >
-              <ChevronLeft size={14} />
-              Back
-            </button>
             <button className="flex items-center gap-1.5 bg-green-600 hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
               <UserPlus size={14} />
               New User Request

@@ -113,7 +113,11 @@ export function QuotationForm({
   const fillDemo = () => {
     const customerId = customers[0]?.id;
     if (!customerId) return;
-    const portIds = ports.map((p) => String(p.id)).filter((id) => isUuid(id));
+    const portIds: string[] = [];
+    for (const p of ports) {
+      const id = String(p.id);
+      if (isUuid(id)) portIds.push(id);
+    }
     reset(
       buildQuotationDemoValues({
         customerId,
@@ -125,12 +129,14 @@ export function QuotationForm({
     );
   };
 
-  const portOptions = ports
-    .filter((p) => isUuid(String(p.id)))
-    .map((p) => ({
+  const portOptions: Array<{ value: string; label: string }> = [];
+  for (const p of ports) {
+    if (!isUuid(String(p.id))) continue;
+    portOptions.push({
       value: String(p.id),
       label: [p.code, p.name].filter(Boolean).join(' — ') || String(p.id),
-    }));
+    });
+  }
 
   return (
     <form
@@ -150,8 +156,8 @@ export function QuotationForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Job type *</label>
-            <select className={selectClass} {...register('job_type')}>
+            <label htmlFor="job_type" className="text-xs font-medium text-[var(--color-neutral-500)]">Job type *</label>
+            <select id="job_type" className={selectClass} {...register('job_type')}>
               {JOB_TYPES.map((t) => (
                 <option key={t} value={t}>
                   {JOB_TYPE_LABELS[t]}
@@ -161,45 +167,62 @@ export function QuotationForm({
             <FieldError message={fieldError('job_type')} />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Valid until</label>
-            <input type="date" className={selectClass} {...register('valid_until')} />
+            <label htmlFor="valid_until" className="text-xs font-medium text-[var(--color-neutral-500)]">Valid until</label>
+            <input id="valid_until" type="date" className={selectClass} {...register('valid_until')} />
             <FieldError message={fieldError('valid_until')} />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Company</label>
-            <select className={selectClass} {...register('company_id')}>
+            <label htmlFor="company_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Company</label>
+            <select id="company_id" className={selectClass} {...register('company_id')}>
               <option value="">Select…</option>
-              {companies.filter((c) => isUuid(c.id)).map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
+              {(() => {
+                const opts = [];
+                for (const c of companies) {
+                  if (!isUuid(c.id)) continue;
+                  opts.push(
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>,
+                  );
+                }
+                return opts;
+              })()}
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Branch</label>
-            <select className={selectClass} {...register('branch_id')}>
+            <label htmlFor="branch_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Branch</label>
+            <select id="branch_id" className={selectClass} {...register('branch_id')}>
               <option value="">Select…</option>
-              {branches
-                .filter((b) => isUuid(String(b.id)))
-                .map((b) => (
-                  <option key={String(b.id)} value={String(b.id)}>
-                    {String(b.name ?? b.code ?? b.id)}
-                  </option>
-                ))}
+              {(() => {
+                const opts = [];
+                for (const b of branches) {
+                  if (!isUuid(String(b.id))) continue;
+                  opts.push(
+                    <option key={String(b.id)} value={String(b.id)}>
+                      {String(b.name ?? b.code ?? b.id)}
+                    </option>,
+                  );
+                }
+                return opts;
+              })()}
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Department</label>
-            <select className={selectClass} {...register('department_id')}>
+            <label htmlFor="department_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Department</label>
+            <select id="department_id" className={selectClass} {...register('department_id')}>
               <option value="">Select…</option>
-              {departments
-                .filter((d) => isUuid(String(d.id)))
-                .map((d) => (
-                  <option key={String(d.id)} value={String(d.id)}>
-                    {String(d.name ?? d.code ?? d.id)}
-                  </option>
-                ))}
+              {(() => {
+                const opts = [];
+                for (const d of departments) {
+                  if (!isUuid(String(d.id))) continue;
+                  opts.push(
+                    <option key={String(d.id)} value={String(d.id)}>
+                      {String(d.name ?? d.code ?? d.id)}
+                    </option>,
+                  );
+                }
+                return opts;
+              })()}
             </select>
           </div>
         </div>
@@ -211,8 +234,8 @@ export function QuotationForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1 sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Customer *</label>
-            <select className={selectClass} {...register('customer_id')}>
+            <label htmlFor="customer_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Customer *</label>
+            <select id="customer_id" className={selectClass} {...register('customer_id')}>
               <option value="">Select customer…</option>
               {customers.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -229,8 +252,8 @@ export function QuotationForm({
             {...register('salesperson_id')}
           />
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Carrier</label>
-            <select className={selectClass} {...register('carrier_id')}>
+            <label htmlFor="carrier_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Carrier</label>
+            <select id="carrier_id" className={selectClass} {...register('carrier_id')}>
               <option value="">Select…</option>
               {carriers.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -248,8 +271,8 @@ export function QuotationForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Origin port</label>
-            <select className={selectClass} {...register('origin_port_id')}>
+            <label htmlFor="origin_port_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Origin port</label>
+            <select id="origin_port_id" className={selectClass} {...register('origin_port_id')}>
               <option value="">Select…</option>
               {portOptions.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -259,10 +282,10 @@ export function QuotationForm({
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="dest_port_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Destination port
             </label>
-            <select className={selectClass} {...register('dest_port_id')}>
+            <select id="dest_port_id" className={selectClass} {...register('dest_port_id')}>
               <option value="">Select…</option>
               {portOptions.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -272,8 +295,8 @@ export function QuotationForm({
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Incoterm</label>
-            <select className={selectClass} {...register('incoterm')}>
+            <label htmlFor="incoterm" className="text-xs font-medium text-[var(--color-neutral-500)]">Incoterm</label>
+            <select id="incoterm" className={selectClass} {...register('incoterm')}>
               <option value="">Select…</option>
               {INCOTERMS.map((i) => (
                 <option key={i} value={i}>
@@ -318,18 +341,23 @@ export function QuotationForm({
             {...register('container_count', { valueAsNumber: true })}
           />
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="container_type_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Container type
             </label>
-            <select className={selectClass} {...register('container_type_id')}>
+            <select id="container_type_id" className={selectClass} {...register('container_type_id')}>
               <option value="">Select…</option>
-              {containers
-                .filter((c) => isUuid(String(c.id)))
-                .map((c) => (
-                  <option key={String(c.id)} value={String(c.id)}>
-                    {String(c.code ?? c.name ?? c.id)}
-                  </option>
-                ))}
+              {(() => {
+                const opts = [];
+                for (const c of containers) {
+                  if (!isUuid(String(c.id))) continue;
+                  opts.push(
+                    <option key={String(c.id)} value={String(c.id)}>
+                      {String(c.code ?? c.name ?? c.id)}
+                    </option>,
+                  );
+                }
+                return opts;
+              })()}
             </select>
           </div>
           <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)] mt-6">
@@ -344,10 +372,11 @@ export function QuotationForm({
             {...register('transit_time_days', { valueAsNumber: true })}
           />
           <div className="sm:col-span-2 space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="special_requirements" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Special requirements
             </label>
             <textarea
+              id="special_requirements"
               className="min-h-[72px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
               {...register('special_requirements')}
             />
@@ -361,8 +390,8 @@ export function QuotationForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Currency *</label>
-            <select className={selectClass} {...register('currency_code')}>
+            <label htmlFor="currency_code" className="text-xs font-medium text-[var(--color-neutral-500)]">Currency *</label>
+            <select id="currency_code" className={selectClass} {...register('currency_code')}>
               <option value="">Select…</option>
               {currencies.map((c) => (
                 <option key={c.value} value={c.value}>
@@ -402,26 +431,29 @@ export function QuotationForm({
         </CardHeader>
         <div className="grid grid-cols-1 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Remarks</label>
+            <label htmlFor="remarks" className="text-xs font-medium text-[var(--color-neutral-500)]">Remarks</label>
             <textarea
+              id="remarks"
               className="min-h-[72px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
               {...register('remarks')}
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="internal_notes" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Internal notes
             </label>
             <textarea
+              id="internal_notes"
               className="min-h-[72px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
               {...register('internal_notes')}
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="routing_notes" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Routing notes
             </label>
             <textarea
+              id="routing_notes"
               className="min-h-[72px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
               {...register('routing_notes')}
             />

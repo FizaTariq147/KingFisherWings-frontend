@@ -1,14 +1,14 @@
 import { useState, type ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Wand2, Search, ChevronDown, Maximize2 } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Wand2, Search, ChevronDown, Maximize2 } from 'lucide-react';
 
 // lightweight local replacements for missing widget exports
 function FilterField({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div>
-      <label className="block text-xs font-medium text-gray-500 mb-2">{label}</label>
-      <div>{children}</div>
-    </div>
+    <label className="block">
+      <span className="block text-xs font-medium text-gray-500 mb-2">{label}</span>
+      {children}
+    </label>
   );
 }
 
@@ -32,20 +32,14 @@ function DateInput(props: { value?: string }) {
 
 export default function EnquirySheetPage() {
   const [rows, setRows] = useState('10');
-  const navigate = useNavigate();
   return (
-    <div className="bg-white border border-gray-200 rounded-md">
+    <div className="space-y-3">
+      <PageBackLink to="/customers" label="Back to Customers" />
+      <div className="bg-white border border-gray-200 rounded-md">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
         <h2 className="text-[17px] font-medium text-gray-800">All Enquiry</h2>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-          >
-            <ChevronLeft size={14} />
-            Back
-          </button>
           <button className="flex items-center gap-1.5 bg-[#FF751F] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
             <Wand2 size={14} />
             Create
@@ -175,6 +169,7 @@ export default function EnquirySheetPage() {
       </div>
       <div className="px-5 pb-4">
         <p className="text-xs text-gray-500">This report took 0.05 seconds.</p>
+      </div>
       </div>
     </div>
   );

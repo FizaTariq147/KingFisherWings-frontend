@@ -55,11 +55,18 @@ export function UserFilters({
         className="h-9 rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm text-[var(--color-neutral-800)] focus:outline-none focus:border-[var(--color-primary-500)]"
       >
         <option value="all">All roles</option>
-        {USER_ROLES.filter((r) => r !== 'SUPER_ADMIN' && r !== 'TENANT_ADMIN').map((r) => (
-          <option key={r} value={r}>
-            {formatUserRole(r)}
-          </option>
-        ))}
+        {(() => {
+          const opts = [];
+          for (const r of USER_ROLES) {
+            if (r === 'SUPER_ADMIN' || r === 'TENANT_ADMIN') continue;
+            opts.push(
+              <option key={r} value={r}>
+                {formatUserRole(r)}
+              </option>,
+            );
+          }
+          return opts;
+        })()}
       </select>
 
       <input

@@ -3,10 +3,10 @@ import type { PropsWithChildren, ReactNode } from 'react';
 
 export function FilterField({ label, children }: PropsWithChildren<{ label: ReactNode }>) {
   return (
-    <div className="flex items-start gap-3">
-      <label className="w-28 shrink-0 text-sm text-gray-700 pt-2 text-right">{label}</label>
+    <label className="flex items-start gap-3">
+      <span className="w-28 shrink-0 text-sm text-gray-700 pt-2 text-right">{label}</span>
       <div className="flex-1">{children}</div>
-    </div>
+    </label>
   );
 }
 

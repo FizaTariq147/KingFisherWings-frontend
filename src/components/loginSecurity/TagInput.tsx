@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 import { Plus, X } from 'lucide-react'
 
 interface TagInputProps {
@@ -17,6 +17,7 @@ export function TagInput({
   const [input, setInput]   = useState('')
   const [error, setError]   = useState<string | null>(null)
   const inputRef            = useRef<HTMLInputElement>(null)
+  const inputId             = useId()
 
   const add = () => {
     const raw = input.trim()
@@ -41,11 +42,17 @@ export function TagInput({
     if (e.key === 'Escape') { setInput(''); setError(null) }
   }
 
+  const labelClass = 'block text-xs font-medium text-[var(--color-neutral-600)] mb-2'
+
   return (
     <div>
-      <label className="block text-xs font-medium text-[var(--color-neutral-600)] mb-2">
-        {label}
-      </label>
+      {disabled ? (
+        <span className={labelClass}>{label}</span>
+      ) : (
+        <label htmlFor={inputId} className={labelClass}>
+          {label}
+        </label>
+      )}
 
       {/* Tags */}
       {values.length > 0 && (
@@ -81,6 +88,7 @@ export function TagInput({
         <>
           <div className="flex gap-2">
             <input
+              id={inputId}
               ref={inputRef}
               type="text"
               value={input}

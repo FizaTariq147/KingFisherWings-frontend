@@ -116,13 +116,14 @@ async function resolveOwnCompany(
       const owned = companies.filter((c) => companyBelongsToTenant(c, tenant.id));
       const pool = owned.length > 0 ? owned : companies;
 
-      const ranked = pool
-        .map((company) => ({
-          company,
-          score: companyOwnershipScore(tenant, company),
-        }))
-        .filter((row) => (owned.length > 0 ? row.score >= 0 : row.score >= 40))
-        .sort((a, b) => {
+      const ranked = [];
+      for (const company of pool) {
+        const score = companyOwnershipScore(tenant, company);
+        if (owned.length > 0 ? score >= 0 : score >= 40) {
+          ranked.push({ company, score });
+        }
+      }
+      ranked.sort((a, b) => {
           if (b.score !== a.score) return b.score - a.score;
           const aDefault = a.company.is_default === true ? 1 : 0;
           const bDefault = b.company.is_default === true ? 1 : 0;

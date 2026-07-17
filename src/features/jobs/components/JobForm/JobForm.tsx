@@ -37,12 +37,15 @@ function FieldError({ message }: { message?: string }) {
 }
 
 function partyOptions(parties: Array<{ id: string; name?: string; code?: string }>) {
-  return parties
-    .filter((p) => isUuid(p.id))
-    .map((p) => ({
+  const opts: Array<{ value: string; label: string }> = [];
+  for (const p of parties) {
+    if (!isUuid(p.id)) continue;
+    opts.push({
       value: p.id,
       label: [p.code, p.name].filter(Boolean).join(' — ') || p.id,
-    }));
+    });
+  }
+  return opts;
 }
 
 export function JobForm({
@@ -103,12 +106,14 @@ export function JobForm({
   const fieldError = (name: keyof CreateJobFormValues) =>
     errors[name]?.message as string | undefined;
 
-  const portOpts = ports
-    .filter((p) => isUuid(String(p.id)))
-    .map((p) => ({
+  const portOpts: Array<{ value: string; label: string }> = [];
+  for (const p of ports) {
+    if (!isUuid(String(p.id))) continue;
+    portOpts.push({
       value: String(p.id),
       label: [p.code, p.name].filter(Boolean).join(' — ') || String(p.id),
-    }));
+    });
+  }
 
   const destPortOpts = portOpts.filter((p) => p.value !== originPortId);
   const originPortOpts = portOpts.filter((p) => p.value !== destPortId);
@@ -125,57 +130,64 @@ export function JobForm({
         </CardHeader>
         <div className="p-4 pt-0 space-y-4">
           <div className="space-y-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
-              Job type <span className="text-[var(--color-danger-500)]">*</span>
-            </label>
             {mode === 'edit' ? (
-              <select className={selectClass} {...register('job_type')} disabled>
-                {jobTypeOptions.map((t) => (
-                  <option key={t} value={t}>
-                    {JOB_TYPE_LABELS[t]}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-                {jobTypeOptions.map((t) => {
-                  const checked = selectedJobType === t;
-                  return (
-                    <label
-                      key={t}
-                      className={`flex items-center gap-2 rounded-md border px-3 py-2 text-xs font-medium cursor-pointer transition-colors ${
-                        checked
-                          ? 'border-[var(--color-primary-500)] bg-[var(--color-primary-50)] text-[var(--color-primary-700)]'
-                          : 'border-[var(--color-neutral-200)] text-[var(--color-neutral-700)] hover:border-[var(--color-neutral-300)]'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        value={t}
-                        className="accent-[var(--color-primary-600)]"
-                        {...register('job_type')}
-                      />
+              <>
+                <label htmlFor="job-type" className="text-xs font-medium text-[var(--color-neutral-500)]">
+                  Job type <span className="text-[var(--color-danger-500)]">*</span>
+                </label>
+                <select id="job-type" className={selectClass} {...register('job_type')} disabled>
+                  {jobTypeOptions.map((t) => (
+                    <option key={t} value={t}>
                       {JOB_TYPE_LABELS[t]}
-                    </label>
-                  );
-                })}
-              </div>
+                    </option>
+                  ))}
+                </select>
+              </>
+            ) : (
+              <>
+                <span className="text-xs font-medium text-[var(--color-neutral-500)]">
+                  Job type <span className="text-[var(--color-danger-500)]">*</span>
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                  {jobTypeOptions.map((t) => {
+                    const checked = selectedJobType === t;
+                    return (
+                      <label
+                        key={t}
+                        className={`flex items-center gap-2 rounded-md border px-3 py-2 text-xs font-medium cursor-pointer transition-colors ${
+                          checked
+                            ? 'border-[var(--color-primary-500)] bg-[var(--color-primary-50)] text-[var(--color-primary-700)]'
+                            : 'border-[var(--color-neutral-200)] text-[var(--color-neutral-700)] hover:border-[var(--color-neutral-300)]'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          value={t}
+                          className="accent-[var(--color-primary-600)]"
+                          {...register('job_type')}
+                        />
+                        {JOB_TYPE_LABELS[t]}
+                      </label>
+                    );
+                  })}
+                </div>
+              </>
             )}
             <FieldError message={fieldError('job_type')} />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1">
-              <label className="text-xs font-medium text-[var(--color-neutral-500)]">Incoterms</label>
-              <Input {...register('incoterms')} placeholder="e.g. FOB" />
+              <label htmlFor="job-incoterms" className="text-xs font-medium text-[var(--color-neutral-500)]">Incoterms</label>
+              <Input id="job-incoterms" {...register('incoterms')} placeholder="e.g. FOB" />
               <FieldError message={fieldError('incoterms')} />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-[var(--color-neutral-500)]">ETD</label>
-              <Input type="date" {...register('etd')} />
+              <label htmlFor="job-etd" className="text-xs font-medium text-[var(--color-neutral-500)]">ETD</label>
+              <Input id="job-etd" type="date" {...register('etd')} />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-[var(--color-neutral-500)]">ETA</label>
-              <Input type="date" {...register('eta')} />
+              <label htmlFor="job-eta" className="text-xs font-medium text-[var(--color-neutral-500)]">ETA</label>
+              <Input id="job-eta" type="date" {...register('eta')} />
             </div>
           </div>
         </div>
@@ -277,17 +289,18 @@ export function JobForm({
         </CardHeader>
         <div className="p-4 pt-0 grid gap-4 sm:grid-cols-2">
           <div className="space-y-1 sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Commodity</label>
-            <Input {...register('commodity')} />
+            <label htmlFor="job-commodity" className="text-xs font-medium text-[var(--color-neutral-500)]">Commodity</label>
+            <Input id="job-commodity" {...register('commodity')} />
             <FieldError message={fieldError('commodity')} />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">HS code</label>
-            <Input {...register('hs_code')} />
+            <label htmlFor="job-hs-code" className="text-xs font-medium text-[var(--color-neutral-500)]">HS code</label>
+            <Input id="job-hs-code" {...register('hs_code')} />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Pieces</label>
+            <label htmlFor="job-pieces" className="text-xs font-medium text-[var(--color-neutral-500)]">Pieces</label>
             <Input
+              id="job-pieces"
               type="number"
               step="1"
               {...register('pieces', {
@@ -297,10 +310,11 @@ export function JobForm({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="job-gross-weight" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Gross weight (kg)
             </label>
             <Input
+              id="job-gross-weight"
               type="number"
               step="0.001"
               {...register('gross_weight', {
@@ -310,10 +324,11 @@ export function JobForm({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="job-chargeable-weight" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Chargeable weight
             </label>
             <Input
+              id="job-chargeable-weight"
               type="number"
               step="0.001"
               {...register('chargeable_weight', {
@@ -323,8 +338,9 @@ export function JobForm({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Volume (CBM)</label>
+            <label htmlFor="job-volume-cbm" className="text-xs font-medium text-[var(--color-neutral-500)]">Volume (CBM)</label>
             <Input
+              id="job-volume-cbm"
               type="number"
               step="0.001"
               {...register('volume_cbm', {
@@ -349,22 +365,28 @@ export function JobForm({
                 name="container_type_id"
                 label="Container type"
                 value={field.value ?? ''}
-                options={containers
-                  .filter((c) => isUuid(String(c.id)))
-                  .map((c) => ({
-                    value: String(c.id),
-                    label: [c.code, c.name].filter(Boolean).join(' — ') || String(c.id),
-                  }))}
+                options={(() => {
+                  const opts: Array<{ value: string; label: string }> = [];
+                  for (const c of containers) {
+                    if (!isUuid(String(c.id))) continue;
+                    opts.push({
+                      value: String(c.id),
+                      label: [c.code, c.name].filter(Boolean).join(' — ') || String(c.id),
+                    });
+                  }
+                  return opts;
+                })()}
                 onChange={field.onChange}
                 error={fieldError('container_type_id')}
               />
             )}
           />
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="job-container-count" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Container count
             </label>
             <Input
+              id="job-container-count"
               type="number"
               step="1"
               {...register('container_count', {
@@ -382,19 +404,21 @@ export function JobForm({
         </CardHeader>
         <div className="p-4 pt-0 grid gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="job-customer-remarks" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Customer remarks
             </label>
             <textarea
+              id="job-customer-remarks"
               className="w-full min-h-[72px] rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
               {...register('customer_remarks')}
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="job-notes" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Internal notes
             </label>
             <textarea
+              id="job-notes"
               className="w-full min-h-[72px] rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
               {...register('notes')}
             />
@@ -404,8 +428,8 @@ export function JobForm({
             Dangerous goods
           </label>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">DG class</label>
-            <Input {...register('dg_class')} />
+            <label htmlFor="job-dg-class" className="text-xs font-medium text-[var(--color-neutral-500)]">DG class</label>
+            <Input id="job-dg-class" {...register('dg_class')} />
           </div>
         </div>
       </Card>

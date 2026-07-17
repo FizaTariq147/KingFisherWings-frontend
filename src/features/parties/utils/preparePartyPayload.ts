@@ -63,7 +63,12 @@ export function preparePartyPayload<T extends Record<string, unknown>>(dto: T): 
       continue;
     }
     if (key === 'tags' && Array.isArray(value)) {
-      out[key] = value.map(String).map((t) => t.trim()).filter(Boolean);
+      const tags: string[] = [];
+      for (const t of value) {
+        const trimmed = String(t).trim();
+        if (trimmed) tags.push(trimmed);
+      }
+      out[key] = tags;
       continue;
     }
     if (typeof value === 'string') {

@@ -36,8 +36,9 @@ export default function BankReconciliationCreatePage() {
       <Card className="p-4 space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1">
-            <label className="text-sm font-medium">GL account *</label>
+            <label htmlFor="br-gl-account" className="text-sm font-medium">GL account *</label>
             <select
+              id="br-gl-account"
               className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
               value={glAccountId}
               onChange={(e) => setGlAccountId(e.target.value)}
@@ -51,8 +52,9 @@ export default function BankReconciliationCreatePage() {
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-medium">Bank account</label>
+            <label htmlFor="br-bank-account" className="text-sm font-medium">Bank account</label>
             <select
+              id="br-bank-account"
               className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
               value={bankAccountId}
               onChange={(e) => setBankAccountId(e.target.value)}

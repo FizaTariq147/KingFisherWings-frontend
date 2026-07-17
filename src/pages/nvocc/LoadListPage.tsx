@@ -1,71 +1,65 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Search, ChevronDown, Heart } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Search, ChevronDown, Heart } from 'lucide-react';
 import { SelectInput, TextInput } from '../../components/widgets/FilterField';
 
 const tabs = ['NVOCC Load List', 'Export Vessel Load List', 'Import Vessel DSO'];
 
 export default function LoadListPage() {
-  const navigate = useNavigate();
   const [rows, setRows] = useState('10');
   const [activeTab, setActiveTab] = useState(tabs[0]);
 
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/nvocc" label="Back to NVOCC" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800 uppercase">Vessel Load List / DSO</h2>
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-          >
-            <ChevronLeft size={14} />
-            Back
-          </button>
         </div>
 
         {/* Filter row + Submit pinned top-right */}
         <div className="p-5 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           <div className="flex flex-wrap items-start gap-x-8 gap-y-3">
-            <div className="flex items-start gap-3">
-              <label className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Department</label>
+            <label className="flex items-start gap-3">
+              <span className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Department</span>
               <div className="w-52">
                 <SelectInput options={['-Select-']} />
               </div>
-            </div>
+            </label>
 
-            <div className="flex items-start gap-3">
-              <label className="text-sm text-gray-700 pt-2">
+            <label className="flex items-start gap-3">
+              <span className="text-sm text-gray-700 pt-2">
                 <span className="text-red-500">*</span> Vessel
-              </label>
+              </span>
               <div className="w-52">
                 <SelectInput options={['All']} />
               </div>
-            </div>
+            </label>
 
-            <div className="flex items-start gap-3">
-              <label className="text-sm text-gray-700 pt-2">
+            <label className="flex items-start gap-3">
+              <span className="text-sm text-gray-700 pt-2">
                 <span className="text-red-500">*</span> Voyage
-              </label>
+              </span>
               <div className="w-52">
                 <TextInput />
               </div>
-            </div>
+            </label>
 
-            <div className="flex items-start gap-3">
-              <label className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Carrier</label>
+            <label className="flex items-start gap-3">
+              <span className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Carrier</span>
               <div className="w-52">
                 <SelectInput options={['All']} />
               </div>
-            </div>
+            </label>
 
-            <div className="flex items-start gap-3">
-              <label className="text-sm text-gray-700 pt-2">Job No</label>
+            <label className="flex items-start gap-3">
+              <span className="text-sm text-gray-700 pt-2">Job No</span>
               <div className="w-52">
                 <TextInput />
               </div>
-            </div>
+            </label>
           </div>
 
           <button className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity shrink-0">

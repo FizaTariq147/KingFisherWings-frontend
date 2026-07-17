@@ -149,10 +149,10 @@ export function TariffForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="service_type" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Service type *
             </label>
-            <select className={selectClass} {...register('service_type')}>
+            <select id="service_type" className={selectClass} {...register('service_type')}>
               {TARIFF_SERVICE_TYPES.map((t) => (
                 <option key={t} value={t}>
                   {TARIFF_SERVICE_TYPE_LABELS[t]}
@@ -162,26 +162,31 @@ export function TariffForm({
             <FieldError message={fieldError('service_type')} />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="charge_code_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Charge code *
             </label>
-            <select className={selectClass} {...register('charge_code_id', uuidSelect)}>
+            <select id="charge_code_id" className={selectClass} {...register('charge_code_id', uuidSelect)}>
               <option value="">Select…</option>
-              {chargeCodes
-                .filter((c) => isUuid(String(c.id)))
-                .map((c) => (
-                  <option key={String(c.id)} value={String(c.id)}>
-                    {String(c.code ?? c.name ?? c.id)}
-                  </option>
-                ))}
+              {(() => {
+                const opts = [];
+                for (const c of chargeCodes) {
+                  if (!isUuid(String(c.id))) continue;
+                  opts.push(
+                    <option key={String(c.id)} value={String(c.id)}>
+                      {String(c.code ?? c.name ?? c.id)}
+                    </option>,
+                  );
+                }
+                return opts;
+              })()}
             </select>
             <FieldError message={fieldError('charge_code_id')} />
           </div>
           <div className="space-y-1 sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="customer_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Customer (optional — omit for general rate)
             </label>
-            <select className={selectClass} {...register('customer_id', uuidSelect)}>
+            <select id="customer_id" className={selectClass} {...register('customer_id', uuidSelect)}>
               <option value="">All customers</option>
               {customers.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -203,10 +208,10 @@ export function TariffForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="origin_port_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               {isAir ? 'Origin airport' : 'Origin port'}
             </label>
-            <select className={selectClass} {...register('origin_port_id', uuidSelect)}>
+            <select id="origin_port_id" className={selectClass} {...register('origin_port_id', uuidSelect)}>
               <option value="">Select…</option>
               {locationOptions.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -216,10 +221,10 @@ export function TariffForm({
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="dest_port_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               {isAir ? 'Destination airport' : 'Destination port'}
             </label>
-            <select className={selectClass} {...register('dest_port_id', uuidSelect)}>
+            <select id="dest_port_id" className={selectClass} {...register('dest_port_id', uuidSelect)}>
               <option value="">Select…</option>
               {locationOptions.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -230,24 +235,29 @@ export function TariffForm({
             <FieldError message={fieldError('dest_port_id')} />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="container_type_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Container type
             </label>
-            <select className={selectClass} {...register('container_type_id', uuidSelect)}>
+            <select id="container_type_id" className={selectClass} {...register('container_type_id', uuidSelect)}>
               <option value="">Select…</option>
-              {containers
-                .filter((c) => isUuid(String(c.id)))
-                .map((c) => (
-                  <option key={String(c.id)} value={String(c.id)}>
-                    {String(c.code ?? c.name ?? c.id)}
-                  </option>
-                ))}
+              {(() => {
+                const opts = [];
+                for (const c of containers) {
+                  if (!isUuid(String(c.id))) continue;
+                  opts.push(
+                    <option key={String(c.id)} value={String(c.id)}>
+                      {String(c.code ?? c.name ?? c.id)}
+                    </option>,
+                  );
+                }
+                return opts;
+              })()}
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Unit</label>
+            <label htmlFor="unit" className="text-xs font-medium text-[var(--color-neutral-500)]">Unit</label>
             {uoms.length > 0 ? (
-              <select className={selectClass} {...register('unit')}>
+              <select id="unit" className={selectClass} {...register('unit')}>
                 <option value="">Select…</option>
                 <option value="KG">KG</option>
                 <option value="Per Container">Per Container</option>
@@ -261,7 +271,7 @@ export function TariffForm({
                 })}
               </select>
             ) : (
-              <Input placeholder="KG" {...register('unit')} />
+              <Input id="unit" placeholder="KG" {...register('unit')} />
             )}
           </div>
         </div>
@@ -273,10 +283,10 @@ export function TariffForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="currency_code" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Currency *
             </label>
-            <select className={selectClass} {...register('currency_code')}>
+            <select id="currency_code" className={selectClass} {...register('currency_code')}>
               <option value="">Select…</option>
               {currencies.map((c) => (
                 <option key={c.value} value={c.value}>
@@ -313,15 +323,15 @@ export function TariffForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="valid_from" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Valid from *
             </label>
-            <input type="date" className={selectClass} {...register('valid_from')} />
+            <input id="valid_from" type="date" className={selectClass} {...register('valid_from')} />
             <FieldError message={fieldError('valid_from')} />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Valid to</label>
-            <input type="date" className={selectClass} {...register('valid_to')} />
+            <label htmlFor="valid_to" className="text-xs font-medium text-[var(--color-neutral-500)]">Valid to</label>
+            <input id="valid_to" type="date" className={selectClass} {...register('valid_to')} />
             <FieldError message={fieldError('valid_to')} />
           </div>
         </div>

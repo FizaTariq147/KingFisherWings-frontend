@@ -131,8 +131,8 @@ export function ZipDistanceForm({
             {...register('distance', { valueAsNumber: true })}
           />
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Unit *</label>
-            <select className={selectClass} {...register('unit')}>
+            <label htmlFor="unit" className="text-xs font-medium text-[var(--color-neutral-500)]">Unit *</label>
+            <select id="unit" className={selectClass} {...register('unit')}>
               {DISTANCE_UNITS.map((u) => (
                 <option key={u} value={u}>
                   {u}

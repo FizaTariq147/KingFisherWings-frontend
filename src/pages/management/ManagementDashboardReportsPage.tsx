@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  ChevronLeft, Search, ChevronDown, Heart,
-  Users, BarChart2, ClipboardList, PieChart, Headphones,
-  FileText, DollarSign, CreditCard, RotateCw, ListChecks,
-} from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Search, ChevronDown, Heart, Users, BarChart2, ClipboardList, PieChart, Headphones, FileText, DollarSign, CreditCard, RotateCw, ListChecks } from 'lucide-react';
 import { SelectInput, DateInput } from '../../components/widgets/FilterField';
 
 interface ReportButton {
@@ -28,28 +25,21 @@ const reportButtons: ReportButton[] = [
 ];
 
 export default function ManagementDashboardReportsPage() {
-  const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
 
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/management" label="Back to Management" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">Management Dashboard - Reports</h2>
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-          >
-            <ChevronLeft size={14} />
-            Back
-          </button>
         </div>
 
         {/* Filter grid */}
         <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-3">
           <div className="flex items-start gap-3">
-            <label className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Date Range</label>
+            <span className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Date Range</span>
             <div className="flex-1">
               <div className="flex items-center justify-between border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-700">
                 <span>This Month</span>
@@ -61,47 +51,47 @@ export default function ManagementDashboardReportsPage() {
             </div>
           </div>
 
-          <div className="flex items-start gap-3">
-            <label className="w-16 shrink-0 text-sm text-gray-700 pt-2 text-right">From Date</label>
+          <label className="flex items-start gap-3">
+            <span className="w-16 shrink-0 text-sm text-gray-700 pt-2 text-right">From Date</span>
             <div className="flex-1">
               <DateInput value="01-JUL-26" />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="w-14 shrink-0 text-sm text-gray-700 pt-2 text-right">To Date</label>
+          <label className="flex items-start gap-3">
+            <span className="w-14 shrink-0 text-sm text-gray-700 pt-2 text-right">To Date</span>
             <div className="flex-1">
               <DateInput value="31-JUL-26" />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Branch</label>
+          <label className="flex items-start gap-3">
+            <span className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Branch</span>
             <div className="flex-1">
               <SelectInput options={['All']} />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="w-16 shrink-0 text-sm text-gray-700 pt-2 text-right">Client</label>
+          <label className="flex items-start gap-3">
+            <span className="w-16 shrink-0 text-sm text-gray-700 pt-2 text-right">Client</span>
             <div className="flex-1">
               <SelectInput options={['All']} />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="w-14 shrink-0 text-sm text-gray-700 pt-2 text-right">Sales Person</label>
+          <label className="flex items-start gap-3">
+            <span className="w-14 shrink-0 text-sm text-gray-700 pt-2 text-right">Sales Person</span>
             <div className="flex-1">
               <SelectInput options={['All']} />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Department</label>
+          <label className="flex items-start gap-3">
+            <span className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Department</span>
             <div className="flex-1">
               <SelectInput options={['All']} />
             </div>
-          </div>
+          </label>
         </div>
 
         {/* Search toolbar */}

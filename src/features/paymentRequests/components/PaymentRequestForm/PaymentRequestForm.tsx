@@ -131,8 +131,8 @@ export function PaymentRequestForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1 sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Party *</label>
-            <select className={selectClass} {...register('party_id', uuidSelect)}>
+            <label htmlFor="party_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Party *</label>
+            <select id="party_id" className={selectClass} {...register('party_id', uuidSelect)}>
               <option value="">Select…</option>
               {parties.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -159,10 +159,10 @@ export function PaymentRequestForm({
             <FieldError message={fieldError('amount')} />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="currency_code" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Currency *
             </label>
-            <select className={selectClass} {...register('currency_code')}>
+            <select id="currency_code" className={selectClass} {...register('currency_code')}>
               {(currencies.length ? currencies : [{ value: 'AED', label: 'AED' }]).map((c) => (
                 <option key={String(c.value)} value={String(c.value)}>
                   {String(c.label ?? c.value)}
@@ -172,8 +172,8 @@ export function PaymentRequestForm({
             <FieldError message={fieldError('currency_code')} />
           </div>
           <div className="space-y-1 sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Invoice</label>
-            <select className={selectClass} {...register('invoice_id', uuidSelect)}>
+            <label htmlFor="invoice_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Invoice</label>
+            <select id="invoice_id" className={selectClass} {...register('invoice_id', uuidSelect)}>
               <option value="">—</option>
               {invoices.map((inv) => (
                 <option key={inv.id} value={inv.id}>

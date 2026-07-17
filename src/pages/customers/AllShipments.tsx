@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Wand2, Search, Calendar, ChevronDown, Maximize2 } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Wand2, Search, Calendar, ChevronDown, Maximize2 } from 'lucide-react';
 
 
 interface FilterFieldProps {
@@ -11,10 +11,10 @@ interface FilterFieldProps {
 
 function FilterField({ label, children }: FilterFieldProps) {
   return (
-    <div className="flex items-start gap-3">
-      <label className="w-28 shrink-0 text-sm text-gray-700 pt-2 text-right">{label}</label>
-      <div className="flex-1">{children}</div>
-    </div>
+    <label className="flex items-start gap-3">
+      <span className="w-28 shrink-0 text-sm text-gray-700 pt-2 text-right">{label}</span>
+      <span className="flex-1">{children}</span>
+    </label>
   );
 }
 
@@ -62,20 +62,14 @@ function DateInput({ value }: { value: string }) {
 
 export default function AllShipmentsPage() {
   const [rows, setRows] = useState('5');
-     const navigate = useNavigate();
   return (
-    <div className="bg-white border border-gray-200 rounded-md">
+    <div className="space-y-3">
+      <PageBackLink to="/customers" label="Back to Customers" />
+      <div className="bg-white border border-gray-200 rounded-md">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
         <h2 className="text-[17px] font-medium text-gray-800">All Shipments</h2>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-          >
-            <ChevronLeft size={14} />
-            Back
-          </button>
           <button className="flex items-center gap-1.5 bg-[#FF751F] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
             <Wand2 size={14} />
             Create
@@ -159,24 +153,39 @@ export default function AllShipmentsPage() {
         </FilterField>
 
         <FilterField label="Created User">
-          <div className="flex items-center justify-between border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-400">
-            <span>&nbsp;</span>
-            <ChevronDown size={14} className="text-gray-400 rotate-180" />
-          </div>
+          <select
+            className="w-full appearance-none border border-gray-300 rounded px-3 py-1.5 pr-8 text-sm text-gray-700
+                       focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F] bg-white"
+            defaultValue=""
+          >
+            <option value="" disabled>
+              &nbsp;
+            </option>
+          </select>
         </FilterField>
 
         <FilterField label="Shipment Status">
-          <div className="flex items-center justify-between border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-400">
-            <span>&nbsp;</span>
-            <ChevronDown size={14} className="text-gray-400 rotate-180" />
-          </div>
+          <select
+            className="w-full appearance-none border border-gray-300 rounded px-3 py-1.5 pr-8 text-sm text-gray-700
+                       focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F] bg-white"
+            defaultValue=""
+          >
+            <option value="" disabled>
+              &nbsp;
+            </option>
+          </select>
         </FilterField>
 
         <FilterField label="Type">
-          <div className="flex items-center justify-between border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-400">
-            <span>&nbsp;</span>
-            <ChevronDown size={14} className="text-gray-400 rotate-180" />
-          </div>
+          <select
+            className="w-full appearance-none border border-gray-300 rounded px-3 py-1.5 pr-8 text-sm text-gray-700
+                       focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F] bg-white"
+            defaultValue=""
+          >
+            <option value="" disabled>
+              &nbsp;
+            </option>
+          </select>
         </FilterField>
       </div>
 
@@ -226,6 +235,7 @@ export default function AllShipmentsPage() {
       {/* Results area — empty state */}
       <div className="flex items-center justify-center h-56">
         <Search size={40} className="text-gray-300" />
+      </div>
       </div>
     </div>
   );

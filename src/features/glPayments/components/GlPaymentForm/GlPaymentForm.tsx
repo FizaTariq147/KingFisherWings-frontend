@@ -134,10 +134,10 @@ export function GlPaymentForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="gl-payment-direction" className="text-sm font-medium text-[var(--color-neutral-700)]">
               Direction *
             </label>
-            <select className={selectClass} {...register('direction')}>
+            <select id="gl-payment-direction" className={selectClass} {...register('direction')}>
               {PAYMENT_DIRECTIONS.map((d) => (
                 <option key={d} value={d}>
                   {PAYMENT_DIRECTION_LABELS[d]}
@@ -147,8 +147,8 @@ export function GlPaymentForm({
             <FieldError message={fieldError('direction')} />
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">Method</label>
-            <select className={selectClass} {...register('payment_method')}>
+            <label htmlFor="gl-payment-method" className="text-sm font-medium text-[var(--color-neutral-700)]">Method</label>
+            <select id="gl-payment-method" className={selectClass} {...register('payment_method')}>
               {PAYMENT_METHODS.map((m) => (
                 <option key={m} value={m}>
                   {PAYMENT_METHOD_LABELS[m]}
@@ -158,8 +158,8 @@ export function GlPaymentForm({
             <FieldError message={fieldError('payment_method')} />
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">Party *</label>
-            <select className={selectClass} {...register('party_id', uuidSelect)}>
+            <label htmlFor="gl-payment-party" className="text-sm font-medium text-[var(--color-neutral-700)]">Party *</label>
+            <select id="gl-payment-party" className={selectClass} {...register('party_id', uuidSelect)}>
               <option value="">— Select party —</option>
               {parties.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -177,10 +177,10 @@ export function GlPaymentForm({
             {...register('amount')}
           />
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="gl-payment-currency" className="text-sm font-medium text-[var(--color-neutral-700)]">
               Currency *
             </label>
-            <select className={selectClass} {...register('currency_code')}>
+            <select id="gl-payment-currency" className={selectClass} {...register('currency_code')}>
               {GL_PAYMENT_CURRENCY_OPTIONS.map((c) => (
                 <option key={c} value={c}>
                   {c}
@@ -208,10 +208,10 @@ export function GlPaymentForm({
             {...register('reference_number')}
           />
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="gl-payment-bank-account" className="text-sm font-medium text-[var(--color-neutral-700)]">
               Bank account
             </label>
-            <select className={selectClass} {...register('bank_account_id', uuidSelect)}>
+            <select id="gl-payment-bank-account" className={selectClass} {...register('bank_account_id', uuidSelect)}>
               <option value="">— None —</option>
               {bankAccounts.map((b) => (
                 <option key={b.id} value={b.id}>
@@ -222,10 +222,10 @@ export function GlPaymentForm({
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="gl-payment-gl-account" className="text-sm font-medium text-[var(--color-neutral-700)]">
               GL account
             </label>
-            <select className={selectClass} {...register('gl_account_id', uuidSelect)}>
+            <select id="gl-payment-gl-account" className={selectClass} {...register('gl_account_id', uuidSelect)}>
               <option value="">— None —</option>
               {accounts.map((a) => (
                 <option key={a.id} value={a.id}>
@@ -268,12 +268,13 @@ export function GlPaymentForm({
               error={fieldError('cheque_due_date')}
               {...register('cheque_due_date')}
             />
-            <label className="flex items-center gap-2 text-sm sm:col-span-2">
+            <label htmlFor="gl-payment-is-pdc" className="flex items-center gap-2 text-sm sm:col-span-2">
               <Controller
                 name="is_pdc"
                 control={control}
                 render={({ field }) => (
                   <input
+                    id="gl-payment-is-pdc"
                     type="checkbox"
                     className={checkClass}
                     checked={Boolean(field.value)}

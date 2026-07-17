@@ -138,10 +138,10 @@ export function CreditNoteForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1 sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="cn-credited-invoice" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Credited invoice *
             </label>
-            <select className={selectClass} {...register('credited_invoice_id')}>
+            <select id="cn-credited-invoice" className={selectClass} {...register('credited_invoice_id')}>
               <option value="">Select posted invoice…</option>
               {invoiceOptions.map((opt) => (
                 <option key={opt.id} value={opt.id}>
@@ -156,8 +156,9 @@ export function CreditNoteForm({
             </p>
           </div>
           <div className="space-y-1 sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Remarks</label>
+            <label htmlFor="cn-remarks" className="text-xs font-medium text-[var(--color-neutral-500)]">Remarks</label>
             <textarea
+              id="cn-remarks"
               className="min-h-[64px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
               {...register('remarks')}
             />

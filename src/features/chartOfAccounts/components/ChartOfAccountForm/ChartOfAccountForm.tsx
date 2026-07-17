@@ -135,10 +135,10 @@ export function ChartOfAccountForm({
             {...register('account_name_ar')}
           />
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="coa-parent-id" className="text-sm font-medium text-[var(--color-neutral-700)]">
               Parent account
             </label>
-            <select className={selectClass} {...register('parent_id')}>
+            <select id="coa-parent-id" className={selectClass} {...register('parent_id')}>
               <option value="">— None —</option>
               {parentOptions.map((a) => (
                 <option key={a.id} value={a.id}>
@@ -157,10 +157,10 @@ export function ChartOfAccountForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="coa-account-group" className="text-sm font-medium text-[var(--color-neutral-700)]">
               Account group *
             </label>
-            <select className={selectClass} {...register('account_group')}>
+            <select id="coa-account-group" className={selectClass} {...register('account_group')}>
               {ACCOUNT_GROUPS.map((g) => (
                 <option key={g} value={g}>
                   {ACCOUNT_GROUP_LABELS[g]}
@@ -170,10 +170,10 @@ export function ChartOfAccountForm({
             <FieldError message={fieldError('account_group')} />
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="coa-account-type" className="text-sm font-medium text-[var(--color-neutral-700)]">
               Account type *
             </label>
-            <select className={selectClass} {...register('account_type')}>
+            <select id="coa-account-type" className={selectClass} {...register('account_type')}>
               {ACCOUNT_TYPES.map((t) => (
                 <option key={t} value={t}>
                   {ACCOUNT_TYPE_LABELS[t]}
@@ -183,10 +183,10 @@ export function ChartOfAccountForm({
             <FieldError message={fieldError('account_type')} />
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="coa-account-sub-type" className="text-sm font-medium text-[var(--color-neutral-700)]">
               Sub type
             </label>
-            <select className={selectClass} {...register('account_sub_type')}>
+            <select id="coa-account-sub-type" className={selectClass} {...register('account_sub_type')}>
               {ACCOUNT_SUB_TYPES.map((t) => (
                 <option key={t} value={t}>
                   {t.replace(/_/g, ' ')}
@@ -196,8 +196,8 @@ export function ChartOfAccountForm({
             <FieldError message={fieldError('account_sub_type')} />
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">Currency</label>
-            <select className={selectClass} {...register('currency_code')}>
+            <label htmlFor="coa-currency-code" className="text-sm font-medium text-[var(--color-neutral-700)]">Currency</label>
+            <select id="coa-currency-code" className={selectClass} {...register('currency_code')}>
               <option value="">—</option>
               {COA_CURRENCY_OPTIONS.map((c) => (
                 <option key={c} value={c}>
@@ -223,10 +223,10 @@ export function ChartOfAccountForm({
             {...register('opening_balance')}
           />
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="coa-opening-balance-type" className="text-sm font-medium text-[var(--color-neutral-700)]">
               Opening balance type
             </label>
-            <select className={selectClass} {...register('opening_balance_type')}>
+            <select id="coa-opening-balance-type" className={selectClass} {...register('opening_balance_type')}>
               {OPENING_BALANCE_TYPES.map((t) => (
                 <option key={t} value={t}>
                   {t}
@@ -254,12 +254,13 @@ export function ChartOfAccountForm({
                 ['is_active', 'Active'],
               ] as const
             ).map(([name, label]) => (
-              <label key={name} className="flex items-center gap-2 text-sm">
+              <label key={name} htmlFor={`coa-flag-${name}`} className="flex items-center gap-2 text-sm">
                 <Controller
                   name={name}
                   control={control}
                   render={({ field }) => (
                     <input
+                      id={`coa-flag-${name}`}
                       type="checkbox"
                       className={checkClass}
                       checked={Boolean(field.value)}

@@ -121,8 +121,8 @@ export default function QuotationOnlineQuotePage() {
             {...register('tenant_slug')}
           />
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Job type *</label>
-            <select className={selectClass} {...register('job_type')}>
+            <label htmlFor="job_type" className="text-xs font-medium text-[var(--color-neutral-500)]">Job type *</label>
+            <select id="job_type" className={selectClass} {...register('job_type')}>
               {JOB_TYPES.map((jt) => (
                 <option key={jt} value={jt}>
                   {JOB_TYPE_LABELS[jt] ?? jt}
@@ -134,31 +134,41 @@ export default function QuotationOnlineQuotePage() {
           <Input label="Contact name" {...register('contact_name')} />
           <Input label="Contact email" type="email" {...register('contact_email')} />
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Origin port</label>
-            <select className={selectClass} {...register('origin_port_id')}>
+            <label htmlFor="origin_port_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Origin port</label>
+            <select id="origin_port_id" className={selectClass} {...register('origin_port_id')}>
               <option value="">Select…</option>
-              {ports
-                .filter((p) => isUuid(String(p.id)))
-                .map((p) => (
-                  <option key={String(p.id)} value={String(p.id)}>
-                    {[p.code, p.name].filter(Boolean).join(' — ') || String(p.id)}
-                  </option>
-                ))}
+              {(() => {
+                const opts = [];
+                for (const p of ports) {
+                  if (!isUuid(String(p.id))) continue;
+                  opts.push(
+                    <option key={String(p.id)} value={String(p.id)}>
+                      {[p.code, p.name].filter(Boolean).join(' — ') || String(p.id)}
+                    </option>,
+                  );
+                }
+                return opts;
+              })()}
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="dest_port_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Destination port
             </label>
-            <select className={selectClass} {...register('dest_port_id')}>
+            <select id="dest_port_id" className={selectClass} {...register('dest_port_id')}>
               <option value="">Select…</option>
-              {ports
-                .filter((p) => isUuid(String(p.id)))
-                .map((p) => (
-                  <option key={String(p.id)} value={String(p.id)}>
-                    {[p.code, p.name].filter(Boolean).join(' — ') || String(p.id)}
-                  </option>
-                ))}
+              {(() => {
+                const opts = [];
+                for (const p of ports) {
+                  if (!isUuid(String(p.id))) continue;
+                  opts.push(
+                    <option key={String(p.id)} value={String(p.id)}>
+                      {[p.code, p.name].filter(Boolean).join(' — ') || String(p.id)}
+                    </option>,
+                  );
+                }
+                return opts;
+              })()}
             </select>
           </div>
           <Input label="Commodity" {...register('commodity')} />
@@ -182,10 +192,11 @@ export default function QuotationOnlineQuotePage() {
           />
           <Input type="date" label="Valid until" {...register('valid_until')} />
           <div className="space-y-1 sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="special_requirements" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Special requirements
             </label>
             <textarea
+              id="special_requirements"
               className="min-h-[72px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
               {...register('special_requirements')}
             />

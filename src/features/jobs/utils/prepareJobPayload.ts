@@ -84,10 +84,12 @@ export function prepareJobPayload(
     payload.commodity = payload.commodity.trim();
   }
   if (Array.isArray(payload.tags)) {
-    payload.tags = payload.tags
-      .map((t) => String(t).trim())
-      .filter((t) => t.length > 0)
-      .slice(0, 20);
+    const tags: string[] = [];
+    for (const t of payload.tags) {
+      const trimmed = String(t).trim();
+      if (trimmed.length > 0) tags.push(trimmed);
+    }
+    payload.tags = tags.slice(0, 20);
   }
 
   for (const key of UUID_OPTIONAL_KEYS) {

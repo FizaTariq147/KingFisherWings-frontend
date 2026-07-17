@@ -284,33 +284,33 @@ export default function LeaveCalendar() {
         }
       >
         <div className="space-y-4">
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-600)]">Leave Type</label>
+          <label className="flex flex-col gap-1">
+            <span className="text-xs font-medium text-[var(--color-neutral-600)]">Leave Type</span>
             <select className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
               <option>Annual Leave</option>
               <option>Sick Leave</option>
               <option>Emergency</option>
               <option>Unpaid</option>
             </select>
-          </div>
+          </label>
           <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-[var(--color-neutral-600)]">From Date</label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-[var(--color-neutral-600)]">From Date</span>
               <input type="date" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-[var(--color-neutral-600)]">To Date</label>
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-[var(--color-neutral-600)]">To Date</span>
               <input type="date" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" />
-            </div>
+            </label>
           </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-600)]">Reason</label>
+          <label className="flex flex-col gap-1">
+            <span className="text-xs font-medium text-[var(--color-neutral-600)]">Reason</span>
             <textarea
               rows={3}
               placeholder="Briefly describe the reason for leave..."
               className="w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--color-primary-500)] resize-none"
             />
-          </div>
+          </label>
         </div>
       </Modal>
     </div>
