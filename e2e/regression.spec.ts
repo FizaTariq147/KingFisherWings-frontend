@@ -1,11 +1,13 @@
 import fs from 'node:fs';
-import { expect, test } from '@playwright/test';
-import { hasTenantAdminCredentials, tenantAdminAuthFile } from './helpers';
+import { expect, test } from './fixtures';
+import { erpSessionStorageFile, hasErpCredentials, tenantAdminAuthFile } from './helpers';
 
 test.beforeEach(() => {
   test.skip(
-    !hasTenantAdminCredentials() || !fs.existsSync(tenantAdminAuthFile),
-    'Tenant admin credentials required for regression suite',
+    !hasErpCredentials() ||
+      !fs.existsSync(tenantAdminAuthFile) ||
+      !fs.existsSync(erpSessionStorageFile),
+    'ERP credentials required for regression suite',
   );
 });
 

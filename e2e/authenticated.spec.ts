@@ -1,15 +1,18 @@
 import fs from 'node:fs';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import {
-  hasTenantAdminCredentials,
+  erpSessionStorageFile,
+  hasErpCredentials,
   tenantAdminAuthFile,
   waitForApi,
 } from './helpers';
 
 test.beforeEach(() => {
   test.skip(
-    !hasTenantAdminCredentials() || !fs.existsSync(tenantAdminAuthFile),
-    'Tenant admin credentials or auth state missing — set E2E_TENANT_SLUG / E2E_TENANT_PASSWORD and run setup',
+    !hasErpCredentials() ||
+      !fs.existsSync(tenantAdminAuthFile) ||
+      !fs.existsSync(erpSessionStorageFile),
+    'ERP credentials or auth state missing — set E2E_TENANT_SLUG + E2E_STAFF_EMAIL + E2E_STAFF_PASSWORD',
   );
 });
 

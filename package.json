@@ -15,6 +15,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
     "test:api": "node scripts/api-matrix-test.mjs",
+    "test:integration": "node scripts/api-matrix-test.mjs && playwright test --project=setup --project=chromium --project=authenticated",
     "doctor": "npx react-doctor@latest"
   },
   "dependencies": {

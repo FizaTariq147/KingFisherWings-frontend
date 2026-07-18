@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import {
+  erpPostLoginUrl,
   fillStaffCredentials,
   hasStaffCredentials,
   hasTenantAdminCredentials,
@@ -11,7 +12,7 @@ import {
 test.describe('Authentication', () => {
   test('login page renders marketing shell and opens sign-in dialog', async ({ page }) => {
     await page.goto('/login');
-    await expect(page.getByText('KINGFISHER WINGS')).toBeVisible();
+    await expect(page.getByRole('heading', { name: /KINGFISHER WINGS/i })).toBeVisible();
     await page.getByRole('button', { name: 'Login', exact: true }).click();
     await expect(page.getByRole('dialog', { name: 'Sign in' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Customer / User Sign On' })).toBeVisible();
@@ -27,6 +28,7 @@ test.describe('Authentication', () => {
 
   test('shows validation for invalid staff email', async ({ page }) => {
     await openErpLoginModal(page);
+    await page.getByRole('button', { name: 'Staff / User' }).click();
     await page.locator('#kf-tenant-slug').fill('demo-tenant');
     await page.locator('#kf-email').fill('not-an-email');
     await page.locator('#kf-pw').fill('secret');
@@ -54,7 +56,11 @@ test.describe('Authentication', () => {
   });
 
   test('tenant admin login calls auth API and navigates to dashboard', async ({ page }) => {
-    test.skip(!hasTenantAdminCredentials(), 'Set E2E_TENANT_SLUG and E2E_TENANT_PASSWORD');
+    // Only enable when POST /auth/tenant-login works for the demo tenant (often staff-only).
+    test.skip(
+      !hasTenantAdminCredentials() || process.env.E2E_ENABLE_TENANT_LOGIN !== '1',
+      'Set E2E_TENANT_SLUG, E2E_TENANT_PASSWORD, and E2E_ENABLE_TENANT_LOGIN=1',
+    );
 
     const loginResponse = page.waitForResponse(
       (res) =>
@@ -78,7 +84,7 @@ test.describe('Authentication', () => {
     const meRes = await meResponse;
     expect(meRes.status()).toBeLessThan(500);
 
-    await expect(page).toHaveURL(/\/(dashboard|change-password)/);
+    await expect(page).toHaveURL(erpPostLoginUrl);
   });
 
   test('staff login calls staff auth endpoint when credentials provided', async ({ page }) => {
@@ -94,7 +100,8 @@ test.describe('Authentication', () => {
 
     const loginRes = await loginResponse;
     expect(loginRes.status()).toBeLessThan(500);
-    await expect(page).toHaveURL(/\/(dashboard|change-password)/, { timeout: 120_000 });
+    expect([200, 201]).toContain(loginRes.status());
+    await expect(page).toHaveURL(erpPostLoginUrl, { timeout: 120_000 });
   });
 
   test('invalid credentials show error without breaking login dialog', async ({ page }) => {
@@ -127,7 +134,7 @@ test.describe('Super Admin Authentication', () => {
   test('super admin login validates empty password', async ({ page }) => {
     await page.goto('/superadmin/login');
     await page.getByLabel(/email/i).fill('admin@example.com');
-    await page.getByRole('button', { name: /sign in|log in/i }).click();
+    await page.locator('form').getByRole('button', { name: /sign in|log in/i }).click();
     await expect(page.getByText(/password is required/i)).toBeVisible();
   });
 });

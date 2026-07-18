@@ -4,6 +4,7 @@ import { openErpLoginModal, submitLogin } from './helpers';
 test.describe('Form validation — Login', () => {
   test('rejects invalid email format on staff login', async ({ page }) => {
     await openErpLoginModal(page);
+    await page.getByRole('button', { name: 'Staff / User' }).click();
     await page.locator('#kf-tenant-slug').fill('demo');
     await page.locator('#kf-email').fill('bad-email');
     await page.locator('#kf-pw').fill('x');
@@ -14,6 +15,7 @@ test.describe('Form validation — Login', () => {
 
   test('shows required field messages for empty staff email', async ({ page }) => {
     await openErpLoginModal(page);
+    await page.getByRole('button', { name: 'Staff / User' }).click();
     await page.locator('#kf-tenant-slug').fill('demo');
     await page.locator('#kf-pw').fill('x');
     await page.getByText('I agree to the terms of the').locator('..').locator('input[type="checkbox"]').check();

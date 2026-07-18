@@ -1,6 +1,6 @@
 # API Testing Results — Fresa Gold / KingFisher Tech Gold Frontend
 
-**Generated:** 2026-07-17T12:14:52.118Z  
+**Generated:** 2026-07-18T05:40:31.871Z  
 **API Base:** [https://kingfisherwings.onrender.com](https://kingfisherwings.onrender.com)  
 **Swagger UI:** [https://kingfisherwings.onrender.com/docs](https://kingfisherwings.onrender.com/docs#)  
 **OpenAPI operations (live):** 441  
@@ -61,222 +61,220 @@
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | Staff login | `POST` | `/auth/login` | 200 | 653ms |
-| **PASS** | Tenant Admin login (slug+password) | `POST` | `/auth/tenant-login` | 401 | 421ms |
-| **PASS** | Refresh without token | `POST` | `/auth/refresh` | 401 | 283ms |
-| **PASS** | Super Admin login (if creds) | `POST` | `/auth/super-admin/login` | 401 | 316ms |
-| **PASS** | GET /auth/me | `GET` | `/auth/me` | 200 | 262ms |
-| **PASS** | PATCH /auth/me preferred country | `PATCH` | `/auth/me` | 200 | 270ms |
-| **PASS** | List sessions | `GET` | `/auth/sessions` | 200 | 262ms |
-| **PASS** | Staff login invalid password | `POST` | `/auth/login` | 401 | 433ms |
-| **PASS** | Protected me without token | `GET` | `/auth/me` | 401 | 241ms |
-| **PASS** | Refresh access token | `POST` | `/auth/refresh` | 200 | 657ms |
-
-> **Note:** `POST /auth/tenant-login` returned **401** for the demo tenant password. ERP access was obtained via **staff login** (`POST /auth/login` with admin email). Negative auth cases (invalid password / no token / missing SuperAdmin creds) are expected 401 and counted as PASS.
+| **PASS** | Staff login | `POST` | `/auth/login` | 200 | 608ms |
+| **PASS** | Tenant Admin login (slug+password) | `POST` | `/auth/tenant-login` | 401 | 415ms |
+| **PASS** | Refresh without token | `POST` | `/auth/refresh` | 401 | 234ms |
+| **PASS** | Super Admin login (if creds) | `POST` | `/auth/super-admin/login` | 401 | 241ms |
+| **PASS** | GET /auth/me | `GET` | `/auth/me` | 200 | 267ms |
+| **PASS** | PATCH /auth/me preferred country | `PATCH` | `/auth/me` | 200 | 261ms |
+| **PASS** | List sessions | `GET` | `/auth/sessions` | 200 | 238ms |
+| **PASS** | Staff login invalid password | `POST` | `/auth/login` | 401 | 418ms |
+| **PASS** | Protected me without token | `GET` | `/auth/me` | 401 | 240ms |
+| **PASS** | Refresh access token | `POST` | `/auth/refresh` | 200 | 600ms |
 
 ### AWB Stock
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List batches | `GET` | `/awb-stock/batches` | 200 | 265ms |
-| **PASS** | List allocations | `GET` | `/awb-stock/allocations` | 200 | 296ms |
-| **PASS** | Low stock report | `GET` | `/awb-stock/reports/low-stock` | 200 | 266ms |
-| **PASS** | Get batch 8c216050-a954-4f6e-a94e-ae99eaa626b9 | `GET` | `/awb-stock/batches/8c216050-a954-4f6e-a94e-ae99eaa626b9` | 200 | 285ms |
+| **PASS** | List batches | `GET` | `/awb-stock/batches` | 200 | 259ms |
+| **PASS** | List allocations | `GET` | `/awb-stock/allocations` | 200 | 266ms |
+| **PASS** | Low stock report | `GET` | `/awb-stock/reports/low-stock` | 200 | 279ms |
+| **PASS** | Get batch 8c216050-a954-4f6e-a94e-ae99eaa626b9 | `GET` | `/awb-stock/batches/8c216050-a954-4f6e-a94e-ae99eaa626b9` | 200 | 268ms |
 
 ### Companies (SuperAdmin)
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List companies | `GET` | `/companies` | 200 | 259ms |
+| **PASS** | List companies | `GET` | `/companies` | 200 | 246ms |
 
 ### Credit Notes
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List credit notes | `GET` | `/credit-notes` | 200 | 286ms |
+| **PASS** | List credit notes | `GET` | `/credit-notes` | 200 | 269ms |
 
 ### GL AR/AP Aging
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | AR aging | `GET` | `/gl/ar/aging` | 200 | 288ms |
-| **PASS** | AP aging | `GET` | `/gl/ap/aging` | 200 | 273ms |
-| **PASS** | AR statement | `GET` | `/gl/ar/statement/c9696f4c-d634-4700-bda3-a201de23ebad` | 200 | 351ms |
-| **PASS** | AP statement | `GET` | `/gl/ap/statement/c9696f4c-d634-4700-bda3-a201de23ebad` | 200 | 378ms |
+| **PASS** | AR aging | `GET` | `/gl/ar/aging` | 200 | 251ms |
+| **PASS** | AP aging | `GET` | `/gl/ap/aging` | 200 | 270ms |
+| **PASS** | AR statement | `GET` | `/gl/ar/statement/c9696f4c-d634-4700-bda3-a201de23ebad` | 200 | 251ms |
+| **PASS** | AP statement | `GET` | `/gl/ap/statement/c9696f4c-d634-4700-bda3-a201de23ebad` | 200 | 266ms |
 
 ### GL Bank Reconciliation
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List reconciliations | `GET` | `/gl/bank-reconciliations` | 200 | 295ms |
+| **PASS** | List reconciliations | `GET` | `/gl/bank-reconciliations` | 200 | 263ms |
 
 ### GL Chart of Accounts
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List accounts | `GET` | `/gl/accounts` | 200 | 264ms |
-| **PASS** | Account tree | `GET` | `/gl/accounts/tree` | 200 | 271ms |
-| **PASS** | Trial balance (accounts) | `GET` | `/gl/accounts/reports/trial-balance` | 200 | 278ms |
-| **PASS** | Get account f4c9f6e2-0a8f-429f-83af-bb12abae6a9c | `GET` | `/gl/accounts/f4c9f6e2-0a8f-429f-83af-bb12abae6a9c` | 200 | 294ms |
-| **PASS** | Account ledger | `GET` | `/gl/accounts/f4c9f6e2-0a8f-429f-83af-bb12abae6a9c/ledger` | 200 | 315ms |
+| **PASS** | List accounts | `GET` | `/gl/accounts` | 200 | 284ms |
+| **PASS** | Account tree | `GET` | `/gl/accounts/tree` | 200 | 249ms |
+| **PASS** | Trial balance (accounts) | `GET` | `/gl/accounts/reports/trial-balance` | 200 | 294ms |
+| **PASS** | Get account f4c9f6e2-0a8f-429f-83af-bb12abae6a9c | `GET` | `/gl/accounts/f4c9f6e2-0a8f-429f-83af-bb12abae6a9c` | 200 | 249ms |
+| **PASS** | Account ledger | `GET` | `/gl/accounts/f4c9f6e2-0a8f-429f-83af-bb12abae6a9c/ledger` | 200 | 284ms |
 
 ### GL Cheques
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
 | **PASS** | List cheques | `GET` | `/gl/cheques` | 200 | 264ms |
-| **PASS** | PDC due report | `GET` | `/gl/cheques/reports/pdc-due` | 200 | 284ms |
+| **PASS** | PDC due report | `GET` | `/gl/cheques/reports/pdc-due` | 200 | 277ms |
 
 ### GL Financial Reports
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | Trial balance | `GET` | `/gl/reports/trial-balance` | 200 | 340ms |
-| **PASS** | Balance sheet | `GET` | `/gl/reports/balance-sheet` | 200 | 283ms |
-| **PASS** | Profit and loss | `GET` | `/gl/reports/profit-and-loss` | 200 | 272ms |
-| **PASS** | Cash flow | `GET` | `/gl/reports/cash-flow` | 200 | 263ms |
-| **PASS** | VAT return | `GET` | `/gl/reports/vat-return` | 400 | 265ms |
+| **PASS** | Trial balance | `GET` | `/gl/reports/trial-balance` | 200 | 255ms |
+| **PASS** | Balance sheet | `GET` | `/gl/reports/balance-sheet` | 200 | 299ms |
+| **PASS** | Profit and loss | `GET` | `/gl/reports/profit-and-loss` | 200 | 267ms |
+| **PASS** | Cash flow | `GET` | `/gl/reports/cash-flow` | 200 | 250ms |
+| **PASS** | VAT return | `GET` | `/gl/reports/vat-return` | 400 | 253ms |
 
 ### GL MIS
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | MIS dashboard | `GET` | `/gl/mis/dashboard` | 200 | 284ms |
-| **PASS** | Profitability | `GET` | `/gl/mis/profitability` | 200 | 305ms |
-| **PASS** | Operational | `GET` | `/gl/mis/operational` | 200 | 289ms |
+| **PASS** | MIS dashboard | `GET` | `/gl/mis/dashboard` | 200 | 278ms |
+| **PASS** | Profitability | `GET` | `/gl/mis/profitability` | 200 | 288ms |
+| **PASS** | Operational | `GET` | `/gl/mis/operational` | 200 | 266ms |
 
 ### GL Payments
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List payments | `GET` | `/gl/payments` | 200 | 266ms |
+| **PASS** | List payments | `GET` | `/gl/payments` | 200 | 283ms |
 
 ### GL Saved Reports
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List saved reports | `GET` | `/gl/saved-reports` | 200 | 262ms |
+| **PASS** | List saved reports | `GET` | `/gl/saved-reports` | 200 | 257ms |
 
 ### GL Vouchers
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List vouchers | `GET` | `/gl/vouchers` | 200 | 305ms |
-| **PASS** | Get voucher 86f58465-75fb-4657-847a-4a367033889d | `GET` | `/gl/vouchers/86f58465-75fb-4657-847a-4a367033889d` | 200 | 278ms |
+| **PASS** | List vouchers | `GET` | `/gl/vouchers` | 200 | 295ms |
+| **PASS** | Get voucher 86f58465-75fb-4657-847a-4a367033889d | `GET` | `/gl/vouchers/86f58465-75fb-4657-847a-4a367033889d` | 200 | 260ms |
 
 ### Invoices
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List invoices | `GET` | `/invoices` | 200 | 271ms |
-| **PASS** | Overdue report | `GET` | `/invoices/reports/overdue` | 200 | 274ms |
-| **PASS** | Get invoice b179acb1-ca41-411d-b6b0-f7d7d0cc5c69 | `GET` | `/invoices/b179acb1-ca41-411d-b6b0-f7d7d0cc5c69` | 200 | 276ms |
+| **PASS** | List invoices | `GET` | `/invoices` | 200 | 283ms |
+| **PASS** | Overdue report | `GET` | `/invoices/reports/overdue` | 200 | 273ms |
+| **PASS** | Get invoice b179acb1-ca41-411d-b6b0-f7d7d0cc5c69 | `GET` | `/invoices/b179acb1-ca41-411d-b6b0-f7d7d0cc5c69` | 200 | 274ms |
 
 ### Jobs
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List jobs | `GET` | `/jobs` | 200 | 274ms |
-| **PASS** | Get job 8a66ad12-0dce-4215-9c56-bd2271a5ed0a | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a` | 200 | 291ms |
-| **PASS** | Job P&L | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/pnl` | 200 | 364ms |
-| **PASS** | Job containers | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/containers` | 200 | 264ms |
-| **PASS** | Job cargo | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/cargo` | 200 | 288ms |
-| **PASS** | Job charges | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/charges` | 404 | 244ms |
-| **PASS** | Job documents | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/documents` | 200 | 293ms |
-| **PASS** | Job milestones | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/milestones` | 200 | 303ms |
-| **PASS** | Job notes | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/notes` | 200 | 262ms |
+| **PASS** | List jobs | `GET` | `/jobs` | 200 | 252ms |
+| **PASS** | Get job 8a66ad12-0dce-4215-9c56-bd2271a5ed0a | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a` | 200 | 290ms |
+| **PASS** | Job P&L | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/pnl` | 200 | 268ms |
+| **PASS** | Job containers | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/containers` | 200 | 257ms |
+| **PASS** | Job cargo | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/cargo` | 200 | 279ms |
+| **PASS** | Job charges | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/charges` | 404 | 247ms |
+| **PASS** | Job documents | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/documents` | 200 | 251ms |
+| **PASS** | Job milestones | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/milestones` | 200 | 266ms |
+| **PASS** | Job notes | `GET` | `/jobs/8a66ad12-0dce-4215-9c56-bd2271a5ed0a/notes` | 200 | 249ms |
 
 ### Locale
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | GET defaults (no country) | `GET` | `/locale/defaults` | 200 | 238ms |
-| **PASS** | GET defaults ?country=AE | `GET` | `/locale/defaults` | 200 | 378ms |
-| **PASS** | GET profile AE | `GET` | `/locale/AE` | 200 | 268ms |
+| **PASS** | GET defaults (no country) | `GET` | `/locale/defaults` | 200 | 251ms |
+| **PASS** | GET defaults ?country=AE | `GET` | `/locale/defaults` | 200 | 248ms |
+| **PASS** | GET profile AE | `GET` | `/locale/AE` | 200 | 233ms |
 
 ### Masters
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List airlines | `GET` | `/masters/airlines` | 200 | 292ms |
-| **PASS** | List airports | `GET` | `/masters/airports` | 200 | 281ms |
-| **PASS** | List banks | `GET` | `/masters/banks` | 200 | 258ms |
-| **PASS** | List branches | `GET` | `/masters/branches` | 200 | 305ms |
-| **PASS** | List charge-codes | `GET` | `/masters/charge-codes` | 200 | 262ms |
-| **PASS** | List container-types | `GET` | `/masters/container-types` | 200 | 277ms |
-| **PASS** | List countries | `GET` | `/masters/countries` | 200 | 275ms |
-| **PASS** | List currencies | `GET` | `/masters/currencies` | 200 | 260ms |
-| **PASS** | List departments | `GET` | `/masters/departments` | 200 | 269ms |
-| **PASS** | List designations | `GET` | `/masters/designations` | 200 | 280ms |
-| **PASS** | List exchange-rates | `GET` | `/masters/exchange-rates` | 200 | 268ms |
-| **PASS** | List holidays | `GET` | `/masters/holidays` | 200 | 263ms |
-| **PASS** | List hs-codes | `GET` | `/masters/hs-codes` | 200 | 261ms |
-| **PASS** | List ports | `GET` | `/masters/ports` | 200 | 279ms |
-| **PASS** | List shipping-lines | `GET` | `/masters/shipping-lines` | 200 | 286ms |
-| **PASS** | List tax-rates | `GET` | `/masters/tax-rates` | 200 | 297ms |
-| **PASS** | List truckers | `GET` | `/masters/truckers` | 200 | 301ms |
-| **PASS** | List units-of-measure | `GET` | `/masters/units-of-measure` | 200 | 307ms |
-| **PASS** | List vessels | `GET` | `/masters/vessels` | 200 | 257ms |
-| **PASS** | List warehouses | `GET` | `/masters/warehouses` | 200 | 259ms |
-| **PASS** | Latest exchange rate | `GET` | `/masters/exchange-rates/latest/91f58d72-f8de-4ac0-b4e5-6be52f2a3120` | 200 | 456ms |
+| **PASS** | List airlines | `GET` | `/masters/airlines` | 200 | 273ms |
+| **PASS** | List airports | `GET` | `/masters/airports` | 200 | 298ms |
+| **PASS** | List banks | `GET` | `/masters/banks` | 200 | 263ms |
+| **PASS** | List branches | `GET` | `/masters/branches` | 200 | 256ms |
+| **PASS** | List charge-codes | `GET` | `/masters/charge-codes` | 200 | 245ms |
+| **PASS** | List container-types | `GET` | `/masters/container-types` | 200 | 262ms |
+| **PASS** | List countries | `GET` | `/masters/countries` | 200 | 258ms |
+| **PASS** | List currencies | `GET` | `/masters/currencies` | 200 | 246ms |
+| **PASS** | List departments | `GET` | `/masters/departments` | 200 | 264ms |
+| **PASS** | List designations | `GET` | `/masters/designations` | 200 | 272ms |
+| **PASS** | List exchange-rates | `GET` | `/masters/exchange-rates` | 200 | 347ms |
+| **PASS** | List holidays | `GET` | `/masters/holidays` | 200 | 250ms |
+| **PASS** | List hs-codes | `GET` | `/masters/hs-codes` | 200 | 266ms |
+| **PASS** | List ports | `GET` | `/masters/ports` | 200 | 251ms |
+| **PASS** | List shipping-lines | `GET` | `/masters/shipping-lines` | 200 | 272ms |
+| **PASS** | List tax-rates | `GET` | `/masters/tax-rates` | 200 | 260ms |
+| **PASS** | List truckers | `GET` | `/masters/truckers` | 200 | 265ms |
+| **PASS** | List units-of-measure | `GET` | `/masters/units-of-measure` | 200 | 271ms |
+| **PASS** | List vessels | `GET` | `/masters/vessels` | 200 | 262ms |
+| **PASS** | List warehouses | `GET` | `/masters/warehouses` | 200 | 256ms |
+| **PASS** | Latest exchange rate | `GET` | `/masters/exchange-rates/latest/91f58d72-f8de-4ac0-b4e5-6be52f2a3120` | 200 | 266ms |
 
 ### Organization
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | Get profile | `GET` | `/organization/profile` | 200 | 255ms |
-| **PASS** | List bank accounts | `GET` | `/organization/bank-accounts` | 200 | 305ms |
-| **PASS** | List number formats | `GET` | `/organization/number-formats` | 200 | 262ms |
+| **PASS** | Get profile | `GET` | `/organization/profile` | 200 | 260ms |
+| **PASS** | List bank accounts | `GET` | `/organization/bank-accounts` | 200 | 250ms |
+| **PASS** | List number formats | `GET` | `/organization/number-formats` | 200 | 263ms |
 
 ### Parties
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List parties | `GET` | `/parties` | 200 | 297ms |
-| **PASS** | Get party c9696f4c-d634-4700-bda3-a201de23ebad | `GET` | `/parties/c9696f4c-d634-4700-bda3-a201de23ebad` | 200 | 297ms |
+| **PASS** | List parties | `GET` | `/parties` | 200 | 252ms |
+| **PASS** | Get party c9696f4c-d634-4700-bda3-a201de23ebad | `GET` | `/parties/c9696f4c-d634-4700-bda3-a201de23ebad` | 200 | 266ms |
 
 ### Payment Requests
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List payment requests | `GET` | `/payment-requests` | 200 | 291ms |
+| **PASS** | List payment requests | `GET` | `/payment-requests` | 200 | 273ms |
 
 ### Purchase Invoices
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List purchase invoices | `GET` | `/purchase-invoices` | 200 | 297ms |
+| **PASS** | List purchase invoices | `GET` | `/purchase-invoices` | 200 | 279ms |
 
 ### Quotations
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List quotations | `GET` | `/quotations` | 200 | 270ms |
-| **PASS** | Chargewise report | `GET` | `/quotations/reports/chargewise` | 200 | 276ms |
-| **PASS** | Analytics report | `GET` | `/quotations/reports/analytics` | 200 | 266ms |
-| **PASS** | Conversion analytics | `GET` | `/quotations/reports/analytics/conversion` | 200 | 286ms |
-| **PASS** | Lost reasons analytics | `GET` | `/quotations/reports/analytics/lost-reasons` | 200 | 261ms |
-| **PASS** | Response time analytics | `GET` | `/quotations/reports/analytics/response-time` | 200 | 260ms |
-| **PASS** | Get quotation b675a92e-34df-41f1-8053-0c8763f37a2b | `GET` | `/quotations/b675a92e-34df-41f1-8053-0c8763f37a2b` | 200 | 310ms |
+| **PASS** | List quotations | `GET` | `/quotations` | 200 | 260ms |
+| **PASS** | Chargewise report | `GET` | `/quotations/reports/chargewise` | 200 | 265ms |
+| **PASS** | Analytics report | `GET` | `/quotations/reports/analytics` | 200 | 260ms |
+| **PASS** | Conversion analytics | `GET` | `/quotations/reports/analytics/conversion` | 200 | 268ms |
+| **PASS** | Lost reasons analytics | `GET` | `/quotations/reports/analytics/lost-reasons` | 200 | 248ms |
+| **PASS** | Response time analytics | `GET` | `/quotations/reports/analytics/response-time` | 200 | 878ms |
+| **PASS** | Get quotation b675a92e-34df-41f1-8053-0c8763f37a2b | `GET` | `/quotations/b675a92e-34df-41f1-8053-0c8763f37a2b` | 200 | 270ms |
 
 ### Search
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | Global search | `GET` | `/search` | 200 | 303ms |
+| **PASS** | Global search | `GET` | `/search` | 200 | 294ms |
 
 ### Tariffs
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List tariffs | `GET` | `/quotations/tariffs` | 200 | 260ms |
+| **PASS** | List tariffs | `GET` | `/quotations/tariffs` | 200 | 298ms |
 
 ### Tenants (SuperAdmin)
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **BLOCKED** | List tenants | `GET` | `/tenants` | 403 | 255ms |
-| **BLOCKED** | Tenant statistics | `GET` | `/tenants/statistics` | 403 | 253ms |
+| **BLOCKED** | List tenants | `GET` | `/tenants` | 403 | 249ms |
+| **BLOCKED** | Tenant statistics | `GET` | `/tenants/statistics` | 403 | 254ms |
 
 <details><summary>Notes (2)</summary>
 
@@ -289,14 +287,14 @@
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List users | `GET` | `/users` | 200 | 267ms |
-| **PASS** | Get user facc2d2a-fc61-4bc4-83a8-47c6440e2afb | `GET` | `/users/facc2d2a-fc61-4bc4-83a8-47c6440e2afb` | 200 | 297ms |
+| **PASS** | List users | `GET` | `/users` | 200 | 265ms |
+| **PASS** | Get user facc2d2a-fc61-4bc4-83a8-47c6440e2afb | `GET` | `/users/facc2d2a-fc61-4bc4-83a8-47c6440e2afb` | 200 | 256ms |
 
 ### Zip Distances
 
 | Result | Test | Method | Path | Status | Time |
 |--------|------|--------|------|--------|------|
-| **PASS** | List zip distances | `GET` | `/quotations/zip-distances` | 200 | 288ms |
+| **PASS** | List zip distances | `GET` | `/quotations/zip-distances` | 200 | 275ms |
 
 ## Failed Tests (full list)
 
@@ -312,23 +310,17 @@ _None._
 ## Scope Notes
 
 1. This run validates **frontend-wired modules** against the live API ([Swagger](https://kingfisherwings.onrender.com/docs#)).
-2. Focus is **read/list + auth + key detail GETs** discovered from list responses. Destructive CRUD (`DELETE`, cancel, post, convert, create with side effects) was **not** executed against live tenant data.
+2. Focus is **read/list + auth + key detail GETs** discovered from list responses. Destructive CRUD (DELETE, cancel, post, convert) was **not** executed against production data to avoid side effects.
 3. Live OpenAPI currently exposes **441** operations; the frontend consumes a large subset (~220 path templates including Jobs sub-resources).
-4. **AWB Stock / GL list endpoints** reject unknown query properties such as `page`/`limit` — the test harness calls them **without** pagination query params (matches backend DTO forbidNonWhitelisted behaviour).
-5. \`POST /auth/tenant-login\` returned **401** for this demo password; **staff login** (\`POST /auth/login\` with admin email) succeeded and was used for all ERP module tests.
-6. To re-run with Super Admin coverage for Tenants:
+4. To re-run with Super Admin coverage:
 
 ```powershell
 $env:E2E_SUPERADMIN_EMAIL = "your@email"
 $env:E2E_SUPERADMIN_PASSWORD = "your-password"
-# optional overrides:
-# $env:E2E_TENANT_SLUG = "demo-trade-house"
-# $env:E2E_STAFF_EMAIL = "sara.alami@demo-trade.example"
-# $env:E2E_STAFF_PASSWORD = "..."
 node scripts/api-matrix-test.mjs
 ```
 
-Report output: `docs/API-Testing-Results.md`
+5. Tenant Admin login via `POST /auth/tenant-login` returned 401 for the demo password; **staff login** (`POST /auth/login` with admin email) succeeded and was used for ERP module tests.
 
 ## Swagger Tag Inventory (live)
 
