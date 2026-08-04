@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const BASE = process.env.API_BASE_URL || 'https://kingfisherwings.onrender.com';
+const BASE = process.env.API_BASE_URL || 'https://kingfisherwings-backend.onrender.com';
 const OUT = path.join(ROOT, 'docs', 'API-Testing-Results.md');
 const RAW_OUT = path.join(ROOT, '.tmp-api-test-results.json');
 
@@ -442,7 +442,7 @@ async function main() {
   md += `# API Testing Results — Fresa Gold / KingFisher Tech Gold Frontend\n\n`;
   md += `**Generated:** ${now}  \n`;
   md += `**API Base:** [${BASE}](${BASE})  \n`;
-  md += `**Swagger UI:** [https://kingfisherwings.onrender.com/docs](https://kingfisherwings.onrender.com/docs#)  \n`;
+  md += `**Swagger UI:** [https://kingfisherwings-backend.onrender.com/docs](https://kingfisherwings-backend.onrender.com/docs#)  \n`;
   md += `**OpenAPI operations (live):** ${swaggerOps.length}  \n`;
   md += `**Credentials used:** Tenant slug \`${CREDS.tenantSlug}\`, staff email \`${CREDS.staffEmail}\` (Tenant Admin / staff JWT)  \n`;
   md += `**Super Admin:** ${superToken ? 'Authenticated' : 'Not provided — SuperAdmin-only endpoints marked BLOCKED'}  \n\n`;
@@ -512,7 +512,7 @@ async function main() {
   }
 
   md += `## Scope Notes\n\n`;
-  md += `1. This run validates **frontend-wired modules** against the live API ([Swagger](https://kingfisherwings.onrender.com/docs#)).\n`;
+  md += `1. This run validates **frontend-wired modules** against the live API ([Swagger](https://kingfisherwings-backend.onrender.com/docs#)).\n`;
   md += `2. Focus is **read/list + auth + key detail GETs** discovered from list responses. Destructive CRUD (DELETE, cancel, post, convert) was **not** executed against production data to avoid side effects.\n`;
   md += `3. Live OpenAPI currently exposes **${swaggerOps.length}** operations; the frontend consumes a large subset (~220 path templates including Jobs sub-resources).\n`;
   md += `4. To re-run with Super Admin coverage:\n\n`;

@@ -8,8 +8,8 @@ interface WelcomeBannerProps {
 }
 
 export function WelcomeBanner({
-  productName = 'KingFisher Wings Logistic',
-  tenantName = 'KingFisher Wings Logistic LLC',
+  productName = 'KingFisher Tech Gold',
+  tenantName,
   onSearch,
 }: WelcomeBannerProps) {
   return (
@@ -26,15 +26,17 @@ export function WelcomeBanner({
             Welcome to {productName}
           </h2>
           <p className="text-xs text-[var(--color-neutral-600)] mt-0.5">
-            Track and Manage Sales, Shipments, Jobs and Accounts
+            Track and manage quotations, jobs, and accounts
           </p>
         </div>
       </div>
 
       <div className="flex items-center gap-3 shrink-0">
-        <span className="text-xs font-semibold text-[var(--color-primary)] px-3 py-1.5 rounded-md bg-[var(--color-surface)]">
-          {tenantName}
-        </span>
+        {tenantName ? (
+          <span className="text-xs font-semibold text-[var(--color-primary)] px-3 py-1.5 rounded-md bg-[var(--color-surface)]">
+            {tenantName}
+          </span>
+        ) : null}
         <Button variant="ghost" size="sm" onClick={onSearch} aria-label="Search">
           <Search size={15} className="text-[var(--color-neutral-600)]" />
         </Button>

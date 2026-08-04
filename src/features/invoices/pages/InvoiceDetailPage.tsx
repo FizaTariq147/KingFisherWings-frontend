@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 import { StoredFileLink } from '@/features/files/components/StoredFileLink';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
 import { InvoiceEmailModal } from '../components/InvoiceEmailModal';
@@ -37,6 +38,8 @@ export default function InvoiceDetailPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [emailOpen, setEmailOpen] = useState(false);
+  const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
+  const [pdfReadyUrl, setPdfReadyUrl] = useState<string | null>(null);
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -122,11 +125,18 @@ export default function InvoiceDetailPage() {
           if (!ok) return;
         }
         void run(async () => {
-          await actions.generatePdf.mutateAsync();
+          const info = await actions.generatePdf.mutateAsync();
+          let url = info?.pdf_url || info?.customer_pdf_url;
           try {
-            await refetchPdf();
+            const refreshed = await refetchPdf();
+            const next = refreshed.data;
+            url = next?.pdf_url || next?.customer_pdf_url || url;
           } catch {
             /* PDF info may lag while generation runs */
+          }
+          if (url) {
+            setPdfReadyUrl(url);
+            setPdfReadyOpen(true);
           }
         }, 'PDF generation requested.');
       },
@@ -283,6 +293,15 @@ export default function InvoiceDetailPage() {
           setActionMessage('Invoice emailed.');
           refetch();
         }}
+      />
+
+      <PdfReadyModal
+        open={pdfReadyOpen}
+        onClose={() => setPdfReadyOpen(false)}
+        url={pdfReadyUrl}
+        title="Invoice PDF ready"
+        fileName={`invoice-${id}.pdf`}
+        description="Your invoice PDF was created successfully."
       />
     </>
   );

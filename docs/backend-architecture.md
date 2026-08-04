@@ -42,7 +42,7 @@ flowchart LR
 The frontend `.env.example` points to a hosted API:
 
 ```
-VITE_API_URL=https://kingfisherwings.onrender.com
+VITE_API_URL=https://kingfisherwings-backend.onrender.com
 ```
 
 Local development typically uses `http://localhost:3000` (with or without `/api` prefix — ensure `VITE_API_URL` matches how the backend mounts routes).

@@ -2,10 +2,10 @@
 
 API documentation for the **Tenants (Super Admin)** module, derived from the live Swagger spec:
 
-- **Swagger UI:** [https://kingfisherwings.onrender.com/docs](https://kingfisherwings.onrender.com/docs)
-- **OpenAPI JSON:** [https://kingfisherwings.onrender.com/docs-json](https://kingfisherwings.onrender.com/docs-json)
+- **Swagger UI:** [https://kingfisherwings-backend.onrender.com/docs](https://kingfisherwings-backend.onrender.com/docs)
+- **OpenAPI JSON:** [https://kingfisherwings-backend.onrender.com/docs-json](https://kingfisherwings-backend.onrender.com/docs-json)
 - **API title:** KingFisher Wings ERP API v1.0 (OAS 3.0)
-- **Base URL:** `https://kingfisherwings.onrender.com` (configure via `VITE_API_BASE_URL` in the frontend)
+- **Base URL:** `https://kingfisherwings-backend.onrender.com` (configure via `VITE_API_BASE_URL` in the frontend)
 
 ---
 

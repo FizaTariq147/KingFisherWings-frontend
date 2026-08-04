@@ -140,14 +140,10 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
   const visibleItems = (() => {
     if (isSuperAdminArea) return []
 
-    // Tenant Admin owns the workspace — show full ops nav (Quotations + Tariffs, etc.).
-    // Staff are filtered by menu_* when /auth/me returns a permissions list.
+    // Tenant Admin owns the workspace — full ops nav.
     if (isTenantAdmin) return OPS_NAV_ITEMS
 
-    const perms = authCtx?.user?.permissions
-    // When /auth/me omits permissions, keep full ops nav (existing behaviour).
-    if (!perms || perms.length === 0) return OPS_NAV_ITEMS
-
+    // Staff / User: sidebar follows visibility + functional flags / menu_* from session.
     return OPS_NAV_ITEMS.filter((item) => {
       if (!item.permission && !item.permissionAny) return true
       if (item.permissionAny?.length) {

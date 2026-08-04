@@ -1,8 +1,8 @@
 # API Testing Results — Fresa Gold / KingFisher Tech Gold Frontend
 
 **Generated:** 2026-07-18T05:40:31.871Z  
-**API Base:** [https://kingfisherwings.onrender.com](https://kingfisherwings.onrender.com)  
-**Swagger UI:** [https://kingfisherwings.onrender.com/docs](https://kingfisherwings.onrender.com/docs#)  
+**API Base:** [https://kingfisherwings-backend.onrender.com](https://kingfisherwings-backend.onrender.com)  
+**Swagger UI:** [https://kingfisherwings-backend.onrender.com/docs](https://kingfisherwings-backend.onrender.com/docs#)  
 **OpenAPI operations (live):** 441  
 **Credentials used:** Tenant slug `demo-trade-house`, staff email `sara.alami@demo-trade.example` (Tenant Admin / staff JWT)  
 **Super Admin:** Not provided — SuperAdmin-only endpoints marked BLOCKED  
@@ -309,7 +309,7 @@ _None._
 
 ## Scope Notes
 
-1. This run validates **frontend-wired modules** against the live API ([Swagger](https://kingfisherwings.onrender.com/docs#)).
+1. This run validates **frontend-wired modules** against the live API ([Swagger](https://kingfisherwings-backend.onrender.com/docs#)).
 2. Focus is **read/list + auth + key detail GETs** discovered from list responses. Destructive CRUD (DELETE, cancel, post, convert) was **not** executed against production data to avoid side effects.
 3. Live OpenAPI currently exposes **441** operations; the frontend consumes a large subset (~220 path templates including Jobs sub-resources).
 4. To re-run with Super Admin coverage:

@@ -13,7 +13,10 @@ import {
   resolveTenantIdFromUserLike,
   tenantIdFromAccessToken,
 } from '@/lib/tenantFromAuth'
-import { isTenantUserManagerRole } from '@/features/users/constants/userPermissions'
+import {
+  isTenantUserManagerRole,
+  menuKeysFromStaffAccess,
+} from '@/features/users/constants/userPermissions'
 import { bootstrapLocaleSession, clearLocaleSession } from '@/features/locale/bootstrap/localeBootstrap'
 import { pickPreferredCountryCode } from '@/store/locale/localeSlice'
 import { useAuthStore } from '@/store/authStore'
@@ -112,7 +115,16 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
 
   const fromMe = normalizePermissionKeys(record.permissions)
   const fromJwt = permissionsFromAccessToken(accessToken)
-  const permissions = [...new Set([...fromMe, ...fromJwt])] as PermissionKey[]
+  const fromStaffFlags = menuKeysFromStaffAccess(record)
+  const isTenantAdmin =
+    isTenantUserManagerRole(role.slug) || isTenantUserManagerRole(role.name)
+
+  // Staff: merge JWT/menu keys with Tenant Admin visibility / functional flags.
+  // Always keep dashboard + settings so signed-in staff are not locked out of the shell.
+  let permissions = [...new Set([...fromMe, ...fromJwt, ...fromStaffFlags])] as PermissionKey[]
+  if (!isTenantAdmin) {
+    permissions = [...new Set([...permissions, 'menu_dashboard', 'menu_settings'])] as PermissionKey[]
+  }
 
   // undefined = /me omitted the flag (keep login-session value); boolean = trust /me
   const mustChangePassword = hasMustChangePasswordFlag(record)
@@ -211,12 +223,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (DEV_BYPASS_AUTH) return true
     if (!user) return false
     // Tenant Admin is the workspace owner — full ERP menus (Quotations, Tariffs, etc.).
-    // Staff are gated by menu_* keys from JWT /auth/me.
+    // Staff are gated by menu_* keys from JWT /auth/me (+ visibility flags mapped into menus).
     if (isTenantUserManagerRole(user.role.slug) || isTenantUserManagerRole(user.role.name)) {
       return true
     }
-    // When /auth/me omits permissions, avoid locking the app behind menu_* keys.
-    if (user.permissions.length === 0) return true
+    if (user.permissions.length === 0) return false
     return keys.every((k) => user.permissions.includes(k))
   }, [user])
 
@@ -226,7 +237,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (isTenantUserManagerRole(user.role.slug) || isTenantUserManagerRole(user.role.name)) {
       return true
     }
-    if (user.permissions.length === 0) return true
+    if (user.permissions.length === 0) return false
     return keys.some((k) => user.permissions.includes(k))
   }, [user])
 

@@ -149,7 +149,7 @@ export default function EmployeeProfile() {
           <div className="w-16 h-16 rounded-2xl bg-slate-200" />
           <div>
             <p className="text-sm text-muted-foreground">Employee</p>
-            <h1 className="text-xl font-semibold">{employee.name}</h1>
+            <h2 className="text-xl font-semibold">{employee.name}</h2>
             <p className="text-sm">{employee.designation}</p>
           </div>
         </div>

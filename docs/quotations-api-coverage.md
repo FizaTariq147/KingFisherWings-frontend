@@ -1,6 +1,6 @@
 # Quotations API Coverage Report
 
-Source: live Swagger `https://kingfisherwings.onrender.com/docs` (`/docs-json`), tag group **Quotations** (+ Online Tariff Master + Zip Distance Master under `/quotations/*`).
+Source: live Swagger `https://kingfisherwings-backend.onrender.com/docs` (`/docs-json`), tag group **Quotations** (+ Online Tariff Master + Zip Distance Master under `/quotations/*`).
 
 **Audited:** 2026-07-15  
 **State management:** TanStack Query (React Query) — same as other ERP feature modules. **No Redux slice** (project pattern; not a gap).

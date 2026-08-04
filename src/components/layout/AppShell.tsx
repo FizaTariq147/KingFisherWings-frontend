@@ -6,16 +6,24 @@ import { FooterStatusBar } from './FooterStatusBar';
 import { useApplyTheme } from '../../hooks/useApplyTheme';
 import { useAuthStore } from '@/store/authStore';
 import { useUIStore } from '@/store/uiStore';
+import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore';
 import { OnboardingSteps } from '@/features/platform/components/OnboardingSteps';
 
 export function AppShell({ title }: { title: string }) {
   useApplyTheme();
   const user = useAuthStore((s) => s.user);
+  const isSuperAdminAuthenticated = useSuperAdminAuthStore((s) => s.isAuthenticated);
   const mobileSidebarOpen = useUIStore((s) => s.mobileSidebarOpen);
   const closeMobileSidebar = useUIStore((s) => s.closeMobileSidebar);
   const location = useLocation();
   const isSuperAdminArea =
     location.pathname.startsWith('/superadmin') && !location.pathname.includes('/login');
+
+  const footerUserLabel = isSuperAdminArea
+    ? isSuperAdminAuthenticated
+      ? 'Superadmin'
+      : 'Not signed in'
+    : (user?.email ?? 'Not signed in');
 
   useEffect(() => {
     const onResize = () => {
@@ -66,7 +74,7 @@ export function AppShell({ title }: { title: string }) {
         </main>
         <FooterStatusBar
           info={{
-            userEmail: user?.email ?? 'Not signed in',
+            userEmail: footerUserLabel,
             timestamp: new Date().toLocaleString(),
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             poweredBy: title,

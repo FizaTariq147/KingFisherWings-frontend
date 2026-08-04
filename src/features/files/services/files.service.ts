@@ -6,7 +6,11 @@ import { withGatewayRetry } from '@/lib/wakeApi';
 import { FILES_API } from '../api/files.api';
 import type { FileDownloadParams, StoredFileAction } from '../types/files.types';
 import { parseFilesApiUrl } from '../utils/parseFilesApiUrl';
-import { openBlobInNewTab, triggerBlobDownload } from '../utils/triggerBlobDownload';
+import {
+  openBlankPreviewTab,
+  openBlobInNewTab,
+  triggerBlobDownload,
+} from '../utils/triggerBlobDownload';
 
 async function readAxiosErrorData(data: unknown): Promise<unknown> {
   if (typeof Blob !== 'undefined' && data instanceof Blob) {
@@ -157,12 +161,20 @@ export const filesService = {
     action: StoredFileAction = 'download',
     options?: { signal?: AbortSignal; displayName?: string },
   ): Promise<void> {
-    const blob = await this.downloadBlob(params, options);
     const name = options?.displayName?.trim() || params.filename;
     if (action === 'open') {
-      await this.openBlob(blob);
+      // Open the tab in the same turn as the user click, then navigate after fetch.
+      const preview = openBlankPreviewTab();
+      try {
+        const blob = await this.downloadBlob(params, options);
+        openBlobInNewTab(blob, preview);
+      } catch (err) {
+        preview.close();
+        throw err;
+      }
       return;
     }
+    const blob = await this.downloadBlob(params, options);
     await this.saveBlob(blob, name);
   },
 

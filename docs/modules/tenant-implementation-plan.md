@@ -263,7 +263,7 @@ Use only if sidebar collapse or super-admin-specific UI state is needed. Not req
 
 | Task | Detail |
 |------|--------|
-| Set `VITE_API_BASE_URL=https://kingfisherwings.onrender.com` in `.env.example` | Align with deployed API |
+| Set `VITE_API_BASE_URL=https://kingfisherwings-backend.onrender.com` in `.env.example` | Align with deployed API |
 | Document env in README | Currently only `VITE_API_URL` documented |
 | Keep `ApiEnvelope<T>` unwrapping in service layer | Not in components |
 

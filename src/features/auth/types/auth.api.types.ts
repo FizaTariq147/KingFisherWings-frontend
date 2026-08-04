@@ -1,4 +1,4 @@
-/** Swagger Auth DTOs — https://kingfisherwings.onrender.com/docs (tag: Auth) */
+/** Swagger Auth DTOs — https://kingfisherwings-backend.onrender.com/docs (tag: Auth) */
 
 /** POST /auth/login — Staff login: tenant slug + email + password */
 export interface LoginDto {

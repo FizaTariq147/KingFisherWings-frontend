@@ -1,39 +1,37 @@
 import type { LucideIcon } from 'lucide-react'
-import { MessageCircle, Heart, ThumbsUp, Bell, Handshake, Calendar, Share2, Link2, Rss } from 'lucide-react'
+import {
+  FileText,
+  Plane,
+  Receipt,
+  Settings,
+  Users,
+  Wallet,
+} from 'lucide-react'
+import { Link } from 'react-router-dom'
 
-interface ToolbarAction {
+interface ToolbarLink {
   label: string
+  to: string
   Icon: LucideIcon
-  onClick?: () => void
 }
 
-const ACTIONS: ToolbarAction[] = [
-  { label: 'Comments', Icon: MessageCircle },
-  { label: 'Favorites', Icon: Heart },
-  { label: 'Likes', Icon: ThumbsUp },
-  { label: 'Notification', Icon: Bell },
-  { label: 'Follow Up', Icon: Handshake },
-  { label: 'Calendar', Icon: Calendar },
-]
-
-// Kept minimal/neutral rather than brand-colored per integration — the
-// original per-item rainbow (WhatsApp green, LinkedIn blue, etc.) fights
-// the "color should be purposeful" rule, so these render as one quiet
-// neutral cluster instead. Swap in real provider icons/links as integrations land.
-const INTEGRATIONS: { label: string; Icon: LucideIcon }[] = [
-  { label: 'Share', Icon: Share2 },
-  { label: 'Connected apps', Icon: Link2 },
-  { label: 'Feed', Icon: Rss },
+/** Real ERP shortcuts — no placeholder social/integration actions. */
+const LINKS: ToolbarLink[] = [
+  { label: 'Quotations', to: '/quotations/all', Icon: FileText },
+  { label: 'Jobs', to: '/jobs/air-export', Icon: Plane },
+  { label: 'Invoices', to: '/invoices', Icon: Receipt },
+  { label: 'Finance', to: '/finance', Icon: Wallet },
+  { label: 'Customers', to: '/customers', Icon: Users },
+  { label: 'Settings', to: '/settings', Icon: Settings },
 ]
 
 export function QuickAccessToolbar() {
   return (
     <div className="flex items-center gap-2 flex-wrap py-1">
-      {ACTIONS.map(({ label, Icon, onClick }) => (
-        <button
-          key={label}
-          type="button"
-          onClick={onClick}
+      {LINKS.map(({ label, to, Icon }) => (
+        <Link
+          key={to}
+          to={to}
           className="flex items-center gap-2 pl-3 pr-1.5 py-1.5 rounded-full border border-[var(--color-neutral-200)] bg-[var(--color-bg)] text-xs font-medium text-[var(--color-neutral-900)] hover:bg-[var(--color-surface)] transition-colors"
         >
           {label}
@@ -43,21 +41,8 @@ export function QuickAccessToolbar() {
           >
             <Icon size={12} aria-hidden="true" />
           </span>
-        </button>
+        </Link>
       ))}
-
-      <div className="flex items-center gap-1.5 ml-auto pl-2 border-l border-[var(--color-neutral-200)]">
-        {INTEGRATIONS.map(({ label, Icon }) => (
-          <button
-            key={label}
-            type="button"
-            aria-label={label}
-            className="w-8 h-8 rounded-md flex items-center justify-center text-[var(--color-neutral-600)] hover:bg-[var(--color-surface)] transition-colors"
-          >
-            <Icon size={15} aria-hidden="true" />
-          </button>
-        ))}
-      </div>
     </div>
   )
 }

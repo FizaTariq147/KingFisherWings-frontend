@@ -1,3 +1,4 @@
+import type { PermissionKey } from '@/types/auth.types';
 import type { UserRole } from '../constants/user.constants';
 
 /** Visibility permission field keys on the User entity. */
@@ -24,6 +25,60 @@ export const USER_FUNCTIONAL_FLAGS = [
 ] as const;
 
 export type UserFunctionalFlag = (typeof USER_FUNCTIONAL_FLAGS)[number];
+
+function readTruthyFlag(record: Record<string, unknown>, key: string): boolean {
+  const value = record[key];
+  return value === true || value === 'true' || value === 1 || value === '1';
+}
+
+/**
+ * Map Tenant Admin user flags / visibility permissions (from GET /auth/me)
+ * onto sidebar `menu_*` keys so staff nav matches what was assigned at create/edit.
+ */
+export function menuKeysFromStaffAccess(record: Record<string, unknown>): PermissionKey[] {
+  const keys = new Set<PermissionKey>();
+
+  if (readTruthyFlag(record, 'is_cs_rep')) {
+    keys.add('menu_customers');
+  }
+
+  if (readTruthyFlag(record, 'is_salesperson') || readTruthyFlag(record, 'can_see_sales')) {
+    keys.add('menu_sales');
+    keys.add('menu_quotations');
+  }
+
+  if (readTruthyFlag(record, 'is_operations') || readTruthyFlag(record, 'can_see_job_pnl')) {
+    keys.add('menu_jobs_air_export');
+    keys.add('menu_jobs_sea_export');
+    keys.add('menu_jobs_sea_import');
+    keys.add('menu_documentation');
+    keys.add('menu_nvocc');
+  }
+
+  if (readTruthyFlag(record, 'is_operations')) {
+    keys.add('menu_quotations');
+  }
+
+  if (readTruthyFlag(record, 'is_finance') || readTruthyFlag(record, 'can_see_invoices')) {
+    keys.add('menu_finance');
+  }
+
+  if (
+    readTruthyFlag(record, 'is_finance') ||
+    readTruthyFlag(record, 'can_see_payments') ||
+    readTruthyFlag(record, 'can_see_ar_ap') ||
+    readTruthyFlag(record, 'can_see_bank_balances')
+  ) {
+    keys.add('menu_accounts');
+  }
+
+  if (readTruthyFlag(record, 'can_see_mgmt_reports')) {
+    keys.add('menu_reports');
+    keys.add('menu_management');
+  }
+
+  return [...keys];
+}
 
 /**
  * Roles that may be assigned when provisioning tenant staff/customer users.

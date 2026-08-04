@@ -24,7 +24,7 @@ export function SuperAdminTopbar() {
       <p className="text-sm text-slate-400">Platform Admin</p>
       <div className="flex items-center gap-3">
         <span className="text-sm text-slate-600">
-          {user ? `${user.firstName} ${user.lastName}` : ''}
+          {user ? 'Superadmin' : ''}
         </span>
         <button
           type="button"
