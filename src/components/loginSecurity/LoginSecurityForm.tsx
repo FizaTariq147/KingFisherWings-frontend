@@ -161,10 +161,11 @@ export function LoginSecurityForm({ userId, userName }: LoginSecurityFormProps) 
       >
         <div className="flex flex-col gap-4">
           <div>
-            <label className="block text-xs font-medium text-[var(--color-neutral-600)] mb-1.5">
+            <label htmlFor="login-security-timezone" className="block text-xs font-medium text-[var(--color-neutral-600)] mb-1.5">
               Timezone
             </label>
             <select
+              id="login-security-timezone"
               value={timezone}
               onChange={(e) => setTimezone(e.target.value)}
               className={inputClass}

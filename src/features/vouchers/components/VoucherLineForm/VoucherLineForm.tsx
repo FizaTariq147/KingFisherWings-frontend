@@ -60,8 +60,8 @@ export function VoucherLineForm({ onSubmit, isSubmitting, onCancel }: VoucherLin
       noValidate
     >
       <div className="sm:col-span-2 space-y-1">
-        <label className="text-sm font-medium text-[var(--color-neutral-700)]">Account *</label>
-        <select className={selectClass} {...register('account_id')}>
+        <label htmlFor="account_id" className="text-sm font-medium text-[var(--color-neutral-700)]">Account *</label>
+        <select id="account_id" className={selectClass} {...register('account_id')}>
           <option value="">— Select —</option>
           {accounts.map((a) => (
             <option key={a.id} value={a.id}>

@@ -159,10 +159,10 @@ export function PurchaseInvoiceForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1 sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="party_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Vendor / supplier *
             </label>
-            <select className={selectClass} {...register('party_id')}>
+            <select id="party_id" className={selectClass} {...register('party_id')}>
               <option value="">Select…</option>
               {parties.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -173,10 +173,10 @@ export function PurchaseInvoiceForm({
             <FieldError message={fieldError('party_id')} />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="currency_code" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Currency *
             </label>
-            <select className={selectClass} {...register('currency_code')}>
+            <select id="currency_code" className={selectClass} {...register('currency_code')}>
               {(currencies.length ? currencies : [{ value: 'AED', label: 'AED' }]).map((c) => (
                 <option key={String(c.value)} value={String(c.value)}>
                   {String(c.label ?? c.value)}
@@ -186,44 +186,59 @@ export function PurchaseInvoiceForm({
             <FieldError message={fieldError('currency_code')} />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Company</label>
-            <select className={selectClass} {...register('company_id', uuidSelect)}>
+            <label htmlFor="company_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Company</label>
+            <select id="company_id" className={selectClass} {...register('company_id', uuidSelect)}>
               <option value="">—</option>
-              {companies
-                .filter((c) => isUuid(String(c.id)))
-                .map((c) => (
-                  <option key={String(c.id)} value={String(c.id)}>
-                    {String(c.name ?? c.code ?? c.id)}
-                  </option>
-                ))}
+              {(() => {
+                const opts = [];
+                for (const c of companies) {
+                  if (!isUuid(String(c.id))) continue;
+                  opts.push(
+                    <option key={String(c.id)} value={String(c.id)}>
+                      {String(c.name ?? c.code ?? c.id)}
+                    </option>,
+                  );
+                }
+                return opts;
+              })()}
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Branch</label>
-            <select className={selectClass} {...register('branch_id', uuidSelect)}>
+            <label htmlFor="branch_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Branch</label>
+            <select id="branch_id" className={selectClass} {...register('branch_id', uuidSelect)}>
               <option value="">—</option>
-              {branches
-                .filter((b) => isUuid(String(b.id)))
-                .map((b) => (
-                  <option key={String(b.id)} value={String(b.id)}>
-                    {String(b.name ?? b.code ?? b.id)}
-                  </option>
-                ))}
+              {(() => {
+                const opts = [];
+                for (const b of branches) {
+                  if (!isUuid(String(b.id))) continue;
+                  opts.push(
+                    <option key={String(b.id)} value={String(b.id)}>
+                      {String(b.name ?? b.code ?? b.id)}
+                    </option>,
+                  );
+                }
+                return opts;
+              })()}
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="department_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Department
             </label>
-            <select className={selectClass} {...register('department_id', uuidSelect)}>
+            <select id="department_id" className={selectClass} {...register('department_id', uuidSelect)}>
               <option value="">—</option>
-              {departments
-                .filter((d) => isUuid(String(d.id)))
-                .map((d) => (
-                  <option key={String(d.id)} value={String(d.id)}>
-                    {String(d.name ?? d.code ?? d.id)}
-                  </option>
-                ))}
+              {(() => {
+                const opts = [];
+                for (const d of departments) {
+                  if (!isUuid(String(d.id))) continue;
+                  opts.push(
+                    <option key={String(d.id)} value={String(d.id)}>
+                      {String(d.name ?? d.code ?? d.id)}
+                    </option>,
+                  );
+                }
+                return opts;
+              })()}
             </select>
           </div>
           <Input label="Job ID" placeholder="UUID" {...register('job_id', uuidSelect)} />
@@ -255,17 +270,19 @@ export function PurchaseInvoiceForm({
           <Input label="Due date" type="date" {...register('due_date')} />
           <Input label="LPO number" {...register('lpo_number')} />
           <div className="space-y-1 sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Remarks</label>
+            <label htmlFor="remarks" className="text-xs font-medium text-[var(--color-neutral-500)]">Remarks</label>
             <textarea
+              id="remarks"
               className="min-h-[64px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
               {...register('remarks')}
             />
           </div>
           <div className="space-y-1 sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="internal_notes" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Internal notes
             </label>
             <textarea
+              id="internal_notes"
               className="min-h-[64px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
               {...register('internal_notes')}
             />

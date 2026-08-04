@@ -83,21 +83,21 @@ export function AuditFilters({ current, onChange }: AuditFiltersProps) {
     >
       {/* Search */}
       <div className="flex flex-col gap-1 min-w-[180px] flex-1">
-        <label className="text-[10px] font-medium text-[var(--color-neutral-500)] uppercase tracking-wider">
+        <label htmlFor="audit-search" className="text-[10px] font-medium text-[var(--color-neutral-500)] uppercase tracking-wider">
           Search
         </label>
         <div className="relative">
           <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--color-neutral-400)]" />
-          <input {...register('search')} placeholder="User, record, IP…" className={`${inputClass} pl-7 w-full`} />
+          <input id="audit-search" {...register('search')} placeholder="User, record, IP…" className={`${inputClass} pl-7 w-full`} />
         </div>
       </div>
 
       {/* Action */}
       <div className="flex flex-col gap-1">
-        <label className="text-[10px] font-medium text-[var(--color-neutral-500)] uppercase tracking-wider">
+        <label htmlFor="audit-action" className="text-[10px] font-medium text-[var(--color-neutral-500)] uppercase tracking-wider">
           Action
         </label>
-        <select {...register('action')} className={`${inputClass} pr-8`}>
+        <select id="audit-action" {...register('action')} className={`${inputClass} pr-8`}>
           <option value="">All actions</option>
           {ACTION_OPTIONS.map(({ value, label }) => (
             <option key={value} value={value}>{label}</option>
@@ -107,10 +107,10 @@ export function AuditFilters({ current, onChange }: AuditFiltersProps) {
 
       {/* Entity */}
       <div className="flex flex-col gap-1">
-        <label className="text-[10px] font-medium text-[var(--color-neutral-500)] uppercase tracking-wider">
+        <label htmlFor="audit-entity" className="text-[10px] font-medium text-[var(--color-neutral-500)] uppercase tracking-wider">
           Module
         </label>
-        <select {...register('entity')} className={`${inputClass} pr-8`}>
+        <select id="audit-entity" {...register('entity')} className={`${inputClass} pr-8`}>
           <option value="">All modules</option>
           {ENTITY_OPTIONS.map(({ value, label }) => (
             <option key={value} value={value}>{label}</option>
@@ -120,18 +120,18 @@ export function AuditFilters({ current, onChange }: AuditFiltersProps) {
 
       {/* Date from */}
       <div className="flex flex-col gap-1">
-        <label className="text-[10px] font-medium text-[var(--color-neutral-500)] uppercase tracking-wider">
+        <label htmlFor="audit-date-from" className="text-[10px] font-medium text-[var(--color-neutral-500)] uppercase tracking-wider">
           From
         </label>
-        <input type="date" {...register('dateFrom')} className={inputClass} />
+        <input id="audit-date-from" type="date" {...register('dateFrom')} className={inputClass} />
       </div>
 
       {/* Date to */}
       <div className="flex flex-col gap-1">
-        <label className="text-[10px] font-medium text-[var(--color-neutral-500)] uppercase tracking-wider">
+        <label htmlFor="audit-date-to" className="text-[10px] font-medium text-[var(--color-neutral-500)] uppercase tracking-wider">
           To
         </label>
-        <input type="date" {...register('dateTo')} className={inputClass} />
+        <input id="audit-date-to" type="date" {...register('dateTo')} className={inputClass} />
       </div>
 
       {/* Actions */}

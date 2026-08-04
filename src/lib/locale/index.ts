@@ -6,6 +6,15 @@ export {
   timezoneOptionsForCountry,
   isTimezoneAllowedForCountry,
 } from './resolveLocale';
+export {
+  buildLocaleFormatContext,
+  formatCurrency,
+  formatDate,
+  formatDateTime,
+  formatNumber,
+  formatTime,
+} from './format';
+export type { LocaleFormatContext } from '@/features/locale/types/locale.types';
 export { isValidLibPhone, phoneValidationHint } from './phone';
 export {
   applyLocaleFromCountry,

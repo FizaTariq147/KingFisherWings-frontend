@@ -155,33 +155,43 @@ export function InvoiceLinesEditor({ invoiceId, lines, editable }: InvoiceLinesE
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+              <label htmlFor="invoice-line-charge-code" className="text-xs font-medium text-[var(--color-neutral-500)]">
                 Charge code
               </label>
-              <select className={selectClass} {...register('charge_code_id', uuidSelect)}>
+              <select id="invoice-line-charge-code" className={selectClass} {...register('charge_code_id', uuidSelect)}>
                 <option value="">—</option>
-                {chargeCodes
-                  .filter((c) => isUuid(String(c.id)))
-                  .map((c) => (
-                    <option key={String(c.id)} value={String(c.id)}>
-                      {String(c.code ?? c.name ?? c.id)}
-                    </option>
-                  ))}
+                {(() => {
+                  const opts = [];
+                  for (const c of chargeCodes) {
+                    if (!isUuid(String(c.id))) continue;
+                    opts.push(
+                      <option key={String(c.id)} value={String(c.id)}>
+                        {String(c.code ?? c.name ?? c.id)}
+                      </option>,
+                    );
+                  }
+                  return opts;
+                })()}
               </select>
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+              <label htmlFor="invoice-line-tax-rate" className="text-xs font-medium text-[var(--color-neutral-500)]">
                 Tax rate
               </label>
-              <select className={selectClass} {...register('tax_rate_id', uuidSelect)}>
+              <select id="invoice-line-tax-rate" className={selectClass} {...register('tax_rate_id', uuidSelect)}>
                 <option value="">—</option>
-                {taxRates
-                  .filter((t) => isUuid(String(t.id)))
-                  .map((t) => (
-                    <option key={String(t.id)} value={String(t.id)}>
-                      {String(t.name ?? t.code ?? t.id)}
-                    </option>
-                  ))}
+                {(() => {
+                  const opts = [];
+                  for (const t of taxRates) {
+                    if (!isUuid(String(t.id))) continue;
+                    opts.push(
+                      <option key={String(t.id)} value={String(t.id)}>
+                        {String(t.name ?? t.code ?? t.id)}
+                      </option>,
+                    );
+                  }
+                  return opts;
+                })()}
               </select>
             </div>
           </div>

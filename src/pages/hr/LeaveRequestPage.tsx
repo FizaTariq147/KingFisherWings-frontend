@@ -1,29 +1,23 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Plus, Search, ChevronDown, Heart } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Plus, Search, ChevronDown, Heart } from 'lucide-react';
 import { SelectInput, DateInput } from '../../components/widgets/FilterField';
 
 const tabs = ['Leave Applied / Pending', 'Leave Approved', 'Leave Rejected/Cancelled'];
 
 export default function LeaveRequestPage() {
-  const navigate = useNavigate();
   const [rows, setRows] = useState('10');
   const [activeTab, setActiveTab] = useState(tabs[0]);
 
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/hr" label="Back to HR" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">Leave form List</h2>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-            >
-              <ChevronLeft size={14} />
-              Back
-            </button>
             <button className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
               <Plus size={14} />
               Create
@@ -35,8 +29,8 @@ export default function LeaveRequestPage() {
       {/* Filter row + Submit pinned top-right */}
 <div className="p-5 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
   <div className="flex flex-wrap items-start gap-x-8 gap-y-3">
-    <div className="flex items-start gap-3">
-      <label className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Date Range</label>
+    <label className="flex items-start gap-3">
+      <span className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Date Range</span>
       <div className="flex gap-2">
         <div className="w-40">
           <SelectInput options={['Requested Date', 'Leave Start Date']} />
@@ -45,28 +39,28 @@ export default function LeaveRequestPage() {
           <SelectInput options={['Next 1 Year', 'This Month', 'This Year']} />
         </div>
       </div>
-    </div>
+    </label>
 
-    <div className="flex items-start gap-3">
-      <label className="text-sm text-gray-700 pt-2">From Date</label>
+    <label className="flex items-start gap-3">
+      <span className="text-sm text-gray-700 pt-2">From Date</span>
       <div className="w-36">
         <DateInput value="08-JUL-26" />
       </div>
-    </div>
+    </label>
 
-    <div className="flex items-start gap-3">
-      <label className="text-sm text-gray-700 pt-2">To Date</label>
+    <label className="flex items-start gap-3">
+      <span className="text-sm text-gray-700 pt-2">To Date</span>
       <div className="w-36">
         <DateInput value="08-JUL-27" />
       </div>
-    </div>
+    </label>
 
-    <div className="flex items-start gap-3">
-      <label className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Branch</label>
+    <label className="flex items-start gap-3">
+      <span className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Branch</span>
       <div className="w-64">
         <SelectInput options={['All']} />
       </div>
-    </div>
+    </label>
   </div>
 
   <button className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity shrink-0">

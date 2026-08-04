@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Plus, Search, ChevronDown, Heart, X, AlignJustify } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Plus, Search, ChevronDown, Heart, X, AlignJustify } from 'lucide-react';
 import { SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
 
 interface MasterItem {
@@ -12,7 +13,6 @@ interface MasterItem {
 const initialItems: MasterItem[] = [{ id: 'pod', label: 'POD', checked: true }];
 
 export default function VesselVoyageMasterPage() {
-  const navigate = useNavigate();
   const [rows, setRows] = useState('10');
   const [items, setItems] = useState<MasterItem[]>(initialItems);
   const [expanded, setExpanded] = useState(true);
@@ -26,19 +26,13 @@ export default function VesselVoyageMasterPage() {
   };
 
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/nvocc" label="Back to NVOCC" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">Vessel Voyage Master List</h2>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-            >
-              <ChevronLeft size={14} />
-              Back
-            </button>
             <button className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
               <Plus size={14} />
               Create
@@ -49,40 +43,40 @@ export default function VesselVoyageMasterPage() {
         {/* Filter row + Submit pinned top-right */}
         <div className="p-5 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           <div className="flex flex-wrap items-start gap-x-8 gap-y-3">
-            <div className="flex items-start gap-3">
-              <label className="text-sm text-gray-700 pt-2">From ETD Date</label>
+            <label className="flex items-start gap-3">
+              <span className="text-sm text-gray-700 pt-2">From ETD Date</span>
               <div className="w-40">
                 <DateInput value="30-MAR-26" />
               </div>
-            </div>
+            </label>
 
-            <div className="flex items-start gap-3">
-              <label className="text-sm text-gray-700 pt-2">To ETD Date</label>
+            <label className="flex items-start gap-3">
+              <span className="text-sm text-gray-700 pt-2">To ETD Date</span>
               <div className="w-40">
                 <DateInput value="16-OCT-26" />
               </div>
-            </div>
+            </label>
 
-            <div className="flex items-start gap-3">
-              <label className="w-14 shrink-0 text-sm text-gray-700 pt-2 text-right">Vessel</label>
+            <label className="flex items-start gap-3">
+              <span className="w-14 shrink-0 text-sm text-gray-700 pt-2 text-right">Vessel</span>
               <div className="w-52">
                 <TextInput />
               </div>
-            </div>
+            </label>
 
-            <div className="flex items-start gap-3">
-              <label className="w-10 shrink-0 text-sm text-gray-700 pt-2 text-right">POL</label>
+            <label className="flex items-start gap-3">
+              <span className="w-10 shrink-0 text-sm text-gray-700 pt-2 text-right">POL</span>
               <div className="w-52">
                 <SelectInput options={['-Select-']} />
               </div>
-            </div>
+            </label>
 
-            <div className="flex items-start gap-3">
-              <label className="w-10 shrink-0 text-sm text-gray-700 pt-2 text-right">POD</label>
+            <label className="flex items-start gap-3">
+              <span className="w-10 shrink-0 text-sm text-gray-700 pt-2 text-right">POD</span>
               <div className="w-52">
                 <SelectInput options={['-Select-']} />
               </div>
-            </div>
+            </label>
           </div>
         </div>
 

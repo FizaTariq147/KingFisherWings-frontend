@@ -44,6 +44,16 @@ function AuditRow({ entry }: { entry: AuditLogEntry }) {
       <tr
         className={`border-b border-[var(--color-neutral-100)] transition-colors ${hasDiff ? 'cursor-pointer hover:bg-[var(--color-neutral-50)]' : ''}`}
         onClick={() => hasDiff && setExpanded((v) => !v)}
+        onKeyDown={(e) => {
+          if (!hasDiff) return
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            setExpanded((v) => !v)
+          }
+        }}
+        tabIndex={hasDiff ? 0 : undefined}
+        role={hasDiff ? 'button' : undefined}
+        aria-expanded={hasDiff ? expanded : undefined}
       >
         {/* Timestamp */}
         <td className="px-4 py-3 whitespace-nowrap">

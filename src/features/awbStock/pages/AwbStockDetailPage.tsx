@@ -82,16 +82,17 @@ export default function AwbStockDetailPage() {
     [jobsResult?.jobs],
   );
 
-  const branchOptions = useMemo(
-    () =>
-      branches
-        .filter((b) => isUuid(String(b.id)))
-        .map((b) => ({
-          value: String(b.id),
-          label: [b.code, b.name].filter(Boolean).join(' — ') || String(b.id),
-        })),
-    [branches],
-  );
+  const branchOptions = useMemo(() => {
+    const opts: Array<{ value: string; label: string }> = [];
+    for (const b of branches) {
+      if (!isUuid(String(b.id))) continue;
+      opts.push({
+        value: String(b.id),
+        label: [b.code, b.name].filter(Boolean).join(' — ') || String(b.id),
+      });
+    }
+    return opts;
+  }, [branches]);
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)] py-10 text-center">Loading…</p>;

@@ -290,31 +290,31 @@ export default function SettingsUsers() {
       >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-[var(--color-neutral-600)]">First Name</label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-[var(--color-neutral-600)]">First Name</span>
               <input type="text" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="First name..." />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-[var(--color-neutral-600)]">Last Name</label>
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-[var(--color-neutral-600)]">Last Name</span>
               <input type="text" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="Last name..." />
-            </div>
+            </label>
           </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-600)]">Email Address *</label>
+          <label className="flex flex-col gap-1">
+            <span className="text-xs font-medium text-[var(--color-neutral-600)]">Email Address *</span>
             <input type="email" className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="user@company.ae" />
-          </div>
+          </label>
           <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-[var(--color-neutral-600)]">Role *</label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-[var(--color-neutral-600)]">Role *</span>
               <select className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
                 <option value="">-- Select role --</option>
                 {roles.map((r) => <option key={r.id}>{r.name}</option>)}
               </select>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-[var(--color-neutral-600)]">Department</label>
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-[var(--color-neutral-600)]">Department</span>
               <input type="text" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="Department..." />
-            </div>
+            </label>
           </div>
           <div className="p-3 rounded-lg bg-[var(--color-info-100)] border border-[var(--color-info-500)]/20">
             <p className="text-xs text-[var(--color-info-500)]">
@@ -339,24 +339,24 @@ export default function SettingsUsers() {
       >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-[var(--color-neutral-600)]">Role Name *</label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-[var(--color-neutral-600)]">Role Name *</span>
               <input
                 type="text"
                 defaultValue={selectedRole?.name}
                 className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]"
                 placeholder="e.g. Operations Manager"
               />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-[var(--color-neutral-600)]">Description</label>
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-[var(--color-neutral-600)]">Description</span>
               <input
                 type="text"
                 defaultValue={selectedRole?.description}
                 className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]"
                 placeholder="Brief description..."
               />
-            </div>
+            </label>
           </div>
 
           <div>

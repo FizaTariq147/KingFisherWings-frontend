@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { PageBackLink } from '@/components/ui/PageBackLink';
 import { JobForm } from '../components/JobForm';
 import { JOB_SEGMENTS, JOB_TYPE_WIZARD_OPTIONS, type JobSegmentKey } from '../constants/job.constants';
 import { useJob, useUpdateJob } from '../hooks/useJobs';
@@ -32,13 +33,7 @@ export default function JobEditPage() {
 
   return (
     <div className="space-y-4">
-      <button
-        type="button"
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-        onClick={() => navigate(`${prefix}/${id}`)}
-      >
-        ← Back to job
-      </button>
+      <PageBackLink to={`${prefix}/${id}`} label="Back to job" />
       <div>
         <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Edit job</h2>
       </div>

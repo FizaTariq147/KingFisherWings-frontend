@@ -14,6 +14,8 @@ import {
   tenantIdFromAccessToken,
 } from '@/lib/tenantFromAuth'
 import { isTenantUserManagerRole } from '@/features/users/constants/userPermissions'
+import { bootstrapLocaleSession, clearLocaleSession } from '@/features/locale/bootstrap/localeBootstrap'
+import { pickPreferredCountryCode } from '@/store/locale/localeSlice'
 import { useAuthStore } from '@/store/authStore'
 import type { AuthUser, PermissionKey, Role } from '@/types/auth.types'
 
@@ -139,12 +141,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchedRef            = useRef(false)
 
   useEffect(() => {
-    if (DEV_BYPASS_AUTH) return
+    if (DEV_BYPASS_AUTH) {
+      bootstrapLocaleSession('AE')
+      return
+    }
 
     if (!accessToken) {
       setUser(null)
       setLoading(false)
       fetchedRef.current = false
+      clearLocaleSession()
       return
     }
     if (fetchedRef.current) return
@@ -192,6 +198,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               ? priorMustChange
               : Boolean(normalized.mustChangePassword),
         })
+        bootstrapLocaleSession(pickPreferredCountryCode(data))
       })
       .catch(() => {
         setUser(null)

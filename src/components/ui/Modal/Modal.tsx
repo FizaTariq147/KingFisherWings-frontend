@@ -35,6 +35,15 @@ export function Modal({ open, onClose, title, children, footer, size = 'md' }: M
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+            e.preventDefault();
+            onClose();
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label="Close dialog"
       />
       {/* Panel */}
       <div className={cn(

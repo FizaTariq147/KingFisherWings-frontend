@@ -181,7 +181,50 @@ function getMockResponse(url: string): unknown {
         role: { slug: 'TENANT_ADMIN', name: 'Tenant Admin' },
         tenant_id: '00000000-0000-4000-8000-000000000001',
         permissions: [],
+        preferred_country_code: 'AE',
       },
+    }
+  }
+
+  if (url.includes('/locale/defaults')) {
+    const hasCountry = url.includes('country=')
+    if (!hasCountry) {
+      return {
+        country_code: null,
+        dial_code: null,
+        base_currency: null,
+        timezone: null,
+        timezones: [],
+        tax_id_label: null,
+        has_postal_pattern: false,
+        has_tax_pattern: false,
+        country_required: false,
+      }
+    }
+    return {
+      country_code: 'AE',
+      dial_code: '+971',
+      base_currency: 'AED',
+      timezone: 'Asia/Dubai',
+      timezones: ['Asia/Dubai'],
+      tax_id_label: 'UAE TRN (15 digits)',
+      has_postal_pattern: true,
+      has_tax_pattern: true,
+      country_required: false,
+    }
+  }
+
+  if (url.match(/\/locale\/[A-Z]{2}$/i)) {
+    return {
+      country_code: 'AE',
+      dial_code: '+971',
+      base_currency: 'AED',
+      timezone: 'Asia/Dubai',
+      timezones: ['Asia/Dubai'],
+      tax_id_label: 'UAE TRN (15 digits)',
+      has_postal_pattern: true,
+      has_tax_pattern: true,
+      country_required: false,
     }
   }
 

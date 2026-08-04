@@ -118,8 +118,13 @@ export function normalizeBankAccount(raw: unknown): TenantBankAccount {
   };
 }
 
-export function normalizeBankAccounts(raw: unknown[]) {
-  return raw.map(normalizeBankAccount).filter((a) => Boolean(a.id));
+export function normalizeBankAccounts(raw: unknown[]): TenantBankAccount[] {
+  const accounts: TenantBankAccount[] = [];
+  for (const item of raw) {
+    const a = normalizeBankAccount(item);
+    if (a.id) accounts.push(a);
+  }
+  return accounts;
 }
 
 export function normalizeNumberFormat(raw: unknown): NumberFormat {
@@ -142,8 +147,13 @@ export function normalizeNumberFormat(raw: unknown): NumberFormat {
   };
 }
 
-export function normalizeNumberFormats(raw: unknown[]) {
-  return raw.map(normalizeNumberFormat).filter((f) => Boolean(f.document_type));
+export function normalizeNumberFormats(raw: unknown[]): NumberFormat[] {
+  const formats: NumberFormat[] = [];
+  for (const item of raw) {
+    const f = normalizeNumberFormat(item);
+    if (f.document_type) formats.push(f);
+  }
+  return formats;
 }
 
 export function normalizeNumberFormatPreview(raw: unknown): NumberFormatPreview {

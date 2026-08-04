@@ -106,6 +106,15 @@ export function ListPageTemplate<T>({
                 <tr
                   key={rowKey(row)}
                   onClick={() => onRowClick?.(row)}
+                  onKeyDown={(e) => {
+                    if (!onRowClick) return
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      onRowClick(row)
+                    }
+                  }}
+                  tabIndex={onRowClick ? 0 : undefined}
+                  role={onRowClick ? 'button' : undefined}
                   className={`border-b border-slate-50 last:border-0 ${onRowClick ? 'cursor-pointer hover:bg-surface' : ''}`}
                 >
                   {columns.map((c) => (

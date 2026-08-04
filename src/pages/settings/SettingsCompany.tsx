@@ -94,24 +94,24 @@ export default function SettingsCompany() {
                     { label: 'City',                  placeholder: 'Dubai' },
                     { label: 'P.O. Box',              placeholder: '45678' },
                   ].map((field) => (
-                    <div key={field.label} className={`flex flex-col gap-1 ${field.full ? 'col-span-2' : ''}`}>
-                      <label className="text-xs font-medium text-[var(--color-neutral-600)]">{field.label}</label>
+                    <label key={field.label} className={`flex flex-col gap-1 ${field.full ? 'col-span-2' : ''}`}>
+                      <span className="text-xs font-medium text-[var(--color-neutral-600)]">{field.label}</span>
                       <input
                         type="text"
                         placeholder={field.placeholder}
                         defaultValue={field.placeholder}
                         className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]"
                       />
-                    </div>
+                    </label>
                   ))}
-                  <div className="col-span-2 flex flex-col gap-1">
-                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">Address</label>
+                  <label className="col-span-2 flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[var(--color-neutral-600)]">Address</span>
                     <textarea
                       rows={2}
                       defaultValue="P.O. Box 45678, Deira, Dubai, UAE"
                       className="w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--color-primary-500)] resize-none"
                     />
-                  </div>
+                  </label>
                 </div>
               </Card>
 
@@ -136,43 +136,43 @@ export default function SettingsCompany() {
               <Card>
                 <CardHeader><CardTitle>Invoice & Document Settings</CardTitle></CardHeader>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">Invoice Prefix</label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[var(--color-neutral-600)]">Invoice Prefix</span>
                     <input type="text" defaultValue="INV" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">Job Number Prefix</label>
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[var(--color-neutral-600)]">Job Number Prefix</span>
                     <input type="text" defaultValue="KFW" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">Default Currency</label>
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[var(--color-neutral-600)]">Default Currency</span>
                     <select className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
                       <option>AED</option>
                       <option>USD</option>
                       <option>EUR</option>
                     </select>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">VAT Rate (%)</label>
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[var(--color-neutral-600)]">VAT Rate (%)</span>
                     <input type="number" defaultValue="5" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">Default Payment Terms</label>
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[var(--color-neutral-600)]">Default Payment Terms</span>
                     <select className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
                       <option>Net 30</option>
                       <option>Net 15</option>
                       <option>Net 60</option>
                       <option>Immediate</option>
                     </select>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">Fiscal Year Start</label>
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[var(--color-neutral-600)]">Fiscal Year Start</span>
                     <select className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
                       <option>January</option>
                       <option>April</option>
                       <option>July</option>
                     </select>
-                  </div>
+                  </label>
                 </div>
               </Card>
 
@@ -299,7 +299,8 @@ export default function SettingsCompany() {
                         <p className="text-xs text-[var(--color-neutral-400)]">{pref.desc}</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" defaultChecked={i < 4} className="sr-only peer" />
+                        <span className="sr-only">{pref.label}</span>
+                        <input type="checkbox" defaultChecked={i < 4} className="sr-only peer" aria-label={pref.label} />
                         <div className="w-9 h-5 bg-[var(--color-neutral-200)] peer-checked:bg-[var(--color-primary-500)] rounded-full transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4" />
                       </label>
                     </div>
@@ -316,12 +317,12 @@ export default function SettingsCompany() {
                     { label: 'Language',     options: ['English', 'Arabic', 'Urdu'],                  default: 0 },
                     { label: 'Number Format', options: ['1,234.56', '1.234,56'],                      default: 0 },
                   ].map((setting) => (
-                    <div key={setting.label} className="flex flex-col gap-1">
-                      <label className="text-xs font-medium text-[var(--color-neutral-600)]">{setting.label}</label>
+                    <label key={setting.label} className="flex flex-col gap-1">
+                      <span className="text-xs font-medium text-[var(--color-neutral-600)]">{setting.label}</span>
                       <select className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
                         {setting.options.map((opt) => <option key={opt}>{opt}</option>)}
                       </select>
-                    </div>
+                    </label>
                   ))}
                 </div>
               </Card>

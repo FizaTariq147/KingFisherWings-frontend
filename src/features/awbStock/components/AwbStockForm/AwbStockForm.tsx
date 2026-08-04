@@ -67,22 +67,26 @@ export function AwbStockForm({
   const fieldError = (name: keyof CreateAwbStockBatchFormValues) =>
     errors[name]?.message as string | undefined;
 
-  const airlineOpts = airlines
-    .filter((a) => isUuid(String(a.id)))
-    .map((a) => ({
+  const airlineOpts: Array<{ value: string; label: string; prefixHint: string }> = [];
+  for (const a of airlines) {
+    if (!isUuid(String(a.id))) continue;
+    airlineOpts.push({
       value: String(a.id),
       label: [a.code, a.name].filter(Boolean).join(' — ') || String(a.id),
       prefixHint: String(a.code || '')
         .replace(/\D/g, '')
         .slice(0, 3),
-    }));
+    });
+  }
 
-  const branchOpts = branches
-    .filter((b) => isUuid(String(b.id)))
-    .map((b) => ({
+  const branchOpts: Array<{ value: string; label: string }> = [];
+  for (const b of branches) {
+    if (!isUuid(String(b.id))) continue;
+    branchOpts.push({
       value: String(b.id),
       label: [b.code, b.name].filter(Boolean).join(' — ') || String(b.id),
-    }));
+    });
+  }
 
   const numAs = (v: unknown) =>
     v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v);
@@ -136,10 +140,10 @@ export function AwbStockForm({
                 )}
               />
               <div className="space-y-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+                <label htmlFor="awb-prefix" className="text-xs font-medium text-[var(--color-neutral-500)]">
                   Airline prefix <span className="text-[var(--color-danger-500)]">*</span>
                 </label>
-                <Input {...register('prefix')} placeholder="e.g. 176" maxLength={3} />
+                <Input id="awb-prefix" {...register('prefix')} placeholder="e.g. 176" maxLength={3} />
                 <FieldError message={fieldError('prefix')} />
               </div>
             </div>
@@ -151,20 +155,21 @@ export function AwbStockForm({
             </CardHeader>
             <div className="p-4 pt-0 grid gap-4 sm:grid-cols-2">
               <div className="space-y-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+                <label htmlFor="awb-range-from" className="text-xs font-medium text-[var(--color-neutral-500)]">
                   Start AWB number <span className="text-[var(--color-danger-500)]">*</span>
                 </label>
                 <Input
+                  id="awb-range-from"
                   type="number"
                   {...register('range_from', { setValueAs: numAs })}
                 />
                 <FieldError message={fieldError('range_from')} />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+                <label htmlFor="awb-range-to" className="text-xs font-medium text-[var(--color-neutral-500)]">
                   End AWB number <span className="text-[var(--color-danger-500)]">*</span>
                 </label>
-                <Input type="number" {...register('range_to', { setValueAs: numAs })} />
+                <Input id="awb-range-to" type="number" {...register('range_to', { setValueAs: numAs })} />
                 <FieldError message={fieldError('range_to')} />
               </div>
               <div className="sm:col-span-2 text-sm text-[var(--color-neutral-500)]">
@@ -208,18 +213,20 @@ export function AwbStockForm({
         </CardHeader>
         <div className="p-4 pt-0 grid gap-4 sm:grid-cols-2">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="awb-low-stock" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Low stock threshold
             </label>
             <Input
+              id="awb-low-stock"
               type="number"
               {...register('low_stock_threshold', { setValueAs: numAs })}
             />
             <FieldError message={fieldError('low_stock_threshold')} />
           </div>
           <div className="space-y-1 sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Notes / remarks</label>
+            <label htmlFor="awb-notes" className="text-xs font-medium text-[var(--color-neutral-500)]">Notes / remarks</label>
             <textarea
+              id="awb-notes"
               className="w-full min-h-[72px] rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
               {...register('notes')}
               placeholder="Optional remarks for this stock batch"

@@ -68,7 +68,12 @@ const UUID_RE =
 
 function toStringArray(value: unknown): string[] {
   if (Array.isArray(value)) {
-    return value.map(String).map((s) => s.trim()).filter(Boolean);
+    const out: string[] = [];
+    for (const v of value) {
+      const s = String(v).trim();
+      if (s) out.push(s);
+    }
+    return out;
   }
   if (typeof value === 'string') {
     return value

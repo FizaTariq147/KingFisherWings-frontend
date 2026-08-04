@@ -243,18 +243,23 @@ export function QuotationLinesEditor({
           className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-lg border border-[var(--color-neutral-200)] p-4"
         >
           <div className="space-y-1 sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="charge_code_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Charge code *
             </label>
-            <select className={selectClass} {...register('charge_code_id')}>
+            <select id="charge_code_id" className={selectClass} {...register('charge_code_id')}>
               <option value="">Select…</option>
-              {chargeCodes
-                .filter((c) => isUuid(String(c.id)))
-                .map((c) => (
-                  <option key={String(c.id)} value={String(c.id)}>
-                    {String(c.code ?? c.name ?? c.id)}
-                  </option>
-                ))}
+              {(() => {
+                const opts = [];
+                for (const c of chargeCodes) {
+                  if (!isUuid(String(c.id))) continue;
+                  opts.push(
+                    <option key={String(c.id)} value={String(c.id)}>
+                      {String(c.code ?? c.name ?? c.id)}
+                    </option>,
+                  );
+                }
+                return opts;
+              })()}
             </select>
             {errors.charge_code_id && (
               <p className="text-xs text-[var(--color-danger-500)]">
@@ -285,16 +290,21 @@ export function QuotationLinesEditor({
             {...register('exchange_rate', { valueAsNumber: true })}
           />
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-500)]">Tax rate</label>
-            <select className={selectClass} {...register('tax_rate_id')}>
+            <label htmlFor="tax_rate_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Tax rate</label>
+            <select id="tax_rate_id" className={selectClass} {...register('tax_rate_id')}>
               <option value="">None</option>
-              {taxRates
-                .filter((t) => isUuid(String(t.id)))
-                .map((t) => (
-                  <option key={String(t.id)} value={String(t.id)}>
-                    {String(t.name ?? t.code ?? t.id)}
-                  </option>
-                ))}
+              {(() => {
+                const opts = [];
+                for (const t of taxRates) {
+                  if (!isUuid(String(t.id))) continue;
+                  opts.push(
+                    <option key={String(t.id)} value={String(t.id)}>
+                      {String(t.name ?? t.code ?? t.id)}
+                    </option>,
+                  );
+                }
+                return opts;
+              })()}
             </select>
           </div>
           <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)] sm:col-span-2">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Plus, Search, ChevronDown, Maximize2, ArrowUpDown, Pencil, Heart } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Plus, Search, ChevronDown, Maximize2, ArrowUpDown, Pencil, Heart } from 'lucide-react';
 import { SelectInput } from '../../components/widgets/FilterField';
 import { employeeService } from '../../features/hr/services/employeeService';
 import type { EmployeeRow } from '../../features/hr/types/employee.types';
@@ -19,7 +20,6 @@ function Pagination({ count }: { count: number }) {
 }
 
 export default function EmployeesListPage() {
-  const navigate = useNavigate();
   const [rows, setRows] = useState('10');
   const [employees, setEmployees] = useState<EmployeeRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,19 +38,13 @@ export default function EmployeesListPage() {
   }, []);
 
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/hr" label="Back to HR" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">Employees List</h2>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-            >
-              <ChevronLeft size={14} />
-              Back
-            </button>
             <button className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
               <Plus size={14} />
               Create
@@ -60,24 +54,24 @@ export default function EmployeesListPage() {
 
         {/* Filter grid */}
         <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-3">
-          <div className="flex items-start gap-3">
-            <label className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Name</label>
+          <label className="flex items-start gap-3">
+            <span className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Name</span>
             <div className="flex-1">
               <SelectInput options={['All']} />
             </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <label className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Branch</label>
+          </label>
+          <label className="flex items-start gap-3">
+            <span className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Branch</span>
             <div className="flex-1">
               <SelectInput options={['All']} />
             </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <label className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Status</label>
+          </label>
+          <label className="flex items-start gap-3">
+            <span className="w-20 shrink-0 text-sm text-gray-700 pt-2 text-right">Status</span>
             <div className="flex-1">
               <SelectInput options={['All']} />
             </div>
-          </div>
+          </label>
         </div>
 
         {/* Search toolbar */}

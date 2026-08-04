@@ -1,35 +1,29 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
 import { SelectInput, DateInput } from '../../components/widgets/FilterField';
 
 export default function ComplaintsPage() {
-  const navigate = useNavigate();
   const [rows, setRows] = useState('5');
 
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/management" label="Back to Management" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">List of Complaints</h2>
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-          >
-            <ChevronLeft size={14} />
-            Back
-          </button>
         </div>
 
         {/* Filter row */}
         <div className="p-5 flex flex-wrap items-start gap-x-8 gap-y-3">
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">Category</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Category</span>
             <div className="w-40">
               <SelectInput options={['All']} />
             </div>
-          </div>
+          </label>
 
           <div className="flex-1 min-w-[240px] relative">
             <div className="flex items-center justify-between border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-700">
@@ -41,26 +35,26 @@ export default function ComplaintsPage() {
             </div>
           </div>
 
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">From date</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">From date</span>
             <div className="w-36">
               <DateInput value="01-JUL-26" />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">To date</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">To date</span>
             <div className="w-36">
               <DateInput value="31-JUL-26" />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">Status</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Status</span>
             <div className="w-40">
               <SelectInput options={['All']} />
             </div>
-          </div>
+          </label>
         </div>
 
         {/* Search toolbar */}

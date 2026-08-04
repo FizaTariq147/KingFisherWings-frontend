@@ -98,9 +98,16 @@ export function normalizeParty(raw: unknown): Party | null {
   const companyId = pickString(record, 'company_id', 'companyId');
   const salespersonId = pickString(record, 'salesperson_id', 'salespersonId');
   const tagsRaw = record.tags;
-  const tags = Array.isArray(tagsRaw)
-    ? tagsRaw.map(String).map((t) => t.trim()).filter(Boolean)
-    : undefined;
+  let tags: string[] | undefined;
+  if (Array.isArray(tagsRaw)) {
+    tags = [];
+    for (const t of tagsRaw) {
+      const trimmed = String(t).trim();
+      if (trimmed) tags.push(trimmed);
+    }
+  } else {
+    tags = undefined;
+  }
 
   const contactsRaw = record.contacts ?? record.party_contacts;
   const addressesRaw = record.addresses ?? record.party_addresses;

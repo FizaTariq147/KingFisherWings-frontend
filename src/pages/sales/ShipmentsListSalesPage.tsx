@@ -1,25 +1,19 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
 import { FilterField, SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
 
 export default function ShipmentsListSalesPage() {
-  const navigate = useNavigate();
   const [rows, setRows] = useState('5');
 
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/sales" label="Back to Sales" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">Shipment List - Sales</h2>
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-          >
-            <ChevronLeft size={14} />
-            Back
-          </button>
         </div>
 
         {/* Filter grid */}

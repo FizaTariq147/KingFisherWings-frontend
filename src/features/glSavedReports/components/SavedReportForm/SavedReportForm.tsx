@@ -153,10 +153,10 @@ export function SavedReportForm({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <Input label="Name *" error={fieldError('name')} {...register('name')} />
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="saved-report-type" className="text-sm font-medium text-[var(--color-neutral-700)]">
               Report type *
             </label>
-            <select className={selectClass} {...register('report_type')}>
+            <select id="saved-report-type" className={selectClass} {...register('report_type')}>
               {SAVED_REPORT_TYPES.map((t) => (
                 <option key={t} value={t}>
                   {SAVED_REPORT_TYPE_LABELS[t]}
@@ -177,12 +177,13 @@ export function SavedReportForm({
             error={fieldError('company_id')}
             {...register('company_id', uuidSelect)}
           />
-          <label className="flex items-center gap-2 text-sm h-9">
+          <label htmlFor="saved-report-is-shared" className="flex items-center gap-2 text-sm h-9">
             <Controller
               name="is_shared"
               control={control}
               render={({ field }) => (
                 <input
+                  id="saved-report-is-shared"
                   type="checkbox"
                   className={checkClass}
                   checked={Boolean(field.value)}
@@ -193,10 +194,11 @@ export function SavedReportForm({
             Share with other users
           </label>
           <div className="sm:col-span-2 space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="saved-report-filters" className="text-sm font-medium text-[var(--color-neutral-700)]">
               Filters (JSON object)
             </label>
             <textarea
+              id="saved-report-filters"
               className="min-h-[120px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm font-mono"
               defaultValue={filtersJson}
               placeholder='{"from_date":"2026-06-01","to_date":"2026-06-30","hide_zero":true}'

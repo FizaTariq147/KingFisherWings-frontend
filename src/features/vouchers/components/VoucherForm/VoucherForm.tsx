@@ -137,10 +137,10 @@ export function VoucherForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+            <label htmlFor="voucher_type" className="text-sm font-medium text-[var(--color-neutral-700)]">
               Voucher type *
             </label>
-            <select className={selectClass} {...register('voucher_type')}>
+            <select id="voucher_type" className={selectClass} {...register('voucher_type')}>
               {VOUCHER_TYPES.map((t) => (
                 <option key={t} value={t}>
                   {VOUCHER_TYPE_LABELS[t]}
@@ -156,8 +156,8 @@ export function VoucherForm({
             {...register('voucher_date')}
           />
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">Currency</label>
-            <select className={selectClass} {...register('currency_code')}>
+            <label htmlFor="currency_code" className="text-sm font-medium text-[var(--color-neutral-700)]">Currency</label>
+            <select id="currency_code" className={selectClass} {...register('currency_code')}>
               <option value="">—</option>
               {VOUCHER_CURRENCY_OPTIONS.map((c) => (
                 <option key={c} value={c}>
@@ -180,8 +180,8 @@ export function VoucherForm({
             {...register('reference_number')}
           />
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--color-neutral-700)]">Party</label>
-            <select className={selectClass} {...register('party_id', uuidSelect)}>
+            <label htmlFor="party_id" className="text-sm font-medium text-[var(--color-neutral-700)]">Party</label>
+            <select id="party_id" className={selectClass} {...register('party_id', uuidSelect)}>
               <option value="">— None —</option>
               {parties.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -238,10 +238,11 @@ export function VoucherForm({
                 className="grid grid-cols-1 sm:grid-cols-6 gap-3 rounded-lg border border-[var(--color-neutral-200)] p-3"
               >
                 <div className="sm:col-span-2 space-y-1">
-                  <label className="text-sm font-medium text-[var(--color-neutral-700)]">
+                  <label htmlFor={`voucher-line-account-${index}`} className="text-sm font-medium text-[var(--color-neutral-700)]">
                     Account
                   </label>
                   <select
+                    id={`voucher-line-account-${index}`}
                     className={selectClass}
                     {...register(`lines.${index}.account_id` as const)}
                   >

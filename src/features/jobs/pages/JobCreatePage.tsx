@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { PageBackLink } from '@/components/ui/PageBackLink';
 import { JobForm } from '../components/JobForm';
 import {
   JOB_SEGMENTS,
   JOB_TYPE_WIZARD_OPTIONS,
+  JOB_TYPES,
   type JobSegmentKey,
   type JobType,
 } from '../constants/job.constants';
@@ -17,13 +19,23 @@ function defaultTypeForSegment(segment: JobSegmentKey | null): JobType {
   return JOB_SEGMENTS[segment].defaultCreateType;
 }
 
+function parseJobTypeParam(raw: string | null): JobType | null {
+  if (!raw) return null;
+  const upper = raw.trim().toUpperCase();
+  return (JOB_TYPES as readonly string[]).includes(upper) ? (upper as JobType) : null;
+}
+
 export default function JobCreatePage() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
   const segment = segmentFromPath(pathname);
   const isGenericCreate = pathname === '/jobs/new' || !segment;
   const create = useCreateJob();
   const [error, setError] = useState<string | null>(null);
+
+  const queryType = parseJobTypeParam(searchParams.get('job_type'));
+  const defaultJobType = queryType ?? defaultTypeForSegment(segment);
 
   const backPath = isGenericCreate ? '/dashboard' : jobRoutePrefix(segment!);
   const backLabel = isGenericCreate
@@ -32,13 +44,7 @@ export default function JobCreatePage() {
 
   return (
     <div className="space-y-4">
-      <button
-        type="button"
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-        onClick={() => navigate(backPath)}
-      >
-        ← {backLabel}
-      </button>
+      <PageBackLink to={backPath} label={backLabel} />
       <div>
         <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create job</h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
@@ -62,7 +68,7 @@ export default function JobCreatePage() {
       <JobForm
         mode="create"
         jobTypeOptions={JOB_TYPE_WIZARD_OPTIONS}
-        defaultJobType={defaultTypeForSegment(segment)}
+        defaultJobType={defaultJobType}
         isSubmitting={create.isPending}
         onCancel={() => navigate(backPath)}
         onSubmit={async (values) => {

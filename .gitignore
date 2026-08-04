@@ -1,9 +1,51 @@
-node_modules
-dist
+# Dependencies
+node_modules/
+
+# Build
+dist/
+build/
+.storybook-out/
+
+# Environment / secrets
 .env
-.env.local
-.env.production
+.env.*
+!.env.example
+!.env.e2e.example
+
+# Logs & caches
 *.log
-.vite
-coverage
-.storybook-out
+npm-debug.log*
+.vite/
+.cache/
+coverage/
+*.tsbuildinfo
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# Playwright / E2E
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+e2e/.auth/
+
+# React Doctor dumps
+.tmp-react-doctor*/
+.tmp-react-doctor-verify/
+.tmp-react-doctor-verify2/
+
+# Local temp / swagger extracts / analysis artifacts
+.tmp-*
+.tmp*
+
+# Optional local reports (keep docs/*.md tracked; ignore raw JSON dumps at root)
+.tmp-api-test-results.json

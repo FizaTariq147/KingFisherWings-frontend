@@ -24,15 +24,19 @@ function buildDiff(
     ...Object.keys(after  ?? {}),
   ])
 
-  return Array.from(keys).map((key) => {
+  const rows: DiffRow[] = []
+  for (const key of keys) {
     const b = before?.[key]
     const a = after?.[key]
     let status: DiffStatus = 'unchanged'
     if (b === undefined) status = 'added'
     else if (a === undefined) status = 'removed'
     else if (JSON.stringify(b) !== JSON.stringify(a)) status = 'changed'
-    return { key, status, before: b, after: a }
-  }).filter((r) => r.status !== 'unchanged')
+    if (status !== 'unchanged') {
+      rows.push({ key, status, before: b, after: a })
+    }
+  }
+  return rows
 }
 
 function formatValue(v: unknown): string {

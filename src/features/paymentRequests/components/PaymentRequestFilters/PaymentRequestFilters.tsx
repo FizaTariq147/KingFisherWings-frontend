@@ -28,8 +28,9 @@ export function PaymentRequestFilters({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       <div className="space-y-1">
-        <label className="text-xs font-medium text-[var(--color-neutral-500)]">Status</label>
+        <label htmlFor="payment-request-filter-status" className="text-xs font-medium text-[var(--color-neutral-500)]">Status</label>
         <select
+          id="payment-request-filter-status"
           className={selectClass}
           value={status}
           onChange={(e) => onStatusChange(e.target.value as PaymentRequestStatus | 'all')}

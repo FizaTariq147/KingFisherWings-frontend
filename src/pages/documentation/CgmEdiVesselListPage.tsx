@@ -1,26 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Plus, Search, ChevronDown, Heart } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Plus, Search, ChevronDown, Heart } from 'lucide-react';
 import { SelectInput, TextInput } from '../../components/widgets/FilterField';
 
 export default function CgmEdiVesselListPage() {
-  const navigate = useNavigate();
   const [rows, setRows] = useState('50');
 
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/documentation" label="Back to Documentation" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">CGM EDI Vessel List</h2>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-            >
-              <ChevronLeft size={14} />
-              Back
-            </button>
             <button className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
               <Plus size={14} />
               Create
@@ -30,33 +24,33 @@ export default function CgmEdiVesselListPage() {
 
         {/* Filter row */}
         <div className="p-5 flex flex-wrap items-start gap-x-10 gap-y-3">
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">Vessel Name</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Vessel Name</span>
             <div className="w-48">
               <TextInput />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">Voyage</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Voyage</span>
             <div className="w-48">
               <TextInput />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">Origin</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Origin</span>
             <div className="w-40">
               <SelectInput options={['All']} />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">Destination</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Destination</span>
             <div className="w-40">
               <SelectInput options={['All']} />
             </div>
-          </div>
+          </label>
         </div>
 
         {/* Search toolbar */}

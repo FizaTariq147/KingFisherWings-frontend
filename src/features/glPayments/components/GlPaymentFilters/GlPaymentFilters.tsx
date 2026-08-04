@@ -45,8 +45,9 @@ export function GlPaymentFilters({
         onChange={(e) => onSearchChange(e.target.value)}
       />
       <div className="space-y-1">
-        <label className="text-sm font-medium text-[var(--color-neutral-700)]">Direction</label>
+        <label htmlFor="gl-payment-filter-direction" className="text-sm font-medium text-[var(--color-neutral-700)]">Direction</label>
         <select
+          id="gl-payment-filter-direction"
           className={selectClass}
           value={direction}
           onChange={(e) => onDirectionChange(e.target.value as PaymentDirection | 'all')}
@@ -60,8 +61,9 @@ export function GlPaymentFilters({
         </select>
       </div>
       <div className="space-y-1">
-        <label className="text-sm font-medium text-[var(--color-neutral-700)]">Status</label>
+        <label htmlFor="gl-payment-filter-status" className="text-sm font-medium text-[var(--color-neutral-700)]">Status</label>
         <select
+          id="gl-payment-filter-status"
           className={selectClass}
           value={status}
           onChange={(e) => onStatusChange(e.target.value as GlPaymentStatus | 'all')}

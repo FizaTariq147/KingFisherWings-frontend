@@ -1,26 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Upload, Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Upload, Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
 import { SelectInput } from '../../components/widgets/FilterField';
 
 export default function SalaryLedgerPage() {
-  const navigate = useNavigate();
   const [rows, setRows] = useState('50');
 
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/hr" label="Back to HR" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">Salary Ledger List</h2>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-            >
-              <ChevronLeft size={14} />
-              Back
-            </button>
             <button className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
               <Upload size={14} />
               Upload
@@ -30,26 +24,26 @@ export default function SalaryLedgerPage() {
 
         {/* Filter row */}
         <div className="p-5 flex flex-wrap items-start gap-x-10 gap-y-3">
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">Branch</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Branch</span>
             <div className="w-56">
               <SelectInput options={['-Select-']} />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">Salary date</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Salary date</span>
             <div className="w-56">
               <SelectInput options={['-Select-']} />
             </div>
-          </div>
+          </label>
 
-          <div className="flex items-start gap-3">
-            <label className="text-sm text-gray-700 pt-2">Employee</label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Employee</span>
             <div className="w-64">
               <SelectInput options={['All']} />
             </div>
-          </div>
+          </label>
         </div>
 
         {/* Search toolbar */}

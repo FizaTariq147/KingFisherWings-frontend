@@ -76,8 +76,8 @@ export function BankAccountForm({
           {...register('swift_code')}
         />
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-[var(--color-neutral-600)]">Currency</label>
-          <select className={selectClass} {...register('currency_code')}>
+          <label htmlFor="bank-account-currency" className="text-xs font-medium text-[var(--color-neutral-600)]">Currency</label>
+          <select id="bank-account-currency" className={selectClass} {...register('currency_code')}>
             {CURRENCY_OPTIONS.map((c) => (
               <option key={c} value={c}>
                 {c}

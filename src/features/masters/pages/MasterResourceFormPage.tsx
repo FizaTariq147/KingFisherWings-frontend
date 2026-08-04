@@ -269,8 +269,9 @@ function FieldInput({
 
     return (
       <div className="space-y-1">
-        <label className="text-xs font-medium text-[var(--color-neutral-500)]">{field.label}</label>
+        <label htmlFor={`master-select-${field.name}`} className="text-xs font-medium text-[var(--color-neutral-500)]">{field.label}</label>
         <select
+          id={`master-select-${field.name}`}
           name={field.name}
           data-field={field.name}
           aria-invalid={Boolean(error)}
@@ -319,10 +320,10 @@ function FieldInput({
         : [];
     return (
       <div className="space-y-2">
-        <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+        <span className="text-xs font-medium text-[var(--color-neutral-500)]">
           {field.label}
           {field.required ? ' *' : ''}
-        </label>
+        </span>
         <div className="flex flex-wrap gap-3" data-field={field.name}>
           {options.map((opt) => {
             const checked = selected.includes(opt.value);
@@ -354,8 +355,9 @@ function FieldInput({
   if (field.type === 'textarea') {
     return (
       <div className="space-y-1">
-        <label className="text-xs font-medium text-[var(--color-neutral-500)]">{field.label}</label>
+        <label htmlFor={`master-textarea-${field.name}`} className="text-xs font-medium text-[var(--color-neutral-500)]">{field.label}</label>
         <textarea
+          id={`master-textarea-${field.name}`}
           name={field.name}
           data-field={field.name}
           aria-invalid={Boolean(error)}
@@ -477,70 +479,78 @@ function useFieldOptions(field: MasterFieldConfig) {
   return useMemo(() => {
     if (field.options?.length) return field.options;
     if (fromCompanies) {
-      return companies
-        .filter((c) => isUuid(c.id))
-        .map((c) => ({
+      const opts: Array<{ value: string; label: string }> = [];
+      for (const c of companies) {
+        if (!isUuid(c.id)) continue;
+        opts.push({
           value: c.id,
           label: c.code ? `${c.name} (${c.code})` : c.name,
-        }));
+        });
+      }
+      return opts;
     }
     if (!optionsKey) return [];
     const valueKey = field.optionsValueKey ?? 'id';
     const labelKey = field.optionsLabelKey ?? 'name';
-    return items
-      .filter((item) => {
-        // Departments: show all (including inactive). Other masters: active only.
-        if (!fromDepartments && item.is_active === false) return false;
-        if (item.deleted_at) return false;
-        return true;
-      })
-      .map((item) => {
-        const name = masterDisplayValue(item, labelKey);
-        const code = typeof item.code === 'string' ? item.code : '';
-        const rate = item.rate != null && item.rate !== '' ? String(item.rate) : '';
-        const inactive = item.is_active === false;
+    const opts: Array<{ value: string; label: string }> = [];
+    for (const item of items) {
+      // Departments: show all (including inactive). Other masters: active only.
+      if (!fromDepartments && item.is_active === false) continue;
+      if (item.deleted_at) continue;
 
-        // Holidays / country lookups must submit ISO alpha-2, never the row UUID.
-        if (optionsKey === 'countries' || valueKey === 'iso_code') {
-          const iso = pickCountryIsoCode(item);
-          if (!iso) return null;
-          return { value: iso, label: name !== '—' ? `${name} (${iso})` : iso };
-        }
+      const name = masterDisplayValue(item, labelKey);
+      const code = typeof item.code === 'string' ? item.code : '';
+      const rate = item.rate != null && item.rate !== '' ? String(item.rate) : '';
+      const inactive = item.is_active === false;
 
-        const value = String(item[valueKey] ?? '');
-        // UUID FK selects must only expose real UUIDs (Nest ParseUUIDPipe / @IsUUID).
-        if (valueKey === 'id' && !isUuid(value)) return null;
+      // Holidays / country lookups must submit ISO alpha-2, never the row UUID.
+      if (optionsKey === 'countries' || valueKey === 'iso_code') {
+        const iso = pickCountryIsoCode(item);
+        if (!iso) continue;
+        opts.push({ value: iso, label: name !== '—' ? `${name} (${iso})` : iso });
+        continue;
+      }
 
-        if (optionsKey === 'currencies') {
-          const c =
-            typeof item.code === 'string' && item.code
-              ? item.code.toUpperCase()
-              : value.toUpperCase();
-          const displayName = masterDisplayValue(item, 'name');
-          const label =
-            displayName !== '—' && displayName.toUpperCase() !== c
-              ? `${c} — ${displayName}`
-              : c;
-          return {
-            value: valueKey === 'code' ? c : value,
-            label,
-          };
-        }
+      const value = String(item[valueKey] ?? '');
+      // UUID FK selects must only expose real UUIDs (Nest ParseUUIDPipe / @IsUUID).
+      if (valueKey === 'id' && !isUuid(value)) continue;
 
-        let label = name;
-        if (optionsKey === 'tax-rates') {
-          label = [name !== '—' ? name : code, code && name !== code ? `(${code})` : '', rate ? `${rate}%` : '']
-            .filter(Boolean)
-            .join(' ');
-        } else if (code && name !== '—' && name !== code) {
-          label = `${name} (${code})`;
-        }
-        if (fromDepartments && inactive) {
-          label = `${label || value} — inactive`;
-        }
-        return { value, label: label || value };
-      })
-      .filter((opt): opt is { value: string; label: string } => Boolean(opt?.value));
+      if (optionsKey === 'currencies') {
+        const c =
+          typeof item.code === 'string' && item.code
+            ? item.code.toUpperCase()
+            : value.toUpperCase();
+        const displayName = masterDisplayValue(item, 'name');
+        const label =
+          displayName !== '—' && displayName.toUpperCase() !== c
+            ? `${c} — ${displayName}`
+            : c;
+        const currencyValue = valueKey === 'code' ? c : value;
+        if (!currencyValue) continue;
+        opts.push({
+          value: currencyValue,
+          label,
+        });
+        continue;
+      }
+
+      let label = name;
+      if (optionsKey === 'tax-rates') {
+        label = [name !== '—' ? name : code, code && name !== code ? `(${code})` : '', rate ? `${rate}%` : '']
+          .filter(Boolean)
+          .join(' ');
+      } else if (code && name !== '—' && name !== code) {
+        label = `${name} (${code})`;
+      }
+      if (fromDepartments && inactive) {
+        label = `${label || value} — inactive`;
+      }
+      const finalValue = value;
+      const finalLabel = label || value;
+      if (!finalValue) continue;
+      opts.push({ value: finalValue, label: finalLabel });
+    }
+    return opts;
   }, [
     companies,
     field.options,

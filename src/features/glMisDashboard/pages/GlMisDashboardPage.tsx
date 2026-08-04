@@ -94,8 +94,9 @@ export default function GlMisDashboardPage() {
         <Input label="Company ID" value={companyId} onChange={(e) => setCompanyId(e.target.value)} />
         <Input label="Branch ID" value={branchId} onChange={(e) => setBranchId(e.target.value)} />
         <div className="space-y-1">
-          <label className="text-sm font-medium text-[var(--color-neutral-700)]">Profitability group</label>
+          <label htmlFor="mis-group-by" className="text-sm font-medium text-[var(--color-neutral-700)]">Profitability group</label>
           <select
+            id="mis-group-by"
             className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
             value={groupBy}
             onChange={(e) => setGroupBy(e.target.value as MisGroupBy)}

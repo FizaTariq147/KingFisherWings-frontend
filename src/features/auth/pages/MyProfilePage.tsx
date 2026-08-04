@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { CountrySelect } from '@/components/ui/CountrySelect';
 import { authService } from '@/features/auth/services/auth.service';
+import { bootstrapLocaleSession } from '@/features/locale/bootstrap/localeBootstrap';
 import { getServerErrorMessage } from '@/lib/validation';
 import { useAuthStore } from '@/store/authStore';
 
@@ -46,6 +47,7 @@ export default function MyProfilePage() {
       await authService.updateMe({ preferred_country_code: country || null });
       setInitial(country);
       setSuccess(true);
+      bootstrapLocaleSession(country || null);
       await queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
       window.setTimeout(() => setSuccess(false), 2500);
     } catch (err) {

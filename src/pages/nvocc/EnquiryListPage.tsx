@@ -1,26 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Wand2, Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Wand2, Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
 import { FilterField, SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
 
 export default function EnquiryListPage() {
-  const navigate = useNavigate();
   const [rows, setRows] = useState('10');
 
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/nvocc" label="Back to NVOCC" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">All Enquiry List</h2>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-            >
-              <ChevronLeft size={14} />
-              Back
-            </button>
             <button className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
               <Wand2 size={14} />
               Create

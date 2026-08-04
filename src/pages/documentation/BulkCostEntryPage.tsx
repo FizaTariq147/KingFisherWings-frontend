@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { PageBackLink } from '@/components/ui/PageBackLink';
 import { X, Plus, Save, CheckCircle } from 'lucide-react';
 import { SelectInput, TextInput } from '../../components/widgets/FilterField';
 
@@ -24,121 +25,120 @@ export default function BulkCostEntryPage() {
 
     return (
         <div className="fixed inset-0 bg-black/40 flex items-start justify-center overflow-y-auto py-6 z-50">
-            <div className="bg-white rounded-md shadow-lg w-full max-w-6xl">
+            <div className="space-y-3 w-full max-w-6xl px-4">
+                <PageBackLink to="/documentation" label="Back to Documentation" />
+                <div className="bg-white rounded-md shadow-lg w-full">
                 {/* Header */}
                 <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
                     <h1 className="text-[17px] font-medium text-gray-800">Cost Entry</h1>
-                    <button onClick={() => navigate(-1)} className="text-gray-400 hover:text-gray-600">
-                        <X size={18} />
-                    </button>
                 </div>
 
                 {/* Form fields */}
                 <div className="p-5 grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-3">
-                    <div className="md:col-span-4 flex items-start gap-3">
-                        <label className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Organization</label>
+                    <label className="md:col-span-4 flex items-start gap-3">
+                        <span className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Organization</span>
                         <div className="w-full max-w-md">
                             <SelectInput options={['-Select-']} />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Vessel Name</label>
+                    <label className="flex items-start gap-3">
+                        <span className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Vessel Name</span>
                         <div className="flex-1">
                             <SelectInput options={['-Select-']} />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="text-sm text-gray-700 pt-2">Voyage No.</label>
+                    <label className="flex items-start gap-3">
+                        <span className="text-sm text-gray-700 pt-2">Voyage No.</span>
                         <div className="flex-1">
                             <SelectInput options={['-Select-']} />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="text-sm text-gray-700 pt-2">Job No.</label>
+                    <label className="flex items-start gap-3">
+                        <span className="text-sm text-gray-700 pt-2">Job No.</span>
                         <div className="flex-1">
                             <SelectInput options={['-Select-']} />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="text-sm text-gray-700 pt-2">Shipment No.</label>
+                    <label className="flex items-start gap-3">
+                        <span className="text-sm text-gray-700 pt-2">Shipment No.</span>
                         <div className="flex-1">
                             <SelectInput options={['-Select-']} />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Charge</label>
+                    <label className="flex items-start gap-3">
+                        <span className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Charge</span>
                         <div className="flex-1">
                             <SelectInput options={['-Select-']} />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="text-sm text-gray-700 pt-2">Description</label>
+                    <label className="flex items-start gap-3">
+                        <span className="text-sm text-gray-700 pt-2">Description</span>
                         <div className="flex-1">
                             <TextInput />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="text-sm text-gray-700 pt-2">FCY Amount</label>
+                    <label className="flex items-start gap-3">
+                        <span className="text-sm text-gray-700 pt-2">FCY Amount</span>
                         <div className="flex-1">
                             <TextInput />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="text-sm text-gray-700 pt-2">Amount (AED)</label>
+                    <label className="flex items-start gap-3">
+                        <span className="text-sm text-gray-700 pt-2">Amount (AED)</span>
                         <div className="flex-1">
                             <TextInput />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Currency</label>
+                    <label className="flex items-start gap-3">
+                        <span className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Currency</span>
                         <div className="flex-1">
                             <TextInput />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="text-sm text-gray-700 pt-2">Ex.Rate</label>
+                    <label className="flex items-start gap-3">
+                        <span className="text-sm text-gray-700 pt-2">Ex.Rate</span>
                         <div className="flex-1">
                             <TextInput />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="text-sm text-gray-700 pt-2">Prorate Method</label>
+                    <label className="flex items-start gap-3">
+                        <span className="text-sm text-gray-700 pt-2">Prorate Method</span>
                         <div className="flex-1">
                             <SelectInput options={['Chargeable Unit']} />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="text-sm text-gray-700 pt-2">Tax Group Code</label>
+                    <label className="flex items-start gap-3">
+                        <span className="text-sm text-gray-700 pt-2">Tax Group Code</span>
                         <div className="flex-1">
                             <SelectInput options={['-Select-']} />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Sale / Cost</label>
+                    <label className="flex items-start gap-3">
+                        <span className="w-24 shrink-0 text-sm text-gray-700 pt-2 text-right">Sale / Cost</span>
                         <div className="flex-1">
                             <SelectInput options={['Cost', 'Sale']} />
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex items-start gap-3">
-                        <label className="text-sm text-gray-700 pt-2">Dr / Cr</label>
+                    <label className="flex items-start gap-3">
+                        <span className="text-sm text-gray-700 pt-2">Dr / Cr</span>
                         <div className="flex-1">
                             <SelectInput options={['Dr', 'Cr']} />
                         </div>
-                    </div>
+                    </label>
 
                     <div className="md:col-span-2 flex justify-end items-start">
                         <button className="flex items-center gap-1.5 bg-blue-600 hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
@@ -162,7 +162,7 @@ export default function BulkCostEntryPage() {
                 {/* Footer actions */}
                 <div className="flex items-center justify-between px-5 py-3 border-t border-gray-200">
                     <button
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate('/documentation')}
                         className="flex items-center gap-1.5 bg-red-600 hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity"
                     >
                         <X size={14} />
@@ -178,6 +178,7 @@ export default function BulkCostEntryPage() {
                             Save and Close
                         </button>
                     </div>
+                </div>
                 </div>
             </div>
         </div>

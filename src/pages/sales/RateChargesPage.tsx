@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Plus, Search, ChevronDown, Heart, X, AlignJustify } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Plus, Search, ChevronDown, Heart, X, AlignJustify } from 'lucide-react';
 
 interface TariffItem {
   id: string;
@@ -17,7 +18,6 @@ export default function RateChargesPage() {
   const [rows, setRows] = useState('10');
   const [expanded, setExpanded] = useState(true);
   const [items, setItems] = useState<TariffItem[]>(initialItems);
-  const navigate = useNavigate();
   const toggleItem = (id: string) => {
     setItems((prev) => prev.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item)));
   };
@@ -27,19 +27,13 @@ export default function RateChargesPage() {
   };
 
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/sales" label="Back to Sales" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">Tariff Sheet</h2>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-            >
-              <ChevronLeft size={14} />
-              Back
-            </button>
             <button className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
               <Plus size={14} />
               Create

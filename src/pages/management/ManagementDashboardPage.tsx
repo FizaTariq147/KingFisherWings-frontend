@@ -98,22 +98,22 @@ export default function ManagementDashboardPage() {
 
         {/* Filter row */}
         <div className="p-5 grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-3">
-          <div>
-            <label className="block text-sm text-gray-700 mb-1">From Date</label>
+          <label className="block">
+            <span className="block text-sm text-gray-700 mb-1">From Date</span>
             <DateInput value="01-JAN-26" />
-          </div>
-          <div>
-            <label className="block text-sm text-gray-700 mb-1">To Date</label>
+          </label>
+          <label className="block">
+            <span className="block text-sm text-gray-700 mb-1">To Date</span>
             <DateInput value="09-JUL-26" />
-          </div>
-          <div>
-            <label className="block text-sm text-gray-700 mb-1">Department</label>
+          </label>
+          <label className="block">
+            <span className="block text-sm text-gray-700 mb-1">Department</span>
             <TextInput placeholder="-All-" />
-          </div>
-          <div>
-            <label className="block text-sm text-gray-700 mb-1">Branch</label>
+          </label>
+          <label className="block">
+            <span className="block text-sm text-gray-700 mb-1">Branch</span>
             <TextInput placeholder="- All -" />
-          </div>
+          </label>
         </div>
 
         {/* Chart grid */}

@@ -44,6 +44,7 @@ export function SearchableSelect({
   hint,
 }: SearchableSelectProps) {
   const listId = useId();
+  const inputId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const selected = options.find((o) => o.value === value);
   const [query, setQuery] = useState(selected?.label ?? value ?? '');
@@ -130,12 +131,13 @@ export function SearchableSelect({
 
   return (
     <div className="space-y-1" ref={rootRef}>
-      <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+      <label htmlFor={inputId} className="text-xs font-medium text-[var(--color-neutral-500)]">
         {label}
         {required ? ' *' : ''}
       </label>
       <div className="relative">
         <input
+          id={inputId}
           type="text"
           name={name}
           data-field={name}

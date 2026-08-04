@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Search, ChevronDown, Heart, FileCheck, FileText, Circle, DollarSign, Headphones, PieChart } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Search, ChevronDown, Heart, FileCheck, FileText, Circle, DollarSign, Headphones, PieChart } from 'lucide-react';
 import { FilterField, SelectInput, DateInput } from '../../components/widgets/FilterField';
 
 interface ReportButton {
@@ -22,20 +23,13 @@ const reportButtons: ReportButton[] = [
 export default function SalesDashboardPage() {
   const [rows, setRows] = useState('50');
   const [submitted, setSubmitted] = useState(false);
-    const navigate = useNavigate();
   return (
-    <div>
+    <div className="space-y-3">
+      <PageBackLink to="/sales" label="Back to Sales" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">Sales Dashboard</h2>
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-          >
-            <ChevronLeft size={14} />
-            Back
-          </button>
         </div>
 
         {/* Filter grid */}

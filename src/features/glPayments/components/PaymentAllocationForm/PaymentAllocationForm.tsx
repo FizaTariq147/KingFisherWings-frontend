@@ -60,8 +60,8 @@ export function PaymentAllocationForm({
       noValidate
     >
       <div className="sm:col-span-2 space-y-1">
-        <label className="text-sm font-medium text-[var(--color-neutral-700)]">Invoice *</label>
-        <select className={selectClass} {...register('invoice_id', uuidSelect)}>
+        <label htmlFor="payment-alloc-invoice" className="text-sm font-medium text-[var(--color-neutral-700)]">Invoice *</label>
+        <select id="payment-alloc-invoice" className={selectClass} {...register('invoice_id', uuidSelect)}>
           <option value="">— Select invoice —</option>
           {invoices.map((inv) => (
             <option key={inv.id} value={inv.id}>

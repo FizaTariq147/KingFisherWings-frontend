@@ -171,26 +171,26 @@ export default function CreateJobForm() {
           <Card>
             <CardHeader><CardTitle>Shipper</CardTitle></CardHeader>
             <div className="space-y-3">
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">Select Customer</label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">Select Customer</span>
                 <select className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
                   <option value="">-- Select customer --</option>
                   {customers.map((c) => <option key={c}>{c}</option>)}
                 </select>
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">Address</label>
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">Address</span>
                 <textarea rows={2} className="w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--color-primary-500)] resize-none" placeholder="Shipper address..." />
-              </div>
+              </label>
               <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-[var(--color-neutral-600)]">Country</label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-[var(--color-neutral-600)]">Country</span>
                   <input type="text" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="UAE" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-[var(--color-neutral-600)]">Phone</label>
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-[var(--color-neutral-600)]">Phone</span>
                   <input type="text" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="+971..." />
-                </div>
+                </label>
               </div>
             </div>
           </Card>
@@ -198,23 +198,23 @@ export default function CreateJobForm() {
           <Card>
             <CardHeader><CardTitle>Consignee</CardTitle></CardHeader>
             <div className="space-y-3">
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">Company Name</label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">Company Name</span>
                 <input type="text" className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="Consignee name..." />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">Address</label>
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">Address</span>
                 <textarea rows={2} className="w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--color-primary-500)] resize-none" placeholder="Consignee address..." />
-              </div>
+              </label>
               <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-[var(--color-neutral-600)]">Country</label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-[var(--color-neutral-600)]">Country</span>
                   <input type="text" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="UK" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-[var(--color-neutral-600)]">Email</label>
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-[var(--color-neutral-600)]">Email</span>
                   <input type="email" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="email@company.com" />
-                </div>
+                </label>
               </div>
             </div>
           </Card>
@@ -226,24 +226,24 @@ export default function CreateJobForm() {
                 <input type="checkbox" id="same-as-consignee" className="rounded" />
                 <label htmlFor="same-as-consignee" className="text-sm text-[var(--color-neutral-600)]">Same as consignee</label>
               </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">Company Name</label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">Company Name</span>
                 <input type="text" className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="Notify party name..." />
-              </div>
+              </label>
             </div>
           </Card>
 
           <Card>
             <CardHeader><CardTitle>Overseas Agent</CardTitle></CardHeader>
             <div className="space-y-3">
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">Agent Name</label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">Agent Name</span>
                 <input type="text" className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="Agent company name..." />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">Country</label>
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">Country</span>
                 <input type="text" className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="Country..." />
-              </div>
+              </label>
             </div>
           </Card>
         </div>
@@ -256,38 +256,38 @@ export default function CreateJobForm() {
             <Card>
               <CardHeader><CardTitle>Origin</CardTitle></CardHeader>
               <div className="space-y-3">
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-[var(--color-neutral-600)]">
                     {mode === 'Air' ? 'Origin Airport' : 'Port of Loading (POL)'}
-                  </label>
+                  </span>
                   <select className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
                     <option value="">-- Select --</option>
                     {(mode === 'Air' ? airports : ports).map((p) => <option key={p}>{p}</option>)}
                   </select>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-[var(--color-neutral-600)]">ETD</label>
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-[var(--color-neutral-600)]">ETD</span>
                   <input type="date" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" />
-                </div>
+                </label>
               </div>
             </Card>
 
             <Card>
               <CardHeader><CardTitle>Destination</CardTitle></CardHeader>
               <div className="space-y-3">
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-[var(--color-neutral-600)]">
                     {mode === 'Air' ? 'Destination Airport' : 'Port of Discharge (POD)'}
-                  </label>
+                  </span>
                   <select className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
                     <option value="">-- Select --</option>
                     {(mode === 'Air' ? airports : ports).map((p) => <option key={p}>{p}</option>)}
                   </select>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-[var(--color-neutral-600)]">ETA</label>
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-[var(--color-neutral-600)]">ETA</span>
                   <input type="date" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" />
-                </div>
+                </label>
               </div>
             </Card>
           </div>
@@ -297,41 +297,41 @@ export default function CreateJobForm() {
               {mode === 'Air' ? 'Airline & Flight Details' : 'Vessel & Voyage Details'}
             </CardTitle></CardHeader>
             <div className="grid grid-cols-3 gap-4">
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">
                   {mode === 'Air' ? 'Airline' : 'Shipping Line'}
-                </label>
+                </span>
                 <select className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
                   <option value="">-- Select --</option>
                   {(mode === 'Air' ? airlines : shippingLines).map((a) => <option key={a}>{a}</option>)}
                 </select>
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">
                   {mode === 'Air' ? 'Flight No.' : 'Vessel Name'}
-                </label>
+                </span>
                 <input type="text" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder={mode === 'Air' ? 'EK 001' : 'MSC Gülsün'} />
-              </div>
+              </label>
               {mode === 'Sea' && (
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-[var(--color-neutral-600)]">Voyage No.</label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-[var(--color-neutral-600)]">Voyage No.</span>
                   <input type="text" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="062W" />
-                </div>
+                </label>
               )}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">Incoterm</label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">Incoterm</span>
                 <select className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
                   <option value="">-- Select --</option>
                   {incoterms.map((i) => <option key={i}>{i}</option>)}
                 </select>
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">Payment Mode</label>
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">Payment Mode</span>
                 <select className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
                   <option>Prepaid</option>
                   <option>Collect</option>
                 </select>
-              </div>
+              </label>
             </div>
           </Card>
         </div>
@@ -343,27 +343,27 @@ export default function CreateJobForm() {
           <Card>
             <CardHeader><CardTitle>Cargo Information</CardTitle></CardHeader>
             <div className="grid grid-cols-3 gap-4">
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">Commodity</label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">Commodity</span>
                 <input type="text" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="e.g. Electronics" />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">No. of Pieces</label>
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">No. of Pieces</span>
                 <input type="number" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="0" />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">Gross Weight (kg)</label>
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">Gross Weight (kg)</span>
                 <input type="number" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="0.00" />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">Volume (CBM)</label>
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">Volume (CBM)</span>
                 <input type="number" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="0.00" />
-              </div>
+              </label>
               {mode === 'Air' && (
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-[var(--color-neutral-600)]">Chargeable Weight (kg)</label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-[var(--color-neutral-600)]">Chargeable Weight (kg)</span>
                   <input type="number" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="Auto-calculated" />
-                </div>
+                </label>
               )}
             </div>
           </Card>
@@ -375,20 +375,20 @@ export default function CreateJobForm() {
                 <Button size="sm" variant="secondary">+ Add Container</Button>
               </CardHeader>
               <div className="grid grid-cols-3 gap-4">
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-[var(--color-neutral-600)]">Container Type</label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-[var(--color-neutral-600)]">Container Type</span>
                   <select className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
                     {containerTypes.map((t) => <option key={t}>{t}</option>)}
                   </select>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-[var(--color-neutral-600)]">Container No.</label>
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-[var(--color-neutral-600)]">Container No.</span>
                   <input type="text" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="MSKU1234567" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-[var(--color-neutral-600)]">Seal No.</label>
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-[var(--color-neutral-600)]">Seal No.</span>
                   <input type="text" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="SL-001-2026" />
-                </div>
+                </label>
               </div>
             </Card>
           )}
@@ -404,10 +404,10 @@ export default function CreateJobForm() {
                   </label>
                 ))}
               </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-[var(--color-neutral-600)]">Special Instructions</label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-[var(--color-neutral-600)]">Special Instructions</span>
                 <textarea rows={5} className="w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--color-primary-500)] resize-none" placeholder="Any special handling instructions..." />
-              </div>
+              </label>
             </div>
           </Card>
         </div>
@@ -424,25 +424,25 @@ export default function CreateJobForm() {
             <div className="space-y-3">
               {['Air Freight Charges', 'Fuel Surcharge', 'Documentation Fee'].map((charge, i) => (
                 <div key={i} className="grid grid-cols-6 gap-3 items-end p-3 rounded-lg bg-[var(--color-neutral-50)]">
-                  <div className="col-span-2 flex flex-col gap-1">
-                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">Description</label>
+                  <label className="col-span-2 flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[var(--color-neutral-600)]">Description</span>
                     <input type="text" defaultValue={charge} className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">Type</label>
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[var(--color-neutral-600)]">Type</span>
                     <select className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]">
                       <option>Revenue</option>
                       <option>Cost</option>
                     </select>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">Qty</label>
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[var(--color-neutral-600)]">Qty</span>
                     <input type="number" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="1" />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">Rate</label>
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[var(--color-neutral-600)]">Rate</span>
                     <input type="number" className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]" placeholder="0.00" />
-                  </div>
+                  </label>
                   <button className="h-9 text-[var(--color-danger-500)] hover:text-[var(--color-danger-700)] text-sm">
                     ✕ Remove
                   </button>

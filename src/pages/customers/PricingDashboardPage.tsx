@@ -1,25 +1,19 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Search, ChevronDown } from 'lucide-react';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { Search, ChevronDown } from 'lucide-react';
 import { FilterField, SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
 
 const tabs = ['Open Enquiry Report', 'Quotation status-wise statistics'];
 
 export default function PricingDashboardPage() {
   const [activeTab, setActiveTab] = useState(tabs[0]);
-  const navigate = useNavigate();
   return (
-    <div className="bg-white border border-gray-200 rounded-md">
+    <div className="space-y-3">
+      <PageBackLink to="/customers" label="Back to Customers" />
+      <div className="bg-white border border-gray-200 rounded-md">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
         <h2 className="text-[17px] font-medium text-gray-800">Pricing Dashboard</h2>
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-1.5 bg-gray-400 hover:bg-gray-500 text-white text-sm px-4 py-1.5 rounded transition-colors"
-        >
-          <ChevronLeft size={14} />
-          Back
-        </button>
       </div>
 
       {/* Filter grid */}
@@ -129,6 +123,7 @@ export default function PricingDashboardPage() {
       {/* Results area — empty state */}
       <div className="flex items-center justify-center h-56">
         <Search size={40} className="text-gray-300" />
+      </div>
       </div>
     </div>
   );
