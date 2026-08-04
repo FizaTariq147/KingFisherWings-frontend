@@ -90,7 +90,7 @@ README documents `theme-blue` / `theme-red`; `themeStore` also has `theme-green`
 
 ### API path prefix ambiguity
 
-Some calls use `/api/auth/login` while `VITE_API_URL` in `.env.example` is `https://kingfisherwings.onrender.com` (no `/api` suffix). Whether paths are `/api/...` or root-relative depends on how `VITE_API_URL` is configured.
+Some calls use `/api/auth/login` while `VITE_API_URL` in `.env.example` is `https://kingfisherwings-backend.onrender.com` (no `/api` suffix). Whether paths are `/api/...` or root-relative depends on how `VITE_API_URL` is configured.
 
 **Action:** Document the expected `VITE_API_URL` format (with or without `/api`).
 

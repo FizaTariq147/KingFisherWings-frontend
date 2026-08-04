@@ -57,9 +57,9 @@ export default function UserEditPage() {
       </button>
 
       <div>
-        <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
           Edit {formatUserLabel(user)}
-        </h1>
+        </h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">{user.email}</p>
       </div>
 

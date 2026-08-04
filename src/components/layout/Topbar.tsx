@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   Menu,
   Bell,
@@ -15,6 +15,8 @@ import {
 } from 'lucide-react'
 import { useUIStore } from '@/store/uiStore'
 import { useAuthStore } from '@/store/authStore'
+import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore'
+import { superAdminAuthService } from '@/features/superadmin/services/superAdminAuth.service'
 import {
   isTenantUserManagerRole,
   resolveAuthRoleSlug,
@@ -59,14 +61,21 @@ export function Topbar({
   notificationCount = 0,
   onLogout,
 }: TopbarProps) {
+  const navigate = useNavigate()
+  const location = useLocation()
   const toggleSidebar = useUIStore((s) => s.toggleSidebar)
   const openMobileSidebar = useUIStore((s) => s.openMobileSidebar)
   const user = useAuthStore((s) => s.user)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const logout = useAuthStore((s) => s.logout)
+  const isSuperAdminAuthenticated = useSuperAdminAuthStore((s) => s.isAuthenticated)
+  const superAdminLogout = useSuperAdminAuthStore((s) => s.logout)
   const [loggingOut, setLoggingOut] = useState(false)
 
-  const canChangePassword = isAuthenticated && Boolean(user)
+  const isSuperAdminArea =
+    location.pathname.startsWith('/superadmin') && !location.pathname.includes('/login')
+
+  const canChangePassword = isAuthenticated && Boolean(user) && !isSuperAdminArea
   const passwordLabel = isTenantUserManagerRole(resolveAuthRoleSlug(user?.role))
     ? 'Tenant password'
     : 'Password'
@@ -85,6 +94,17 @@ export function Topbar({
     try {
       if (onLogout) {
         onLogout()
+        return
+      }
+      if (isSuperAdminArea) {
+        try {
+          await superAdminAuthService.logout()
+        } catch {
+          // clear local session regardless
+        } finally {
+          superAdminLogout()
+          navigate('/superadmin/login', { replace: true })
+        }
         return
       }
       // POST /auth/logout (Bearer) then clear local session
@@ -130,9 +150,19 @@ export function Topbar({
           <BookOpen size={20} />
         </ActionButton>
 
-        {isAuthenticated ? <GlobalSearch /> : null}
+        {isAuthenticated && !isSuperAdminArea ? <GlobalSearch /> : null}
 
-        {isAuthenticated && (
+        {isSuperAdminArea && isSuperAdminAuthenticated && (
+          <span
+            className="hidden md:flex items-center gap-1.5 max-w-[8rem] lg:max-w-[12rem] min-w-0"
+            aria-label="Superadmin"
+            title="Superadmin"
+          >
+            <UserCircle size={20} className="shrink-0" />
+            <span className="truncate">Superadmin</span>
+          </span>
+        )}
+        {!isSuperAdminArea && isAuthenticated && (
           <Link
             to="/profile"
             className="hidden md:flex items-center gap-1.5 max-w-[8rem] lg:max-w-[12rem] min-w-0 hover:opacity-80"
@@ -143,7 +173,7 @@ export function Topbar({
             <span className="truncate">{user?.name ?? 'User'}</span>
           </Link>
         )}
-        {!isAuthenticated && (
+        {!isSuperAdminArea && !isAuthenticated && (
           <span className="hidden md:flex items-center gap-1.5 max-w-[8rem] lg:max-w-[12rem] min-w-0">
             <UserCircle size={20} className="shrink-0" />
             <span className="truncate">User</span>

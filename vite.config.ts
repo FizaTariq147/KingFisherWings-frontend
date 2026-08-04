@@ -22,7 +22,7 @@ export default defineConfig({
     // Free-tier Render can take 30–60s to wake; keep proxy timeouts high.
     proxy: {
       '/backend': {
-        target: 'https://kingfisherwings.onrender.com',
+        target: 'https://kingfisherwings-backend.onrender.com',
         changeOrigin: true,
         secure: true,
         timeout: 120_000,

@@ -160,7 +160,7 @@ export default function CustomerProfile() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">{customer.name}</h1>
+              <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">{customer.name}</h2>
               <Badge variant={statusVariant[customer.status]}>{customer.status}</Badge>
             </div>
             <p className="text-sm text-[var(--color-neutral-400)]">

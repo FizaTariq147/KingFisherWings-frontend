@@ -56,9 +56,9 @@ export default function CompanyEditPage() {
       </button>
 
       <div>
-        <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
           Edit {company.name}
-        </h1>
+        </h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">{company.code}</p>
       </div>
 

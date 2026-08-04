@@ -1,13 +1,15 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppShell } from '../components/layout/AppShell'
 import ProtectedRoute from '../components/routing/ProtectedRoute'
-import { SettingsRedirect, LegacySettingsUsersRedirect } from '../components/routing/SettingsRedirect'
+import { LegacySettingsUsersRedirect } from '../components/routing/SettingsRedirect'
 import LoginPage from '../features/auth/pages/LoginPage'
 import ForgotPasswordPage from '../features/auth/pages/ForgotPasswordPage'
 import ResetPasswordPage from '../features/auth/pages/ResetPasswordPage'
 import ChangePasswordPage from '../features/auth/pages/ChangePasswordPage'
 import MyProfilePage from '../features/auth/pages/MyProfilePage'
 import SessionManagementPage from '../pages/settings/SessionManagementPage'
+import SettingsMenuPage from '../pages/settings/SettingsMenuPage'
+import LoginSecurityPage from '../pages/settings/LoginSecurityPage'
 import Forbidden from '../pages/errors/Forbidden'
 import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
@@ -336,8 +338,9 @@ export const router = createBrowserRouter([
           { path: '/hr/pay-roll', element: <PayRollPage /> },
           { path: '/hr/salary-upload', element: <SalaryLedgerPage /> },
           { path: '/reports', element: <Placeholder title="Reports" /> },
-          { path: '/settings', element: <SettingsRedirect /> },
+          { path: '/settings', element: <SettingsMenuPage /> },
           { path: '/settings/sessions', element: <SessionManagementPage /> },
+          { path: '/settings/login-security', element: <LoginSecurityPage /> },
           {
             element: (
               <ProtectedRoute

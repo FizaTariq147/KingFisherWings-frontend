@@ -40,7 +40,7 @@ function isUnauthorized(error: unknown): boolean {
 
 /**
  * ERP Auth — Swagger tag "Auth"
- * https://kingfisherwings.onrender.com/docs
+ * https://kingfisherwings-backend.onrender.com/docs
  *
  * Hierarchy:
  *   SuperAdmin → Company → Tenant → Tenant Admin → Users (staff)
