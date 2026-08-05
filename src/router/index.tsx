@@ -145,6 +145,15 @@ import MasterResourceDetailPage from '../features/masters/pages/MasterResourceDe
 import { SuperAdminProtectedRoute } from '../features/superadmin/components/SuperAdminProtectedRoute/SuperAdminProtectedRoute'
 import SuperAdminLoginPage from '../features/superadmin/pages/SuperAdminLoginPage'
 import SuperAdminDashboardPage from '../features/superadmin/pages/SuperAdminDashboardPage'
+import { PortalShell } from '../features/portal-auth/layout/PortalShell'
+import PortalLoginPage from '../features/portal-auth/pages/PortalLoginPage'
+import PortalHomePage from '../features/portal-auth/pages/PortalHomePage'
+import PortalBookPage from '../features/portal-auth/pages/PortalBookPage'
+import PortalTrackPage from '../features/portal-auth/pages/PortalTrackPage'
+import PortalShipmentsPage from '../features/portal-auth/pages/PortalShipmentsPage'
+import PortalQuotesPage from '../features/portal-auth/pages/PortalQuotesPage'
+import PortalAlertsPage from '../features/portal-auth/pages/PortalAlertsPage'
+import PortalAccountPage from '../features/portal-auth/pages/PortalAccountPage'
 import TenantListPage from '../features/tenants/pages/TenantListPage'
 import TenantCreatePage from '../features/tenants/pages/TenantCreatePage'
 import TenantEditPage from '../features/tenants/pages/TenantEditPage'
@@ -204,6 +213,21 @@ export const router = createBrowserRouter([
           // Super Admin cannot access tenant user management — Tenant Admin owns that in ERP.
         ],
       },
+    ],
+  },
+
+  { path: '/portal/login', element: <PortalLoginPage /> },
+  {
+    path: '/portal',
+    element: <PortalShell />,
+    children: [
+      { index: true, element: <PortalHomePage /> },
+      { path: 'book', element: <PortalBookPage /> },
+      { path: 'track', element: <PortalTrackPage /> },
+      { path: 'shipments', element: <PortalShipmentsPage /> },
+      { path: 'quotes', element: <PortalQuotesPage /> },
+      { path: 'alerts', element: <PortalAlertsPage /> },
+      { path: 'account', element: <PortalAccountPage /> },
     ],
   },
 
