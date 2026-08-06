@@ -26,6 +26,9 @@ export type PermissionKey =
   | 'gl.manage_bank_recon'
   | 'gl.view_reports'
   | 'gl.view_mis'
+  // Customer portal admin (Parties → portal users)
+  | 'portal.manage_users'
+  | 'portal.manage_permissions'
   | (string & {})
 
 export interface Permission {

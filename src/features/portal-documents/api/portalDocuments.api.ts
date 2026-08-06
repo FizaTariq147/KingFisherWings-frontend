@@ -1,0 +1,8 @@
+export const PORTAL_DOCUMENTS_API = {
+  summary: '/portal/documents/summary',
+  permissions: '/portal/documents/permissions',
+  list: '/portal/documents',
+  downloadInvoice: (invoiceId: string) => `/portal/documents/invoices/${invoiceId}/download`,
+  downloadJobDoc: (jobId: string, docId: string) =>
+    `/portal/documents/jobs/${jobId}/${docId}/download`,
+} as const;
