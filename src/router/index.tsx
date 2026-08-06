@@ -146,14 +146,18 @@ import { SuperAdminProtectedRoute } from '../features/superadmin/components/Supe
 import SuperAdminLoginPage from '../features/superadmin/pages/SuperAdminLoginPage'
 import SuperAdminDashboardPage from '../features/superadmin/pages/SuperAdminDashboardPage'
 import { PortalShell } from '../features/portal-auth/layout/PortalShell'
+import { PortalProtectedRoute } from '../features/portal-auth/components/PortalProtectedRoute'
 import PortalLoginPage from '../features/portal-auth/pages/PortalLoginPage'
 import PortalHomePage from '../features/portal-auth/pages/PortalHomePage'
-import PortalBookPage from '../features/portal-auth/pages/PortalBookPage'
-import PortalTrackPage from '../features/portal-auth/pages/PortalTrackPage'
-import PortalShipmentsPage from '../features/portal-auth/pages/PortalShipmentsPage'
-import PortalQuotesPage from '../features/portal-auth/pages/PortalQuotesPage'
 import PortalAlertsPage from '../features/portal-auth/pages/PortalAlertsPage'
 import PortalAccountPage from '../features/portal-auth/pages/PortalAccountPage'
+import PortalBookPage from '../features/portal-quotations/pages/PortalBookPage'
+import PortalQuotesPage from '../features/portal-quotations/pages/PortalQuotesPage'
+import PortalQuoteDetailPage from '../features/portal-quotations/pages/PortalQuoteDetailPage'
+import PortalTrackPage from '../features/portal-shipments/pages/PortalTrackPage'
+import PortalShipmentsPage from '../features/portal-shipments/pages/PortalShipmentsPage'
+import PortalShipmentDetailPage from '../features/portal-shipments/pages/PortalShipmentDetailPage'
+import PortalDocumentsPage from '../features/portal-documents/pages/PortalDocumentsPage'
 import TenantListPage from '../features/tenants/pages/TenantListPage'
 import TenantCreatePage from '../features/tenants/pages/TenantCreatePage'
 import TenantEditPage from '../features/tenants/pages/TenantEditPage'
@@ -219,15 +223,23 @@ export const router = createBrowserRouter([
   { path: '/portal/login', element: <PortalLoginPage /> },
   {
     path: '/portal',
-    element: <PortalShell />,
+    element: <PortalProtectedRoute />,
     children: [
-      { index: true, element: <PortalHomePage /> },
-      { path: 'book', element: <PortalBookPage /> },
-      { path: 'track', element: <PortalTrackPage /> },
-      { path: 'shipments', element: <PortalShipmentsPage /> },
-      { path: 'quotes', element: <PortalQuotesPage /> },
-      { path: 'alerts', element: <PortalAlertsPage /> },
-      { path: 'account', element: <PortalAccountPage /> },
+      {
+        element: <PortalShell />,
+        children: [
+          { index: true, element: <PortalHomePage /> },
+          { path: 'book', element: <PortalBookPage /> },
+          { path: 'track', element: <PortalTrackPage /> },
+          { path: 'shipments', element: <PortalShipmentsPage /> },
+          { path: 'shipments/:id', element: <PortalShipmentDetailPage /> },
+          { path: 'quotes', element: <PortalQuotesPage /> },
+          { path: 'quotes/:id', element: <PortalQuoteDetailPage /> },
+          { path: 'documents', element: <PortalDocumentsPage /> },
+          { path: 'alerts', element: <PortalAlertsPage /> },
+          { path: 'account', element: <PortalAccountPage /> },
+        ],
+      },
     ],
   },
 

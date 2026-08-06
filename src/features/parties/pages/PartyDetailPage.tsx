@@ -11,6 +11,8 @@ import { PartyContactsSection } from '../components/PartyContactsSection';
 import { PartyCreditBadge } from '../components/PartyCreditBadge';
 import { PartyOverviewPanel } from '../components/PartyOverviewPanel';
 import { PartyStatusBadge } from '../components/PartyStatusBadge';
+import { PartyPortalPermissionsSection } from '../components/PartyPortalPermissionsSection';
+import { PartyPortalUsersSection } from '../components/PartyPortalUsersSection';
 import { PARTY_TYPE_LABELS } from '../constants/party.constants';
 import { usePartyConfirmState } from '../hooks/usePartyConfirmState';
 import {
@@ -142,6 +144,16 @@ export default function PartyDetailPage() {
             content: (
               <PartyAddressesSection partyId={party.id} addresses={party.addresses ?? []} />
             ),
+          },
+          {
+            key: 'portal-users',
+            label: 'Portal users',
+            content: <PartyPortalUsersSection partyId={party.id} />,
+          },
+          {
+            key: 'portal-permissions',
+            label: 'Portal rights',
+            content: <PartyPortalPermissionsSection partyId={party.id} />,
           },
         ]}
       />

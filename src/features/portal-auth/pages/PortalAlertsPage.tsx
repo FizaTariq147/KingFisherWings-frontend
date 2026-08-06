@@ -1,15 +1,20 @@
-import { Card } from '@/components/ui/Card';
+import { Bell } from 'lucide-react';
+import { PortalEmptyState, PortalPageHeader, PortalPanel } from '../components/portal-ui';
 
 export default function PortalAlertsPage() {
   return (
-    <Card className="p-6">
-      <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">
-        Alerts
-      </h1>
-      <p className="mt-2 text-sm text-[var(--color-neutral-400)]">
-        Coming soon — portal notifications will be wired to backend when available.
-      </p>
-    </Card>
+    <div className="space-y-5">
+      <PortalPageHeader
+        title="Alerts"
+        description="Shipment and document notifications will appear here."
+      />
+      <PortalPanel>
+        <PortalEmptyState
+          title="No alerts yet"
+          description="Coming soon — portal notifications will be wired when the backend is available."
+          Icon={Bell}
+        />
+      </PortalPanel>
+    </div>
   );
 }
-

@@ -4,6 +4,7 @@ import { FullPageSpinner } from '@/components/skeletons/SkeletonPrimitives';
 import { usePortalAuthBootstrap } from '../../hooks/usePortalAuthBootstrap';
 import { portalAuthService } from '../../services/portalAuth.service';
 import { usePortalAuthStore } from '../../store/portalAuthStore';
+import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache';
 
 /** Guards customer portal routes — requires a valid portal token + /me check. */
 export function PortalProtectedRoute() {
@@ -33,6 +34,7 @@ export function PortalProtectedRoute() {
         }
       } catch {
         if (!cancelled) {
+          clearPortalQueryCache();
           logout();
           setSessionOk(false);
         }

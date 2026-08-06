@@ -2,6 +2,7 @@ import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { PORTAL_AUTH_API } from '@/features/portal-auth/api/portalAuth.api';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import { normalizePortalTokenPair } from '@/features/portal-auth/utils/normalizePortalAuth';
+import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache';
 
 export interface ApiEnvelope<T, M = undefined> {
   data: T;
@@ -45,7 +46,9 @@ export const portalApiClient = axios.create({
     import.meta.env.VITE_API_BASE_URL ||
     import.meta.env.VITE_API_URL ||
     '/backend',
-  withCredentials: true,
+  // Portal auth is Bearer-only. Do not send ERP staff cookies — they can make
+  // every portal login appear to share the same tenant-scoped data.
+  withCredentials: false,
   timeout: 120_000,
 });
 
@@ -108,6 +111,7 @@ portalApiClient.interceptors.response.use(
       const refreshToken = usePortalAuthStore.getState().refreshToken;
       if (!refreshToken) {
         usePortalAuthStore.getState().logout();
+        clearPortalQueryCache();
         window.location.href = '/portal/login';
         return Promise.reject(new PortalApiError(message, status));
       }
@@ -140,6 +144,7 @@ portalApiClient.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null);
         usePortalAuthStore.getState().logout();
+        clearPortalQueryCache();
         window.location.href = '/portal/login';
         return Promise.reject(new PortalApiError('Session expired. Please sign in again.', 401));
       } finally {
