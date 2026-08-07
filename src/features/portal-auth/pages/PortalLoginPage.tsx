@@ -268,7 +268,7 @@ export default function PortalLoginPage() {
             <button
               type="submit"
               disabled={loginMutation.isPending}
-              className="mt-2 w-full bg-[var(--color-primary)] py-3.5 text-sm font-semibold text-white transition-[background-color,transform] hover:bg-[var(--color-primary-800)] active:scale-[0.99] disabled:opacity-60"
+              className="mt-2 w-full bg-[var(--color-primary)] py-3.5 text-sm font-semibold text-white transition-[background-color,transform] hover:bg-[var(--color-secondary)] active:scale-[0.99] disabled:opacity-60"
             >
               {loginMutation.isPending ? 'Signing in…' : 'Continue'}
             </button>

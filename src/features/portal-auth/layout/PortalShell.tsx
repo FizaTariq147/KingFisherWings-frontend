@@ -4,12 +4,18 @@ import {
   Bell,
   BookOpen,
   ClipboardList,
+  CircleDollarSign,
   FileText,
+  HandCoins,
   LogOut,
   Menu,
+  MessageSquare,
   Package,
+  Receipt,
   Route,
+  Scale,
   User,
+  Wallet,
   X,
 } from 'lucide-react';
 import { useApplyTheme } from '@/hooks/useApplyTheme';
@@ -19,6 +25,7 @@ import { PortalSidebar } from '../components/PortalSidebar/PortalSidebar';
 import { usePortalBrand } from '../hooks/usePortalBrand';
 import { usePortalAuthStore } from '../store/portalAuthStore';
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache';
+import { usePortalNotificationUnreadCount } from '@/features/portal-notifications/hooks/usePortalNotifications';
 
 const MOBILE_NAV = [
   { label: 'Dashboard', to: '/portal', Icon: ClipboardList },
@@ -26,7 +33,14 @@ const MOBILE_NAV = [
   { label: 'Track', to: '/portal/track', Icon: Route },
   { label: 'Shipments', to: '/portal/shipments', Icon: Package },
   { label: 'Quotes', to: '/portal/quotes', Icon: Bell },
+  { label: 'Invoices', to: '/portal/invoices', Icon: FileText },
+  { label: 'Credit notes', to: '/portal/credit-notes', Icon: Receipt },
+  { label: 'Payments', to: '/portal/payments', Icon: HandCoins },
+  { label: 'Credit', to: '/portal/credit', Icon: Wallet },
+  { label: 'Credit requests', to: '/portal/credit-requests', Icon: CircleDollarSign },
   { label: 'Documents', to: '/portal/documents', Icon: FileText },
+  { label: 'Messages', to: '/portal/messages', Icon: MessageSquare },
+  { label: 'Disputes', to: '/portal/disputes', Icon: Scale },
   { label: 'Alerts', to: '/portal/alerts', Icon: Bell },
   { label: 'Account', to: '/portal/account', Icon: User },
 ] as const;
@@ -35,7 +49,8 @@ export function PortalShell() {
   useApplyTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const unreadCount = 0;
+  const unreadQuery = usePortalNotificationUnreadCount();
+  const unreadCount = unreadQuery.data ?? 0;
   const logoutStore = usePortalAuthStore((s) => s.logout);
   const user = usePortalAuthStore((s) => s.user);
   const { companyName, portalLabel, companyInitial } = usePortalBrand();

@@ -158,6 +158,18 @@ import PortalTrackPage from '../features/portal-shipments/pages/PortalTrackPage'
 import PortalShipmentsPage from '../features/portal-shipments/pages/PortalShipmentsPage'
 import PortalShipmentDetailPage from '../features/portal-shipments/pages/PortalShipmentDetailPage'
 import PortalDocumentsPage from '../features/portal-documents/pages/PortalDocumentsPage'
+import PortalInvoicesPage from '../features/portal-invoices/pages/PortalInvoicesPage'
+import PortalInvoiceDetailPage from '../features/portal-invoices/pages/PortalInvoiceDetailPage'
+import PortalCreditNotesPage from '../features/portal-credit-notes/pages/PortalCreditNotesPage'
+import PortalCreditNoteDetailPage from '../features/portal-credit-notes/pages/PortalCreditNoteDetailPage'
+import PortalPaymentsPage from '../features/portal-payments/pages/PortalPaymentsPage'
+import PortalCreditPage from '../features/portal-credit/pages/PortalCreditPage'
+import PortalCreditRequestsPage from '../features/portal-credit-requests/pages/PortalCreditRequestsPage'
+import PortalMessagesPage from '../features/portal-messages/pages/PortalMessagesPage'
+import PortalDisputesPage from '../features/portal-disputes/pages/PortalDisputesPage'
+import PortalAdminInboxPage from '../features/portal-admin-inbox/pages/PortalAdminInboxPage'
+import PublicTrackPage from '../features/public-track/pages/PublicTrackPage'
+import NotificationsPage from '../features/notifications/pages/NotificationsPage'
 import TenantListPage from '../features/tenants/pages/TenantListPage'
 import TenantCreatePage from '../features/tenants/pages/TenantCreatePage'
 import TenantEditPage from '../features/tenants/pages/TenantEditPage'
@@ -221,6 +233,7 @@ export const router = createBrowserRouter([
   },
 
   { path: '/portal/login', element: <PortalLoginPage /> },
+  { path: '/track', element: <PublicTrackPage /> },
   {
     path: '/portal',
     element: <PortalProtectedRoute />,
@@ -235,7 +248,16 @@ export const router = createBrowserRouter([
           { path: 'shipments/:id', element: <PortalShipmentDetailPage /> },
           { path: 'quotes', element: <PortalQuotesPage /> },
           { path: 'quotes/:id', element: <PortalQuoteDetailPage /> },
+          { path: 'invoices', element: <PortalInvoicesPage /> },
+          { path: 'invoices/:id', element: <PortalInvoiceDetailPage /> },
+          { path: 'credit-notes', element: <PortalCreditNotesPage /> },
+          { path: 'credit-notes/:id', element: <PortalCreditNoteDetailPage /> },
+          { path: 'payments', element: <PortalPaymentsPage /> },
+          { path: 'credit', element: <PortalCreditPage /> },
+          { path: 'credit-requests', element: <PortalCreditRequestsPage /> },
           { path: 'documents', element: <PortalDocumentsPage /> },
+          { path: 'messages', element: <PortalMessagesPage /> },
+          { path: 'disputes', element: <PortalDisputesPage /> },
           { path: 'alerts', element: <PortalAlertsPage /> },
           { path: 'account', element: <PortalAccountPage /> },
         ],
@@ -396,7 +418,8 @@ export const router = createBrowserRouter([
             element: <LegacySettingsUsersRedirect />,
           },
           { path: '/profile', element: <MyProfilePage /> },
-          { path: '/notifications', element: <Placeholder title="Notifications" /> },
+          { path: '/notifications', element: <NotificationsPage /> },
+          { path: '/portal-admin/inbox', element: <PortalAdminInboxPage /> },
           { path: '/sales', element: <SalesMenuPage /> },
           {path: '/sales/call-sheet', element: <CallSheetPage />},
           {path: '/sales/client-request-list', element: <ClientRequestListPage />},

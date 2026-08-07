@@ -17,9 +17,7 @@ export default defineConfig({
 
   server: {
     host: true,
-    allowedHosts: true, // or ['your-ngrok-domain.ngrok-free.dev']
-    // Same-origin proxy avoids browser CORS failures against the Render API.
-    // Free-tier Render can take 30–60s to wake; keep proxy timeouts high.
+    allowedHosts: true,
     proxy: {
       '/backend': {
         target: 'https://kingfisherwings-backend.onrender.com',

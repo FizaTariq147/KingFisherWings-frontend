@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { DashboardCard } from '@/components/dashboard/DashboardCard';
 import { usePortalAuthStore } from '../store/portalAuthStore';
 import { portalAuthService } from '../services/portalAuth.service';
 import { usePortalBrand } from '../hooks/usePortalBrand';
@@ -28,8 +29,6 @@ import {
 } from '@/features/portal-documents/hooks/usePortalDocuments';
 import {
   PortalEmptyState,
-  PortalPageHeader,
-  PortalPanel,
   PortalStatCard,
 } from '../components/portal-ui';
 
@@ -243,180 +242,169 @@ export default function PortalHomePage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="space-y-3">
-          <PortalPageHeader
-            title="Recent shipments"
-            description="Latest activity on your consignments"
-            actions={
-              <Link
-                to="/portal/shipments"
-                className="text-sm font-medium text-[var(--color-primary)] hover:underline"
+        <DashboardCard
+          title="Recent shipments"
+          accent="primary"
+          isLoading={recentShipments.isLoading}
+          showOwnerIcon={false}
+          onExpand={() => navigate('/portal/shipments')}
+          onAdd={() => navigate('/portal/book')}
+        >
+          {recentShipments.isError ? (
+            <div className="space-y-2 p-6">
+              <p className="text-sm text-[var(--color-danger-600)]">Could not load shipments.</p>
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                onClick={() => void recentShipments.refetch()}
               >
-                View all
-              </Link>
-            }
-          />
-          <PortalPanel>
-            {recentShipments.isLoading ? (
-              <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading…</p>
-            ) : recentShipments.isError ? (
-              <div className="space-y-2 p-6">
-                <p className="text-sm text-[var(--color-danger-600)]">Could not load shipments.</p>
-                <Button type="button" size="sm" variant="secondary" onClick={() => recentShipments.refetch()}>
-                  Retry
+                Retry
+              </Button>
+            </div>
+          ) : recentShipmentItems.length === 0 ? (
+            <PortalEmptyState
+              title="No shipments yet"
+              description="When jobs are linked to your account, they will appear here."
+              Icon={Package}
+              action={
+                <Button type="button" size="sm" onClick={() => navigate('/portal/book')}>
+                  Request a quote
                 </Button>
-              </div>
-            ) : recentShipmentItems.length === 0 ? (
-              <PortalEmptyState
-                title="No shipments yet"
-                description="When jobs are linked to your account, they will appear here."
-                Icon={Package}
-                action={
-                  <Button type="button" size="sm" onClick={() => navigate('/portal/book')}>
-                    Request a quote
-                  </Button>
-                }
-              />
-            ) : (
-              <div className="divide-y divide-[var(--color-neutral-100)]">
-                {recentShipmentItems.map((s) => (
-                  <Link
-                    key={s.id}
-                    to={`/portal/shipments/${s.id}`}
-                    className="flex items-center justify-between gap-3 px-4 py-3.5 transition hover:bg-[var(--color-neutral-50)]"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-primary-100)] text-[var(--color-primary)]">
-                        <Package size={16} aria-hidden="true" />
+              }
+            />
+          ) : (
+            <div className="divide-y divide-[var(--color-neutral-100)]">
+              {recentShipmentItems.map((s) => (
+                <Link
+                  key={s.id}
+                  to={`/portal/shipments/${s.id}`}
+                  className="flex items-center justify-between gap-3 px-4 py-3.5 transition hover:bg-[var(--color-neutral-50)]"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-primary-100)] text-[var(--color-primary)]">
+                      <Package size={16} aria-hidden="true" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-semibold text-[var(--color-neutral-900)]">
+                        {s.reference}
                       </div>
-                      <div className="min-w-0">
-                        <div className="truncate text-sm font-semibold text-[var(--color-neutral-900)]">
-                          {s.reference}
-                        </div>
-                        <div className="truncate text-xs text-[var(--color-neutral-500)]">
-                          {[s.origin, s.destination].filter(Boolean).join(' → ') || '—'}
-                        </div>
+                      <div className="truncate text-xs text-[var(--color-neutral-500)]">
+                        {[s.origin, s.destination].filter(Boolean).join(' → ') || '—'}
                       </div>
                     </div>
-                    {s.status ? (
-                      <Badge variant="info">{s.status.replaceAll('_', ' ')}</Badge>
-                    ) : null}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </PortalPanel>
-        </div>
+                  </div>
+                  {s.status ? (
+                    <Badge variant="info">{s.status.replaceAll('_', ' ')}</Badge>
+                  ) : null}
+                </Link>
+              ))}
+            </div>
+          )}
+        </DashboardCard>
 
-        <div className="space-y-3">
-          <PortalPageHeader
-            title="Recent quotes"
-            description="Latest quote requests for your party"
-            actions={
-              <Link
-                to="/portal/quotes"
-                className="text-sm font-medium text-[var(--color-primary)] hover:underline"
+        <DashboardCard
+          title="Recent quotes"
+          accent="secondary"
+          isLoading={recentQuotes.isLoading}
+          showOwnerIcon={false}
+          onExpand={() => navigate('/portal/quotes')}
+          onAdd={() => navigate('/portal/book')}
+        >
+          {recentQuotes.isError ? (
+            <div className="space-y-2 p-6">
+              <p className="text-sm text-[var(--color-danger-600)]">Could not load quotations.</p>
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                onClick={() => void recentQuotes.refetch()}
               >
-                View all
-              </Link>
-            }
-          />
-          <PortalPanel>
-            {recentQuotes.isLoading ? (
-              <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading…</p>
-            ) : recentQuotes.isError ? (
-              <div className="space-y-2 p-6">
-                <p className="text-sm text-[var(--color-danger-600)]">Could not load quotations.</p>
-                <Button type="button" size="sm" variant="secondary" onClick={() => recentQuotes.refetch()}>
-                  Retry
+                Retry
+              </Button>
+            </div>
+          ) : recentQuoteItems.length === 0 ? (
+            <PortalEmptyState
+              title="No quotations yet"
+              description="Submit a quote request to get pricing from your forwarder."
+              Icon={Quote}
+              action={
+                <Button type="button" size="sm" onClick={() => navigate('/portal/book')}>
+                  Request a quote
                 </Button>
-              </div>
-            ) : recentQuoteItems.length === 0 ? (
-              <PortalEmptyState
-                title="No quotations yet"
-                description="Submit a quote request to get pricing from your forwarder."
-                Icon={Quote}
-                action={
-                  <Button type="button" size="sm" onClick={() => navigate('/portal/book')}>
-                    Request a quote
-                  </Button>
-                }
-              />
-            ) : (
-              <div className="divide-y divide-[var(--color-neutral-100)]">
-                {recentQuoteItems.map((q) => (
-                  <Link
-                    key={q.id}
-                    to={`/portal/quotes/${q.id}`}
-                    className="flex items-center justify-between gap-3 px-4 py-3.5 transition hover:bg-[var(--color-neutral-50)]"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-secondary-100)] text-[var(--color-secondary-700)]">
-                        <Quote size={16} aria-hidden="true" />
+              }
+            />
+          ) : (
+            <div className="divide-y divide-[var(--color-neutral-100)]">
+              {recentQuoteItems.map((q) => (
+                <Link
+                  key={q.id}
+                  to={`/portal/quotes/${q.id}`}
+                  className="flex items-center justify-between gap-3 px-4 py-3.5 transition hover:bg-[var(--color-neutral-50)]"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-secondary-100)] text-[var(--color-secondary-700)]">
+                      <Quote size={16} aria-hidden="true" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-semibold text-[var(--color-neutral-900)]">
+                        {q.number}
                       </div>
-                      <div className="min-w-0">
-                        <div className="truncate text-sm font-semibold text-[var(--color-neutral-900)]">
-                          {q.number}
-                        </div>
-                        <div className="truncate text-xs text-[var(--color-neutral-500)]">
-                          {[q.origin, q.destination].filter(Boolean).join(' → ') || q.jobType || '—'}
-                        </div>
+                      <div className="truncate text-xs text-[var(--color-neutral-500)]">
+                        {[q.origin, q.destination].filter(Boolean).join(' → ') || q.jobType || '—'}
                       </div>
                     </div>
-                    {q.status ? <Badge variant="info">{q.status}</Badge> : null}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </PortalPanel>
-        </div>
+                  </div>
+                  {q.status ? <Badge variant="info">{q.status}</Badge> : null}
+                </Link>
+              ))}
+            </div>
+          )}
+        </DashboardCard>
       </div>
 
-      <div className="space-y-3">
-        <PortalPageHeader title="Quick actions" description="Common tasks" />
-        <PortalPanel className="p-2">
-          <div className="grid gap-1 sm:grid-cols-3">
-            {[
-              {
-                to: '/portal/book',
-                title: 'Request a quote',
-                desc: 'Submit freight requirements',
-                Icon: Quote,
-              },
-              {
-                to: '/portal/track',
-                title: 'Track a shipment',
-                desc: 'Look up by reference',
-                Icon: Route,
-              },
-              {
-                to: '/portal/documents',
-                title: 'Open documents',
-                desc:
-                  typeof documentTotal === 'number'
-                    ? `${documentTotal} file${documentTotal === 1 ? '' : 's'} available`
-                    : 'Invoices and job files',
-                Icon: FileText,
-              },
-            ].map(({ to, title, desc, Icon }) => (
-              <Link
-                key={to}
-                to={to}
-                className="flex items-center gap-3 rounded-lg px-3 py-3 transition hover:bg-[var(--color-neutral-50)]"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-secondary-100)] text-[var(--color-secondary-700)]">
-                  <Icon size={18} aria-hidden="true" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm font-semibold text-[var(--color-neutral-900)]">{title}</div>
-                  <div className="text-xs text-[var(--color-neutral-500)]">{desc}</div>
-                </div>
-                <ArrowRight size={16} className="text-[var(--color-neutral-400)]" aria-hidden="true" />
-              </Link>
-            ))}
-          </div>
-        </PortalPanel>
-      </div>
+      <DashboardCard title="Quick actions" accent="primary" showOwnerIcon={false}>
+        <div className="grid gap-1 p-2 sm:grid-cols-3">
+          {[
+            {
+              to: '/portal/book',
+              title: 'Request a quote',
+              desc: 'Submit freight requirements',
+              Icon: Quote,
+            },
+            {
+              to: '/portal/track',
+              title: 'Track a shipment',
+              desc: 'Look up by reference',
+              Icon: Route,
+            },
+            {
+              to: '/portal/documents',
+              title: 'Open documents',
+              desc:
+                typeof documentTotal === 'number'
+                  ? `${documentTotal} file${documentTotal === 1 ? '' : 's'} available`
+                  : 'Invoices and job files',
+              Icon: FileText,
+            },
+          ].map(({ to, title, desc, Icon }) => (
+            <Link
+              key={to}
+              to={to}
+              className="flex items-center gap-3 rounded-lg px-3 py-3 transition hover:bg-[var(--color-neutral-50)]"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-secondary-100)] text-[var(--color-secondary-700)]">
+                <Icon size={18} aria-hidden="true" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-semibold text-[var(--color-neutral-900)]">{title}</div>
+                <div className="text-xs text-[var(--color-neutral-500)]">{desc}</div>
+              </div>
+              <ArrowRight size={16} className="text-[var(--color-neutral-400)]" aria-hidden="true" />
+            </Link>
+          ))}
+        </div>
+      </DashboardCard>
     </div>
   );
 }

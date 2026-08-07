@@ -29,6 +29,8 @@ interface DashboardCardProps {
   emptyMessage?: string
   /** Internal scroll body max height, so the 2x2 grid never grows the page */
   maxBodyHeight?: string
+  /** Owner avatar button in the header (default true for ERP dashboard cards) */
+  showOwnerIcon?: boolean
   children: ReactNode
 }
 
@@ -60,6 +62,7 @@ export function DashboardCard({
   isEmpty = false,
   emptyMessage = 'Nothing to show yet.',
   maxBodyHeight = '320px',
+  showOwnerIcon = true,
   children,
 }: DashboardCardProps) {
   return (
@@ -77,15 +80,21 @@ export function DashboardCard({
           <h3 className="text-sm font-semibold text-[var(--color-neutral-900)]">{title}</h3>
         </div>
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="sm" aria-label={`${title} owner`}>
-            <UserCircle size={15} className="text-[var(--color-neutral-400)]" />
-          </Button>
-          <Button variant="ghost" size="sm" onClick={onExpand} aria-label={`View all — ${title}`}>
-            <ChevronRight size={15} className="text-[var(--color-neutral-400)]" />
-          </Button>
-          <Button variant="ghost" size="sm" onClick={onAdd} aria-label={`Add — ${title}`}>
-            <Plus size={15} className="text-[var(--color-secondary)]" />
-          </Button>
+          {showOwnerIcon ? (
+            <Button variant="ghost" size="sm" aria-label={`${title} owner`}>
+              <UserCircle size={15} className="text-[var(--color-neutral-400)]" />
+            </Button>
+          ) : null}
+          {onExpand ? (
+            <Button variant="ghost" size="sm" onClick={onExpand} aria-label={`View all — ${title}`}>
+              <ChevronRight size={15} style={{ color: ACCENT_COLOR[accent] }} />
+            </Button>
+          ) : null}
+          {onAdd ? (
+            <Button variant="ghost" size="sm" onClick={onAdd} aria-label={`Add — ${title}`}>
+              <Plus size={15} style={{ color: ACCENT_COLOR[accent] }} />
+            </Button>
+          ) : null}
         </div>
       </div>
 
