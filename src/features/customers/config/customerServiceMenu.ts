@@ -6,10 +6,19 @@ import {
   ListChecks,
   Search,
   MapPin,
+  Inbox,
 } from 'lucide-react';
 import type { MenuTile } from '../types/menu.types';
 
 export const customerServiceMenu: MenuTile[] = [
+  {
+    id: 'portal-inbox',
+    title: 'Portal Inbox',
+    description: 'Customer portal messages, disputes, and credit limit requests.',
+    icon: Inbox,
+    iconColor: 'bg-indigo-500',
+    path: '/portal-admin/inbox',
+  },
   {
     id: 'all-shipments',
     title: 'All Shipments',

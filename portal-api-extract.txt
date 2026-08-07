@@ -1,0 +1,263 @@
+
+==== GET /portal/invoices ====
+summary: List my customer invoices
+params: [{"in":"query","name":"page","required":false,"schema":{"type":"number"}},{"in":"query","name":"limit","required":false,"schema":{"type":"number"}},{"in":"query","name":"status","required":false,"schema":{"type":"string","enum":["DRAFT","POSTED","SENT","PARTIALLY_PAID","PAID","CANCELLED","VOID"]}},{"in":"query","name":"job_id","required":false,"schema":{"type":"string","format":"uuid"}},{"in":"query","name":"search","required":false,"schema":{"type":"string"}},{"in":"query","name":"from_date","required":false,"schema":{"type":"string"}},{"in":"query","name":"to_date","required":false,"schema":{"type":"string"}}]
+response desc: 
+
+==== GET /portal/invoices/summary ====
+summary: Invoice outstanding / overdue counters
+params: []
+response desc: 
+
+==== GET /portal/invoices/{id} ====
+summary: Invoice detail (no internal notes)
+params: [{"in":"path","name":"id","required":true,"schema":{"type":"string"}}]
+response desc: 
+
+==== GET /portal/invoices/{id}/pdf ====
+summary: Download invoice PDF if permitted
+params: [{"in":"path","name":"id","required":true,"schema":{"type":"string"}}]
+response desc: 
+
+==== GET /portal/credit-notes ====
+summary: List credit notes applied to my account
+params: [{"in":"query","name":"page","required":false,"schema":{"type":"number"}},{"in":"query","name":"limit","required":false,"schema":{"type":"number"}},{"in":"query","name":"status","required":false,"schema":{"type":"string","enum":["DRAFT","POSTED","SENT","PARTIALLY_PAID","PAID","CANCELLED","VOID"]}},{"in":"query","name":"job_id","required":false,"schema":{"type":"string","format":"uuid"}},{"in":"query","name":"search","required":false,"schema":{"type":"string"}},{"in":"query","name":"from_date","required":false,"schema":{"type":"string"}},{"in":"query","name":"to_date","required":false,"schema":{"type":"string"}}]
+response desc: 
+
+==== GET /portal/credit-notes/{id} ====
+summary: Credit note detail
+params: [{"in":"path","name":"id","required":true,"schema":{"type":"string"}}]
+response desc: 
+
+==== GET /portal/payments ====
+summary: Payment / receipt history for my account
+params: [{"in":"query","name":"page","required":false,"schema":{"type":"number"}},{"in":"query","name":"limit","required":false,"schema":{"type":"number"}},{"in":"query","name":"from_date","required":false,"schema":{"type":"string"}},{"in":"query","name":"to_date","required":false,"schema":{"type":"string"}},{"in":"query","name":"search","required":false,"schema":{"type":"string"}}]
+response desc: 
+
+==== GET /portal/credit/summary ====
+summary: Credit limit, used, available
+params: []
+response desc: 
+
+==== GET /portal/credit/aging ====
+summary: AR aging buckets for my account
+params: [{"in":"query","name":"as_of","required":false,"schema":{"type":"string"}}]
+response desc: 
+
+==== GET /portal/credit/statement ====
+summary: AR account statement (JSON)
+params: [{"in":"query","name":"as_of","required":false,"schema":{"type":"string"}}]
+response desc: 
+
+==== GET /portal/credit/statement.pdf ====
+summary: Download AR statement PDF (requires STATEMENT download permission)
+params: [{"in":"query","name":"as_of","required":false,"schema":{"type":"string"}}]
+response desc: 
+
+==== POST /portal/credit/limit-requests ====
+summary: Request a higher credit limit
+params: []
+body: {
+  "type": "object",
+  "required": [
+    "requested_limit",
+    "justification"
+  ],
+  "properties": {
+    "requested_limit": {
+      "type": "number"
+    },
+    "justification": {
+      "type": "string"
+    }
+  }
+}
+response desc: 
+
+==== GET /portal/credit/limit-requests ====
+summary: List my credit limit requests
+params: []
+response desc: 
+
+==== POST /portal/messages ====
+summary: Contact the forwarder
+params: []
+body: {
+  "type": "object",
+  "required": [
+    "subject",
+    "body"
+  ],
+  "properties": {
+    "subject": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "job_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "invoice_id": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}
+response desc: 
+
+==== GET /portal/messages ====
+summary: List messages I sent
+params: [{"in":"query","name":"page","required":false,"schema":{"type":"number"}},{"in":"query","name":"limit","required":false,"schema":{"type":"number"}}]
+response desc: 
+
+==== POST /portal/disputes ====
+summary: Raise an invoice dispute
+params: []
+body: {
+  "type": "object",
+  "required": [
+    "invoice_id",
+    "reason",
+    "description"
+  ],
+  "properties": {
+    "invoice_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    }
+  }
+}
+response desc: 
+
+==== GET /portal/disputes ====
+summary: List my disputes
+params: [{"in":"query","name":"page","required":false,"schema":{"type":"number"}},{"in":"query","name":"limit","required":false,"schema":{"type":"number"}},{"in":"query","name":"status","required":false,"schema":{"type":"string","enum":["OPEN","UNDER_REVIEW","RESOLVED","REJECTED"]}}]
+response desc: 
+
+==== GET /portal/notifications ====
+summary: List portal in-app notifications
+params: [{"in":"query","name":"page","required":false,"schema":{"type":"number"}},{"in":"query","name":"limit","required":false,"schema":{"type":"number"}},{"in":"query","name":"unread_only","required":false,"schema":{"type":"string"}}]
+response desc: 
+
+==== GET /portal/notifications/unread-count ====
+summary: Portal unread badge count
+params: []
+response desc: 
+
+==== POST /portal/notifications/{id}/read ====
+summary: Mark one portal notification as read
+params: [{"in":"path","name":"id","required":true,"schema":{"type":"string"}}]
+response desc: 
+
+==== POST /portal/notifications/read-all ====
+summary: Mark all portal notifications as read
+params: []
+response desc: 
+
+==== GET /portal-admin/messages ====
+summary: Staff inbox of customer portal messages
+params: [{"in":"query","name":"page","required":false,"schema":{"type":"number"}},{"in":"query","name":"limit","required":false,"schema":{"type":"number"}},{"in":"query","name":"party_id","required":false,"schema":{"type":"string","format":"uuid"}},{"in":"query","name":"unread_only","required":false,"schema":{"type":"string"}}]
+response desc: 
+
+==== POST /portal-admin/messages/{id}/read ====
+summary: Mark a portal message as read by staff
+params: [{"in":"path","name":"id","required":true,"schema":{"type":"string"}}]
+response desc: 
+
+==== GET /portal-admin/disputes ====
+summary: List customer invoice disputes
+params: []
+response desc: 
+
+==== PATCH /portal-admin/disputes/{id} ====
+summary: Review / resolve a dispute
+params: [{"in":"path","name":"id","required":true,"schema":{"type":"string"}}]
+body: {
+  "type": "object",
+  "required": [
+    "status"
+  ],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "UNDER_REVIEW",
+        "RESOLVED",
+        "REJECTED"
+      ]
+    },
+    "staff_notes": {
+      "type": "string"
+    }
+  }
+}
+response desc: 
+
+==== GET /portal-admin/credit-limit-requests ====
+summary: List credit limit increase requests
+params: []
+response desc: 
+
+==== PATCH /portal-admin/credit-limit-requests/{id} ====
+summary: Approve or reject a credit limit request
+params: [{"in":"path","name":"id","required":true,"schema":{"type":"string"}}]
+body: {
+  "type": "object",
+  "required": [
+    "status"
+  ],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "review_notes": {
+      "type": "string"
+    },
+    "approved_limit": {
+      "type": "number"
+    }
+  }
+}
+response desc: 
+
+==== GET /track ====
+summary: Public shipment track by reference
+params: [{"in":"query","name":"tenant_slug","required":true,"schema":{"type":"string"}},{"in":"query","name":"ref","required":true,"schema":{"type":"string"}}]
+response desc: 
+
+==== GET /track/embed ====
+summary: Embed widget config (tenant branding)
+params: [{"in":"query","name":"tenant_slug","required":false,"schema":{"type":"string"}}]
+response desc: 
+
+==== GET /notifications ====
+summary: List staff in-app notifications (unread first)
+params: [{"in":"query","name":"page","required":false,"schema":{"type":"number"}},{"in":"query","name":"limit","required":false,"schema":{"type":"number"}},{"in":"query","name":"unread_only","required":false,"schema":{"type":"string"}}]
+response desc: 
+
+==== GET /notifications/unread-count ====
+summary: Unread notification badge count
+params: []
+response desc: 
+
+==== POST /notifications/{id}/read ====
+summary: Mark one notification as read
+params: [{"in":"path","name":"id","required":true,"schema":{"type":"string"}}]
+response desc: 
+
+==== POST /notifications/read-all ====
+summary: Mark all notifications as read
+params: []
+response desc: 

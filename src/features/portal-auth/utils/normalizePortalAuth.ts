@@ -32,7 +32,7 @@ function normalizeParty(raw: unknown): PortalPartySummary | null {
 }
 
 /** Map login /me payloads into a stable portal user. */
-export function normalizePortalUser(raw: unknown, accessToken?: string | null): PortalUser {
+export function normalizePortalUser(raw: unknown, _accessToken?: string | null): PortalUser {
   const envelope = unwrapEnvelope(raw);
   const source =
     asRecord(envelope.user) ||

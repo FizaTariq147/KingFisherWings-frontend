@@ -1,5 +1,20 @@
 import { NavLink } from 'react-router-dom';
-import { Bell, BookOpen, ClipboardList, FileText, LogOut, Package, Route, User } from 'lucide-react';
+import {
+  Bell,
+  BookOpen,
+  ClipboardList,
+  CircleDollarSign,
+  FileText,
+  HandCoins,
+  LogOut,
+  MessageSquare,
+  Package,
+  Receipt,
+  Route,
+  Scale,
+  User,
+  Wallet,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePortalBrand } from '../../hooks/usePortalBrand';
 import { usePortalAuthStore } from '../../store/portalAuthStore';
@@ -15,7 +30,14 @@ const NAV = [
   { label: 'Track', to: '/portal/track', Icon: Route },
   { label: 'Shipments', to: '/portal/shipments', Icon: Package },
   { label: 'Quotes', to: '/portal/quotes', Icon: Bell },
+  { label: 'Invoices', to: '/portal/invoices', Icon: FileText },
+  { label: 'Credit notes', to: '/portal/credit-notes', Icon: Receipt },
+  { label: 'Payments', to: '/portal/payments', Icon: HandCoins },
+  { label: 'Credit', to: '/portal/credit', Icon: Wallet },
+  { label: 'Credit requests', to: '/portal/credit-requests', Icon: CircleDollarSign },
   { label: 'Documents', to: '/portal/documents', Icon: FileText },
+  { label: 'Messages', to: '/portal/messages', Icon: MessageSquare },
+  { label: 'Disputes', to: '/portal/disputes', Icon: Scale },
   { label: 'Alerts', to: '/portal/alerts', Icon: Bell },
   { label: 'Account', to: '/portal/account', Icon: User },
 ] as const;

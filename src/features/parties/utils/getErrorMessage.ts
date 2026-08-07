@@ -31,6 +31,12 @@ export function getErrorMessage(error: unknown): string {
     if (response?.status === 401) {
       return 'Your session expired. Please sign in again.';
     }
+    if (response?.status === 500) {
+      return (
+        rawMessage ||
+        'Server error (500) on this API. Frontend request is correct — backend must fix the route.'
+      );
+    }
     if (typeof record.message === 'string' && record.message.trim()) return record.message;
     if (Array.isArray(record.message)) return record.message.map(String).join('; ');
     if (typeof record.error === 'string' && record.error.trim()) return record.error;
