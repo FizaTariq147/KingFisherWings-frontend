@@ -3,4 +3,5 @@ export const PORTAL_QUOTATIONS_API = {
   list: '/portal/quotations',
   request: '/portal/quotations/request',
   detail: (id: string) => `/portal/quotations/${id}`,
+  pdf: (id: string) => `/portal/quotations/${id}/pdf`,
 } as const;

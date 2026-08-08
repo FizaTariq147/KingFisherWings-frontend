@@ -60,6 +60,10 @@ export interface PortalQuotationDetail extends PortalQuotationListItem {
   chargeableWeight?: number;
   volumeCbm?: number;
   specialRequirements?: string;
+  /** Direct file URL when API includes one */
+  pdfUrl?: string;
+  /** Explicit readiness flag when API includes one */
+  pdfReady?: boolean;
   lines?: Array<{
     id: string;
     description: string;

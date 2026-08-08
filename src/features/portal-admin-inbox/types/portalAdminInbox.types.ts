@@ -4,10 +4,30 @@ export interface AdminPortalMessageListParams {
   page?: number; limit?: number; party_id?: string; unread_only?: string | boolean;
 }
 export interface AdminPortalMessage {
-  id: string; subject: string; body?: string; partyId?: string; partyName?: string;
-  createdAt?: string; isRead?: boolean; senderEmail?: string;
+  id: string;
+  subject: string;
+  body?: string;
+  partyId?: string;
+  partyName?: string;
+  createdAt?: string;
+  isRead?: boolean;
+  senderEmail?: string;
+  replies?: AdminPortalMessageReply[];
 }
-export interface AdminPortalMessageListResult { items: AdminPortalMessage[]; meta: PortalPaginationMeta; }
+export interface AdminPortalMessageReply {
+  id: string;
+  body: string;
+  createdAt?: string;
+  authorType?: string;
+  authorName?: string;
+}
+export interface AdminPortalMessageListResult {
+  items: AdminPortalMessage[];
+  meta: PortalPaginationMeta;
+}
+export interface AdminPortalMessageReplyDto {
+  body: string;
+}
 
 export interface AdminPortalDispute {
   id: string; invoiceId?: string; invoiceNumber?: string; partyId?: string; partyName?: string;

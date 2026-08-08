@@ -11,6 +11,7 @@ import { useAppForm } from '@/lib/validation';
 import {
   useCreatePartyPortalUser,
   usePartyPortalUsers,
+  useResendPartyPortalInvite,
   useResetPartyPortalPassword,
   useUpdatePartyPortalUserStatus,
 } from '../../hooks/usePartyPortal';
@@ -35,6 +36,7 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
   const createUser = useCreatePartyPortalUser(partyId);
   const updateStatus = useUpdatePartyPortalUserStatus(partyId);
   const resetPassword = useResetPartyPortalPassword(partyId);
+  const resendInvite = useResendPartyPortalInvite(partyId);
 
   const [open, setOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -57,7 +59,11 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
     form.reset({ email: '', full_name: '', phone: '', password: '', send_email: true });
   };
 
-  const pending = createUser.isPending || updateStatus.isPending || resetPassword.isPending;
+  const pending =
+    createUser.isPending ||
+    updateStatus.isPending ||
+    resetPassword.isPending ||
+    resendInvite.isPending;
 
   return (
     <Card>
@@ -169,6 +175,22 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
                     }}
                   >
                     Reset password
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    disabled={pending}
+                    onClick={async () => {
+                      try {
+                        const result = await resendInvite.mutateAsync(user.id);
+                        window.alert(result.message || 'Invite resent.');
+                      } catch (err) {
+                        window.alert(getErrorMessage(err) || 'Could not resend invite.');
+                      }
+                    }}
+                  >
+                    Resend invite
                   </Button>
                 </div>
               </div>

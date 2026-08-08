@@ -252,6 +252,8 @@ export const router = createBrowserRouter([
           { path: 'invoices/:id', element: <PortalInvoiceDetailPage /> },
           { path: 'credit-notes', element: <PortalCreditNotesPage /> },
           { path: 'credit-notes/:id', element: <PortalCreditNoteDetailPage /> },
+          { path: 'debit-notes', element: <PortalCreditNotesPage /> },
+          { path: 'debit-notes/:id', element: <PortalCreditNoteDetailPage /> },
           { path: 'payments', element: <PortalPaymentsPage /> },
           { path: 'credit', element: <PortalCreditPage /> },
           { path: 'credit-requests', element: <PortalCreditRequestsPage /> },

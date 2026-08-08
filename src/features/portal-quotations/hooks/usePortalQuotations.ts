@@ -2,6 +2,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { usePortalQueryScope } from '@/features/portal-shared/usePortalQueryScope';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import { portalQuotationsService } from '../services/portalQuotations.service';
+import { fetchLocaleCurrencyForCountry } from '../utils/loadPortalCurrencyOptions';
 import type {
   PortalQuotationListParams,
   PortalQuotationRequestDto,
@@ -13,7 +14,20 @@ export const portalQuotationKeys = {
   list: (scope: string, params: PortalQuotationListParams) =>
     [...portalQuotationKeys.all(scope), 'list', params] as const,
   detail: (scope: string, id: string) => [...portalQuotationKeys.all(scope), 'detail', id] as const,
+  localeCurrency: (countryCode: string) =>
+    ['portal', 'locale-currency', countryCode] as const,
 };
+
+/** Public locale currency for a country (not staff masters). */
+export function usePortalLocaleCurrency(countryCode: string) {
+  const cc = countryCode.trim().toUpperCase();
+  return useQuery({
+    queryKey: portalQuotationKeys.localeCurrency(cc || 'none'),
+    queryFn: () => fetchLocaleCurrencyForCountry(cc),
+    enabled: /^[A-Z]{2}$/.test(cc),
+    staleTime: 60 * 60_000,
+  });
+}
 
 export function usePortalQuotationSummary(enabled = true) {
   const accessToken = usePortalAuthStore((s) => s.accessToken);

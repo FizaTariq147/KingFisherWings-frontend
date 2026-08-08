@@ -1,13 +1,15 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { portalAdminInboxService } from '../services/portalAdminInbox.service';
 import type {
-  AdminPortalMessageListParams, ReviewCreditLimitDto, ReviewDisputeDto,
+  AdminPortalMessageListParams, AdminPortalMessageReplyDto, ReviewCreditLimitDto, ReviewDisputeDto,
 } from '../types/portalAdminInbox.types';
 
 export const portalAdminInboxKeys = {
   all: ['portal-admin-inbox'] as const,
   messages: (params: AdminPortalMessageListParams) => [...portalAdminInboxKeys.all, 'messages', params] as const,
+  messageDetail: (id: string) => [...portalAdminInboxKeys.all, 'message', id] as const,
   disputes: () => [...portalAdminInboxKeys.all, 'disputes'] as const,
+  disputeDetail: (id: string) => [...portalAdminInboxKeys.all, 'dispute', id] as const,
   creditRequests: () => [...portalAdminInboxKeys.all, 'credit-requests'] as const,
 };
 
@@ -28,12 +30,42 @@ export function useMarkAdminPortalMessageRead() {
   });
 }
 
+export function useAdminPortalMessage(id: string, enabled = true) {
+  return useQuery({
+    queryKey: portalAdminInboxKeys.messageDetail(id),
+    queryFn: () => portalAdminInboxService.getMessage(id),
+    enabled: Boolean(id) && enabled,
+    staleTime: 0,
+  });
+}
+
+export function useReplyAdminPortalMessage() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, dto }: { id: string; dto: AdminPortalMessageReplyDto }) =>
+      portalAdminInboxService.replyToMessage(id, dto),
+    onSuccess: (_data, vars) => {
+      void qc.invalidateQueries({ queryKey: portalAdminInboxKeys.all });
+      void qc.invalidateQueries({ queryKey: portalAdminInboxKeys.messageDetail(vars.id) });
+    },
+  });
+}
+
 export function useAdminPortalDisputes(enabled = true) {
   return useQuery({
     queryKey: portalAdminInboxKeys.disputes(),
     queryFn: () => portalAdminInboxService.listDisputes(),
     staleTime: 0,
     enabled,
+  });
+}
+
+export function useAdminPortalDispute(id: string, enabled = true) {
+  return useQuery({
+    queryKey: portalAdminInboxKeys.disputeDetail(id),
+    queryFn: () => portalAdminInboxService.getDispute(id),
+    enabled: Boolean(id) && enabled,
+    staleTime: 0,
   });
 }
 

@@ -1,6 +1,7 @@
 import {
   asRecord,
   normalizeMeta,
+  pickBoolean,
   pickString,
   unwrapList
 } from '@/features/portal-shared/normalize';
@@ -18,6 +19,9 @@ export function normalizePortalDispute(raw: unknown): PortalDispute | null {
     status: pickString(r.status) || undefined,
     createdAt: pickString(r.created_at, r.createdAt) || undefined,
     staffNotes: pickString(r.staff_notes, r.staffNotes) || undefined,
+    hasAttachment:
+      pickBoolean(r.has_attachment, r.hasAttachment) ??
+      Boolean(pickString(r.attachment_name, r.attachmentName, r.attachment_url)),
   };
 }
 

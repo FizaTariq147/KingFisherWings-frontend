@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import { PortalApiError } from '@/lib/portalApiClient';
@@ -24,7 +24,23 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
+const inviteSchema = z.object({
+  full_name: z
+    .string()
+    .trim()
+    .max(200)
+    .optional()
+    .or(z.literal(''))
+    .refine((v) => !v || v.length >= 2, 'Full name must be at least 2 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirm: z.string().min(1, 'Confirm your password'),
+}).refine((v) => v.password === v.confirm, {
+  message: 'Passwords do not match',
+  path: ['confirm'],
+});
+
 type LoginFormValues = z.infer<typeof loginSchema>;
+type InviteFormValues = z.infer<typeof inviteSchema>;
 
 interface LocationState {
   from?: { pathname: string };
@@ -37,6 +53,8 @@ export default function PortalLoginPage() {
   useApplyTheme();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const inviteToken = (searchParams.get('token') || searchParams.get('invite') || '').trim();
   const setSession = usePortalAuthStore((s) => s.setSession);
   const { ready, accessToken } = usePortalAuthBootstrap();
   const { companyName, portalLabel } = usePortalBrand();
@@ -49,6 +67,11 @@ export default function PortalLoginPage() {
       email: '',
       password: '',
     },
+  });
+
+  const inviteForm = useForm<InviteFormValues>({
+    resolver: zodResolver(inviteSchema),
+    defaultValues: { full_name: '', password: '', confirm: '' },
   });
 
   const loginMutation = useMutation({
@@ -83,6 +106,41 @@ export default function PortalLoginPage() {
             ? error.message
             : 'Login failed. Try again.';
       form.setError('root', { message });
+    },
+  });
+
+  const inviteMutation = useMutation({
+    mutationFn: portalAuthService.acceptInvite,
+    onSuccess: async (result) => {
+      if (result?.accessToken) {
+        useAuthStore.setState({
+          user: null,
+          accessToken: null,
+          refreshToken: null,
+          isAuthenticated: false,
+          error: null,
+        });
+        clearPortalQueryCache();
+        setSession(result.user, result.accessToken, result.refreshToken);
+        try {
+          const me = await portalAuthService.me();
+          usePortalAuthStore.getState().setUser(me);
+        } catch {
+          /* optional */
+        }
+        navigate('/portal', { replace: true });
+        return;
+      }
+      navigate('/portal/login', { replace: true });
+    },
+    onError: (error: unknown) => {
+      const message =
+        error instanceof PortalApiError
+          ? error.message
+          : error instanceof Error
+            ? error.message
+            : 'Could not accept invite.';
+      inviteForm.setError('root', { message });
     },
   });
 
@@ -170,21 +228,98 @@ export default function PortalLoginPage() {
       <main className="relative flex items-center bg-[var(--color-surface)] px-6 py-12 sm:px-10 lg:px-14 lg:py-16">
         <div className="portal-login-form mx-auto w-full max-w-[380px]">
           <h2 className="text-xl font-semibold tracking-tight text-[var(--color-neutral-900)]">
-            Sign in
+            {inviteToken ? 'Accept invite' : 'Sign in'}
           </h2>
           <p className="mt-1.5 text-sm text-[var(--color-neutral-500)]">
-            Enter the workspace and credentials from your forwarder.
+            {inviteToken
+              ? 'Set your password to activate your customer portal account.'
+              : 'Enter the workspace and credentials from your forwarder.'}
           </p>
 
-          {form.formState.errors.root && (
+          {(form.formState.errors.root || inviteForm.formState.errors.root) && (
             <div
               className="mt-6 border-l-2 border-red-500 bg-red-50/80 px-3 py-2.5 text-sm text-red-700"
               role="alert"
             >
-              {form.formState.errors.root.message}
+              {form.formState.errors.root?.message || inviteForm.formState.errors.root?.message}
             </div>
           )}
 
+          {inviteToken ? (
+            <form
+              onSubmit={inviteForm.handleSubmit((values) =>
+                inviteMutation.mutate({
+                  token: inviteToken,
+                  password: values.password,
+                  full_name: values.full_name?.trim() || undefined,
+                }),
+              )}
+              noValidate
+              className="mt-8 space-y-6"
+            >
+              <div>
+                <label
+                  htmlFor="invite_full_name"
+                  className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-neutral-500)]"
+                >
+                  Full name (optional)
+                </label>
+                <input
+                  id="invite_full_name"
+                  autoComplete="name"
+                  className={`${inputClass} mt-1`}
+                  {...inviteForm.register('full_name')}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="invite_password"
+                  className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-neutral-500)]"
+                >
+                  New password
+                </label>
+                <input
+                  id="invite_password"
+                  type="password"
+                  autoComplete="new-password"
+                  className={`${inputClass} mt-1`}
+                  {...inviteForm.register('password')}
+                />
+                {inviteForm.formState.errors.password && (
+                  <p className="mt-1.5 text-xs text-red-600">
+                    {inviteForm.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label
+                  htmlFor="invite_confirm"
+                  className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-neutral-500)]"
+                >
+                  Confirm password
+                </label>
+                <input
+                  id="invite_confirm"
+                  type="password"
+                  autoComplete="new-password"
+                  className={`${inputClass} mt-1`}
+                  {...inviteForm.register('confirm')}
+                />
+                {inviteForm.formState.errors.confirm && (
+                  <p className="mt-1.5 text-xs text-red-600">
+                    {inviteForm.formState.errors.confirm.message}
+                  </p>
+                )}
+              </div>
+              <button
+                type="submit"
+                disabled={inviteMutation.isPending}
+                className="mt-2 w-full bg-[var(--color-primary)] py-3.5 text-sm font-semibold text-white transition-[background-color,transform] hover:bg-[var(--color-secondary)] active:scale-[0.99] disabled:opacity-60"
+              >
+                {inviteMutation.isPending ? 'Activating…' : 'Activate account'}
+              </button>
+            </form>
+          ) : (
           <form
             onSubmit={form.handleSubmit((values) => loginMutation.mutate(values))}
             noValidate
@@ -273,6 +408,7 @@ export default function PortalLoginPage() {
               {loginMutation.isPending ? 'Signing in…' : 'Continue'}
             </button>
           </form>
+          )}
 
           <p className="mt-10 text-center text-xs text-[var(--color-neutral-400)]">
             Staff access?{' '}

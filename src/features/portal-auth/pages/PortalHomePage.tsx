@@ -243,7 +243,7 @@ export default function PortalHomePage() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <DashboardCard
-          title="Recent shipments"
+          title="Recent   Shipments"
           accent="primary"
           isLoading={recentShipments.isLoading}
           showOwnerIcon={false}
@@ -304,7 +304,7 @@ export default function PortalHomePage() {
         </DashboardCard>
 
         <DashboardCard
-          title="Recent quotes"
+          title="Recent Quotes"
           accent="secondary"
           isLoading={recentQuotes.isLoading}
           showOwnerIcon={false}
@@ -363,7 +363,7 @@ export default function PortalHomePage() {
         </DashboardCard>
       </div>
 
-      <DashboardCard title="Quick actions" accent="primary" showOwnerIcon={false}>
+      <DashboardCard title="Quick   Actions" accent="primary" showOwnerIcon={false}>
         <div className="grid gap-1 p-2 sm:grid-cols-3">
           {[
             {

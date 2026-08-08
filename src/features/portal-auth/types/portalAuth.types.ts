@@ -4,6 +4,12 @@ export interface PortalLoginDto {
   password: string;
 }
 
+export interface PortalAcceptInviteDto {
+  token: string;
+  password: string;
+  full_name?: string;
+}
+
 export interface PortalPartySummary {
   id: string;
   name: string;

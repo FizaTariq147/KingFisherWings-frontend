@@ -8,8 +8,15 @@ export interface PortalCreditNoteLine {
   id: string; description: string; quantity?: number; unitPrice?: number; lineTotal?: number;
 }
 export interface PortalCreditNoteListItem {
-  id: string; number: string; status?: string; currencyCode?: string;
-  creditDate?: string; totalAmount?: number; creditedInvoiceId?: string; creditedInvoiceNumber?: string;
+  id: string;
+  number: string;
+  status?: string;
+  currencyCode?: string;
+  creditDate?: string;
+  totalAmount?: number;
+  creditedInvoiceId?: string;
+  creditedInvoiceNumber?: string;
+  kind?: 'credit' | 'debit';
 }
 export interface PortalCreditNoteDetail extends PortalCreditNoteListItem {
   remarks?: string; lines: PortalCreditNoteLine[];
