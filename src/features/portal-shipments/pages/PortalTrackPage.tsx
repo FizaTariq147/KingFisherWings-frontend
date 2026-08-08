@@ -10,8 +10,37 @@ import { usePortalShipmentLookup } from '../hooks/usePortalShipments';
 export default function PortalTrackPage() {
   const navigate = useNavigate();
   const [ref, setRef] = useState('');
+  const [fieldError, setFieldError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const lookup = usePortalShipmentLookup();
+
+  const validateRef = (value: string): string | null => {
+    const trimmed = value.trim();
+    if (!trimmed) return 'Reference is required.';
+    if (trimmed.length < 2) return 'Enter at least 2 characters.';
+    if (trimmed.length > 100) return 'Reference is too long.';
+    return null;
+  };
+
+  const runLookup = async () => {
+    setError(null);
+    const validation = validateRef(ref);
+    setFieldError(validation);
+    if (validation) return;
+
+    try {
+      const result = await lookup.mutateAsync(ref.trim());
+      if (!result) {
+        setError('No shipment found for that reference.');
+        return;
+      }
+      navigate(`/portal/shipments/${result.id}`);
+    } catch (err) {
+      setError(
+        err instanceof PortalApiError || err instanceof Error ? err.message : 'Lookup failed.',
+      );
+    }
+  };
 
   return (
     <div className="mx-auto max-w-xl space-y-5">
@@ -25,47 +54,42 @@ export default function PortalTrackPage() {
           <Search size={20} aria-hidden="true" />
         </div>
         {error && (
-          <p role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p
+            role="alert"
+            className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+          >
             {error}
           </p>
         )}
-        <div className="space-y-4">
+        <form
+          className="space-y-4"
+          noValidate
+          onSubmit={(e) => {
+            e.preventDefault();
+            void runLookup();
+          }}
+        >
           <Input
             label="Reference"
+            required
             value={ref}
-            onChange={(e) => setRef(e.target.value)}
-            placeholder="e.g. KFW-J-00042"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && ref.trim().length >= 2 && !lookup.isPending) {
-                e.currentTarget.form?.requestSubmit?.();
-              }
+            onChange={(e) => {
+              setRef(e.target.value);
+              if (fieldError) setFieldError(validateRef(e.target.value));
             }}
+            onBlur={() => setFieldError(validateRef(ref))}
+            placeholder="e.g. KFW-J-00042"
+            error={fieldError ?? undefined}
+            hint="At least 2 characters"
           />
           <Button
-            type="button"
+            type="submit"
             className="w-full"
             disabled={lookup.isPending || ref.trim().length < 2}
-            onClick={async () => {
-              setError(null);
-              try {
-                const result = await lookup.mutateAsync(ref.trim());
-                if (!result) {
-                  setError('No shipment found for that reference.');
-                  return;
-                }
-                navigate(`/portal/shipments/${result.id}`);
-              } catch (err) {
-                setError(
-                  err instanceof PortalApiError || err instanceof Error
-                    ? err.message
-                    : 'Lookup failed.',
-                );
-              }
-            }}
           >
             {lookup.isPending ? 'Searching…' : 'Track shipment'}
           </Button>
-        </div>
+        </form>
       </PortalPanel>
     </div>
   );

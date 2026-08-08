@@ -8,13 +8,32 @@ import {
   unwrapList,
 } from '@/features/portal-shared/normalize';
 import type {
-  AdminCreditLimitRequest, AdminPortalDispute, AdminPortalMessage, AdminPortalMessageListResult,
+  AdminCreditLimitRequest,
+  AdminPortalDispute,
+  AdminPortalMessage,
+  AdminPortalMessageListResult,
+  AdminPortalMessageReply,
 } from '../types/portalAdminInbox.types';
+
+export function normalizeAdminMessageReply(raw: unknown): AdminPortalMessageReply | null {
+  const r = asRecord(raw);
+  if (!r) return null;
+  const body = pickString(r.body, r.message, r.content);
+  if (!body) return null;
+  return {
+    id: pickString(r.id) || Math.random().toString(36).slice(2),
+    body,
+    createdAt: pickString(r.created_at, r.createdAt) || undefined,
+    authorType: pickString(r.author_type, r.authorType, r.sender_type, r.role) || undefined,
+    authorName: pickString(r.author_name, r.authorName, r.sender_name) || undefined,
+  };
+}
 
 export function normalizeAdminMessage(raw: unknown): AdminPortalMessage | null {
   const r = asRecord(raw); if (!r) return null;
   const id = pickString(r.id); if (!id) return null;
   const readAt = pickString(r.read_at, r.readAt, r.staff_read_at);
+  const repliesRaw = Array.isArray(r.replies) ? r.replies : [];
   return {
     id,
     subject: pickString(r.subject, r.title) || 'Message',
@@ -24,6 +43,9 @@ export function normalizeAdminMessage(raw: unknown): AdminPortalMessage | null {
     createdAt: pickString(r.created_at, r.createdAt) || undefined,
     isRead: pickBoolean(r.is_read, r.isRead, r.read_by_staff) ?? Boolean(readAt),
     senderEmail: pickString(r.sender_email, r.email, r.from_email) || undefined,
+    replies: repliesRaw
+      .map(normalizeAdminMessageReply)
+      .filter((x): x is AdminPortalMessageReply => Boolean(x)),
   };
 }
 

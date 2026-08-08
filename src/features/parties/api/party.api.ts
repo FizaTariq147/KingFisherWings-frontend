@@ -15,6 +15,8 @@ export const PARTY_API = {
     `/parties/${partyId}/portal-users/${id}/status`,
   portalUserResetPassword: (partyId: string, id: string) =>
     `/parties/${partyId}/portal-users/${id}/reset-password`,
+  portalUserResendInvite: (partyId: string, id: string) =>
+    `/parties/${partyId}/portal-users/${id}/resend-invite`,
   /** Parties → portal document rights */
   portalPermissions: (partyId: string) => `/parties/${partyId}/portal-permissions`,
   portalPermissionsReset: (partyId: string) =>

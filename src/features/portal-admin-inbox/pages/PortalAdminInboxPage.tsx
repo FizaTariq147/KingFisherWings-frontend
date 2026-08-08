@@ -7,16 +7,124 @@ import { getErrorMessage } from '@/features/parties/utils/getErrorMessage';
 import {
   useAdminCreditLimitRequests,
   useAdminPortalDisputes,
+  useAdminPortalMessage,
   useAdminPortalMessages,
   useMarkAdminPortalMessageRead,
+  useReplyAdminPortalMessage,
   useReviewAdminCreditLimitRequest,
   useReviewAdminPortalDispute,
 } from '../hooks/usePortalAdminInbox';
-import type { AdminCreditLimitRequest, AdminPortalDispute } from '../types/portalAdminInbox.types';
+import type { AdminCreditLimitRequest, AdminPortalDispute, AdminPortalMessage } from '../types/portalAdminInbox.types';
 
 type Tab = 'messages' | 'disputes' | 'credit';
 
 type CreditDraft = { status: string; review_notes: string; approved_limit: string };
+
+function AdminMessageRow({
+  message,
+  onMarkRead,
+  markPending,
+}: {
+  message: AdminPortalMessage;
+  onMarkRead: (id: string) => void;
+  markPending: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const [replyBody, setReplyBody] = useState('');
+  const [localError, setLocalError] = useState<string | null>(null);
+  const detail = useAdminPortalMessage(message.id, open);
+  const reply = useReplyAdminPortalMessage();
+  const thread = detail.data ?? message;
+  const replies = thread.replies ?? [];
+
+  return (
+    <li className="px-4 py-3.5">
+      <div className="flex items-start justify-between gap-3">
+        <button type="button" className="min-w-0 flex-1 text-left" onClick={() => setOpen((v) => !v)}>
+          <div className="text-sm font-semibold">{message.subject}</div>
+          <div className="text-xs text-[var(--color-neutral-500)]">
+            {[message.partyName, message.senderEmail, message.createdAt].filter(Boolean).join(' · ')}
+            {open ? ' · Hide' : ' · Open'}
+          </div>
+          {message.body ? (
+            <p className="mt-1 text-sm text-[var(--color-neutral-700)] whitespace-pre-wrap line-clamp-2">
+              {message.body}
+            </p>
+          ) : null}
+        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          {message.isRead ? (
+            <Badge variant="neutral">Read</Badge>
+          ) : (
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              disabled={markPending}
+              onClick={() => onMarkRead(message.id)}
+            >
+              Mark read
+            </Button>
+          )}
+        </div>
+      </div>
+      {open && (
+        <div className="mt-3 space-y-3 border-t border-[var(--color-neutral-100)] pt-3">
+          {localError && (
+            <p className="text-xs text-[var(--color-danger-600)]" role="alert">
+              {localError}
+            </p>
+          )}
+          {detail.isLoading ? (
+            <p className="text-xs text-[var(--color-neutral-400)]">Loading thread…</p>
+          ) : (
+            <>
+              {replies.length > 0 ? (
+                <ul className="space-y-2">
+                  {replies.map((r) => (
+                    <li key={r.id} className="rounded-md bg-[var(--color-neutral-50)] px-3 py-2 text-sm">
+                      <div className="text-xs text-[var(--color-neutral-500)]">
+                        {[r.authorName || r.authorType || 'Reply', r.createdAt].filter(Boolean).join(' · ')}
+                      </div>
+                      <p className="mt-1 whitespace-pre-wrap">{r.body}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-xs text-[var(--color-neutral-400)]">No replies yet.</p>
+              )}
+              <form
+                className="space-y-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setLocalError(null);
+                  if (!replyBody.trim()) {
+                    setLocalError('Reply is required.');
+                    return;
+                  }
+                  void reply
+                    .mutateAsync({ id: message.id, dto: { body: replyBody.trim() } })
+                    .then(() => setReplyBody(''))
+                    .catch((err) => setLocalError(getErrorMessage(err) || 'Reply failed.'));
+                }}
+              >
+                <textarea
+                  className="min-h-[72px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
+                  placeholder="Staff reply…"
+                  value={replyBody}
+                  onChange={(e) => setReplyBody(e.target.value)}
+                />
+                <Button type="submit" size="sm" disabled={reply.isPending}>
+                  {reply.isPending ? 'Sending…' : 'Reply'}
+                </Button>
+              </form>
+            </>
+          )}
+        </div>
+      )}
+    </li>
+  );
+}
 
 function defaultCreditDraft(req: AdminCreditLimitRequest): CreditDraft {
   return {
@@ -121,34 +229,12 @@ export default function PortalAdminInboxPage() {
           ) : (
             <ul className="divide-y divide-[var(--color-neutral-100)]">
               {messages.data.items.map((m) => (
-                <li key={m.id} className="px-4 py-3.5 flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="text-sm font-semibold">{m.subject}</div>
-                    <div className="text-xs text-[var(--color-neutral-500)]">
-                      {[m.partyName, m.senderEmail, m.createdAt].filter(Boolean).join(' · ')}
-                    </div>
-                    {m.body ? (
-                      <p className="mt-1 text-sm text-[var(--color-neutral-700)] whitespace-pre-wrap">
-                        {m.body}
-                      </p>
-                    ) : null}
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    {m.isRead ? (
-                      <Badge variant="neutral">Read</Badge>
-                    ) : (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="secondary"
-                        disabled={markRead.isPending}
-                        onClick={() => void markRead.mutateAsync(m.id)}
-                      >
-                        Mark read
-                      </Button>
-                    )}
-                  </div>
-                </li>
+                <AdminMessageRow
+                  key={m.id}
+                  message={m}
+                  markPending={markRead.isPending}
+                  onMarkRead={(id) => void markRead.mutateAsync(id)}
+                />
               ))}
             </ul>
           )}

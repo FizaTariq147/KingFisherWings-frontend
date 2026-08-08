@@ -61,6 +61,17 @@ export const partyPortalService = {
     return normalizeResetPartyPortalPasswordResult(bodyOf(res) ?? res.data);
   },
 
+  async resendInvite(partyId: string, id: string): Promise<{ message?: string }> {
+    const res = await axiosInstance.post(PARTY_API.portalUserResendInvite(partyId, id));
+    const raw = bodyOf<{ message?: string }>(res) ?? (res.data as { message?: string });
+    return {
+      message:
+        raw && typeof raw === 'object' && 'message' in raw
+          ? String((raw as { message?: string }).message || 'Invite resent.')
+          : 'Invite resent.',
+    };
+  },
+
   async getPermissions(partyId: string): Promise<PartyPortalPermissionEntry[]> {
     const res = await axiosInstance.get(PARTY_API.portalPermissions(partyId));
     return normalizePartyPortalPermissions(res.data);

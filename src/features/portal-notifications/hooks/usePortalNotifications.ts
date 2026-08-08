@@ -1,4 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { usePortalQueryScope } from '@/features/portal-shared/usePortalQueryScope';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import { portalNotificationsService } from '../services/portalNotifications.service';
@@ -6,7 +7,8 @@ import type { PortalNotificationListParams } from '../types/portalNotifications.
 
 export const portalNotificationKeys = {
   all: (scope: string) => ['portal', scope, 'notifications'] as const,
-  list: (scope: string, params: PortalNotificationListParams) => [...portalNotificationKeys.all(scope), 'list', params] as const,
+  list: (scope: string, params: PortalNotificationListParams) =>
+    [...portalNotificationKeys.all(scope), 'list', params] as const,
   unread: (scope: string) => [...portalNotificationKeys.all(scope), 'unread'] as const,
 };
 
@@ -25,13 +27,23 @@ export function usePortalNotifications(params: PortalNotificationListParams) {
 export function usePortalNotificationUnreadCount() {
   const accessToken = usePortalAuthStore((s) => s.accessToken);
   const scope = usePortalQueryScope();
-  return useQuery({
+  const qc = useQueryClient();
+  const query = useQuery({
     queryKey: portalNotificationKeys.unread(scope),
     queryFn: () => portalNotificationsService.unreadCount(),
     enabled: Boolean(accessToken) && scope !== 'anon',
     staleTime: 0,
     refetchInterval: 60_000,
   });
+
+  useEffect(() => {
+    if (!accessToken || scope === 'anon') return;
+    return portalNotificationsService.subscribeUnreadCount((count) => {
+      qc.setQueryData(portalNotificationKeys.unread(scope), count);
+    });
+  }, [accessToken, scope, qc]);
+
+  return query;
 }
 
 export function useMarkPortalNotificationRead() {

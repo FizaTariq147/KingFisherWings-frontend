@@ -1,6 +1,7 @@
 import {
   asRecord,
   normalizeMeta,
+  pickBoolean,
   pickNumber,
   pickString,
   unwrapData,
@@ -130,6 +131,26 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
     volumeCbm: pickNumber(data.volume_cbm, data.volumeCbm),
     specialRequirements:
       pickString(data.special_requirements, data.specialRequirements, data.notes) || undefined,
+    pdfUrl: (() => {
+      const raw = pickString(
+        data.customer_pdf_url,
+        data.customerPdfUrl,
+        data.pdf_url,
+        data.pdfUrl,
+        data.download_url,
+        data.downloadUrl,
+      );
+      // Relative API paths must not be opened in the SPA (frontend 404).
+      return raw && /^https?:\/\//i.test(raw) ? raw : undefined;
+    })(),
+    pdfReady:
+      pickBoolean(
+        data.pdf_ready,
+        data.pdfReady,
+        data.has_customer_pdf,
+        data.hasCustomerPdf,
+        data.customer_pdf_ready,
+      ) ?? undefined,
     lines,
   };
 }

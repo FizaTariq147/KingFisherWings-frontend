@@ -32,6 +32,7 @@ const NAV = [
   { label: 'Quotes', to: '/portal/quotes', Icon: Bell },
   { label: 'Invoices', to: '/portal/invoices', Icon: FileText },
   { label: 'Credit notes', to: '/portal/credit-notes', Icon: Receipt },
+  { label: 'Debit notes', to: '/portal/debit-notes', Icon: Receipt },
   { label: 'Payments', to: '/portal/payments', Icon: HandCoins },
   { label: 'Credit', to: '/portal/credit', Icon: Wallet },
   { label: 'Credit requests', to: '/portal/credit-requests', Icon: CircleDollarSign },

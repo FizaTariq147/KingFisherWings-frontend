@@ -41,6 +41,26 @@ function formatApiErrorMessage(data: unknown, fallback: string): string {
   return fallback;
 }
 
+async function resolvePortalErrorMessage(err: AxiosError, fallback: string): Promise<string> {
+  const data = err.response?.data;
+  if (data instanceof Blob) {
+    try {
+      const text = await data.text();
+      if (text.trim()) {
+        try {
+          return formatApiErrorMessage(JSON.parse(text), fallback);
+        } catch {
+          if (text.length < 400) return text;
+        }
+      }
+    } catch {
+      /* keep fallback */
+    }
+    return fallback;
+  }
+  return formatApiErrorMessage(data, fallback);
+}
+
 export const portalApiClient = axios.create({
   baseURL:
     import.meta.env.VITE_API_BASE_URL ||
@@ -100,8 +120,8 @@ portalApiClient.interceptors.response.use(
   (res) => res,
   async (err: AxiosError) => {
     const status = err.response?.status ?? 0;
-    const message = formatApiErrorMessage(
-      err.response?.data,
+    const message = await resolvePortalErrorMessage(
+      err,
       err.message ?? 'Something went wrong',
     );
     const original = err.config as RetryConfig | undefined;

@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { CircleDollarSign } from 'lucide-react';
+import { z } from 'zod';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -14,12 +17,30 @@ import {
   usePortalCreditRequests,
 } from '../hooks/usePortalCreditRequests';
 
+const createCreditRequestSchema = z.object({
+  requested_limit: z
+    .string()
+    .trim()
+    .min(1, 'Requested limit is required')
+    .refine((v) => {
+      const n = Number(v);
+      return Number.isFinite(n) && n >= 1;
+    }, 'Requested limit must be at least 1'),
+  justification: z.string().trim().min(10, 'Justification must be at least 10 characters'),
+});
+
+type CreateCreditRequestValues = z.infer<typeof createCreditRequestSchema>;
+
 export default function PortalCreditRequestsPage() {
   const { data, isLoading, isError, error, refetch } = usePortalCreditRequests();
   const create = useCreatePortalCreditRequest();
-  const [requestedLimit, setRequestedLimit] = useState('');
-  const [justification, setJustification] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
+  const form = useForm<CreateCreditRequestValues>({
+    resolver: zodResolver(createCreditRequestSchema),
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
+    defaultValues: { requested_limit: '', justification: '' },
+  });
   const items = data ?? [];
 
   return (
@@ -37,24 +58,15 @@ export default function PortalCreditRequestsPage() {
         )}
         <form
           className="space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
+          noValidate
+          onSubmit={form.handleSubmit((values) => {
             setFormError(null);
-            const limit = Number(requestedLimit);
-            if (!Number.isFinite(limit) || limit <= 0) {
-              setFormError('Enter a valid requested limit.');
-              return;
-            }
-            if (!justification.trim()) {
-              setFormError('Justification is required.');
-              return;
-            }
             void create
-              .mutateAsync({ requested_limit: limit, justification: justification.trim() })
-              .then(() => {
-                setRequestedLimit('');
-                setJustification('');
+              .mutateAsync({
+                requested_limit: Number(values.requested_limit),
+                justification: values.justification.trim(),
               })
+              .then(() => form.reset({ requested_limit: '', justification: '' }))
               .catch((err) => {
                 setFormError(
                   err instanceof PortalApiError || err instanceof Error
@@ -62,24 +74,33 @@ export default function PortalCreditRequestsPage() {
                     : 'Could not submit request.',
                 );
               });
-          }}
+          })}
         >
           <Input
             label="Requested limit"
+            required
             type="number"
             step="any"
-            value={requestedLimit}
-            onChange={(e) => setRequestedLimit(e.target.value)}
+            min={1}
+            hint="Minimum 1"
+            error={form.formState.errors.requested_limit?.message}
+            {...form.register('requested_limit')}
           />
           <label className="block text-sm">
             <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
-              Justification
+              Justification <span className="text-[var(--color-danger-500)]">*</span>
             </span>
             <textarea
               className="min-h-[88px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
-              value={justification}
-              onChange={(e) => setJustification(e.target.value)}
+              {...form.register('justification')}
             />
+            {form.formState.errors.justification ? (
+              <p className="mt-1 text-xs text-[var(--color-danger-500)]">
+                {form.formState.errors.justification.message}
+              </p>
+            ) : (
+              <p className="mt-1 text-xs text-[var(--color-neutral-400)]">At least 10 characters</p>
+            )}
           </label>
           <Button type="submit" disabled={create.isPending}>
             {create.isPending ? 'Submitting…' : 'Submit request'}

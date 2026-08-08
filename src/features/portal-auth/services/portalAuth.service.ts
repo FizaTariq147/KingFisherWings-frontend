@@ -1,6 +1,6 @@
 import { portalApiClient, type ApiEnvelope } from '@/lib/portalApiClient';
 import { PORTAL_AUTH_API } from '../api/portalAuth.api';
-import type { PortalLoginDto, PortalLoginResult, PortalUser } from '../types/portalAuth.types';
+import type { PortalAcceptInviteDto, PortalLoginDto, PortalLoginResult, PortalUser } from '../types/portalAuth.types';
 import {
   normalizePortalLoginResponse,
   normalizePortalTokenPair,
@@ -53,5 +53,21 @@ export const portalAuthService = {
   async me(): Promise<PortalUser> {
     const res = await portalApiClient.get<unknown>(PORTAL_AUTH_API.me);
     return normalizePortalUser(unwrapData(res.data) ?? res.data);
+  },
+
+  async acceptInvite(dto: PortalAcceptInviteDto): Promise<PortalLoginResult | void> {
+    const res = await portalApiClient.post<unknown>(PORTAL_AUTH_API.acceptInvite, {
+      token: dto.token.trim(),
+      password: dto.password,
+      full_name: dto.full_name?.trim() || undefined,
+    });
+    const normalized = normalizePortalLoginResponse(unwrapData(res.data) ?? res.data);
+    if (normalized?.accessToken) {
+      return {
+        user: normalized.user,
+        accessToken: normalized.accessToken,
+        refreshToken: normalized.refreshToken,
+      };
+    }
   },
 };

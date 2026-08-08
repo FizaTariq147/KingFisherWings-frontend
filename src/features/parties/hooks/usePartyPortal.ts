@@ -61,6 +61,12 @@ export function useResetPartyPortalPassword(partyId: string) {
   });
 }
 
+export function useResendPartyPortalInvite(partyId: string) {
+  return useMutation({
+    mutationFn: (id: string) => partyPortalService.resendInvite(partyId, id),
+  });
+}
+
 export function useUpsertPartyPortalPermissions(partyId: string) {
   const qc = useQueryClient();
   return useMutation({
