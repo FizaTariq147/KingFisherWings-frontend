@@ -4,7 +4,15 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
-import { PortalEmptyState, PortalPageHeader, PortalPanel } from '@/features/portal-auth/components/portal-ui';
+import {
+  PortalAnimatedList,
+  PortalAnimatedListItem,
+  PortalEmptyState,
+  PortalFetchBar,
+  PortalLoadingState,
+  PortalPageHeader,
+  PortalPanel,
+} from '@/features/portal-auth/components/portal-ui';
 import { usePortalPayments } from '../hooks/usePortalPayments';
 
 export default function PortalPaymentsPage() {
@@ -32,9 +40,9 @@ export default function PortalPaymentsPage() {
         />
       </PortalPanel>
       <PortalPanel>
-        {isFetching && <div className="h-0.5 bg-[var(--color-secondary)]/80 animate-pulse" />}
+        <PortalFetchBar active={isFetching && !isLoading} />
         {isLoading ? (
-          <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading…</p>
+          <PortalLoadingState />
         ) : isError ? (
           <div className="p-6 space-y-2">
             <p className="text-sm text-[var(--color-danger-600)]">
@@ -53,9 +61,12 @@ export default function PortalPaymentsPage() {
             Icon={HandCoins}
           />
         ) : (
-          <ul className="divide-y divide-[var(--color-neutral-100)]">
+          <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((p) => (
-              <li key={p.id} className="flex items-center justify-between gap-3 px-4 py-3.5">
+              <PortalAnimatedListItem
+                key={p.id}
+                className="flex items-center justify-between gap-3 px-4 py-3.5"
+              >
                 <div className="min-w-0">
                   <div className="text-sm font-semibold truncate">{p.reference || p.id}</div>
                   <div className="text-xs text-[var(--color-neutral-500)]">
@@ -66,9 +77,9 @@ export default function PortalPaymentsPage() {
                   <span className="text-sm font-semibold tabular-nums">{p.amount ?? '—'}</span>
                   {p.status ? <Badge variant="neutral">{p.status}</Badge> : null}
                 </div>
-              </li>
+              </PortalAnimatedListItem>
             ))}
-          </ul>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
       {meta && meta.totalPages > 1 && (

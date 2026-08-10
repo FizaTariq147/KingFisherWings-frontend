@@ -27,7 +27,7 @@ export function SkeletonOverlay({ children }: { children: ReactNode }) {
   )
 }
 
-/** Full-page centered spinner — used during initial app boot */
+/** Full-page centered loader — matches customer portal dot style. */
 export function FullPageSpinner({ message = 'Loading…' }: { message?: string }) {
   return (
     <div
@@ -35,13 +35,11 @@ export function FullPageSpinner({ message = 'Loading…' }: { message?: string }
       role="status"
       aria-label={message}
     >
-      <div
-        className="w-10 h-10 rounded-full border-[3px] border-t-transparent animate-spin mb-4"
-        style={{
-          borderColor: 'var(--color-primary-200)',
-          borderTopColor: 'var(--color-primary-600)',
-        }}
-      />
+      <div className="flex items-center gap-2 app-loading-dots mb-4" aria-hidden="true">
+        <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-secondary)]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-secondary)]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-secondary)]" />
+      </div>
       <p className="text-sm text-[var(--color-neutral-400)]">{message}</p>
     </div>
   )

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import type { MenuTile } from '../../features/customers/types/menu.types';
 import { MenuTileCard } from './MenuTileCard';
 import { filterMenuTiles } from './filterMenuTiles';
+import { AppAnimatedGrid, AppAnimatedGridItem } from '@/components/motion';
 
 type ModuleMenuShellProps = {
   title: string;
@@ -87,12 +88,16 @@ export function ModuleMenuShell({
         </p>
       </div>
 
-      <div className="p-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <AppAnimatedGrid className="p-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {regularTiles.map((tile) => (
-          <MenuTileCard key={tile.id} tile={tile} onClick={navigate} />
+          <AppAnimatedGridItem key={tile.id}>
+            <MenuTileCard tile={tile} onClick={navigate} />
+          </AppAnimatedGridItem>
         ))}
         {showFeatured && featuredTile ? (
-          <MenuTileCard tile={featuredTile} onClick={navigate} />
+          <AppAnimatedGridItem>
+            <MenuTileCard tile={featuredTile} onClick={navigate} />
+          </AppAnimatedGridItem>
         ) : null}
 
         {filtered.length === 0 ? (
@@ -100,7 +105,7 @@ export function ModuleMenuShell({
             No modules match “{query.trim()}”.
           </p>
         ) : null}
-      </div>
+      </AppAnimatedGrid>
     </div>
   );
 }

@@ -10,7 +10,7 @@ import { TenantConfirmModal } from '../components/TenantConfirmModal';
 import { TenantStatsCards } from '../components/TenantStatsCards';
 import { TenantFilters } from '../components/TenantFilters';
 import { TenantTable } from '../components/TenantTable';
-import { TenantTableSkeleton } from '../components/TenantTableSkeleton';
+import { AppFetchBar, AppLoadingState } from '@/components/motion';
 import { useTenantConfirmState } from '../hooks/useTenantConfirmState';
 import { useTenantsList, useTenantStatistics, useTenantMutations } from '../hooks/useTenants';
 import { useSyncAllTenantPermissions } from '../hooks/useTenantMutations';
@@ -244,9 +244,12 @@ export default function TenantListPage() {
       )}
 
       {isLoading ? (
-        <TenantTableSkeleton />
+        <Card padding="none">
+          <AppLoadingState label="Loading tenants…" />
+        </Card>
       ) : (
         <Card padding="none">
+          <AppFetchBar active={Boolean(isFetching && !isLoading)} />
           <TenantTable
             tenants={tenants}
             isFetching={isFetching}

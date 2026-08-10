@@ -21,11 +21,11 @@ export function PortalEmptyState({
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center px-6 py-14 text-center',
+        'portal-motion-surface flex flex-col items-center justify-center px-6 py-14 text-center',
         className,
       )}
     >
-      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary-100)] text-[var(--color-primary)]">
+      <div className="portal-empty-icon mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary-100)] text-[var(--color-primary)]">
         <Icon size={22} aria-hidden="true" />
       </div>
       <p className="text-sm font-semibold text-[var(--color-neutral-800)]">{title}</p>

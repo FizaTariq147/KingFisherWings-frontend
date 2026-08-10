@@ -1,3 +1,4 @@
+import { AppFetchBar } from '@/components/motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowUpDown } from 'lucide-react';
 import {
@@ -68,11 +69,7 @@ export function UserTable({
 
   return (
     <div className="relative">
-      {isFetching && (
-        <div className="absolute top-0 left-0 right-0 h-0.5 z-10 overflow-hidden bg-[var(--color-primary-100)]">
-          <div className="h-full w-1/3 bg-[var(--color-primary-500)] animate-pulse" />
-        </div>
-      )}
+      <AppFetchBar active={Boolean(isFetching)} className="absolute top-0 left-0 right-0 z-10" />
       <Table className="min-w-[720px]">
         <TableHeader>
           <TableRow className="hover:bg-transparent">

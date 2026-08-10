@@ -9,11 +9,12 @@ import {
   useNotificationUnreadCount,
   useNotifications,
 } from '../hooks/useNotifications';
+import { AppFetchBar, AppLoadingState } from '@/components/motion';
 
 export default function NotificationsPage() {
   const [page, setPage] = useState(1);
   const params = useMemo(() => ({ page, limit: 20 }), [page]);
-  const { data, isLoading, isError, refetch } = useNotifications(params);
+  const { data, isLoading, isFetching, isError, refetch } = useNotifications(params);
   const unread = useNotificationUnreadCount();
   const markRead = useMarkNotificationRead();
   const markAll = useMarkAllNotificationsRead();
@@ -44,8 +45,9 @@ export default function NotificationsPage() {
       </div>
 
       <Card className="p-0 overflow-hidden">
+        <AppFetchBar active={Boolean(isFetching && !isLoading)} />
         {isLoading ? (
-          <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading…</p>
+          <AppLoadingState label="Loading notifications…" />
         ) : isError ? (
           <div className="p-6 space-y-2">
             <p className="text-sm text-[var(--color-danger-600)]">Failed to load notifications.</p>

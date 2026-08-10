@@ -14,7 +14,7 @@ export function DashboardPage() {
 
   return (
     <div className="pb-16">
-      <div className="space-y-4">
+      <div className="space-y-4 app-js-motion">
         <WelcomeBanner productName={productName} tenantName={tenantLabel} />
         <QuickAccessToolbar />
 

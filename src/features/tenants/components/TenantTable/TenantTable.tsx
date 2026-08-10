@@ -1,3 +1,4 @@
+import { AppFetchBar } from '@/components/motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowUpDown } from 'lucide-react';
 import {

@@ -17,6 +17,7 @@ import { useQuotationConfirmState } from '../hooks/useQuotationConfirmState';
 import { useExpireDueQuotations, useQuotations } from '../hooks/useQuotations';
 import type { Quotation } from '../types/quotation.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { AppListPanelBody } from '@/components/motion';
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
   const [debounced, setDebounced] = useState(value);
@@ -193,25 +194,25 @@ export default function QuotationListPage() {
               Retry
             </Button>
           </div>
-        ) : isLoading ? (
-          <p className="text-sm text-[var(--color-neutral-400)] py-10 text-center">Loading…</p>
         ) : (
-          <QuotationTable
-            quotations={quotations}
-            isFetching={isFetching}
-            meta={meta}
-            onPage={setPage}
-            pendingActionId={pendingActionId}
-            onView={(q) => navigate(`/quotations/${q.id}`)}
-            onEdit={(q) => navigate(`/quotations/${q.id}/edit`)}
-            onDuplicate={(q) => requestConfirm('duplicate', q)}
-            onSubmit={(q) => requestConfirm('submit', q)}
-            onApprove={(q) => requestConfirm('approve', q)}
-            onReject={(q) => requestConfirm('reject', q)}
-            onSend={(q) => requestConfirm('send', q)}
-            onDelete={(q) => requestConfirm('delete', q)}
-            onArchive={(q) => requestConfirm('archive', q)}
-          />
+          <AppListPanelBody isLoading={isLoading} isFetching={isFetching}>
+            <QuotationTable
+              quotations={quotations}
+              isFetching={isFetching}
+              meta={meta}
+              onPage={setPage}
+              pendingActionId={pendingActionId}
+              onView={(q) => navigate(`/quotations/${q.id}`)}
+              onEdit={(q) => navigate(`/quotations/${q.id}/edit`)}
+              onDuplicate={(q) => requestConfirm('duplicate', q)}
+              onSubmit={(q) => requestConfirm('submit', q)}
+              onApprove={(q) => requestConfirm('approve', q)}
+              onReject={(q) => requestConfirm('reject', q)}
+              onSend={(q) => requestConfirm('send', q)}
+              onDelete={(q) => requestConfirm('delete', q)}
+              onArchive={(q) => requestConfirm('archive', q)}
+            />
+          </AppListPanelBody>
         )}
       </Card>
 

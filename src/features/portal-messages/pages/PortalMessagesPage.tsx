@@ -9,7 +9,10 @@ import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { PortalApiError } from '@/lib/portalApiClient';
 import {
+  PortalAnimatedList,
+  PortalAnimatedListItem,
   PortalEmptyState,
+  PortalLoadingState,
   PortalPageHeader,
   PortalPanel,
 } from '@/features/portal-auth/components/portal-ui';
@@ -52,7 +55,7 @@ function MessageThreadRow({ message }: { message: PortalMessage }) {
   const replies = thread.replies ?? [];
 
   return (
-    <li className="px-4 py-3.5">
+    <div className="px-4 py-3.5">
       <div className="flex items-start justify-between gap-3">
         <button
           type="button"
@@ -175,7 +178,7 @@ function MessageThreadRow({ message }: { message: PortalMessage }) {
           )}
         </div>
       )}
-    </li>
+    </div>
   );
 }
 
@@ -272,7 +275,7 @@ export default function PortalMessagesPage() {
 
       <PortalPanel>
         {isLoading ? (
-          <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading…</p>
+          <PortalLoadingState />
         ) : isError ? (
           <div className="p-6 space-y-2">
             <p className="text-sm text-[var(--color-danger-600)]">
@@ -291,11 +294,13 @@ export default function PortalMessagesPage() {
             Icon={MessageSquare}
           />
         ) : (
-          <ul className="divide-y divide-[var(--color-neutral-100)]">
+          <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((m) => (
-              <MessageThreadRow key={m.id} message={m} />
+              <PortalAnimatedListItem key={m.id}>
+                <MessageThreadRow message={m} />
+              </PortalAnimatedListItem>
             ))}
-          </ul>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
       {meta && meta.totalPages > 1 && (

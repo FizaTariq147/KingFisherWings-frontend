@@ -6,7 +6,17 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
 import {
-  PortalEmptyState, PortalPageHeader, PortalPanel, PortalStatCard, portalSelectClassName,
+  PortalAnimatedGrid,
+  PortalAnimatedGridItem,
+  PortalAnimatedList,
+  PortalAnimatedListItem,
+  PortalEmptyState,
+  PortalFetchBar,
+  PortalLoadingState,
+  PortalPageHeader,
+  PortalPanel,
+  PortalStatCard,
+  portalSelectClassName,
 } from '@/features/portal-auth/components/portal-ui';
 import { PORTAL_INVOICE_STATUSES } from '../api/portalInvoices.api';
 import {
@@ -29,12 +39,12 @@ export default function PortalInvoicesPage() {
   return (
     <div className="space-y-5">
       <PortalPageHeader title="Invoices" description="Customer invoices for your account." />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <PortalStatCard label="Total" value={summary.data?.total ?? (summary.isLoading ? '…' : 0)} Icon={FileText} />
-        <PortalStatCard label="Outstanding" value={summary.data?.outstanding ?? (summary.isLoading ? '…' : 0)} />
-        <PortalStatCard label="Overdue" value={summary.data?.overdue ?? (summary.isLoading ? '…' : 0)} />
-        <PortalStatCard label="Paid" value={summary.data?.paid ?? (summary.isLoading ? '…' : 0)} tone="accent" />
-      </div>
+      <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <PortalAnimatedGridItem><PortalStatCard label="Total" value={summary.data?.total ?? (summary.isLoading ? '…' : 0)} Icon={FileText} /></PortalAnimatedGridItem>
+        <PortalAnimatedGridItem><PortalStatCard label="Outstanding" value={summary.data?.outstanding ?? (summary.isLoading ? '…' : 0)} /></PortalAnimatedGridItem>
+        <PortalAnimatedGridItem><PortalStatCard label="Overdue" value={summary.data?.overdue ?? (summary.isLoading ? '…' : 0)} /></PortalAnimatedGridItem>
+        <PortalAnimatedGridItem><PortalStatCard label="Paid" value={summary.data?.paid ?? (summary.isLoading ? '…' : 0)} tone="accent" /></PortalAnimatedGridItem>
+      </PortalAnimatedGrid>
       <PortalPanel padded>
         <div className="grid gap-3 sm:grid-cols-2">
           <Input label="Search" value={search} onChange={(e) => { setPage(1); setSearch(e.target.value); }} />
@@ -48,9 +58,9 @@ export default function PortalInvoicesPage() {
         </div>
       </PortalPanel>
       <PortalPanel>
-        {isFetching && <div className="h-0.5 bg-[var(--color-secondary)]/80 animate-pulse" />}
+        <PortalFetchBar active={isFetching && !isLoading} />
         {isLoading ? (
-          <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading invoices…</p>
+          <PortalLoadingState label="Loading invoices…" />
         ) : isError ? (
           <div className="p-6 space-y-2">
             <p className="text-sm text-[var(--color-danger-600)]">{error instanceof PortalApiError || error instanceof Error ? error.message : 'Failed to load invoices.'}</p>
@@ -59,9 +69,9 @@ export default function PortalInvoicesPage() {
         ) : items.length === 0 ? (
           <PortalEmptyState title="No invoices" description="Invoices appear here once posted for your party." Icon={FileText} />
         ) : (
-          <ul className="divide-y divide-[var(--color-neutral-100)]">
+          <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((inv) => (
-              <li key={inv.id} className="flex items-center justify-between gap-3 px-4 py-3.5">
+              <PortalAnimatedListItem key={inv.id} className="flex items-center justify-between gap-3 px-4 py-3.5">
                 <Link to={`/portal/invoices/${inv.id}`} className="min-w-0 flex-1 hover:opacity-80">
                   <div className="text-sm font-semibold truncate">{inv.number}</div>
                   <div className="text-xs text-[var(--color-neutral-500)]">
@@ -75,9 +85,9 @@ export default function PortalInvoicesPage() {
                     <Download size={14} aria-hidden="true" /> PDF
                   </Button>
                 </div>
-              </li>
+              </PortalAnimatedListItem>
             ))}
-          </ul>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
       {meta && meta.totalPages > 1 && (

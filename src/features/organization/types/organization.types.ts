@@ -41,7 +41,7 @@ export interface UpdateOrganizationProfileDto {
   website?: string;
   address?: string;
   city?: string;
-  country_code?: string | null;
+  country_code?: string;
   phone?: string;
   email?: string;
   language?: string;

@@ -8,7 +8,10 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
 import {
+  PortalAnimatedList,
+  PortalAnimatedListItem,
   PortalEmptyState,
+  PortalLoadingState,
   PortalPageHeader,
   PortalPanel,
 } from '@/features/portal-auth/components/portal-ui';
@@ -110,7 +113,7 @@ export default function PortalCreditRequestsPage() {
 
       <PortalPanel>
         {isLoading ? (
-          <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading…</p>
+          <PortalLoadingState />
         ) : isError ? (
           <div className="p-6 space-y-2">
             <p className="text-sm text-[var(--color-danger-600)]">
@@ -129,9 +132,12 @@ export default function PortalCreditRequestsPage() {
             Icon={CircleDollarSign}
           />
         ) : (
-          <ul className="divide-y divide-[var(--color-neutral-100)]">
+          <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((req) => (
-              <li key={req.id} className="flex items-center justify-between gap-3 px-4 py-3.5">
+              <PortalAnimatedListItem
+                key={req.id}
+                className="flex items-center justify-between gap-3 px-4 py-3.5"
+              >
                 <div className="min-w-0">
                   <div className="text-sm font-semibold">
                     Requested {req.requestedLimit ?? '—'}
@@ -142,9 +148,9 @@ export default function PortalCreditRequestsPage() {
                   </div>
                 </div>
                 {req.status ? <Badge variant="info">{req.status}</Badge> : null}
-              </li>
+              </PortalAnimatedListItem>
             ))}
-          </ul>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
     </div>

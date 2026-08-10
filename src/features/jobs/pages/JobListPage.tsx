@@ -20,6 +20,7 @@ import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useJobs } from '../hooks/useJobs';
 import type { Job } from '../types/job.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { AppListPanelBody } from '@/components/motion';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
@@ -161,9 +162,7 @@ export default function JobListPage() {
             {actionMessage}
           </div>
         )}
-        {isLoading ? (
-          <p className="text-sm text-[var(--color-neutral-400)] py-8 text-center">Loading jobs…</p>
-        ) : (
+        <AppListPanelBody isLoading={isLoading} isFetching={isFetching} label="Loading jobs…">
           <JobTable
             jobs={jobs}
             isFetching={isFetching}
@@ -176,7 +175,7 @@ export default function JobListPage() {
             onClose={(j) => requestConfirm('close', j)}
             onDelete={(j) => requestConfirm('delete', j)}
           />
-        )}
+        </AppListPanelBody>
       </Card>
 
       {confirm && (

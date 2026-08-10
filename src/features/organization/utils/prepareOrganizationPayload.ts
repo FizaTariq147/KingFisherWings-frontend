@@ -45,10 +45,9 @@ export function prepareProfilePayload(
   const city = trimOrOmit(values.city);
   if (city) payload.city = city;
 
-  if ('country_code' in values) {
-    const cc = trimOrOmit(values.country_code);
-    payload.country_code = cc ? cc.toUpperCase() : null;
-  }
+  // Tenant.country_code is NOT NULL — omit when cleared; never send null.
+  const cc = trimOrOmit(values.country_code);
+  if (cc) payload.country_code = cc.toUpperCase();
 
   const phone = trimOrOmit(values.phone);
   if (phone) payload.phone = phone;

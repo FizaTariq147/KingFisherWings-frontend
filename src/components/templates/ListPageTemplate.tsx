@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { AppLoadingState, AppFetchBar } from '@/components/motion';
 
 export interface ListColumn<T> {
   key: string;
@@ -18,6 +19,7 @@ interface ListPageTemplateProps<T> {
   columns: ListColumn<T>[];
   data: T[];
   isLoading?: boolean;
+  isFetching?: boolean;
   rowKey: (row: T) => string;
   onRowClick?: (row: T) => void;
   primaryAction?: { label: string; onClick: () => void };
@@ -32,7 +34,7 @@ interface ListPageTemplateProps<T> {
 }
 
 export function ListPageTemplate<T>({
-  title, subtitle, columns, data, isLoading, rowKey, onRowClick,
+  title, subtitle, columns, data, isLoading, isFetching, rowKey, onRowClick,
   primaryAction, statusTabs, activeStatus, onStatusChange,
   searchPlaceholder = 'Search…', searchValue, onSearchChange,
   filters, emptyLabel = 'No records found',
@@ -86,7 +88,11 @@ export function ListPageTemplate<T>({
           </div>
         )}
 
+        <AppFetchBar active={Boolean(isFetching && !isLoading)} />
         <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
+          {isLoading ? (
+            <AppLoadingState />
+          ) : (
           <table className="w-full min-w-[640px] text-sm">
             <thead>
               <tr className="text-left text-xs text-slate-400 border-b border-slate-100">
@@ -96,13 +102,10 @@ export function ListPageTemplate<T>({
               </tr>
             </thead>
             <tbody>
-              {isLoading && (
-                <tr><td colSpan={columns.length} className="py-8 text-center text-sm text-slate-400">Loading…</td></tr>
-              )}
-              {!isLoading && data.length === 0 && (
+              {data.length === 0 && (
                 <tr><td colSpan={columns.length} className="py-8 text-center text-sm text-slate-400">{emptyLabel}</td></tr>
               )}
-              {!isLoading && data.map((row) => (
+              {data.map((row) => (
                 <tr
                   key={rowKey(row)}
                   onClick={() => onRowClick?.(row)}
@@ -126,6 +129,7 @@ export function ListPageTemplate<T>({
               ))}
             </tbody>
           </table>
+          )}
         </div>
       </div>
     </div>

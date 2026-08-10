@@ -26,6 +26,7 @@ import { useAuthStore } from '@/store/authStore'
 import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore'
 import { AuthContext } from '@/context/AuthContext'
 import { cn } from '@/lib/utils'
+import { useAppAutoAnimate } from '@/components/motion'
 import {
   isTenantUserManagerRole,
   resolveAuthRoleSlug,
@@ -175,6 +176,7 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
     )
 
   const showPlatformNav = isSuperAdminArea && isSuperAdmin
+  const [navRef] = useAppAutoAnimate()
   const UsersNavIcon = ADMIN_USERS_NAV_ITEM.Icon
   const MastersNavIcon = ADMIN_MASTERS_NAV_ITEM.Icon
   const PartiesNavIcon = ADMIN_PARTIES_NAV_ITEM.Icon
@@ -188,7 +190,11 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
       )}
       style={{ background: 'var(--color-sidebar-bg)', color: 'var(--color-sidebar-text)' }}
     >
-      <nav className="flex-1 overflow-y-auto py-2.5 scrollbar-none" aria-label="Main navigation">
+      <nav
+        ref={navRef}
+        className="flex-1 overflow-y-auto py-2.5 scrollbar-none app-nav-stagger"
+        aria-label="Main navigation"
+      >
         {visibleItems.map(({ label, path, Icon }) => (
           <NavLink
             key={path}

@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
 import {
+  PortalAnimatedList,
+  PortalAnimatedListItem,
   PortalEmptyState,
+  PortalFetchBar,
+  PortalLoadingState,
   PortalPageHeader,
   PortalPanel,
   portalSelectClassName,
@@ -95,9 +99,9 @@ export default function PortalQuotesPage() {
       </PortalPanel>
 
       <PortalPanel>
-        {isFetching && <div className="h-0.5 bg-[var(--color-secondary)]/80 animate-pulse" />}
+        <PortalFetchBar active={isFetching && !isLoading} />
         {isLoading ? (
-          <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading quotes…</p>
+          <PortalLoadingState label="Loading quotes…" />
         ) : isError ? (
           <div className="p-6 space-y-2">
             <p className="text-sm text-[var(--color-danger-600)]">
@@ -121,28 +125,29 @@ export default function PortalQuotesPage() {
             }
           />
         ) : (
-          <div className="divide-y divide-[var(--color-neutral-100)]">
+          <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((q) => (
-              <Link
-                key={q.id}
-                to={`/portal/quotes/${q.id}`}
-                className="flex items-center justify-between gap-3 px-4 py-3.5 transition hover:bg-[var(--color-neutral-50)]"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-secondary-100)] text-[var(--color-secondary-700)]">
-                    <FileText size={16} aria-hidden="true" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-sm font-semibold truncate">{q.number}</div>
-                    <div className="text-xs text-[var(--color-neutral-500)] truncate">
-                      {[q.origin, q.destination].filter(Boolean).join(' → ') || q.jobType || '—'}
+              <PortalAnimatedListItem key={q.id}>
+                <Link
+                  to={`/portal/quotes/${q.id}`}
+                  className="flex items-center justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-[var(--color-neutral-50)]"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-secondary-100)] text-[var(--color-secondary-700)]">
+                      <FileText size={16} aria-hidden="true" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-sm font-semibold truncate">{q.number}</div>
+                      <div className="text-xs text-[var(--color-neutral-500)] truncate">
+                        {[q.origin, q.destination].filter(Boolean).join(' → ') || q.jobType || '—'}
+                      </div>
                     </div>
                   </div>
-                </div>
-                {q.status ? <Badge variant="info">{q.status}</Badge> : null}
-              </Link>
+                  {q.status ? <Badge variant="info">{q.status}</Badge> : null}
+                </Link>
+              </PortalAnimatedListItem>
             ))}
-          </div>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
 

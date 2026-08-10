@@ -12,7 +12,7 @@ export function PortalPageHeader({ title, description, actions, className }: Por
   return (
     <div
       className={cn(
-        'flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between',
+        'portal-motion-surface flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between',
         className,
       )}
     >
@@ -24,7 +24,9 @@ export function PortalPageHeader({ title, description, actions, className }: Por
           <p className="text-sm text-[var(--color-neutral-500)] max-w-2xl">{description}</p>
         ) : null}
       </div>
-      {actions ? <div className="flex flex-wrap items-center gap-2 shrink-0">{actions}</div> : null}
+      {actions ? (
+        <div className="flex flex-wrap items-center gap-2 shrink-0">{actions}</div>
+      ) : null}
     </div>
   );
 }

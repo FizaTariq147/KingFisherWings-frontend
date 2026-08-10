@@ -10,6 +10,7 @@ import { CreditNoteTable } from '../components/CreditNoteTable';
 import { DEFAULT_CREDIT_NOTE_PAGE_SIZE } from '../constants/creditNote.constants';
 import { useCreditNotes } from '../hooks/useCreditNotes';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { AppListPanelBody } from '@/components/motion';
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
   const [debounced, setDebounced] = useState(value);
@@ -100,16 +101,16 @@ export default function CreditNoteListPage() {
               Retry
             </Button>
           </div>
-        ) : isLoading ? (
-          <p className="text-sm text-[var(--color-neutral-400)] py-10 text-center">Loading…</p>
         ) : (
-          <CreditNoteTable
-            creditNotes={creditNotes}
-            isFetching={isFetching}
-            meta={meta}
-            onPage={setPage}
-            onView={(cn) => navigate(`${CREDIT_NOTE_ROUTE_PREFIX}/${cn.id}`)}
-          />
+          <AppListPanelBody isLoading={isLoading} isFetching={isFetching}>
+            <CreditNoteTable
+              creditNotes={creditNotes}
+              isFetching={isFetching}
+              meta={meta}
+              onPage={setPage}
+              onView={(cn) => navigate(`${CREDIT_NOTE_ROUTE_PREFIX}/${cn.id}`)}
+            />
+          </AppListPanelBody>
         )}
       </Card>
     </div>

@@ -9,6 +9,9 @@ import { ApiError } from '../../../lib/superAdminApiClient';
 import { useAuthStore } from '@/store/authStore';
 import { superAdminAuthService } from '../services/superAdminAuth.service';
 import { useSuperAdminAuthStore } from '../store/superAdminAuthStore';
+import { AppMotionStyles } from '@/components/motion';
+import { BackgroundBeams } from '@/components/aceternity/background-beams';
+import { Spotlight } from '@/components/aceternity/spotlight';
 
 const loginSchema = z.object({
   email: z.string().trim().email('Invalid email'),
@@ -73,8 +76,11 @@ export default function SuperAdminLoginPage(): JSX.Element {
   });
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface)] px-4">
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[var(--color-surface)] px-4">
+      <AppMotionStyles />
+      <BackgroundBeams className="pointer-events-none absolute inset-0 z-0 opacity-40" />
+      <Spotlight className="-top-40 left-0 md:-top-20 md:left-60" fill="#FF751F" />
+      <div className="relative z-10 w-full max-w-md rounded-xl bg-white/95 p-8 shadow-lg backdrop-blur-sm app-login-form">
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-bold text-[var(--color-primary)]">KingFisher Tech Gold</h1>
           <p className="mt-1 text-sm text-gray-500">Super Admin Portal</p>

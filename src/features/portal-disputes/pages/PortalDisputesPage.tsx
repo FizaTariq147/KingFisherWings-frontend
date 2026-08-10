@@ -9,7 +9,10 @@ import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { PortalApiError } from '@/lib/portalApiClient';
 import {
+  PortalAnimatedList,
+  PortalAnimatedListItem,
   PortalEmptyState,
+  PortalLoadingState,
   PortalPageHeader,
   PortalPanel,
   portalSelectClassName,
@@ -147,7 +150,7 @@ export default function PortalDisputesPage() {
 
       <PortalPanel>
         {isLoading ? (
-          <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading…</p>
+          <PortalLoadingState />
         ) : isError ? (
           <div className="p-6 space-y-2">
             <p className="text-sm text-[var(--color-danger-600)]">
@@ -166,9 +169,9 @@ export default function PortalDisputesPage() {
             Icon={Scale}
           />
         ) : (
-          <ul className="divide-y divide-[var(--color-neutral-100)]">
+          <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((d) => (
-              <li key={d.id} className="px-4 py-3.5">
+              <PortalAnimatedListItem key={d.id} className="px-4 py-3.5">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="text-sm font-semibold">
@@ -200,9 +203,9 @@ export default function PortalDisputesPage() {
                     <Badge variant="info">{d.status.replaceAll('_', ' ')}</Badge>
                   ) : null}
                 </div>
-              </li>
+              </PortalAnimatedListItem>
             ))}
-          </ul>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
       {meta && meta.totalPages > 1 && (

@@ -5,6 +5,11 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
 import {
+  PortalAnimatedGrid,
+  PortalAnimatedGridItem,
+  PortalAnimatedList,
+  PortalAnimatedListItem,
+  PortalLoadingState,
   PortalPageHeader,
   PortalPanel,
   PortalStatCard,
@@ -38,7 +43,7 @@ export default function PortalQuoteDetailPage() {
   }, [data]);
 
   if (isLoading) {
-    return <p className="text-sm text-[var(--color-neutral-400)]">Loading quotation…</p>;
+    return <PortalLoadingState label="Loading quotation…" />;
   }
 
   if (isError || !data) {
@@ -125,12 +130,20 @@ export default function PortalQuoteDetailPage() {
         </p>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <PortalStatCard label="Currency" value={data.currencyCode || '—'} />
-        <PortalStatCard label="Valid until" value={data.validUntil || '—'} />
-        <PortalStatCard label="Weight" value={data.grossWeight ?? '—'} />
-        <PortalStatCard label="Pieces" value={data.pieces ?? '—'} />
-      </div>
+      <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <PortalAnimatedGridItem>
+          <PortalStatCard label="Currency" value={data.currencyCode || '—'} />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard label="Valid until" value={data.validUntil || '—'} />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard label="Weight" value={data.grossWeight ?? '—'} />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard label="Pieces" value={data.pieces ?? '—'} />
+        </PortalAnimatedGridItem>
+      </PortalAnimatedGrid>
 
       {data.commodity || data.specialRequirements ? (
         <PortalPanel padded className="space-y-2 text-sm">
@@ -154,9 +167,9 @@ export default function PortalQuoteDetailPage() {
         {!data.lines?.length ? (
           <p className="text-sm text-[var(--color-neutral-400)]">No charge lines.</p>
         ) : (
-          <ul className="space-y-2">
+          <PortalAnimatedList className="space-y-2">
             {data.lines.map((line) => (
-              <li
+              <PortalAnimatedListItem
                 key={line.id}
                 className="flex justify-between gap-3 border-b border-[var(--color-neutral-100)] pb-2 text-sm last:border-0"
               >
@@ -166,9 +179,9 @@ export default function PortalQuoteDetailPage() {
                     ? `${line.currencyCode || data.currencyCode || ''} ${line.amount}`
                     : '—'}
                 </span>
-              </li>
+              </PortalAnimatedListItem>
             ))}
-          </ul>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
     </div>
