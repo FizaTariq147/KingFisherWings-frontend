@@ -5,7 +5,11 @@ import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
 import { PARTY_PORTAL_DOCUMENT_TYPES as PORTAL_DOCUMENT_TYPES } from '@/features/parties/api/party.api';
 import {
+  PortalAnimatedList,
+  PortalAnimatedListItem,
   PortalEmptyState,
+  PortalFetchBar,
+  PortalLoadingState,
   PortalPageHeader,
   PortalPanel,
   PortalStatCard,
@@ -96,9 +100,9 @@ export default function PortalDocumentsPage() {
       </PortalPanel>
 
       <PortalPanel>
-        {isFetching && <div className="h-0.5 bg-[var(--color-secondary)]/80 animate-pulse" />}
+        <PortalFetchBar active={isFetching && !isLoading} />
         {isLoading ? (
-          <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading documents…</p>
+          <PortalLoadingState label="Loading documents…" />
         ) : isError ? (
           <div className="p-6 space-y-2">
             <p className="text-sm text-[var(--color-danger-600)]">
@@ -117,9 +121,12 @@ export default function PortalDocumentsPage() {
             Icon={FileText}
           />
         ) : (
-          <ul className="divide-y divide-[var(--color-neutral-100)]">
+          <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((doc) => (
-              <li key={doc.id} className="flex items-center justify-between gap-3 px-4 py-3.5">
+              <PortalAnimatedListItem
+                key={doc.id}
+                className="flex items-center justify-between gap-3 px-4 py-3.5"
+              >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-primary-100)] text-[var(--color-primary)]">
                     <FileText size={16} aria-hidden="true" />
@@ -146,9 +153,9 @@ export default function PortalDocumentsPage() {
                     </Button>
                   )}
                 </div>
-              </li>
+              </PortalAnimatedListItem>
             ))}
-          </ul>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
 

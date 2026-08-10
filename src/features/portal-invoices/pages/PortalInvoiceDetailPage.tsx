@@ -3,7 +3,16 @@ import { ArrowLeft, Download } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
-import { PortalPageHeader, PortalPanel, PortalStatCard } from '@/features/portal-auth/components/portal-ui';
+import {
+  PortalAnimatedGrid,
+  PortalAnimatedGridItem,
+  PortalAnimatedList,
+  PortalAnimatedListItem,
+  PortalLoadingState,
+  PortalPageHeader,
+  PortalPanel,
+  PortalStatCard,
+} from '@/features/portal-auth/components/portal-ui';
 import { useDownloadPortalInvoicePdf, usePortalInvoice } from '../hooks/usePortalInvoices';
 
 export default function PortalInvoiceDetailPage() {
@@ -11,7 +20,7 @@ export default function PortalInvoiceDetailPage() {
   const { data, isLoading, isError, error, refetch } = usePortalInvoice(id);
   const download = useDownloadPortalInvoicePdf();
 
-  if (isLoading) return <p className="text-sm text-[var(--color-neutral-400)]">Loading invoice…</p>;
+  if (isLoading) return <PortalLoadingState label="Loading invoice…" />;
   if (isError || !data) {
     return (
       <div className="space-y-2">
@@ -40,26 +49,29 @@ export default function PortalInvoiceDetailPage() {
           </>
         }
       />
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <PortalStatCard label="Total" value={data.totalAmount ?? '—'} />
-        <PortalStatCard label="Outstanding" value={data.outstandingBalance ?? '—'} />
-        <PortalStatCard label="Paid" value={data.paidAmount ?? '—'} />
-        <PortalStatCard label="Currency" value={data.currencyCode || '—'} />
-      </div>
+      <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <PortalAnimatedGridItem><PortalStatCard label="Total" value={data.totalAmount ?? '—'} /></PortalAnimatedGridItem>
+        <PortalAnimatedGridItem><PortalStatCard label="Outstanding" value={data.outstandingBalance ?? '—'} /></PortalAnimatedGridItem>
+        <PortalAnimatedGridItem><PortalStatCard label="Paid" value={data.paidAmount ?? '—'} /></PortalAnimatedGridItem>
+        <PortalAnimatedGridItem><PortalStatCard label="Currency" value={data.currencyCode || '—'} /></PortalAnimatedGridItem>
+      </PortalAnimatedGrid>
       {data.remarks ? <PortalPanel padded><p className="text-sm text-[var(--color-neutral-700)]">{data.remarks}</p></PortalPanel> : null}
       <PortalPanel padded>
         <h2 className="mb-4 text-sm font-semibold text-[var(--color-neutral-900)]">Lines</h2>
         {!data.lines.length ? (
           <p className="text-sm text-[var(--color-neutral-400)]">No lines.</p>
         ) : (
-          <ul className="space-y-2">
+          <PortalAnimatedList className="space-y-2">
             {data.lines.map((line) => (
-              <li key={line.id} className="flex justify-between gap-3 border-b border-[var(--color-neutral-100)] pb-2 text-sm last:border-0">
+              <PortalAnimatedListItem
+                key={line.id}
+                className="flex justify-between gap-3 border-b border-[var(--color-neutral-100)] pb-2 text-sm last:border-0"
+              >
                 <span>{line.description}</span>
                 <span className="font-medium tabular-nums">{line.lineTotal ?? '—'}</span>
-              </li>
+              </PortalAnimatedListItem>
             ))}
-          </ul>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
     </div>

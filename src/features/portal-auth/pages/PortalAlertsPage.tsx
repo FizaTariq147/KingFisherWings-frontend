@@ -4,7 +4,10 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
 import {
+  PortalAnimatedList,
+  PortalAnimatedListItem,
   PortalEmptyState,
+  PortalLoadingState,
   PortalPageHeader,
   PortalPanel,
 } from '../components/portal-ui';
@@ -48,7 +51,7 @@ export default function PortalAlertsPage() {
 
       <PortalPanel>
         {isLoading ? (
-          <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading…</p>
+          <PortalLoadingState />
         ) : isError ? (
           <div className="p-6 space-y-2">
             <p className="text-sm text-[var(--color-danger-600)]">
@@ -67,9 +70,9 @@ export default function PortalAlertsPage() {
             Icon={Bell}
           />
         ) : (
-          <ul className="divide-y divide-[var(--color-neutral-100)]">
+          <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((n) => (
-              <li
+              <PortalAnimatedListItem
                 key={n.id}
                 className={`flex items-start justify-between gap-3 px-4 py-3.5 ${
                   n.isRead ? '' : 'bg-[var(--color-primary-50)]/40'
@@ -97,9 +100,9 @@ export default function PortalAlertsPage() {
                 ) : (
                   <Badge variant="neutral">Read</Badge>
                 )}
-              </li>
+              </PortalAnimatedListItem>
             ))}
-          </ul>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
       {meta && meta.totalPages > 1 && (

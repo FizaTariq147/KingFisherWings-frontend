@@ -5,6 +5,11 @@ import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { getErrorMessage } from '@/features/parties/utils/getErrorMessage';
 import {
+  PortalAnimatedList,
+  PortalAnimatedListItem,
+  PortalLoadingState,
+} from '@/features/portal-auth/components/portal-ui';
+import {
   useAdminCreditLimitRequests,
   useAdminPortalDisputes,
   useAdminPortalMessage,
@@ -38,7 +43,7 @@ function AdminMessageRow({
   const replies = thread.replies ?? [];
 
   return (
-    <li className="px-4 py-3.5">
+    <div className="px-4 py-3.5">
       <div className="flex items-start justify-between gap-3">
         <button type="button" className="min-w-0 flex-1 text-left" onClick={() => setOpen((v) => !v)}>
           <div className="text-sm font-semibold">{message.subject}</div>
@@ -122,7 +127,7 @@ function AdminMessageRow({
           )}
         </div>
       )}
-    </li>
+    </div>
   );
 }
 
@@ -221,22 +226,23 @@ export default function PortalAdminInboxPage() {
             </label>
           </div>
           {messages.isLoading ? (
-            <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading…</p>
+            <PortalLoadingState />
           ) : messages.isError ? (
             <p className="p-6 text-sm text-[var(--color-danger-600)]">Failed to load messages.</p>
           ) : !(messages.data?.items.length) ? (
             <p className="p-6 text-sm text-[var(--color-neutral-400)]">No messages.</p>
           ) : (
-            <ul className="divide-y divide-[var(--color-neutral-100)]">
+            <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
               {messages.data.items.map((m) => (
-                <AdminMessageRow
-                  key={m.id}
-                  message={m}
-                  markPending={markRead.isPending}
-                  onMarkRead={(id) => void markRead.mutateAsync(id)}
-                />
+                <PortalAnimatedListItem key={m.id}>
+                  <AdminMessageRow
+                    message={m}
+                    markPending={markRead.isPending}
+                    onMarkRead={(id) => void markRead.mutateAsync(id)}
+                  />
+                </PortalAnimatedListItem>
               ))}
-            </ul>
+            </PortalAnimatedList>
           )}
         </Card>
       )}
@@ -244,7 +250,7 @@ export default function PortalAdminInboxPage() {
       {tab === 'disputes' && (
         <Card className="p-0 overflow-hidden">
           {disputes.isLoading ? (
-            <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading…</p>
+            <PortalLoadingState />
           ) : disputes.isError ? (
             <div className="space-y-3 p-6">
               <p className="text-sm font-medium text-[var(--color-danger-600)]">
@@ -262,35 +268,36 @@ export default function PortalAdminInboxPage() {
           ) : !(disputes.data?.length) ? (
             <p className="p-6 text-sm text-[var(--color-neutral-400)]">No disputes.</p>
           ) : (
-            <ul className="divide-y divide-[var(--color-neutral-100)]">
+            <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
               {disputes.data.map((d) => (
-                <DisputeRow
-                  key={d.id}
-                  dispute={d}
-                  draft={disputeDrafts[d.id] ?? { status: 'UNDER_REVIEW', staff_notes: '' }}
-                  onChange={(next) =>
-                    setDisputeDrafts((prev) => ({ ...prev, [d.id]: next }))
-                  }
-                  onSubmit={() => {
-                    setActionError(null);
-                    const draft = disputeDrafts[d.id] ?? {
-                      status: 'UNDER_REVIEW',
-                      staff_notes: '',
-                    };
-                    void reviewDispute
-                      .mutateAsync({
-                        id: d.id,
-                        dto: {
-                          status: draft.status as 'UNDER_REVIEW' | 'RESOLVED' | 'REJECTED',
-                          staff_notes: draft.staff_notes.trim() || undefined,
-                        },
-                      })
-                      .catch((err) => setActionError(getErrorMessage(err)));
-                  }}
-                  pending={reviewDispute.isPending}
-                />
+                <PortalAnimatedListItem key={d.id}>
+                  <DisputeRow
+                    dispute={d}
+                    draft={disputeDrafts[d.id] ?? { status: 'UNDER_REVIEW', staff_notes: '' }}
+                    onChange={(next) =>
+                      setDisputeDrafts((prev) => ({ ...prev, [d.id]: next }))
+                    }
+                    onSubmit={() => {
+                      setActionError(null);
+                      const draft = disputeDrafts[d.id] ?? {
+                        status: 'UNDER_REVIEW',
+                        staff_notes: '',
+                      };
+                      void reviewDispute
+                        .mutateAsync({
+                          id: d.id,
+                          dto: {
+                            status: draft.status as 'UNDER_REVIEW' | 'RESOLVED' | 'REJECTED',
+                            staff_notes: draft.staff_notes.trim() || undefined,
+                          },
+                        })
+                        .catch((err) => setActionError(getErrorMessage(err)));
+                    }}
+                    pending={reviewDispute.isPending}
+                  />
+                </PortalAnimatedListItem>
               ))}
-            </ul>
+            </PortalAnimatedList>
           )}
         </Card>
       )}
@@ -298,25 +305,25 @@ export default function PortalAdminInboxPage() {
       {tab === 'credit' && (
         <Card className="p-0 overflow-hidden">
           {creditRequests.isLoading ? (
-            <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading…</p>
+            <PortalLoadingState />
           ) : creditRequests.isError ? (
             <p className="p-6 text-sm text-[var(--color-danger-600)]">Failed to load requests.</p>
           ) : !(creditRequests.data?.length) ? (
             <p className="p-6 text-sm text-[var(--color-neutral-400)]">No credit limit requests.</p>
           ) : (
-            <ul className="divide-y divide-[var(--color-neutral-100)]">
+            <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
               {creditRequests.data.map((req) => {
                 const draft = creditDrafts[req.id] ?? defaultCreditDraft(req);
                 const alreadyDecided =
                   String(req.status || '').toUpperCase() === 'APPROVED' ||
                   String(req.status || '').toUpperCase() === 'REJECTED';
                 return (
-                  <CreditRow
-                    key={req.id}
-                    request={req}
-                    draft={draft}
-                    disabled={alreadyDecided}
-                    onChange={(next) =>
+                  <PortalAnimatedListItem key={req.id}>
+                    <CreditRow
+                      request={req}
+                      draft={draft}
+                      disabled={alreadyDecided}
+                      onChange={(next) =>
                       setCreditDrafts((prev) => ({ ...prev, [req.id]: next }))
                     }
                     onSubmit={() => {
@@ -362,9 +369,10 @@ export default function PortalAdminInboxPage() {
                     }}
                     pending={reviewCredit.isPending}
                   />
+                  </PortalAnimatedListItem>
                 );
               })}
-            </ul>
+            </PortalAnimatedList>
           )}
         </Card>
       )}
@@ -386,7 +394,7 @@ function DisputeRow({
   pending: boolean;
 }) {
   return (
-    <li className="px-4 py-4 space-y-3">
+    <div className="px-4 py-4 space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="text-sm font-semibold">
@@ -420,7 +428,7 @@ function DisputeRow({
           Save
         </Button>
       </div>
-    </li>
+    </div>
   );
 }
 
@@ -440,7 +448,7 @@ function CreditRow({
   disabled?: boolean;
 }) {
   return (
-    <li className="px-4 py-4 space-y-3">
+    <div className="px-4 py-4 space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="text-sm font-semibold">
@@ -480,6 +488,6 @@ function CreditRow({
           {pending ? 'Saving…' : 'Save'}
         </Button>
       </div>
-    </li>
+    </div>
   );
 }

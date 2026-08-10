@@ -18,6 +18,7 @@ import {
 } from '../hooks/useChartOfAccounts';
 import { canManageChartOfAccounts } from '../utils/coaPermissions';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { AppListPanelBody } from '@/components/motion';
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
   const [debounced, setDebounced] = useState(value);
@@ -192,23 +193,23 @@ export default function ChartOfAccountListPage() {
               Retry
             </Button>
           </div>
-        ) : isLoading ? (
-          <p className="text-sm text-[var(--color-neutral-400)] py-10 text-center">Loading…</p>
         ) : (
-          <ChartOfAccountTable
-            accounts={paged}
-            isFetching={isFetching}
-            page={page}
-            pageSize={pageSize}
-            total={total}
-            onPage={setPage}
-            onView={(a) => navigate(`${CHART_OF_ACCOUNT_ROUTE_PREFIX}/${a.id}`)}
-            onEdit={
-              canWriteCoa
-                ? (a) => navigate(`${CHART_OF_ACCOUNT_ROUTE_PREFIX}/${a.id}/edit`)
-                : undefined
-            }
-          />
+          <AppListPanelBody isLoading={isLoading} isFetching={isFetching}>
+            <ChartOfAccountTable
+              accounts={paged}
+              isFetching={isFetching}
+              page={page}
+              pageSize={pageSize}
+              total={total}
+              onPage={setPage}
+              onView={(a) => navigate(`${CHART_OF_ACCOUNT_ROUTE_PREFIX}/${a.id}`)}
+              onEdit={
+                canWriteCoa
+                  ? (a) => navigate(`${CHART_OF_ACCOUNT_ROUTE_PREFIX}/${a.id}/edit`)
+                  : undefined
+              }
+            />
+          </AppListPanelBody>
         )}
       </Card>
     </div>

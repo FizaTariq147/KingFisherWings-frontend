@@ -59,7 +59,7 @@ export const tenantService = {
   async create(dto: CreateTenantDto): Promise<Tenant> {
     const res = await superAdminApiClient.post<ApiEnvelope<Tenant>>(
       TENANT_API.list,
-      prepareTenantPayload(dto),
+      prepareTenantPayload(dto, { mode: 'create' }),
     );
     return normalizeTenant(res.data.data as unknown as Record<string, unknown>);
   },
@@ -149,7 +149,7 @@ export const tenantService = {
   async update(id: string, dto: UpdateTenantDto): Promise<Tenant> {
     const res = await superAdminApiClient.patch<ApiEnvelope<Tenant>>(
       TENANT_API.byId(id),
-      prepareTenantPayload(dto),
+      prepareTenantPayload(dto, { mode: 'update' }),
     );
     return normalizeTenant(res.data.data as unknown as Record<string, unknown>);
   },

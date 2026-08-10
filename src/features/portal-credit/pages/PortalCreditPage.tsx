@@ -5,7 +5,12 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
 import {
+  PortalAnimatedGrid,
+  PortalAnimatedGridItem,
+  PortalAnimatedList,
+  PortalAnimatedListItem,
   PortalEmptyState,
+  PortalLoadingState,
   PortalPageHeader,
   PortalPanel,
   PortalStatCard,
@@ -55,31 +60,39 @@ export default function PortalCreditPage() {
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <PortalStatCard
-          label="Credit limit"
-          value={summary.data?.creditLimit ?? (summary.isLoading ? '…' : '—')}
-          Icon={Wallet}
-        />
-        <PortalStatCard
-          label="Used"
-          value={summary.data?.used ?? (summary.isLoading ? '…' : '—')}
-        />
-        <PortalStatCard
-          label="Available"
-          value={summary.data?.available ?? (summary.isLoading ? '…' : '—')}
-          tone="accent"
-        />
-        <PortalStatCard
-          label="Status"
-          value={summary.data?.creditStatus || (summary.isLoading ? '…' : '—')}
-        />
-      </div>
+      <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <PortalAnimatedGridItem>
+          <PortalStatCard
+            label="Credit limit"
+            value={summary.data?.creditLimit ?? (summary.isLoading ? '…' : '—')}
+            Icon={Wallet}
+          />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard
+            label="Used"
+            value={summary.data?.used ?? (summary.isLoading ? '…' : '—')}
+          />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard
+            label="Available"
+            value={summary.data?.available ?? (summary.isLoading ? '…' : '—')}
+            tone="accent"
+          />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard
+            label="Status"
+            value={summary.data?.creditStatus || (summary.isLoading ? '…' : '—')}
+          />
+        </PortalAnimatedGridItem>
+      </PortalAnimatedGrid>
 
       <PortalPanel padded>
         <h2 className="mb-4 text-sm font-semibold text-[var(--color-neutral-900)]">Aging</h2>
         {aging.isLoading ? (
-          <p className="text-sm text-[var(--color-neutral-400)]">Loading aging…</p>
+          <PortalLoadingState label="Loading aging…" className="py-6" />
         ) : aging.isError ? (
           <p className="text-sm text-[var(--color-danger-600)]">
             {aging.error instanceof PortalApiError || aging.error instanceof Error
@@ -89,19 +102,18 @@ export default function PortalCreditPage() {
         ) : !aging.data?.buckets.length ? (
           <p className="text-sm text-[var(--color-neutral-400)]">No aging buckets.</p>
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <PortalAnimatedGrid className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {aging.data.buckets.map((b) => (
-              <div
-                key={b.label}
-                className="rounded-lg border border-[var(--color-neutral-200)] px-3 py-3"
-              >
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
-                  {b.label}
+              <PortalAnimatedGridItem key={b.label}>
+                <div className="rounded-lg border border-[var(--color-neutral-200)] px-3 py-3">
+                  <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
+                    {b.label}
+                  </div>
+                  <div className="mt-1 text-lg font-semibold tabular-nums">{b.amount}</div>
                 </div>
-                <div className="mt-1 text-lg font-semibold tabular-nums">{b.amount}</div>
-              </div>
+              </PortalAnimatedGridItem>
             ))}
-          </div>
+          </PortalAnimatedGrid>
         )}
       </PortalPanel>
 
@@ -110,7 +122,7 @@ export default function PortalCreditPage() {
           <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Statement</h2>
         </div>
         {statement.isLoading ? (
-          <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading statement…</p>
+          <PortalLoadingState label="Loading statement…" />
         ) : statement.isError ? (
           <p className="p-6 text-sm text-[var(--color-danger-600)]">
             {statement.error instanceof PortalApiError || statement.error instanceof Error
@@ -120,9 +132,12 @@ export default function PortalCreditPage() {
         ) : !statement.data?.lines.length ? (
           <PortalEmptyState title="No statement lines" description="No AR movements for this period." />
         ) : (
-          <ul className="divide-y divide-[var(--color-neutral-100)]">
+          <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {statement.data.lines.map((line) => (
-              <li key={line.id} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
+              <PortalAnimatedListItem
+                key={line.id}
+                className="flex items-center justify-between gap-3 px-4 py-3 text-sm"
+              >
                 <div className="min-w-0">
                   <div className="font-medium truncate">
                     {line.reference || line.description || 'Entry'}
@@ -138,9 +153,9 @@ export default function PortalCreditPage() {
                     <div className="text-xs text-[var(--color-neutral-500)]">Bal {line.balance}</div>
                   ) : null}
                 </div>
-              </li>
+              </PortalAnimatedListItem>
             ))}
-          </ul>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
     </div>

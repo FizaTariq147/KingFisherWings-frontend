@@ -1,4 +1,5 @@
 import { Card } from '@/components/ui/Card';
+import { AppAnimatedGrid, AppAnimatedGridItem, AppGsapCountUp, AppLoadingState } from '@/components/motion';
 import type { TenantStatistics } from '../../types/tenant.types';
 import { normalizeTenantStatistics } from '../../utils/normalizeTenantStatistics';
 
@@ -19,41 +20,40 @@ export function TenantStatsCards({ stats, isLoading }: TenantStatsCardsProps) {
   const safe = normalizeTenantStatistics(stats);
 
   const items = [
-    { label: 'Total tenants', value: safe.total.toString() },
-    { label: 'Active', value: safe.active.toString() },
-    { label: 'Inactive', value: safe.inactive.toString() },
-    { label: 'Trial', value: safe.trial.toString() },
-    { label: 'MRR', value: `$${safe.mrr.toLocaleString()}` },
+    { label: 'Total tenants', value: safe.total, prefix: '' },
+    { label: 'Active', value: safe.active, prefix: '' },
+    { label: 'Inactive', value: safe.inactive, prefix: '' },
+    { label: 'Trial', value: safe.trial, prefix: '' },
+    { label: 'MRR', value: safe.mrr, prefix: '$' },
   ];
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-20 animate-pulse rounded-lg border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)]"
-          />
-        ))}
-      </div>
+      <AppAnimatedGrid className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="col-span-2 lg:col-span-5">
+          <AppLoadingState label="Loading statistics…" />
+        </div>
+      </AppAnimatedGrid>
     );
   }
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+    <AppAnimatedGrid className="grid grid-cols-2 lg:grid-cols-5 gap-4">
       {items.map((item) => (
-        <Card key={item.label}>
-          <p className="text-xs text-[var(--color-neutral-400)] font-medium mb-1">{item.label}</p>
-          <p className={`text-xl font-bold ${STAT_COLORS[item.label] ?? 'text-[var(--color-neutral-800)]'}`}>
-            {item.value}
-          </p>
-          {item.label === 'Trial' && (
-            <p className="mt-0.5 text-[10px] text-[var(--color-neutral-400)]">
-              Subscription plan Trial
+        <AppAnimatedGridItem key={item.label}>
+          <Card>
+            <p className="text-xs text-[var(--color-neutral-400)] font-medium mb-1">{item.label}</p>
+            <p className={`text-xl font-bold ${STAT_COLORS[item.label] ?? 'text-[var(--color-neutral-800)]'}`}>
+              <AppGsapCountUp value={item.value} prefix={item.prefix} />
             </p>
-          )}
-        </Card>
+            {item.label === 'Trial' && (
+              <p className="mt-0.5 text-[10px] text-[var(--color-neutral-400)]">
+                Subscription plan Trial
+              </p>
+            )}
+          </Card>
+        </AppAnimatedGridItem>
       ))}
-    </div>
+    </AppAnimatedGrid>
   );
 }

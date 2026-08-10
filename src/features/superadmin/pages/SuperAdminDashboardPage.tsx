@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { usePlatformOnboardingStore } from '@/features/platform/store/platformOnboardingStore';
 import { useCompanyRegistry } from '@/features/companies/hooks/useCompanies';
+import { AppAnimatedGrid, AppAnimatedGridItem } from '@/components/motion';
 import { TenantStatsCards } from '@/features/tenants/components/TenantStatsCards';
 import { useTenantStatistics } from '@/features/tenants/hooks/useTenants';
 
@@ -52,43 +53,47 @@ export default function SuperAdminDashboardPage() {
         isLoading={isLoading}
       />
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Card className="flex flex-col gap-4 p-4">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-              style={{ background: 'var(--color-primary-50)' }}
-            >
-              <Briefcase size={18} style={{ color: 'var(--color-primary-600)' }} aria-hidden="true" />
+      <AppAnimatedGrid className="grid gap-4 sm:grid-cols-2">
+        <AppAnimatedGridItem>
+          <Card className="flex flex-col gap-4 p-4">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                style={{ background: 'var(--color-primary-50)' }}
+              >
+                <Briefcase size={18} style={{ color: 'var(--color-primary-600)' }} aria-hidden="true" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-[var(--color-neutral-800)]">Companies</p>
+                <p className="text-xs text-[var(--color-neutral-400)]">Register and manage company profiles</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-medium text-[var(--color-neutral-800)]">Companies</p>
-              <p className="text-xs text-[var(--color-neutral-400)]">Register and manage company profiles</p>
-            </div>
-          </div>
-          <Button variant="secondary" onClick={() => navigate('/superadmin/companies')}>
-            Manage Companies
-          </Button>
-        </Card>
+            <Button variant="secondary" onClick={() => navigate('/superadmin/companies')}>
+              Manage Companies
+            </Button>
+          </Card>
+        </AppAnimatedGridItem>
 
-        <Card className="flex flex-col gap-4 p-4">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-              style={{ background: 'var(--color-primary-50)' }}
-            >
-              <Building2 size={18} style={{ color: 'var(--color-primary-600)' }} aria-hidden="true" />
+        <AppAnimatedGridItem>
+          <Card className="flex flex-col gap-4 p-4">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                style={{ background: 'var(--color-primary-50)' }}
+              >
+                <Building2 size={18} style={{ color: 'var(--color-primary-600)' }} aria-hidden="true" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-[var(--color-neutral-800)]">Tenants</p>
+                <p className="text-xs text-[var(--color-neutral-400)]">Workspaces, subscriptions, and limits</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-medium text-[var(--color-neutral-800)]">Tenants</p>
-              <p className="text-xs text-[var(--color-neutral-400)]">Workspaces, subscriptions, and limits</p>
-            </div>
-          </div>
-          <Button variant="secondary" onClick={() => navigate('/superadmin/tenants')}>
-            Manage Tenants
-          </Button>
-        </Card>
-      </div>
+            <Button variant="secondary" onClick={() => navigate('/superadmin/tenants')}>
+              Manage Tenants
+            </Button>
+          </Card>
+        </AppAnimatedGridItem>
+      </AppAnimatedGrid>
     </div>
   );
 }

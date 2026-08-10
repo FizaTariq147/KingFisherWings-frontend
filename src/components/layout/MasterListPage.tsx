@@ -1,7 +1,8 @@
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../ui/Table';
+import { Table, TableHeader, TableRow, TableHead, TableCell } from '../ui/Table';
+import { AppAnimatedTableBody, AppFetchBar, AppLoadingState } from '@/components/motion';
 
 interface Column {
   key: string;
@@ -28,6 +29,7 @@ interface MasterListPageProps {
   total?: number;
   onPage?: (page: number) => void;
   isLoading?: boolean;
+  isFetching?: boolean;
   isError?: boolean;
   errorMessage?: string | null;
   emptyMessage?: string;
@@ -57,6 +59,7 @@ export function MasterListPage({
   total,
   onPage,
   isLoading,
+  isFetching,
   isError,
   errorMessage,
   emptyMessage = 'No records found',
@@ -133,6 +136,10 @@ export function MasterListPage({
       )}
 
       <Card padding="none">
+        <AppFetchBar active={Boolean(isFetching && !isLoading)} />
+        {isLoading && rows.length === 0 ? (
+          <AppLoadingState />
+        ) : (
         <Table>
           <TableHeader>
             <TableRow>
@@ -145,17 +152,7 @@ export function MasterListPage({
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {isLoading && rows.length === 0 && (
-              <TableRow>
-                <td
-                  colSpan={columns.length + 2}
-                  className="px-4 py-10 text-center text-sm text-[var(--color-neutral-400)]"
-                >
-                  Loading…
-                </td>
-              </TableRow>
-            )}
+          <AppAnimatedTableBody>
             {!isLoading && rows.length === 0 && (
               <TableRow>
                 <td
@@ -170,7 +167,7 @@ export function MasterListPage({
               const active = (statuses?.[i] ?? 'ACTIVE') === 'ACTIVE';
               const pending = pendingActionIndex === i;
               return (
-                <TableRow key={row.id ?? i}>
+                <TableRow key={row.id ?? i} className="app-list-row">
                   {columns.map((col) => (
                     <TableCell key={col.key} mono={col.mono}>
                       {row[col.key]}
@@ -228,8 +225,9 @@ export function MasterListPage({
                 </TableRow>
               );
             })}
-          </TableBody>
+          </AppAnimatedTableBody>
         </Table>
+        )}
       </Card>
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-sm text-[var(--color-neutral-400)]">

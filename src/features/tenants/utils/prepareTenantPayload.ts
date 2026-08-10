@@ -1,6 +1,20 @@
 const FORM_ONLY_FIELDS = ['selected_company_id'] as const;
 
-/** Only fields documented on CreateTenantDto / UpdateTenantDto. */
+/**
+ * Company reference fields are accepted on create (provisioning) but are not
+ * columns on the Tenant model. Sending them on PATCH makes Prisma throw 500.
+ */
+const CREATE_ONLY_FIELDS = [
+  'company_code',
+  'company_name',
+  'company_legal_name',
+  'company_registration_number',
+  'password',
+  'admin_first_name',
+  'admin_last_name',
+] as const;
+
+/** Fields accepted by CreateTenantDto / UpdateTenantDto. */
 const ALLOWED_TENANT_FIELDS = new Set([
   'code',
   'name',
@@ -48,24 +62,31 @@ const OPTIONAL_STRING_FIELDS = [
   'company_registration_number',
 ] as const;
 
-/** Sent as `null` when cleared in the form (PATCH clearable fields). */
-const CLEARABLE_NULL_FIELDS = new Set(['country_code']);
-
 const DATE_FIELDS = ['trial_ends', 'subscription_ends'] as const;
 
 const ENUM_FIELDS = ['subscription_plan', 'status'] as const;
 
+export type PrepareTenantPayloadOptions = {
+  mode?: 'create' | 'update';
+};
+
 /** Strip empty optionals, format dates, and uppercase enums for the API. */
-export function prepareTenantPayload<T extends Record<string, unknown>>(dto: T): T {
+export function prepareTenantPayload<T extends Record<string, unknown>>(
+  dto: T,
+  options: PrepareTenantPayloadOptions = {},
+): T {
+  const mode = options.mode ?? 'create';
   const out: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(dto as Record<string, unknown>)) {
     if (!ALLOWED_TENANT_FIELDS.has(key)) continue;
-    if (CLEARABLE_NULL_FIELDS.has(key) && (value === '' || value == null)) {
-      out[key] = null;
-      continue;
-    }
     out[key] = value;
+  }
+
+  if (mode === 'update') {
+    for (const key of CREATE_ONLY_FIELDS) {
+      delete out[key];
+    }
   }
 
   if (typeof out.slug === 'string') {
@@ -80,10 +101,13 @@ export function prepareTenantPayload<T extends Record<string, unknown>>(dto: T):
   if (typeof out.email === 'string') {
     out.email = out.email.trim().toLowerCase();
   }
+  if (typeof out.country_code === 'string') {
+    out.country_code = out.country_code.trim().toUpperCase();
+  }
 
   for (const key of Object.keys(out)) {
     const value = out[key];
-    if (CLEARABLE_NULL_FIELDS.has(key) && value === null) continue;
+    // Tenant.country_code is NOT NULL (Char(2)) — omit when cleared; never send null.
     if (value === '' || value === null || value === undefined) {
       delete out[key];
     }
@@ -92,7 +116,7 @@ export function prepareTenantPayload<T extends Record<string, unknown>>(dto: T):
     }
   }
 
-  if ('password' in dto && (typeof out.password !== 'string' || !out.password)) {
+  if (mode === 'create' && ('password' in dto) && (typeof out.password !== 'string' || !out.password)) {
     throw new Error('Tenant password is required before create.');
   }
 

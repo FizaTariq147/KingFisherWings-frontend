@@ -4,6 +4,13 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
 import {
+  PortalAnimatedGrid,
+  PortalAnimatedGridItem,
+  PortalAnimatedList,
+  PortalAnimatedListItem,
+  PortalGsapTimeline,
+  PortalGsapTimelineItem,
+  PortalLoadingState,
   PortalPageHeader,
   PortalPanel,
   PortalStatCard,
@@ -26,7 +33,7 @@ export default function PortalShipmentDetailPage() {
   const documents = data?.documents?.length ? data.documents : documentsQuery.data ?? [];
 
   if (isLoading) {
-    return <p className="text-sm text-[var(--color-neutral-400)]">Loading shipment…</p>;
+    return <PortalLoadingState label="Loading shipment…" />;
   }
 
   if (isError || !data) {
@@ -65,11 +72,17 @@ export default function PortalShipmentDetailPage() {
         actions={data.status ? <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge> : null}
       />
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <PortalStatCard label="Pieces" value={data.pieces ?? '—'} Icon={Package} />
-        <PortalStatCard label="Gross weight" value={data.grossWeight ?? '—'} />
-        <PortalStatCard label="Volume (CBM)" value={data.volumeCbm ?? '—'} />
-      </div>
+      <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-3">
+        <PortalAnimatedGridItem>
+          <PortalStatCard label="Pieces" value={data.pieces ?? '—'} Icon={Package} />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard label="Gross weight" value={data.grossWeight ?? '—'} />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard label="Volume (CBM)" value={data.volumeCbm ?? '—'} />
+        </PortalAnimatedGridItem>
+      </PortalAnimatedGrid>
 
       {data.cargoSummary ? (
         <PortalPanel padded>
@@ -82,10 +95,9 @@ export default function PortalShipmentDetailPage() {
         {milestones.length === 0 ? (
           <p className="text-sm text-[var(--color-neutral-400)]">No milestones yet.</p>
         ) : (
-          <ol className="space-y-4">
-            {milestones.map((m) => (
-              <li key={m.id} className="relative border-l-2 border-[var(--color-secondary)] pl-4">
-                <div className="absolute -left-[5px] top-1.5 h-2 w-2 rounded-full bg-[var(--color-secondary)]" />
+          <PortalGsapTimeline>
+            {milestones.map((m, index) => (
+              <PortalGsapTimelineItem key={m.id} isLast={index === milestones.length - 1}>
                 <div className="text-sm font-medium text-[var(--color-neutral-800)]">{m.label}</div>
                 <div className="text-xs text-[var(--color-neutral-500)]">
                   {[m.occurredAt, m.location, m.status].filter(Boolean).join(' · ') || '—'}
@@ -93,9 +105,9 @@ export default function PortalShipmentDetailPage() {
                 {m.notes ? (
                   <p className="mt-1 text-xs text-[var(--color-neutral-600)]">{m.notes}</p>
                 ) : null}
-              </li>
+              </PortalGsapTimelineItem>
             ))}
-          </ol>
+          </PortalGsapTimeline>
         )}
       </PortalPanel>
 
@@ -104,9 +116,9 @@ export default function PortalShipmentDetailPage() {
         {documents.length === 0 ? (
           <p className="text-sm text-[var(--color-neutral-400)]">No documents available.</p>
         ) : (
-          <ul className="space-y-2">
+          <PortalAnimatedList className="space-y-2">
             {documents.map((doc) => (
-              <li
+              <PortalAnimatedListItem
                 key={doc.id}
                 className="flex items-center justify-between gap-3 rounded-lg border border-[var(--color-neutral-200)] px-3 py-2.5"
               >
@@ -134,9 +146,9 @@ export default function PortalShipmentDetailPage() {
                     Download
                   </Button>
                 )}
-              </li>
+              </PortalAnimatedListItem>
             ))}
-          </ul>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
     </div>

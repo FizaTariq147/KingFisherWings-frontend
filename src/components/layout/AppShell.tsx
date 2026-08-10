@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
@@ -8,6 +8,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useUIStore } from '@/store/uiStore';
 import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore';
 import { OnboardingSteps } from '@/features/platform/components/OnboardingSteps';
+import { AppMotionStyles, AppPageTransition } from '@/components/motion';
 
 export function AppShell({ title }: { title: string }) {
   useApplyTheme();
@@ -44,6 +45,7 @@ export function AppShell({ title }: { title: string }) {
 
   return (
     <div className="flex h-[100dvh] bg-[var(--color-neutral-50)] overflow-hidden">
+      <AppMotionStyles />
       <div className="hidden md:flex shrink-0">
         <Sidebar />
       </div>
@@ -52,11 +54,11 @@ export function AppShell({ title }: { title: string }) {
         <div className="md:hidden fixed inset-0 z-50 flex">
           <button
             type="button"
-            className="fixed inset-0 bg-black/40"
+            className="fixed inset-0 bg-black/40 app-mobile-backdrop"
             onClick={closeMobileSidebar}
             aria-label="Close navigation"
           />
-          <div className="relative z-10 h-full shadow-xl">
+          <div className="relative z-10 h-full shadow-xl app-mobile-drawer">
             <Sidebar mobile onNavigate={closeMobileSidebar} />
           </div>
         </div>
@@ -70,7 +72,7 @@ export function AppShell({ title }: { title: string }) {
               <OnboardingSteps />
             </div>
           )}
-          <Outlet />
+          <AppPageTransition />
         </main>
         <FooterStatusBar
           info={{

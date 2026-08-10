@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode, useContext } from 'react'
 import { AuthContext } from '@/context/AuthContext'
 import { useAuthStore } from '@/store/authStore'
 import { FullPageSpinner } from './SkeletonPrimitives'
+import { AppMotionStyles } from '@/components/motion'
 
 interface AuthLoadingGateProps {
   children: ReactNode
@@ -34,7 +35,12 @@ export function AuthLoadingGate({ children }: AuthLoadingGateProps) {
 
   const waitingForMe = !!accessToken && !!authCtx?.isLoading
   if (restoring || waitingForMe) {
-    return <FullPageSpinner message="Restoring session…" />
+    return (
+      <>
+        <AppMotionStyles />
+        <FullPageSpinner message="Restoring session…" />
+      </>
+    )
   }
 
   return <>{children}</>

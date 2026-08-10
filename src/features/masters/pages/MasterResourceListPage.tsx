@@ -50,7 +50,7 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
     extra: resource?.listDefaults,
   };
 
-  const { data, isLoading, isError, error, refetch } = useMasterList(
+  const { data, isLoading, isFetching, isError, error, refetch } = useMasterList(
     resource?.key ?? resourceKey,
     resource?.basePath ?? '',
     listParams,
@@ -143,6 +143,7 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
         total={meta?.total}
         onPage={setPage}
         isLoading={isLoading}
+        isFetching={isFetching}
         isError={isError}
         errorMessage={error instanceof Error ? error.message : null}
         onAdd={() => navigate(newPath)}

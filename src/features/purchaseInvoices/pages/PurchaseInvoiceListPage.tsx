@@ -13,6 +13,7 @@ import {
 } from '../constants/purchaseInvoice.constants';
 import { usePurchaseInvoices } from '../hooks/usePurchaseInvoices';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { AppListPanelBody } from '@/components/motion';
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
   const [debounced, setDebounced] = useState(value);
@@ -106,16 +107,16 @@ export default function PurchaseInvoiceListPage() {
               Retry
             </Button>
           </div>
-        ) : isLoading ? (
-          <p className="text-sm text-[var(--color-neutral-400)] py-10 text-center">Loading…</p>
         ) : (
-          <PurchaseInvoiceTable
-            purchaseInvoices={purchaseInvoices}
-            isFetching={isFetching}
-            meta={meta}
-            onPage={setPage}
-            onView={(inv) => navigate(`${PURCHASE_INVOICE_ROUTE_PREFIX}/${inv.id}`)}
-          />
+          <AppListPanelBody isLoading={isLoading} isFetching={isFetching}>
+            <PurchaseInvoiceTable
+              purchaseInvoices={purchaseInvoices}
+              isFetching={isFetching}
+              meta={meta}
+              onPage={setPage}
+              onView={(inv) => navigate(`${PURCHASE_INVOICE_ROUTE_PREFIX}/${inv.id}`)}
+            />
+          </AppListPanelBody>
         )}
       </Card>
     </div>

@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
 import {
+  PortalAnimatedList,
+  PortalAnimatedListItem,
   PortalEmptyState,
+  PortalFetchBar,
+  PortalLoadingState,
   PortalPageHeader,
   PortalPanel,
   portalSelectClassName,
@@ -103,9 +107,9 @@ export default function PortalCreditNotesPage() {
         </div>
       </PortalPanel>
       <PortalPanel>
-        {isFetching && <div className="h-0.5 bg-[var(--color-secondary)]/80 animate-pulse" />}
+        <PortalFetchBar active={isFetching && !isLoading} />
         {isLoading ? (
-          <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading…</p>
+          <PortalLoadingState />
         ) : isError ? (
           <div className="p-6 space-y-2">
             <p className="text-sm text-[var(--color-danger-600)]">
@@ -128,25 +132,26 @@ export default function PortalCreditNotesPage() {
             Icon={Receipt}
           />
         ) : (
-          <div className="divide-y divide-[var(--color-neutral-100)]">
+          <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((cn) => (
-              <Link
-                key={cn.id}
-                to={`${basePath}/${cn.id}`}
-                className="flex items-center justify-between gap-3 px-4 py-3.5 hover:bg-[var(--color-neutral-50)]"
-              >
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold truncate">{cn.number}</div>
-                  <div className="text-xs text-[var(--color-neutral-500)]">
-                    {[cn.creditedInvoiceNumber, cn.creditDate, cn.currencyCode, cn.totalAmount]
-                      .filter((v) => v != null && v !== '')
-                      .join(' · ') || '—'}
+              <PortalAnimatedListItem key={cn.id}>
+                <Link
+                  to={`${basePath}/${cn.id}`}
+                  className="flex items-center justify-between gap-3 px-4 py-3.5 hover:bg-[var(--color-neutral-50)]"
+                >
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold truncate">{cn.number}</div>
+                    <div className="text-xs text-[var(--color-neutral-500)]">
+                      {[cn.creditedInvoiceNumber, cn.creditDate, cn.currencyCode, cn.totalAmount]
+                        .filter((v) => v != null && v !== '')
+                        .join(' · ') || '—'}
+                    </div>
                   </div>
-                </div>
-                {cn.status ? <Badge variant="info">{cn.status.replaceAll('_', ' ')}</Badge> : null}
-              </Link>
+                  {cn.status ? <Badge variant="info">{cn.status.replaceAll('_', ' ')}</Badge> : null}
+                </Link>
+              </PortalAnimatedListItem>
             ))}
-          </div>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
       {meta && meta.totalPages > 1 && (

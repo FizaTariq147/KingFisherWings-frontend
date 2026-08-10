@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { UserCircle, ChevronRight, Plus, Inbox } from 'lucide-react'
 import { Card } from '../ui/Card'
 import { Button } from '../ui/Button'
+import { AppLoadingState } from '@/components/motion'
 
 /**
  * ASSUMED component API (actual Card/Button source wasn't in context —
@@ -35,13 +36,7 @@ interface DashboardCardProps {
 }
 
 function CardSkeleton() {
-  return (
-    <div className="p-4 space-y-2.5 animate-pulse">
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="h-4 rounded bg-[var(--color-neutral-100)]" style={{ width: `${85 - i * 8}%` }} />
-      ))}
-    </div>
-  )
+  return <AppLoadingState className="py-8" />
 }
 
 function CardEmptyState({ message }: { message: string }) {

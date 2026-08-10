@@ -90,7 +90,6 @@ export const createTenantSchema = withLocaleCatalogRefine(
 export type CreateTenantFormValues = z.infer<typeof createTenantObject>;
 
 const updateTenantObject = createTenantObject.omit({
-  code: true,
   slug: true,
   password: true,
   admin_first_name: true,

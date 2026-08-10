@@ -1,6 +1,7 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Building2, CreditCard, Hash } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAppAutoAnimate } from '@/components/motion';
 
 const TABS = [
   { to: '/organization', label: 'Organization Profile', icon: Building2, end: true },
@@ -9,6 +10,9 @@ const TABS = [
 ] as const;
 
 export default function OrganizationShell() {
+  const location = useLocation();
+  const [navRef] = useAppAutoAnimate();
+
   return (
     <div className="space-y-4 max-w-6xl">
       <div>
@@ -19,7 +23,10 @@ export default function OrganizationShell() {
       </div>
 
       <div className="flex flex-col gap-6 lg:flex-row">
-        <nav className="w-full shrink-0 space-y-1 lg:w-52">
+        <nav
+          ref={navRef}
+          className="w-full shrink-0 space-y-1 lg:w-52 app-nav-stagger"
+        >
           {TABS.map(({ to, label, icon: Icon, end }) => (
             <NavLink
               key={to}
@@ -39,7 +46,7 @@ export default function OrganizationShell() {
             </NavLink>
           ))}
         </nav>
-        <div className="min-w-0 flex-1">
+        <div key={location.pathname} className="min-w-0 flex-1 app-page-enter">
           <Outlet />
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/Badge';
 import { usePortalAuthStore } from '../store/portalAuthStore';
-import { PortalPageHeader, PortalPanel } from '../components/portal-ui';
+import { PortalAnimatedGrid, PortalAnimatedGridItem, PortalPageHeader, PortalPanel } from '../components/portal-ui';
 
 export default function PortalAccountPage() {
   const user = usePortalAuthStore((s) => s.user);
@@ -32,11 +32,17 @@ export default function PortalAccountPage() {
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
-          <Info label="Phone" value={user?.phone || '—'} />
-          <Info label="Party" value={user?.party?.name || '—'} />
-          <Info label="Tenant" value={user?.tenantName || user?.tenantSlug || '—'} />
-        </div>
+        <PortalAnimatedGrid className="grid gap-3 sm:grid-cols-2">
+          <PortalAnimatedGridItem>
+            <Info label="Phone" value={user?.phone || '—'} />
+          </PortalAnimatedGridItem>
+          <PortalAnimatedGridItem>
+            <Info label="Party" value={user?.party?.name || '—'} />
+          </PortalAnimatedGridItem>
+          <PortalAnimatedGridItem>
+            <Info label="Tenant" value={user?.tenantName || user?.tenantSlug || '—'} />
+          </PortalAnimatedGridItem>
+        </PortalAnimatedGrid>
       </PortalPanel>
     </div>
   );

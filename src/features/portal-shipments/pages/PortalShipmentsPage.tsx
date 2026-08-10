@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
 import {
+  PortalAnimatedList,
+  PortalAnimatedListItem,
   PortalEmptyState,
+  PortalFetchBar,
+  PortalLoadingState,
   PortalPageHeader,
   PortalPanel,
   portalSelectClassName,
@@ -82,11 +86,9 @@ export default function PortalShipmentsPage() {
       </PortalPanel>
 
       <PortalPanel>
-        {isFetching && (
-          <div className="h-0.5 bg-[var(--color-secondary)]/80 animate-pulse" aria-hidden />
-        )}
+        <PortalFetchBar active={isFetching && !isLoading} />
         {isLoading ? (
-          <p className="p-6 text-sm text-[var(--color-neutral-400)]">Loading shipments…</p>
+          <PortalLoadingState label="Loading shipments…" />
         ) : isError ? (
           <div className="p-6 space-y-2">
             <p className="text-sm text-[var(--color-danger-600)]">
@@ -105,30 +107,31 @@ export default function PortalShipmentsPage() {
             Icon={Search}
           />
         ) : (
-          <div className="divide-y divide-[var(--color-neutral-100)]">
+          <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((s) => (
-              <Link
-                key={s.id}
-                to={`/portal/shipments/${s.id}`}
-                className="flex items-center justify-between gap-3 px-4 py-3.5 transition hover:bg-[var(--color-neutral-50)]"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-primary-100)] text-[var(--color-primary)]">
-                    <Package size={16} aria-hidden="true" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-sm font-semibold text-[var(--color-neutral-900)] truncate">
-                      {s.reference}
+              <PortalAnimatedListItem key={s.id}>
+                <Link
+                  to={`/portal/shipments/${s.id}`}
+                  className="flex items-center justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-[var(--color-neutral-50)]"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-primary-100)] text-[var(--color-primary)]">
+                      <Package size={16} aria-hidden="true" />
                     </div>
-                    <div className="text-xs text-[var(--color-neutral-500)] truncate">
-                      {[s.origin, s.destination].filter(Boolean).join(' → ') || s.jobType || '—'}
+                    <div className="min-w-0">
+                      <div className="text-sm font-semibold text-[var(--color-neutral-900)] truncate">
+                        {s.reference}
+                      </div>
+                      <div className="text-xs text-[var(--color-neutral-500)] truncate">
+                        {[s.origin, s.destination].filter(Boolean).join(' → ') || s.jobType || '—'}
+                      </div>
                     </div>
                   </div>
-                </div>
-                {s.status ? <Badge variant="info">{s.status.replaceAll('_', ' ')}</Badge> : null}
-              </Link>
+                  {s.status ? <Badge variant="info">{s.status.replaceAll('_', ' ')}</Badge> : null}
+                </Link>
+              </PortalAnimatedListItem>
             ))}
-          </div>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
 

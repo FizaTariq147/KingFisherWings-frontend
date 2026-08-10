@@ -159,23 +159,21 @@ export function TenantForm({ mode, defaultValues, onSubmit, isSubmitting }: Tena
         <Grid>
           <Input label="Legal company name" error={fieldError('name')} {...register('name')} />
           <Input label="Display name" error={fieldError('display_name')} {...register('display_name')} />
+          <Input
+            label="Tenant code"
+            hint="Uppercase letters, numbers, hyphens (3–20)"
+            error={fieldError('code')}
+            className="font-mono uppercase"
+            {...register('code')}
+          />
           {mode === 'create' && (
-            <>
-              <Input
-                label="Tenant code"
-                hint="Uppercase letters, numbers, hyphens (3–20)"
-                error={fieldError('code')}
-                className="font-mono uppercase"
-                {...register('code')}
-              />
-              <Input
-                label="Workspace slug"
-                hint="Lowercase letters, numbers, and hyphens only (e.g. oceanic-dxb)"
-                error={fieldError('slug')}
-                className="font-mono lowercase"
-                {...register('slug')}
-              />
-            </>
+            <Input
+              label="Workspace slug"
+              hint="Lowercase letters, numbers, and hyphens only (e.g. oceanic-dxb)"
+              error={fieldError('slug')}
+              className="font-mono lowercase"
+              {...register('slug')}
+            />
           )}
         </Grid>
       </Card>

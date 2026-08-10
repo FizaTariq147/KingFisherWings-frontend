@@ -3,7 +3,16 @@ import { ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
-import { PortalPageHeader, PortalPanel, PortalStatCard } from '@/features/portal-auth/components/portal-ui';
+import {
+  PortalAnimatedGrid,
+  PortalAnimatedGridItem,
+  PortalAnimatedList,
+  PortalAnimatedListItem,
+  PortalLoadingState,
+  PortalPageHeader,
+  PortalPanel,
+  PortalStatCard,
+} from '@/features/portal-auth/components/portal-ui';
 import { usePortalCreditNote } from '../hooks/usePortalCreditNotes';
 import type { PortalNoteKind } from '../services/portalCreditNotes.service';
 
@@ -14,7 +23,7 @@ export default function PortalCreditNoteDetailPage() {
   const listPath = kind === 'debit' ? '/portal/debit-notes' : '/portal/credit-notes';
   const { data, isLoading, isError, error, refetch } = usePortalCreditNote(id, kind);
 
-  if (isLoading) return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
+  if (isLoading) return <PortalLoadingState label="Loading…" />;
   if (isError || !data) {
     return (
       <div className="space-y-2">
@@ -50,11 +59,11 @@ export default function PortalCreditNoteDetailPage() {
         }
         actions={data.status ? <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge> : null}
       />
-      <div className="grid gap-4 sm:grid-cols-3">
-        <PortalStatCard label="Total" value={data.totalAmount ?? '—'} />
-        <PortalStatCard label="Currency" value={data.currencyCode || '—'} />
-        <PortalStatCard label="Date" value={data.creditDate || '—'} />
-      </div>
+      <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-3">
+        <PortalAnimatedGridItem><PortalStatCard label="Total" value={data.totalAmount ?? '—'} /></PortalAnimatedGridItem>
+        <PortalAnimatedGridItem><PortalStatCard label="Currency" value={data.currencyCode || '—'} /></PortalAnimatedGridItem>
+        <PortalAnimatedGridItem><PortalStatCard label="Date" value={data.creditDate || '—'} /></PortalAnimatedGridItem>
+      </PortalAnimatedGrid>
       {data.remarks ? (
         <PortalPanel padded>
           <p className="text-sm">{data.remarks}</p>
@@ -65,17 +74,17 @@ export default function PortalCreditNoteDetailPage() {
         {!data.lines.length ? (
           <p className="text-sm text-[var(--color-neutral-400)]">No lines.</p>
         ) : (
-          <ul className="space-y-2">
+          <PortalAnimatedList className="space-y-2">
             {data.lines.map((line) => (
-              <li
+              <PortalAnimatedListItem
                 key={line.id}
                 className="flex justify-between gap-3 border-b border-[var(--color-neutral-100)] pb-2 text-sm last:border-0"
               >
                 <span>{line.description}</span>
                 <span className="font-medium tabular-nums">{line.lineTotal ?? '—'}</span>
-              </li>
+              </PortalAnimatedListItem>
             ))}
-          </ul>
+          </PortalAnimatedList>
         )}
       </PortalPanel>
     </div>
