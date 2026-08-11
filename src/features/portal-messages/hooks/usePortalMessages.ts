@@ -49,6 +49,13 @@ export function useCreatePortalMessage() {
   });
 }
 
+export function useDownloadPortalMessageAttachment() {
+  return useMutation({
+    mutationFn: ({ id, name }: { id: string; name?: string }) =>
+      portalMessagesService.downloadAttachment(id, name || 'message-attachment'),
+  });
+}
+
 export function useReplyPortalMessage() {
   const qc = useQueryClient();
   const scope = usePortalQueryScope();

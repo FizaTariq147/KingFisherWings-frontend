@@ -39,6 +39,12 @@ export function useAdminPortalMessage(id: string, enabled = true) {
   });
 }
 
+export function useDownloadAdminPortalMessageAttachment() {
+  return useMutation({
+    mutationFn: (id: string) => portalAdminInboxService.downloadMessageAttachment(id),
+  });
+}
+
 export function useReplyAdminPortalMessage() {
   const qc = useQueryClient();
   return useMutation({

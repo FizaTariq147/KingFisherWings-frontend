@@ -45,9 +45,34 @@ export function normalizePortalMessage(raw: unknown): PortalMessage | null {
     readByStaff: pickBoolean(r.read_by_staff, r.readByStaff, r.is_read, r.isRead),
     jobId: pickString(r.job_id, r.jobId) || undefined,
     invoiceId: pickString(r.invoice_id, r.invoiceId) || undefined,
+    attachmentName:
+      pickString(r.attachment_name, r.attachmentName, r.file_name, r.filename, r.original_name) ||
+      undefined,
     hasAttachment:
       pickBoolean(r.has_attachment, r.hasAttachment) ??
-      Boolean(pickString(r.attachment_name, r.attachmentName, r.attachment_url)),
+      Boolean(
+        pickString(
+          r.attachment_name,
+          r.attachmentName,
+          r.attachment_url,
+          r.file_name,
+          r.filename,
+          r.file_url,
+        ),
+      ),
+    senderName:
+      pickString(
+        r.sender_name,
+        r.senderName,
+        r.created_by_name,
+        r.author_name,
+        asRecord(r.sender)?.full_name,
+        asRecord(r.sender)?.name,
+      ) || undefined,
+    senderEmail:
+      pickString(r.sender_email, r.senderEmail, r.email, asRecord(r.sender)?.email) || undefined,
+    partyName:
+      pickString(r.party_name, r.partyName, asRecord(r.party)?.name) || undefined,
     replies: repliesRaw
       .map(normalizePortalMessageReply)
       .filter((x): x is PortalMessageReply => Boolean(x)),

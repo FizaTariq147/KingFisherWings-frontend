@@ -11,6 +11,10 @@ import {
 } from '@/lib/tenantFromAuth'
 import { withGatewayRetry } from '@/lib/wakeApi'
 import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore'
+import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore'
+import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache'
+import { useVendorAuthStore } from '@/features/vendor-auth/store/vendorAuthStore'
+import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache'
 
 export type Product =
   | 'KingFisher Tech Global'
@@ -160,6 +164,10 @@ async function applyLoginSuccess(
   result: Awaited<ReturnType<typeof authService.loginTenant>>,
 ) {
   useSuperAdminAuthStore.getState().logout()
+  usePortalAuthStore.getState().logout()
+  clearPortalQueryCache()
+  useVendorAuthStore.getState().logout()
+  clearVendorQueryCache()
   const tenantId =
     result.user.tenantId ||
     resolveSessionTenantIdFromAuth({

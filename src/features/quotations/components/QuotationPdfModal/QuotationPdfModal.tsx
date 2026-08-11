@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { StoredFileLink } from '@/features/files/components/StoredFileLink';
@@ -7,6 +7,7 @@ import { PDF_MODES, type PdfMode } from '../../constants/quotation.constants';
 import { useQuotationPdfStatus } from '../../hooks/useQuotationActions';
 import type { QuotationPdfInfo } from '../../types/quotation.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import { normalizeQuotationPdfInfo } from '../../utils/normalizeQuotationPdf';
 
 interface QuotationPdfModalProps {
   quotationId: string;
@@ -26,6 +27,13 @@ function pickReadyPdfUrl(info: QuotationPdfInfo | undefined, mode: PdfMode): str
   return info.customer_pdf_url || info.internal_pdf_url;
 }
 
+function statusLabel(raw: unknown): string {
+  const info = normalizeQuotationPdfInfo(raw);
+  const status = String(info.status || '').trim();
+  if (!status || status === 'NOT_FOUND') return 'Waiting for the generator…';
+  return status.replaceAll('_', ' ');
+}
+
 export function QuotationPdfModal({
   quotationId,
   open,
@@ -42,25 +50,33 @@ export function QuotationPdfModal({
   const [latestInfo, setLatestInfo] = useState<QuotationPdfInfo | undefined>(pdfInfo);
   const [readyUrl, setReadyUrl] = useState<string | null>(null);
   const [readyOpen, setReadyOpen] = useState(false);
+  const wasOpen = useRef(false);
   const { data: statusData, refetch } = useQuotationPdfStatus(quotationId, open && poll);
 
   useEffect(() => {
-    if (open) {
+    if (open && !wasOpen.current) {
       setLatestInfo(pdfInfo);
       setReadyOpen(false);
       setReadyUrl(null);
+      setLocalError(null);
+      setPoll(false);
     }
+    if (!open) {
+      setPoll(false);
+    }
+    wasOpen.current = open;
   }, [open, pdfInfo]);
 
-  const statusRows = useMemo(() => {
-    if (Array.isArray(statusData)) return statusData;
-    if (statusData && typeof statusData === 'object') {
-      const items = (statusData as { items?: unknown[] }).items;
-      if (Array.isArray(items)) return items;
-      return [statusData];
-    }
-    return [];
-  }, [statusData]);
+  useEffect(() => {
+    if (!open || !pdfInfo) return;
+    setLatestInfo((prev) => ({ ...prev, ...pdfInfo }));
+  }, [open, pdfInfo]);
+
+  useEffect(() => {
+    if (!open || !poll || !statusData) return;
+    const next = normalizeQuotationPdfInfo(statusData);
+    setLatestInfo((prev) => ({ ...prev, ...next }));
+  }, [open, poll, statusData]);
 
   useEffect(() => {
     if (!poll || !open) return;
@@ -71,24 +87,32 @@ export function QuotationPdfModal({
   }, [poll, open, refetch]);
 
   useEffect(() => {
-    if (!open || !poll || readyOpen) return;
-    const url = pickReadyPdfUrl(latestInfo, mode) || pickReadyPdfUrl(pdfInfo, mode);
-    if (url) {
-      setReadyUrl(url);
-      setReadyOpen(true);
-      setPoll(false);
-    }
-  }, [open, poll, readyOpen, latestInfo, pdfInfo, mode]);
+    if (!open || !poll || readyOpen || !statusData) return;
+    const fromStatus = normalizeQuotationPdfInfo(statusData);
+    const url = pickReadyPdfUrl(fromStatus, mode);
+    if (!url) return;
+    setLatestInfo((prev) => ({ ...prev, ...fromStatus }));
+    setReadyUrl(url);
+    setReadyOpen(true);
+    setPoll(false);
+  }, [open, poll, readyOpen, statusData, mode]);
 
   const customerUrl = latestInfo?.customer_pdf_url;
   const internalUrl = latestInfo?.internal_pdf_url;
   const displayError = localError || error;
+  const statusText = useMemo(() => statusLabel(statusData), [statusData]);
+
+  const closeReady = () => {
+    setReadyOpen(false);
+    setReadyUrl(null);
+    onClose();
+  };
 
   return (
     <>
-      <Modal open={open} onClose={onClose} title="Quotation PDF">
+      <Modal open={open && !readyOpen} onClose={onClose} title="Quotation PDF">
         <div className="space-y-4">
-          {displayError && (
+          {displayError ? (
             <div
               role="alert"
               className="rounded-md border px-3 py-2 text-sm"
@@ -100,7 +124,7 @@ export function QuotationPdfModal({
             >
               {displayError}
             </div>
-          )}
+          ) : null}
 
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[var(--color-neutral-500)]">Mode *</span>
@@ -111,7 +135,7 @@ export function QuotationPdfModal({
             >
               {PDF_MODES.map((m) => (
                 <option key={m} value={m}>
-                  {m}
+                  {m === 'CUSTOMER' ? 'Customer' : 'Internal'}
                 </option>
               ))}
             </select>
@@ -130,40 +154,19 @@ export function QuotationPdfModal({
           </label>
 
           {(customerUrl || internalUrl) && (
-            <div className="text-sm space-y-1">
+            <div className="space-y-1 text-sm">
               <p className="text-xs font-medium text-[var(--color-neutral-500)]">Available PDFs</p>
-              {customerUrl && (
-                <StoredFileLink url={customerUrl} label="Open customer PDF" />
-              )}
-              {internalUrl && (
-                <StoredFileLink url={internalUrl} label="Open internal PDF" />
-              )}
+              {customerUrl ? <StoredFileLink url={customerUrl} label="Open customer PDF" /> : null}
+              {internalUrl ? <StoredFileLink url={internalUrl} label="Open internal PDF" /> : null}
             </div>
           )}
 
-          {poll && !customerUrl && !internalUrl && !displayError && (
+          {poll && !displayError ? (
             <p className="text-xs text-[var(--color-neutral-500)]">
-              Generation queued. A popup appears when the PDF is ready — check Generation status below.
+              Generation queued. A popup opens when the PDF is ready.
+              {statusData ? ` Status: ${statusText}.` : ''}
             </p>
-          )}
-
-          {poll && (
-            <div className="rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-2 text-xs space-y-1 max-h-32 overflow-auto">
-              <p className="font-medium text-[var(--color-neutral-600)]">Generation status</p>
-              {statusRows.length > 0 ? (
-                statusRows.map((row, i) => (
-                  <pre
-                    key={i}
-                    className="text-[11px] text-[var(--color-neutral-500)] whitespace-pre-wrap"
-                  >
-                    {typeof row === 'object' ? JSON.stringify(row) : String(row)}
-                  </pre>
-                ))
-              ) : (
-                <p className="text-[var(--color-neutral-400)]">Waiting for status…</p>
-              )}
-            </div>
-          )}
+          ) : null}
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="secondary" onClick={onClose}>
@@ -180,7 +183,7 @@ export function QuotationPdfModal({
                 try {
                   const result = await onGenerate(mode, layout.trim() || undefined);
                   if (result) {
-                    setLatestInfo(result);
+                    setLatestInfo((prev) => ({ ...prev, ...result }));
                     const url = pickReadyPdfUrl(result, mode);
                     if (url) {
                       setReadyUrl(url);
@@ -189,6 +192,7 @@ export function QuotationPdfModal({
                     }
                   }
                 } catch (err) {
+                  setPoll(false);
                   setLocalError(getErrorMessage(err));
                 }
               }}
@@ -201,7 +205,7 @@ export function QuotationPdfModal({
 
       <PdfReadyModal
         open={readyOpen}
-        onClose={() => setReadyOpen(false)}
+        onClose={closeReady}
         url={readyUrl}
         title="Quotation PDF ready"
         fileName={`quotation-${quotationId}.pdf`}

@@ -1,11 +1,12 @@
 import { portalApiClient, PortalApiError } from '@/lib/portalApiClient';
-import { filenameFromContentDisposition } from '@/features/portal-shared/normalize';
-import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
+import { safeDownloadFilename } from '@/features/portal-shared/normalize';
 import { PORTAL_QUOTATIONS_API } from '../api/portalQuotations.api';
 import type {
   PortalQuotationDetail,
   PortalQuotationListParams,
   PortalQuotationListResult,
+  PortalQuotationRejectDto,
   PortalQuotationRequestDto,
   PortalQuotationSummary,
 } from '../types/portalQuotations.types';
@@ -47,42 +48,30 @@ export const portalQuotationsService = {
     };
   },
 
+  async accept(id: string): Promise<PortalQuotationDetail> {
+    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.accept(id));
+    const detail = normalizeQuotationDetail(res.data);
+    if (detail) return detail;
+    return this.getById(id);
+  },
+
+  async reject(id: string, dto: PortalQuotationRejectDto): Promise<PortalQuotationDetail> {
+    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.reject(id), dto);
+    const detail = normalizeQuotationDetail(res.data);
+    if (detail) return detail;
+    return this.getById(id);
+  },
+
   async downloadPdf(id: string, fallbackName = 'quotation.pdf'): Promise<void> {
     try {
-      const res = await portalApiClient.get(PORTAL_QUOTATIONS_API.pdf(id), {
-        responseType: 'blob',
-      });
-      const blob = res.data as Blob;
-      const headerType =
-        typeof res.headers?.['content-type'] === 'string' ? res.headers['content-type'] : '';
-
-      // Success path can still return a JSON error blob if the gateway mishandles status.
-      if (blob instanceof Blob && /json/i.test(headerType || blob.type) && blob.size < 4096) {
-        const text = await blob.text();
-        try {
-          const parsed = JSON.parse(text) as { message?: string | string[] };
-          const message = Array.isArray(parsed.message)
-            ? parsed.message.map(String).join('; ')
-            : parsed.message;
-          throw new PortalApiError(
-            message || 'Quotation PDF is not available yet.',
-            404,
-          );
-        } catch (err) {
-          if (err instanceof PortalApiError) throw err;
-        }
-      }
-
-      const filename =
-        filenameFromContentDisposition(
-          typeof res.headers['content-disposition'] === 'string'
-            ? res.headers['content-disposition']
-            : undefined,
-        ) || fallbackName;
-      triggerBlobDownload(blob, filename);
+      await downloadPortalBlob(
+        PORTAL_QUOTATIONS_API.pdf(id),
+        safeDownloadFilename(fallbackName, 'quotation.pdf'),
+        { accept: 'application/pdf, application/octet-stream, */*' },
+      );
     } catch (err) {
       if (err instanceof PortalApiError) {
-        if (err.status === 404 || err.status === 500 || err.status >= 500) {
+        if (err.status === 404 || err.status >= 500) {
           const raw = err.message.trim().toLowerCase();
           const generic =
             !raw ||

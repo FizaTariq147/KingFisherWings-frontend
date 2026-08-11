@@ -26,20 +26,21 @@ export function PdfReadyModal({
   description = 'Your PDF was created successfully.',
 }: PdfReadyModalProps) {
   const { openStoredFile, downloadStoredFile, isPending, error } = useFileDownload();
-
-  if (!open || !url) return null;
+  const ready = Boolean(url);
 
   const handleOpen = () => {
+    if (!url) return;
     if (isStoredFileUrl(url)) {
-      void openStoredFile(url, fileName);
+      void openStoredFile(url, fileName).catch(() => undefined);
       return;
     }
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const handleDownload = () => {
+    if (!url) return;
     if (isStoredFileUrl(url)) {
-      void downloadStoredFile(url, fileName);
+      void downloadStoredFile(url, fileName).catch(() => undefined);
       return;
     }
     const anchor = document.createElement('a');
@@ -53,30 +54,32 @@ export function PdfReadyModal({
   };
 
   return (
-    <Modal open={open} onClose={onClose} title={title} size="sm">
+    <Modal open={open} onClose={onClose} title={ready ? title : 'Generating PDF'} size="sm" layer="nested">
       <div className="space-y-4">
-        <p className="text-sm text-[var(--color-neutral-600)]">{description}</p>
+        <p className="text-sm text-[var(--color-neutral-600)]">
+          {ready ? description : 'Please wait while the PDF is generated…'}
+        </p>
 
-        {error && (
+        {error ? (
           <p role="alert" className="text-sm text-[var(--color-danger-600)]">
             {error}
           </p>
-        )}
+        ) : null}
 
-        <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="secondary" onClick={onClose}>
             Close
           </Button>
           <Button
             type="button"
             variant="secondary"
-            disabled={isPending}
+            disabled={!ready || isPending}
             onClick={handleDownload}
           >
             <Download size={16} aria-hidden="true" />
             {isPending ? 'Working…' : 'Download'}
           </Button>
-          <Button type="button" disabled={isPending} onClick={handleOpen}>
+          <Button type="button" disabled={!ready || isPending} onClick={handleOpen}>
             <ExternalLink size={16} aria-hidden="true" />
             Open in new tab
           </Button>

@@ -15,12 +15,14 @@ import {
   PortalPanel,
   portalSelectClassName,
 } from '@/features/portal-auth/components/portal-ui';
+import { PORTAL_JOB_TYPES } from '@/features/portal-shipments/api/portalShipments.api';
 import { usePortalQuotations } from '../hooks/usePortalQuotations';
 
 export default function PortalQuotesPage() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
+  const [jobType, setJobType] = useState('');
   const [page, setPage] = useState(1);
   const params = useMemo(
     () => ({
@@ -28,9 +30,10 @@ export default function PortalQuotesPage() {
       limit: 20,
       search: search.trim() || undefined,
       status: status || undefined,
+      job_type: jobType || undefined,
       order: 'desc' as const,
     }),
-    [page, search, status],
+    [page, search, status, jobType],
   );
 
   const { data, isLoading, isError, error, refetch, isFetching } = usePortalQuotations(params);
@@ -56,7 +59,7 @@ export default function PortalQuotesPage() {
       />
 
       <PortalPanel padded>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-3">
           <Input
             label="Search"
             value={search}
@@ -91,6 +94,26 @@ export default function PortalQuotesPage() {
               ].map((s) => (
                 <option key={s} value={s}>
                   {s}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
+              Job type
+            </span>
+            <select
+              className={portalSelectClassName}
+              value={jobType}
+              onChange={(e) => {
+                setPage(1);
+                setJobType(e.target.value);
+              }}
+            >
+              <option value="">All</option>
+              {PORTAL_JOB_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {t.replaceAll('_', ' ')}
                 </option>
               ))}
             </select>
@@ -143,7 +166,14 @@ export default function PortalQuotesPage() {
                       </div>
                     </div>
                   </div>
-                  {q.status ? <Badge variant="info">{q.status}</Badge> : null}
+                  <div className="flex shrink-0 flex-col items-end gap-1">
+                    {q.status ? <Badge variant="info">{q.status}</Badge> : null}
+                    {(q.status || '').toUpperCase() === 'SENT' ? (
+                      <span className="text-[11px] font-medium text-[var(--color-secondary-700)]">
+                        Accept or reject
+                      </span>
+                    ) : null}
+                  </div>
                 </Link>
               </PortalAnimatedListItem>
             ))}

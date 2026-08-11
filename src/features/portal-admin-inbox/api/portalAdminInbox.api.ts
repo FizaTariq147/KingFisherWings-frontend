@@ -3,6 +3,8 @@ export const PORTAL_ADMIN_INBOX_API = {
   messageDetail: (id: string) => `/portal-admin/messages/${id}`,
   markMessageRead: (id: string) => `/portal-admin/messages/${id}/read`,
   messageReplies: (id: string) => `/portal-admin/messages/${id}/replies`,
+  messageAttachment: (id: string) =>
+    `/portal-admin/messages/${encodeURIComponent(id)}/attachment`,
   disputes: '/portal-admin/disputes',
   disputeDetail: (id: string) => `/portal-admin/disputes/${id}`,
   reviewDispute: (id: string) => `/portal-admin/disputes/${id}`,

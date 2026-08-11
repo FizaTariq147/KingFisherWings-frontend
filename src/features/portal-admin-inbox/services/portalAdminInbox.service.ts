@@ -1,4 +1,6 @@
 import { axiosInstance } from '@/lib/axios';
+import { filenameFromContentDisposition } from '@/features/portal-shared/normalize';
+import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { PORTAL_ADMIN_INBOX_API } from '../api/portalAdminInbox.api';
 import type {
   AdminCreditLimitRequest,
@@ -39,6 +41,20 @@ export const portalAdminInboxService = {
 
   async markMessageRead(id: string): Promise<void> {
     await axiosInstance.post(PORTAL_ADMIN_INBOX_API.markMessageRead(id), undefined, staffGetConfig);
+  },
+
+  async downloadMessageAttachment(id: string, fallbackName = 'message-attachment'): Promise<void> {
+    const res = await axiosInstance.get(PORTAL_ADMIN_INBOX_API.messageAttachment(id), {
+      ...staffGetConfig,
+      responseType: 'blob',
+    });
+    const filename =
+      filenameFromContentDisposition(
+        typeof res.headers['content-disposition'] === 'string'
+          ? res.headers['content-disposition']
+          : undefined,
+      ) || fallbackName;
+    triggerBlobDownload(res.data as Blob, filename);
   },
 
   async replyToMessage(id: string, dto: AdminPortalMessageReplyDto): Promise<AdminPortalMessage> {

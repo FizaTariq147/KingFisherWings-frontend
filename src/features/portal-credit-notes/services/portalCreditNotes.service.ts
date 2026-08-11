@@ -1,4 +1,7 @@
 import { portalApiClient } from '@/lib/portalApiClient';
+import { PORTAL_DOCUMENTS_API } from '@/features/portal-documents/api/portalDocuments.api';
+import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
+import { safeDownloadFilename } from '@/features/portal-shared/normalize';
 import { PORTAL_CREDIT_NOTES_API, PORTAL_DEBIT_NOTES_API } from '../api/portalCreditNotes.api';
 import type {
   PortalCreditNoteDetail,
@@ -29,5 +32,17 @@ export const portalCreditNotesService = {
     const detail = normalizeCreditNoteDetail(res.data, kind);
     if (!detail) throw new Error(kind === 'debit' ? 'Debit note not found.' : 'Credit note not found.');
     return detail;
+  },
+  async downloadPdf(
+    id: string,
+    kind: PortalNoteKind = 'credit',
+    fallbackName?: string,
+  ): Promise<void> {
+    const fallback = kind === 'debit' ? 'debit-note.pdf' : 'credit-note.pdf';
+    await downloadPortalBlob(
+      PORTAL_DOCUMENTS_API.downloadInvoice(id),
+      safeDownloadFilename(fallbackName || fallback, fallback),
+      { accept: 'application/pdf, application/octet-stream, */*' },
+    );
   },
 };

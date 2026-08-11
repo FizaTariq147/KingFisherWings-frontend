@@ -72,6 +72,13 @@ export function usePortalShipmentDocuments(id: string, enabled = true) {
   });
 }
 
+export function useExportPortalShipmentsCsv() {
+  return useMutation({
+    mutationFn: (params: PortalShipmentListParams = {}) =>
+      portalShipmentsService.exportCsv(params),
+  });
+}
+
 export function usePortalShipmentLookup() {
   return useMutation({
     mutationFn: (ref: string) => portalShipmentsService.lookup(ref),

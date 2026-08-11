@@ -19,9 +19,21 @@ export function normalizePortalDispute(raw: unknown): PortalDispute | null {
     status: pickString(r.status) || undefined,
     createdAt: pickString(r.created_at, r.createdAt) || undefined,
     staffNotes: pickString(r.staff_notes, r.staffNotes) || undefined,
+    attachmentName:
+      pickString(r.attachment_name, r.attachmentName, r.file_name, r.filename, r.original_name) ||
+      undefined,
     hasAttachment:
       pickBoolean(r.has_attachment, r.hasAttachment) ??
-      Boolean(pickString(r.attachment_name, r.attachmentName, r.attachment_url)),
+      Boolean(
+        pickString(
+          r.attachment_name,
+          r.attachmentName,
+          r.attachment_url,
+          r.file_name,
+          r.filename,
+          r.file_url,
+        ),
+      ),
   };
 }
 

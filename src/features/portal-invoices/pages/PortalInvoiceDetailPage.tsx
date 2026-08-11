@@ -1,4 +1,5 @@
-import { Link, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Download } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -17,8 +18,10 @@ import { useDownloadPortalInvoicePdf, usePortalInvoice } from '../hooks/usePorta
 
 export default function PortalInvoiceDetailPage() {
   const { id = '' } = useParams();
+  const navigate = useNavigate();
   const { data, isLoading, isError, error, refetch } = usePortalInvoice(id);
   const download = useDownloadPortalInvoicePdf();
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   if (isLoading) return <PortalLoadingState label="Loading invoice…" />;
   if (isError || !data) {
@@ -42,13 +45,55 @@ export default function PortalInvoiceDetailPage() {
         actions={
           <>
             {data.status ? <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge> : null}
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() => navigate(`/portal/disputes?invoice_id=${encodeURIComponent(data.id)}`)}
+            >
+              Raise dispute
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() => navigate(`/portal/messages?invoice_id=${encodeURIComponent(data.id)}`)}
+            >
+              Message
+            </Button>
+            {data.jobId ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                onClick={() => navigate(`/portal/shipments/${data.jobId}`)}
+              >
+                Shipment
+              </Button>
+            ) : null}
             <Button type="button" size="sm" variant="secondary" disabled={download.isPending}
-              onClick={() => void download.mutateAsync({ id: data.id, name: `${data.number}.pdf` })}>
-              <Download size={14} /> Download PDF
+              onClick={() => {
+                setPdfError(null);
+                void download
+                  .mutateAsync({ id: data.id, name: `${data.number}.pdf` })
+                  .catch((err) => {
+                    setPdfError(
+                      err instanceof PortalApiError || err instanceof Error
+                        ? err.message
+                        : 'Could not download invoice PDF.',
+                    );
+                  });
+              }}>
+              <Download size={14} /> {download.isPending ? 'Downloading…' : 'Download PDF'}
             </Button>
           </>
         }
       />
+      {pdfError ? (
+        <p className="text-sm text-[var(--color-danger-600)]" role="alert">
+          {pdfError}
+        </p>
+      ) : null}
       <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <PortalAnimatedGridItem><PortalStatCard label="Total" value={data.totalAmount ?? '—'} /></PortalAnimatedGridItem>
         <PortalAnimatedGridItem><PortalStatCard label="Outstanding" value={data.outstandingBalance ?? '—'} /></PortalAnimatedGridItem>

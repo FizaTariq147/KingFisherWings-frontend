@@ -21,7 +21,12 @@ export function normalizePortalNotification(raw: unknown): PortalNotification | 
     createdAt: pickString(r.created_at, r.createdAt) || undefined,
     readAt,
     isRead,
-    type: pickString(r.type, r.notification_type) || undefined,
+    type: pickString(r.type, r.notification_type, r.kind, r.event) || undefined,
+    jobId: pickString(r.job_id, r.jobId) || undefined,
+    invoiceId: pickString(r.invoice_id, r.invoiceId) || undefined,
+    quotationId: pickString(r.quotation_id, r.quotationId) || undefined,
+    entityId: pickString(r.entity_id, r.entityId, r.resource_id) || undefined,
+    raw: r,
   };
 }
 

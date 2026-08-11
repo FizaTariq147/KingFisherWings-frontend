@@ -1,6 +1,7 @@
 import { portalApiClient } from '@/lib/portalApiClient';
-import { filenameFromContentDisposition } from '@/features/portal-shared/normalize';
-import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
+import { postPortalWithOptionalFile } from '@/features/portal-shared/portalMultipart';
+import { safeDownloadFilename, unwrapData } from '@/features/portal-shared/normalize';
 import { PORTAL_MESSAGES_API } from '../api/portalMessages.api';
 import type {
   PortalMessage,
@@ -29,29 +30,39 @@ export const portalMessagesService = {
   },
 
   async create(dto: PortalMessageCreateDto): Promise<PortalMessage> {
-    const res = await portalApiClient.post(PORTAL_MESSAGES_API.create, dto);
-    const item = normalizePortalMessage(res.data?.data ?? res.data);
+    const res = await postPortalWithOptionalFile(
+      PORTAL_MESSAGES_API.create,
+      {
+        subject: dto.subject,
+        body: dto.body,
+        job_id: dto.job_id,
+        invoice_id: dto.invoice_id,
+      },
+      dto.file,
+    );
+    const item = normalizePortalMessage(unwrapData(res.data) ?? res.data);
     if (!item) throw new Error('Could not send message.');
     return item;
   },
 
   async reply(id: string, dto: PortalMessageReplyDto): Promise<PortalMessage> {
-    const res = await portalApiClient.post(PORTAL_MESSAGES_API.replies(id), dto);
-    const item = normalizePortalMessageDetail(res.data) ?? normalizePortalMessage(res.data?.data ?? res.data);
+    const res = await postPortalWithOptionalFile(
+      PORTAL_MESSAGES_API.replies(id),
+      { body: dto.body },
+      dto.file,
+    );
+    const item =
+      normalizePortalMessageDetail(res.data) ??
+      normalizePortalMessage(unwrapData(res.data) ?? res.data);
     if (item) return item;
     return this.getById(id);
   },
 
   async downloadAttachment(id: string, fallbackName = 'message-attachment'): Promise<void> {
-    const res = await portalApiClient.get(PORTAL_MESSAGES_API.attachment(id), {
-      responseType: 'blob',
-    });
-    const filename =
-      filenameFromContentDisposition(
-        typeof res.headers['content-disposition'] === 'string'
-          ? res.headers['content-disposition']
-          : undefined,
-      ) || fallbackName;
-    triggerBlobDownload(res.data as Blob, filename);
+    await downloadPortalBlob(
+      PORTAL_MESSAGES_API.attachment(id),
+      safeDownloadFilename(fallbackName, 'message-attachment'),
+      { accept: 'application/octet-stream, */*' },
+    );
   },
 };

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Bell } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -17,10 +18,19 @@ import {
   usePortalNotificationUnreadCount,
   usePortalNotifications,
 } from '@/features/portal-notifications/hooks/usePortalNotifications';
+import {
+  notificationTypeLabel,
+  portalNotificationHref,
+} from '@/features/portal-notifications/utils/portalNotificationLink';
 
 export default function PortalAlertsPage() {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const params = useMemo(() => ({ page, limit: 20 }), [page]);
+  const [unreadOnly, setUnreadOnly] = useState(false);
+  const params = useMemo(
+    () => ({ page, limit: 20, unread_only: unreadOnly ? 'true' : undefined }),
+    [page, unreadOnly],
+  );
   const { data, isLoading, isError, error, refetch } = usePortalNotifications(params);
   const unread = usePortalNotificationUnreadCount();
   const markRead = useMarkPortalNotificationRead();
@@ -32,10 +42,21 @@ export default function PortalAlertsPage() {
     <div className="space-y-5">
       <PortalPageHeader
         title="Alerts"
-        description="Notifications for your customer portal account."
+        description="Document-ready and milestone notifications for your company account."
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Badge variant="info">{unread.data ?? 0} unread</Badge>
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() => {
+                setPage(1);
+                setUnreadOnly((v) => !v);
+              }}
+            >
+              {unreadOnly ? 'Show all' : 'Unread only'}
+            </Button>
             <Button
               type="button"
               size="sm"
@@ -65,43 +86,57 @@ export default function PortalAlertsPage() {
           </div>
         ) : items.length === 0 ? (
           <PortalEmptyState
-            title="No alerts yet"
-            description="Shipment, invoice, and document notifications will appear here."
+            title={unreadOnly ? 'No unread alerts' : 'No alerts yet'}
+            description="Document-ready alerts appear here by default. Milestone updates require opt-in on Account."
             Icon={Bell}
           />
         ) : (
           <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
-            {items.map((n) => (
-              <PortalAnimatedListItem
-                key={n.id}
-                className={`flex items-start justify-between gap-3 px-4 py-3.5 ${
-                  n.isRead ? '' : 'bg-[var(--color-primary-50)]/40'
-                }`}
-              >
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold">{n.title}</div>
-                  {n.body ? (
-                    <p className="mt-1 text-sm text-[var(--color-neutral-600)]">{n.body}</p>
-                  ) : null}
-                  <div className="mt-1 text-xs text-[var(--color-neutral-500)]">
-                    {n.createdAt || '—'}
-                  </div>
-                </div>
-                {!n.isRead ? (
-                  <Button
+            {items.map((n) => {
+              const href = portalNotificationHref(n);
+              return (
+                <PortalAnimatedListItem
+                  key={n.id}
+                  className={`flex items-start justify-between gap-3 px-4 py-3.5 ${
+                    n.isRead ? '' : 'bg-[var(--color-primary-50)]/40'
+                  }`}
+                >
+                  <button
                     type="button"
-                    size="sm"
-                    variant="secondary"
-                    disabled={markRead.isPending}
-                    onClick={() => void markRead.mutateAsync(n.id)}
+                    className="min-w-0 flex-1 text-left"
+                    onClick={() => {
+                      if (!n.isRead) void markRead.mutateAsync(n.id);
+                      if (href) navigate(href);
+                    }}
                   >
-                    Mark read
-                  </Button>
-                ) : (
-                  <Badge variant="neutral">Read</Badge>
-                )}
-              </PortalAnimatedListItem>
-            ))}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="text-sm font-semibold">{n.title}</div>
+                      {n.type ? <Badge variant="neutral">{notificationTypeLabel(n.type)}</Badge> : null}
+                    </div>
+                    {n.body ? (
+                      <p className="mt-1 text-sm text-[var(--color-neutral-600)]">{n.body}</p>
+                    ) : null}
+                    <div className="mt-1 text-xs text-[var(--color-neutral-500)]">
+                      {n.createdAt || '—'}
+                      {href ? ' · Open related item' : ''}
+                    </div>
+                  </button>
+                  {!n.isRead ? (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      disabled={markRead.isPending}
+                      onClick={() => void markRead.mutateAsync(n.id)}
+                    >
+                      Mark read
+                    </Button>
+                  ) : (
+                    <Badge variant="neutral">Read</Badge>
+                  )}
+                </PortalAnimatedListItem>
+              );
+            })}
           </PortalAnimatedList>
         )}
       </PortalPanel>

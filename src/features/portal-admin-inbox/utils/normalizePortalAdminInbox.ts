@@ -43,6 +43,9 @@ export function normalizeAdminMessage(raw: unknown): AdminPortalMessage | null {
     createdAt: pickString(r.created_at, r.createdAt) || undefined,
     isRead: pickBoolean(r.is_read, r.isRead, r.read_by_staff) ?? Boolean(readAt),
     senderEmail: pickString(r.sender_email, r.email, r.from_email) || undefined,
+    hasAttachment:
+      pickBoolean(r.has_attachment, r.hasAttachment) ??
+      Boolean(pickString(r.attachment_name, r.attachmentName, r.attachment_url)),
     replies: repliesRaw
       .map(normalizeAdminMessageReply)
       .filter((x): x is AdminPortalMessageReply => Boolean(x)),

@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Download } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
@@ -13,7 +14,7 @@ import {
   PortalPanel,
   PortalStatCard,
 } from '@/features/portal-auth/components/portal-ui';
-import { usePortalCreditNote } from '../hooks/usePortalCreditNotes';
+import { useDownloadPortalCreditNotePdf, usePortalCreditNote } from '../hooks/usePortalCreditNotes';
 import type { PortalNoteKind } from '../services/portalCreditNotes.service';
 
 export default function PortalCreditNoteDetailPage() {
@@ -22,6 +23,8 @@ export default function PortalCreditNoteDetailPage() {
   const kind: PortalNoteKind = location.pathname.includes('/debit-notes') ? 'debit' : 'credit';
   const listPath = kind === 'debit' ? '/portal/debit-notes' : '/portal/credit-notes';
   const { data, isLoading, isError, error, refetch } = usePortalCreditNote(id, kind);
+  const download = useDownloadPortalCreditNotePdf();
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   if (isLoading) return <PortalLoadingState label="Loading…" />;
   if (isError || !data) {
@@ -57,8 +60,41 @@ export default function PortalCreditNoteDetailPage() {
               ? 'Debit note detail'
               : 'Credit note detail'
         }
-        actions={data.status ? <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge> : null}
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            {data.status ? <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge> : null}
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              disabled={download.isPending}
+              onClick={() => {
+                setPdfError(null);
+                void download
+                  .mutateAsync({
+                    id: data.id,
+                    kind,
+                    name: `${data.number || kind}.pdf`,
+                  })
+                  .catch((err) => {
+                    setPdfError(
+                      err instanceof PortalApiError || err instanceof Error
+                        ? err.message
+                        : 'Could not download PDF.',
+                    );
+                  });
+              }}
+            >
+              <Download size={14} /> {download.isPending ? 'Downloading…' : 'Download PDF'}
+            </Button>
+          </div>
+        }
       />
+      {pdfError ? (
+        <p className="text-sm text-[var(--color-danger-600)]" role="alert">
+          {pdfError}
+        </p>
+      ) : null}
       <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-3">
         <PortalAnimatedGridItem><PortalStatCard label="Total" value={data.totalAmount ?? '—'} /></PortalAnimatedGridItem>
         <PortalAnimatedGridItem><PortalStatCard label="Currency" value={data.currencyCode || '—'} /></PortalAnimatedGridItem>

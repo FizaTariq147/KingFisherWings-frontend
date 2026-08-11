@@ -27,6 +27,7 @@ import {
   usePortalDocumentSummary,
   usePortalDocuments,
 } from '@/features/portal-documents/hooks/usePortalDocuments';
+import { usePortalDashboard } from '@/features/portal-dashboard/hooks/usePortalDashboard';
 import {
   PortalAnimatedGrid,
   PortalAnimatedGridItem,
@@ -67,6 +68,7 @@ export default function PortalHomePage() {
     return 'there';
   }, [user?.fullName, user?.email]);
 
+  const dashboard = usePortalDashboard();
   const shipmentSummary = usePortalShipmentSummary();
   const quoteSummary = usePortalQuotationSummary();
   const documentSummary = usePortalDocumentSummary();
@@ -96,6 +98,7 @@ export default function PortalHomePage() {
   }, [setUser]);
 
   const refreshDashboard = () => {
+    void dashboard.refetch();
     void shipmentSummary.refetch();
     void quoteSummary.refetch();
     void documentSummary.refetch();
@@ -109,31 +112,36 @@ export default function PortalHomePage() {
   }
 
   const shipmentTotal = displayValue(
-    shipmentSummary.data?.total,
+    dashboard.data?.shipmentsTotal ?? shipmentSummary.data?.total,
     recentShipments.data?.meta.total,
-    shipmentSummary.isLoading || recentShipments.isLoading,
+    dashboard.isLoading || shipmentSummary.isLoading || recentShipments.isLoading,
   );
   const shipmentActive = displayValue(
-    shipmentSummary.data?.active,
+    dashboard.data?.shipmentsActive ?? shipmentSummary.data?.active,
     undefined,
-    shipmentSummary.isLoading,
+    dashboard.isLoading || shipmentSummary.isLoading,
   );
   const quoteTotal = displayValue(
-    quoteSummary.data?.total,
+    dashboard.data?.quotationsTotal ?? quoteSummary.data?.total,
     recentQuotes.data?.meta.total,
-    quoteSummary.isLoading || recentQuotes.isLoading,
+    dashboard.isLoading || quoteSummary.isLoading || recentQuotes.isLoading,
   );
-  const quoteOpen = displayValue(quoteSummary.data?.open, undefined, quoteSummary.isLoading);
+  const quoteOpen = displayValue(
+    dashboard.data?.quotationsOpen ?? quoteSummary.data?.open,
+    undefined,
+    dashboard.isLoading || quoteSummary.isLoading,
+  );
   const documentTotal = displayValue(
-    documentSummary.data?.total,
+    dashboard.data?.documentsTotal ?? documentSummary.data?.total,
     recentDocuments.data?.meta.total,
-    documentSummary.isLoading || recentDocuments.isLoading,
+    dashboard.isLoading || documentSummary.isLoading || recentDocuments.isLoading,
   );
 
   const recentShipmentItems = recentShipments.data?.items ?? [];
   const recentQuoteItems = recentQuotes.data?.items ?? [];
   const partyName = user?.party?.name?.trim();
   const isRefreshing =
+    dashboard.isFetching ||
     shipmentSummary.isFetching ||
     quoteSummary.isFetching ||
     documentSummary.isFetching ||
@@ -204,7 +212,7 @@ export default function PortalHomePage() {
         </div>
       </section>
 
-      <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <PortalAnimatedGridItem>
           <button
             type="button"
@@ -215,8 +223,8 @@ export default function PortalHomePage() {
               label="Shipments"
               value={shipmentTotal}
               hint={
-                typeof shipmentSummary.data?.delivered === 'number'
-                  ? `${shipmentSummary.data.delivered} delivered`
+                typeof (dashboard.data?.shipmentsDelivered ?? shipmentSummary.data?.delivered) === 'number'
+                  ? `${dashboard.data?.shipmentsDelivered ?? shipmentSummary.data?.delivered} delivered`
                   : 'All consignments'
               }
               Icon={Package}
@@ -263,6 +271,42 @@ export default function PortalHomePage() {
               hint="Visible files"
               Icon={FileText}
               tone="accent"
+            />
+          </button>
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <button
+            type="button"
+            className="w-full text-left active:scale-[0.98] transition-transform"
+            onClick={() => navigate('/portal/invoices')}
+          >
+            <PortalStatCard
+              label="Outstanding"
+              value={displayValue(
+                dashboard.data?.invoicesOutstanding,
+                undefined,
+                dashboard.isLoading,
+              )}
+              hint="Open invoices"
+              Icon={FileText}
+            />
+          </button>
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <button
+            type="button"
+            className="w-full text-left active:scale-[0.98] transition-transform"
+            onClick={() => navigate('/portal/invoices')}
+          >
+            <PortalStatCard
+              label="Overdue"
+              value={displayValue(
+                dashboard.data?.invoicesOverdue,
+                undefined,
+                dashboard.isLoading,
+              )}
+              hint="Past due"
+              Icon={FileText}
             />
           </button>
         </PortalAnimatedGridItem>

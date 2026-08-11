@@ -168,6 +168,21 @@ import PortalCreditRequestsPage from '../features/portal-credit-requests/pages/P
 import PortalMessagesPage from '../features/portal-messages/pages/PortalMessagesPage'
 import PortalDisputesPage from '../features/portal-disputes/pages/PortalDisputesPage'
 import PortalAdminInboxPage from '../features/portal-admin-inbox/pages/PortalAdminInboxPage'
+import { VendorShell } from '../features/vendor-auth/layout/VendorShell'
+import { VendorProtectedRoute } from '../features/vendor-auth/components/VendorProtectedRoute'
+import VendorLoginPage from '../features/vendor-auth/pages/VendorLoginPage'
+import VendorHomePage from '../features/vendor-auth/pages/VendorHomePage'
+import VendorAccountPage from '../features/vendor-auth/pages/VendorAccountPage'
+import VendorInvoicesPage from '../features/vendor-invoices/pages/VendorInvoicesPage'
+import VendorInvoiceDetailPage from '../features/vendor-invoices/pages/VendorInvoiceDetailPage'
+import VendorPaymentsPage from '../features/vendor-payments/pages/VendorPaymentsPage'
+import VendorAdvancesPage from '../features/vendor-payments/pages/VendorAdvancesPage'
+import VendorCreditNotesPage from '../features/vendor-credit-notes/pages/VendorCreditNotesPage'
+import VendorCreditPage from '../features/vendor-credit/pages/VendorCreditPage'
+import VendorSchedulePage from '../features/vendor-schedule/pages/VendorSchedulePage'
+import VendorPaymentRequestsPage from '../features/vendor-payment-requests/pages/VendorPaymentRequestsPage'
+import VendorDisputesPage from '../features/vendor-disputes/pages/VendorDisputesPage'
+import VendorTdsPage from '../features/vendor-tds/pages/VendorTdsPage'
 import PublicTrackPage from '../features/public-track/pages/PublicTrackPage'
 import NotificationsPage from '../features/notifications/pages/NotificationsPage'
 import TenantListPage from '../features/tenants/pages/TenantListPage'
@@ -233,6 +248,7 @@ export const router = createBrowserRouter([
   },
 
   { path: '/portal/login', element: <PortalLoginPage /> },
+  { path: '/portal/accept-invite', element: <PortalLoginPage /> },
   { path: '/track', element: <PublicTrackPage /> },
   {
     path: '/portal',
@@ -262,6 +278,32 @@ export const router = createBrowserRouter([
           { path: 'disputes', element: <PortalDisputesPage /> },
           { path: 'alerts', element: <PortalAlertsPage /> },
           { path: 'account', element: <PortalAccountPage /> },
+        ],
+      },
+    ],
+  },
+
+  { path: '/vendor/login', element: <VendorLoginPage /> },
+  { path: '/vendor/accept-invite', element: <VendorLoginPage /> },
+  {
+    path: '/vendor',
+    element: <VendorProtectedRoute />,
+    children: [
+      {
+        element: <VendorShell />,
+        children: [
+          { index: true, element: <VendorHomePage /> },
+          { path: 'invoices', element: <VendorInvoicesPage /> },
+          { path: 'invoices/:id', element: <VendorInvoiceDetailPage /> },
+          { path: 'payments', element: <VendorPaymentsPage /> },
+          { path: 'advances', element: <VendorAdvancesPage /> },
+          { path: 'credit-notes', element: <VendorCreditNotesPage /> },
+          { path: 'schedule', element: <VendorSchedulePage /> },
+          { path: 'credit', element: <VendorCreditPage /> },
+          { path: 'payment-requests', element: <VendorPaymentRequestsPage /> },
+          { path: 'disputes', element: <VendorDisputesPage /> },
+          { path: 'tds', element: <VendorTdsPage /> },
+          { path: 'account', element: <VendorAccountPage /> },
         ],
       },
     ],

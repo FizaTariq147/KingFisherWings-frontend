@@ -167,6 +167,11 @@ export function PortalShell() {
                       >
                         <Icon size={18} className="opacity-90" aria-hidden="true" />
                         <span>{label}</span>
+                        {label === 'Alerts' && unreadCount > 0 ? (
+                          <span className="ml-auto inline-flex min-w-6 items-center justify-center rounded-full bg-[var(--color-secondary)] px-1 text-xs font-semibold">
+                            {unreadCount}
+                          </span>
+                        ) : null}
                       </NavLink>
                     </div>
                   ))}

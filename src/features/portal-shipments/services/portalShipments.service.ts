@@ -1,5 +1,6 @@
 import { portalApiClient } from '@/lib/portalApiClient';
 import { filenameFromContentDisposition } from '@/features/portal-shared/normalize';
+import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { PORTAL_SHIPMENTS_API } from '../api/portalShipments.api';
 import type {
@@ -30,6 +31,18 @@ export const portalShipmentsService = {
   async list(params: PortalShipmentListParams = {}): Promise<PortalShipmentListResult> {
     const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.list, { params });
     return normalizeShipmentList(res.data, params);
+  },
+
+  async exportCsv(params: PortalShipmentListParams = {}): Promise<void> {
+    await downloadPortalBlob(PORTAL_SHIPMENTS_API.exportCsv, 'shipments.csv', {
+      search: params.search,
+      status: params.status,
+      job_type: params.job_type,
+      from_date: params.from_date,
+      to_date: params.to_date,
+      order: params.order,
+      limit: 100,
+    });
   },
 
   async lookup(ref: string): Promise<PortalShipmentListItem | null> {
