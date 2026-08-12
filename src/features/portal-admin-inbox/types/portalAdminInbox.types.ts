@@ -12,6 +12,7 @@ export interface AdminPortalMessage {
   createdAt?: string;
   isRead?: boolean;
   senderEmail?: string;
+  hasAttachment?: boolean;
   replies?: AdminPortalMessageReply[];
 }
 export interface AdminPortalMessageReply {

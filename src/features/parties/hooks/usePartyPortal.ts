@@ -46,7 +46,7 @@ export function useCreatePartyPortalUser(partyId: string) {
 export function useUpdatePartyPortalUserStatus(partyId: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: 'ACTIVE' | 'DISABLED' }) =>
+    mutationFn: ({ id, status }: { id: string; status: 'ACTIVE' | 'DISABLED' | 'INVITED' }) =>
       partyPortalService.updateUserStatus(partyId, id, status),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: partyPortalKeys.users(partyId) });

@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { usePortalQueryScope } from '@/features/portal-shared/usePortalQueryScope';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import {
@@ -39,5 +39,19 @@ export function usePortalCreditNote(id: string, kind: PortalNoteKind = 'credit')
     queryFn: () => portalCreditNotesService.getById(id, kind),
     enabled: Boolean(accessToken) && Boolean(id) && scope !== 'anon',
     staleTime: 0,
+  });
+}
+
+export function useDownloadPortalCreditNotePdf() {
+  return useMutation({
+    mutationFn: ({
+      id,
+      kind,
+      name,
+    }: {
+      id: string;
+      kind?: PortalNoteKind;
+      name?: string;
+    }) => portalCreditNotesService.downloadPdf(id, kind ?? 'credit', name),
   });
 }

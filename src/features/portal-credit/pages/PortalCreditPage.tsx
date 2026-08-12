@@ -30,6 +30,7 @@ export default function PortalCreditPage() {
   const aging = usePortalCreditAging(asOfParam);
   const statement = usePortalCreditStatement(asOfParam);
   const downloadPdf = useDownloadPortalStatementPdf();
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   return (
     <div className="space-y-5">
@@ -49,9 +50,18 @@ export default function PortalCreditPage() {
               size="sm"
               variant="secondary"
               disabled={downloadPdf.isPending}
-              onClick={() => void downloadPdf.mutateAsync(asOfParam)}
+              onClick={() => {
+                setPdfError(null);
+                void downloadPdf.mutateAsync(asOfParam).catch((err) => {
+                  setPdfError(
+                    err instanceof PortalApiError || err instanceof Error
+                      ? err.message
+                      : 'Could not download statement PDF.',
+                  );
+                });
+              }}
             >
-              <Download size={14} /> Statement PDF
+              <Download size={14} /> {downloadPdf.isPending ? 'Downloading…' : 'Statement PDF'}
             </Button>
             <Button type="button" size="sm" onClick={() => navigate('/portal/credit-requests')}>
               Limit requests
@@ -59,6 +69,11 @@ export default function PortalCreditPage() {
           </div>
         }
       />
+      {pdfError ? (
+        <p className="text-sm text-[var(--color-danger-600)]" role="alert">
+          {pdfError}
+        </p>
+      ) : null}
 
       <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <PortalAnimatedGridItem>

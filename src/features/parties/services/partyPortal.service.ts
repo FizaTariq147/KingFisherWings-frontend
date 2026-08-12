@@ -37,14 +37,21 @@ export const partyPortalService = {
     partyId: string,
     dto: CreatePartyPortalUserDto,
   ): Promise<CreatePartyPortalUserResult> {
-    const res = await axiosInstance.post(PARTY_API.portalUsers(partyId), dto);
+    const res = await axiosInstance.post(PARTY_API.portalUsers(partyId), {
+      email: dto.email.trim().toLowerCase(),
+      full_name: dto.full_name.trim(),
+      phone: dto.phone?.trim() || undefined,
+      password: dto.password?.trim() || undefined,
+      send_email: dto.send_email,
+      invite_mode: dto.invite_mode,
+    });
     return normalizeCreatePartyPortalUserResult(bodyOf(res) ?? res.data);
   },
 
   async updateUserStatus(
     partyId: string,
     id: string,
-    status: 'ACTIVE' | 'DISABLED',
+    status: 'ACTIVE' | 'DISABLED' | 'INVITED',
   ): Promise<PartyPortalUser> {
     const res = await axiosInstance.patch(PARTY_API.portalUserStatus(partyId, id), { status });
     const user = normalizePartyPortalUser(bodyOf(res) ?? res.data);

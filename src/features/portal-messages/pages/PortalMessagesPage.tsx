@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { MessageSquare } from 'lucide-react';
@@ -18,11 +19,11 @@ import {
 } from '@/features/portal-auth/components/portal-ui';
 import {
   useCreatePortalMessage,
+  useDownloadPortalMessageAttachment,
   usePortalMessage,
   usePortalMessages,
   useReplyPortalMessage,
 } from '../hooks/usePortalMessages';
-import { portalMessagesService } from '../services/portalMessages.service';
 import type { PortalMessage } from '../types/portalMessages.types';
 
 const optionalUuid = z
@@ -48,11 +49,16 @@ type CreateMessageValues = z.infer<typeof createMessageSchema>;
 function MessageThreadRow({ message }: { message: PortalMessage }) {
   const [open, setOpen] = useState(false);
   const [replyBody, setReplyBody] = useState('');
+  const [replyFile, setReplyFile] = useState<File | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
   const detail = usePortalMessage(message.id, open);
   const reply = useReplyPortalMessage();
+  const download = useDownloadPortalMessageAttachment();
   const thread = detail.data ?? message;
   const replies = thread.replies ?? [];
+  const hasAttachment = Boolean(
+    message.hasAttachment || thread.hasAttachment || thread.attachmentName || message.attachmentName,
+  );
 
   return (
     <div className="px-4 py-3.5">
@@ -69,7 +75,13 @@ function MessageThreadRow({ message }: { message: PortalMessage }) {
             </p>
           ) : null}
           <div className="mt-1 text-xs text-[var(--color-neutral-500)]">
-            {message.createdAt || '—'}
+            {[
+              message.senderName || message.senderEmail,
+              message.partyName ? `Shared with ${message.partyName}` : 'Shared with your company',
+              message.createdAt,
+            ]
+              .filter(Boolean)
+              .join(' · ')}
             {open ? ' · Hide thread' : ' · Open thread'}
           </div>
         </button>
@@ -79,36 +91,41 @@ function MessageThreadRow({ message }: { message: PortalMessage }) {
           ) : (
             <Badge variant="neutral">Sent</Badge>
           )}
-          {(message.hasAttachment || thread.hasAttachment) && (
+          {hasAttachment && (
             <Button
               type="button"
               size="sm"
               variant="secondary"
-              onClick={() =>
-                void portalMessagesService
-                  .downloadAttachment(message.id)
+              disabled={download.isPending}
+              onClick={() => {
+                setLocalError(null);
+                void download
+                  .mutateAsync({
+                    id: message.id,
+                    name: thread.attachmentName || message.attachmentName || 'message-attachment',
+                  })
                   .catch((err) =>
                     setLocalError(
                       err instanceof PortalApiError || err instanceof Error
                         ? err.message
-                        : 'Download failed.',
+                        : 'Could not download attachment.',
                     ),
-                  )
-              }
+                  );
+              }}
             >
-              Attachment
+              {download.isPending ? 'Downloading…' : 'Download attachment'}
             </Button>
           )}
         </div>
       </div>
+      {localError ? (
+        <p className="mt-2 text-xs text-[var(--color-danger-600)]" role="alert">
+          {localError}
+        </p>
+      ) : null}
 
       {open && (
         <div className="mt-3 space-y-3 border-t border-[var(--color-neutral-100)] pt-3">
-          {localError && (
-            <p className="text-xs text-[var(--color-danger-600)]" role="alert">
-              {localError}
-            </p>
-          )}
           {detail.isLoading ? (
             <p className="text-xs text-[var(--color-neutral-400)]">Loading thread…</p>
           ) : detail.isError ? (
@@ -151,8 +168,14 @@ function MessageThreadRow({ message }: { message: PortalMessage }) {
                     return;
                   }
                   void reply
-                    .mutateAsync({ id: message.id, dto: { body: trimmed } })
-                    .then(() => setReplyBody(''))
+                    .mutateAsync({
+                      id: message.id,
+                      dto: { body: trimmed, file: replyFile ?? undefined },
+                    })
+                    .then(() => {
+                      setReplyBody('');
+                      setReplyFile(null);
+                    })
                     .catch((err) => {
                       setLocalError(
                         err instanceof PortalApiError || err instanceof Error
@@ -170,6 +193,12 @@ function MessageThreadRow({ message }: { message: PortalMessage }) {
                   required
                   minLength={1}
                 />
+                <input
+                  type="file"
+                  key={replyFile ? replyFile.name : 'reply-no-file'}
+                  className="block w-full text-sm text-[var(--color-neutral-700)] file:mr-3 file:rounded-md file:border-0 file:bg-[var(--color-neutral-100)] file:px-3 file:py-1.5 file:text-sm"
+                  onChange={(e) => setReplyFile(e.target.files?.[0] ?? null)}
+                />
                 <Button type="submit" size="sm" disabled={reply.isPending || !replyBody.trim()}>
                   {reply.isPending ? 'Sending…' : 'Reply'}
                 </Button>
@@ -183,23 +212,35 @@ function MessageThreadRow({ message }: { message: PortalMessage }) {
 }
 
 export default function PortalMessagesPage() {
+  const [searchParams] = useSearchParams();
   const [page, setPage] = useState(1);
   const params = useMemo(() => ({ page, limit: 20 }), [page]);
   const { data, isLoading, isError, error, refetch } = usePortalMessages(params);
   const create = useCreatePortalMessage();
   const [formError, setFormError] = useState<string | null>(null);
+  const [attachment, setAttachment] = useState<File | null>(null);
   const form = useForm<CreateMessageValues>({
     resolver: zodResolver(createMessageSchema),
     mode: 'onBlur',
     reValidateMode: 'onChange',
     defaultValues: { subject: '', body: '', job_id: '', invoice_id: '' },
   });
+
+  useEffect(() => {
+    const jobId = searchParams.get('job_id')?.trim();
+    const invoiceId = searchParams.get('invoice_id')?.trim();
+    if (jobId) form.setValue('job_id', jobId);
+    if (invoiceId) form.setValue('invoice_id', invoiceId);
+  }, [form, searchParams]);
   const items = data?.items ?? [];
   const meta = data?.meta;
 
   return (
     <div className="space-y-5">
-      <PortalPageHeader title="Messages" description="Contact your forwarder about jobs or invoices." />
+      <PortalPageHeader
+        title="Messages"
+        description="Party-shared inbox — everyone at your company sees the same threads and staff replies."
+      />
 
       <PortalPanel padded>
         {formError && (
@@ -218,8 +259,12 @@ export default function PortalMessagesPage() {
                 body: values.body.trim(),
                 job_id: values.job_id?.trim() || undefined,
                 invoice_id: values.invoice_id?.trim() || undefined,
+                file: attachment ?? undefined,
               })
-              .then(() => form.reset({ subject: '', body: '', job_id: '', invoice_id: '' }))
+              .then(() => {
+                form.reset({ subject: '', body: '', job_id: '', invoice_id: '' });
+                setAttachment(null);
+              })
               .catch((err) => {
                 setFormError(
                   err instanceof PortalApiError || err instanceof Error
@@ -267,6 +312,24 @@ export default function PortalMessagesPage() {
               {...form.register('invoice_id')}
             />
           </div>
+          <label className="block text-sm">
+            <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
+              Attachment (optional)
+            </span>
+            <input
+              type="file"
+              key={attachment ? attachment.name : 'message-no-file'}
+              className="block w-full text-sm text-[var(--color-neutral-700)] file:mr-3 file:rounded-md file:border-0 file:bg-[var(--color-neutral-100)] file:px-3 file:py-1.5 file:text-sm"
+              onChange={(e) => setAttachment(e.target.files?.[0] ?? null)}
+            />
+            {attachment ? (
+              <p className="mt-1 text-xs text-[var(--color-neutral-500)]">{attachment.name}</p>
+            ) : (
+              <p className="mt-1 text-xs text-[var(--color-neutral-400)]">
+                Optional supporting file (PDF, image, or spreadsheet).
+              </p>
+            )}
+          </label>
           <Button type="submit" disabled={create.isPending}>
             {create.isPending ? 'Sending…' : 'Send message'}
           </Button>
@@ -290,7 +353,7 @@ export default function PortalMessagesPage() {
         ) : items.length === 0 ? (
           <PortalEmptyState
             title="No messages"
-            description="Messages you send to your forwarder appear here."
+            description="Threads you or a colleague send are shared across your company portal users."
             Icon={MessageSquare}
           />
         ) : (

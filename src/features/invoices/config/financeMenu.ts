@@ -1,4 +1,4 @@
-import { FileText, AlertTriangle, Receipt, ShoppingCart, HandCoins } from 'lucide-react';
+import { FileText, AlertTriangle, Receipt, ShoppingCart, HandCoins, Scale, Users } from 'lucide-react';
 import type { MenuTile } from '../../customers/types/menu.types';
 
 /** Finance hub — modules only; create actions live on each list page. */
@@ -42,5 +42,21 @@ export const financeMenu: MenuTile[] = [
     icon: HandCoins,
     iconColor: 'bg-orange-500',
     path: '/payment-requests',
+  },
+  {
+    id: 'vendor-disputes-inbox',
+    title: 'Vendor Disputes',
+    description: 'Review and resolve disputes raised from the Vendor Payment Portal.',
+    icon: Scale,
+    iconColor: 'bg-rose-500',
+    path: '/vendor-admin/disputes',
+  },
+  {
+    id: 'vendor-portal-users',
+    title: 'Vendor Portal Users',
+    description: 'Tenant-wide list of vendor portal logins (invite from party detail).',
+    icon: Users,
+    iconColor: 'bg-violet-500',
+    path: '/vendor-users',
   },
 ];

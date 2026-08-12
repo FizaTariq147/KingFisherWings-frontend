@@ -1,0 +1,1 @@
+export { PartyVendorPermissionsSection } from './PartyVendorPermissionsSection';

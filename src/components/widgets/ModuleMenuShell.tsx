@@ -40,6 +40,23 @@ export function ModuleMenuShell({
     : filtered;
   const showFeatured = Boolean(featuredTile && filtered.some((t) => t.id === featuredId));
 
+  const sectionGroups = useMemo(() => {
+    const hasSections = regularTiles.some((tile) => tile.section);
+    if (!hasSections) return [{ label: null as string | null, tiles: regularTiles }];
+
+    const groups: Array<{ label: string | null; tiles: MenuTile[] }> = [];
+    for (const tile of regularTiles) {
+      const label = tile.section ?? 'Other';
+      const last = groups[groups.length - 1];
+      if (last && last.label === label) {
+        last.tiles.push(tile);
+      } else {
+        groups.push({ label, tiles: [tile] });
+      }
+    }
+    return groups;
+  }, [regularTiles]);
+
   return (
     <div className={`min-h-screen ${className}`}>
       <div className="bg-white border-b border-gray-200 px-6 py-3 flex flex-wrap items-center justify-end gap-2">
@@ -88,24 +105,38 @@ export function ModuleMenuShell({
         </p>
       </div>
 
-      <AppAnimatedGrid className="p-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {regularTiles.map((tile) => (
-          <AppAnimatedGridItem key={tile.id}>
-            <MenuTileCard tile={tile} onClick={navigate} />
-          </AppAnimatedGridItem>
+      <div className="p-6 space-y-8">
+        {sectionGroups.map((group) => (
+          <div key={group.label ?? 'default'} className="space-y-4">
+            {group.label ? (
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+                {group.label}
+              </h2>
+            ) : null}
+            <AppAnimatedGrid className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {group.tiles.map((tile) => (
+                <AppAnimatedGridItem key={tile.id}>
+                  <MenuTileCard tile={tile} onClick={navigate} />
+                </AppAnimatedGridItem>
+              ))}
+            </AppAnimatedGrid>
+          </div>
         ))}
+
         {showFeatured && featuredTile ? (
-          <AppAnimatedGridItem>
-            <MenuTileCard tile={featuredTile} onClick={navigate} />
-          </AppAnimatedGridItem>
+          <AppAnimatedGrid className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <AppAnimatedGridItem>
+              <MenuTileCard tile={featuredTile} onClick={navigate} />
+            </AppAnimatedGridItem>
+          </AppAnimatedGrid>
         ) : null}
 
         {filtered.length === 0 ? (
-          <p className="sm:col-span-2 lg:col-span-3 xl:col-span-4 text-sm text-gray-500 py-8 text-center">
+          <p className="text-sm text-gray-500 py-8 text-center">
             No modules match “{query.trim()}”.
           </p>
         ) : null}
-      </AppAnimatedGrid>
+      </div>
     </div>
   );
 }

@@ -9,6 +9,8 @@ import {
   prepareContactPayload,
   preparePartyPayload,
 } from '../utils/preparePartyPayload';
+import { downloadPartyCsvExport } from '../utils/downloadPartyCsv';
+import { normalizePartyHistory } from '../utils/normalizePartyHistory';
 import type {
   CreatePartyAddressDto,
   CreatePartyContactDto,
@@ -17,6 +19,7 @@ import type {
   Party,
   PartyAddress,
   PartyContact,
+  PartyHistoryEntry,
   PartyImportResult,
   PartyListParams,
   PartyListResult,
@@ -299,10 +302,6 @@ export const partyService = {
     }
   },
 
-  /**
-   * CSV bulk import. Swagger omits multipart schema; Nest commonly uses field `file`.
-   * Do not set Content-Type manually — the browser must add the multipart boundary.
-   */
   async importCsv(file: File): Promise<PartyImportResult> {
     try {
       const form = new FormData();
@@ -331,6 +330,32 @@ export const partyService = {
           };
         }),
       };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /parties/export — CSV with same filters as list. */
+  async exportCsv(params: PartyListParams = {}): Promise<void> {
+    try {
+      await downloadPartyCsvExport(
+        PARTY_API.export,
+        buildListQuery(params),
+        'parties.csv',
+      );
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /parties/{id}/history */
+  async getHistory(id: string): Promise<PartyHistoryEntry[]> {
+    assertPartyId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<unknown>(PARTY_API.history(id)),
+      );
+      return normalizePartyHistory(res.data);
     } catch (error) {
       throw formatAxiosError(error);
     }

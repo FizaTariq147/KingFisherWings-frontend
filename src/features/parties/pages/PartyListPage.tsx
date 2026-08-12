@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertCircle, RefreshCw, Upload } from 'lucide-react';
+import { AlertCircle, Download, RefreshCw, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
@@ -15,6 +15,7 @@ import {
 import { usePartyConfirmState } from '../hooks/usePartyConfirmState';
 import {
   useDeleteParty,
+  useExportPartiesCsv,
   useImportParties,
   useParties,
   useSetPartyActive,
@@ -53,6 +54,7 @@ export default function PartyListPage() {
   const setActive = useSetPartyActive();
   const updateCredit = useUpdatePartyCreditStatus();
   const importParties = useImportParties();
+  const exportParties = useExportPartiesCsv();
 
   useEffect(() => {
     setPage(1);
@@ -91,13 +93,27 @@ export default function PartyListPage() {
         <div>
           <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Parties</h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-            Customers, agents, carriers, suppliers, and related parties.
+            Any party can have Users Portal and Vendor Portal logins from the party detail page.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button type="button" variant="secondary" onClick={() => refetch()} disabled={isFetching}>
             <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
             Refresh
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={exportParties.isPending}
+            onClick={() => {
+              setActionError(null);
+              void exportParties.mutateAsync(listParams).catch((err) => {
+                setActionError(getErrorMessage(err) || 'Export failed.');
+              });
+            }}
+          >
+            <Download className="h-4 w-4" />
+            {exportParties.isPending ? 'Exporting…' : 'Export CSV'}
           </Button>
           <input
             ref={fileRef}

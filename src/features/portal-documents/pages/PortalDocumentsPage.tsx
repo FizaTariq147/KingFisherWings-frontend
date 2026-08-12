@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Download, FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -17,26 +18,31 @@ import {
 } from '@/features/portal-auth/components/portal-ui';
 import {
   useDownloadPortalDocument,
+  usePortalDocumentPermissions,
   usePortalDocuments,
   usePortalDocumentSummary,
 } from '../hooks/usePortalDocuments';
 
 export default function PortalDocumentsPage() {
+  const [searchParams] = useSearchParams();
+  const jobId = searchParams.get('job_id')?.trim() || '';
   const [page, setPage] = useState(1);
-  const [source, setSource] = useState('');
+  const [source, setSource] = useState(jobId ? 'job' : '');
   const [docType, setDocType] = useState('');
   const params = useMemo(
     () => ({
       page,
       limit: 20,
       source: source || undefined,
+      job_id: jobId || undefined,
       portal_document_type: docType || undefined,
       order: 'desc' as const,
     }),
-    [page, source, docType],
+    [page, source, docType, jobId],
   );
 
   const summary = usePortalDocumentSummary();
+  const permissions = usePortalDocumentPermissions();
   const { data, isLoading, isError, error, refetch, isFetching } = usePortalDocuments(params);
   const download = useDownloadPortalDocument();
   const items = data?.items ?? [];
@@ -44,18 +50,48 @@ export default function PortalDocumentsPage() {
 
   return (
     <div className="space-y-5">
-      <PortalPageHeader
-        title="Documents"
-        description="Invoices and shipment documents available to your account."
-      />
-
-      <div className="grid gap-4 sm:grid-cols-3">
-        <PortalStatCard
-          label="Total documents"
-          value={summary.data?.total ?? (summary.isLoading ? '…' : 0)}
-          Icon={FileText}
-        />
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0 flex-1 space-y-4">
+          <PortalPageHeader
+            title="Documents"
+            description="Invoices and shipment documents available to your account."
+          />
+          <div className="max-w-xs">
+            <PortalStatCard
+              label="Total documents"
+              value={summary.data?.total ?? (summary.isLoading ? '…' : 0)}
+              Icon={FileText}
+            />
+          </div>
+        </div>
+        {permissions.isLoading || permissions.data?.length ? (
+          <div className="w-full max-w-[22rem] shrink-0 rounded-xl border border-[var(--color-neutral-200)] bg-white px-3.5 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.04)] lg:ml-auto">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
+              Document rights
+            </div>
+            {permissions.isLoading ? (
+              <p className="mt-2 text-xs text-[var(--color-neutral-400)]">Loading…</p>
+            ) : (
+              <div className="mt-2 flex flex-wrap justify-end gap-1.5">
+                {permissions.data?.map((perm) => (
+                  <Badge
+                    key={perm.documentType}
+                    variant={perm.canDownload ? 'success' : perm.canView ? 'info' : 'neutral'}
+                  >
+                    {perm.documentType.replaceAll('_', ' ')}
+                    {perm.canDownload ? ' · download' : perm.canView ? ' · view' : ' · hidden'}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : null}
       </div>
+      {jobId ? (
+        <p className="text-xs text-[var(--color-neutral-500)]">
+          Showing documents for shipment {jobId}.
+        </p>
+      ) : null}
 
       <PortalPanel padded>
         <div className="grid gap-3 sm:grid-cols-2">

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Receipt } from 'lucide-react';
+import { Download, Receipt } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -15,7 +15,7 @@ import {
   PortalPanel,
   portalSelectClassName,
 } from '@/features/portal-auth/components/portal-ui';
-import { usePortalCreditNotes } from '../hooks/usePortalCreditNotes';
+import { useDownloadPortalCreditNotePdf, usePortalCreditNotes } from '../hooks/usePortalCreditNotes';
 import type { PortalNoteKind } from '../services/portalCreditNotes.service';
 
 const STATUSES = ['DRAFT', 'POSTED', 'SENT', 'PARTIALLY_PAID', 'PAID', 'CANCELLED', 'VOID'];
@@ -37,6 +37,8 @@ export default function PortalCreditNotesPage() {
     [page, search, status],
   );
   const { data, isLoading, isError, error, refetch, isFetching } = usePortalCreditNotes(params, kind);
+  const download = useDownloadPortalCreditNotePdf();
+  const [pdfError, setPdfError] = useState<string | null>(null);
   const items = data?.items ?? [];
   const meta = data?.meta;
 
@@ -106,6 +108,11 @@ export default function PortalCreditNotesPage() {
           </label>
         </div>
       </PortalPanel>
+      {pdfError ? (
+        <p className="text-sm text-[var(--color-danger-600)]" role="alert">
+          {pdfError}
+        </p>
+      ) : null}
       <PortalPanel>
         <PortalFetchBar active={isFetching && !isLoading} />
         {isLoading ? (
@@ -134,21 +141,46 @@ export default function PortalCreditNotesPage() {
         ) : (
           <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((cn) => (
-              <PortalAnimatedListItem key={cn.id}>
-                <Link
-                  to={`${basePath}/${cn.id}`}
-                  className="flex items-center justify-between gap-3 px-4 py-3.5 hover:bg-[var(--color-neutral-50)]"
-                >
-                  <div className="min-w-0">
-                    <div className="text-sm font-semibold truncate">{cn.number}</div>
-                    <div className="text-xs text-[var(--color-neutral-500)]">
-                      {[cn.creditedInvoiceNumber, cn.creditDate, cn.currencyCode, cn.totalAmount]
-                        .filter((v) => v != null && v !== '')
-                        .join(' · ') || '—'}
-                    </div>
+              <PortalAnimatedListItem
+                key={cn.id}
+                className="flex items-center justify-between gap-3 px-4 py-3.5"
+              >
+                <Link to={`${basePath}/${cn.id}`} className="min-w-0 flex-1 hover:opacity-80">
+                  <div className="text-sm font-semibold truncate">{cn.number}</div>
+                  <div className="text-xs text-[var(--color-neutral-500)]">
+                    {[cn.creditedInvoiceNumber, cn.creditDate, cn.currencyCode, cn.totalAmount]
+                      .filter((v) => v != null && v !== '')
+                      .join(' · ') || '—'}
                   </div>
-                  {cn.status ? <Badge variant="info">{cn.status.replaceAll('_', ' ')}</Badge> : null}
                 </Link>
+                <div className="flex items-center gap-2 shrink-0">
+                  {cn.status ? <Badge variant="info">{cn.status.replaceAll('_', ' ')}</Badge> : null}
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    disabled={download.isPending}
+                    onClick={() => {
+                      setPdfError(null);
+                      void download
+                        .mutateAsync({
+                          id: cn.id,
+                          kind,
+                          name: `${cn.number || kind}.pdf`,
+                        })
+                        .catch((err) => {
+                          setPdfError(
+                            err instanceof PortalApiError || err instanceof Error
+                              ? err.message
+                              : 'Could not download PDF.',
+                          );
+                        });
+                    }}
+                  >
+                    <Download size={14} aria-hidden="true" />
+                    {download.isPending ? 'Downloading…' : 'PDF'}
+                  </Button>
+                </div>
               </PortalAnimatedListItem>
             ))}
           </PortalAnimatedList>

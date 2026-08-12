@@ -1,6 +1,6 @@
 import { portalApiClient } from '@/lib/portalApiClient';
-import { filenameFromContentDisposition } from '@/features/portal-shared/normalize';
-import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
+import { safeDownloadFilename } from '@/features/portal-shared/normalize';
 import { PORTAL_DOCUMENTS_API } from '../api/portalDocuments.api';
 import type {
   PortalDocumentListParams,
@@ -13,17 +13,6 @@ import {
   normalizeDocumentPermissions,
   normalizeDocumentSummary,
 } from '../utils/normalizePortalDocuments';
-
-async function downloadBlob(url: string, fallbackName: string): Promise<void> {
-  const res = await portalApiClient.get(url, { responseType: 'blob' });
-  const filename =
-    filenameFromContentDisposition(
-      typeof res.headers['content-disposition'] === 'string'
-        ? res.headers['content-disposition']
-        : undefined,
-    ) || fallbackName;
-  triggerBlobDownload(res.data as Blob, filename);
-}
 
 export const portalDocumentsService = {
   async summary(): Promise<PortalDocumentSummary> {
@@ -42,7 +31,11 @@ export const portalDocumentsService = {
   },
 
   async downloadInvoice(invoiceId: string, fallbackName = 'invoice.pdf'): Promise<void> {
-    await downloadBlob(PORTAL_DOCUMENTS_API.downloadInvoice(invoiceId), fallbackName);
+    await downloadPortalBlob(
+      PORTAL_DOCUMENTS_API.downloadInvoice(invoiceId),
+      safeDownloadFilename(fallbackName, 'invoice.pdf'),
+      { accept: 'application/pdf, application/octet-stream, */*' },
+    );
   },
 
   async downloadJobDocument(
@@ -50,6 +43,9 @@ export const portalDocumentsService = {
     docId: string,
     fallbackName = 'document',
   ): Promise<void> {
-    await downloadBlob(PORTAL_DOCUMENTS_API.downloadJobDoc(jobId, docId), fallbackName);
+    await downloadPortalBlob(
+      PORTAL_DOCUMENTS_API.downloadJobDoc(jobId, docId),
+      safeDownloadFilename(fallbackName, 'document'),
+    );
   },
 };

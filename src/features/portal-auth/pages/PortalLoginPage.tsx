@@ -13,6 +13,8 @@ import { usePortalAuthBootstrap } from '../hooks/usePortalAuthBootstrap';
 import { usePortalBrand } from '../hooks/usePortalBrand';
 import { usePortalAuthStore } from '../store/portalAuthStore';
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache';
+import { useVendorAuthStore } from '@/features/vendor-auth/store/vendorAuthStore';
+import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
 import { portalAnimationStyles, PortalGsapRouteMap, usePortalAutoAnimate } from '../components/portal-ui';
 import {
   BackgroundBeams,
@@ -93,6 +95,8 @@ export default function PortalLoginPage() {
         isAuthenticated: false,
         error: null,
       });
+      useVendorAuthStore.getState().logout();
+      clearVendorQueryCache();
 
       clearPortalQueryCache();
       setSession(user, accessToken, refreshToken);
@@ -129,6 +133,8 @@ export default function PortalLoginPage() {
           isAuthenticated: false,
           error: null,
         });
+        useVendorAuthStore.getState().logout();
+        clearVendorQueryCache();
         clearPortalQueryCache();
         setSession(result.user, result.accessToken, result.refreshToken);
         try {
@@ -398,6 +404,14 @@ export default function PortalLoginPage() {
               className="font-medium text-[var(--color-primary)] underline-offset-4 hover:underline"
             >
               ERP login
+            </Link>
+            {' · '}
+            Vendor?{' '}
+            <Link
+              to="/vendor/login"
+              className="font-medium text-[var(--color-primary)] underline-offset-4 hover:underline"
+            >
+              Vendor portal
             </Link>
           </p>
         </div>

@@ -10,10 +10,12 @@ export interface PortalMessageCreateDto {
   body: string;
   job_id?: string;
   invoice_id?: string;
+  file?: File;
 }
 
 export interface PortalMessageReplyDto {
   body: string;
+  file?: File;
 }
 
 export interface PortalMessageReply {
@@ -33,6 +35,10 @@ export interface PortalMessage {
   jobId?: string;
   invoiceId?: string;
   hasAttachment?: boolean;
+  attachmentName?: string;
+  senderName?: string;
+  senderEmail?: string;
+  partyName?: string;
   replies?: PortalMessageReply[];
 }
 

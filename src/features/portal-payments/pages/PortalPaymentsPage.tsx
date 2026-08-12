@@ -18,9 +18,17 @@ import { usePortalPayments } from '../hooks/usePortalPayments';
 export default function PortalPaymentsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const params = useMemo(
-    () => ({ page, limit: 20, search: search.trim() || undefined }),
-    [page, search],
+    () => ({
+      page,
+      limit: 20,
+      search: search.trim() || undefined,
+      from_date: fromDate || undefined,
+      to_date: toDate || undefined,
+    }),
+    [page, search, fromDate, toDate],
   );
   const { data, isLoading, isError, error, refetch, isFetching } = usePortalPayments(params);
   const items = data?.items ?? [];
@@ -30,14 +38,34 @@ export default function PortalPaymentsPage() {
     <div className="space-y-5">
       <PortalPageHeader title="Payments" description="Receipts and payment history for your account." />
       <PortalPanel padded>
-        <Input
-          label="Search"
-          value={search}
-          onChange={(e) => {
-            setPage(1);
-            setSearch(e.target.value);
-          }}
-        />
+        <div className="grid gap-3 sm:grid-cols-3">
+          <Input
+            label="Search"
+            value={search}
+            onChange={(e) => {
+              setPage(1);
+              setSearch(e.target.value);
+            }}
+          />
+          <Input
+            label="From"
+            type="date"
+            value={fromDate}
+            onChange={(e) => {
+              setPage(1);
+              setFromDate(e.target.value);
+            }}
+          />
+          <Input
+            label="To"
+            type="date"
+            value={toDate}
+            onChange={(e) => {
+              setPage(1);
+              setToDate(e.target.value);
+            }}
+          />
+        </div>
       </PortalPanel>
       <PortalPanel>
         <PortalFetchBar active={isFetching && !isLoading} />

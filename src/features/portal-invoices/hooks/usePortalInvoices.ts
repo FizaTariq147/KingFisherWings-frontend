@@ -45,6 +45,13 @@ export function usePortalInvoice(id: string) {
   });
 }
 
+export function useExportPortalInvoicesCsv() {
+  return useMutation({
+    mutationFn: (params: PortalInvoiceListParams = {}) =>
+      portalInvoicesService.exportCsv(params),
+  });
+}
+
 export function useDownloadPortalInvoicePdf() {
   return useMutation({
     mutationFn: ({ id, name }: { id: string; name?: string }) =>

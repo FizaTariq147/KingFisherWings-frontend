@@ -5,6 +5,7 @@ import { portalQuotationsService } from '../services/portalQuotations.service';
 import { fetchLocaleCurrencyForCountry } from '../utils/loadPortalCurrencyOptions';
 import type {
   PortalQuotationListParams,
+  PortalQuotationRejectDto,
   PortalQuotationRequestDto,
 } from '../types/portalQuotations.types';
 
@@ -60,6 +61,35 @@ export function usePortalQuotation(id: string) {
     queryFn: () => portalQuotationsService.getById(id),
     enabled: Boolean(accessToken) && Boolean(id) && scope !== 'anon',
     staleTime: 0,
+  });
+}
+
+export function useAcceptPortalQuotation() {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: (id: string) => portalQuotationsService.accept(id),
+    onSuccess: (q) => {
+      void qc.invalidateQueries({ queryKey: portalQuotationKeys.all(scope) });
+      if (scope !== 'anon' && q.id) {
+        qc.setQueryData(portalQuotationKeys.detail(scope, q.id), q);
+      }
+    },
+  });
+}
+
+export function useRejectPortalQuotation() {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: ({ id, dto }: { id: string; dto: PortalQuotationRejectDto }) =>
+      portalQuotationsService.reject(id, dto),
+    onSuccess: (q) => {
+      void qc.invalidateQueries({ queryKey: portalQuotationKeys.all(scope) });
+      if (scope !== 'anon' && q.id) {
+        qc.setQueryData(portalQuotationKeys.detail(scope, q.id), q);
+      }
+    },
   });
 }
 

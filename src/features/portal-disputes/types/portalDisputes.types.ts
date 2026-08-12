@@ -1,6 +1,11 @@
 import type { PortalPaginationMeta } from '@/features/portal-shared/normalize';
 export interface PortalDisputeListParams { page?: number; limit?: number; status?: string; }
-export interface PortalDisputeCreateDto { invoice_id: string; reason: string; description: string; }
+export interface PortalDisputeCreateDto {
+  invoice_id: string;
+  reason: string;
+  description: string;
+  file?: File;
+}
 export interface PortalDispute {
   id: string;
   invoiceId?: string;
@@ -11,5 +16,6 @@ export interface PortalDispute {
   createdAt?: string;
   staffNotes?: string;
   hasAttachment?: boolean;
+  attachmentName?: string;
 }
 export interface PortalDisputeListResult { items: PortalDispute[]; meta: PortalPaginationMeta; }

@@ -91,3 +91,14 @@ export function filenameFromContentDisposition(header?: string): string | undefi
   const plain = /filename="?([^";]+)"?/i.exec(header);
   return plain?.[1]?.trim() || undefined;
 }
+
+/** Browser `download` attribute treats `/` `\` as path — invoice numbers often contain them. */
+export function safeDownloadFilename(name: string, fallback = 'download'): string {
+  const cleaned = name
+    .replace(/[/\\?%*:|"<>]/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/^\.+/, '')
+    .slice(0, 180);
+  return cleaned || fallback;
+}

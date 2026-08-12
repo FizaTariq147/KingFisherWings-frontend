@@ -17,6 +17,7 @@ export const partyKeys = {
   all: ['tenant', 'parties'] as const,
   list: (params: PartyListParams) => [...partyKeys.all, 'list', params] as const,
   detail: (id: string) => [...partyKeys.all, 'detail', id] as const,
+  history: (id: string) => [...partyKeys.all, 'history', id] as const,
 };
 
 export function useParties(params: PartyListParams) {
@@ -135,5 +136,20 @@ export function useImportParties() {
   return useMutation({
     mutationFn: (file: File) => partyService.importCsv(file),
     onSuccess: () => invalidate(),
+  });
+}
+
+export function useExportPartiesCsv() {
+  return useMutation({
+    mutationFn: (params: PartyListParams) => partyService.exportCsv(params),
+  });
+}
+
+export function usePartyHistory(partyId: string) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: partyKeys.history(partyId),
+    queryFn: () => partyService.getHistory(partyId),
+    enabled: Boolean(accessToken) && isUuid(partyId),
   });
 }

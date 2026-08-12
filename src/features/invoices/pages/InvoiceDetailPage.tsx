@@ -124,21 +124,34 @@ export default function InvoiceDetailPage() {
           );
           if (!ok) return;
         }
+        setPdfReadyUrl(null);
+        setPdfReadyOpen(true);
         void run(async () => {
-          const info = await actions.generatePdf.mutateAsync();
-          let url = info?.pdf_url || info?.customer_pdf_url;
           try {
-            const refreshed = await refetchPdf();
-            const next = refreshed.data;
-            url = next?.pdf_url || next?.customer_pdf_url || url;
-          } catch {
-            /* PDF info may lag while generation runs */
-          }
-          if (url) {
+            const info = await actions.generatePdf.mutateAsync();
+            let url = info?.pdf_url || info?.customer_pdf_url;
+            for (let attempt = 0; attempt < 8 && !url; attempt += 1) {
+              await new Promise((resolve) => {
+                window.setTimeout(resolve, 1500);
+              });
+              try {
+                const refreshed = await refetchPdf();
+                url = refreshed.data?.pdf_url || refreshed.data?.customer_pdf_url || url;
+              } catch {
+                /* PDF info may lag while generation runs */
+              }
+            }
+            if (!url) {
+              throw new Error(
+                'PDF is still generating. Use Open PDF on this page when it appears.',
+              );
+            }
             setPdfReadyUrl(url);
-            setPdfReadyOpen(true);
+          } catch (err) {
+            setPdfReadyOpen(false);
+            throw err;
           }
-        }, 'PDF generation requested.');
+        }, 'PDF ready.');
       },
       variant: 'secondary' as const,
     },

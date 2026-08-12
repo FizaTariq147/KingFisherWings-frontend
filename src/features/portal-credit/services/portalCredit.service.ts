@@ -1,6 +1,5 @@
 import { portalApiClient } from '@/lib/portalApiClient';
-import { filenameFromContentDisposition } from '@/features/portal-shared/normalize';
-import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
 import { PORTAL_CREDIT_API } from '../api/portalCredit.api';
 import type { PortalAgingResult, PortalCreditSummary, PortalStatementResult } from '../types/portalCredit.types';
 import { normalizeAging, normalizeCreditSummary, normalizeStatement } from '../utils/normalizePortalCredit';
@@ -19,13 +18,9 @@ export const portalCreditService = {
     return normalizeStatement(res.data);
   },
   async downloadStatementPdf(asOf?: string): Promise<void> {
-    const res = await portalApiClient.get(PORTAL_CREDIT_API.statementPdf, {
+    await downloadPortalBlob(PORTAL_CREDIT_API.statementPdf, 'statement.pdf', {
       params: asOf ? { as_of: asOf } : undefined,
-      responseType: 'blob',
+      accept: 'application/pdf, application/octet-stream, */*',
     });
-    const filename = filenameFromContentDisposition(
-      typeof res.headers['content-disposition'] === 'string' ? res.headers['content-disposition'] : undefined,
-    ) || 'statement.pdf';
-    triggerBlobDownload(res.data as Blob, filename);
   },
 };

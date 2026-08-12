@@ -11,6 +11,11 @@ export interface PortalQuotationListParams {
   order?: 'asc' | 'desc';
 }
 
+export interface PortalQuotationRejectDto {
+  reason: string;
+  notes?: string;
+}
+
 export interface PortalQuotationRequestDto {
   job_type: string;
   currency_code: string;

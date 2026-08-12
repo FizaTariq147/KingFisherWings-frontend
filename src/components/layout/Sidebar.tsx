@@ -19,6 +19,7 @@ import {
   Shield,
   Globe,
   Briefcase,
+  Truck,
   type LucideIcon,
 } from 'lucide-react'
 import { useUIStore } from '@/store/uiStore'
@@ -52,6 +53,7 @@ interface NavItem {
 const OPS_NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', path: '/dashboard', Icon: LayoutDashboard, permission: 'menu_dashboard' },
   { label: 'Customers', path: '/customers', Icon: Users, permission: 'menu_customers' },
+  { label: 'Vendors', path: '/vendors', Icon: Truck, permission: 'menu_finance' },
   { label: 'Quotations', path: '/quotations', Icon: MessageSquare, permission: 'menu_quotations' },
   { label: 'Management', path: '/management', Icon: Shapes, permission: 'menu_management' as PermissionKey },
   { label: 'Air Export', path: '/jobs/air-export', Icon: Plane, permission: 'menu_jobs_air_export' },

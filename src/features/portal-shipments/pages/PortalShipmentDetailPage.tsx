@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Download, Package } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -24,6 +24,7 @@ import {
 
 export default function PortalShipmentDetailPage() {
   const { id = '' } = useParams();
+  const navigate = useNavigate();
   const { data, isLoading, isError, error, refetch } = usePortalShipment(id);
   const milestonesQuery = usePortalShipmentMilestones(id, Boolean(data) && !data?.milestones?.length);
   const documentsQuery = usePortalShipmentDocuments(id, Boolean(data));
@@ -63,13 +64,32 @@ export default function PortalShipmentDetailPage() {
         <ArrowLeft size={14} aria-hidden="true" />
         Back to shipments
       </Link>
-
       <PortalPageHeader
         title={data.reference}
         description={
           [data.origin, data.destination].filter(Boolean).join(' → ') || data.jobType || 'Shipment detail'
         }
-        actions={data.status ? <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge> : null}
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            {data.status ? <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge> : null}
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() => navigate(`/portal/documents?job_id=${encodeURIComponent(id)}`)}
+            >
+              All documents
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() => navigate(`/portal/messages?job_id=${encodeURIComponent(id)}`)}
+            >
+              Message
+            </Button>
+          </div>
+        }
       />
 
       <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-3">
