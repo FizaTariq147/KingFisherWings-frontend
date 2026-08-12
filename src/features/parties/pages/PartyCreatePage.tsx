@@ -22,7 +22,8 @@ export default function PartyCreatePage() {
       <div>
         <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create party</h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Add a customer, agent, carrier, or other party.
+          Add any party type (customer, agent, supplier, carrier, etc.). After saving, open the party detail
+          page to create Users Portal or Vendor Portal logins — party type is never changed automatically.
         </p>
       </div>
       {error && (

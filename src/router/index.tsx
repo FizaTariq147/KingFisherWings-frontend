@@ -15,6 +15,7 @@ import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
 
 import CustomerServiceMenuPage from '../pages/customers/CustomerServiceMenuPage'
+import VendorServiceMenuPage from '../pages/vendors/VendorServiceMenuPage'
 import AllShipmentsPage from '../pages/customers/AllShipments'
 import EnquirySheetPage from '../pages/customers/EnquirySheetPage'
 import PricingDashboardPage from '../pages/customers/PricingDashboardPage'
@@ -168,6 +169,9 @@ import PortalCreditRequestsPage from '../features/portal-credit-requests/pages/P
 import PortalMessagesPage from '../features/portal-messages/pages/PortalMessagesPage'
 import PortalDisputesPage from '../features/portal-disputes/pages/PortalDisputesPage'
 import PortalAdminInboxPage from '../features/portal-admin-inbox/pages/PortalAdminInboxPage'
+import PortalUsersAdminPage from '../features/portal-admin/pages/PortalUsersAdminPage'
+import VendorAdminDisputesPage from '../features/vendor-admin-disputes/pages/VendorAdminDisputesPage'
+import VendorUsersAdminPage from '../features/vendor-users-admin/pages/VendorUsersAdminPage'
 import { VendorShell } from '../features/vendor-auth/layout/VendorShell'
 import { VendorProtectedRoute } from '../features/vendor-auth/components/VendorProtectedRoute'
 import VendorLoginPage from '../features/vendor-auth/pages/VendorLoginPage'
@@ -318,6 +322,7 @@ export const router = createBrowserRouter([
         children: [
           { path: '/dashboard', element: <DashboardPage /> },
           { path: '/customers', element: <CustomerServiceMenuPage /> },
+          { path: '/vendors', element: <VendorServiceMenuPage /> },
           { path: '/customers/:id', element: <Placeholder title="Customer Profile" /> },
           {
             element: (
@@ -464,6 +469,14 @@ export const router = createBrowserRouter([
           { path: '/profile', element: <MyProfilePage /> },
           { path: '/notifications', element: <NotificationsPage /> },
           { path: '/portal-admin/inbox', element: <PortalAdminInboxPage /> },
+          { path: '/portal-users', element: <PortalUsersAdminPage /> },
+          { path: '/vendor-users', element: <VendorUsersAdminPage /> },
+          {
+            element: (
+              <ProtectedRoute requireAnyPermission={['menu_finance', 'menu_customers']} />
+            ),
+            children: [{ path: '/vendor-admin/disputes', element: <VendorAdminDisputesPage /> }],
+          },
           { path: '/sales', element: <SalesMenuPage /> },
           {path: '/sales/call-sheet', element: <CallSheetPage />},
           {path: '/sales/client-request-list', element: <ClientRequestListPage />},

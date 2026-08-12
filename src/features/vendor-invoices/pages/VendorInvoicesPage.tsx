@@ -19,7 +19,7 @@ import {
 } from '@/features/portal-auth/components/portal-ui';
 import { VendorQueryError } from '@/features/vendor-shared/VendorQueryError';
 import { formatVendorMoney } from '@/features/vendor-shared/formatMoney';
-import { vendorErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
+import { vendorErrorMessage, vendorInvoicePdfErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import { VENDOR_INVOICE_STATUSES } from '../api/vendorInvoices.api';
 import {
   useDownloadVendorInvoicePdf,
@@ -36,8 +36,11 @@ export default function VendorInvoicesPage() {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [amount, setAmount] = useState('');
+  const [currencyCode, setCurrencyCode] = useState('AED');
   const [invoiceDate, setInvoiceDate] = useState('');
+  const [dueDate, setDueDate] = useState('');
   const [reference, setReference] = useState('');
+  const [remarks, setRemarks] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [submitMsg, setSubmitMsg] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -125,7 +128,8 @@ export default function VendorInvoicesPage() {
         <div>
           <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Submit a draft invoice</h2>
           <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
-            Upload a PDF with amount, date, and reference. Staff will post the purchase invoice in ERP.
+            Send currency, total amount, and optional PDF / dates / reference. Staff will post the
+            purchase invoice in ERP.
           </p>
         </div>
         {submitError ? (
@@ -139,27 +143,33 @@ export default function VendorInvoicesPage() {
           </p>
         ) : null}
         <form
-          className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
           onSubmit={(e) => {
             e.preventDefault();
             setSubmitError(null);
             setSubmitMsg(null);
-            if (!amount.trim() || !invoiceDate || !file) {
-              setSubmitError('PDF, amount, and invoice date are required.');
+            const total = Number(amount);
+            if (!currencyCode.trim() || !Number.isFinite(total) || total < 0.01) {
+              setSubmitError('Currency and total amount (min 0.01) are required.');
               return;
             }
             void submit
               .mutateAsync({
-                amount: amount.trim(),
-                invoice_date: invoiceDate,
+                currency_code: currencyCode.trim().toUpperCase(),
+                total_amount: total,
+                invoice_date: invoiceDate || undefined,
+                due_date: dueDate || undefined,
                 reference: reference.trim() || undefined,
+                remarks: remarks.trim() || undefined,
                 file: file ?? undefined,
               })
               .then(() => {
                 setSubmitMsg('Draft invoice submitted. Staff will post it in ERP.');
                 setAmount('');
                 setInvoiceDate('');
+                setDueDate('');
                 setReference('');
+                setRemarks('');
                 setFile(null);
               })
               .catch((err) => {
@@ -167,11 +177,40 @@ export default function VendorInvoicesPage() {
               });
           }}
         >
-          <Input label="Amount" type="number" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} />
-          <Input label="Invoice date" type="date" value={invoiceDate} onChange={(e) => setInvoiceDate(e.target.value)} />
+          <Input
+            label="Total amount"
+            type="number"
+            step="0.01"
+            min="0.01"
+            required
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+          <Input
+            label="Currency"
+            maxLength={3}
+            required
+            value={currencyCode}
+            onChange={(e) => setCurrencyCode(e.target.value.toUpperCase())}
+          />
+          <Input
+            label="Invoice date"
+            type="date"
+            value={invoiceDate}
+            onChange={(e) => setInvoiceDate(e.target.value)}
+          />
+          <Input
+            label="Due date"
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+          />
           <Input label="Reference" value={reference} onChange={(e) => setReference(e.target.value)} />
-          <label className="block text-sm">
-            <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">PDF</span>
+          <Input label="Remarks" value={remarks} onChange={(e) => setRemarks(e.target.value)} />
+          <label className="block text-sm sm:col-span-2 lg:col-span-3">
+            <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
+              PDF (optional)
+            </span>
             <input
               type="file"
               accept="application/pdf"
@@ -180,7 +219,7 @@ export default function VendorInvoicesPage() {
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             />
           </label>
-          <div className="sm:col-span-2 lg:col-span-4">
+          <div className="sm:col-span-2 lg:col-span-3">
             <Button type="submit" disabled={submit.isPending}>
               {submit.isPending ? 'Submitting…' : 'Submit draft PI'}
             </Button>
@@ -277,7 +316,7 @@ export default function VendorInvoicesPage() {
                       void download
                         .mutateAsync({ id: inv.id, name: `${inv.number}.pdf` })
                         .catch((err) => {
-                          setPdfError(vendorErrorMessage(err, 'Could not download invoice PDF.'));
+                          setPdfError(vendorInvoicePdfErrorMessage(err));
                         });
                     }}
                   >

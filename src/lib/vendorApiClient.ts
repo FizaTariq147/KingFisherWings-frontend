@@ -20,6 +20,20 @@ export class VendorApiError extends Error {
   }
 }
 
+const GENERIC_AXIOS_STATUS = /^Request failed with status code \d+$/i;
+
+function statusFallback(status: number): string {
+  if (status === 403) {
+    return (
+      'Access denied. Check workspace slug and password, confirm this is a vendor portal account (not customer portal ' +
+      'or staff ERP), and ask your forwarder if the login is still active.'
+    );
+  }
+  if (status === 401) return 'Invalid credentials or session expired.';
+  if (status === 404 || status === 501) return 'The requested vendor resource was not found.';
+  return 'Something went wrong.';
+}
+
 function formatApiErrorMessage(data: unknown, fallback: string): string {
   if (!data || typeof data !== 'object') return fallback;
   const record = data as Record<string, unknown>;
@@ -27,6 +41,11 @@ function formatApiErrorMessage(data: unknown, fallback: string): string {
   if (Array.isArray(message)) return message.map(String).join('; ');
   if (typeof message === 'string' && message.trim()) return message.trim();
   if (typeof record.error === 'string' && record.error.trim()) return record.error.trim();
+  return fallback;
+}
+
+function normalizeVendorFallback(status: number, fallback: string): string {
+  if (GENERIC_AXIOS_STATUS.test(fallback.trim())) return statusFallback(status);
   return fallback;
 }
 
@@ -100,7 +119,11 @@ vendorApiClient.interceptors.response.use(
   (res) => res,
   async (err: AxiosError) => {
     const status = err.response?.status ?? 0;
-    const message = await resolveVendorErrorMessage(err, err.message ?? 'Something went wrong');
+    const resolved = await resolveVendorErrorMessage(
+      err,
+      normalizeVendorFallback(status, err.message ?? statusFallback(status)),
+    );
+    const message = normalizeVendorFallback(status, resolved);
     const original = err.config as RetryConfig | undefined;
     const url = original?.url ?? '';
 

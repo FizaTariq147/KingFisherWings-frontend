@@ -9,10 +9,13 @@ import { PartyAddressesSection } from '../components/PartyAddressesSection';
 import { PartyConfirmModal } from '../components/PartyConfirmModal';
 import { PartyContactsSection } from '../components/PartyContactsSection';
 import { PartyCreditBadge } from '../components/PartyCreditBadge';
+import { PartyHistorySection } from '../components/PartyHistorySection';
 import { PartyOverviewPanel } from '../components/PartyOverviewPanel';
 import { PartyStatusBadge } from '../components/PartyStatusBadge';
 import { PartyPortalPermissionsSection } from '../components/PartyPortalPermissionsSection';
 import { PartyPortalUsersSection } from '../components/PartyPortalUsersSection';
+import { PartyVendorPermissionsSection } from '../components/PartyVendorPermissionsSection';
+import { PartyVendorUsersSection } from '../components/PartyVendorUsersSection';
 import { PARTY_TYPE_LABELS } from '../constants/party.constants';
 import { usePartyConfirmState } from '../hooks/usePartyConfirmState';
 import {
@@ -147,13 +150,28 @@ export default function PartyDetailPage() {
           },
           {
             key: 'portal-users',
-            label: 'Portal users',
+            label: 'Users Portal',
             content: <PartyPortalUsersSection partyId={party.id} />,
           },
           {
             key: 'portal-permissions',
             label: 'Portal rights',
             content: <PartyPortalPermissionsSection partyId={party.id} />,
+          },
+          {
+            key: 'vendor-users',
+            label: 'Vendor Portal',
+            content: <PartyVendorUsersSection partyId={party.id} />,
+          },
+          {
+            key: 'vendor-permissions',
+            label: 'Vendor rights',
+            content: <PartyVendorPermissionsSection partyId={party.id} />,
+          },
+          {
+            key: 'history',
+            label: 'History',
+            content: <PartyHistorySection partyId={party.id} />,
           },
         ]}
       />

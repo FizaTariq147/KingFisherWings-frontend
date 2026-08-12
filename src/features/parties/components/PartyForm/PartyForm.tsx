@@ -167,7 +167,7 @@ export function PartyForm({
           <CardTitle>Identity</CardTitle>
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
-          <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1">
+          <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1 sm:col-span-2">
             Party type *
             <select className={selectClass} {...register('party_type')}>
               {PARTY_TYPES.map((t) => (
@@ -176,6 +176,9 @@ export function PartyForm({
                 </option>
               ))}
             </select>
+            <span className="block pt-1 text-[var(--color-neutral-400)]">
+              Use Users Portal and Vendor Portal tabs on the party detail page to add portal logins.
+            </span>
             {fieldError('party_type') && (
               <span className="text-[var(--color-danger-600)]">{fieldError('party_type')}</span>
             )}

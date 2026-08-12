@@ -23,6 +23,7 @@ const createSchema = z.object({
   phone: z.string().trim().max(30).optional().or(z.literal('')),
   password: z.string().min(8, 'Min 8 characters').optional().or(z.literal('')),
   send_email: z.boolean().optional(),
+  invite_mode: z.boolean().optional(),
 });
 
 type CreateFormValues = z.infer<typeof createSchema>;
@@ -50,13 +51,14 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
       phone: '',
       password: '',
       send_email: true,
+      invite_mode: false,
     },
   });
 
   const close = () => {
     setOpen(false);
     setFormError(null);
-    form.reset({ email: '', full_name: '', phone: '', password: '', send_email: true });
+    form.reset({ email: '', full_name: '', phone: '', password: '', send_email: true, invite_mode: false });
   };
 
   const pending =
@@ -68,7 +70,12 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between gap-2">
-        <CardTitle>Portal users</CardTitle>
+        <div>
+          <CardTitle>Users Portal</CardTitle>
+          <p className="text-xs text-[var(--color-neutral-400)] mt-1 font-normal">
+            Available for every party type. Does not change party type.
+          </p>
+        </div>
         <Button type="button" size="sm" onClick={() => setOpen(true)}>
           Create portal login
         </Button>
@@ -104,7 +111,7 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
         ) : isError ? (
           <div className="space-y-2">
             <p className="text-sm text-[var(--color-danger-600)]">
-              {error instanceof Error ? error.message : 'Failed to load portal users.'}
+              {getErrorMessage(error) || 'Failed to load portal users.'}
             </p>
             <Button type="button" size="sm" variant="secondary" onClick={() => refetch()}>
               Retry
@@ -112,7 +119,7 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
           </div>
         ) : users.length === 0 ? (
           <p className="text-sm text-[var(--color-neutral-400)]">
-            No portal users yet. Create a login so this customer can access the Customer Portal.
+            No portal users yet. Create a login for the Customer Portal.
           </p>
         ) : (
           users.map((user) => {
@@ -212,6 +219,7 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
                 phone: values.phone?.trim() || undefined,
                 password: values.password?.trim() || undefined,
                 send_email: values.send_email ?? true,
+                invite_mode: values.invite_mode ?? false,
               });
               if (result.temporaryPassword) setTempPassword(result.temporaryPassword);
               close();
@@ -242,6 +250,10 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
             error={form.formState.errors.password?.message}
             {...form.register('password')}
           />
+          <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
+            <input type="checkbox" {...form.register('invite_mode')} />
+            Invite mode (email accept-invite link instead of temporary password)
+          </label>
           <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
             <input type="checkbox" {...form.register('send_email')} />
             Send credentials email when SMTP is configured

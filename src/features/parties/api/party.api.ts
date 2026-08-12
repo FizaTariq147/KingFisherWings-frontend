@@ -21,6 +21,16 @@ export const PARTY_API = {
   portalPermissions: (partyId: string) => `/parties/${partyId}/portal-permissions`,
   portalPermissionsReset: (partyId: string) =>
     `/parties/${partyId}/portal-permissions/reset-defaults`,
+  /** Parties → vendor portal users (docs#/Parties + Admin — Vendor Portal Users) */
+  vendorUsers: (partyId: string) => `/parties/${partyId}/vendor-users`,
+  vendorUserStatus: (partyId: string, id: string) =>
+    `/parties/${partyId}/vendor-users/${id}/status`,
+  vendorUserResetPassword: (partyId: string, id: string) =>
+    `/parties/${partyId}/vendor-users/${id}/reset-password`,
+  vendorUserResendInvite: (partyId: string, id: string) =>
+    `/parties/${partyId}/vendor-users/${id}/resend-invite`,
+  /** Parties → vendor document rights */
+  vendorPermissions: (partyId: string) => `/parties/${partyId}/vendor-permissions`,
 } as const;
 
 export const PARTY_PORTAL_DOCUMENT_TYPES = [
@@ -53,5 +63,24 @@ export const PARTY_PORTAL_DOCUMENT_TYPE_LABELS: Record<PartyPortalDocumentType, 
   POD: 'POD',
   PRE_ALERT: 'Pre-alert',
   OTHER: 'Other',
+};
+
+/** Vendor portal document rights (docs VendorPermissionEntryDto). */
+export const PARTY_VENDOR_DOCUMENT_TYPES = [
+  'PURCHASE_INVOICE',
+  'REMITTANCE',
+  'CREDIT_NOTE',
+  'STATEMENT',
+  'TDS_CERTIFICATE',
+] as const;
+
+export type PartyVendorDocumentType = (typeof PARTY_VENDOR_DOCUMENT_TYPES)[number];
+
+export const PARTY_VENDOR_DOCUMENT_TYPE_LABELS: Record<PartyVendorDocumentType, string> = {
+  PURCHASE_INVOICE: 'Purchase invoice',
+  REMITTANCE: 'Remittance',
+  CREDIT_NOTE: 'Credit note',
+  STATEMENT: 'Statement',
+  TDS_CERTIFICATE: 'TDS certificate',
 };
 

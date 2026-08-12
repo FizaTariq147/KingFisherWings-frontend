@@ -72,6 +72,14 @@ function DisputeRow({ dispute }: { dispute: VendorDispute }) {
           {shown.createdAt ? (
             <p className="text-xs text-[var(--color-neutral-500)]">Opened {shown.createdAt}</p>
           ) : null}
+          {shown.staffNotes ? (
+            <p className="text-sm text-[var(--color-neutral-700)]">
+              <span className="font-medium">Staff notes: </span>
+              {shown.staffNotes}
+            </p>
+          ) : (
+            <p className="text-xs text-[var(--color-neutral-400)]">No staff notes yet.</p>
+          )}
         </div>
       ) : null}
     </div>

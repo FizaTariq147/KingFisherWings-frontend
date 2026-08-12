@@ -15,7 +15,7 @@ import {
 } from '@/features/portal-auth/components/portal-ui';
 import { formatVendorMoney } from '@/features/vendor-shared/formatMoney';
 import { VendorQueryError } from '@/features/vendor-shared/VendorQueryError';
-import { vendorErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
+import { vendorInvoicePdfErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import { useDownloadVendorInvoicePdf, useVendorInvoice } from '../hooks/useVendorInvoices';
 
 export default function VendorInvoiceDetailPage() {
@@ -67,9 +67,9 @@ export default function VendorInvoiceDetailPage() {
               onClick={() => {
                 setPdfError(null);
                 void download
-                  .mutateAsync({ id: data.id, name: `${data.number}.pdf` })
+                  .mutateAsync({ id: data.id, name: `${data.number}.pdf`, pdfUrl: data.pdfUrl })
                   .catch((err) => {
-                    setPdfError(vendorErrorMessage(err, 'Could not download invoice PDF.'));
+                    setPdfError(vendorInvoicePdfErrorMessage(err));
                   });
               }}
             >
@@ -82,6 +82,10 @@ export default function VendorInvoiceDetailPage() {
       {pdfError ? (
         <p className="text-sm text-[var(--color-danger-600)]" role="alert">
           {pdfError}
+        </p>
+      ) : !data.pdfUrl && String(data.status || '').toUpperCase() === 'DRAFT' ? (
+        <p className="text-sm text-[var(--color-neutral-500)]">
+          PDF download becomes available after your forwarder posts this draft purchase invoice in ERP.
         </p>
       ) : null}
 

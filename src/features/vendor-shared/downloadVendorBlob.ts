@@ -52,12 +52,16 @@ function fileUrlFromJson(parsed: unknown): string {
   const data = asRecord(unwrapData(parsed)) ?? root;
   return pickString(
     data.pdf_url,
-    data.download_url,
+    data.customer_pdf_url,
+    data.attachment_url,
     data.file_url,
+    data.download_url,
     data.url,
     root.pdf_url,
-    root.download_url,
+    root.customer_pdf_url,
+    root.attachment_url,
     root.file_url,
+    root.download_url,
     root.url,
   );
 }

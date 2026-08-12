@@ -14,6 +14,7 @@ export function normalizeVendorDispute(raw: unknown): VendorDispute | null {
     description: pickString(r.description) || undefined,
     status: pickString(r.status) || undefined,
     createdAt: pickString(r.created_at, r.createdAt) || undefined,
+    staffNotes: pickString(r.staff_notes, r.staffNotes) || undefined,
   };
 }
 

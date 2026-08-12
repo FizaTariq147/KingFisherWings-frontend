@@ -113,3 +113,14 @@ export interface PartyImportResult {
   createdIds: string[];
   errors: PartyImportRowError[];
 }
+
+/** GET /parties/{id}/history — jobs, quotations, invoices, etc. */
+export interface PartyHistoryEntry {
+  id?: string;
+  type?: string;
+  label: string;
+  reference?: string;
+  date?: string;
+  amount?: number;
+  status?: string;
+}

@@ -1,6 +1,6 @@
 import type { PartyPortalDocumentType } from '../api/party.api';
 
-export type PartyPortalUserStatus = 'ACTIVE' | 'DISABLED' | string;
+export type PartyPortalUserStatus = 'ACTIVE' | 'DISABLED' | 'INVITED' | string;
 
 export interface PartyPortalUser {
   id: string;
@@ -22,6 +22,7 @@ export interface CreatePartyPortalUserDto {
   phone?: string;
   password?: string;
   send_email?: boolean;
+  invite_mode?: boolean;
 }
 
 export interface CreatePartyPortalUserResult {

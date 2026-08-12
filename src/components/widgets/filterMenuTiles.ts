@@ -7,7 +7,7 @@ export function filterMenuTiles(tiles: MenuTile[], query: string): MenuTile[] {
 
   const tokens = q.split(/\s+/).filter(Boolean);
   return tiles.filter((tile) => {
-    const haystack = `${tile.title} ${tile.description} ${tile.id}`.toLowerCase();
+    const haystack = `${tile.title} ${tile.description} ${tile.id} ${tile.section ?? ''}`.toLowerCase();
     return tokens.every((token) => haystack.includes(token));
   });
 }

@@ -21,6 +21,7 @@ export interface VendorDispute {
   description?: string;
   status?: string;
   createdAt?: string;
+  staffNotes?: string;
 }
 
 export interface VendorDisputeListResult {

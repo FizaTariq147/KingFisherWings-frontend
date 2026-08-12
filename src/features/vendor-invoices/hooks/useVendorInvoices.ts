@@ -54,8 +54,15 @@ export function useExportVendorInvoicesCsv() {
 
 export function useDownloadVendorInvoicePdf() {
   return useMutation({
-    mutationFn: ({ id, name }: { id: string; name?: string }) =>
-      vendorInvoicesService.downloadPdf(id, name || 'invoice.pdf'),
+    mutationFn: ({
+      id,
+      name,
+      pdfUrl,
+    }: {
+      id: string;
+      name?: string;
+      pdfUrl?: string;
+    }) => vendorInvoicesService.downloadPdf(id, name || 'invoice.pdf', pdfUrl),
   });
 }
 

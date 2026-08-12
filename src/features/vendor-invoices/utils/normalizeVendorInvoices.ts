@@ -32,6 +32,57 @@ export function normalizeInvoiceSummary(raw: unknown): VendorInvoiceSummary {
   };
 }
 
+/** Extract a downloadable PDF/file URL from vendor invoice API payloads. */
+export function pickInvoicePdfUrl(data: Record<string, unknown>): string | undefined {
+  const direct = pickString(
+    data.pdf_url,
+    data.pdfUrl,
+    data.customer_pdf_url,
+    data.customerPdfUrl,
+    data.vendor_pdf_url,
+    data.vendorPdfUrl,
+    data.attachment_url,
+    data.attachmentUrl,
+    data.source_file_url,
+    data.sourceFileUrl,
+    data.file_url,
+    data.fileUrl,
+    data.download_url,
+    data.downloadUrl,
+  );
+  if (direct) return direct;
+
+  for (const key of ['attachment', 'file', 'document', 'source_file', 'sourceFile', 'vendor_file']) {
+    const nested = asRecord(data[key]);
+    if (!nested) continue;
+    const url = pickString(
+      nested.url,
+      nested.file_url,
+      nested.fileUrl,
+      nested.download_url,
+      nested.downloadUrl,
+      nested.path,
+    );
+    if (url) return url;
+  }
+
+  for (const key of ['attachments', 'documents', 'files']) {
+    const list = data[key];
+    if (!Array.isArray(list)) continue;
+    for (const item of list) {
+      const row = asRecord(item);
+      if (!row) continue;
+      const url = pickString(row.url, row.file_url, row.fileUrl, row.download_url, row.downloadUrl, row.path);
+      if (url) return url;
+    }
+  }
+
+  const purchaseInvoice = asRecord(data.purchase_invoice) ?? asRecord(data.purchaseInvoice);
+  if (purchaseInvoice) return pickInvoicePdfUrl(purchaseInvoice);
+
+  return undefined;
+}
+
 function normalizeLine(raw: unknown): VendorInvoiceLine | null {
   const r = asRecord(raw);
   if (!r) return null;
@@ -85,6 +136,7 @@ export function normalizeInvoiceDetail(raw: unknown): VendorInvoiceDetail | null
     taxTotal: pickNumber(data.tax_total, data.taxTotal),
     paidAmount: pickNumber(data.paid_amount, data.paidAmount),
     remarks: pickString(data.remarks, data.notes) || undefined,
+    pdfUrl: pickInvoicePdfUrl(data),
     lines: linesRaw.map(normalizeLine).filter((l): l is VendorInvoiceLine => Boolean(l)),
   };
 }

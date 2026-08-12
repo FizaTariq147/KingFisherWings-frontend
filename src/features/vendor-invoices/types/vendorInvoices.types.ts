@@ -34,6 +34,7 @@ export interface VendorInvoiceDetail extends VendorInvoiceListItem {
   taxTotal?: number;
   paidAmount?: number;
   remarks?: string;
+  pdfUrl?: string;
   lines: VendorInvoiceLine[];
 }
 
@@ -51,8 +52,11 @@ export interface VendorInvoiceListResult {
 }
 
 export interface VendorInvoiceSubmitDto {
-  amount: string;
-  invoice_date: string;
+  currency_code: string;
+  total_amount: number;
+  invoice_date?: string;
+  due_date?: string;
   reference?: string;
+  remarks?: string;
   file?: File;
 }

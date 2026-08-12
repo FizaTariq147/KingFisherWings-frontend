@@ -152,6 +152,58 @@ function pickString(...values: unknown[]): string {
   return '';
 }
 
+export interface AuthTenantBranding {
+  tenantId?: string;
+  tenantSlug?: string;
+  tenantName?: string;
+}
+
+/** Title-case tenant slug when API omits a display name (portal + vendor chrome). */
+export function formatTenantSlugLabel(slug?: string): string | undefined {
+  if (!slug) return undefined;
+  return slug
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(' ');
+}
+
+/** Resolve tenant branding from login /me payloads (nested tenant + organization). */
+export function resolveAuthTenantBranding(
+  source: Record<string, unknown>,
+  envelope?: Record<string, unknown>,
+): AuthTenantBranding {
+  const tenant = asRecord(source.tenant) || asRecord(envelope?.tenant);
+  const organization =
+    asRecord(source.organization) ||
+    asRecord(envelope?.organization) ||
+    asRecord(tenant?.organization);
+
+  const tenantSlug =
+    pickString(source.tenant_slug, source.tenantSlug, tenant?.slug, envelope?.tenant_slug) ||
+    undefined;
+
+  const tenantName =
+    pickString(
+      tenant?.display_name,
+      tenant?.displayName,
+      tenant?.name,
+      tenant?.company_name,
+      tenant?.companyName,
+      organization?.name,
+      organization?.display_name,
+      organization?.displayName,
+      source.tenant_name,
+      source.tenantName,
+      envelope?.tenant_name,
+    ) || formatTenantSlugLabel(tenantSlug);
+
+  const tenantId =
+    pickString(source.tenant_id, source.tenantId, tenant?.id, envelope?.tenant_id) || undefined;
+
+  return { tenantId, tenantSlug, tenantName };
+}
+
 function pickUserSource(record: Record<string, unknown>): Record<string, unknown> {
   return (
     asRecord(record.user) ||

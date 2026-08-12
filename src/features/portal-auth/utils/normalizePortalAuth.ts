@@ -1,6 +1,7 @@
 import {
   normalizeAuthLoginResponse,
   normalizeTokenPair,
+  resolveAuthTenantBranding,
   unwrapEnvelope,
 } from '@/features/auth/utils/normalizeAuthResponse';
 import type { PortalPartySummary, PortalUser } from '../types/portalAuth.types';
@@ -56,34 +57,10 @@ export function normalizePortalUser(raw: unknown, _accessToken?: string | null):
   const email = pickString(source.email);
   const id = pickString(source.id) || email || 'portal-user';
 
-  const tenant = asRecord(source.tenant) || asRecord(envelope.tenant);
-  const organization =
-    asRecord(source.organization) ||
-    asRecord(envelope.organization) ||
-    asRecord(tenant?.organization);
-
-  const tenantSlug =
-    pickString(
-      source.tenant_slug,
-      source.tenantSlug,
-      tenant?.slug,
-      envelope.tenant_slug,
-    ) || undefined;
-
-  const tenantName =
-    pickString(
-      tenant?.display_name,
-      tenant?.displayName,
-      tenant?.name,
-      tenant?.company_name,
-      tenant?.companyName,
-      organization?.name,
-      organization?.display_name,
-      organization?.displayName,
-      source.tenant_name,
-      source.tenantName,
-      envelope.tenant_name,
-    ) || undefined;
+  const { tenantName, tenantId: resolvedTenantId, tenantSlug } = resolveAuthTenantBranding(
+    source,
+    envelope,
+  );
 
   return {
     id,
@@ -93,20 +70,9 @@ export function normalizePortalUser(raw: unknown, _accessToken?: string | null):
     status: pickString(source.status) || undefined,
     party,
     tenantSlug,
-    tenantId:
-      pickString(source.tenant_id, source.tenantId, tenant?.id, envelope.tenant_id) ||
-      undefined,
-    tenantName: tenantName || formatTenantSlugLabel(tenantSlug),
+    tenantId: resolvedTenantId,
+    tenantName,
   };
-}
-
-function formatTenantSlugLabel(slug?: string): string | undefined {
-  if (!slug) return undefined;
-  return slug
-    .split(/[-_]+/)
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-    .join(' ');
 }
 
 export function normalizePortalLoginResponse(raw: unknown) {
