@@ -8,6 +8,9 @@ import {
   ListChecks,
   IdCard,
   FileText,
+  CalendarCheck,
+  ClipboardList,
+  Mail,
 } from 'lucide-react';
 import type { MenuTile } from '../../customers/types/menu.types';
 
@@ -15,7 +18,7 @@ export const salesMenu: MenuTile[] = [
   {
     id: 'call-sheet',
     title: 'Call Sheet',
-    description: 'To create and view call sheet by salesman wise, customer wise and call sheet purpose by using this option.',
+    description: 'Log sales calls, visits, outcomes, and review daily salesperson activity.',
     icon: Phone,
     iconColor: 'bg-sky-500',
     path: '/sales/call-sheet',
@@ -31,10 +34,26 @@ export const salesMenu: MenuTile[] = [
   {
     id: 'lead',
     title: 'Lead',
-    description: 'To create and view leads by customer name wise, status wise and lead source, by using this option.',
+    description: 'Capture prospects, manage the sales pipeline, and convert qualified leads to parties.',
     icon: ThumbsUp,
     iconColor: 'bg-emerald-500',
     path: '/sales/lead',
+  },
+  {
+    id: 'follow-ups',
+    title: 'Follow-ups',
+    description: 'Plan pending actions, manage due dates, and close completed sales tasks.',
+    icon: CalendarCheck,
+    iconColor: 'bg-violet-500',
+    path: '/sales/follow-ups',
+  },
+  {
+    id: 'enquiries',
+    title: 'Enquiries',
+    description: 'Record freight requirements and convert qualified enquiries into quotations.',
+    icon: ClipboardList,
+    iconColor: 'bg-indigo-500',
+    path: '/sales/enquiries',
   },
   {
     id: 'rate-charges',
@@ -47,7 +66,7 @@ export const salesMenu: MenuTile[] = [
   {
     id: 'sales-budget',
     title: 'Sales Budget',
-    description: 'To maintain sales budget for a year such as salesperson wise, amount with foreign currencies and etc..',
+    description: 'Set salesperson targets by period and service, and compare performance.',
     icon: Wallet,
     iconColor: 'bg-lime-500',
     path: '/sales/sales-budget',
@@ -55,10 +74,18 @@ export const salesMenu: MenuTile[] = [
   {
     id: 'sales-dashboard',
     title: 'Sales Dashboard',
-    description: 'This dashboard will show each customer wise performance.',
+    description: 'Review CRM KPIs, pipeline performance, conversion, and sales reports.',
     icon: Gauge,
     iconColor: 'bg-yellow-500',
     path: '/sales/sales-dashboard',
+  },
+  {
+    id: 'email-marketing',
+    title: 'Email Marketing',
+    description: 'Manage subscribers, reusable templates, and outbound sales campaigns.',
+    icon: Mail,
+    iconColor: 'bg-rose-500',
+    path: '/sales/email-marketing',
   },
   {
     id: 'shipments-list-sales',
@@ -82,8 +109,8 @@ export const salesMenu: MenuTile[] = [
 export const reportsSalesTile: MenuTile = {
   id: 'reports-sales',
   title: 'Reports - Sales',
-  description: 'To view sales man call history, Sales man wise profitability and all sales related report by using this option.',
+  description: 'Pipeline, win/loss, budget vs actual, enquiry conversion, overdue follow-ups, and other CRM sales reports.',
   icon: FileText,
   iconColor: 'bg-sky-500',
-  path: '/sales/reports',
+  path: '/sales/sales-dashboard',
 };
