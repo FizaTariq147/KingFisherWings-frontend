@@ -1,0 +1,17 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useAuthStore } from '@/store/authStore';
+import { crmEmailService } from '../services/crmEmail.service';
+import type { CreateCampaignDto, CreateCampaignTemplateDto, CreateSubscriberDto } from '../types/crm.types';
+const keys = { all: ['tenant', 'crm', 'email'] as const, subscribers: ['tenant', 'crm', 'email', 'subscribers'] as const, templates: ['tenant', 'crm', 'email', 'templates'] as const, campaigns: ['tenant', 'crm', 'email', 'campaigns'] as const };
+const useEnabled = () => Boolean(useAuthStore(s => s.accessToken));
+const useInvalidatingMutation = <T,>(fn: (value: T) => Promise<unknown>) => { const c = useQueryClient(); return useMutation({ mutationFn: fn, onSuccess: () => c.invalidateQueries({ queryKey: keys.all }) }); };
+export const useCrmSubscribers = () => useQuery({ queryKey: keys.subscribers, queryFn: crmEmailService.subscribers, enabled: useEnabled() });
+export const useCrmTemplates = () => useQuery({ queryKey: keys.templates, queryFn: crmEmailService.templates, enabled: useEnabled() });
+export const useCrmCampaigns = () => useQuery({ queryKey: keys.campaigns, queryFn: crmEmailService.campaigns, enabled: useEnabled() });
+export const useCreateCrmSubscriber = () => useInvalidatingMutation((dto: CreateSubscriberDto) => crmEmailService.createSubscriber(dto));
+export const useImportCrmSubscribers = () => useInvalidatingMutation((file: File) => crmEmailService.importSubscribers(file));
+export const useUnsubscribeCrmSubscriber = () => useInvalidatingMutation((id: string) => crmEmailService.unsubscribe(id));
+export const useCreateCrmTemplate = () => useInvalidatingMutation((dto: CreateCampaignTemplateDto) => crmEmailService.createTemplate(dto));
+export const useCreateCrmCampaign = () => useInvalidatingMutation((dto: CreateCampaignDto) => crmEmailService.createCampaign(dto));
+export const useScheduleCrmCampaign = () => useInvalidatingMutation((id: string) => crmEmailService.schedule(id));
+export const useSendCrmCampaign = () => useInvalidatingMutation((id: string) => crmEmailService.send(id));

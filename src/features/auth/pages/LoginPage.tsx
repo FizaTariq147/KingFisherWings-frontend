@@ -499,7 +499,7 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = NAVY }}
               >
                 <Lock size={15} strokeWidth={2.5} />
-                Customer / User Sign On
+                Admin or Staff Sign On
               </button>
 
               <div className="mt-2.5 flex justify-end">

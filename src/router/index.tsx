@@ -102,14 +102,21 @@ import AwbStockCreatePage from '../features/awbStock/pages/AwbStockCreatePage'
 import AwbStockDetailPage from '../features/awbStock/pages/AwbStockDetailPage'
 import AwbStockEditPage from '../features/awbStock/pages/AwbStockEditPage'
 import SalesMenuPage from '../pages/sales/SalesMenuPage'
-import CallSheetPage from '../pages/sales/CallSheetPage'
 import ClientRequestListPage from '../pages/sales/ClientRequestListPage'
-import SalesLeadPage from '../pages/sales/SalesLeadPage'
 import RateChargesPage from '../pages/sales/RateChargesPage'
-import SalesBudgetPage from '../pages/sales/SalesBudgetPage'
-import SalesDashboardPage from '../pages/sales/SalesDashboardPage'
 import ShipmentsListSalesPage from '../pages/sales/ShipmentsListSalesPage'
 import VisitingCardListPage from '../pages/sales/VisitingCardListPage'
+import CrmLeadsPage from '../features/crm/pages/CrmLeadsPage'
+import CrmLeadCreatePage from '../features/crm/pages/CrmLeadCreatePage'
+import CrmLeadDetailPage from '../features/crm/pages/CrmLeadDetailPage'
+import CrmCallLogsPage from '../features/crm/pages/CrmCallLogsPage'
+import CrmFollowUpsPage from '../features/crm/pages/CrmFollowUpsPage'
+import CrmEnquiriesPage from '../features/crm/pages/CrmEnquiriesPage'
+import CrmEnquiryCreatePage from '../features/crm/pages/CrmEnquiryCreatePage'
+import CrmEnquiryDetailPage from '../features/crm/pages/CrmEnquiryDetailPage'
+import CrmDashboardPage from '../features/crm/pages/CrmDashboardPage'
+import CrmBudgetsPage from '../features/crm/pages/CrmBudgetsPage'
+import CrmEmailMarketingPage from '../features/crm/pages/CrmEmailMarketingPage'
 import HrMenuPage from '../pages/hr/HrMenuPage'
 import EmployeesListPage from '../pages/hr/EmployeesListPage'
 import LeaveRequestPage from '../pages/hr/LeaveRequestPage'
@@ -478,12 +485,19 @@ export const router = createBrowserRouter([
             children: [{ path: '/vendor-admin/disputes', element: <VendorAdminDisputesPage /> }],
           },
           { path: '/sales', element: <SalesMenuPage /> },
-          {path: '/sales/call-sheet', element: <CallSheetPage />},
+          {path: '/sales/call-sheet', element: <CrmCallLogsPage />},
           {path: '/sales/client-request-list', element: <ClientRequestListPage />},
-          {path: '/sales/lead', element: <SalesLeadPage />},
+          {path: '/sales/lead', element: <CrmLeadsPage />},
+          {path: '/sales/lead/new', element: <CrmLeadCreatePage />},
+          {path: '/sales/lead/:id', element: <CrmLeadDetailPage />},
+          {path: '/sales/follow-ups', element: <CrmFollowUpsPage />},
+          {path: '/sales/enquiries', element: <CrmEnquiriesPage />},
+          {path: '/sales/enquiries/new', element: <CrmEnquiryCreatePage />},
+          {path: '/sales/enquiries/:id', element: <CrmEnquiryDetailPage />},
           {path: '/sales/rate-charges', element: <RateChargesPage />},
-          {path: '/sales/sales-budget', element: <SalesBudgetPage />},
-          {path: '/sales/sales-dashboard', element: <SalesDashboardPage />},
+          {path: '/sales/sales-budget', element: <CrmBudgetsPage />},
+          {path: '/sales/sales-dashboard', element: <CrmDashboardPage />},
+          {path: '/sales/email-marketing', element: <CrmEmailMarketingPage />},
           {path: '/sales/shipments-list', element: <ShipmentsListSalesPage />},
           {path: '/sales/visiting-card-list', element: <VisitingCardListPage />},
 

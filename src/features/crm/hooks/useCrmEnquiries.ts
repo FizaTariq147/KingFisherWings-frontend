@@ -1,0 +1,11 @@
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useAuthStore } from '@/store/authStore';
+import { crmEnquiriesService } from '../services/crmEnquiries.service';
+import type { CreateEnquiryDto, EnquiryListParams, UpdateEnquiryDto } from '../types/crm.types';
+const keys = { all: ['tenant', 'crm', 'enquiries'] as const, list: (p: EnquiryListParams) => ['tenant', 'crm', 'enquiries', p] as const, detail: (id: string) => ['tenant', 'crm', 'enquiries', id] as const };
+export const useCrmEnquiries = (params: EnquiryListParams) => { const t = useAuthStore(s => s.accessToken); return useQuery({ queryKey: keys.list(params), queryFn: () => crmEnquiriesService.list(params), enabled: Boolean(t), placeholderData: keepPreviousData }); };
+export const useCrmEnquiry = (id: string) => { const t = useAuthStore(s => s.accessToken); return useQuery({ queryKey: keys.detail(id), queryFn: () => crmEnquiriesService.get(id), enabled: Boolean(t && id) }); };
+const invalidate = (c: ReturnType<typeof useQueryClient>) => () => c.invalidateQueries({ queryKey: keys.all });
+export const useCreateCrmEnquiry = () => { const c = useQueryClient(); return useMutation({ mutationFn: (dto: CreateEnquiryDto) => crmEnquiriesService.create(dto), onSuccess: invalidate(c) }); };
+export const useUpdateCrmEnquiry = (id: string) => { const c = useQueryClient(); return useMutation({ mutationFn: (dto: UpdateEnquiryDto) => crmEnquiriesService.update(id, dto), onSuccess: invalidate(c) }); };
+export const useConvertCrmEnquiry = () => { const c = useQueryClient(); return useMutation({ mutationFn: (id: string) => crmEnquiriesService.convert(id), onSuccess: invalidate(c) }); };
