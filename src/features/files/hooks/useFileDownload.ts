@@ -1,6 +1,14 @@
 import { useCallback, useState } from 'react';
 import { filesService } from '../services/files.service';
-import type { FileDownloadParams } from '../types/files.types';
+import type { FileDisplayOptions, FileDownloadParams } from '../types/files.types';
+
+function normalizeFileOptions(
+  displayNameOrOptions?: string | FileDisplayOptions,
+): FileDisplayOptions | undefined {
+  if (!displayNameOrOptions) return undefined;
+  if (typeof displayNameOrOptions === 'string') return { displayName: displayNameOrOptions };
+  return displayNameOrOptions;
+}
 
 export function useFileDownload() {
   const [isPending, setIsPending] = useState(false);
@@ -21,26 +29,26 @@ export function useFileDownload() {
   }, []);
 
   const openStoredFile = useCallback(
-    (url: string, displayName?: string) =>
-      run(() => filesService.openStoredFile(url, { displayName })),
+    (url: string, displayNameOrOptions?: string | FileDisplayOptions) =>
+      run(() => filesService.openStoredFile(url, normalizeFileOptions(displayNameOrOptions))),
     [run],
   );
 
   const downloadStoredFile = useCallback(
-    (url: string, displayName?: string) =>
-      run(() => filesService.downloadStoredFile(url, { displayName })),
+    (url: string, displayNameOrOptions?: string | FileDisplayOptions) =>
+      run(() => filesService.downloadStoredFile(url, normalizeFileOptions(displayNameOrOptions))),
     [run],
   );
 
   const openFile = useCallback(
-    (params: FileDownloadParams, displayName?: string) =>
-      run(() => filesService.download(params, 'open', { displayName })),
+    (params: FileDownloadParams, displayNameOrOptions?: string | FileDisplayOptions) =>
+      run(() => filesService.download(params, 'open', normalizeFileOptions(displayNameOrOptions))),
     [run],
   );
 
   const downloadFile = useCallback(
-    (params: FileDownloadParams, displayName?: string) =>
-      run(() => filesService.download(params, 'download', { displayName })),
+    (params: FileDownloadParams, displayNameOrOptions?: string | FileDisplayOptions) =>
+      run(() => filesService.download(params, 'download', normalizeFileOptions(displayNameOrOptions))),
     [run],
   );
 

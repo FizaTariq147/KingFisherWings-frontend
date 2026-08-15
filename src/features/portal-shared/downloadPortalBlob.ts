@@ -6,7 +6,9 @@ import {
   safeDownloadFilename,
   unwrapData,
 } from '@/features/portal-shared/normalize';
-import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import { triggerBlobDownload, triggerBrandedPdfDownload } from '@/features/files/utils/triggerBlobDownload';
+import { isPdfBlob, type PdfBrandingOptions } from '@/features/files/utils/pdfBranding';
+import { formatPdfFilename, stripPdfExtension } from '@/features/files/utils/pdfFilename';
 
 function compactParams(params?: Record<string, unknown>): Record<string, unknown> | undefined {
   if (!params) return undefined;
@@ -71,6 +73,7 @@ export type DownloadPortalBlobOptions = {
   params?: Record<string, unknown>;
   accept?: string;
   hops?: number;
+  branding?: PdfBrandingOptions;
 };
 
 /** Authenticated blob download for portal CSV/PDF/attachments. */
@@ -133,7 +136,7 @@ export async function downloadPortalBlob(
     throw new PortalApiError('Download returned an empty file.', res.status || 404);
   }
 
-  const filename = safeDownloadFilename(
+  const serverName = safeDownloadFilename(
     filenameFromContentDisposition(
       typeof res.headers['content-disposition'] === 'string'
         ? res.headers['content-disposition']
@@ -141,5 +144,25 @@ export async function downloadPortalBlob(
     ) || fallbackName,
     fallbackName,
   );
+  const fallbackRef = stripPdfExtension(fallbackName);
+  const genericFallback = ['quotation', 'invoice', 'document', 'download'].includes(
+    fallbackRef.toLowerCase(),
+  );
+  const filename = options.branding?.documentNumber
+    ? formatPdfFilename(options.branding.documentNumber, stripPdfExtension(fallbackName) || 'document')
+    : !genericFallback && fallbackRef
+      ? formatPdfFilename(fallbackRef, 'document')
+      : serverName;
+
+  if (isPdfBlob(blob, filename)) {
+    await triggerBrandedPdfDownload(blob, filename, {
+      filename,
+      branding: options.branding ?? {
+        documentNumber: stripPdfExtension(filename),
+        title: stripPdfExtension(filename),
+      },
+    });
+    return;
+  }
   triggerBlobDownload(blob, filename);
 }

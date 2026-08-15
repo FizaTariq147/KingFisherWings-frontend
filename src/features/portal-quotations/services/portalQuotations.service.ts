@@ -1,6 +1,7 @@
 import { portalApiClient, PortalApiError } from '@/lib/portalApiClient';
+import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
+import { quotationPdfBranding } from '@/features/files/utils/pdfBranding';
 import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
-import { safeDownloadFilename } from '@/features/portal-shared/normalize';
 import { PORTAL_QUOTATIONS_API } from '../api/portalQuotations.api';
 import type {
   PortalQuotationDetail,
@@ -62,13 +63,16 @@ export const portalQuotationsService = {
     return this.getById(id);
   },
 
-  async downloadPdf(id: string, fallbackName = 'quotation.pdf'): Promise<void> {
+  async downloadPdf(
+    id: string,
+    quotationNumber = 'quotation',
+  ): Promise<void> {
+    const filename = formatPdfFilename(quotationNumber, 'quotation');
     try {
-      await downloadPortalBlob(
-        PORTAL_QUOTATIONS_API.pdf(id),
-        safeDownloadFilename(fallbackName, 'quotation.pdf'),
-        { accept: 'application/pdf, application/octet-stream, */*' },
-      );
+      await downloadPortalBlob(PORTAL_QUOTATIONS_API.pdf(id), filename, {
+        accept: 'application/pdf, application/octet-stream, */*',
+        branding: quotationPdfBranding(quotationNumber),
+      });
     } catch (err) {
       if (err instanceof PortalApiError) {
         if (err.status === 404 || err.status >= 500) {

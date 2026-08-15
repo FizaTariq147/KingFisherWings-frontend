@@ -55,7 +55,7 @@ export function useExportPortalInvoicesCsv() {
 export function useDownloadPortalInvoicePdf() {
   return useMutation({
     mutationFn: ({ id, name }: { id: string; name?: string }) =>
-      portalInvoicesService.downloadPdf(id, name || 'invoice.pdf'),
+      portalInvoicesService.downloadPdf(id, name || 'invoice'),
   });
 }
 

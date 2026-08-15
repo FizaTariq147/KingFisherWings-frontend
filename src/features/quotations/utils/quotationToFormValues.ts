@@ -1,5 +1,6 @@
 import type { CreateQuotationFormValues } from '../types/quotation.types';
 import type { Quotation } from '../types/quotation.types';
+import { formatQuotationRemarks } from './formatQuotationRemarks';
 
 export function quotationToFormValues(q: Quotation): CreateQuotationFormValues {
   return {
@@ -26,7 +27,11 @@ export function quotationToFormValues(q: Quotation): CreateQuotationFormValues {
     special_requirements: q.special_requirements || undefined,
     carrier_preference: q.carrier_preference || undefined,
     routing_notes: q.routing_notes || undefined,
-    remarks: q.remarks || undefined,
+    remarks:
+      formatQuotationRemarks(q.remarks, {
+        contactName: q.contact_name,
+        createdByName: q.created_by_name,
+      }) || undefined,
     internal_notes: q.internal_notes || undefined,
     transit_time_days: q.transit_time_days,
     valid_until: q.valid_until || undefined,

@@ -6,7 +6,8 @@ import {
   safeDownloadFilename,
   unwrapData,
 } from '@/features/vendor-shared/normalize';
-import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import { triggerBlobDownload, triggerBrandedPdfDownload } from '@/features/files/utils/triggerBlobDownload';
+import { isPdfBlob } from '@/features/files/utils/pdfBranding';
 
 function compactParams(params?: Record<string, unknown>): Record<string, unknown> | undefined {
   if (!params) return undefined;
@@ -139,5 +140,9 @@ export async function downloadVendorBlob(
     ) || fallbackName,
     fallbackName,
   );
+  if (isPdfBlob(blob, filename)) {
+    await triggerBrandedPdfDownload(blob, filename, { filename, branding: { title: filename } });
+    return;
+  }
   triggerBlobDownload(blob, filename);
 }

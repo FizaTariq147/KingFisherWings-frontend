@@ -1,3 +1,12 @@
+import { isPdfBlob, openPdfBlobInNewTab, resolvePdfBranding, type PdfBrandingOptions } from './pdfBranding';
+import { ensureBrandedPdfBlob } from './stampPdfBranding';
+import { resolvePdfDownloadFilename } from './pdfFilename';
+
+export type BlobOpenOptions = {
+  filename?: string;
+  branding?: PdfBrandingOptions;
+};
+
 /** Save a Blob in the browser with a suggested filename. */
 export function triggerBlobDownload(blob: Blob, filename: string): void {
   const objectUrl = URL.createObjectURL(blob);
@@ -12,11 +21,24 @@ export function triggerBlobDownload(blob: Blob, filename: string): void {
   window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
 }
 
-/**
- * Open a blank tab synchronously (must run in the click handler) so the
- * browser does not treat a later navigation as a blocked pop-up.
- */
-export function openBlankPreviewTab(): Window {
+/** Download PDF with quote-no filename; header/footer overlay preserves body alignment. */
+export async function triggerBrandedPdfDownload(
+  blob: Blob,
+  filename: string,
+  options?: BlobOpenOptions,
+): Promise<void> {
+  const downloadName = resolvePdfDownloadFilename(filename, {
+    documentNumber: options?.branding?.documentNumber,
+    title: options?.branding?.title || options?.filename,
+  });
+  const branding = resolvePdfBranding(options?.branding);
+  const output = isPdfBlob(blob, filename)
+    ? await ensureBrandedPdfBlob(blob, branding)
+    : blob;
+  triggerBlobDownload(output, downloadName);
+}
+
+export function openBlankPreviewTab(_options?: BlobOpenOptions): Window {
   const opened = window.open('about:blank', '_blank');
   if (!opened) {
     throw new Error('Pop-up blocked. Allow pop-ups to preview this file.');
@@ -26,19 +48,26 @@ export function openBlankPreviewTab(): Window {
     opened.document.body.innerHTML =
       '<p style="font-family:system-ui,sans-serif;padding:1.5rem;color:#555">Loading preview…</p>';
   } catch {
-    /* ignore — some browsers restrict about:blank writes */
+    /* ignore */
   }
   return opened;
 }
 
-/**
- * Open a Blob in a new tab (useful for PDF preview).
- * Pass `targetWindow` from {@link openBlankPreviewTab} when the blob is
- * fetched asynchronously after a user click.
- */
-export function openBlobInNewTab(blob: Blob, targetWindow?: Window | null): void {
-  const objectUrl = URL.createObjectURL(blob);
+/** Open PDF in a new tab with header/footer overlay (content position unchanged). */
+export async function openBlobInNewTab(
+  blob: Blob,
+  targetWindow?: Window | null,
+  options?: BlobOpenOptions,
+): Promise<void> {
+  const filename = options?.filename;
+  if (isPdfBlob(blob, filename)) {
+    const branding = resolvePdfBranding(options?.branding);
+    const blobToOpen = await ensureBrandedPdfBlob(blob, branding);
+    openPdfBlobInNewTab(blobToOpen, targetWindow, filename);
+    return;
+  }
 
+  const objectUrl = URL.createObjectURL(blob);
   if (targetWindow && !targetWindow.closed) {
     try {
       targetWindow.location.replace(objectUrl);
@@ -49,7 +78,6 @@ export function openBlobInNewTab(blob: Blob, targetWindow?: Window | null): void
     return;
   }
 
-  // Synchronous path only — after await, this is usually blocked by the browser.
   const opened = window.open(objectUrl, '_blank');
   if (!opened) {
     URL.revokeObjectURL(objectUrl);

@@ -75,7 +75,7 @@ export default function PortalInvoiceDetailPage() {
               onClick={() => {
                 setPdfError(null);
                 void download
-                  .mutateAsync({ id: data.id, name: `${data.number}.pdf` })
+                  .mutateAsync({ id: data.id, name: data.number })
                   .catch((err) => {
                     setPdfError(
                       err instanceof PortalApiError || err instanceof Error

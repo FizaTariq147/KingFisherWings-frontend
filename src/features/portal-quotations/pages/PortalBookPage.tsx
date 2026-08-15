@@ -18,6 +18,7 @@ import {
   usePortalLocaleCurrency,
   useRequestPortalQuotation,
 } from '../hooks/usePortalQuotations';
+import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 
 const optionalUuid = z
   .string()
@@ -82,6 +83,7 @@ function parseOptionalNumber(value?: string): number | undefined {
 export default function PortalBookPage() {
   const navigate = useNavigate();
   const requestQuote = useRequestPortalQuotation();
+  const portalUser = usePortalAuthStore((s) => s.user);
   const [error, setError] = useState<string | null>(null);
   const [countryCode, setCountryCode] = useState('AE');
 
@@ -157,6 +159,8 @@ export default function PortalBookPage() {
                 pieces: parseOptionalNumber(values.pieces),
                 special_requirements: values.special_requirements?.trim() || undefined,
                 valid_until: values.valid_until || undefined,
+                contact_name: portalUser?.fullName?.trim() || undefined,
+                contact_email: portalUser?.email?.trim() || undefined,
               });
               if (created.id && created.id !== 'new') {
                 navigate(`/portal/quotes/${created.id}`);

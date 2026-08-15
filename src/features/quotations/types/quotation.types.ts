@@ -133,6 +133,7 @@ export interface Quotation {
   created_at?: string;
   updated_at?: string;
   created_by?: string;
+  created_by_name?: string;
   lines?: QuotationLine[];
   status_history?: QuotationStatusHistoryEntry[];
   approvals?: QuotationApproval[];

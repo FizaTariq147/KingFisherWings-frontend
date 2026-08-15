@@ -8,4 +8,12 @@ export interface ParsedFilesApiUrl extends FileDownloadParams {
   source: string;
 }
 
+import type { PdfBrandingOptions } from '../utils/pdfBranding';
+
 export type StoredFileAction = 'open' | 'download';
+
+export type FileDisplayOptions = {
+  signal?: AbortSignal;
+  displayName?: string;
+  branding?: PdfBrandingOptions;
+};

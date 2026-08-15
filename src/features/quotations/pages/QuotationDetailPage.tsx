@@ -342,6 +342,8 @@ export default function QuotationDetailPage() {
 
       <QuotationPdfModal
         quotationId={id}
+        quotationNumber={title}
+        quotationDate={quotation.quotation_date}
         open={pdfOpen}
         isPending={actions.generatePdf.isPending}
         pdfInfo={pdfInfo}

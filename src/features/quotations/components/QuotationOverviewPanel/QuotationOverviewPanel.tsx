@@ -1,5 +1,6 @@
 import { JOB_TYPE_LABELS } from '../../constants/quotation.constants';
 import type { Quotation } from '../../types/quotation.types';
+import { formatQuotationRemarks } from '../../utils/formatQuotationRemarks';
 import { quotationDisplayNumber } from '../../utils/normalizeQuotation';
 
 function Row({ label, value }: { label: string; value?: string | number | null }) {
@@ -16,6 +17,11 @@ interface QuotationOverviewPanelProps {
 }
 
 export function QuotationOverviewPanel({ quotation: q }: QuotationOverviewPanelProps) {
+  const remarks = formatQuotationRemarks(q.remarks, {
+    contactName: q.contact_name,
+    createdByName: q.created_by_name,
+  });
+
   return (
     <div className="space-y-6">
       <section>
@@ -77,7 +83,7 @@ export function QuotationOverviewPanel({ quotation: q }: QuotationOverviewPanelP
           Additional information
         </h3>
         <dl>
-          <Row label="Remarks" value={q.remarks} />
+          <Row label="Remarks" value={remarks} />
           <Row label="Internal notes" value={q.internal_notes} />
           <Row label="Special requirements" value={q.special_requirements} />
           <Row label="Routing notes" value={q.routing_notes} />

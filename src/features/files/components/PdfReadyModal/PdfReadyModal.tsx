@@ -2,6 +2,8 @@ import { Download, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { useFileDownload } from '@/features/files/hooks/useFileDownload';
+import { isPdfUrl, openBrandedPdfUrl, type PdfBrandingOptions } from '@/features/files/utils/pdfBranding';
+import { stripPdfExtension } from '@/features/files/utils/pdfFilename';
 import { isStoredFileUrl } from '@/features/files/utils/parseFilesApiUrl';
 
 export interface PdfReadyModalProps {
@@ -12,6 +14,7 @@ export interface PdfReadyModalProps {
   title?: string;
   fileName?: string;
   description?: string;
+  branding?: PdfBrandingOptions;
 }
 
 /**
@@ -24,14 +27,31 @@ export function PdfReadyModal({
   title = 'PDF ready',
   fileName = 'document.pdf',
   description = 'Your PDF was created successfully.',
+  branding,
 }: PdfReadyModalProps) {
   const { openStoredFile, downloadStoredFile, isPending, error } = useFileDownload();
   const ready = Boolean(url);
+  const fileOptions = {
+    displayName: fileName,
+    branding: {
+      ...branding,
+      title: branding?.title || fileName,
+      documentNumber: branding?.documentNumber || stripPdfExtension(fileName),
+    },
+  };
 
   const handleOpen = () => {
     if (!url) return;
     if (isStoredFileUrl(url)) {
-      void openStoredFile(url, fileName).catch(() => undefined);
+      void openStoredFile(url, fileOptions).catch(() => undefined);
+      return;
+    }
+    if (isPdfUrl(url, fileName)) {
+      try {
+        void openBrandedPdfUrl(url, fileOptions.branding);
+      } catch {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
       return;
     }
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -40,7 +60,11 @@ export function PdfReadyModal({
   const handleDownload = () => {
     if (!url) return;
     if (isStoredFileUrl(url)) {
-      void downloadStoredFile(url, fileName).catch(() => undefined);
+      void downloadStoredFile(url, fileOptions).catch(() => undefined);
+      return;
+    }
+    if (isPdfUrl(url, fileName)) {
+      void downloadStoredFile(url, fileOptions).catch(() => undefined);
       return;
     }
     const anchor = document.createElement('a');

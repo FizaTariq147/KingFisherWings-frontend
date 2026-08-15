@@ -4,6 +4,8 @@ import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 import { StoredFileLink } from '@/features/files/components/StoredFileLink';
+import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
+import { invoicePdfBranding } from '@/features/files/utils/pdfBranding';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
 import { InvoiceEmailModal } from '../components/InvoiceEmailModal';
 import { InvoiceLinesEditor } from '../components/InvoiceLinesEditor';
@@ -61,6 +63,9 @@ export default function InvoiceDetailPage() {
   const canPost = invoice.status === 'DRAFT';
   const canCancel = !['CANCELLED', 'VOID', 'PAID'].includes(invoice.status);
   const pdfUrl = pdfInfo?.pdf_url || pdfInfo?.customer_pdf_url || invoice.pdf_url;
+  const invoiceNumber = invoiceDisplayNumber(invoice);
+  const pdfFileName = formatPdfFilename(invoiceNumber, 'invoice');
+  const pdfBranding = invoicePdfBranding(invoiceNumber, invoice.invoice_date);
 
   const run = async (fn: () => Promise<unknown>, successMsg?: string) => {
     setActionError(null);
@@ -214,7 +219,7 @@ export default function InvoiceDetailPage() {
       )}
 
       <DetailPageTemplate
-        title={invoiceDisplayNumber(invoice)}
+        title={invoiceNumber}
         subtitle={
           invoice.invoice_type
             ? INVOICE_TYPE_LABELS[invoice.invoice_type as InvoiceType] ?? invoice.invoice_type
@@ -277,7 +282,12 @@ export default function InvoiceDetailPage() {
                   </CardHeader>
                   <div className="p-4 pt-0 text-sm">
                     {pdfUrl ? (
-                      <StoredFileLink url={pdfUrl} label="Open PDF" displayName={`invoice-${id}.pdf`} />
+                      <StoredFileLink
+                        url={pdfUrl}
+                        label="Open PDF"
+                        displayName={pdfFileName}
+                        branding={pdfBranding}
+                      />
                     ) : (
                       <p className="text-[var(--color-neutral-400)]">
                         No PDF yet. Use Generate PDF.
@@ -313,7 +323,8 @@ export default function InvoiceDetailPage() {
         onClose={() => setPdfReadyOpen(false)}
         url={pdfReadyUrl}
         title="Invoice PDF ready"
-        fileName={`invoice-${id}.pdf`}
+        fileName={pdfFileName}
+        branding={pdfBranding}
         description="Your invoice PDF was created successfully."
       />
     </>

@@ -151,7 +151,11 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     revenue_total: num(r.revenue_total),
     gp_amount: num(r.gp_amount),
     gp_percent: num(r.gp_percent),
-    contact_name: str(r.contact_name),
+    contact_name:
+      str(r.contact_name) ??
+      str(asRecord(r.portal_user)?.full_name) ??
+      str(asRecord(r.portal_user)?.fullName) ??
+      str(asRecord(r.portal_user)?.name),
     contact_email: str(r.contact_email),
     contact_phone: str(r.contact_phone),
     lost_reason: str(r.lost_reason),
@@ -163,6 +167,15 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     created_at: str(r.created_at),
     updated_at: str(r.updated_at),
     created_by: str(r.created_by),
+    created_by_name:
+      str(r.created_by_name) ??
+      str(r.created_by_full_name) ??
+      str(asRecord(r.created_by_user)?.full_name) ??
+      str(asRecord(r.created_by_user)?.fullName) ??
+      str(asRecord(r.created_by_user)?.name) ??
+      str(asRecord(r.creator)?.full_name) ??
+      str(asRecord(r.creator)?.fullName) ??
+      str(asRecord(r.creator)?.name),
     lines: normalizeQuotationLines(linesRaw),
     status_history: Array.isArray(r.status_history)
       ? (r.status_history as Quotation['status_history'])
