@@ -6,6 +6,7 @@ export default function CustomerServiceMenuPage() {
     <ModuleMenuShell
       title="Customers"
       tiles={customerServiceMenu}
+      compact
     />
   );
 }

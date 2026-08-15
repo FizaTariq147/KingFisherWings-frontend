@@ -1,5 +1,5 @@
 import { Building2, KeyRound, Shield, UserCircle, MonitorSmartphone } from 'lucide-react';
-import type { MenuTile } from '../../features/customers/types/menu.types';
+import type { MenuTile } from '@/features/customers/types/menu.types';
 
 /** Settings hub — account, security, and workspace configuration. */
 export const settingsMenu: MenuTile[] = [

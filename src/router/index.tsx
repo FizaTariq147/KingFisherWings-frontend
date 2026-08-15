@@ -136,6 +136,7 @@ import ManagementDashboardPage from '../pages/management/ManagementDashboardPage
 import ManagementDashboardReportsPage from '../pages/management/ManagementDashboardReportsPage'
 import UserAccessPage from '../pages/management/UserAccessPage'
 import UserWisePerformancePage from '../pages/management/UserWisePerformancePage'
+import ManagementReportsMisPage from '../pages/management/ManagementReportsMisPage'
 import DocumentationMenuPage from '../pages/documentation/DocumentationMenuPage'
 import AllJobsPageDocumentation from '../pages/documentation/AllJobsPage'
 import BoeDashboardPage from '../pages/documentation/BoeDashboardPage'
@@ -195,6 +196,7 @@ import VendorPaymentRequestsPage from '../features/vendor-payment-requests/pages
 import VendorDisputesPage from '../features/vendor-disputes/pages/VendorDisputesPage'
 import VendorTdsPage from '../features/vendor-tds/pages/VendorTdsPage'
 import PublicTrackPage from '../features/public-track/pages/PublicTrackPage'
+import PublicTrackWidgetPage from '../features/public-track/pages/PublicTrackWidgetPage'
 import NotificationsPage from '../features/notifications/pages/NotificationsPage'
 import TenantListPage from '../features/tenants/pages/TenantListPage'
 import TenantCreatePage from '../features/tenants/pages/TenantCreatePage'
@@ -261,6 +263,7 @@ export const router = createBrowserRouter([
   { path: '/portal/login', element: <PortalLoginPage /> },
   { path: '/portal/accept-invite', element: <PortalLoginPage /> },
   { path: '/track', element: <PublicTrackPage /> },
+  { path: '/track/widget', element: <PublicTrackWidgetPage /> },
   {
     path: '/portal',
     element: <PortalProtectedRoute />,
@@ -439,6 +442,7 @@ export const router = createBrowserRouter([
           {path: '/management/management-dashboard/reports', element: <ManagementDashboardReportsPage />},
           {path: '/management/user-access', element: <UserAccessPage />},
           {path: '/management/user-wise-performance', element: <UserWisePerformancePage />},
+          {path: '/management/reports', element: <ManagementReportsMisPage />},
           { path: '/nvocc', element: <NvoccMenuPage /> },
           { path: '/nvocc/all-jobs', element: <AllJobsPage /> },
           { path: '/nvocc/booking-list', element: <BookingListPage /> },

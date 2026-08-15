@@ -10,6 +10,8 @@ type ModuleMenuShellProps = {
   tiles: MenuTile[];
   /** Optional extra tile (e.g. Reports) included in search + grid. */
   featuredTile?: MenuTile;
+  /** Smaller section and tile headings (e.g. Customers menu). */
+  compact?: boolean;
   /** Page background. */
   className?: string;
 };
@@ -22,6 +24,7 @@ export function ModuleMenuShell({
   title,
   tiles,
   featuredTile,
+  compact = false,
   className = 'bg-gray-50',
 }: ModuleMenuShellProps) {
   const navigate = useNavigate();
@@ -92,8 +95,8 @@ export function ModuleMenuShell({
         </select>
       </div>
 
-      <div className="bg-[#0A2942] px-6 py-3">
-        <p className="text-white text-sm">
+      <div className={`bg-[#0A2942] px-6 ${compact ? 'py-2' : 'py-3'}`}>
+        <p className={`text-white ${compact ? 'text-xs' : 'text-sm'}`}>
           <span className="text-white/60">Menu</span>
           <span className="text-white/40 mx-2">/</span>
           <span className="font-medium">{title}</span>
@@ -109,14 +112,16 @@ export function ModuleMenuShell({
         {sectionGroups.map((group) => (
           <div key={group.label ?? 'default'} className="space-y-4">
             {group.label ? (
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+              <h2
+                className={`font-semibold uppercase tracking-wide text-gray-500 ${compact ? 'text-xs' : 'text-sm'}`}
+              >
                 {group.label}
               </h2>
             ) : null}
             <AppAnimatedGrid className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {group.tiles.map((tile) => (
                 <AppAnimatedGridItem key={tile.id}>
-                  <MenuTileCard tile={tile} onClick={navigate} />
+                  <MenuTileCard tile={tile} onClick={navigate} compact={compact} />
                 </AppAnimatedGridItem>
               ))}
             </AppAnimatedGrid>
@@ -126,7 +131,7 @@ export function ModuleMenuShell({
         {showFeatured && featuredTile ? (
           <AppAnimatedGrid className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <AppAnimatedGridItem>
-              <MenuTileCard tile={featuredTile} onClick={navigate} />
+              <MenuTileCard tile={featuredTile} onClick={navigate} compact={compact} />
             </AppAnimatedGridItem>
           </AppAnimatedGrid>
         ) : null}

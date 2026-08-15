@@ -1,13 +1,8 @@
+import { managementService } from './management.service';
 import type { UserRow } from '../types/user.types';
 
-// Placeholder — swap this out for a real API call later, same function signature
+/** Management User Access — backed by GET /users. */
 export const userService = {
-  getUsers: async (): Promise<UserRow[]> => {
-    // await fetch('/api/users') ...
-    return [];
-  },
-  getSubscriptionKey: async (): Promise<string> => {
-    // await fetch('/api/subscription-key') ...
-    return '';
-  },
+  getUsers: async (search?: string): Promise<UserRow[]> => managementService.listUsers(search),
+  getSubscriptionKey: async (): Promise<string> => managementService.getSubscriptionKey(),
 };

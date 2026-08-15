@@ -19,7 +19,6 @@ export const customerServiceMenu: MenuTile[] = [
     icon: Inbox,
     iconColor: 'bg-indigo-500',
     path: '/portal-admin/inbox',
-    section: 'Customer Portal',
   },
   {
     id: 'portal-users',
@@ -28,7 +27,6 @@ export const customerServiceMenu: MenuTile[] = [
     icon: Users,
     iconColor: 'bg-violet-500',
     path: '/portal-users',
-    section: 'Customer Portal',
   },
   {
     id: 'all-shipments',
@@ -37,7 +35,6 @@ export const customerServiceMenu: MenuTile[] = [
     icon: BookOpen,
     iconColor: 'bg-sky-500',
     path: '/customer-service/shipments',
-    section: 'Customer Service',
   },
   {
     id: 'enquiry-sheet',
@@ -46,7 +43,6 @@ export const customerServiceMenu: MenuTile[] = [
     icon: FileText,
     iconColor: 'bg-sky-500',
     path: '/customer-service/enquiry-sheet',
-    section: 'Customer Service',
   },
   {
     id: 'pricing-dashboard',
@@ -55,7 +51,6 @@ export const customerServiceMenu: MenuTile[] = [
     icon: BarChart2,
     iconColor: 'bg-emerald-500',
     path: '/customer-service/pricing-dashboard',
-    section: 'Customer Service',
   },
   {
     id: 'sailing-schedule',
@@ -64,7 +59,6 @@ export const customerServiceMenu: MenuTile[] = [
     icon: CalendarCheck,
     iconColor: 'bg-emerald-500',
     path: '/customer-service/sailing-schedule',
-    section: 'Customer Service',
   },
   {
     id: 'shipment-agent-edi',
@@ -73,7 +67,6 @@ export const customerServiceMenu: MenuTile[] = [
     icon: ListChecks,
     iconColor: 'bg-lime-600',
     path: '/customer-service/agent-edi',
-    section: 'Customer Service',
   },
   {
     id: 'shipment-costing-search',
@@ -82,7 +75,6 @@ export const customerServiceMenu: MenuTile[] = [
     icon: Search,
     iconColor: 'bg-amber-500',
     path: '/customer-service/costing-search',
-    section: 'Customer Service',
   },
   {
     id: 'shipment-tracking',
@@ -91,6 +83,5 @@ export const customerServiceMenu: MenuTile[] = [
     icon: MapPin,
     iconColor: 'bg-amber-500',
     path: '/customer-service/tracking',
-    section: 'Customer Service',
   },
 ];

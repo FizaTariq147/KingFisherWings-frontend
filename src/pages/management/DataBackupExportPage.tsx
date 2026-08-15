@@ -1,34 +1,27 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Search, ChevronDown, Maximize2, FileArchive, Heart, CheckCircle2 } from 'lucide-react';
+import { MANAGEMENT_BACKUP_LABELS } from '@/features/management/constants/managementBackup.constants';
+import {
+  useManagementBackupHistory,
+  useManagementBackupRequest,
+} from '@/features/management/hooks/useManagement';
+import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
 
-const backupItems = [
-  'Master - COA',
-  'Master - Employee',
-  'Master - Organization',
-  'Master - Organization Address',
-  'Master - Organization Contacts',
-  'Master - Payroll',
-  'Report - Balance Sheet Summary',
-  'Report - Customer Aging Summary',
-  'Report - Invoice & Credit Note',
-  'Report - Job List',
-  'Report - Profit and Loss Summary',
-  'Report - Purchase Invoice & Credit Note',
-  'Report - Quotation List',
-  'Report - Shipment List',
-  'Report - Supplier Aging Summary',
-  'Report - Trial Balance List',
-  'Transactions - AP Outstanding',
-  'Transactions - AR Outstanding',
-  'Transactions - GL Journal',
-  'Transactions - VAT IN',
-  'Transactions - VAT OUT',
-];
+const backupItems = MANAGEMENT_BACKUP_LABELS;
 
 export default function DataBackupExportPage() {
   const [rows, setRows] = useState('5');
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [selectAll, setSelectAll] = useState(false);
+  const [historySearch, setHistorySearch] = useState('');
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const historyQuery = useManagementBackupHistory();
+  const requestBackup = useManagementBackupRequest();
+
+  useEffect(() => {
+    if (historyQuery.isSuccess) setActionMessage(null);
+  }, [historyQuery.dataUpdatedAt, historyQuery.isSuccess]);
 
   const toggleItem = (item: string) => {
     setChecked((prev) => ({ ...prev, [item]: !prev[item] }));
@@ -43,6 +36,16 @@ export default function DataBackupExportPage() {
     });
     setChecked(newChecked);
   };
+
+  const selectedLabels = backupItems.filter((item) => checked[item]);
+  const historyItems = useMemo(() => {
+    const list = historyQuery.data ?? [];
+    if (!historySearch.trim()) return list;
+    const q = historySearch.trim().toLowerCase();
+    return list.filter((x) => x.name.toLowerCase().includes(q) || (x.reportType || '').toLowerCase().includes(q));
+  }, [historyQuery.data, historySearch]);
+  const pageSize = Number(rows) || 5;
+  const pageHistory = historyItems.slice(0, pageSize);
 
   return (
     <div>
@@ -83,9 +86,26 @@ export default function DataBackupExportPage() {
 
           {/* Right column — action + history + instructions */}
           <div className="space-y-4">
-            <button className="flex items-center gap-1.5 bg-yellow-500 hover:opacity-90 text-white text-sm font-medium px-4 py-1.5 rounded transition-opacity">
+            {actionError ? <p className="text-sm text-red-600">{actionError}</p> : null}
+            {actionMessage ? <p className="text-sm text-green-700">{actionMessage}</p> : null}
+            <button
+              type="button"
+              disabled={requestBackup.isPending || selectedLabels.length === 0}
+              onClick={() => {
+                setActionError(null);
+                setActionMessage(null);
+                void requestBackup
+                  .mutateAsync(selectedLabels)
+                  .then(() => {
+                    setActionMessage('Backup request submitted.');
+                    void historyQuery.refetch();
+                  })
+                  .catch((err) => setActionError(getErrorMessage(err)));
+              }}
+              className="flex items-center gap-1.5 bg-yellow-500 hover:opacity-90 text-white text-sm font-medium px-4 py-1.5 rounded transition-opacity disabled:opacity-50"
+            >
               <FileArchive size={14} />
-              Request Backup
+              {requestBackup.isPending ? 'Requesting…' : 'Request Backup'}
             </button>
 
             <div className="border border-gray-200 rounded-md">
@@ -103,9 +123,15 @@ export default function DataBackupExportPage() {
                 </button>
                 <input
                   type="text"
+                  value={historySearch}
+                  onChange={(e) => setHistorySearch(e.target.value)}
                   className="border border-gray-300 rounded px-3 py-1.5 text-sm w-40 focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]"
                 />
-                <button className="bg-gray-100 border border-gray-300 hover:bg-gray-200 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors">
+                <button
+                  type="button"
+                  onClick={() => void historyQuery.refetch()}
+                  className="bg-gray-100 border border-gray-300 hover:bg-gray-200 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors"
+                >
                   Search
                 </button>
                 <span className="text-sm text-gray-500 ml-1">Rows</span>
@@ -125,8 +151,31 @@ export default function DataBackupExportPage() {
                 </button>
               </div>
 
-              <div className="flex items-center justify-center h-40">
-                <Search size={32} className="text-gray-300" />
+              <div className="min-h-40">
+                {historyQuery.isLoading ? (
+                  <div className="flex items-center justify-center h-40 text-sm text-gray-400">Loading…</div>
+                ) : historyQuery.isError ? (
+                  <div className="flex items-center justify-center h-40 px-4 text-sm text-red-600 text-center">
+                    {getErrorMessage(historyQuery.error)}
+                  </div>
+                ) : pageHistory.length === 0 ? (
+                  <div className="flex items-center justify-center h-40">
+                    <Search size={32} className="text-gray-300" />
+                  </div>
+                ) : (
+                  <div className="divide-y divide-gray-100">
+                    {pageHistory.map((row) => (
+                      <div key={row.id} className="px-4 py-2.5 text-sm">
+                        <div className="font-medium text-gray-800">{row.name}</div>
+                        <div className="text-xs text-gray-500">
+                          {[row.reportType, row.createdAt ? new Date(row.createdAt).toLocaleString() : null]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 

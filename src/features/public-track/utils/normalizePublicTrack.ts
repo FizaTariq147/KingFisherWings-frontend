@@ -40,5 +40,8 @@ export function normalizeEmbedConfig(raw: unknown): PublicTrackEmbedConfig {
     companyName: pickString(d.company_name, d.companyName, d.tenant_name) || undefined,
     primaryColor: pickString(d.primary_color, d.primaryColor) || undefined,
     logoUrl: pickString(d.logo_url, d.logoUrl) || undefined,
+    trackUrl: pickString(d.track_url, d.trackUrl, d.endpoint) || undefined,
+    apiBaseUrl: pickString(d.api_base_url, d.apiBaseUrl, d.base_url) || undefined,
+    widgetScriptUrl: pickString(d.widget_script_url, d.widgetScriptUrl, d.widget_url) || undefined,
   };
 }
