@@ -6,5 +6,11 @@ export interface PublicTrackResult {
   jobType?: string; milestones: PublicTrackMilestone[]; partyName?: string;
 }
 export interface PublicTrackEmbedConfig {
-  tenantSlug?: string; companyName?: string; primaryColor?: string; logoUrl?: string;
+  tenantSlug?: string;
+  companyName?: string;
+  primaryColor?: string;
+  logoUrl?: string;
+  trackUrl?: string;
+  apiBaseUrl?: string;
+  widgetScriptUrl?: string;
 }

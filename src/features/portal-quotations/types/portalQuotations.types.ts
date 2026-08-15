@@ -29,6 +29,8 @@ export interface PortalQuotationRequestDto {
   container_type_id?: string;
   special_requirements?: string;
   valid_until?: string;
+  contact_name?: string;
+  contact_email?: string;
 }
 
 export interface PortalQuotationSummary {

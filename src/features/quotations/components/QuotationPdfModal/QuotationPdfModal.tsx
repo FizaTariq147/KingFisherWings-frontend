@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { StoredFileLink } from '@/features/files/components/StoredFileLink';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
+import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
+import { quotationPdfBranding } from '@/features/files/utils/pdfBranding';
 import { PDF_MODES, type PdfMode } from '../../constants/quotation.constants';
 import { useQuotationPdfStatus } from '../../hooks/useQuotationActions';
 import type { QuotationPdfInfo } from '../../types/quotation.types';
@@ -11,6 +13,8 @@ import { normalizeQuotationPdfInfo } from '../../utils/normalizeQuotationPdf';
 
 interface QuotationPdfModalProps {
   quotationId: string;
+  quotationNumber: string;
+  quotationDate?: string;
   open: boolean;
   isPending?: boolean;
   onClose: () => void;
@@ -36,6 +40,8 @@ function statusLabel(raw: unknown): string {
 
 export function QuotationPdfModal({
   quotationId,
+  quotationNumber,
+  quotationDate,
   open,
   isPending,
   onClose,
@@ -101,6 +107,8 @@ export function QuotationPdfModal({
   const internalUrl = latestInfo?.internal_pdf_url;
   const displayError = localError || error;
   const statusText = useMemo(() => statusLabel(statusData), [statusData]);
+  const pdfFileName = formatPdfFilename(quotationNumber, 'quotation');
+  const pdfBranding = quotationPdfBranding(quotationNumber, quotationDate);
 
   const closeReady = () => {
     setReadyOpen(false);
@@ -156,8 +164,22 @@ export function QuotationPdfModal({
           {(customerUrl || internalUrl) && (
             <div className="space-y-1 text-sm">
               <p className="text-xs font-medium text-[var(--color-neutral-500)]">Available PDFs</p>
-              {customerUrl ? <StoredFileLink url={customerUrl} label="Open customer PDF" /> : null}
-              {internalUrl ? <StoredFileLink url={internalUrl} label="Open internal PDF" /> : null}
+              {customerUrl ? (
+                <StoredFileLink
+                  url={customerUrl}
+                  label="Open customer PDF"
+                  displayName={pdfFileName}
+                  branding={pdfBranding}
+                />
+              ) : null}
+              {internalUrl ? (
+                <StoredFileLink
+                  url={internalUrl}
+                  label="Open internal PDF"
+                  displayName={pdfFileName}
+                  branding={pdfBranding}
+                />
+              ) : null}
             </div>
           )}
 
@@ -208,7 +230,8 @@ export function QuotationPdfModal({
         onClose={closeReady}
         url={readyUrl}
         title="Quotation PDF ready"
-        fileName={`quotation-${quotationId}.pdf`}
+        fileName={pdfFileName}
+        branding={pdfBranding}
         description="Your quotation PDF was created successfully."
       />
     </>

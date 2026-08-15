@@ -108,10 +108,12 @@ export default function CrmBudgetsPage() {
             placeholder="All salespeople"
           />
         </div>
-        {query.isLoading || query.isError || !query.data?.length ? (
+        {query.isLoading || query.isError ? (
           <CrmEmpty loading={query.isLoading} error={query.isError ? getErrorMessage(query.error) : undefined}>
-            No budgets found.
+            {!salesperson ? 'Select a salesperson to load budgets (required by API).' : 'No budgets found.'}
           </CrmEmpty>
+        ) : !query.data?.length ? (
+          <CrmEmpty>No budgets found for this salesperson.</CrmEmpty>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">

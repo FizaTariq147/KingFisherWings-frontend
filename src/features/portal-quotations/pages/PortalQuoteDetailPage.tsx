@@ -166,7 +166,7 @@ export default function PortalQuoteDetailPage() {
                   // Always fetch via portal API (Bearer). Do not navigate to
                   // relative pdf_url paths — those hit the SPA and show 404.
                   void portalQuotationsService
-                    .downloadPdf(quoteId, `${data.number || 'quotation'}.pdf`)
+                    .downloadPdf(quoteId, data.number || 'quotation')
                     .catch((err) => {
                       setPdfUnavailable(true);
                       setPdfError(

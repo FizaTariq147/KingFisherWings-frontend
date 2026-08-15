@@ -12,7 +12,7 @@ import {
   ClipboardList,
   Mail,
 } from 'lucide-react';
-import type { MenuTile } from '../../customers/types/menu.types';
+import type { MenuTile } from '@/features/customers/types/menu.types';
 
 export const salesMenu: MenuTile[] = [
   {

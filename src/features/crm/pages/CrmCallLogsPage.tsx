@@ -47,6 +47,8 @@ export default function CrmCallLogsPage() {
   const [page, setPage] = useState(1);
   const [date, setDate] = useState('');
   const [salesperson, setSalesperson] = useState('');
+  const [leadId, setLeadId] = useState('');
+  const [partyId, setPartyId] = useState('');
   const [tab, setTab] = useState<'list' | 'daily'>('list');
 
   const list = useCrmCallLogs({
@@ -54,6 +56,8 @@ export default function CrmCallLogsPage() {
     limit: CRM_PAGE_SIZE,
     date: date || undefined,
     salesperson_id: salesperson || undefined,
+    lead_id: leadId.trim() || undefined,
+    party_id: partyId.trim() || undefined,
   });
   const daily = useCrmDailyCallLogs(date, salesperson, tab === 'daily');
   const create = useCreateCrmCallLog();
@@ -173,6 +177,22 @@ export default function CrmCallLogsPage() {
               placeholder="All salespeople"
             />
           </div>
+          {tab === 'list' && (
+            <>
+              <TextInput
+                className="max-w-44"
+                placeholder="Lead ID"
+                value={leadId}
+                onChange={(e) => setLeadId(e.target.value)}
+              />
+              <TextInput
+                className="max-w-44"
+                placeholder="Party ID"
+                value={partyId}
+                onChange={(e) => setPartyId(e.target.value)}
+              />
+            </>
+          )}
         </div>
         {loading || error || !items.length ? (
           <CrmEmpty loading={loading} error={error ? getErrorMessage(error) : undefined}>

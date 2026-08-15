@@ -4,13 +4,17 @@ import { resolveSessionTenantIdFromAuth } from '@/lib/tenantFromAuth';
 import { useAuthStore } from '@/store/authStore';
 import { withGatewayRetry } from '@/lib/wakeApi';
 import { FILES_API } from '../api/files.api';
-import type { FileDownloadParams, StoredFileAction } from '../types/files.types';
+import type { FileDisplayOptions, FileDownloadParams, StoredFileAction } from '../types/files.types';
+import type { PdfBrandingOptions } from '../utils/pdfBranding';
 import { parseFilesApiUrl } from '../utils/parseFilesApiUrl';
 import {
   openBlankPreviewTab,
   openBlobInNewTab,
   triggerBlobDownload,
+  triggerBrandedPdfDownload,
 } from '../utils/triggerBlobDownload';
+import { isPdfBlob, isPdfUrl, openBrandedPdfUrl } from '../utils/pdfBranding';
+import { resolvePdfDownloadFilename, stripPdfExtension } from '../utils/pdfFilename';
 
 async function readAxiosErrorData(data: unknown): Promise<unknown> {
   if (typeof Blob !== 'undefined' && data instanceof Blob) {
@@ -148,26 +152,31 @@ export const filesService = {
   },
 
   async openBlob(blob: Blob): Promise<void> {
-    openBlobInNewTab(blob);
+    await openBlobInNewTab(blob);
   },
 
-  async saveBlob(blob: Blob, filename: string): Promise<void> {
-    triggerBlobDownload(blob, filename);
+  async saveBlob(blob: Blob, filename: string, branding?: PdfBrandingOptions): Promise<void> {
+    const downloadName = resolvePdfDownloadFilename(filename, branding);
+    if (isPdfBlob(blob, filename)) {
+      await triggerBrandedPdfDownload(blob, downloadName, { filename: downloadName, branding });
+      return;
+    }
+    triggerBlobDownload(blob, downloadName);
   },
 
   /** Fetch by tenant + filename, then open or save in the browser. */
   async download(
     params: FileDownloadParams,
     action: StoredFileAction = 'download',
-    options?: { signal?: AbortSignal; displayName?: string },
+    options?: FileDisplayOptions,
   ): Promise<void> {
     const name = options?.displayName?.trim() || params.filename;
+    const blobOptions = { filename: name, branding: options?.branding };
     if (action === 'open') {
-      // Open the tab in the same turn as the user click, then navigate after fetch.
-      const preview = openBlankPreviewTab();
+      const preview = openBlankPreviewTab(blobOptions);
       try {
         const blob = await this.downloadBlob(params, options);
-        openBlobInNewTab(blob, preview);
+        await openBlobInNewTab(blob, preview, blobOptions);
       } catch (err) {
         preview.close();
         throw err;
@@ -175,7 +184,7 @@ export const filesService = {
       return;
     }
     const blob = await this.downloadBlob(params, options);
-    await this.saveBlob(blob, name);
+    await this.saveBlob(blob, name, options?.branding);
   },
 
   /**
@@ -183,31 +192,50 @@ export const filesService = {
    * Uses authenticated GET for `/files/{tenantId}/{filename}` paths;
    * falls back to `window.open` for external URLs.
    */
-  async openStoredFile(
-    url: string,
-    options?: { signal?: AbortSignal; displayName?: string },
-  ): Promise<void> {
+  async openStoredFile(url: string, options?: FileDisplayOptions): Promise<void> {
     const parsed = parseFilesApiUrl(url);
+    const displayName = options?.displayName ?? (parsed?.filename || guessFilenameFromUrl(url));
+    const downloadName = resolvePdfDownloadFilename(displayName, options?.branding);
+    const branding = {
+      ...options?.branding,
+      title: options?.branding?.title || stripPdfExtension(downloadName),
+      documentNumber: options?.branding?.documentNumber || stripPdfExtension(downloadName),
+    };
     if (!parsed) {
+      if (isPdfUrl(url, displayName)) {
+        void openBrandedPdfUrl(url, branding);
+        return;
+      }
       window.open(url, '_blank', 'noopener,noreferrer');
       return;
     }
     await this.download(
       { tenantId: parsed.tenantId, filename: parsed.filename },
       'open',
-      { ...options, displayName: options?.displayName ?? parsed.filename },
+      { ...options, displayName: downloadName, branding },
     );
   },
 
-  async downloadStoredFile(
-    url: string,
-    options?: { signal?: AbortSignal; displayName?: string },
-  ): Promise<void> {
+  async downloadStoredFile(url: string, options?: FileDisplayOptions): Promise<void> {
     const parsed = parseFilesApiUrl(url);
+    const displayName = options?.displayName ?? (parsed?.filename || guessFilenameFromUrl(url));
+    const downloadName = resolvePdfDownloadFilename(displayName, options?.branding);
+    const branding = {
+      ...options?.branding,
+      title: options?.branding?.title || stripPdfExtension(downloadName),
+      documentNumber: options?.branding?.documentNumber || stripPdfExtension(downloadName),
+    };
     if (!parsed) {
+      if (isPdfUrl(url, displayName)) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Could not download PDF.');
+        const blob = await response.blob();
+        await triggerBrandedPdfDownload(blob, downloadName, { filename: downloadName, branding });
+        return;
+      }
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = options?.displayName ?? guessFilenameFromUrl(url);
+      anchor.download = downloadName;
       anchor.target = '_blank';
       anchor.rel = 'noopener noreferrer';
       anchor.click();
@@ -216,7 +244,7 @@ export const filesService = {
     await this.download(
       { tenantId: parsed.tenantId, filename: parsed.filename },
       'download',
-      { ...options, displayName: options?.displayName ?? parsed.filename },
+      { ...options, displayName: downloadName, branding },
     );
   },
 };

@@ -1,35 +1,93 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { usePublicTrackLookup } from '../hooks/usePublicTrack';
+import { usePublicTrackEmbed, usePublicTrackLookup } from '../hooks/usePublicTrack';
 import type { PublicTrackResult } from '../types/publicTrack.types';
+import { resolveRefFromLocation, resolveTenantSlugFromLocation } from '../utils/publicTrackContext';
 
 export default function PublicTrackPage() {
-  const [tenantSlug, setTenantSlug] = useState('');
-  const [ref, setRef] = useState('');
+  const [searchParams] = useSearchParams();
+  const initialTenant = useMemo(
+    () => resolveTenantSlugFromLocation(searchParams.toString()),
+    [searchParams],
+  );
+  const initialRef = useMemo(() => resolveRefFromLocation(searchParams.toString()), [searchParams]);
+
+  const [tenantSlug, setTenantSlug] = useState(initialTenant);
+  const [ref, setRef] = useState(initialRef);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<PublicTrackResult | null>(null);
+  const [autoRan, setAutoRan] = useState(false);
+
+  const embed = usePublicTrackEmbed(tenantSlug || undefined);
   const lookup = usePublicTrackLookup();
 
+  const branding = embed.data;
+  const resolvedTenant = branding?.tenantSlug || tenantSlug.trim();
+  const showTenantField = !branding?.tenantSlug;
+  const title = branding?.companyName ? `Track with ${branding.companyName}` : 'Find your shipment';
+  const canSearch = ref.trim().length >= 2;
+
+  const runLookup = async () => {
+    setError(null);
+    setResult(null);
+    try {
+      const data = await lookup.mutateAsync({
+        tenantSlug: resolvedTenant || undefined,
+        ref: ref.trim(),
+      });
+      setResult(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Lookup failed.');
+    }
+  };
+
+  useEffect(() => {
+    if (branding?.tenantSlug && !tenantSlug.trim()) {
+      setTenantSlug(branding.tenantSlug);
+    }
+  }, [branding?.tenantSlug, tenantSlug]);
+
+  useEffect(() => {
+    if (autoRan || initialRef.trim().length < 2) return;
+    setAutoRan(true);
+    void runLookup();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- auto-run once when URL ref is present
+  }, [autoRan, initialRef]);
+
   return (
-    <div className="min-h-screen bg-[var(--color-surface)]">
+    <div
+      className="min-h-screen bg-[var(--color-surface)]"
+      style={branding?.primaryColor ? { ['--color-primary' as string]: branding.primaryColor } : undefined}
+    >
       <div className="mx-auto max-w-xl px-4 py-12 sm:px-6">
+        {branding?.logoUrl ? (
+          <img
+            src={branding.logoUrl}
+            alt={branding.companyName ?? 'Company logo'}
+            className="mb-4 h-10 w-auto object-contain"
+          />
+        ) : null}
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--color-neutral-500)]">
           Track &amp; Trace
         </p>
-        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--color-neutral-900)]">
-          Find your shipment
-        </h2>
+        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--color-neutral-900)]">{title}</h2>
         <p className="mt-1 text-sm text-[var(--color-neutral-500)]">
-          Enter your forwarder workspace and shipment reference.
+          Enter your shipment reference (job number, HAWB, MAWB, HBL, MBL, or booking #).
         </p>
 
         <div className="mt-8 rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
           <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-primary-100)] text-[var(--color-primary)]">
             <Search size={20} aria-hidden="true" />
           </div>
+          {embed.isError && (
+            <p className="mb-4 text-xs text-[var(--color-neutral-500)]">
+              Using default branding — workspace could not be resolved from this domain.
+            </p>
+          )}
           {error && (
             <p
               role="alert"
@@ -38,40 +96,34 @@ export default function PublicTrackPage() {
               {error}
             </p>
           )}
-          <div className="space-y-4">
-            <Input
-              label="Workspace (tenant slug)"
-              value={tenantSlug}
-              onChange={(e) => setTenantSlug(e.target.value)}
-              placeholder="e.g. kingfisher"
-            />
+          <form
+            className="space-y-4"
+            noValidate
+            onSubmit={(e) => {
+              e.preventDefault();
+              void runLookup();
+            }}
+          >
+            {showTenantField ? (
+              <Input
+                label="Workspace (tenant slug)"
+                value={tenantSlug}
+                onChange={(e) => setTenantSlug(e.target.value)}
+                placeholder="e.g. kingfisher"
+                hint="Optional when opened on your company domain"
+              />
+            ) : null}
             <Input
               label="Reference"
+              required
               value={ref}
               onChange={(e) => setRef(e.target.value)}
               placeholder="e.g. KFW-J-00042"
             />
-            <Button
-              type="button"
-              className="w-full"
-              disabled={lookup.isPending || tenantSlug.trim().length < 2 || ref.trim().length < 2}
-              onClick={async () => {
-                setError(null);
-                setResult(null);
-                try {
-                  const data = await lookup.mutateAsync({
-                    tenantSlug: tenantSlug.trim(),
-                    ref: ref.trim(),
-                  });
-                  setResult(data);
-                } catch (err) {
-                  setError(err instanceof Error ? err.message : 'Lookup failed.');
-                }
-              }}
-            >
+            <Button type="submit" className="w-full" disabled={lookup.isPending || !canSearch}>
               {lookup.isPending ? 'Searching…' : 'Track shipment'}
             </Button>
-          </div>
+          </form>
         </div>
 
         {result && (
@@ -84,6 +136,9 @@ export default function PublicTrackPage() {
                     result.jobType ||
                     '—'}
                 </div>
+                {result.partyName ? (
+                  <div className="mt-1 text-xs text-[var(--color-neutral-500)]">{result.partyName}</div>
+                ) : null}
               </div>
               {result.status ? (
                 <Badge variant="info">{result.status.replaceAll('_', ' ')}</Badge>

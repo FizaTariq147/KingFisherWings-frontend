@@ -1,6 +1,7 @@
 import { portalApiClient, PortalApiError } from '@/lib/portalApiClient';
+import { invoicePdfBranding } from '@/features/files/utils/pdfBranding';
+import { formatPdfFilename, stripPdfExtension } from '@/features/files/utils/pdfFilename';
 import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
-import { safeDownloadFilename } from '@/features/portal-shared/normalize';
 import { PORTAL_DOCUMENTS_API } from '@/features/portal-documents/api/portalDocuments.api';
 import { PORTAL_INVOICES_API } from '../api/portalInvoices.api';
 import type { PortalInvoiceDetail, PortalInvoiceListParams, PortalInvoiceListResult, PortalInvoiceSummary } from '../types/portalInvoices.types';
@@ -71,13 +72,14 @@ export const portalInvoicesService = {
     if (!detail) throw new Error('Invoice not found.');
     return detail;
   },
-  async downloadPdf(id: string, fallbackName = 'invoice.pdf'): Promise<void> {
-    const safeName = safeDownloadFilename(fallbackName, 'invoice.pdf');
-    const name = safeName.toLowerCase().endsWith('.pdf') ? safeName : `${safeName}.pdf`;
+  async downloadPdf(id: string, invoiceNumber = 'invoice'): Promise<void> {
+    const ref = stripPdfExtension(invoiceNumber) || 'invoice';
+    const filename = formatPdfFilename(ref, 'invoice');
 
     try {
-      await downloadPortalBlob(PORTAL_INVOICES_API.pdf(id), name, {
+      await downloadPortalBlob(PORTAL_INVOICES_API.pdf(id), filename, {
         accept: PDF_ACCEPT,
+        branding: invoicePdfBranding(ref),
       });
       return;
     } catch (primaryErr) {
@@ -86,8 +88,9 @@ export const portalInvoicesService = {
         throw friendlyInvoicePdfError(primaryErr);
       }
       try {
-        await downloadPortalBlob(PORTAL_DOCUMENTS_API.downloadInvoice(id), name, {
+        await downloadPortalBlob(PORTAL_DOCUMENTS_API.downloadInvoice(id), filename, {
           accept: PDF_ACCEPT,
+          branding: invoicePdfBranding(ref),
         });
       } catch (fallbackErr) {
         throw friendlyInvoicePdfError(fallbackErr);

@@ -4,9 +4,10 @@ import type { MenuTile } from '../../features/customers/types/menu.types';
 interface Props {
   tile: MenuTile;
   onClick: (path: string) => void;
+  compact?: boolean;
 }
 
-export function MenuTileCard({ tile, onClick }: Props) {
+export function MenuTileCard({ tile, onClick, compact = false }: Props) {
   const Icon = tile.icon as ComponentType<{ size: number }>;
 
   return (
@@ -17,7 +18,9 @@ export function MenuTileCard({ tile, onClick }: Props) {
                  focus:outline-none focus:ring-2 focus:ring-[#FF751F]/40"
     >
       <div className="flex items-start justify-between mb-4">
-        <h3 className="text-[15px] font-semibold text-[#0A2942] leading-snug">
+        <h3
+          className={`font-semibold text-[#0A2942] leading-snug ${compact ? 'text-[13px]' : 'text-[15px]'}`}
+        >
           {tile.title}
         </h3>
         <span
@@ -27,7 +30,7 @@ export function MenuTileCard({ tile, onClick }: Props) {
           <Icon size={18} />
         </span>
       </div>
-      <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
+      <p className={`text-gray-500 leading-relaxed line-clamp-3 ${compact ? 'text-xs' : 'text-sm'}`}>
         {tile.description}
       </p>
     </button>

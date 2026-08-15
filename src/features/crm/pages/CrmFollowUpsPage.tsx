@@ -44,6 +44,7 @@ export default function CrmFollowUpsPage() {
   const [status, setStatus] = useState<FollowUpStatus | ''>('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
+  const [ownerId, setOwnerId] = useState('');
   const [team, setTeam] = useState(false);
   const [tab, setTab] = useState<'list' | 'calendar'>('list');
 
@@ -53,6 +54,7 @@ export default function CrmFollowUpsPage() {
     status: status || undefined,
     from: from || undefined,
     to: to || undefined,
+    owner_id: ownerId || undefined,
     team: team || undefined,
   });
   const calendar = useCrmFollowUpCalendar(from, to, tab === 'calendar');
@@ -138,6 +140,17 @@ export default function CrmFollowUpsPage() {
           </SelectInput>
           <TextInput type="date" className="max-w-44" value={from} onChange={(e) => setFrom(e.target.value)} />
           <TextInput type="date" className="max-w-44" value={to} onChange={(e) => setTo(e.target.value)} />
+          {tab === 'list' && (
+            <div className="min-w-56">
+              <CrmSalespersonSelect
+                label="Owner"
+                placeholder="All owners"
+                value={ownerId}
+                onChange={setOwnerId}
+                allowEmpty
+              />
+            </div>
+          )}
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={team} onChange={(e) => setTeam(e.target.checked)} />
             Team follow-ups
