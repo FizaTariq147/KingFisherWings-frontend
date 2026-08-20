@@ -281,7 +281,9 @@ export const userService = {
     try {
       const res = await axiosInstance.patch<ApiEnvelope<User>>(
         USER_API.byId(id),
-        prepareUserPayload(dto as unknown as Record<string, unknown>),
+        prepareUserPayload(dto as unknown as Record<string, unknown>, {
+          keepEmptyAllowlists: Array.isArray(dto.allowed_ips) || Array.isArray(dto.allowed_mac_addresses),
+        }),
       );
       return normalizeUser(extractUserPayload(res.data));
     } catch (error) {

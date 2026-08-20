@@ -3,6 +3,7 @@ import { VENDOR_AUTH_API } from '@/features/vendor-auth/api/vendorAuth.api';
 import { useVendorAuthStore } from '@/features/vendor-auth/store/vendorAuthStore';
 import { normalizeVendorTokenPair } from '@/features/vendor-auth/utils/normalizeVendorAuth';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
+import { matchesAnyApiPath } from '@/lib/apiPath';
 
 export interface VendorApiEnvelope<T, M = undefined> {
   data: T;
@@ -90,16 +91,18 @@ const processQueue = (error: unknown, token: string | null) => {
   pendingQueue = [];
 };
 
-const VENDOR_AUTH_BOOTSTRAP = [VENDOR_AUTH_API.login, VENDOR_AUTH_API.refresh];
+const VENDOR_AUTH_BOOTSTRAP = [
+  VENDOR_AUTH_API.login,
+  VENDOR_AUTH_API.refresh,
+  VENDOR_AUTH_API.acceptInvite,
+] as const;
 
 function isVendorAuthBootstrap(url?: string): boolean {
-  if (!url) return false;
-  return VENDOR_AUTH_BOOTSTRAP.some((path) => url.includes(path));
+  return matchesAnyApiPath(url, VENDOR_AUTH_BOOTSTRAP);
 }
 
 function isVendorAuthNoRefresh(url?: string): boolean {
-  if (!url) return false;
-  return isVendorAuthBootstrap(url) || url.includes(VENDOR_AUTH_API.logout);
+  return isVendorAuthBootstrap(url) || matchesAnyApiPath(url, [VENDOR_AUTH_API.logout]);
 }
 
 vendorApiClient.interceptors.request.use((config) => {

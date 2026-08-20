@@ -10,6 +10,7 @@ import MyProfilePage from '../features/auth/pages/MyProfilePage'
 import SessionManagementPage from '../pages/settings/SessionManagementPage'
 import SettingsMenuPage from '../pages/settings/SettingsMenuPage'
 import LoginSecurityPage from '../pages/settings/LoginSecurityPage'
+import TwoFactorSetupPage from '../pages/settings/TwoFactorSetupPage'
 import Forbidden from '../pages/errors/Forbidden'
 import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
@@ -232,6 +233,7 @@ export const router = createBrowserRouter([
 
   { path: '/', element: <Navigate to="/login" replace /> },
   { path: '/login', element: <LoginPage /> },
+  { path: '/accept-invite', element: <LoginPage /> },
   { path: '/forgot-password', element: <ForgotPasswordPage /> },
   { path: '/reset-password', element: <ResetPasswordPage /> },
   { path: '/403', element: <Forbidden /> },
@@ -459,6 +461,7 @@ export const router = createBrowserRouter([
           { path: '/settings', element: <SettingsMenuPage /> },
           { path: '/settings/sessions', element: <SessionManagementPage /> },
           { path: '/settings/login-security', element: <LoginSecurityPage /> },
+          { path: '/settings/two-factor', element: <TwoFactorSetupPage /> },
           {
             element: (
               <ProtectedRoute

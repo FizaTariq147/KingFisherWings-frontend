@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Plus, Search, ChevronDown, Maximize2, ArrowUpDown, Pencil, Heart } from 'lucide-react';
 import { SelectInput } from '../../components/widgets/FilterField';
@@ -29,6 +28,11 @@ export default function EmployeesListPage() {
     employeeService.getEmployees().then((data) => {
       if (active) {
         setEmployees(data);
+        setLoading(false);
+      }
+    }).catch(() => {
+      if (active) {
+        setEmployees([]);
         setLoading(false);
       }
     });

@@ -249,6 +249,7 @@ export function normalizeLoginUser(
     tenantId: tenantId || undefined,
     companyId: pickString(record.companyId, record.company_id) || undefined,
     mustChangePassword: pickMustChangePassword(record),
+    twoFactorEnabled: pickTwoFactorEnabled(record),
   };
 }
 
@@ -271,6 +272,25 @@ export function pickMustChangePassword(record: Record<string, unknown>): boolean
     record.requirePasswordChange ??
     record.password_change_required ??
     record.passwordChangeRequired;
+  return value === true || value === 'true' || value === 1;
+}
+
+export function hasTwoFactorEnabledFlag(record: Record<string, unknown>): boolean {
+  return (
+    'two_factor_enabled' in record ||
+    'twoFactorEnabled' in record ||
+    'is_2fa_enabled' in record ||
+    'is2faEnabled' in record
+  );
+}
+
+export function pickTwoFactorEnabled(record: Record<string, unknown>): boolean | undefined {
+  if (!hasTwoFactorEnabledFlag(record)) return undefined;
+  const value =
+    record.two_factor_enabled ??
+    record.twoFactorEnabled ??
+    record.is_2fa_enabled ??
+    record.is2faEnabled;
   return value === true || value === 'true' || value === 1;
 }
 
@@ -319,13 +339,15 @@ export function normalizeAuthLoginResponse(
   // Flag may sit on the envelope root or on the nested user.
   const mustChangePassword =
     user.mustChangePassword || pickMustChangePassword(record);
+  const twoFactorEnabled =
+    user.twoFactorEnabled ?? pickTwoFactorEnabled(record);
   const sessionId = pickSessionId(record, accessToken) || pickSessionId(asRecord(raw) ?? {}, accessToken);
 
   return {
     accessToken,
     refreshToken,
     sessionId: sessionId || undefined,
-    user: { ...user, mustChangePassword },
+    user: { ...user, mustChangePassword, twoFactorEnabled },
   };
 }
 

@@ -3,6 +3,7 @@ import { PORTAL_AUTH_API } from '@/features/portal-auth/api/portalAuth.api';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import { normalizePortalTokenPair } from '@/features/portal-auth/utils/normalizePortalAuth';
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache';
+import { matchesAnyApiPath } from '@/lib/apiPath';
 
 export interface ApiEnvelope<T, M = undefined> {
   data: T;
@@ -87,19 +88,15 @@ const processQueue = (error: unknown, token: string | null) => {
 const PORTAL_AUTH_BOOTSTRAP = [
   PORTAL_AUTH_API.login,
   PORTAL_AUTH_API.refresh,
-];
+  PORTAL_AUTH_API.acceptInvite,
+] as const;
 
 function isPortalAuthBootstrap(url?: string): boolean {
-  if (!url) return false;
-  return PORTAL_AUTH_BOOTSTRAP.some((path) => url.includes(path));
+  return matchesAnyApiPath(url, PORTAL_AUTH_BOOTSTRAP);
 }
 
 function isPortalAuthNoRefresh(url?: string): boolean {
-  if (!url) return false;
-  return (
-    isPortalAuthBootstrap(url) ||
-    url.includes(PORTAL_AUTH_API.logout)
-  );
+  return isPortalAuthBootstrap(url) || matchesAnyApiPath(url, [PORTAL_AUTH_API.logout]);
 }
 
 portalApiClient.interceptors.request.use((config) => {

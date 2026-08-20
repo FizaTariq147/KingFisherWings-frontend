@@ -1,14 +1,38 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Plus, Search, ChevronDown, Heart } from 'lucide-react';
 import { SelectInput, DateInput } from '../../components/widgets/FilterField';
+import { hrService } from '../../features/hr/services/hr.service';
 
 const tabs = ['Leave Applied / Pending', 'Leave Approved', 'Leave Rejected/Cancelled'];
 
 export default function LeaveRequestPage() {
   const [rows, setRows] = useState('10');
   const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [search, setSearch] = useState('');
+  const { data: requests = [], isLoading, isError, error } = useQuery({
+    queryKey: ['hr', 'leave-requests'],
+    queryFn: () => hrService.listLeaveRequests(),
+  });
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return requests.filter((row) => {
+      const status = row.status.toUpperCase();
+      if (activeTab.includes('Pending') && !status.includes('PEND') && !status.includes('APPL')) {
+        return false;
+      }
+      if (activeTab.includes('Approved') && !status.includes('APPROV')) return false;
+      if (activeTab.includes('Rejected') && !status.includes('REJECT') && !status.includes('CANCEL')) {
+        return false;
+      }
+      if (!q) return true;
+      return `${row.employee} ${row.type} ${row.reason}`.toLowerCase().includes(q);
+    });
+  }, [requests, activeTab, search]);
+
+  const visible = filtered.slice(0, Number(rows) || 10);
 
   return (
     <div className="space-y-3">
@@ -94,6 +118,8 @@ export default function LeaveRequestPage() {
           </button>
           <input
             type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="border border-gray-300 rounded px-3 py-1.5 text-sm w-56 focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]"
           />
           <button className="bg-gray-100 border border-gray-300 hover:bg-gray-200 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors">
@@ -116,10 +142,44 @@ export default function LeaveRequestPage() {
           </button>
         </div>
 
-        {/* Results area — empty state with label */}
-        <div className="flex flex-col items-center justify-center h-56 gap-2">
-          <Search size={40} className="text-gray-300" />
-          <span className="text-sm text-gray-500">No data found.</span>
+        {/* Results */}
+        <div className="min-h-56">
+          {isLoading ? (
+            <div className="flex items-center justify-center h-56 text-sm text-gray-500">Loading leave requests…</div>
+          ) : isError ? (
+            <div className="flex items-center justify-center h-56 text-sm text-red-600">
+              {error instanceof Error ? error.message : 'Could not load leave requests.'}
+            </div>
+          ) : visible.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-56 gap-2">
+              <Search size={40} className="text-gray-300" />
+              <span className="text-sm text-gray-500">No data found.</span>
+            </div>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  {['Employee', 'Type', 'From', 'To', 'Status', 'Reason'].map((col) => (
+                    <th key={col} className="text-left font-semibold text-[#0A2942] px-4 py-2.5">
+                      {col}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {visible.map((row) => (
+                  <tr key={row.id} className="border-b border-gray-100">
+                    <td className="px-4 py-2">{row.employee}</td>
+                    <td className="px-4 py-2">{row.type}</td>
+                    <td className="px-4 py-2">{row.from}</td>
+                    <td className="px-4 py-2">{row.to}</td>
+                    <td className="px-4 py-2">{row.status}</td>
+                    <td className="px-4 py-2">{row.reason || '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 

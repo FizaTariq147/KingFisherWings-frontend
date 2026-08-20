@@ -50,7 +50,10 @@ const OPTIONAL_STRING_FIELDS = [
 ] as const;
 
 /** Strip empty / invalid optional values before sending to the API. */
-export function prepareUserPayload<T extends Record<string, unknown>>(dto: T): T {
+export function prepareUserPayload<T extends Record<string, unknown>>(
+  dto: T,
+  options?: { keepEmptyAllowlists?: boolean },
+): T {
   const out: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(dto as Record<string, unknown>)) {
@@ -88,7 +91,13 @@ export function prepareUserPayload<T extends Record<string, unknown>>(dto: T): T
   }
 
   for (const key of OPTIONAL_STRING_FIELDS) {
-    if (out[key] === '') delete out[key];
+    if (out[key] === '') {
+      if (options?.keepEmptyAllowlists) {
+        out[key] = null;
+      } else {
+        delete out[key];
+      }
+    }
   }
 
   for (const key of OPTIONAL_UUID_ARRAY_FIELDS) {
@@ -102,12 +111,14 @@ export function prepareUserPayload<T extends Record<string, unknown>>(dto: T): T
     else out[key] = valid;
   }
 
-  if (Array.isArray(out.allowed_ips) && out.allowed_ips.length === 0) {
-    delete out.allowed_ips;
-  }
+  if (!options?.keepEmptyAllowlists) {
+    if (Array.isArray(out.allowed_ips) && out.allowed_ips.length === 0) {
+      delete out.allowed_ips;
+    }
 
-  if (Array.isArray(out.allowed_mac_addresses) && out.allowed_mac_addresses.length === 0) {
-    delete out.allowed_mac_addresses;
+    if (Array.isArray(out.allowed_mac_addresses) && out.allowed_mac_addresses.length === 0) {
+      delete out.allowed_mac_addresses;
+    }
   }
 
   // Staff users must be ACTIVE to sign in via /auth/login.

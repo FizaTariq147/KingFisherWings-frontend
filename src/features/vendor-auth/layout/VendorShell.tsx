@@ -1,17 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LogOut, Menu, X } from 'lucide-react';
+import { LogOut, X } from 'lucide-react';
 import { useApplyTheme } from '@/hooks/useApplyTheme';
 import { cn } from '@/lib/utils';
+import logo from '@/assets/logo.png';
 import {
   PortalPageTransition,
   portalAnimationStyles,
   usePortalAutoAnimate,
 } from '@/features/portal-auth/components/portal-ui';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
+import { useVendorDisputes } from '@/features/vendor-disputes/hooks/useVendorDisputes';
 import { VendorSidebar } from '../components/VendorSidebar';
+import { VendorTopbar } from '../components/VendorTopbar';
 import { useVendorBrand } from '../hooks/useVendorBrand';
-import { VENDOR_NAV } from '../nav';
+import { VENDOR_NAV_SECTIONS } from '../nav';
 import { vendorAuthService } from '../services/vendorAuth.service';
 import { useVendorAuthStore } from '../store/vendorAuthStore';
 
@@ -21,9 +24,19 @@ export function VendorShell() {
   const location = useLocation();
   const [mobileNavRef] = usePortalAutoAnimate();
   const logoutStore = useVendorAuthStore((s) => s.logout);
-  const user = useVendorAuthStore((s) => s.user);
-  const { companyName, portalLabel, companyInitial } = useVendorBrand();
+  const { companyName, portalLabel } = useVendorBrand();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const disputes = useVendorDisputes({ page: 1, limit: 1 });
+  const notificationCount = disputes.data?.meta.total ?? disputes.data?.items.length ?? 0;
+
+  const handleMenuClick = () => {
+    if (window.matchMedia('(max-width: 1023px)').matches) {
+      setMobileOpen((v) => !v);
+      return;
+    }
+    setSidebarCollapsed((v) => !v);
+  };
 
   useEffect(() => {
     setMobileOpen(false);
@@ -49,46 +62,13 @@ export function VendorShell() {
   };
 
   return (
-    <div className="portal-shell min-h-screen flex items-start bg-[var(--color-surface)]">
+    <div className="portal-shell flex min-h-screen bg-[#F4F7F9]">
       <style>{portalAnimationStyles}</style>
 
-      <div
-        className="portal-shell-ambient pointer-events-none fixed inset-0 opacity-70"
-        style={{
-          background:
-            'radial-gradient(900px 420px at 12% -10%, color-mix(in srgb, var(--color-secondary) 16%, transparent), transparent 60%), radial-gradient(700px 360px at 100% 0%, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 55%)',
-        }}
-        aria-hidden="true"
-      />
+      <VendorSidebar onLogout={() => void handleLogout()} collapsed={sidebarCollapsed} />
 
-      <VendorSidebar onLogout={() => void handleLogout()} />
-
-      <div className="relative flex-1 min-w-0 min-h-screen flex flex-col">
-        <header className="lg:hidden sticky top-0 z-30 border-b border-[var(--color-neutral-200)] bg-white/90 backdrop-blur-md">
-          <div className="flex items-center justify-between gap-3 px-4 py-3">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--color-primary)] text-white text-sm font-bold shrink-0">
-                {companyInitial}
-              </div>
-              <div className="min-w-0">
-                <div className="text-sm font-semibold text-[var(--color-neutral-900)] truncate">
-                  {portalLabel}
-                </div>
-                <div className="text-[11px] text-[var(--color-neutral-500)] truncate">
-                  {user?.party?.name || companyName}
-                </div>
-              </div>
-            </div>
-            <button
-              type="button"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--color-neutral-200)] text-[var(--color-neutral-700)] hover:bg-[var(--color-neutral-50)]"
-              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-              onClick={() => setMobileOpen((v) => !v)}
-            >
-              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
-          </div>
-        </header>
+      <div className="relative flex min-h-screen min-w-0 flex-1 flex-col">
+        <VendorTopbar notificationCount={notificationCount} onMenuClick={handleMenuClick} />
 
         {mobileOpen ? (
           <div className="lg:hidden fixed inset-0 z-40">
@@ -98,12 +78,19 @@ export function VendorShell() {
               aria-label="Close navigation"
               onClick={() => setMobileOpen(false)}
             />
-            <div className="portal-mobile-drawer absolute right-0 top-0 h-full w-[min(320px,88vw)] bg-[var(--color-sidebar-bg)] text-white shadow-xl flex flex-col">
-              <div className="flex items-start justify-between gap-3 px-4 py-4 border-b border-white/10">
-                <div className="min-w-0 flex-1 pr-2">
-                  <div className="text-sm font-semibold">{portalLabel}</div>
-                  <div className="mt-0.5 text-xs text-white/60 break-words whitespace-normal leading-snug">
-                    {companyName}
+            <div className="portal-mobile-drawer absolute right-0 top-0 flex h-full w-[min(320px,88vw)] flex-col bg-[var(--color-sidebar-bg)] text-white shadow-xl">
+              <div className="flex items-start justify-between gap-3 border-b border-white/8 px-4 py-4">
+                <div className="flex min-w-0 flex-1 items-start gap-3 pr-2">
+                  <img
+                    src={logo}
+                    alt="KingFisher Wings"
+                    className="h-10 w-10 shrink-0 rounded-xl bg-white object-contain p-1"
+                  />
+                  <div className="min-w-0">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/45">
+                      {portalLabel}
+                    </div>
+                    <div className="mt-0.5 truncate text-sm font-semibold">{companyName}</div>
                   </div>
                 </div>
                 <button
@@ -115,46 +102,70 @@ export function VendorShell() {
                   <X size={18} />
                 </button>
               </div>
-              <nav
-                ref={mobileNavRef}
-                className="flex-1 overflow-y-auto py-3 px-2 portal-nav-stagger"
-                aria-label="Mobile vendor navigation"
-              >
-                {VENDOR_NAV.map(({ label, to, Icon }) => (
-                  <div key={to}>
-                    <NavLink
-                      to={to}
-                      end={to === '/vendor'}
-                      className={({ isActive }) =>
-                        cn(
-                          'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                          isActive
-                            ? 'bg-white/10 text-white border-l-[3px] border-[var(--color-secondary)]'
-                            : 'text-white/80 hover:bg-white/5 hover:text-white',
-                        )
-                      }
-                    >
-                      <Icon size={18} className="opacity-90" aria-hidden="true" />
-                      <span>{label}</span>
-                    </NavLink>
+              <nav ref={mobileNavRef} className="flex-1 overflow-y-auto py-3" aria-label="Mobile vendor navigation">
+                {VENDOR_NAV_SECTIONS.map((section) => (
+                  <div key={section.id} className="mb-2">
+                    <div className="mx-4 mb-1.5 mt-2.5 flex items-center gap-2">
+                      <span
+                        className="h-1.5 w-1.5 shrink-0 rounded-full"
+                        style={{ backgroundColor: section.color }}
+                        aria-hidden="true"
+                      />
+                      <p
+                        className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em]"
+                        style={{ color: section.color }}
+                      >
+                        {section.title}
+                      </p>
+                      <div className="h-px min-w-0 flex-1" style={{ backgroundColor: section.color }} />
+                    </div>
+                    {section.items.map(({ label, to, Icon, iconStyle }) => (
+                      <NavLink
+                        key={to}
+                        to={to}
+                        end={to === '/vendor'}
+                        className={({ isActive }) =>
+                          cn(
+                            'mx-2 flex items-center gap-2.5 rounded-lg border-l-[3px] py-2 pl-2.5 pr-3 text-[13px] transition-all',
+                            isActive
+                              ? 'font-medium text-white'
+                              : 'border-transparent text-white/70 hover:text-white',
+                          )
+                        }
+                        style={({ isActive }) =>
+                          ({
+                            borderLeftColor: isActive ? iconStyle.color : 'transparent',
+                            backgroundColor: isActive ? `${iconStyle.color}24` : undefined,
+                          }) as CSSProperties
+                        }
+                      >
+                        <span
+                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+                          style={{ background: iconStyle.bg }}
+                        >
+                          <Icon size={16} style={{ color: iconStyle.color }} strokeWidth={2.1} aria-hidden="true" />
+                        </span>
+                        <span>{label}</span>
+                      </NavLink>
+                    ))}
                   </div>
                 ))}
               </nav>
-              <div className="border-t border-white/10 p-4">
+              <div className="border-t border-white/10 p-3">
                 <button
                   type="button"
                   onClick={() => void handleLogout()}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-white/10 px-3 py-2.5 text-sm font-medium text-white hover:bg-white/15"
+                  className="flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-white/10 text-sm font-medium text-white/85 hover:bg-white/8"
                 >
                   <LogOut size={16} aria-hidden="true" />
-                  Log out
+                  Logout
                 </button>
               </div>
             </div>
           </div>
         ) : null}
 
-        <main className="relative mx-auto w-full max-w-[1180px] flex-1 px-4 py-6 sm:px-6 sm:py-8">
+        <main className="relative w-full flex-1 px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
           <PortalPageTransition />
         </main>
       </div>

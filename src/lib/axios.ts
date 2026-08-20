@@ -1,4 +1,6 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
+import { AUTH_API } from '@/features/auth/api/auth.api'
+import { matchesAnyApiPath } from '@/lib/apiPath'
 import { useAuthStore } from '@/store/authStore'
 
 interface RetryConfig extends InternalAxiosRequestConfig {
@@ -13,29 +15,28 @@ export const axiosInstance = axios.create({
 })
 
 const AUTH_PUBLIC_URLS = [
-  '/auth/login',
-  '/auth/tenant-login',
-  '/auth/refresh',
-  '/auth/super-admin/login',
-  '/auth/super-admin/signup',
+  AUTH_API.login,
+  AUTH_API.tenantLogin,
+  AUTH_API.refresh,
+  AUTH_API.superAdminLogin,
+  AUTH_API.superAdminSignup,
+  AUTH_API.acceptInvite,
   '/health',
-]
+] as const
 
 /** Logout needs Bearer — do not strip Authorization. Still skip 401 refresh retry. */
 const AUTH_NO_REFRESH_RETRY = [
   ...AUTH_PUBLIC_URLS,
-  '/auth/logout',
-  '/auth/logout-all',
-]
+  AUTH_API.logout,
+  AUTH_API.logoutAll,
+] as const
 
 function isAuthPublicUrl(url?: string): boolean {
-  if (!url) return false
-  return AUTH_PUBLIC_URLS.some((path) => url.includes(path))
+  return matchesAnyApiPath(url, AUTH_PUBLIC_URLS)
 }
 
 function isAuthNoRefreshRetryUrl(url?: string): boolean {
-  if (!url) return false
-  return AUTH_NO_REFRESH_RETRY.some((path) => url.includes(path))
+  return matchesAnyApiPath(url, AUTH_NO_REFRESH_RETRY)
 }
 
 // ── Request: attach access token (never on public login/refresh) ───────────

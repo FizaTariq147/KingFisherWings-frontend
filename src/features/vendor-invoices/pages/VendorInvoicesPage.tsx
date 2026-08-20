@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Download, FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -30,8 +30,11 @@ import {
 } from '../hooks/useVendorInvoices';
 
 export default function VendorInvoicesPage() {
+  const location = useLocation();
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(
+    () => (location.state as { search?: string } | null)?.search?.trim() ?? '',
+  );
   const [status, setStatus] = useState('');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');

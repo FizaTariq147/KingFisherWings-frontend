@@ -6,6 +6,8 @@ export const USER_API = {
   bulk: '/users/bulk',
   adminResetPassword: (id: string) => `/users/${id}/admin-reset-password`,
   forceLogout: (id: string) => `/users/${id}/force-logout`,
+  /** UsersController_changeOwnPassword — same DTO as POST /auth/change-password */
+  meChangePassword: '/users/me/change-password',
 } as const;
 
 export const USER_API_TAGS = {

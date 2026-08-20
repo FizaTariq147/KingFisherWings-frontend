@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { ApiError } from '../../../lib/superAdminApiClient';
 import { useAuthStore } from '@/store/authStore';
+import { safeInternalPath } from '@/lib/safeInternalPath';
 import { superAdminAuthService } from '../services/superAdminAuth.service';
 import { useSuperAdminAuthStore } from '../store/superAdminAuthStore';
 import { AppMotionStyles } from '@/components/motion';
@@ -52,7 +53,7 @@ export default function SuperAdminLoginPage(): JSX.Element {
       });
       setSession(user, access_token, refresh_token);
       const from = (location.state as LocationState | null)?.from?.pathname;
-      navigate(from ?? '/superadmin/dashboard', { replace: true });
+      navigate(safeInternalPath(from, { prefix: '/superadmin', fallback: '/superadmin/dashboard' }), { replace: true });
     },
     onError: (error: unknown) => {
       const message = error instanceof ApiError ? error.message : 'Login failed. Try again.';
