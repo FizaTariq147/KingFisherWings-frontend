@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import { PortalApiError } from '@/lib/portalApiClient';
@@ -10,18 +10,18 @@ import { useApplyTheme } from '@/hooks/useApplyTheme';
 import { useAuthStore } from '@/store/authStore';
 import { portalAuthService } from '../services/portalAuth.service';
 import { usePortalAuthBootstrap } from '../hooks/usePortalAuthBootstrap';
-import { usePortalBrand } from '../hooks/usePortalBrand';
 import { usePortalAuthStore } from '../store/portalAuthStore';
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache';
 import { useVendorAuthStore } from '@/features/vendor-auth/store/vendorAuthStore';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
-import { portalAnimationStyles, PortalGsapRouteMap, usePortalAutoAnimate } from '../components/portal-ui';
+import { AuthLandingShell } from '@/features/auth/components/AuthLandingShell'
+import { safeInternalPath } from '@/lib/safeInternalPath';
 import {
-  BackgroundBeams,
-  MovingBorderButton,
-  Spotlight,
-  TextGenerateEffect,
-} from '@/components/aceternity';
+  LoginPopupFrame,
+  popupInputClass,
+  popupLabelClass,
+  popupSubmitClass,
+} from '@/features/auth/components/LoginPopupFrame'
 
 const loginSchema = z.object({
   tenant_slug: z
@@ -55,20 +55,14 @@ interface LocationState {
   from?: { pathname: string };
 }
 
-const inputClass =
-  'w-full border-0 border-b border-[var(--color-neutral-300)] bg-transparent px-0 py-3 text-[15px] text-[var(--color-neutral-900)] placeholder:text-[var(--color-neutral-400)] transition-[border-color] focus:border-[var(--color-primary)] focus:outline-none focus:ring-0';
-
 export default function PortalLoginPage() {
   useApplyTheme();
-  const [brandRef] = usePortalAutoAnimate();
-  const [formRef] = usePortalAutoAnimate();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const inviteToken = (searchParams.get('token') || searchParams.get('invite') || '').trim();
   const setSession = usePortalAuthStore((s) => s.setSession);
   const { ready, accessToken } = usePortalAuthBootstrap();
-  const { companyName, portalLabel } = usePortalBrand();
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginFormValues>({
@@ -109,7 +103,7 @@ export default function PortalLoginPage() {
       }
 
       const from = (location.state as LocationState | null)?.from?.pathname;
-      navigate(from ?? '/portal', { replace: true });
+      navigate(safeInternalPath(from, { prefix: '/portal', fallback: '/portal' }), { replace: true });
     },
     onError: (error: unknown) => {
       const message =
@@ -163,259 +157,149 @@ export default function PortalLoginPage() {
     return <Navigate to="/portal" replace />;
   }
 
+  const closeToHub = () => navigate('/login');
+
   return (
-    <div className="portal-login min-h-screen lg:grid lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
-      <style>{portalAnimationStyles}</style>
+    <AuthLandingShell onAdminClick={() => navigate('/login?admin=1')}>
+      <LoginPopupFrame
+        title={inviteToken ? 'Accept invite' : 'Customer Portal Sign In'}
+        onClose={closeToHub}
+      >
+        {(form.formState.errors.root || inviteForm.formState.errors.root) && (
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700" role="alert">
+            {form.formState.errors.root?.message || inviteForm.formState.errors.root?.message}
+          </div>
+        )}
 
-      <aside className="portal-page-enter relative flex min-h-[42vh] flex-col justify-between overflow-hidden bg-[var(--color-primary)] px-8 py-10 text-white sm:px-12 sm:py-14 lg:min-h-screen lg:px-16 lg:py-16">
-        <div className="portal-login-grid pointer-events-none absolute inset-0" aria-hidden="true" />
-        <BackgroundBeams className="opacity-70" />
-        <Spotlight className="-top-40 left-0 md:-top-20 md:left-20" fill="white" />
-        <div
-          className="portal-login-pulse pointer-events-none absolute -right-16 top-24 h-56 w-56 rounded-full bg-[var(--color-secondary)]/25 blur-3xl"
-          aria-hidden="true"
-        />
-        <div
-          className="portal-login-pulse pointer-events-none absolute -left-10 bottom-24 h-40 w-40 rounded-full bg-white/10 blur-2xl"
-          aria-hidden="true"
-          style={{ animationDelay: '1.2s' }}
-        />
-
-        {/* Route line motif — GSAP visualization */}
-        <PortalGsapRouteMap className="pointer-events-none absolute inset-0 z-[1] h-full w-full opacity-40" />
-
-        <div ref={brandRef} className="relative z-10 portal-login-brand">
-          <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-white/55">
-            {portalLabel}
-          </p>
-          <h2
-            className="mt-6 max-w-lg text-[clamp(2.25rem,4.5vw,3.75rem)] font-semibold leading-[1.05] tracking-[-0.03em]"
-            style={{ fontFamily: "'Noto Serif', 'Nunito', Georgia, serif" }}
+        {inviteToken ? (
+          <form
+            onSubmit={inviteForm.handleSubmit((values) =>
+              inviteMutation.mutate({
+                token: inviteToken,
+                password: values.password,
+                full_name: values.full_name?.trim() || undefined,
+              }),
+            )}
+            noValidate
+            className="space-y-3.5"
           >
-            {companyName}
-          </h2>
-          <TextGenerateEffect
-            words="Your consignments, quotes, and documents — managed in one place with your forwarder."
-            className="mt-5 max-w-md text-base text-white/80"
-            filter
-            duration={0.4}
-          />
-          <p className="mt-10 text-xs text-white/40 lg:mt-16">
-            Secure access for registered customers only.
-          </p>
-        </div>
-      </aside>
-
-      <main className="portal-page-enter relative flex items-center bg-[var(--color-surface)] px-6 py-12 sm:px-10 lg:px-14 lg:py-16">
-        <div ref={formRef} className="portal-login-form mx-auto w-full max-w-[380px]">
-          <h2 className="text-xl font-semibold tracking-tight text-[var(--color-neutral-900)]">
-            {inviteToken ? 'Accept invite' : 'Sign in'}
-          </h2>
-          <p className="mt-1.5 text-sm text-[var(--color-neutral-500)]">
-            {inviteToken
-              ? 'Set your password to activate your customer portal account.'
-              : 'Enter the workspace and credentials from your forwarder.'}
-          </p>
-
-          {(form.formState.errors.root || inviteForm.formState.errors.root) && (
-            <div
-              className="mt-6 border-l-2 border-red-500 bg-red-50/80 px-3 py-2.5 text-sm text-red-700"
-              role="alert"
-            >
-              {form.formState.errors.root?.message || inviteForm.formState.errors.root?.message}
+            <div>
+              <label htmlFor="invite_full_name" className={popupLabelClass}>
+                Full name (optional)
+              </label>
+              <input id="invite_full_name" autoComplete="name" className={popupInputClass} {...inviteForm.register('full_name')} />
             </div>
-          )}
-
-          {inviteToken ? (
-            <form
-              onSubmit={inviteForm.handleSubmit((values) =>
-                inviteMutation.mutate({
-                  token: inviteToken,
-                  password: values.password,
-                  full_name: values.full_name?.trim() || undefined,
-                }),
+            <div>
+              <label htmlFor="invite_password" className={popupLabelClass}>
+                New password
+              </label>
+              <input
+                id="invite_password"
+                type="password"
+                autoComplete="new-password"
+                className={popupInputClass}
+                {...inviteForm.register('password')}
+              />
+              {inviteForm.formState.errors.password && (
+                <p className="mt-1 text-xs text-red-600">{inviteForm.formState.errors.password.message}</p>
               )}
-              noValidate
-              className="mt-8 space-y-6"
+            </div>
+            <div>
+              <label htmlFor="invite_confirm" className={popupLabelClass}>
+                Confirm password
+              </label>
+              <input
+                id="invite_confirm"
+                type="password"
+                autoComplete="new-password"
+                className={popupInputClass}
+                {...inviteForm.register('confirm')}
+              />
+              {inviteForm.formState.errors.confirm && (
+                <p className="mt-1 text-xs text-red-600">{inviteForm.formState.errors.confirm.message}</p>
+              )}
+            </div>
+            <button
+              type="submit"
+              disabled={inviteMutation.isPending}
+              className={popupSubmitClass}
+              style={{ background: '#0A2942' }}
             >
-              <div>
-                <label
-                  htmlFor="invite_full_name"
-                  className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-neutral-500)]"
-                >
-                  Full name (optional)
-                </label>
-                <input
-                  id="invite_full_name"
-                  autoComplete="name"
-                  className={`${inputClass} mt-1`}
-                  {...inviteForm.register('full_name')}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="invite_password"
-                  className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-neutral-500)]"
-                >
-                  New password
-                </label>
-                <input
-                  id="invite_password"
-                  type="password"
-                  autoComplete="new-password"
-                  className={`${inputClass} mt-1`}
-                  {...inviteForm.register('password')}
-                />
-                {inviteForm.formState.errors.password && (
-                  <p className="mt-1.5 text-xs text-red-600">
-                    {inviteForm.formState.errors.password.message}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label
-                  htmlFor="invite_confirm"
-                  className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-neutral-500)]"
-                >
-                  Confirm password
-                </label>
-                <input
-                  id="invite_confirm"
-                  type="password"
-                  autoComplete="new-password"
-                  className={`${inputClass} mt-1`}
-                  {...inviteForm.register('confirm')}
-                />
-                {inviteForm.formState.errors.confirm && (
-                  <p className="mt-1.5 text-xs text-red-600">
-                    {inviteForm.formState.errors.confirm.message}
-                  </p>
-                )}
-              </div>
-              <MovingBorderButton
-                type="submit"
-                disabled={inviteMutation.isPending}
-                containerClassName="mt-2 w-full"
-                className="w-full bg-[var(--color-primary)] py-3.5 text-sm font-semibold text-white transition-[background-color] hover:bg-[var(--color-secondary)] disabled:opacity-60"
-                borderRadius="0.5rem"
-                duration={2500}
-              >
-                {inviteMutation.isPending ? 'Activating…' : 'Activate account'}
-              </MovingBorderButton>
-            </form>
-          ) : (
+              {inviteMutation.isPending ? 'Activating…' : 'Activate account'}
+            </button>
+          </form>
+        ) : (
           <form
             onSubmit={form.handleSubmit((values) => loginMutation.mutate(values))}
             noValidate
-            className="mt-8 space-y-6"
+            className="space-y-3.5"
           >
             <div>
-              <label
-                htmlFor="tenant_slug"
-                className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-neutral-500)]"
-              >
+              <label htmlFor="tenant_slug" className={popupLabelClass}>
                 Workspace
               </label>
               <input
                 id="tenant_slug"
                 autoComplete="organization"
                 placeholder="Tenant slug"
-                className={`${inputClass} mt-1`}
+                className={popupInputClass}
                 {...form.register('tenant_slug')}
               />
               {form.formState.errors.tenant_slug && (
-                <p className="mt-1.5 text-xs text-red-600">
-                  {form.formState.errors.tenant_slug.message}
-                </p>
+                <p className="mt-1 text-xs text-red-600">{form.formState.errors.tenant_slug.message}</p>
               )}
             </div>
-
             <div>
-              <label
-                htmlFor="portal_email"
-                className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-neutral-500)]"
-              >
+              <label htmlFor="portal_email" className={popupLabelClass}>
                 Email
               </label>
               <input
                 id="portal_email"
                 type="email"
                 autoComplete="username"
-                className={`${inputClass} mt-1`}
+                className={popupInputClass}
                 {...form.register('email')}
               />
               {form.formState.errors.email && (
-                <p className="mt-1.5 text-xs text-red-600">{form.formState.errors.email.message}</p>
+                <p className="mt-1 text-xs text-red-600">{form.formState.errors.email.message}</p>
               )}
             </div>
-
             <div>
-              <label
-                htmlFor="portal_password"
-                className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-neutral-500)]"
-              >
+              <label htmlFor="portal_password" className={popupLabelClass}>
                 Password
               </label>
-              <div className="relative mt-1">
+              <div className="relative">
                 <input
                   id="portal_password"
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
-                  className={`${inputClass} pr-10`}
+                  className={`${popupInputClass} pr-10`}
                   {...form.register('password')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 p-1 text-[var(--color-neutral-400)] transition-colors hover:text-[var(--color-neutral-700)]"
+                  className="absolute right-2.5 top-[calc(50%+2px)] -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 >
-                  {showPassword ? (
-                    <EyeOff size={16} aria-hidden="true" />
-                  ) : (
-                    <Eye size={16} aria-hidden="true" />
-                  )}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
               {form.formState.errors.password && (
-                <p className="mt-1.5 text-xs text-red-600">
-                  {form.formState.errors.password.message}
-                </p>
+                <p className="mt-1 text-xs text-red-600">{form.formState.errors.password.message}</p>
               )}
             </div>
-
-            <MovingBorderButton
+            <button
               type="submit"
               disabled={loginMutation.isPending}
-              containerClassName="mt-2 w-full"
-              className="w-full bg-[var(--color-primary)] py-3.5 text-sm font-semibold text-white transition-[background-color] hover:bg-[var(--color-secondary)] disabled:opacity-60"
-              borderRadius="0.5rem"
-              duration={2500}
+              className={popupSubmitClass}
+              style={{ background: '#0A2942' }}
             >
-              {loginMutation.isPending ? 'Signing in…' : 'Continue'}
-            </MovingBorderButton>
+              {loginMutation.isPending ? 'Signing in…' : 'Sign In'}
+            </button>
           </form>
-          )}
-
-          <p className="mt-10 text-center text-xs text-[var(--color-neutral-400)]">
-            Staff access?{' '}
-            <Link
-              to="/login"
-              className="font-medium text-[var(--color-primary)] underline-offset-4 hover:underline"
-            >
-              ERP login
-            </Link>
-            {' · '}
-            Vendor?{' '}
-            <Link
-              to="/vendor/login"
-              className="font-medium text-[var(--color-primary)] underline-offset-4 hover:underline"
-            >
-              Vendor portal
-            </Link>
-          </p>
-        </div>
-      </main>
-    </div>
+        )}
+      </LoginPopupFrame>
+    </AuthLandingShell>
   );
 }

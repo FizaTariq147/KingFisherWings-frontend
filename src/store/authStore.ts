@@ -32,6 +32,8 @@ export interface AuthUser {
   companyId?: string
   /** Staff users with a temporary password must set their own before using the app. */
   mustChangePassword?: boolean
+  /** Tenant admins must enroll 2FA before they can use ERP. */
+  twoFactorEnabled?: boolean
 }
 
 // ── Backend error response shape from NestJS ──────────────────────────────
@@ -61,6 +63,9 @@ function extractErrorMessage(err: unknown): string {
     const msg = Array.isArray(data.message) ? data.message[0] : data.message
 
     if (status === 401) {
+      if (typeof msg === 'string' && /two.?factor|2fa|totp/i.test(msg)) {
+        return msg
+      }
       if (typeof msg === 'string' && msg.toLowerCase().includes('locked'))
         return 'Your account has been locked due to too many failed attempts. Please contact your administrator.'
       if (typeof msg === 'string' && (msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('credentials')))
@@ -73,7 +78,10 @@ function extractErrorMessage(err: unknown): string {
         return 'Login from this device is not permitted.'
       return 'Authentication failed. Please check your credentials.'
     }
-    if (status === 403) return 'You do not have permission to access this workspace.'
+    if (status === 403) {
+      if (typeof msg === 'string' && /two.?factor|2fa|totp/i.test(msg)) return msg
+      return 'You do not have permission to access this workspace.'
+    }
     if (status === 429) return 'Too many login attempts. Please wait a moment before trying again.'
     if (status === 503 || status === 0)
       return 'Unable to reach the server. Please check your connection.'
@@ -102,6 +110,7 @@ function toStoreUser(user: {
   tenantId?: string
   companyId?: string
   mustChangePassword?: boolean
+  twoFactorEnabled?: boolean
 }): AuthUser {
   return {
     id: user.id,
@@ -112,6 +121,7 @@ function toStoreUser(user: {
     tenantId: user.tenantId,
     companyId: user.companyId,
     mustChangePassword: Boolean(user.mustChangePassword),
+    twoFactorEnabled: user.twoFactorEnabled,
   }
 }
 
@@ -239,8 +249,16 @@ export const useAuthStore = create<AuthStore>()(
               password: dto.password,
               remember_me: dto.remember_me,
               device_name: dto.device_name,
+              totp_code: dto.totp_code,
+              backup_code: dto.backup_code,
             }),
           )
+          if (
+            result.user.twoFactorEnabled == null &&
+            (dto.totp_code?.trim() || dto.backup_code?.trim())
+          ) {
+            result.user.twoFactorEnabled = true
+          }
           await applyLoginSuccess(set, result)
         } catch (err) {
           const slugHint = dto.tenant_slug?.trim()
@@ -273,8 +291,17 @@ export const useAuthStore = create<AuthStore>()(
               password: dto.password,
               remember_me: dto.remember_me,
               device_name: dto.device_name,
+              totp_code: dto.totp_code,
+              backup_code: dto.backup_code,
+              mac_address: dto.mac_address,
             }),
           )
+          if (
+            result.user.twoFactorEnabled == null &&
+            (dto.totp_code?.trim() || dto.backup_code?.trim())
+          ) {
+            result.user.twoFactorEnabled = true
+          }
           await applyLoginSuccess(set, result)
         } catch (err) {
           const slug = dto.tenant_slug?.trim().toLowerCase() || ''
@@ -372,6 +399,7 @@ export const useAuthStore = create<AuthStore>()(
               tenantId: partial.tenantId,
               companyId: partial.companyId,
               mustChangePassword: Boolean(partial.mustChangePassword),
+              twoFactorEnabled: partial.twoFactorEnabled,
             },
           })
           return

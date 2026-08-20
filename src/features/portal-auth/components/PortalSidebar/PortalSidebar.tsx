@@ -1,149 +1,299 @@
-import { NavLink } from 'react-router-dom';
-import {
-  Bell,
-  BookOpen,
-  ClipboardList,
-  CircleDollarSign,
-  FileText,
-  HandCoins,
-  LogOut,
-  MessageSquare,
-  Package,
-  Receipt,
-  Route,
-  Scale,
-  User,
-  Wallet,
-} from 'lucide-react';
+import { useMemo, useState, type CSSProperties } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import type { LucideIcon } from 'lucide-react';
+import { LogOut, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import logo from '@/assets/logo.png';
 import { usePortalAutoAnimate } from '../portal-ui/usePortalAutoAnimate';
 import { usePortalBrand } from '../../hooks/usePortalBrand';
 import { usePortalAuthStore } from '../../store/portalAuthStore';
+import {
+  PORTAL_FLAT_NAV,
+  PORTAL_NAV_SECTIONS,
+  type PortalNavIconStyle,
+} from '../../config/portalNav';
 
 type PortalSidebarProps = {
   onLogout: () => void;
   unreadCount?: number;
+  collapsed?: boolean;
 };
 
-const NAV = [
-  { label: 'Dashboard', to: '/portal', Icon: ClipboardList },
-  { label: 'Book', to: '/portal/book', Icon: BookOpen },
-  { label: 'Track', to: '/portal/track', Icon: Route },
-  { label: 'Shipments', to: '/portal/shipments', Icon: Package },
-  { label: 'Quotes', to: '/portal/quotes', Icon: Bell },
-  { label: 'Invoices', to: '/portal/invoices', Icon: FileText },
-  { label: 'Credit notes', to: '/portal/credit-notes', Icon: Receipt },
-  { label: 'Debit notes', to: '/portal/debit-notes', Icon: Receipt },
-  { label: 'Payments', to: '/portal/payments', Icon: HandCoins },
-  { label: 'Credit', to: '/portal/credit', Icon: Wallet },
-  { label: 'Credit requests', to: '/portal/credit-requests', Icon: CircleDollarSign },
-  { label: 'Documents', to: '/portal/documents', Icon: FileText },
-  { label: 'Messages', to: '/portal/messages', Icon: MessageSquare },
-  { label: 'Disputes', to: '/portal/disputes', Icon: Scale },
-  { label: 'Alerts', to: '/portal/alerts', Icon: Bell },
-  { label: 'Account', to: '/portal/account', Icon: User },
-] as const;
+function accentTint(color: string, alpha: number): string {
+  const hex = color.replace('#', '');
+  if (hex.length !== 6) return color;
+  const r = Number.parseInt(hex.slice(0, 2), 16);
+  const g = Number.parseInt(hex.slice(2, 4), 16);
+  const b = Number.parseInt(hex.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 
-export function PortalSidebar({ onLogout, unreadCount = 0 }: PortalSidebarProps) {
+function SidebarSectionLabel({ title, color }: { title: string; color: string }) {
+  return (
+    <div className="mx-4 mb-1.5 mt-2.5 flex items-center gap-2">
+      <span
+        className="h-1.5 w-1.5 shrink-0 rounded-full"
+        style={{ backgroundColor: color }}
+        aria-hidden="true"
+      />
+      <p
+        className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em]"
+        style={{ color }}
+      >
+        {title}
+      </p>
+      <div className="h-px min-w-0 flex-1" style={{ backgroundColor: color }} />
+    </div>
+  );
+}
+
+function PortalNavIcon({
+  Icon,
+  iconStyle,
+  active,
+  size = 'md',
+}: {
+  Icon: LucideIcon;
+  iconStyle: PortalNavIconStyle;
+  active?: boolean;
+  size?: 'sm' | 'md';
+}) {
+  const box = size === 'sm' ? 'h-7 w-7' : 'h-8 w-8';
+  const iconSize = size === 'sm' ? 14 : 16;
+  return (
+    <span
+      className={cn('flex shrink-0 items-center justify-center rounded-lg transition-colors duration-200', box)}
+      style={{
+        background: active ? accentTint(iconStyle.color, 0.28) : iconStyle.bg,
+        boxShadow: active ? `inset 0 0 0 1px ${accentTint(iconStyle.color, 0.45)}` : undefined,
+      }}
+    >
+      <Icon size={iconSize} style={{ color: iconStyle.color }} strokeWidth={2.1} aria-hidden="true" />
+    </span>
+  );
+}
+
+function PortalNavLink({
+  to,
+  label,
+  Icon,
+  iconStyle,
+  unreadCount,
+  collapsed,
+}: {
+  to: string;
+  label: string;
+  Icon: LucideIcon;
+  iconStyle: PortalNavIconStyle;
+  unreadCount: number;
+  collapsed?: boolean;
+}) {
+  return (
+    <NavLink
+      to={to}
+      end={to === '/portal'}
+      title={collapsed ? label : undefined}
+      className={({ isActive }) =>
+        cn(
+          'group flex items-center gap-2.5 py-2 text-[13px] transition-all duration-200',
+          collapsed
+            ? 'mx-2 justify-center rounded-lg px-0'
+            : 'mx-2 rounded-lg border-l-[3px] pl-2.5 pr-3',
+          isActive
+            ? 'font-medium text-white'
+            : cn(
+                'text-white/70 hover:text-white',
+                collapsed
+                  ? 'hover:[background-color:color-mix(in_srgb,var(--nav-accent)_14%,transparent)]'
+                  : 'border-transparent hover:[border-left-color:var(--nav-accent)] hover:[background-color:color-mix(in_srgb,var(--nav-accent)_12%,transparent)]',
+              ),
+        )
+      }
+      style={({ isActive }) => {
+        const baseStyle = { '--nav-accent': iconStyle.color } as CSSProperties;
+        if (isActive) {
+          return collapsed
+            ? { ...baseStyle, backgroundColor: accentTint(iconStyle.color, 0.18) }
+            : {
+                ...baseStyle,
+                borderLeftColor: iconStyle.color,
+                backgroundColor: accentTint(iconStyle.color, 0.14),
+              };
+        }
+        if (collapsed) return baseStyle;
+        return { ...baseStyle, borderLeftColor: 'transparent' };
+      }}
+    >
+      {({ isActive }) => (
+        <>
+          <PortalNavIcon Icon={Icon} iconStyle={iconStyle} active={isActive} />
+          {!collapsed ? <span className="truncate">{label}</span> : null}
+          {!collapsed && label === 'Alerts' && unreadCount > 0 ? (
+            <span className="ml-auto inline-flex min-w-5 items-center justify-center rounded-full bg-[var(--color-secondary)] px-1.5 text-[10px] font-semibold text-white">
+              {unreadCount}
+            </span>
+          ) : null}
+        </>
+      )}
+    </NavLink>
+  );
+}
+
+export function PortalSidebar({
+  onLogout,
+  unreadCount = 0,
+  collapsed = false,
+}: PortalSidebarProps) {
+  const navigate = useNavigate();
   const user = usePortalAuthStore((s) => s.user);
-  const { companyName, portalLabel, companyInitial } = usePortalBrand();
-  const firstLetter = (user?.fullName || user?.email || 'G').charAt(0).toUpperCase();
+  const { companyName, portalLabel } = usePortalBrand();
+  const displayName = user?.fullName || user?.email || 'User';
+  const firstLetter = displayName.charAt(0).toUpperCase();
   const [navRef] = usePortalAutoAnimate();
+  const [moduleQuery, setModuleQuery] = useState('');
 
-  const linkClass = (isActive: boolean) =>
-    cn(
-      'relative group flex items-center gap-3 py-2.5 text-sm font-medium transition-all duration-200 pl-[18px] pr-4',
-      isActive
-        ? 'bg-white/10 text-white font-medium'
-        : 'text-white/75 hover:text-white hover:bg-white/5 hover:translate-x-0.5',
-    );
+  const moduleMatches = useMemo(() => {
+    const q = moduleQuery.trim().toLowerCase();
+    if (!q) return [];
+    return PORTAL_FLAT_NAV.filter((item) => item.label.toLowerCase().includes(q)).slice(0, 6);
+  }, [moduleQuery]);
+
+  const jumpToModule = (path: string) => {
+    setModuleQuery('');
+    navigate(path);
+  };
 
   return (
     <aside
-      className="hidden lg:flex lg:w-[268px] shrink-0 sticky top-0 h-screen max-h-screen flex-col overflow-hidden"
+      className={cn(
+        'hidden lg:flex shrink-0 sticky top-0 h-screen max-h-screen flex-col overflow-hidden transition-all duration-300',
+        collapsed ? 'lg:w-[72px]' : 'lg:w-[272px]',
+      )}
       style={{ background: 'var(--color-sidebar-bg)', color: 'var(--color-sidebar-text)' }}
     >
-      <div className="px-5 py-6 border-b border-white/10 portal-page-enter">
-        <div className="flex items-start gap-3">
-          <div className="relative shrink-0">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[var(--color-secondary)] to-[var(--color-secondary-700)] flex items-center justify-center shadow-lg shadow-black/20 transition-transform duration-200 hover:scale-105">
-              <span className="font-bold text-base text-white">{companyInitial}</span>
-            </div>
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-[10px] uppercase tracking-[0.14em] font-semibold text-[var(--color-sidebar-text-muted)]">
-              {portalLabel}
-            </div>
-            <div
-              className="mt-0.5 text-sm font-semibold leading-snug text-white break-words whitespace-normal"
-              title={companyName}
-            >
-              {companyName}
+      {collapsed ? (
+        <div className="flex justify-center border-b border-white/8 px-2 py-3">
+          <img src={logo} alt="KingFisher Wings" className="h-9 w-9 rounded-lg object-contain" />
+        </div>
+      ) : (
+        <div className="border-b border-white/8 px-4 py-4">
+          <div className="flex items-start gap-3">
+            <img
+              src={logo}
+              alt="KingFisher Wings"
+              className="h-10 w-10 shrink-0 rounded-xl bg-white object-contain p-1"
+            />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <p className="truncate text-sm font-semibold text-white" title={companyName}>
+                  {companyName}
+                </p>
+                <span className="shrink-0 rounded bg-[var(--color-secondary)] px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-white">
+                  GOLD
+                </span>
+              </div>
+              <p className="mt-0.5 truncate text-[11px] text-white/45">{portalLabel}</p>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
-      <nav className="flex-1 min-h-0 overflow-y-auto py-3 scrollbar-none" aria-label="Customer portal navigation">
-        <p className="px-[18px] pb-2 text-[10px] font-semibold uppercase tracking-wider text-white/35">
-          Menu
-        </p>
-        <div ref={navRef} className="space-y-0.5 portal-nav-stagger">
-          {NAV.map(({ label, to, Icon }) => (
-            <div key={to}>
-              <NavLink to={to} end={to === '/portal'} className={({ isActive }) => linkClass(isActive)}>
-                {({ isActive }) => (
-                  <>
-                    {isActive ? (
-                      <span
-                        className="absolute inset-y-0 left-0 w-[3px] rounded-r bg-[var(--color-secondary)] transition-all duration-200"
-                        aria-hidden="true"
-                      />
-                    ) : null}
-                    <Icon
-                      size={18}
-                      className="shrink-0 opacity-90 transition-transform duration-200 group-hover:scale-110"
-                      aria-hidden="true"
-                    />
-                    <span className="truncate">{label}</span>
-                    {label === 'Alerts' && unreadCount > 0 ? (
-                      <span className="ml-auto inline-flex items-center justify-center min-w-6 h-5 px-1 rounded-full bg-[var(--color-secondary)] text-white text-xs font-semibold">
-                        {unreadCount}
-                      </span>
-                    ) : null}
-                  </>
-                )}
-              </NavLink>
-            </div>
-          ))}
+      {!collapsed ? (
+        <div className="border-b border-white/8 px-4 pb-4">
+          <div className="relative">
+            <Search
+              size={14}
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/35"
+            />
+            <input
+              value={moduleQuery}
+              onChange={(e) => setModuleQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && moduleMatches[0]) jumpToModule(moduleMatches[0].to);
+                if (e.key === 'Escape') setModuleQuery('');
+              }}
+              placeholder="Jump to module"
+              className="h-9 w-full rounded-lg border border-white/10 bg-white/6 pl-8 pr-3 text-xs text-white outline-none placeholder:text-white/35 focus:border-white/20"
+            />
+            {moduleMatches.length > 0 ? (
+              <ul className="absolute left-0 right-0 top-full z-20 mt-1 overflow-hidden rounded-lg border border-white/10 bg-[#0A2942] shadow-lg">
+                {moduleMatches.map((item) => (
+                  <li key={item.to}>
+                    <button
+                      type="button"
+                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-white/85 hover:bg-white/8"
+                      onClick={() => jumpToModule(item.to)}
+                    >
+                      <PortalNavIcon Icon={item.Icon} iconStyle={item.iconStyle} size="sm" />
+                      {item.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
         </div>
+      ) : null}
+
+      <nav
+        ref={navRef}
+        className="flex-1 min-h-0 overflow-y-auto py-3 scrollbar-none"
+        aria-label="Customer portal navigation"
+      >
+        {PORTAL_NAV_SECTIONS.map((section) => (
+          <div key={section.id} className="mb-2">
+            {!collapsed ? <SidebarSectionLabel title={section.title} color={section.color} /> : null}
+            {section.items.map((item) => (
+              <PortalNavLink
+                key={item.to}
+                to={item.to}
+                label={item.label}
+                Icon={item.Icon}
+                iconStyle={item.iconStyle}
+                unreadCount={unreadCount}
+                collapsed={collapsed}
+              />
+            ))}
+          </div>
+        ))}
       </nav>
 
-      <div className="px-4 pb-5 shrink-0">
-        <div className="rounded-xl bg-white/5 border border-white/10 p-3.5 backdrop-blur-sm portal-page-enter">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-full bg-[var(--color-secondary)]/20 ring-1 ring-[var(--color-secondary)]/40 flex items-center justify-center shrink-0">
-              <span className="text-sm font-bold text-white">{firstLetter}</span>
-            </div>
-            <div className="min-w-0">
-              <div className="text-sm font-semibold truncate text-white">
-                {user?.fullName || user?.email || 'User'}
+      <div className="shrink-0 border-t border-white/10 p-3">
+        {!collapsed ? (
+          <>
+            <div className="mb-3 flex items-center gap-2.5 rounded-xl bg-white/6 px-3 py-2.5">
+              <div className="relative shrink-0">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-sm font-semibold text-white">
+                  {firstLetter}
+                </div>
+                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-[#051523] bg-[var(--color-success-500)]" />
               </div>
-              <div className="text-xs text-[var(--color-sidebar-text-muted)] truncate">
-                {user?.party?.name || portalLabel}
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium text-white">{displayName}</p>
+                <p className="truncate text-[10px] uppercase tracking-wide text-white/40">
+                  {user?.party?.name || portalLabel}
+                </p>
               </div>
             </div>
-          </div>
-
+            <button
+              type="button"
+              onClick={onLogout}
+              className="flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-white/10 text-sm font-medium text-white/85 transition-colors hover:bg-white/8"
+            >
+              <LogOut size={16} aria-hidden="true" />
+              Logout
+            </button>
+          </>
+        ) : (
           <button
             type="button"
+            title="Logout"
             onClick={onLogout}
-            className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white transition hover:bg-white/15"
+            className="mx-auto flex h-9 w-9 items-center justify-center rounded-lg text-white/80 hover:bg-white/8"
           >
-            <LogOut size={14} aria-hidden="true" />
-            Log out
+            <LogOut size={16} aria-hidden="true" />
           </button>
-        </div>
+        )}
       </div>
     </aside>
   );

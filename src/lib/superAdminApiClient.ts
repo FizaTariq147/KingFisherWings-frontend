@@ -2,6 +2,7 @@ import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { useSuperAdminAuthStore } from '../features/superadmin/store/superAdminAuthStore';
 import { AUTH_API } from '../features/auth/api/auth.api';
 import { normalizeTokenPair } from '../features/auth/utils/normalizeAuthResponse';
+import { matchesAnyApiPath } from '@/lib/apiPath';
 
 export interface ApiEnvelope<T, M = undefined> {
   data: T;
@@ -66,7 +67,25 @@ const processQueue = (error: unknown, token: string | null) => {
   pendingQueue = [];
 };
 
+const SUPERADMIN_PUBLIC = [
+  AUTH_API.superAdminLogin,
+  AUTH_API.superAdminSignup,
+  AUTH_API.refresh,
+] as const;
+
+const SUPERADMIN_NO_REFRESH = [
+  ...SUPERADMIN_PUBLIC,
+  AUTH_API.logout,
+] as const;
+
 superAdminApiClient.interceptors.request.use((config) => {
+  if (matchesAnyApiPath(config.url, SUPERADMIN_PUBLIC)) {
+    if (config.headers) {
+      delete config.headers.Authorization;
+      delete config.headers.authorization;
+    }
+    return config;
+  }
   const token = useSuperAdminAuthStore.getState().accessToken;
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
@@ -83,10 +102,7 @@ superAdminApiClient.interceptors.response.use(
     const original = err.config as RetryConfig | undefined;
     const url = original?.url ?? '';
 
-    const isAuthBootstrap =
-      url.includes('/auth/super-admin/login') ||
-      url.includes('/auth/refresh') ||
-      url.includes('/auth/logout');
+    const isAuthBootstrap = matchesAnyApiPath(url, SUPERADMIN_NO_REFRESH);
 
     if (status === 401 && original && !original._retry && !isAuthBootstrap) {
       const refreshToken = useSuperAdminAuthStore.getState().refreshToken;

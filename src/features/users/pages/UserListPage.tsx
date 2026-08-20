@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
+import { authService } from '@/features/auth/services/auth.service';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { UserConfirmModal } from '../components/UserConfirmModal';
@@ -109,6 +110,9 @@ export default function UserListPage() {
   const handleDeactivate = (user: User) => requestConfirm('deactivate', user);
   const handleDelete = (user: User) => requestConfirm('delete', user);
   const handleRestore = (user: User) => requestConfirm('restore', user);
+
+  const handleInvite = (user: User) =>
+    runAction(user, () => authService.inviteUser({ user_id: user.id, email: user.email }));
 
   const handleConfirmAction = async () => {
     if (!confirm || (!tenantId && !sessionScoped)) return;
@@ -241,6 +245,7 @@ export default function UserListPage() {
             onDeactivate={handleDeactivate}
             onDelete={handleDelete}
             onRestore={handleRestore}
+            onInvite={handleInvite}
             emptyMessage={
               debouncedSearch || status !== 'all' || role !== 'all'
                 ? status === 'deleted'

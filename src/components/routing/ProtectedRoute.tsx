@@ -2,9 +2,11 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { AppShellSkeleton } from '@/components/skeletons/AppShellSkeleton'
 import { useAuthStore } from '@/store/authStore'
+import { isTenantUserManagerRole } from '@/features/users/constants/userPermissions'
 import type { PermissionKey } from '@/types/auth.types'
 
 const CHANGE_PASSWORD_PATH = '/change-password'
+const TWO_FACTOR_PATH = '/settings/two-factor'
 
 interface ProtectedRouteProps {
   redirectTo?:           string
@@ -23,7 +25,8 @@ export default function ProtectedRoute({
   requireAnyRole,
 }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading, hasPermission, hasAnyPermission, hasRole } = useAuth()
-  const mustChangePassword = useAuthStore((s) => Boolean(s.user?.mustChangePassword))
+  const storeUser = useAuthStore((s) => s.user)
+  const mustChangePassword = Boolean(storeUser?.mustChangePassword)
   const location = useLocation()
 
   // ── Auth still resolving — show full shell skeleton so layout doesn't flash
@@ -39,6 +42,17 @@ export default function ProtectedRoute({
   // Staff with a temporary password must set their own before using the app.
   if (mustChangePassword && location.pathname !== CHANGE_PASSWORD_PATH) {
     return <Navigate to={CHANGE_PASSWORD_PATH} replace />
+  }
+
+  // Tenant Admin must enroll TOTP 2FA before using the rest of the ERP.
+  const isTenantAdmin = isTenantUserManagerRole(storeUser?.role)
+  if (
+    isTenantAdmin &&
+    !storeUser?.twoFactorEnabled &&
+    location.pathname !== TWO_FACTOR_PATH &&
+    location.pathname !== CHANGE_PASSWORD_PATH
+  ) {
+    return <Navigate to={TWO_FACTOR_PATH} replace />
   }
 
   const roleDenied = requireAnyRole

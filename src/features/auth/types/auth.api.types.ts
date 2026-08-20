@@ -9,8 +9,9 @@ export interface LoginDto {
   device_name?: string;
   /** Optional when MAC allow-list is configured. */
   mac_address?: string;
-  /** Optional when 2FA is enabled. */
+  /** TOTP code when two-factor authentication is enabled. */
   totp_code?: string;
+  /** One-time backup code as alternative to TOTP. */
   backup_code?: string;
 }
 
@@ -20,6 +21,10 @@ export interface TenantLoginDto {
   password: string;
   remember_me?: boolean;
   device_name?: string;
+  /** TOTP code when two-factor authentication is enabled on the tenant admin account. */
+  totp_code?: string;
+  /** One-time backup code as alternative to TOTP. */
+  backup_code?: string;
 }
 
 export interface RefreshTokenDto {
@@ -68,6 +73,8 @@ export interface AuthLoginUser {
   companyId?: string;
   /** True when API requires changing the temporary password after first login. */
   mustChangePassword?: boolean;
+  /** True when TOTP 2FA is enrolled for this principal. */
+  twoFactorEnabled?: boolean;
 }
 
 export interface AuthLoginResult extends AuthTokenPair {
@@ -97,4 +104,38 @@ export interface AuthMeResponse {
 
 export interface UpdateMeDto {
   preferred_country_code?: string | null;
+}
+
+/** POST /auth/2fa/enable — TotpVerifyDto */
+export interface TotpVerifyDto {
+  code: string;
+}
+
+/** POST /auth/2fa/disable — DisableTwoFactorDto */
+export interface DisableTwoFactorDto {
+  password: string;
+  /** TOTP or backup code if 2FA is already on. */
+  code?: string;
+}
+
+/** POST /auth/2fa/setup — response fields vary; all optional. */
+export interface TwoFactorSetupResult {
+  secret?: string;
+  qrCodeDataUrl?: string;
+  otpauthUrl?: string;
+  backupCodes?: string[];
+}
+
+/** POST /auth/invite — InviteUserDto */
+export interface InviteUserDto {
+  user_id: string;
+  email?: string;
+}
+
+/** POST /auth/accept-invite — AcceptInviteDto */
+export interface AcceptInviteDto {
+  token: string;
+  password: string;
+  first_name?: string;
+  last_name?: string;
 }

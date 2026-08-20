@@ -19,13 +19,8 @@ export interface LoginSecurityConfig {
   multiLoginAllowed:   boolean
 }
 
-// PATCH /api/users/:id/login-security
+// PATCH /users/:id (allowed_ips, allowed_mac_addresses, office hours)
 export type LoginSecurityPayload = Omit<LoginSecurityConfig, 'userId'>
-
-// GET /api/users/:id/login-security
-export interface LoginSecurityResponse {
-  config: LoginSecurityConfig
-}
 
 export const DAYS_OF_WEEK: { day: DayOfWeek; label: string; short: string }[] = [
   { day: 'MON', label: 'Monday',    short: 'Mon' },

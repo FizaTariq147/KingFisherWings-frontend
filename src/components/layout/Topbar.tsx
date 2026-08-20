@@ -1,222 +1,207 @@
-import type { ReactNode } from 'react'
-import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Menu,
   Bell,
-  BookOpen,
+  Settings,
   UserCircle,
-  HelpCircle,
-  ChevronDown,
-  LogOut,
-  Loader2,
   KeyRound,
   Shield,
-} from 'lucide-react'
-import { useUIStore } from '@/store/uiStore'
-import { useAuthStore } from '@/store/authStore'
-import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore'
-import { superAdminAuthService } from '@/features/superadmin/services/superAdminAuth.service'
+  ChevronDown,
+  Loader2,
+  LogOut,
+} from 'lucide-react';
+import { useUIStore } from '@/store/uiStore';
+import { useAuthStore } from '@/store/authStore';
+import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore';
 import {
   isTenantUserManagerRole,
   resolveAuthRoleSlug,
-} from '@/features/users/constants/userPermissions'
-import { GlobalSearch } from '@/features/search/components/GlobalSearch'
+} from '@/features/users/constants/userPermissions';
+import { GlobalSearch } from '@/features/search/components/GlobalSearch';
+import { useNotificationUnreadCount } from '@/features/notifications/hooks/useNotifications';
+import { cn } from '@/lib/utils';
+import { useShellLogout } from './useShellLogout';
 
 interface TopbarProps {
-  companyName?: string
-  notificationCount?: number
-  onLogout?: () => void
+  onLogout?: () => void;
 }
 
-function ActionButton({
-  children,
-  label,
-  onClick,
-  disabled,
-  className = '',
-}: {
-  children: ReactNode
-  label: string
-  onClick?: () => void
-  disabled?: boolean
-  className?: string
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={label}
-      className={`flex items-center gap-1.5 hover:opacity-80 shrink-0 disabled:opacity-60 ${className}`}
-    >
-      {children}
-      <span className="hidden lg:inline">{label}</span>
-    </button>
-  )
-}
-
-export function Topbar({
-  companyName = 'KINGFISHER WINGS LOGISTIC LLC',
-  notificationCount = 0,
-  onLogout,
-}: TopbarProps) {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const toggleSidebar = useUIStore((s) => s.toggleSidebar)
-  const openMobileSidebar = useUIStore((s) => s.openMobileSidebar)
-  const user = useAuthStore((s) => s.user)
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  const logout = useAuthStore((s) => s.logout)
-  const isSuperAdminAuthenticated = useSuperAdminAuthStore((s) => s.isAuthenticated)
-  const superAdminLogout = useSuperAdminAuthStore((s) => s.logout)
-  const [loggingOut, setLoggingOut] = useState(false)
+export function Topbar({ onLogout }: TopbarProps) {
+  const toggleSidebar = useUIStore((s) => s.toggleSidebar);
+  const openMobileSidebar = useUIStore((s) => s.openMobileSidebar);
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isSuperAdminAuthenticated = useSuperAdminAuthStore((s) => s.isAuthenticated);
+  const location = useLocation();
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const settingsRef = useRef<HTMLDivElement>(null);
+  const { handleLogout, loggingOut } = useShellLogout(onLogout);
 
   const isSuperAdminArea =
-    location.pathname.startsWith('/superadmin') && !location.pathname.includes('/login')
+    location.pathname.startsWith('/superadmin') && !location.pathname.includes('/login');
 
-  const canChangePassword = isAuthenticated && Boolean(user) && !isSuperAdminArea
+  const unread = useNotificationUnreadCount();
+  const notificationCount = unread.data ?? 0;
+
+  const canChangePassword = isAuthenticated && Boolean(user) && !isSuperAdminArea;
   const passwordLabel = isTenantUserManagerRole(resolveAuthRoleSlug(user?.role))
     ? 'Tenant password'
-    : 'Password'
+    : 'Password';
 
   const handleMenuClick = () => {
     if (window.matchMedia('(max-width: 767px)').matches) {
-      openMobileSidebar()
-      return
+      openMobileSidebar();
+      return;
     }
-    toggleSidebar()
-  }
+    toggleSidebar();
+  };
 
-  const handleLogout = async () => {
-    if (loggingOut) return
-    setLoggingOut(true)
-    try {
-      if (onLogout) {
-        onLogout()
-        return
-      }
-      if (isSuperAdminArea) {
-        try {
-          await superAdminAuthService.logout()
-        } catch {
-          // clear local session regardless
-        } finally {
-          superAdminLogout()
-          navigate('/superadmin/login', { replace: true })
-        }
-        return
-      }
-      // POST /auth/logout (Bearer) then clear local session
-      await logout()
-    } finally {
-      setLoggingOut(false)
+  const onLogoutClick = () => {
+    if (onLogout) {
+      void handleLogout();
+      return;
     }
-  }
+    void handleLogout();
+  };
 
   return (
-    <header
-      className="h-14 md:h-16 flex items-center justify-between gap-2 px-3 sm:px-4 text-white shrink-0 min-w-0"
-      style={{ background: 'var(--color-topbar-bg)' }}
-    >
-      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-        <button
-          type="button"
-          onClick={handleMenuClick}
-          aria-label="Toggle navigation"
-          className="p-1.5 hover:opacity-80 shrink-0"
-        >
-          <Menu size={20} />
-        </button>
-        <span className="font-bold text-sm sm:text-base tracking-wide truncate min-w-0">
-          {companyName}
-        </span>
-      </div>
+    <header className="flex h-14 shrink-0 items-center gap-3 border-b border-[var(--color-neutral-200)] bg-white px-3 sm:px-4 md:h-16">
+      <button
+        type="button"
+        onClick={handleMenuClick}
+        aria-label="Toggle navigation"
+        className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[var(--color-neutral-600)] hover:bg-[var(--color-neutral-50)]"
+      >
+        <Menu size={20} />
+      </button>
 
-      <div className="flex items-center gap-2 sm:gap-3 lg:gap-5 text-xs shrink-0">
-        <button type="button" aria-label="Notifications" className="relative flex items-center hover:opacity-80 p-1">
-          <Bell size={20} />
-          {notificationCount > 0 && (
-            <span
-              className="absolute -top-1.5 -right-2 min-w-[16px] px-1 rounded-full text-[10px] font-bold text-white text-center"
-              style={{ background: 'var(--color-secondary)' }}
-            >
-              {notificationCount}
-            </span>
-          )}
-        </button>
+      {isAuthenticated && !isSuperAdminArea ? (
+        <div className="hidden min-w-0 flex-1 md:block">
+          <GlobalSearch variant="inline" />
+        </div>
+      ) : (
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-[var(--color-neutral-800)]">
+            {isSuperAdminArea ? 'KingFisher Platform Console' : 'KingFisher Wings LLC'}
+          </p>
+        </div>
+      )}
 
-        <ActionButton label="Blog" className="hidden sm:flex">
-          <BookOpen size={20} />
-        </ActionButton>
+      <div className="ml-auto flex items-center gap-1 sm:gap-2">
+        {isAuthenticated && !isSuperAdminArea ? (
+          <Link
+            to="/notifications"
+            aria-label="Notifications"
+            className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-[var(--color-neutral-600)] hover:bg-[var(--color-neutral-50)]"
+          >
+            <Bell size={18} />
+            {notificationCount > 0 ? (
+              <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--color-secondary)] px-1 text-[10px] font-bold text-white">
+                {notificationCount > 9 ? '9+' : notificationCount}
+              </span>
+            ) : null}
+          </Link>
+        ) : null}
 
-        {isAuthenticated && !isSuperAdminArea ? <GlobalSearch /> : null}
+        <div ref={settingsRef} className="relative">
+          <button
+            type="button"
+            aria-label="Settings menu"
+            aria-expanded={settingsOpen}
+            onClick={() => setSettingsOpen((v) => !v)}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-[var(--color-neutral-600)] hover:bg-[var(--color-neutral-50)]"
+          >
+            <Settings size={18} />
+          </button>
+          {settingsOpen ? (
+            <>
+              <button
+                type="button"
+                className="fixed inset-0 z-40 cursor-default"
+                aria-label="Close settings menu"
+                onClick={() => setSettingsOpen(false)}
+              />
+              <div className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-xl border border-[var(--color-neutral-200)] bg-white py-1 shadow-lg">
+                {!isSuperAdminArea && isAuthenticated ? (
+                  <Link
+                    to="/settings"
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-[var(--color-neutral-700)] hover:bg-[var(--color-neutral-50)]"
+                    onClick={() => setSettingsOpen(false)}
+                  >
+                    <Settings size={15} />
+                    Settings
+                  </Link>
+                ) : null}
+                {canChangePassword ? (
+                  <Link
+                    to="/change-password"
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-[var(--color-neutral-700)] hover:bg-[var(--color-neutral-50)]"
+                    onClick={() => setSettingsOpen(false)}
+                  >
+                    <KeyRound size={15} />
+                    {passwordLabel}
+                  </Link>
+                ) : null}
+                {isAuthenticated ? (
+                  <Link
+                    to="/settings/sessions"
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-[var(--color-neutral-700)] hover:bg-[var(--color-neutral-50)]"
+                    onClick={() => setSettingsOpen(false)}
+                  >
+                    <Shield size={15} />
+                    Sessions
+                  </Link>
+                ) : null}
+                <button
+                  type="button"
+                  disabled={loggingOut}
+                  onClick={() => {
+                    setSettingsOpen(false);
+                    onLogoutClick();
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-sm text-[var(--color-danger-600)] hover:bg-[var(--color-danger-50)] disabled:opacity-60"
+                >
+                  {loggingOut ? <Loader2 size={15} className="animate-spin" /> : <LogOut size={15} />}
+                  {loggingOut ? 'Signing out…' : 'Log out'}
+                </button>
+              </div>
+            </>
+          ) : null}
+        </div>
 
-        {isSuperAdminArea && isSuperAdminAuthenticated && (
+        {isSuperAdminArea && isSuperAdminAuthenticated ? (
           <span
-            className="hidden md:flex items-center gap-1.5 max-w-[8rem] lg:max-w-[12rem] min-w-0"
-            aria-label="Superadmin"
+            className="hidden items-center gap-1.5 rounded-full bg-[var(--color-neutral-50)] px-3 py-1.5 text-xs font-medium text-[var(--color-neutral-700)] md:inline-flex"
             title="Superadmin"
           >
-            <UserCircle size={20} className="shrink-0" />
-            <span className="truncate">Superadmin</span>
+            <UserCircle size={16} />
+            Superadmin
           </span>
-        )}
-        {!isSuperAdminArea && isAuthenticated && (
+        ) : null}
+
+        {!isSuperAdminArea && isAuthenticated ? (
           <Link
             to="/profile"
-            className="hidden md:flex items-center gap-1.5 max-w-[8rem] lg:max-w-[12rem] min-w-0 hover:opacity-80"
-            aria-label="My profile"
+            className={cn(
+              'hidden items-center gap-2 rounded-full bg-[var(--color-neutral-50)] px-2.5 py-1.5 text-xs font-medium text-[var(--color-neutral-700)] hover:bg-[var(--color-neutral-100)] sm:inline-flex',
+            )}
             title="My profile"
           >
-            <UserCircle size={20} className="shrink-0" />
-            <span className="truncate">{user?.name ?? 'User'}</span>
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-primary)] text-[11px] font-semibold text-white">
+              {(user?.name ?? 'U')[0]?.toUpperCase()}
+            </span>
+            <span className="max-w-[8rem] truncate">{user?.name ?? 'User'}</span>
+            <ChevronDown size={12} className="text-[var(--color-neutral-400)]" />
           </Link>
-        )}
-        {!isSuperAdminArea && !isAuthenticated && (
-          <span className="hidden md:flex items-center gap-1.5 max-w-[8rem] lg:max-w-[12rem] min-w-0">
-            <UserCircle size={20} className="shrink-0" />
-            <span className="truncate">User</span>
-          </span>
-        )}
+        ) : null}
 
-        <button type="button" className="hidden xl:flex items-center gap-1 hover:opacity-80 shrink-0">
-          <HelpCircle size={20} />
-          <span className="hidden lg:inline">Help</span>
-          <ChevronDown size={12} />
-        </button>
-
-        {canChangePassword && (
-          <Link
-            to="/change-password"
-            className="hidden sm:flex items-center gap-1.5 hover:opacity-80 shrink-0"
-            aria-label={passwordLabel}
-          >
-            <KeyRound size={18} />
-            <span className="hidden lg:inline">{passwordLabel}</span>
-          </Link>
-        )}
-
-        {isAuthenticated && (
-          <Link
-            to="/settings/sessions"
-            className="hidden lg:flex items-center gap-1.5 hover:opacity-80 shrink-0"
-            aria-label="Sessions"
-            title="Active sessions"
-          >
-            <Shield size={18} />
-            <span className="hidden xl:inline">Sessions</span>
-          </Link>
-        )}
-
-        <ActionButton
-          label={loggingOut ? 'Signing out…' : 'Log Out'}
-          onClick={() => void handleLogout()}
-          disabled={loggingOut}
-        >
-          {loggingOut ? <Loader2 size={20} className="animate-spin" /> : <LogOut size={20} />}
-        </ActionButton>
+        {isAuthenticated && !isSuperAdminArea ? (
+          <div className="md:hidden">
+            <GlobalSearch variant="compact" />
+          </div>
+        ) : null}
       </div>
     </header>
-  )
+  );
 }

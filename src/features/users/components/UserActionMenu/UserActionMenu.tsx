@@ -1,4 +1,4 @@
-import { Eye, Pencil, Power, PowerOff, RotateCcw, Trash2 } from 'lucide-react';
+import { Eye, Mail, Pencil, Power, PowerOff, RotateCcw, Trash2 } from 'lucide-react';
 import { KebabMenu, MenuItem } from '@/components/ui/KebabMenu';
 import type { User } from '../../types/user.types';
 import { isDeletedUser } from '../../utils/deletedUsersRegistry';
@@ -12,6 +12,7 @@ interface UserActionMenuProps {
   onDeactivate: (user: User) => void;
   onDelete: (user: User) => void;
   onRestore: (user: User) => void;
+  onInvite?: (user: User) => void;
 }
 
 export function UserActionMenu({
@@ -23,9 +24,11 @@ export function UserActionMenu({
   onDeactivate,
   onDelete,
   onRestore,
+  onInvite,
 }: UserActionMenuProps) {
   const isDeleted = isDeletedUser(user);
   const isActive = user.status === 'ACTIVE';
+  const isInvited = user.status === 'INVITED';
 
   return (
     <KebabMenu disabled={disabled} aria-label="User actions">
@@ -46,6 +49,16 @@ export function UserActionMenu({
               onClick={() => {
                 close();
                 onEdit(user);
+              }}
+            />
+          )}
+          {!isDeleted && isInvited && onInvite && (
+            <MenuItem
+              label="Send invite email"
+              icon={<Mail className="h-3.5 w-3.5" />}
+              onClick={() => {
+                close();
+                onInvite(user);
               }}
             />
           )}

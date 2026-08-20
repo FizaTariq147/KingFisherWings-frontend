@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Shield } from 'lucide-react'
-import { axiosInstance } from '@/lib/axios'
 import { LoginSecurityForm } from '@/components/loginSecurity/LoginSecurityForm'
+import { userService } from '@/features/users/services/user.service'
 
 interface UserOption {
   id:    string
@@ -15,11 +15,16 @@ export default function LoginSecurityPage() {
   const [usersLoading, setUsersLoading] = useState(true)
 
   useEffect(() => {
-    axiosInstance
-      .get<{ data: UserOption[] }>('/api/users?limit=200')
-      .then(({ data }) => {
-        setUsers(data.data)
-        if (data.data.length > 0) setSelected(data.data[0].id)
+    userService
+      .list({ tenantId: '', page: 1, limit: 100, lifecycle: 'active' })
+      .then((result) => {
+        const options = result.users.map((user) => ({
+          id: user.id,
+          name: `${user.first_name} ${user.last_name}`.trim() || user.email,
+          email: user.email,
+        }))
+        setUsers(options)
+        if (options.length > 0) setSelected(options[0].id)
       })
       .finally(() => setUsersLoading(false))
   }, [])

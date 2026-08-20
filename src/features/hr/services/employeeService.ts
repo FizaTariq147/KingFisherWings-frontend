@@ -1,9 +1,9 @@
 import type { EmployeeRow } from '../types/employee.types';
+import { hrService } from './hr.service';
 
-// Placeholder — swap this out for a real API call later, same function signature
+/** Employee list — GET /hr/employees */
 export const employeeService = {
   getEmployees: async (): Promise<EmployeeRow[]> => {
-    // await fetch('/api/employees') ...
-    return [];
+    return hrService.listEmployees({ limit: 100 });
   },
 };

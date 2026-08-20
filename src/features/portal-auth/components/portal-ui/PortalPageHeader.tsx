@@ -12,16 +12,16 @@ export function PortalPageHeader({ title, description, actions, className }: Por
   return (
     <div
       className={cn(
-        'portal-motion-surface flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between',
+        'flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between',
         className,
       )}
     >
       <div className="min-w-0 space-y-1">
-        <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-neutral-900)]">
+        <h2 className="text-[28px] font-semibold tracking-tight text-[#0A2942]">
           {title}
         </h2>
         {description ? (
-          <p className="text-sm text-[var(--color-neutral-500)] max-w-2xl">{description}</p>
+          <p className="text-sm text-[#7A8A98] max-w-2xl">{description}</p>
         ) : null}
       </div>
       {actions ? (

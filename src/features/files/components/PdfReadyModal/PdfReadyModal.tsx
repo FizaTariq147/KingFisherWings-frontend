@@ -5,6 +5,7 @@ import { useFileDownload } from '@/features/files/hooks/useFileDownload';
 import { isPdfUrl, openBrandedPdfUrl, type PdfBrandingOptions } from '@/features/files/utils/pdfBranding';
 import { stripPdfExtension } from '@/features/files/utils/pdfFilename';
 import { isStoredFileUrl } from '@/features/files/utils/parseFilesApiUrl';
+import { openSafeHttpUrl } from '@/lib/safeHttpUrl';
 
 export interface PdfReadyModalProps {
   open: boolean;
@@ -50,11 +51,11 @@ export function PdfReadyModal({
       try {
         void openBrandedPdfUrl(url, fileOptions.branding);
       } catch {
-        window.open(url, '_blank', 'noopener,noreferrer');
+        openSafeHttpUrl(url);
       }
       return;
     }
-    window.open(url, '_blank', 'noopener,noreferrer');
+    openSafeHttpUrl(url);
   };
 
   const handleDownload = () => {

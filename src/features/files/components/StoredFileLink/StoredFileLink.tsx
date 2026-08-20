@@ -1,6 +1,8 @@
 import { useFileDownload } from '../../hooks/useFileDownload';
 import { isPdfUrl, openBrandedPdfUrl, type PdfBrandingOptions } from '../../utils/pdfBranding';
 import { isStoredFileUrl } from '../../utils/parseFilesApiUrl';
+import { stripPdfExtension } from '../../utils/pdfFilename';
+import { isSafeHttpUrl, openSafeHttpUrl } from '@/lib/safeHttpUrl';
 
 interface StoredFileLinkProps {
   url: string;
@@ -35,6 +37,7 @@ export function StoredFileLink({
   };
 
   if (!isStoredFileUrl(url)) {
+    if (!isSafeHttpUrl(url)) return null;
     if (isPdfUrl(url, displayName)) {
       return (
         <span className="block">
@@ -45,7 +48,7 @@ export function StoredFileLink({
               try {
                 void openBrandedPdfUrl(url, fileOptions.branding);
               } catch {
-                window.open(url, '_blank', 'noopener,noreferrer');
+                openSafeHttpUrl(url);
               }
             }}
           >
@@ -56,7 +59,7 @@ export function StoredFileLink({
     }
 
     return (
-      <a className={className} href={url} target="_blank" rel="noreferrer">
+      <a className={className} href={url} target="_blank" rel="noopener noreferrer">
         {label}
       </a>
     );

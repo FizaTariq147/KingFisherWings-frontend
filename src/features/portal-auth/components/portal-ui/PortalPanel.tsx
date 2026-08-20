@@ -12,7 +12,7 @@ export function PortalPanel({ children, className, padded = false }: PortalPanel
   return (
     <div
       className={cn(
-        'portal-motion-surface overflow-hidden rounded-xl border border-[var(--color-neutral-200)] bg-white shadow-[0_1px_2px_rgba(10,41,66,0.04)] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(10,41,66,0.12)]',
+        'overflow-hidden rounded-[20px] bg-white shadow-[0_10px_30px_rgba(10,41,66,0.05)]',
         padded && 'p-5 sm:p-6',
         className,
       )}

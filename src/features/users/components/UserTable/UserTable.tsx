@@ -30,6 +30,7 @@ interface UserTableProps {
   onDeactivate: (user: User) => void;
   onDelete: (user: User) => void;
   onRestore: (user: User) => void;
+  onInvite?: (user: User) => void;
   pendingActionId?: string | null;
   emptyMessage?: string;
   onEmptyAction?: () => void;
@@ -57,6 +58,7 @@ export function UserTable({
   onDeactivate,
   onDelete,
   onRestore,
+  onInvite,
   pendingActionId,
   emptyMessage = 'No users found',
   onEmptyAction,
@@ -158,6 +160,7 @@ export function UserTable({
                   onDeactivate={onDeactivate}
                   onDelete={onDelete}
                   onRestore={onRestore}
+                  onInvite={onInvite}
                 />
               </TableCell>
             </TableRow>

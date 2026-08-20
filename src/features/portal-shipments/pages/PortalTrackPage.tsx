@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -9,10 +9,16 @@ import { usePortalShipmentLookup } from '../hooks/usePortalShipments';
 
 export default function PortalTrackPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [ref, setRef] = useState('');
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const lookup = usePortalShipmentLookup();
+
+  useEffect(() => {
+    const preset = (location.state as { ref?: string } | null)?.ref?.trim();
+    if (preset) setRef(preset);
+  }, [location.state]);
 
   const validateRef = (value: string): string | null => {
     const trimmed = value.trim();

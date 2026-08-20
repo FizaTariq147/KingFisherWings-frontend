@@ -17,6 +17,7 @@ import {
   useUpdateUserStatus,
 } from '../hooks/useUsers';
 import { userService } from '../services/user.service';
+import { authService } from '@/features/auth/services/auth.service';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { formatUserRole } from '../utils/formatUserRole';
 import { formatUserLabel } from '../utils/userToFormValues';
@@ -117,6 +118,11 @@ export default function UserDetailPage() {
             });
           }
         }),
+      variant: 'secondary' as const,
+    },
+    !isDeleted && user.status === 'INVITED' && {
+      label: 'Send invite email',
+      onClick: () => runAction(() => authService.inviteUser({ user_id: user.id, email: user.email })),
       variant: 'secondary' as const,
     },
     isDeleted

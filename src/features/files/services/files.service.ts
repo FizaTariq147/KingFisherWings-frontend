@@ -6,6 +6,7 @@ import { withGatewayRetry } from '@/lib/wakeApi';
 import { FILES_API } from '../api/files.api';
 import type { FileDisplayOptions, FileDownloadParams, StoredFileAction } from '../types/files.types';
 import type { PdfBrandingOptions } from '../utils/pdfBranding';
+import { isSafeHttpUrl, openSafeHttpUrl } from '@/lib/safeHttpUrl';
 import { parseFilesApiUrl } from '../utils/parseFilesApiUrl';
 import {
   openBlankPreviewTab,
@@ -202,11 +203,14 @@ export const filesService = {
       documentNumber: options?.branding?.documentNumber || stripPdfExtension(downloadName),
     };
     if (!parsed) {
+      if (!isSafeHttpUrl(url)) {
+        throw new Error('Blocked an unsafe file URL.');
+      }
       if (isPdfUrl(url, displayName)) {
         void openBrandedPdfUrl(url, branding);
         return;
       }
-      window.open(url, '_blank', 'noopener,noreferrer');
+      openSafeHttpUrl(url);
       return;
     }
     await this.download(
@@ -226,6 +230,9 @@ export const filesService = {
       documentNumber: options?.branding?.documentNumber || stripPdfExtension(downloadName),
     };
     if (!parsed) {
+      if (!isSafeHttpUrl(url)) {
+        throw new Error('Blocked an unsafe file URL.');
+      }
       if (isPdfUrl(url, displayName)) {
         const response = await fetch(url);
         if (!response.ok) throw new Error('Could not download PDF.');

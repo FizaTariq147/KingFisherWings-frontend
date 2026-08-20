@@ -1,14 +1,20 @@
 import { axiosInstance } from '@/lib/axios';
+import { USER_API } from '@/features/users/api/user.api';
 import { AUTH_API } from '../api/auth.api';
 import type {
+  AcceptInviteDto,
   AuthLoginResult,
   AuthMeResponse,
   AuthTokenPair,
   ChangePasswordDto,
+  DisableTwoFactorDto,
+  InviteUserDto,
   LoginDto,
   RefreshTokenDto,
   TenantChangePasswordDto,
   TenantLoginDto,
+  TotpVerifyDto,
+  TwoFactorSetupResult,
   UpdateMeDto,
 } from '../types/auth.api.types';
 import {
@@ -38,6 +44,77 @@ function isUnauthorized(error: unknown): boolean {
   return (error as { response?: { status?: number } })?.response?.status === 401;
 }
 
+function setup2faFromUnknown(data: unknown): TwoFactorSetupResult {
+  if (!data || typeof data !== 'object') return {};
+  let record = data as Record<string, unknown>;
+  if (record.data && typeof record.data === 'object' && !Array.isArray(record.data)) {
+    record = record.data as Record<string, unknown>;
+  }
+
+  const read = (...keys: string[]): string | undefined => {
+    for (const key of keys) {
+      const value = record[key];
+      if (typeof value === 'string' && value.trim()) return value.trim();
+    }
+    return undefined;
+  };
+
+  const backupRaw =
+    record.backup_codes ?? record.backupCodes ?? record.recovery_codes ?? record.recoveryCodes;
+  const backupCodes = Array.isArray(backupRaw)
+    ? backupRaw.filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
+    : undefined;
+
+  return {
+    secret: read('secret', 'totp_secret', 'totpSecret', 'base32', 'base32_secret'),
+    qrCodeDataUrl: read(
+      'qr_code',
+      'qrCode',
+      'qr_code_data_url',
+      'qrCodeDataUrl',
+      'qr_data_url',
+      'data_url',
+      'image',
+    ),
+    otpauthUrl: read('otpauth_url', 'otpauthUrl', 'otpauth', 'uri', 'otpauth_uri'),
+    backupCodes,
+  };
+}
+
+const TWO_FA_ROUTE_CACHE = 'kf.auth.2fa.routes';
+
+async function twoFactorRoutesAvailable(): Promise<boolean> {
+  try {
+    const cached = sessionStorage.getItem(TWO_FA_ROUTE_CACHE);
+    if (cached === '1') return true;
+    if (cached === '0') return false;
+  } catch {
+    // sessionStorage may be unavailable
+  }
+
+  try {
+    const { data } = await axiosInstance.get<unknown>('/docs-json', { timeout: 20_000 });
+    const paths =
+      data && typeof data === 'object'
+        ? (data as { paths?: Record<string, unknown> }).paths
+        : undefined;
+    const available = Boolean(paths && paths[AUTH_API.twoFactorSetup]);
+    try {
+      sessionStorage.setItem(TWO_FA_ROUTE_CACHE, available ? '1' : '0');
+    } catch {
+      // ignore quota / private mode
+    }
+    return available;
+  } catch {
+    try {
+      sessionStorage.setItem(TWO_FA_ROUTE_CACHE, '0');
+    } catch {
+      // ignore
+    }
+    return false;
+  }
+}
+
 /**
  * ERP Auth — Swagger tag "Auth"
  * https://kingfisherwings-backend.onrender.com/docs
@@ -59,9 +136,9 @@ export const authService = {
     };
     if (dto.remember_me != null) body.remember_me = dto.remember_me;
     if (dto.device_name?.trim()) body.device_name = dto.device_name.trim().slice(0, 64);
+    if (dto.mac_address?.trim()) body.mac_address = dto.mac_address.trim();
     if (dto.totp_code?.trim()) body.totp_code = dto.totp_code.trim();
     if (dto.backup_code?.trim()) body.backup_code = dto.backup_code.trim();
-    if (dto.mac_address?.trim()) body.mac_address = dto.mac_address.trim();
 
     const { data } = await axiosInstance.post<unknown>(AUTH_API.login, body, {
       withCredentials: false,
@@ -77,6 +154,8 @@ export const authService = {
     };
     if (dto.remember_me != null) body.remember_me = dto.remember_me;
     if (dto.device_name?.trim()) body.device_name = dto.device_name.trim().slice(0, 64);
+    if (dto.totp_code?.trim()) body.totp_code = dto.totp_code.trim();
+    if (dto.backup_code?.trim()) body.backup_code = dto.backup_code.trim();
 
     const { data } = await axiosInstance.post<unknown>(AUTH_API.tenantLogin, body, {
       withCredentials: false,
@@ -240,11 +319,39 @@ export const authService = {
   },
 
   async changePassword(dto: ChangePasswordDto): Promise<void> {
-    await axiosInstance.post(AUTH_API.changePassword, {
+    const body = {
       current_password: dto.current_password,
       new_password: dto.new_password,
       confirm_password: dto.confirm_password,
-    });
+    };
+    try {
+      await axiosInstance.post(AUTH_API.changePassword, body);
+    } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 404) {
+        await axiosInstance.post(USER_API.meChangePassword, body);
+        return;
+      }
+      throw error;
+    }
+  },
+
+  /** AuthController_invite — Bearer; existing INVITED user */
+  async inviteUser(dto: InviteUserDto): Promise<void> {
+    const body: InviteUserDto = { user_id: dto.user_id.trim() };
+    if (dto.email?.trim()) body.email = dto.email.trim().toLowerCase();
+    await axiosInstance.post(AUTH_API.invite, body);
+  },
+
+  /** AuthController_acceptInvite — public */
+  async acceptInvite(dto: AcceptInviteDto): Promise<void> {
+    const body: AcceptInviteDto = {
+      token: dto.token.trim(),
+      password: dto.password,
+    };
+    if (dto.first_name?.trim()) body.first_name = dto.first_name.trim();
+    if (dto.last_name?.trim()) body.last_name = dto.last_name.trim();
+    await axiosInstance.post(AUTH_API.acceptInvite, body, { withCredentials: false });
   },
 
   /** AuthController_tenantChangePassword — Tenant Admin workspace password */
@@ -254,5 +361,34 @@ export const authService = {
       new_password: dto.new_password,
       confirm_password: dto.confirm_password,
     });
+  },
+
+  /**
+   * True when Swagger documents POST /auth/2fa/setup.
+   * Cached so we never hit the missing routes (browser 404 noise).
+   */
+  async twoFactorRoutesAvailable(): Promise<boolean> {
+    return twoFactorRoutesAvailable();
+  },
+
+  /** AuthController_setup2fa — POST /auth/2fa/setup */
+  async setupTwoFactor(): Promise<TwoFactorSetupResult> {
+    if (!(await twoFactorRoutesAvailable())) return {};
+    const { data } = await axiosInstance.post<unknown>(AUTH_API.twoFactorSetup, {});
+    return setup2faFromUnknown(data);
+  },
+
+  /** AuthController_enable2fa — POST /auth/2fa/enable (TotpVerifyDto) */
+  async enableTwoFactor(dto: TotpVerifyDto): Promise<void> {
+    if (!(await twoFactorRoutesAvailable())) return;
+    await axiosInstance.post(AUTH_API.twoFactorEnable, { code: dto.code.trim() });
+  },
+
+  /** AuthController_disable2fa — POST /auth/2fa/disable (DisableTwoFactorDto) */
+  async disableTwoFactor(dto: DisableTwoFactorDto): Promise<void> {
+    if (!(await twoFactorRoutesAvailable())) return;
+    const body: DisableTwoFactorDto = { password: dto.password };
+    if (dto.code?.trim()) body.code = dto.code.trim();
+    await axiosInstance.post(AUTH_API.twoFactorDisable, body);
   },
 };
