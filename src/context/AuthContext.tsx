@@ -47,7 +47,6 @@ const MOCK_USER: AuthUser = {
   role:        { id: 'dev-role', name: 'Admin', slug: 'admin' },
   permissions: [] as PermissionKey[],
   product:     'KingFisher Tech Gold',
-  twoFactorEnabled: true,
 }
 
 function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser | null {
@@ -132,14 +131,6 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     ? pickMustChangePassword(record)
     : undefined
 
-  const twoFactorRaw =
-    record.two_factor_enabled ??
-    record.twoFactorEnabled ??
-    record.is_2fa_enabled ??
-    record.is2faEnabled
-  const twoFactorEnabled =
-    typeof twoFactorRaw === 'boolean' ? twoFactorRaw : undefined
-
   return {
     id: id || email,
     name,
@@ -150,7 +141,6 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     permissions,
     product: (record.product as AuthUser['product']) || 'KingFisher Tech Gold',
     mustChangePassword,
-    twoFactorEnabled,
   }
 }
 
@@ -208,7 +198,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Never overwrite a known tenantId with an empty /me payload.
         // Preserve mustChangePassword from login when /me omits the flag.
         const priorMustChange = Boolean(useAuthStore.getState().user?.mustChangePassword)
-        const priorTwoFactor = useAuthStore.getState().user?.twoFactorEnabled
         patchSessionUser({
           id: normalized.id,
           name: normalized.name,
@@ -220,10 +209,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             normalized.mustChangePassword === undefined
               ? priorMustChange
               : Boolean(normalized.mustChangePassword),
-          twoFactorEnabled:
-            normalized.twoFactorEnabled === undefined
-              ? priorTwoFactor
-              : Boolean(normalized.twoFactorEnabled),
         })
         bootstrapLocaleSession(pickPreferredCountryCode(data))
       })

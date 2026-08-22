@@ -14,6 +14,7 @@ import type {
   CustomerTrackingRow,
 } from '../types/customerService.types';
 import { isWithinDateRange } from '@/features/management/utils/managementFilters';
+import { isUuid } from '@/lib/isUuid';
 
 export function jobHbl(job: Job): string {
   return job.sea_fcl_details?.hbl_number || job.air_details?.hawb_number || '';
@@ -31,20 +32,33 @@ export function jobEta(job: Job): string {
   return job.eta || job.sea_fcl_details?.eta || '';
 }
 
+function displayLabel(name: string | undefined): string {
+  const trimmed = name?.trim();
+  if (trimmed) return trimmed;
+  return '—';
+}
+
+function portDisplay(code: string | undefined): string {
+  const trimmed = code?.trim();
+  if (trimmed && !isUuid(trimmed)) return trimmed;
+  return '—';
+}
+
 export function mapJobToShipmentRow(job: Job): CustomerShipmentRow {
   return {
     id: job.id,
+    jobType: job.job_type,
     shipmentNo: job.job_number || job.id.slice(0, 8),
     jobNo: job.job_number || '—',
-    client: job.shipper_name || job.shipper_id || '—',
-    origin: job.origin_port_code || job.origin_port_id || '—',
-    destination: job.dest_port_code || job.dest_port_id || '—',
-    branch: job.branch_id || '—',
+    client: displayLabel(job.shipper_name),
+    origin: portDisplay(job.origin_port_code),
+    destination: portDisplay(job.dest_port_code),
+    branch: displayLabel(job.branch_name),
     status: JOB_STATUS_LABELS[job.status] || job.status,
     shipmentDate: job.created_at?.slice(0, 10) || '—',
     hbl: jobHbl(job) || '—',
     mbl: jobMbl(job) || '—',
-    salesPerson: job.salesperson_id || '—',
+    salesPerson: displayLabel(job.salesperson_name),
     type: job.job_type.replaceAll('_', ' '),
     etd: jobEtd(job) || '—',
     eta: jobEta(job) || '—',
@@ -69,9 +83,11 @@ export function mapJobsToSailingRows(jobs: Job[]): CustomerSailingRow[] {
   for (const job of jobs) {
     const etd = jobEtd(job);
     if (!etd) continue;
-    const vessel = String(job.sea_fcl_details?.vessel_id || '—');
+    const vesselKey = job.sea_fcl_details?.vessel_id || 'unknown';
+    const vessel = job.sea_fcl_details?.vessel_name || '—';
+    const carrier = job.sea_fcl_details?.shipping_line_name || '—';
     const sailingNo = String(job.sea_fcl_details?.voyage_number || '—');
-    const key = `${vessel}|${sailingNo}|${etd}`;
+    const key = `${vesselKey}|${sailingNo}|${etd}`;
     const existing = map.get(key);
     if (existing) {
       existing.jobIds.add(job.id);
@@ -80,11 +96,11 @@ export function mapJobsToSailingRows(jobs: Job[]): CustomerSailingRow[] {
     }
     map.set(key, {
       id: key,
-      carrier: job.sea_fcl_details?.shipping_line_id || '—',
+      carrier,
       vessel,
       sailingNo,
-      pol: job.origin_port_code || job.origin_port_id || '—',
-      pod: job.dest_port_code || job.dest_port_id || '—',
+      pol: portDisplay(job.origin_port_code),
+      pod: portDisplay(job.dest_port_code),
       etd,
       eta: jobEta(job) || '—',
       jobCount: 1,
@@ -99,16 +115,24 @@ export function mapEnquiryToRow(enquiry: Enquiry): CustomerEnquiryRow {
   const raw = enquiry as Record<string, unknown>;
   const enquiryNo =
     String(raw.enquiry_number ?? raw.enquiryNumber ?? raw.reference_number ?? enquiry.id.slice(0, 8));
-  const partyName = String(raw.party_name ?? raw.partyName ?? raw.company_name ?? '');
+  const partyName = String(raw.party_name ?? raw.partyName ?? raw.company_name ?? '').trim();
+  const leadName = String(raw.lead_name ?? raw.leadName ?? '').trim();
+  const salespersonName = String(raw.salesperson_name ?? raw.salespersonName ?? '').trim();
+  const clientName = partyName || leadName;
   return {
     id: enquiry.id,
     enquiryNo,
-    client: partyName || enquiry.party_id || enquiry.lead_id || '—',
-    origin: String(raw.origin_port_code ?? enquiry.origin_port_id ?? '—'),
-    destination: String(raw.dest_port_code ?? enquiry.dest_port_id ?? '—'),
+    client: clientName && !isUuid(clientName) ? clientName : '—',
+    partyId: enquiry.party_id,
+    leadId: enquiry.lead_id,
+    originPortId: enquiry.origin_port_id,
+    destPortId: enquiry.dest_port_id,
+    origin: String(raw.origin_port_code ?? raw.originPortCode ?? '—'),
+    destination: String(raw.dest_port_code ?? raw.destPortCode ?? '—'),
     serviceType: crmLabel(enquiry.service_type),
     status: enquiry.status,
-    salesPerson: enquiry.salesperson_id || '—',
+    salesPerson: salespersonName || '—',
+    salesPersonId: enquiry.salesperson_id,
     createdAt: enquiry.created_at?.slice(0, 10) || '—',
     currency: enquiry.currency_code || '—',
   };
@@ -159,51 +183,66 @@ function isAll(value: string | undefined): boolean {
 export function applyJobFilters(jobs: Job[], filters: CustomerShipmentFilters): Job[] {
   return jobs.filter((job) => {
     if (filters.agent_only && !job.agent_id) return false;
+
     if (filters.use_etd_dates) {
       if (!isWithinDateRange(jobEtd(job), filters.from_date, filters.to_date)) return false;
-    } else if (!isWithinDateRange(job.created_at, filters.from_date, filters.to_date)) {
+    }
+
+    // Text / non-API filters only — list params are handled by GET /jobs.
+    if (!isAll(filters.client) && !isUuid(filters.client!) && !includesTerm(job.shipper_name, filters.client!)) {
       return false;
     }
-    if (!isAll(filters.branch_id) && job.branch_id !== filters.branch_id) return false;
-    if (!isAll(filters.salesperson_id) && job.salesperson_id !== filters.salesperson_id) return false;
-    if (!isAll(filters.origin) && job.origin_port_id !== filters.origin && job.origin_port_code !== filters.origin) {
-      return false;
+    if (filters.department?.trim()) {
+      if (isUuid(filters.department)) {
+        if (job.department_id !== filters.department) return false;
+      } else if (!includesTerm(job.department_id, filters.department)) {
+        return false;
+      }
     }
-    if (!isAll(filters.destination) && job.dest_port_id !== filters.destination && job.dest_port_code !== filters.destination) {
-      return false;
-    }
-    if (!isAll(filters.status) && job.status !== filters.status) return false;
-    if (!isAll(filters.job_type) && job.job_type !== filters.job_type) return false;
-    if (!isAll(filters.client) && !includesTerm(job.shipper_name, filters.client!) && job.shipper_id !== filters.client) {
-      return false;
-    }
-    if (filters.department?.trim() && !includesTerm(job.department_id, filters.department)) return false;
-    if (filters.shipment_no?.trim() && !includesTerm(job.job_number, filters.shipment_no)) return false;
-    if (filters.job_no?.trim() && !includesTerm(job.job_number, filters.job_no)) return false;
+    if (filters.consignee_id?.trim() && job.consignee_id !== filters.consignee_id) return false;
     if (filters.hbl?.trim() && !includesTerm(jobHbl(job), filters.hbl)) return false;
     if (filters.mbl?.trim() && !includesTerm(jobMbl(job), filters.mbl)) return false;
     if (filters.mawb?.trim() && !includesTerm(job.air_details?.mawb_number, filters.mawb)) return false;
-    if (filters.shipper_id?.trim() && job.shipper_id !== filters.shipper_id) return false;
-    if (filters.consignee_id?.trim() && job.consignee_id !== filters.consignee_id) return false;
-    if (filters.created_user?.trim() && !includesTerm(job.ops_user_id, filters.created_user)) return false;
-    if (filters.carrier?.trim() && !includesTerm(job.sea_fcl_details?.shipping_line_id, filters.carrier)) return false;
-    if (filters.vessel_name?.trim() && !includesTerm(job.sea_fcl_details?.vessel_id, filters.vessel_name)) return false;
-    if (filters.sailing_no?.trim() && !includesTerm(job.sea_fcl_details?.voyage_number, filters.sailing_no)) return false;
-    if (filters.pol?.trim() && job.origin_port_id !== filters.pol && job.origin_port_code !== filters.pol) return false;
-    if (filters.pod?.trim() && job.dest_port_id !== filters.pod && job.dest_port_code !== filters.pod) return false;
-    if (filters.search?.trim()) {
-      const haystack = [
-        job.job_number,
-        job.shipper_name,
-        jobHbl(job),
-        jobMbl(job),
-        job.status,
-        job.job_type,
-      ]
-        .join(' ')
-        .toLowerCase();
-      if (!haystack.includes(filters.search.trim().toLowerCase())) return false;
+    if (filters.created_user?.trim()) {
+      if (isUuid(filters.created_user)) {
+        if (job.ops_user_id !== filters.created_user && job.salesperson_id !== filters.created_user) {
+          return false;
+        }
+      } else if (!includesTerm(job.ops_user_id, filters.created_user)) {
+        return false;
+      }
     }
+
+    if (filters.carrier?.trim() && !isUuid(filters.carrier) && !includesTerm(job.sea_fcl_details?.shipping_line_id, filters.carrier)) {
+      return false;
+    }
+    if (filters.vessel_name?.trim() && !isUuid(filters.vessel_name) && !includesTerm(job.sea_fcl_details?.vessel_id, filters.vessel_name)) {
+      return false;
+    }
+    if (filters.pol?.trim() && !isUuid(filters.pol) && job.origin_port_id !== filters.pol && job.origin_port_code !== filters.pol) {
+      return false;
+    }
+    if (filters.pod?.trim() && !isUuid(filters.pod) && job.dest_port_id !== filters.pod && job.dest_port_code !== filters.pod) {
+      return false;
+    }
+
+    if (!isAll(filters.origin)) {
+      const origin = filters.origin ?? '';
+      if (isUuid(origin)) {
+        if (job.origin_port_id !== origin) return false;
+      } else if (job.origin_port_id !== origin && job.origin_port_code !== origin) {
+        return false;
+      }
+    }
+    if (!isAll(filters.destination)) {
+      const destination = filters.destination ?? '';
+      if (isUuid(destination)) {
+        if (job.dest_port_id !== destination) return false;
+      } else if (job.dest_port_id !== destination && job.dest_port_code !== destination) {
+        return false;
+      }
+    }
+
     return true;
   });
 }
@@ -212,10 +251,34 @@ export function applyEnquiryFilters(rows: CustomerEnquiryRow[], filters: Custome
   return rows.filter((row) => {
     if (!isWithinDateRange(row.createdAt, filters.from_date, filters.to_date)) return false;
     if (!isAll(filters.status) && row.status !== filters.status) return false;
-    if (!isAll(filters.salesperson_id) && row.salesPerson !== filters.salesperson_id) return false;
+    if (!isAll(filters.salesperson_id)) {
+      const matchesName = row.salesPerson === filters.salesperson_id;
+      const matchesId = row.salesPersonId === filters.salesperson_id;
+      if (!matchesName && !matchesId) return false;
+    }
     if (filters.enquiry_no?.trim() && !includesTerm(row.enquiryNo, filters.enquiry_no)) return false;
     if (!isAll(filters.client) && !includesTerm(row.client, filters.client!)) return false;
-    if (filters.created_user?.trim() && !includesTerm(row.salesPerson, filters.created_user)) return false;
+    if (!isAll(filters.origin)) {
+      if (isUuid(filters.origin!)) {
+        if (row.originPortId !== filters.origin) return false;
+      } else if (!includesTerm(row.origin, filters.origin!)) {
+        return false;
+      }
+    }
+    if (!isAll(filters.destination)) {
+      if (isUuid(filters.destination!)) {
+        if (row.destPortId !== filters.destination) return false;
+      } else if (!includesTerm(row.destination, filters.destination!)) {
+        return false;
+      }
+    }
+    if (filters.created_user?.trim()) {
+      if (isUuid(filters.created_user)) {
+        if (row.salesPersonId !== filters.created_user) return false;
+      } else if (!includesTerm(row.salesPerson, filters.created_user)) {
+        return false;
+      }
+    }
     if (filters.search?.trim()) {
       const haystack = [row.enquiryNo, row.client, row.serviceType, row.status, row.origin, row.destination]
         .join(' ')
@@ -239,7 +302,22 @@ function extractRows(data: unknown): Record<string, unknown>[] {
   return [];
 }
 
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  return value as Record<string, unknown>;
+}
+
 export function mapQuotationAnalytics(data: unknown): CustomerPricingPayload['quotationStats'] {
+  const record = asRecord(data);
+  if (record) {
+    const byStatus = asRecord(record.by_status) ?? asRecord(record.byStatus);
+    if (byStatus) {
+      return Object.entries(byStatus)
+        .filter(([, value]) => typeof value === 'number')
+        .map(([status, count]) => ({ status: crmLabel(status), count: Number(count) }));
+    }
+  }
+
   const rows = extractRows(data);
   if (rows.length) {
     return rows.map((row) => ({
@@ -247,8 +325,8 @@ export function mapQuotationAnalytics(data: unknown): CustomerPricingPayload['qu
       count: Number(row.count ?? row.value ?? row.total ?? 0),
     }));
   }
-  if (data && typeof data === 'object') {
-    return Object.entries(data as Record<string, unknown>)
+  if (record) {
+    return Object.entries(record)
       .filter(([, value]) => typeof value === 'number')
       .map(([status, count]) => ({ status: crmLabel(status), count: Number(count) }));
   }

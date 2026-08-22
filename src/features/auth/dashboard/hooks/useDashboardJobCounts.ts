@@ -27,6 +27,12 @@ export function useDashboardJobCounts() {
       const byStatus = Object.fromEntries(
         COUNT_STATUSES.map((status, i) => [status, pages[i]?.meta.total ?? 0]),
       ) as Record<JobStatus, number>;
+      const inTransit = (byStatus.IN_PROGRESS ?? 0) + (byStatus.CUSTOMS_CLEARANCE ?? 0);
+      const atOrigin =
+        (byStatus.BOOKING_CONFIRMED ?? 0) +
+        (byStatus.DOCS_PENDING ?? 0) +
+        (byStatus.ENQUIRY ?? 0);
+      const newJobs = (byStatus.ENQUIRY ?? 0) + (byStatus.QUOTATION ?? 0);
       const active =
         (byStatus.ENQUIRY ?? 0) +
         (byStatus.QUOTATION ?? 0) +
@@ -38,7 +44,11 @@ export function useDashboardJobCounts() {
         (byStatus.ON_HOLD ?? 0);
       return {
         byStatus,
+        bars: COUNT_STATUSES.map((status) => byStatus[status] ?? 0),
         active,
+        inTransit,
+        atOrigin,
+        newJobs,
         customsHold: (byStatus.CUSTOMS_CLEARANCE ?? 0) + (byStatus.ON_HOLD ?? 0),
         docsPending: byStatus.DOCS_PENDING ?? 0,
       };
@@ -51,16 +61,17 @@ export function useDashboardJobCounts() {
 export function useDashboardPendingQuoteStats() {
   const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({
-    queryKey: ['tenant', 'dashboard', 'pending-quote-stats', PENDING_QUOTATION_STATUSES],
+    queryKey: ['tenant', 'dashboard', 'pending-quote-stats', PENDING_QUOTATION_STATUSES, 50],
     queryFn: async () => {
       const listPages = await Promise.all(
         PENDING_QUOTATION_STATUSES.map((status) =>
-          quotationService.list({ page: 1, limit: 8, status, order: 'desc' }),
+          quotationService.list({ page: 1, limit: 50, status, order: 'desc' }),
         ),
       );
       const byStatus = Object.fromEntries(
         PENDING_QUOTATION_STATUSES.map((status, i) => [status, listPages[i]?.meta.total ?? 0]),
       );
+      const bars = PENDING_QUOTATION_STATUSES.map((status) => byStatus[status] ?? 0);
       const quotations = listPages
         .flatMap((page) => page.quotations)
         .sort(
@@ -73,7 +84,7 @@ export function useDashboardPendingQuoteStats() {
         (sum, q) => sum + (q.total_amount ?? q.revenue_total ?? 0),
         0,
       );
-      return { totalPending, byStatus, quotations, pipelineValue };
+      return { totalPending, byStatus, bars, quotations, pipelineValue };
     },
     enabled: Boolean(accessToken),
     staleTime: 60_000,

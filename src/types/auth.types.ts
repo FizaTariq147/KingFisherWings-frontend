@@ -53,8 +53,6 @@ export interface AuthUser {
   product: 'KingFisher Tech Gold' | 'KingFisher Tech Global' | 'KingFisher Tech App' | 'KingFisher Tech Analytics'
   /** Staff with a temporary password must set their own before using the app. */
   mustChangePassword?: boolean
-  /** Tenant admins must enroll 2FA before they can use ERP. */
-  twoFactorEnabled?: boolean
 }
 
 // Decoded JWT payload shape from NestJS backend

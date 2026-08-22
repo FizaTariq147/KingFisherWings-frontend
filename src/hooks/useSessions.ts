@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { authService } from '@/features/auth/services/auth.service'
 import { normalizeActiveSessions } from '@/features/auth/utils/normalizeSessions'
+import { accessTokenExpiresAtMs } from '@/lib/tenantFromAuth'
 import { useAuthStore } from '@/store/authStore'
 import type { ActiveSession } from '@/types/session.types'
 
@@ -21,11 +22,30 @@ function getErrorMessage(error: unknown): string {
     response?: { data?: { message?: string | string[] }; status?: number }
     message?: string
   }
+  const status = axiosErr.response?.status
   const dataMessage = axiosErr.response?.data?.message
   if (Array.isArray(dataMessage) && dataMessage[0]) return String(dataMessage[0])
   if (typeof dataMessage === 'string' && dataMessage.trim()) return dataMessage
-  if (typeof axiosErr.message === 'string' && axiosErr.message.trim()) return axiosErr.message
+  if (status === 401) {
+    return 'Your session expired. Sign in again, then retry revoke.'
+  }
+  if (typeof axiosErr.message === 'string' && axiosErr.message.trim()) {
+    if (/status code 401/i.test(axiosErr.message)) {
+      return 'Your session expired. Sign in again, then retry revoke.'
+    }
+    return axiosErr.message
+  }
   return 'Request failed.'
+}
+
+async function ensureFreshAccessToken(): Promise<void> {
+  const { accessToken, refreshToken, refreshAccessToken } = useAuthStore.getState()
+  if (!refreshToken) return
+  const expiresAt = accessToken ? accessTokenExpiresAtMs(accessToken) : null
+  const needsRefresh =
+    !accessToken || (expiresAt != null && expiresAt <= Date.now() + 15_000)
+  if (!needsRefresh) return
+  await refreshAccessToken()
 }
 
 export function useSessions(): UseSessionsReturn {
@@ -70,16 +90,31 @@ export function useSessions(): UseSessionsReturn {
   const revokeById = useCallback(async (id: string) => {
     setRevoking(id)
     setError(null)
+    const target = sessions.find((s) => s.id === id)
+    const isCurrent = Boolean(target?.isCurrent)
     try {
+      try {
+        await ensureFreshAccessToken()
+      } catch {
+        // Interceptor may still refresh on the revoke call.
+      }
       await authService.revokeSession(id)
       setSessions((prev) => prev.filter((s) => s.id !== id))
+      if (isCurrent) {
+        await useAuthStore.getState().logout()
+      }
     } catch (err) {
+      const status = (err as { response?: { status?: number } })?.response?.status
+      if (isCurrent && (status === 401 || status === 403)) {
+        await useAuthStore.getState().logout()
+        return
+      }
       setError(getErrorMessage(err) || 'Failed to revoke session. Please try again.')
       throw err
     } finally {
       setRevoking(null)
     }
-  }, [])
+  }, [sessions])
 
   const logoutAll = useCallback(async () => {
     setLoggingOutAll(true)

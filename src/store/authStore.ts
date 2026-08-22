@@ -32,8 +32,6 @@ export interface AuthUser {
   companyId?: string
   /** Staff users with a temporary password must set their own before using the app. */
   mustChangePassword?: boolean
-  /** Tenant admins must enroll 2FA before they can use ERP. */
-  twoFactorEnabled?: boolean
 }
 
 // ── Backend error response shape from NestJS ──────────────────────────────
@@ -63,9 +61,6 @@ function extractErrorMessage(err: unknown): string {
     const msg = Array.isArray(data.message) ? data.message[0] : data.message
 
     if (status === 401) {
-      if (typeof msg === 'string' && /two.?factor|2fa|totp/i.test(msg)) {
-        return msg
-      }
       if (typeof msg === 'string' && msg.toLowerCase().includes('locked'))
         return 'Your account has been locked due to too many failed attempts. Please contact your administrator.'
       if (typeof msg === 'string' && (msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('credentials')))
@@ -79,7 +74,6 @@ function extractErrorMessage(err: unknown): string {
       return 'Authentication failed. Please check your credentials.'
     }
     if (status === 403) {
-      if (typeof msg === 'string' && /two.?factor|2fa|totp/i.test(msg)) return msg
       return 'You do not have permission to access this workspace.'
     }
     if (status === 429) return 'Too many login attempts. Please wait a moment before trying again.'
@@ -110,7 +104,6 @@ function toStoreUser(user: {
   tenantId?: string
   companyId?: string
   mustChangePassword?: boolean
-  twoFactorEnabled?: boolean
 }): AuthUser {
   return {
     id: user.id,
@@ -121,7 +114,6 @@ function toStoreUser(user: {
     tenantId: user.tenantId,
     companyId: user.companyId,
     mustChangePassword: Boolean(user.mustChangePassword),
-    twoFactorEnabled: user.twoFactorEnabled,
   }
 }
 
@@ -157,6 +149,8 @@ interface AuthActions {
   continueExpiredSession: () => Promise<void>
   /** POST /auth/sessions/{id}/revoke then clear and go to login. */
   revokeExpiredSessionAndLogin: () => Promise<void>
+  /** Clear ERP staff/tenant session (e.g. when entering Super Admin). */
+  clearSession: () => void
 }
 
 type AuthStore = AuthState & AuthActions
@@ -249,16 +243,8 @@ export const useAuthStore = create<AuthStore>()(
               password: dto.password,
               remember_me: dto.remember_me,
               device_name: dto.device_name,
-              totp_code: dto.totp_code,
-              backup_code: dto.backup_code,
             }),
           )
-          if (
-            result.user.twoFactorEnabled == null &&
-            (dto.totp_code?.trim() || dto.backup_code?.trim())
-          ) {
-            result.user.twoFactorEnabled = true
-          }
           await applyLoginSuccess(set, result)
         } catch (err) {
           const slugHint = dto.tenant_slug?.trim()
@@ -291,17 +277,9 @@ export const useAuthStore = create<AuthStore>()(
               password: dto.password,
               remember_me: dto.remember_me,
               device_name: dto.device_name,
-              totp_code: dto.totp_code,
-              backup_code: dto.backup_code,
               mac_address: dto.mac_address,
             }),
           )
-          if (
-            result.user.twoFactorEnabled == null &&
-            (dto.totp_code?.trim() || dto.backup_code?.trim())
-          ) {
-            result.user.twoFactorEnabled = true
-          }
           await applyLoginSuccess(set, result)
         } catch (err) {
           const slug = dto.tenant_slug?.trim().toLowerCase() || ''
@@ -399,7 +377,6 @@ export const useAuthStore = create<AuthStore>()(
               tenantId: partial.tenantId,
               companyId: partial.companyId,
               mustChangePassword: Boolean(partial.mustChangePassword),
-              twoFactorEnabled: partial.twoFactorEnabled,
             },
           })
           return
@@ -459,31 +436,38 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       revokeExpiredSessionAndLogin: async () => {
-        const { sessionId, accessToken, refreshToken } = get()
+        const { sessionId, refreshToken } = get()
         try {
-          // Ensure Bearer is available — revoke requires auth.
-          if (!accessToken && refreshToken) {
-            const pair = await authService.refresh({ refresh_token: refreshToken })
-            set({
-              accessToken: pair.accessToken,
-              refreshToken: pair.refreshToken || refreshToken,
-              sessionId:
-                pair.sessionId ||
-                sessionIdFromAccessToken(pair.accessToken) ||
-                sessionId,
-            })
+          // Always refresh first — idle modal often still has an expired access token in memory.
+          if (refreshToken) {
+            try {
+              const pair = await authService.refresh({ refresh_token: refreshToken })
+              set({
+                accessToken: pair.accessToken,
+                refreshToken: pair.refreshToken || refreshToken,
+                sessionId:
+                  pair.sessionId ||
+                  sessionIdFromAccessToken(pair.accessToken) ||
+                  sessionId,
+              })
+            } catch {
+              // Continue with best-effort revoke / local sign-out.
+            }
           }
 
-          await authService.revokeCurrentSession(get().sessionId)
-        } catch (error) {
-          // Surface failure to the modal; do not pretend revoke succeeded.
-          const message =
-            error instanceof Error ? error.message : 'Failed to revoke session.'
-          throw new Error(message)
+          try {
+            await authService.revokeCurrentSession(get().sessionId)
+          } catch {
+            // Best-effort: user chose to leave; clear local session even if API rejects.
+          }
+        } finally {
+          set(clearAuthState())
+          window.location.href = '/login'
         }
+      },
 
+      clearSession: () => {
         set(clearAuthState())
-        window.location.href = '/login'
       },
     }),
     {

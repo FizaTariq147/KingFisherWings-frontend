@@ -1,29 +1,41 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { ListChecks, Wand2, Plus, Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
 import { FilterField, SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
 import { useCustomerSailingSchedule } from '@/features/customers/hooks/useCustomerService';
+import { useCustomerFilterSelectOptions } from '@/features/customers/hooks/useCustomerServiceFilterOptions';
 import type { CustomerShipmentFilters } from '@/features/customers/types/customerService.types';
+import { defaultCustomerShipmentFilters } from '@/features/customers/utils/customerServiceDefaults';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
 import {
   DATE_RANGE_PRESETS,
   resolveDateRangePreset,
   type DateRangePreset,
 } from '@/features/management/utils/managementFilters';
+import { CUSTOMER_SERVICE_PATHS } from '@/features/customers/utils/customerServicePaths';
+import { exportSailingScheduleCsv } from '@/features/customers/utils/exportCustomerReport';
+import { toggleTableFullscreen } from '@/features/customers/utils/tableFullscreen';
 
 export default function SailingSchedulePage() {
+  const navigate = useNavigate();
+  const tableRef = useRef<HTMLDivElement>(null);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
+  const [uploadMessage, setUploadMessage] = useState<string | null>(null);
   const [rows, setRows] = useState('10');
   const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [carrier, setCarrier] = useState('-Select-');
-  const [vesselName, setVesselName] = useState('');
+  const [vessel, setVessel] = useState('-Select-');
   const [sailingNo, setSailingNo] = useState('');
   const [pol, setPol] = useState('-Select-');
   const [pod, setPod] = useState('-Select-');
   const [search, setSearch] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<CustomerShipmentFilters>({});
+  const [submitted, setSubmitted] = useState(true);
+  const [activeFilters, setActiveFilters] = useState<CustomerShipmentFilters>(() =>
+    defaultCustomerShipmentFilters({ use_etd_dates: true }),
+  );
 
   const applyPreset = (preset: DateRangePreset) => {
     setDatePreset(preset);
@@ -40,6 +52,11 @@ export default function SailingSchedulePage() {
   }, []);
 
   const query = useCustomerSailingSchedule(activeFilters, submitted);
+  const filters = useCustomerFilterSelectOptions();
+  const portSelectOptions = useMemo(
+    () => [{ value: '-Select-', label: '-Select-' }, ...filters.ports.filter((port) => port.value !== 'All')],
+    [filters.ports],
+  );
   const pageSize = Number(rows) || 10;
   const pageItems = useMemo(() => (query.data ?? []).slice(0, pageSize), [query.data, pageSize]);
 
@@ -49,12 +66,12 @@ export default function SailingSchedulePage() {
       from_date: fromDate || undefined,
       to_date: toDate || undefined,
       carrier: carrier !== '-Select-' ? carrier : undefined,
-      vessel_name: vesselName || undefined,
+      vessel_name: vessel !== '-Select-' ? vessel : undefined,
       sailing_no: sailingNo || undefined,
       pol: pol !== '-Select-' ? pol : undefined,
       pod: pod !== '-Select-' ? pod : undefined,
       search: search.trim() || undefined,
-      limit: 300,
+      limit: 100,
       use_etd_dates: true,
     });
     setSubmitted(true);
@@ -67,20 +84,52 @@ export default function SailingSchedulePage() {
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">Sailing Schedule List</h2>
           <div className="flex items-center gap-2">
-            <button type="button" className="flex items-center gap-1.5 bg-red-600 hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
+            <button
+              type="button"
+              onClick={() => exportSailingScheduleCsv(query.data ?? [], 'sailing-schedule.csv')}
+              disabled={!query.data?.length}
+              className="flex items-center gap-1.5 bg-red-600 hover:opacity-90 disabled:opacity-50 text-white text-sm px-4 py-1.5 rounded transition-opacity"
+            >
               <ListChecks size={14} />
               Report
             </button>
-            <button type="button" className="flex items-center gap-1.5 bg-[#FF751F] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
+            <button
+              type="button"
+              onClick={() => uploadInputRef.current?.click()}
+              className="flex items-center gap-1.5 bg-[#FF751F] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity"
+            >
               <Wand2 size={14} />
               Sailing Schedule Upload
             </button>
-            <button type="button" className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
+            <input
+              ref={uploadInputRef}
+              type="file"
+              accept=".csv,.xlsx,.xls"
+              className="hidden"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                setUploadMessage(
+                  file
+                    ? `Selected "${file.name}". Bulk import is not available yet — use Create to add a sea export job with ETD/vessel details.`
+                    : null,
+                );
+                event.target.value = '';
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => navigate(CUSTOMER_SERVICE_PATHS.createSeaExportJob)}
+              className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity"
+            >
               <Plus size={14} />
               Create
             </button>
           </div>
         </div>
+
+        {uploadMessage && (
+          <p className="px-5 pb-3 text-sm text-amber-700 bg-amber-50 border-b border-amber-100">{uploadMessage}</p>
+        )}
 
         <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-3">
           <FilterField label="Date Range">
@@ -108,11 +157,11 @@ export default function SailingSchedulePage() {
           </FilterField>
 
           <FilterField label="Carrier">
-            <SelectInput options={['-Select-']} value={carrier} onChange={(e) => setCarrier(e.target.value)} />
+            <SelectInput options={filters.carriers} value={carrier} onChange={(e) => setCarrier(e.target.value)} />
           </FilterField>
 
           <FilterField label="Vessel Name">
-            <TextInput value={vesselName} onChange={(e) => setVesselName(e.target.value)} />
+            <SelectInput options={filters.vessels} value={vessel} onChange={(e) => setVessel(e.target.value)} />
           </FilterField>
 
           <FilterField label="Sailing No.">
@@ -120,11 +169,11 @@ export default function SailingSchedulePage() {
           </FilterField>
 
           <FilterField label="POL">
-            <SelectInput options={['-Select-']} value={pol} onChange={(e) => setPol(e.target.value)} />
+            <SelectInput options={portSelectOptions} value={pol} onChange={(e) => setPol(e.target.value)} />
           </FilterField>
 
           <FilterField label="POD">
-            <SelectInput options={['-Select-']} value={pod} onChange={(e) => setPod(e.target.value)} />
+            <SelectInput options={portSelectOptions} value={pod} onChange={(e) => setPod(e.target.value)} />
           </FilterField>
         </div>
 
@@ -165,7 +214,12 @@ export default function SailingSchedulePage() {
               <span className="text-[#FF751F]">➜</span>
               Submit
             </button>
-            <button type="button" className="text-gray-400 hover:text-gray-600 p-1">
+            <button
+              type="button"
+              onClick={() => void toggleTableFullscreen(tableRef)}
+              className="text-gray-400 hover:text-gray-600 p-1"
+              title="Fullscreen table"
+            >
               <Maximize2 size={16} />
             </button>
           </div>
@@ -183,7 +237,7 @@ export default function SailingSchedulePage() {
               <Search size={40} className="text-gray-300" />
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" ref={tableRef}>
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50">
@@ -216,9 +270,13 @@ export default function SailingSchedulePage() {
       </div>
 
       <div className="mt-4">
-        <button type="button" className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
+        <button
+          type="button"
+          onClick={() => navigate(CUSTOMER_SERVICE_PATHS.createSeaExportJob)}
+          className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity"
+        >
           <Heart size={14} />
-          Favorites
+          New Sea Export Job
         </button>
       </div>
     </div>

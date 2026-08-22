@@ -26,7 +26,35 @@ export function normalizeFollowUp(raw: unknown): FollowUp | null {
 }
 export function normalizeEnquiry(raw: unknown): Enquiry | null {
   const b = base(raw); if (!b || !b.id) return null;
-  return { ...b.r, id: b.id, service_type: string(b.r, 'service_type', 'serviceType') as Enquiry['service_type'], currency_code: string(b.r, 'currency_code', 'currencyCode'), status: (string(b.r, 'status') || 'NEW') as Enquiry['status'], lead_id: optional(b.r, 'lead_id'), party_id: optional(b.r, 'party_id'), salesperson_id: optional(b.r, 'salesperson_id'), origin_port_id: optional(b.r, 'origin_port_id'), dest_port_id: optional(b.r, 'dest_port_id'), cargo_details: optional(b.r, 'cargo_details'), incoterms: optional(b.r, 'incoterms'), special_requirements: optional(b.r, 'special_requirements') };
+  const party = asRecord(b.r.party);
+  const lead = asRecord(b.r.lead);
+  const salesperson = asRecord(b.r.salesperson ?? b.r.sales_person);
+  const partyName = party ? string(party, 'name', 'company_name', 'companyName') : '';
+  const leadName = lead ? string(lead, 'company_name', 'companyName', 'contact_name', 'contactName') : '';
+  const salespersonName = salesperson
+    ? string(salesperson, 'full_name', 'fullName', 'name') ||
+      [string(salesperson, 'first_name', 'firstName'), string(salesperson, 'last_name', 'lastName')].filter(Boolean).join(' ')
+    : '';
+  return {
+    ...b.r,
+    id: b.id,
+    created_at: b.created_at,
+    updated_at: b.updated_at,
+    party_name: partyName || optional(b.r, 'party_name', 'partyName'),
+    lead_name: leadName || optional(b.r, 'lead_name', 'leadName'),
+    salesperson_name: salespersonName || optional(b.r, 'salesperson_name', 'salespersonName'),
+    service_type: string(b.r, 'service_type', 'serviceType') as Enquiry['service_type'],
+    currency_code: string(b.r, 'currency_code', 'currencyCode'),
+    status: (string(b.r, 'status') || 'NEW') as Enquiry['status'],
+    lead_id: optional(b.r, 'lead_id'),
+    party_id: optional(b.r, 'party_id'),
+    salesperson_id: optional(b.r, 'salesperson_id'),
+    origin_port_id: optional(b.r, 'origin_port_id'),
+    dest_port_id: optional(b.r, 'dest_port_id'),
+    cargo_details: optional(b.r, 'cargo_details'),
+    incoterms: optional(b.r, 'incoterms'),
+    special_requirements: optional(b.r, 'special_requirements'),
+  };
 }
 export function normalizeBudget(raw: unknown): Budget | null {
   const b = base(raw); if (!b || !b.id) return null;

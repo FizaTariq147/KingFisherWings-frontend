@@ -65,9 +65,12 @@ function HubCard({
 export function AuthLandingShell({
   onAdminClick,
   children,
+  videoOnly = false,
 }: {
   onAdminClick: () => void
   children?: ReactNode
+  /** Hide hub UI — video + overlay stay visible (e.g. while a login popup is open). */
+  videoOnly?: boolean
 }) {
   const navigate = useNavigate()
   const [trackRef, setTrackRef] = useState('')
@@ -95,6 +98,7 @@ export function AuthLandingShell({
         style={{ background: `linear-gradient(180deg, ${NAVY}CC 0%, ${NAVY}99 45%, ${NAVY}B8 100%)` }}
       />
 
+      {!videoOnly && (
       <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-10">
         <div className="w-full max-w-[440px]">
           <div className="mx-auto mb-4 flex w-fit items-center justify-center rounded-2xl bg-white px-4 py-2.5 shadow-lg">
@@ -165,6 +169,7 @@ export function AuthLandingShell({
           </form>
         </div>
       </main>
+      )}
 
       {children}
     </div>

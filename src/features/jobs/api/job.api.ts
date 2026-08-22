@@ -1,4 +1,4 @@
-/** Jobs REST paths — Swagger tag Jobs (Bearer JWT). 108 ops under /jobs. */
+/** Jobs REST paths — Swagger tag Jobs (Bearer JWT). 115 ops under /jobs. */
 export const JOB_API = {
   list: '/jobs',
   byId: (id: string) => `/jobs/${id}`,
@@ -16,6 +16,12 @@ export const JOB_API = {
   cutoffs: (id: string) => `/jobs/${id}/cutoffs`,
   customsStatus: (id: string) => `/jobs/${id}/customs-status`,
   cfsStorageCalculate: (id: string) => `/jobs/${id}/cfs-storage/calculate`,
+  storageCalculation: (id: string) => `/jobs/${id}/storage-calculation`,
+  storageInvoice: (id: string) => `/jobs/${id}/storage-invoice`,
+  customsExaminations: (id: string) => `/jobs/${id}/customs-examinations`,
+  airTranshipmentLink: (id: string) => `/jobs/${id}/air-transhipment-link`,
+  importNoticeCanSend: (id: string) => `/jobs/${id}/import-notices/can/send`,
+  importNoticeDoSend: (id: string) => `/jobs/${id}/import-notices/do/send`,
   transhipmentLink: (id: string) => `/jobs/${id}/transhipment-link`,
 
   containers: (id: string) => `/jobs/${id}/containers`,

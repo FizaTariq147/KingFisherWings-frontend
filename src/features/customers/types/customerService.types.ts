@@ -57,6 +57,7 @@ export interface CustomerPricingFilters extends CustomerEnquiryFilters {
 
 export interface CustomerShipmentRow {
   id: string;
+  jobType: JobType;
   shipmentNo: string;
   jobNo: string;
   client: string;
@@ -95,11 +96,16 @@ export interface CustomerEnquiryRow {
   id: string;
   enquiryNo: string;
   client: string;
+  partyId?: string;
+  leadId?: string;
+  originPortId?: string;
+  destPortId?: string;
   origin: string;
   destination: string;
   serviceType: string;
   status: EnquiryStatus | string;
   salesPerson: string;
+  salesPersonId?: string;
   createdAt: string;
   currency: string;
 }

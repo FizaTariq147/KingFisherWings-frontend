@@ -31,11 +31,15 @@ export function useCompanies(params: CompanyListParams) {
   });
 }
 
+function isPlatformCompanyId(id: string): boolean {
+  return isUuid(id) || id.startsWith('tenant-company:');
+}
+
 export function useCompany(tenantId: string, id: string) {
   return useQuery({
     queryKey: companyKeys.detail(tenantId, id),
     queryFn: () => companyService.getById(tenantId, id),
-    enabled: isUuid(tenantId) && isUuid(id),
+    enabled: isUuid(tenantId) && isPlatformCompanyId(id),
   });
 }
 

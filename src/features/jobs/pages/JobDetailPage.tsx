@@ -75,11 +75,11 @@ export default function JobDetailPage() {
       { key: 'pnl', label: 'P&L', content: <JobPnlPanel jobId={id} /> },
       { key: 'milestones', label: 'Milestones', content: <JobMilestonesPanel jobId={id} /> },
       { key: 'notes', label: 'Notes', content: <JobNotesPanel jobId={id} /> },
-      { key: 'documents', label: 'Documents', content: <JobDocumentsPanel jobId={id} /> },
+      { key: 'documents', label: 'Documents', content: <JobDocumentsPanel jobId={id} jobType={job.job_type} /> },
       {
         key: 'logistics',
         label: 'Logistics',
-        content: <JobLogisticsPanel jobId={id} />,
+        content: <JobLogisticsPanel jobId={id} jobType={job.job_type} />,
       },
       ...(houseJobs.length
         ? [

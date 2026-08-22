@@ -136,7 +136,7 @@ export default function VendorLoginPage() {
   const closeToHub = () => navigate('/login');
 
   return (
-    <AuthLandingShell onAdminClick={() => navigate('/login?admin=1')}>
+    <AuthLandingShell onAdminClick={() => navigate('/login?admin=1')} videoOnly>
       <LoginPopupFrame
         title={inviteToken ? 'Accept invite' : 'Vendor Portal Sign In'}
         onClose={closeToHub}

@@ -1,4 +1,4 @@
-import { Building2, KeyRound, Shield, ShieldCheck, UserCircle, MonitorSmartphone } from 'lucide-react';
+import { Building2, KeyRound, Shield, UserCircle, MonitorSmartphone } from 'lucide-react';
 import type { MenuTile } from '@/features/customers/types/menu.types';
 
 /** Settings hub — account, security, and workspace configuration. */
@@ -26,14 +26,6 @@ export const settingsMenu: MenuTile[] = [
     icon: KeyRound,
     iconColor: 'bg-amber-600',
     path: '/change-password',
-  },
-  {
-    id: 'two-factor',
-    title: 'Two-factor authentication',
-    description: 'Set up authenticator TOTP and backup codes for this account.',
-    icon: ShieldCheck,
-    iconColor: 'bg-emerald-600',
-    path: '/settings/two-factor',
   },
   {
     id: 'login-security',

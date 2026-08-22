@@ -26,6 +26,7 @@ import type {
   CreateJobDto,
   CreateJobNoteDto,
   CreateCustomMilestoneDto,
+  CreateCustomsExaminationDto,
   CreatePartDeliveryDto,
   CreatePaymentRequestFromJobDto,
   CreateProofOfDeliveryDto,
@@ -37,12 +38,15 @@ import type {
   JobListParams,
   JobListResult,
   JobPnl,
+  LinkAirTranshipmentDto,
   LinkTranshipmentDto,
   ReturnContainerDto,
   SchedulePreAlertDto,
+  SendImportNoticeDto,
   SendPreAlertDto,
   SendWhatsAppStatusDto,
   SplitContainerDto,
+  StorageCalculationParams,
   SubmitSiDto,
   SubmitVgmDto,
   UpdateAirJobDetailDto,
@@ -501,6 +505,57 @@ export const jobService = {
   ): Promise<unknown> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.cfsStorageCalculate(id), dto));
+  },
+
+  async getStorageCalculation(
+    id: string,
+    params: StorageCalculationParams = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.get(JOB_API.storageCalculation(id), {
+        params: params.as_of_date ? { as_of_date: params.as_of_date } : undefined,
+      }),
+    );
+  },
+
+  async createStorageInvoice(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.storageInvoice(id)));
+  },
+
+  async listCustomsExaminations(id: string): Promise<unknown[]> {
+    assertId(id);
+    const res = await withGatewayRetry(() =>
+      axiosInstance.get(JOB_API.customsExaminations(id)),
+    );
+    return unwrapList(res.data).items;
+  },
+
+  async createCustomsExamination(
+    id: string,
+    dto: CreateCustomsExaminationDto,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.customsExaminations(id), dto));
+  },
+
+  async linkAirTranshipment(id: string, dto: LinkAirTranshipmentDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.airTranshipmentLink(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async sendImportNoticeCan(id: string, dto: SendImportNoticeDto = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.importNoticeCanSend(id), dto));
+  },
+
+  async sendImportNoticeDo(id: string, dto: SendImportNoticeDto = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.importNoticeDoSend(id), dto));
   },
 
   async linkTranshipment(id: string, dto: LinkTranshipmentDto): Promise<Job> {

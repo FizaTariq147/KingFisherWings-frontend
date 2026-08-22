@@ -1,90 +1,144 @@
 import { Link } from 'react-router-dom';
-import { DashCard, DashSkeleton } from './DashCard';
+import { DashSkeleton } from './DashCard';
 import { compactMoney } from '../utils/dashboardFormat';
 import { cn } from '@/lib/utils';
+import { dashType } from '@/lib/dashboardTypography';
+import { DashboardKpiMiniBars } from '@/lib/DashboardKpiMiniBars';
+import { DASHBOARD_KPI_THEMES } from '@/lib/dashboardKpiThemes';
 
-function MiniBars({
-  values,
-  colors,
+const KPI_THEMES = {
+  jobs: DASHBOARD_KPI_THEMES.orange,
+  quotes: DASHBOARD_KPI_THEMES.gold,
+  receivables: DASHBOARD_KPI_THEMES.navy,
+  onTime: DASHBOARD_KPI_THEMES.green,
+} as const;
+
+function TrendPill({
+  children,
+  tone,
 }: {
-  values: number[];
-  colors: string[];
+  children: string;
+  tone: 'positive' | 'warning';
 }) {
-  const max = Math.max(...values, 1);
   return (
-    <div className="mt-4 flex h-10 items-end gap-1">
-      {values.map((v, i) => (
-        <span
-          key={`${i}-${v}`}
-          className="w-2 rounded-sm"
-          style={{
-            height: `${Math.max(12, Math.round((v / max) * 100))}%`,
-            background: colors[i % colors.length],
-            opacity: 0.85,
-          }}
-        />
-      ))}
-    </div>
+    <span
+      className={cn(
+        dashType.kpi.badge,
+        tone === 'warning' ? 'bg-[#FDECDC] text-[#E07A2F]' : 'bg-[#E7F6EC] text-[#3BA066]',
+      )}
+    >
+      {children}
+    </span>
   );
 }
 
 export function DashboardKpiRow({
   activeJobs,
+  inTransit,
+  atOrigin,
+  newJobs,
   jobBars,
   pendingQuotes,
+  agingQuotes,
+  oldestQuoteDays,
   quoteBars,
   receivables,
+  overdue30,
   agingBars,
   onTimePct,
-  loading,
+  onTimeTarget,
+  onTimeBars,
+  loadingJobs,
+  loadingQuotes,
+  loadingReceivables,
+  loadingOnTime,
 }: {
   activeJobs: number;
+  inTransit: number;
+  atOrigin: number;
+  newJobs: number;
   jobBars: number[];
   pendingQuotes: number;
+  agingQuotes: number;
+  oldestQuoteDays: number;
   quoteBars: number[];
   receivables: number;
+  overdue30: number;
   agingBars: number[];
   onTimePct: number | null;
-  loading: boolean;
+  onTimeTarget: number | null;
+  onTimeBars: number[];
+  loadingJobs: boolean;
+  loadingQuotes: boolean;
+  loadingReceivables: boolean;
+  loadingOnTime: boolean;
 }) {
+  const overdueShare =
+    receivables > 0 ? Math.round((overdue30 / receivables) * 100) : 0;
+  const onTimeDelta =
+    onTimePct == null || onTimeTarget == null
+      ? null
+      : Math.round((onTimePct - onTimeTarget) * 10) / 10;
+
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <KpiCard
         to="/jobs/air-export"
         label="Active jobs"
-        value={loading ? null : String(activeJobs)}
-        hint="Open jobs across operations"
+        value={loadingJobs ? null : String(activeJobs)}
+        unit="open"
+        caption={`${inTransit} in transit, ${atOrigin} at origin`}
+        badge={newJobs > 0 ? `+${newJobs}` : null}
         bars={jobBars}
-        barColors={['#0A2942', '#FF751F', '#C7590F', '#2C557A']}
+        theme={KPI_THEMES.jobs}
+        loading={loadingJobs}
       />
       <KpiCard
         to="/quotations/all"
         label="Pending quotations"
-        value={loading ? null : String(pendingQuotes)}
-        hint="Draft, submitted, approved, sent"
+        value={loadingQuotes ? null : String(pendingQuotes)}
+        unit="awaiting"
+        caption={
+          oldestQuoteDays > 0
+            ? `Oldest open ${oldestQuoteDays} day${oldestQuoteDays === 1 ? '' : 's'}`
+            : 'No aging quotations'
+        }
+        badge={agingQuotes > 0 ? `${agingQuotes} aging` : null}
+        badgeTone="warning"
         bars={quoteBars}
-        barColors={['#FF751F', '#0A2942', '#E8650F', '#2C557A']}
+        theme={KPI_THEMES.quotes}
+        loading={loadingQuotes}
       />
       <KpiCard
         to="/gl/ar/aging"
         label="Receivables"
-        value={loading ? null : compactMoney(receivables)}
-        hint="Outstanding AR"
+        value={loadingReceivables ? null : compactMoney(receivables)}
+        unit="outstanding"
+        caption={`${compactMoney(overdue30)} overdue past 30 days`}
+        badge={overdueShare > 0 ? `-${overdueShare}%` : null}
         bars={agingBars}
-        barColors={['#0A2942', '#2C557A', '#FF751F', '#C7590F', '#163E60']}
+        theme={KPI_THEMES.receivables}
+        loading={loadingReceivables}
       />
       <KpiCard
         to="/gl/mis/dashboard"
         label="On-time delivery"
-        value={onTimePct == null ? '—' : `${Math.round(onTimePct)}%`}
-        hint={
+        value={loadingOnTime ? null : onTimePct == null ? '—' : String(Math.round(onTimePct))}
+        unit="%"
+        caption={
           onTimePct == null
             ? 'No operational on-time metric from the API yet'
-            : 'From MIS operational metrics'
+            : onTimeTarget == null
+              ? 'From MIS operational metrics'
+              : `Target ${Math.round(onTimeTarget)}% this quarter`
         }
-        bars={onTimePct == null ? [4, 6, 5, 8, 7] : [6, 7, 7, 8, 9]}
-        barColors={['#1F8A57', '#0A2942', '#1F8A57', '#2C557A']}
-        muted={onTimePct == null}
+        badge={
+          onTimeDelta == null ? null : `${onTimeDelta > 0 ? '+' : ''}${onTimeDelta}`
+        }
+        bars={onTimeBars}
+        theme={KPI_THEMES.onTime}
+        muted={!loadingOnTime && onTimePct == null}
+        loading={loadingOnTime}
       />
     </div>
   );
@@ -94,38 +148,54 @@ function KpiCard({
   to,
   label,
   value,
-  hint,
+  unit,
+  caption,
+  badge,
+  badgeTone = 'positive',
   bars,
-  barColors,
+  theme,
   muted,
+  loading,
 }: {
   to: string;
   label: string;
   value: string | null;
-  hint: string;
+  unit: string;
+  caption: string;
+  badge?: string | null;
+  badgeTone?: 'positive' | 'warning';
   bars: number[];
-  barColors: string[];
+  theme: (typeof KPI_THEMES)[keyof typeof KPI_THEMES];
   muted?: boolean;
+  loading?: boolean;
 }) {
   return (
-    <Link to={to} className="block">
-      <DashCard className="h-full transition-shadow hover:shadow-[0_12px_28px_rgba(10,41,66,0.08)]">
-        <p className="text-xs font-medium text-[var(--color-neutral-500)]">{label}</p>
+    <Link to={to} className="block min-w-0">
+      <article className={cn(dashType.kpi.card, theme.card)}>
+        <div className="flex items-start justify-between gap-3">
+          <p className={cn(dashType.kpi.label, theme.label)}>{label}</p>
+          {!loading && badge ? <TrendPill tone={badgeTone}>{badge}</TrendPill> : null}
+        </div>
         {value == null ? (
-          <DashSkeleton className="mt-3 h-8 w-16" />
+          <DashSkeleton className="mt-3 h-8 w-20" />
         ) : (
-          <p
-            className={cn(
-              'mt-2 text-[28px] font-semibold leading-none tracking-tight',
-              muted ? 'text-[var(--color-neutral-400)]' : 'text-[var(--color-neutral-900)]',
-            )}
-          >
-            {value}
-          </p>
+          <div className="mt-2 flex items-baseline gap-1.5">
+            <p
+              className={cn(
+                dashType.kpi.value,
+                muted ? 'text-[#9AA8B5]' : theme.value,
+              )}
+            >
+              {value}
+            </p>
+            <p className={cn(dashType.kpi.unit, theme.unit)}>{unit}</p>
+          </div>
         )}
-        <p className="mt-2 text-[11px] text-[var(--color-neutral-400)]">{hint}</p>
-        <MiniBars values={bars.length ? bars : [2, 3, 2, 4]} colors={barColors} />
-      </DashCard>
+        <DashboardKpiMiniBars values={bars} palette={theme.bars} loading={loading} />
+        <p className={cn(dashType.kpi.caption, theme.caption)}>
+          {loading ? 'Loading…' : caption}
+        </p>
+      </article>
     </Link>
   );
 }

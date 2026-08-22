@@ -1,21 +1,35 @@
 import { Link } from 'react-router-dom';
+import type { LucideIcon } from 'lucide-react';
+import { CheckCircle2, FileText, Receipt, Ship } from 'lucide-react';
 import { compactMoney } from '../../utils/portalDashboardFormat';
+import { cn } from '@/lib/utils';
+import { dashType } from '@/lib/dashboardTypography';
+import { DashboardKpiMiniBars } from '@/lib/DashboardKpiMiniBars';
+import { DASHBOARD_KPI_THEMES } from '@/lib/dashboardKpiThemes';
 
-function MiniBars({ values, colors }: { values: number[]; colors: string[] }) {
-  const max = Math.max(...values, 1);
+const KPI_THEMES = {
+  shipments: DASHBOARD_KPI_THEMES.orange,
+  quotes: DASHBOARD_KPI_THEMES.gold,
+  outstanding: DASHBOARD_KPI_THEMES.navy,
+  onTime: DASHBOARD_KPI_THEMES.green,
+} as const;
+
+function TrendPill({
+  children,
+  tone,
+}: {
+  children: string;
+  tone: 'positive' | 'warning';
+}) {
   return (
-    <div className="mt-5 flex h-11 items-end gap-1.5">
-      {values.map((v, i) => (
-        <span
-          key={`${i}-${v}`}
-          className="w-2 rounded-sm"
-          style={{
-            height: `${Math.max(18, Math.round((v / max) * 100))}%`,
-            background: colors[i % colors.length],
-          }}
-        />
-      ))}
-    </div>
+    <span
+      className={cn(
+        dashType.kpi.badge,
+        tone === 'warning' ? 'bg-[#FDECDC] text-[#E07A2F]' : 'bg-[#E7F6EC] text-[#3BA066]',
+      )}
+    >
+      {children}
+    </span>
   );
 }
 
@@ -23,39 +37,51 @@ function KpiCard({
   to,
   label,
   value,
-  hint,
-  meta,
+  unit,
+  caption,
+  badge,
+  badgeTone = 'positive',
   bars,
-  barColors,
+  theme,
+  Icon,
   loading,
 }: {
   to: string;
   label: string;
   value: string | null;
-  hint: string;
-  meta?: string;
+  unit?: string;
+  caption: string;
+  badge?: string | null;
+  badgeTone?: 'positive' | 'warning';
   bars: number[];
-  barColors: string[];
+  theme: (typeof KPI_THEMES)[keyof typeof KPI_THEMES];
+  Icon: LucideIcon;
   loading?: boolean;
 }) {
   return (
-    <Link to={to} className="block h-full">
-      <article className="relative h-full rounded-[20px] bg-white p-5 shadow-[0_10px_30px_rgba(10,41,66,0.05)]">
-        {meta ? (
-          <span className="absolute right-4 top-4 text-[11px] font-medium text-[#9AA8B5]">{meta}</span>
-        ) : null}
-        <p className="pr-12 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#8A98A6]">
-          {label}
-        </p>
+    <Link to={to} className="block h-full min-w-0">
+      <article className={cn(dashType.kpi.card, theme.card)}>
+        <div className="flex items-start justify-between gap-3">
+          <p className={cn(dashType.kpi.label, theme.label)}>{label}</p>
+          <div className="flex shrink-0 items-center gap-2">
+            {!loading && badge ? <TrendPill tone={badgeTone}>{badge}</TrendPill> : null}
+            <span className={cn(dashType.kpi.iconWrap, theme.icon)}>
+              <Icon className="h-4 w-4" aria-hidden="true" />
+            </span>
+          </div>
+        </div>
         {loading || value == null ? (
-          <div className="mt-3 h-8 w-20 animate-pulse rounded bg-[#EEF2F5]" />
+          <div className="mt-3 h-8 w-20 animate-pulse rounded bg-[var(--color-neutral-100)]" />
         ) : (
-          <p className="mt-2 text-[32px] font-semibold leading-none tracking-tight text-[#0A2942]">
-            {value}
-          </p>
+          <div className="mt-2 flex items-baseline gap-1.5">
+            <p className={cn(dashType.kpi.value, theme.value)}>{value}</p>
+            {unit ? <p className={cn(dashType.kpi.unit, theme.unit)}>{unit}</p> : null}
+          </div>
         )}
-        <p className="mt-1.5 text-[12px] text-[#8A98A6]">{hint}</p>
-        <MiniBars values={bars} colors={barColors} />
+        <DashboardKpiMiniBars values={bars} palette={theme.bars} loading={loading} />
+        <p className={cn(dashType.kpi.caption, theme.caption)}>
+          {loading ? 'Loading…' : caption}
+        </p>
       </article>
     </Link>
   );
@@ -64,64 +90,95 @@ function KpiCard({
 export function PortalDashboardKpiRow({
   activeShipments,
   shipmentTotal,
+  shipmentBars,
+  recentActive,
   pendingQuotes,
+  quoteBars,
+  agingQuotes,
   outstanding,
   overdue,
+  invoiceCount,
+  invoiceBars,
   onTimePct,
-  loading,
+  onTimeBars,
+  loadingShipments,
+  loadingQuotes,
+  loadingInvoices,
 }: {
   activeShipments: number;
   shipmentTotal: number;
+  shipmentBars: number[];
+  recentActive: number;
   pendingQuotes: number;
+  quoteBars: number[];
+  agingQuotes: number;
   outstanding: number;
   overdue: number;
+  invoiceCount: number;
+  invoiceBars: number[];
   onTimePct: number | null;
-  loading: boolean;
+  onTimeBars: number[];
+  loadingShipments: boolean;
+  loadingQuotes: boolean;
+  loadingInvoices: boolean;
 }) {
-  const deliveryValue = onTimePct == null ? '—' : `${Math.round(onTimePct)}%`;
-  const invoiceHint = overdue > 0 ? `${overdue} overdue` : 'across open invoices';
+  const deliveryValue = onTimePct == null ? null : String(Math.round(onTimePct));
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <KpiCard
         to="/portal/shipments"
         label="Active shipments"
-        value={loading ? null : String(activeShipments)}
-        hint={`of ${shipmentTotal} total jobs`}
-        meta={activeShipments > 0 ? `+${Math.max(1, Math.min(activeShipments, 9))}` : undefined}
-        bars={[3, 5, 4, 6, 5, 8, 7]}
-        barColors={['#F5C89A', '#F0A45A', '#FF751F', '#E36A12', '#C7590F']}
-        loading={loading}
+        value={loadingShipments ? null : String(activeShipments)}
+        unit="open"
+        caption={`of ${shipmentTotal} total jobs`}
+        badge={recentActive > 0 ? `+${recentActive}` : null}
+        bars={shipmentBars}
+        theme={KPI_THEMES.shipments}
+        Icon={Ship}
+        loading={loadingShipments}
       />
       <KpiCard
         to="/portal/quotes"
         label="Pending quotations"
-        value={loading ? null : String(pendingQuotes)}
-        hint="awaiting approval"
-        meta={pendingQuotes > 0 ? `+${pendingQuotes} APPR` : undefined}
-        bars={[4, 6, 5, 7, 6, 8]}
-        barColors={['#93C5FD', '#60A5FA', '#3B82F6', '#2563EB']}
-        loading={loading}
+        value={loadingQuotes ? null : String(pendingQuotes)}
+        unit="awaiting"
+        caption="awaiting your approval"
+        badge={agingQuotes > 0 ? `${agingQuotes} aging` : null}
+        badgeTone="warning"
+        bars={quoteBars}
+        theme={KPI_THEMES.quotes}
+        Icon={FileText}
+        loading={loadingQuotes}
       />
       <KpiCard
         to="/portal/invoices"
         label="Outstanding"
-        value={loading ? null : compactMoney(outstanding)}
-        hint={invoiceHint}
-        meta="7 DAYS"
-        bars={[4, 5, 6, 7, 8, 9]}
-        barColors={['#86EFAC', '#4ADE80', '#22C55E', '#16A34A']}
-        loading={loading}
+        value={loadingInvoices ? null : compactMoney(outstanding)}
+        unit="outstanding"
+        caption={
+          invoiceCount > 0
+            ? `across ${invoiceCount} invoice${invoiceCount === 1 ? '' : 's'} · ${overdue} overdue`
+            : 'across open invoices'
+        }
+        badge={overdue > 0 ? `${overdue} overdue` : null}
+        badgeTone={overdue > 0 ? 'warning' : 'positive'}
+        bars={invoiceBars}
+        theme={KPI_THEMES.outstanding}
+        Icon={Receipt}
+        loading={loadingInvoices}
       />
       <KpiCard
         to="/portal/shipments"
         label="On-time delivery"
-        value={loading ? null : deliveryValue}
-        hint={onTimePct == null ? 'last 90 days' : 'last 90 days'}
-        meta="6 MONTHS"
-        bars={[6, 7, 6, 8, 7, 9]}
-        barColors={['#1F8A57', '#0A2942', '#2C557A', '#1F8A57']}
-        loading={loading}
+        value={loadingShipments ? null : deliveryValue ?? '—'}
+        unit={deliveryValue == null ? undefined : '%'}
+        caption="last 90 days"
+        badge={null}
+        bars={onTimeBars}
+        theme={KPI_THEMES.onTime}
+        Icon={CheckCircle2}
+        loading={loadingShipments}
       />
     </div>
   );

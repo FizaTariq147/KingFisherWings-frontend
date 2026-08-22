@@ -1,4 +1,4 @@
-import { UserCog, UserCheck, CreditCard, Upload, User } from 'lucide-react';
+import { UserCog, UserCheck, CreditCard, Upload, User, CalendarDays, Clock, Banknote, ClipboardCheck, FileText, Scale } from 'lucide-react';
 import type { MenuTile } from '../../customers/types/menu.types';
 
 export const hrMenu: MenuTile[] = [
@@ -19,6 +19,30 @@ export const hrMenu: MenuTile[] = [
     path: '/hr/leave-request',
   },
   {
+    id: 'leave-calendar',
+    title: 'Leave Calendar',
+    description: 'Month view of pending and approved leave, with apply, approve, and reject.',
+    icon: CalendarDays,
+    iconColor: 'bg-sky-500',
+    path: '/hr/leave',
+  },
+  {
+    id: 'leave-policies',
+    title: 'Leave Policies',
+    description: 'Configure leave entitlements by staff grade and leave type.',
+    icon: Scale,
+    iconColor: 'bg-sky-500',
+    path: '/hr/leave-policies',
+  },
+  {
+    id: 'timesheets',
+    title: 'Timesheets',
+    description: 'Record daily hours, submit for approval, and export overtime to payroll.',
+    icon: Clock,
+    iconColor: 'bg-amber-500',
+    path: '/hr/timesheets',
+  },
+  {
     id: 'pay-roll',
     title: 'Pay Roll',
     description: 'To maintain employees payroll details such as salaries, bonus, working days, payment mode and etc.',
@@ -33,6 +57,30 @@ export const hrMenu: MenuTile[] = [
     icon: Upload,
     iconColor: 'bg-emerald-500',
     path: '/hr/salary-upload',
+  },
+  {
+    id: 'loans',
+    title: 'Employee Loans',
+    description: 'Apply for loans, approve or reject requests, and view repayment schedules.',
+    icon: Banknote,
+    iconColor: 'bg-violet-500',
+    path: '/hr/loans',
+  },
+  {
+    id: 'evaluations',
+    title: 'Performance Evaluations',
+    description: 'Manage evaluation templates, cycles, self and manager scoring.',
+    icon: ClipboardCheck,
+    iconColor: 'bg-indigo-500',
+    path: '/hr/evaluations',
+  },
+  {
+    id: 'letters',
+    title: 'HR Letters',
+    description: 'Generate appointment, experience, NOC, and other employee letters.',
+    icon: FileText,
+    iconColor: 'bg-rose-500',
+    path: '/hr/letters',
   },
 ];
 

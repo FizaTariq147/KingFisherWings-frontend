@@ -122,7 +122,7 @@ export default function CompanyListPage() {
         <div>
           <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Companies</h2>
           <p className="text-sm text-[var(--color-neutral-400)]">
-            Step 1 — register company profiles, then link them when creating tenants
+            Company profiles from /tenants (platform admin cannot call tenant ERP /companies)
           </p>
         </div>
         <Button onClick={() => navigate(companyPath('/new'))} className="w-full sm:w-auto">
@@ -179,6 +179,23 @@ export default function CompanyListPage() {
         </Card>
       ) : (
         <Card padding="none">
+          {!isError && !isLoading && companies.length === 0 ? (
+            <div className="px-4 py-10 text-center space-y-2">
+              <p className="text-sm text-[var(--color-neutral-500)]">No companies found.</p>
+              <p className="text-xs text-[var(--color-neutral-400)] max-w-md mx-auto">
+                Platform companies are read from /tenants. Create a tenant with company fields, or
+                save a company draft and continue to tenant create.
+              </p>
+              <div className="flex justify-center gap-2 pt-2">
+                <Button variant="secondary" size="sm" onClick={() => navigate('/superadmin/tenants')}>
+                  View tenants
+                </Button>
+                <Button size="sm" onClick={() => navigate('/superadmin/tenants/new')}>
+                  + New tenant
+                </Button>
+              </div>
+            </div>
+          ) : (
           <CompanyTable
             companies={companies}
             meta={!isError ? meta : undefined}
@@ -210,6 +227,7 @@ export default function CompanyListPage() {
               return companyDetailPath(company as RegistryCompany);
             }}
           />
+          )}
         </Card>
       )}
 

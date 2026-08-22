@@ -1,9 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ComponentType } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LayoutGrid, List } from 'lucide-react';
 import type { MenuTile } from '../../features/customers/types/menu.types';
 import { MenuTileCard } from './MenuTileCard';
+import { MenuTileListRow } from './MenuTileListRow';
 import { filterMenuTiles } from './filterMenuTiles';
 import { AppAnimatedGrid, AppAnimatedGridItem } from '@/components/motion';
+
+export type ModuleMenuViewMode = 'cards' | 'list';
 
 type ModuleMenuShellProps = {
   title: string;
@@ -14,7 +18,40 @@ type ModuleMenuShellProps = {
   compact?: boolean;
   /** Page background. */
   className?: string;
+  /** Show Cards / List toggle. Default view is cards. */
+  enableViewToggle?: boolean;
+  /** Initial view when toggle is enabled. */
+  defaultView?: ModuleMenuViewMode;
 };
+
+function ViewToggleButton({
+  active,
+  label,
+  icon: Icon,
+  onClick,
+}: {
+  active: boolean;
+  label: string;
+  icon: ComponentType<{ size?: number; className?: string }>;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      title={label}
+      className={`inline-flex h-8 w-8 items-center justify-center rounded transition-colors
+        ${
+          active
+            ? 'bg-[#0A2942] text-white'
+            : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-[#0A2942]'
+        }`}
+    >
+      <Icon size={14} />
+    </button>
+  );
+}
 
 /**
  * Shared module menu layout: search filters tiles by title/description,
@@ -26,9 +63,12 @@ export function ModuleMenuShell({
   featuredTile,
   compact = false,
   className = 'bg-gray-50',
+  enableViewToggle = false,
+  defaultView = 'cards',
 }: ModuleMenuShellProps) {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
+  const [viewMode, setViewMode] = useState<ModuleMenuViewMode>(defaultView);
 
   const allTiles = useMemo(
     () => (featuredTile ? [...tiles, featuredTile] : tiles),
@@ -60,8 +100,30 @@ export function ModuleMenuShell({
     return groups;
   }, [regularTiles]);
 
+  const renderTileGroup = (groupTiles: MenuTile[]) => {
+    if (viewMode === 'list') {
+      return (
+        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white divide-y divide-gray-100">
+          {groupTiles.map((tile) => (
+            <MenuTileListRow key={tile.id} tile={tile} onClick={navigate} compact={compact} />
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <AppAnimatedGrid className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {groupTiles.map((tile) => (
+          <AppAnimatedGridItem key={tile.id}>
+            <MenuTileCard tile={tile} onClick={navigate} compact={compact} />
+          </AppAnimatedGridItem>
+        ))}
+      </AppAnimatedGrid>
+    );
+  };
+
   return (
-    <div className={`min-h-screen ${className}`}>
+    <div className={`relative min-h-screen ${className}`}>
       <div className="bg-white border-b border-gray-200 px-6 py-3 flex flex-wrap items-center justify-end gap-2">
         <label htmlFor={`module-menu-search-${title}`} className="text-sm text-gray-600">
           Search
@@ -108,7 +170,7 @@ export function ModuleMenuShell({
         </p>
       </div>
 
-      <div className="p-6 space-y-8">
+      <div className="p-6 space-y-8 pb-24">
         {sectionGroups.map((group) => (
           <div key={group.label ?? 'default'} className="space-y-4">
             {group.label ? (
@@ -118,23 +180,11 @@ export function ModuleMenuShell({
                 {group.label}
               </h2>
             ) : null}
-            <AppAnimatedGrid className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {group.tiles.map((tile) => (
-                <AppAnimatedGridItem key={tile.id}>
-                  <MenuTileCard tile={tile} onClick={navigate} compact={compact} />
-                </AppAnimatedGridItem>
-              ))}
-            </AppAnimatedGrid>
+            {renderTileGroup(group.tiles)}
           </div>
         ))}
 
-        {showFeatured && featuredTile ? (
-          <AppAnimatedGrid className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <AppAnimatedGridItem>
-              <MenuTileCard tile={featuredTile} onClick={navigate} compact={compact} />
-            </AppAnimatedGridItem>
-          </AppAnimatedGrid>
-        ) : null}
+        {showFeatured && featuredTile ? renderTileGroup([featuredTile]) : null}
 
         {filtered.length === 0 ? (
           <p className="text-sm text-gray-500 py-8 text-center">
@@ -142,6 +192,27 @@ export function ModuleMenuShell({
           </p>
         ) : null}
       </div>
+
+      {enableViewToggle ? (
+        <div
+          className="fixed bottom-5 right-5 z-20 flex items-center gap-1 rounded-xl border border-gray-200 bg-white p-1 shadow-lg"
+          role="group"
+          aria-label="View mode"
+        >
+          <ViewToggleButton
+            active={viewMode === 'cards'}
+            label="Cards"
+            icon={LayoutGrid}
+            onClick={() => setViewMode('cards')}
+          />
+          <ViewToggleButton
+            active={viewMode === 'list'}
+            label="List"
+            icon={List}
+            onClick={() => setViewMode('list')}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

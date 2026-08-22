@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { useMemo, useState } from 'react';
-import { ArrowLeft, Download } from 'lucide-react';
+import { ArrowLeft, Download, Calendar, Coins, Package, Scale } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
@@ -273,16 +273,16 @@ export default function PortalQuoteDetailPage() {
 
       <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Currency" value={data.currencyCode || '—'} />
+          <PortalStatCard label="Currency" value={data.currencyCode || '—'} Icon={Coins} theme="gold" />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Valid until" value={data.validUntil || '—'} />
+          <PortalStatCard label="Valid until" value={data.validUntil || '—'} Icon={Calendar} theme="navy" />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Weight" value={data.grossWeight ?? '—'} />
+          <PortalStatCard label="Weight" value={data.grossWeight ?? '—'} Icon={Scale} theme="orange" />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Pieces" value={data.pieces ?? '—'} />
+          <PortalStatCard label="Pieces" value={data.pieces ?? '—'} Icon={Package} theme="green" />
         </PortalAnimatedGridItem>
       </PortalAnimatedGrid>
 

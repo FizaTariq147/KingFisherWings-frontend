@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import type { Quotation } from '@/features/quotations/types/quotation.types';
 import { quotationDisplayNumber } from '@/features/quotations/utils/normalizeQuotation';
 import { DashEmpty, DashSkeleton } from './DashCard';
@@ -68,9 +69,10 @@ export function PendingQuotationsPanel({
         </div>
         <Link
           to="/quotations/all"
-          className="flex h-10 items-center justify-center rounded-full bg-[var(--color-secondary)] text-sm font-semibold text-white hover:bg-[var(--color-secondary-600)]"
+          className="flex h-10 items-center justify-center gap-2 rounded-full bg-[var(--color-secondary)] text-sm font-semibold text-white hover:bg-[var(--color-secondary-600)]"
         >
           Review queue
+          <ArrowRight size={16} strokeWidth={2.25} aria-hidden />
         </Link>
       </div>
     </section>

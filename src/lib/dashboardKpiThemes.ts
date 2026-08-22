@@ -1,0 +1,68 @@
+/** Shared KPI card color themes — bar palettes align across admin, customer, and vendor dashboards. */
+export const DASHBOARD_KPI_THEMES = {
+  orange: {
+    card: 'border-[#FF751F]/30 bg-gradient-to-br from-[#FFF4ED] to-[#FFEBDD]',
+    label: 'text-[#C7590F]',
+    value: 'text-[#FF751F]',
+    unit: 'text-[#E07A2F]',
+    caption: 'text-[#B56A24]',
+    icon: 'bg-[#FF751F]/15 text-[#FF751F]',
+    bars: ['#FFD4B8', '#FFB380', '#FF751F', '#FF8A3D', '#E8940A', '#FF751F'],
+  },
+  gold: {
+    card: 'border-[#F5A623]/30 bg-gradient-to-br from-[#FFFBEB] to-[#FDF0C8]',
+    label: 'text-[#B8860B]',
+    value: 'text-[#F5A623]',
+    unit: 'text-[#D4920A]',
+    caption: 'text-[#9A7209]',
+    icon: 'bg-[#F5A623]/18 text-[#D4920A]',
+    bars: ['#FDE6B0', '#F5C842', '#F5A623', '#E8940A', '#F5A623', '#D4920A'],
+  },
+  navy: {
+    card: 'border-[#2C557A]/30 bg-gradient-to-br from-[#E8EEF4] to-[#D6E3EE]',
+    label: 'text-[#2C557A]',
+    value: 'text-[#0A2942]',
+    unit: 'text-[#2C557A]',
+    caption: 'text-[#4A6882]',
+    icon: 'bg-[#2C557A]/12 text-[#0A2942]',
+    bars: ['#9BB8D1', '#6F94B8', '#4A7AA3', '#2C557A', '#1E4263', '#0A2942'],
+  },
+  green: {
+    card: 'border-[#22A35A]/30 bg-gradient-to-br from-[#E7F6EC] to-[#D4EFDC]',
+    label: 'text-[#1B8A4A]',
+    value: 'text-[#22A35A]',
+    unit: 'text-[#1B8A4A]',
+    caption: 'text-[#3D8A5A]',
+    icon: 'bg-[#22A35A]/15 text-[#1B8A4A]',
+    bars: ['#B8E6C8', '#7DD4A0', '#22A35A', '#1B8A4A', '#22A35A', '#3BA066'],
+  },
+  cyan: {
+    card: 'border-[#2BB3C0]/30 bg-gradient-to-br from-[#E8F7F8] to-[#D4F0F2]',
+    label: 'text-[#1A7A86]',
+    value: 'text-[#17808A]',
+    unit: 'text-[#1A7A86]',
+    caption: 'text-[#2A8F99]',
+    icon: 'bg-[#2BB3C0]/15 text-[#17808A]',
+    bars: ['#CCFBF1', '#99F6E4', '#5EEAD4', '#2DD4BF', '#14B8A6', '#0F766E'],
+  },
+  rose: {
+    card: 'border-[#E85D6C]/30 bg-gradient-to-br from-[#FCEBEC] to-[#F9D8DB]',
+    label: 'text-[#C6303E]',
+    value: 'text-[#C6303E]',
+    unit: 'text-[#A82835]',
+    caption: 'text-[#A82835]',
+    icon: 'bg-[#E85D6C]/15 text-[#C6303E]',
+    bars: ['#F9D8DB', '#F3A8B0', '#E85D6C', '#C6303E', '#A82835', '#E85D6C'],
+  },
+  purple: {
+    card: 'border-[#5B3E8C]/25 bg-gradient-to-br from-[#EDE8F4] to-[#E0D6EE]',
+    label: 'text-[#5B3E8C]',
+    value: 'text-[#4A3270]',
+    unit: 'text-[#6B5094]',
+    caption: 'text-[#6B5094]',
+    icon: 'bg-[#5B3E8C]/12 text-[#5B3E8C]',
+    bars: ['#E0D6EE', '#C4B5DC', '#5B3E8C', '#4A3270', '#6B5094', '#5B3E8C'],
+  },
+} as const;
+
+export type DashboardKpiTheme = (typeof DASHBOARD_KPI_THEMES)[keyof typeof DASHBOARD_KPI_THEMES];

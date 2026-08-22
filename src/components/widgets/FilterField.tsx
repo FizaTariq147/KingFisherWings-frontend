@@ -1,5 +1,14 @@
 import { ChevronDown, Calendar } from 'lucide-react';
 import type { ChangeEvent, PropsWithChildren, ReactNode } from 'react';
+import type { CustomerFilterOption } from '@/features/customers/types/customerFilter.types';
+
+export type SelectInputOption = string | CustomerFilterOption;
+
+function normalizeSelectOptions(options: SelectInputOption[] = []): CustomerFilterOption[] {
+  return options.map((option) =>
+    typeof option === 'string' ? { value: option, label: option } : option,
+  );
+}
 
 export function FilterField({ label, children }: PropsWithChildren<{ label: ReactNode }>) {
   return (
@@ -17,12 +26,13 @@ export function SelectInput({
   onChange,
   className,
 }: {
-  options?: string[];
+  options?: SelectInputOption[];
   defaultValue?: string;
   value?: string;
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
   className?: string;
 }) {
+  const normalized = normalizeSelectOptions(options);
   const controlled = value !== undefined;
   return (
     <div className="relative">
@@ -35,9 +45,9 @@ export function SelectInput({
           'w-full appearance-none border border-gray-300 rounded px-3 py-1.5 pr-8 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F] bg-white'
         }
       >
-        {options.map((opt) => (
-          <option key={opt} value={opt}>
-            {opt}
+        {normalized.map((opt) => (
+          <option key={`${opt.value}-${opt.label}`} value={opt.value}>
+            {opt.label}
           </option>
         ))}
       </select>

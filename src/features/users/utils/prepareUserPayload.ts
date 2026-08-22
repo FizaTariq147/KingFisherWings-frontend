@@ -31,7 +31,6 @@ const ALLOWED_USER_FIELDS = new Set([
   'office_hours_start',
   'office_hours_end',
   'office_hours_timezone',
-  'two_factor_enabled',
   'max_concurrent_sessions',
   'role_ids',
   'permission_ids',

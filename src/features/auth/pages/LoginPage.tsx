@@ -24,8 +24,6 @@ const NAVY     = '#0A2942'
 const tenantAdminSchema = z.object({
   tenant_slug: z.string().trim().min(1, 'Tenant slug is required'),
   password: z.string().min(1, 'Password is required'),
-  totp_code: z.string().trim().optional(),
-  backup_code: z.string().trim().optional(),
   remember_me: z.boolean().optional(),
 })
 
@@ -33,8 +31,6 @@ const staffSchema = z.object({
   tenant_slug: z.string().trim().min(1, 'Tenant slug is required'),
   email: z.string().trim().email('Enter a valid email address'),
   password: z.string().min(1, 'Password is required'),
-  totp_code: z.string().trim().optional(),
-  backup_code: z.string().trim().optional(),
   remember_me: z.boolean().optional(),
 })
 
@@ -44,8 +40,6 @@ type FormValues = {
   tenant_slug: string
   email?: string
   password: string
-  totp_code?: string
-  backup_code?: string
   remember_me?: boolean
 }
 type LoginMode = 'tenant_admin' | 'staff'
@@ -83,8 +77,6 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
       tenant_slug: '',
       email: '',
       password: '',
-      totp_code: '',
-      backup_code: '',
       remember_me: true,
     },
   })
@@ -92,9 +84,7 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const slug = watch('tenant_slug')
   const email = watch('email')
   const pv = watch('password')
-  const totp = watch('totp_code')
-  const backup = watch('backup_code')
-  useEffect(() => { if (apiErr) setApiErr(null) }, [slug, email, pv, totp, backup, loginMode]) // eslint-disable-line
+  useEffect(() => { if (apiErr) setApiErr(null) }, [slug, email, pv, loginMode]) // eslint-disable-line
 
   useEffect(() => {
     if (open) setTimeout(() => setFocus('tenant_slug'), 80)
@@ -152,26 +142,20 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
 
     if (loginMode === 'staff') {
       const values = parsed.data as StaffFormValues
-      // AuthController_login (LoginDto): tenant_slug + email + password (+ optional TOTP)
+      // AuthController_login (LoginDto): tenant_slug + email + password
       await loginStaff({
         tenant_slug: values.tenant_slug,
         email: values.email,
         password: values.password,
-        // Same optional fields Swagger typically leaves empty unless checked.
         ...(values.remember_me ? { remember_me: true } : {}),
-        ...(values.totp_code?.trim() ? { totp_code: values.totp_code.trim() } : {}),
-        ...(values.backup_code?.trim() ? { backup_code: values.backup_code.trim() } : {}),
         device_name,
       })
     } else {
       const values = parsed.data as TenantAdminFormValues
-      // AuthController_tenantLogin (TenantLoginDto): tenant_slug + password (+ optional TOTP)
       await loginTenant({
         tenant_slug: values.tenant_slug,
         password: values.password,
         ...(values.remember_me ? { remember_me: true } : {}),
-        ...(values.totp_code?.trim() ? { totp_code: values.totp_code.trim() } : {}),
-        ...(values.backup_code?.trim() ? { backup_code: values.backup_code.trim() } : {}),
         device_name,
       })
     }
@@ -298,34 +282,6 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
             >
               Forgot password?
             </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <label htmlFor="kf-totp" className={popupLabelClass}>Authenticator code</label>
-              <input
-                id="kf-totp"
-                type="text"
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                placeholder="If 2FA enabled"
-                disabled={isLoading}
-                {...register('totp_code')}
-                className={popupInputClass}
-              />
-            </div>
-            <div>
-              <label htmlFor="kf-backup" className={popupLabelClass}>Backup code</label>
-              <input
-                id="kf-backup"
-                type="text"
-                autoComplete="off"
-                placeholder="Optional"
-                disabled={isLoading}
-                {...register('backup_code')}
-                className={popupInputClass}
-              />
-            </div>
           </div>
 
           <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -455,7 +411,10 @@ export default function LoginPage() {
   const closeAdmin = () => setLoginOpen(false)
 
   return (
-    <AuthLandingShell onAdminClick={() => setLoginOpen(true)}>
+    <AuthLandingShell
+      onAdminClick={() => setLoginOpen(true)}
+      videoOnly={loginOpen || inviteOpen}
+    >
       <LoginModal open={loginOpen} onClose={closeAdmin} />
       {inviteOpen && inviteToken && (
         <AcceptInvitePopup

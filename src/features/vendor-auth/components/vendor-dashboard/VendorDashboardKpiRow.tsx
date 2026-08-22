@@ -1,65 +1,61 @@
-import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import type { LucideIcon } from 'lucide-react';
 import { Calendar, CreditCard, FileText, Wallet } from 'lucide-react';
 import { formatVendorAmount } from '../../utils/vendorDashboardFormat';
 import { cn } from '@/lib/utils';
+import { dashType } from '@/lib/dashboardTypography';
+import { DashboardKpiMiniBars } from '@/lib/DashboardKpiMiniBars';
+import { DASHBOARD_KPI_THEMES } from '@/lib/dashboardKpiThemes';
 
-function SegmentedBar({ colors }: { colors: string[] }) {
-  return (
-    <div className="mt-5 flex h-2.5 w-full gap-1">
-      {colors.map((color, i) => (
-        <span
-          key={`${color}-${i}`}
-          className="h-full flex-1 rounded-[3px]"
-          style={{ background: color }}
-        />
-      ))}
-    </div>
-  );
-}
+const KPI_THEMES = {
+  invoices: DASHBOARD_KPI_THEMES.orange,
+  due: DASHBOARD_KPI_THEMES.navy,
+  aging: DASHBOARD_KPI_THEMES.cyan,
+  paid: DASHBOARD_KPI_THEMES.gold,
+} as const;
 
 function KpiCard({
   to,
   label,
   value,
-  hint,
-  barColors,
-  icon,
-  tone = 'white',
+  unit,
+  caption,
+  bars,
+  theme,
+  Icon,
   loading,
 }: {
   to: string;
   label: string;
   value: string | null;
-  hint: string;
-  barColors: string[];
-  icon: ReactNode;
-  tone?: 'white' | 'peach';
+  unit?: string;
+  caption: string;
+  bars: number[];
+  theme: (typeof KPI_THEMES)[keyof typeof KPI_THEMES];
+  Icon: LucideIcon;
   loading?: boolean;
 }) {
   return (
-    <Link to={to} className="block h-full">
-      <article
-        className={cn(
-          'relative h-full rounded-[18px] p-5 shadow-[0_10px_30px_rgba(10,41,66,0.05)]',
-          tone === 'peach' ? 'bg-[#FFF1E6]' : 'bg-white',
-        )}
-      >
-        <span className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-lg border border-[#E8EEF3] bg-white/70 text-[#9AA8B5]">
-          {icon}
-        </span>
-        <p className="pr-12 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#8A98A6]">
-          {label}
-        </p>
+    <Link to={to} className="block h-full min-w-0">
+      <article className={cn(dashType.kpi.card, theme.card)}>
+        <div className="flex items-start justify-between gap-3">
+          <p className={cn(dashType.kpi.label, theme.label)}>{label}</p>
+          <span className={cn(dashType.kpi.iconWrap, theme.icon)}>
+            <Icon className="h-4 w-4" aria-hidden="true" />
+          </span>
+        </div>
         {loading || value == null ? (
-          <div className="mt-3 h-8 w-16 animate-pulse rounded bg-[#EEF2F5]" />
+          <div className="mt-3 h-8 w-20 animate-pulse rounded bg-[var(--color-neutral-100)]" />
         ) : (
-          <p className="mt-2 text-[32px] font-semibold leading-none tracking-tight text-[#0A2942]">
-            {value}
-          </p>
+          <div className="mt-2 flex items-baseline gap-1.5">
+            <p className={cn(dashType.kpi.value, theme.value)}>{value}</p>
+            {unit ? <p className={cn(dashType.kpi.unit, theme.unit)}>{unit}</p> : null}
+          </div>
         )}
-        <p className="mt-1.5 text-[12px] text-[#8A98A6]">{hint}</p>
-        <SegmentedBar colors={barColors} />
+        <DashboardKpiMiniBars values={bars} palette={theme.bars} loading={loading} />
+        <p className={cn(dashType.kpi.caption, theme.caption)}>
+          {loading ? 'Loading…' : caption}
+        </p>
       </article>
     </Link>
   );
@@ -71,6 +67,10 @@ export function VendorDashboardKpiRow({
   overdue,
   agingOutstanding,
   paid,
+  invoiceBars,
+  scheduleBars,
+  agingBars,
+  paidBars,
   loading,
 }: {
   invoiceTotal: number;
@@ -78,6 +78,10 @@ export function VendorDashboardKpiRow({
   overdue: number;
   agingOutstanding: number;
   paid: number;
+  invoiceBars: number[];
+  scheduleBars: number[];
+  agingBars: number[];
+  paidBars: number[];
   loading: boolean;
 }) {
   return (
@@ -86,37 +90,44 @@ export function VendorDashboardKpiRow({
         to="/vendor/invoices"
         label="Invoices"
         value={loading ? null : String(invoiceTotal)}
-        hint="All purchase invoices"
-        barColors={['#F8D4B0', '#F5C089', '#FF9A4A', '#FF8A2B', '#FF751F', '#E36A12']}
-        icon={<FileText size={15} strokeWidth={1.8} />}
+        unit="total"
+        caption="All purchase invoices"
+        bars={invoiceBars}
+        theme={KPI_THEMES.invoices}
+        Icon={FileText}
         loading={loading}
       />
       <KpiCard
         to="/vendor/schedule"
         label="Due / Open"
         value={loading ? null : String(dueOpen)}
-        hint={`${overdue} overdue`}
-        barColors={['#3B82F6', '#BFDBFE', '#93C5FD', '#60A5FA', '#3B82F6', '#1D4ED8']}
-        icon={<Calendar size={15} strokeWidth={1.8} />}
+        unit="open"
+        caption={`${overdue} overdue`}
+        bars={scheduleBars}
+        theme={KPI_THEMES.due}
+        Icon={Calendar}
         loading={loading}
       />
       <KpiCard
         to="/vendor/credit"
         label="Aging outstanding"
         value={loading ? null : formatVendorAmount(agingOutstanding)}
-        hint="From aging / invoice summary"
-        barColors={['#CCFBF1', '#99F6E4', '#5EEAD4', '#2DD4BF', '#14B8A6', '#0F766E']}
-        icon={<Wallet size={15} strokeWidth={1.8} />}
+        unit="outstanding"
+        caption="From aging / invoice summary"
+        bars={agingBars}
+        theme={KPI_THEMES.aging}
+        Icon={Wallet}
         loading={loading}
       />
       <KpiCard
         to="/vendor/invoices"
         label="Paid"
         value={loading ? null : String(paid)}
-        hint="This cycle"
-        barColors={['#F8D4B0', '#FF9A4A', '#FF8A2B', '#FF751F', '#E36A12', '#C7590F']}
-        icon={<CreditCard size={15} strokeWidth={1.8} />}
-        tone="peach"
+        unit="this cycle"
+        caption="Settled invoices"
+        bars={paidBars}
+        theme={KPI_THEMES.paid}
+        Icon={CreditCard}
         loading={loading}
       />
     </div>

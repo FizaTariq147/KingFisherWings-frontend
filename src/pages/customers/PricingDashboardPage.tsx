@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Search, ChevronDown } from 'lucide-react';
 import { FilterField, SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
 import { useCustomerPricingDashboard } from '@/features/customers/hooks/useCustomerService';
+import { useCustomerFilterSelectOptions } from '@/features/customers/hooks/useCustomerServiceFilterOptions';
 import type { CustomerPricingFilters } from '@/features/customers/types/customerService.types';
+import { defaultCustomerPricingFilters } from '@/features/customers/utils/customerServiceDefaults';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
 import {
   DATE_RANGE_PRESETS,
@@ -11,10 +14,13 @@ import {
   type DateRangePreset,
 } from '@/features/management/utils/managementFilters';
 import { ENQUIRY_STATUSES } from '@/features/crm/constants/crm.constants';
+import { CUSTOMER_SERVICE_PATHS } from '@/features/customers/utils/customerServicePaths';
+import { downloadCsvFile, exportEnquiriesCsv } from '@/features/customers/utils/exportCustomerReport';
 
 const tabs = ['Open Enquiry Report', 'Quotation status-wise statistics'] as const;
 
 export default function PricingDashboardPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>(tabs[0]);
   const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
   const [fromDate, setFromDate] = useState('');
@@ -26,13 +32,13 @@ export default function PricingDashboardPage() {
   const [origin, setOrigin] = useState('All');
   const [destination, setDestination] = useState('All');
   const [enquiryNo, setEnquiryNo] = useState('');
-  const [createdUser, setCreatedUser] = useState('');
+  const [createdUser, setCreatedUser] = useState('All');
   const [status, setStatus] = useState('All');
   const [search, setSearch] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<CustomerPricingFilters>({
-    tab: 'open_enquiries',
-  });
+  const [submitted, setSubmitted] = useState(true);
+  const [activeFilters, setActiveFilters] = useState<CustomerPricingFilters>(() =>
+    defaultCustomerPricingFilters(),
+  );
 
   const applyPreset = (preset: DateRangePreset) => {
     setDatePreset(preset);
@@ -49,6 +55,7 @@ export default function PricingDashboardPage() {
   }, []);
 
   const query = useCustomerPricingDashboard(activeFilters, submitted);
+  const filters = useCustomerFilterSelectOptions();
 
   const openEnquiries = useMemo(() => {
     let rows = query.data?.openEnquiries ?? [];
@@ -76,9 +83,9 @@ export default function PricingDashboardPage() {
       origin: origin !== 'All' ? origin : undefined,
       destination: destination !== 'All' ? destination : undefined,
       enquiry_no: enquiryNo || undefined,
-      created_user: createdUser || undefined,
+      created_user: createdUser !== 'All' ? createdUser : undefined,
       status,
-      limit: 200,
+      limit: 100,
     });
     setSubmitted(true);
   };
@@ -89,6 +96,13 @@ export default function PricingDashboardPage() {
       <div className="bg-white border border-gray-200 rounded-md">
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">Pricing Dashboard</h2>
+          <button
+            type="button"
+            onClick={() => navigate(CUSTOMER_SERVICE_PATHS.createEnquiry)}
+            className="bg-[#FF751F] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity"
+          >
+            Create Enquiry
+          </button>
         </div>
 
         <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-3">
@@ -117,27 +131,27 @@ export default function PricingDashboardPage() {
           </FilterField>
 
           <FilterField label="Branch">
-            <SelectInput options={['All']} value={branch} onChange={(e) => setBranch(e.target.value)} />
+            <SelectInput options={filters.branches} value={branch} onChange={(e) => setBranch(e.target.value)} />
           </FilterField>
 
           <FilterField label="Client">
-            <SelectInput options={['All']} value={client} onChange={(e) => setClient(e.target.value)} />
+            <SelectInput options={filters.clients} value={client} onChange={(e) => setClient(e.target.value)} />
           </FilterField>
 
           <FilterField label="Sales Person">
-            <SelectInput options={['All']} value={salesPerson} onChange={(e) => setSalesPerson(e.target.value)} />
+            <SelectInput options={filters.salesPersons} value={salesPerson} onChange={(e) => setSalesPerson(e.target.value)} />
           </FilterField>
 
           <FilterField label="Department">
-            <SelectInput options={['All']} value={department} onChange={(e) => setDepartment(e.target.value)} />
+            <SelectInput options={filters.departments} value={department} onChange={(e) => setDepartment(e.target.value)} />
           </FilterField>
 
           <FilterField label="Origin">
-            <SelectInput options={['All']} value={origin} onChange={(e) => setOrigin(e.target.value)} />
+            <SelectInput options={filters.ports} value={origin} onChange={(e) => setOrigin(e.target.value)} />
           </FilterField>
 
           <FilterField label="Destination">
-            <SelectInput options={['All']} value={destination} onChange={(e) => setDestination(e.target.value)} />
+            <SelectInput options={filters.ports} value={destination} onChange={(e) => setDestination(e.target.value)} />
           </FilterField>
 
           <FilterField label="Enquiry No">
@@ -145,7 +159,7 @@ export default function PricingDashboardPage() {
           </FilterField>
 
           <FilterField label="Created User">
-            <TextInput value={createdUser} onChange={(e) => setCreatedUser(e.target.value)} />
+            <SelectInput options={filters.salesPersons} value={createdUser} onChange={(e) => setCreatedUser(e.target.value)} />
           </FilterField>
 
           <FilterField label="Enquiry Status">
@@ -165,7 +179,14 @@ export default function PricingDashboardPage() {
             <button
               key={tab}
               type="button"
-              onClick={() => setActiveTab(tab)}
+              onClick={() => {
+                setActiveTab(tab);
+                setActiveFilters((prev) => ({
+                  ...prev,
+                  tab: tab === tabs[0] ? 'open_enquiries' : 'quotation_stats',
+                }));
+                setSubmitted(true);
+              }}
               className={`px-5 py-3 text-sm font-medium transition-colors relative ${
                 activeTab === tab ? 'bg-[#0A2942] text-white' : 'text-white/70 hover:text-white bg-[#0A2942]/80'
               }`}
@@ -190,9 +211,23 @@ export default function PricingDashboardPage() {
           <button type="button" onClick={handleSubmit} className="bg-gray-100 border border-gray-300 hover:bg-gray-200 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors">
             Search
           </button>
-          <button type="button" className="flex items-center gap-1 border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-600 bg-white">
-            Options
-            <ChevronDown size={12} />
+          <button
+            type="button"
+            onClick={() => {
+              if (activeTab === tabs[0]) {
+                exportEnquiriesCsv(openEnquiries, 'pricing-open-enquiries.csv');
+              } else {
+                downloadCsvFile(
+                  'quotation-status-stats.csv',
+                  ['Status', 'Count'],
+                  quotationStats.map((row) => [row.status, String(row.count)]),
+                );
+              }
+            }}
+            disabled={activeTab === tabs[0] ? !openEnquiries.length : !quotationStats.length}
+            className="bg-gray-100 border border-gray-300 hover:bg-gray-200 disabled:opacity-50 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors"
+          >
+            Export Report
           </button>
         </div>
 
@@ -226,7 +261,11 @@ export default function PricingDashboardPage() {
                   </thead>
                   <tbody>
                     {openEnquiries.map((item) => (
-                      <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <tr
+                        key={item.id}
+                        onClick={() => navigate(CUSTOMER_SERVICE_PATHS.enquiryDetail(item.id))}
+                        className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                      >
                         <td className="px-4 py-2 text-blue-600">{item.enquiryNo}</td>
                         <td className="px-4 py-2 text-gray-700">{item.client}</td>
                         <td className="px-4 py-2 text-gray-700">{item.serviceType}</td>

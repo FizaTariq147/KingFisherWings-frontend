@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Download, Wallet } from 'lucide-react';
+import { Download, BadgeCheck, TrendingUp, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
@@ -81,25 +81,31 @@ export default function PortalCreditPage() {
             label="Credit limit"
             value={summary.data?.creditLimit ?? (summary.isLoading ? '…' : '—')}
             Icon={Wallet}
+            theme="navy"
           />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
           <PortalStatCard
             label="Used"
             value={summary.data?.used ?? (summary.isLoading ? '…' : '—')}
+            Icon={TrendingUp}
+            theme="orange"
           />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
           <PortalStatCard
             label="Available"
             value={summary.data?.available ?? (summary.isLoading ? '…' : '—')}
-            tone="accent"
+            Icon={BadgeCheck}
+            theme="green"
           />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
           <PortalStatCard
             label="Status"
             value={summary.data?.creditStatus || (summary.isLoading ? '…' : '—')}
+            Icon={BadgeCheck}
+            theme="purple"
           />
         </PortalAnimatedGridItem>
       </PortalAnimatedGrid>

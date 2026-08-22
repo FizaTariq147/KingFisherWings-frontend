@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Check } from 'lucide-react';
+import { Check, ListTodo } from 'lucide-react';
 import type { PortalTaskItem } from '../../utils/portalDashboardFormat';
 import { cn } from '@/lib/utils';
+import { dashType } from '@/lib/dashboardTypography';
 
 export function PortalTodaysTasksPanel({
   tasks,
@@ -28,7 +29,12 @@ export function PortalTodaysTasksPanel({
 
   return (
     <section className="rounded-[20px] bg-white p-5 shadow-[0_10px_30px_rgba(10,41,66,0.05)]">
-      <h2 className="mb-4 text-[15px] font-semibold text-[#0A2942]">Today&apos;s tasks</h2>
+      <div className="mb-4 flex items-center gap-2">
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#E8EEF4] text-[#0A2942]">
+          <ListTodo className="h-4 w-4" aria-hidden="true" />
+        </span>
+        <h2 className={dashType.panel.title}>Today&apos;s tasks</h2>
+      </div>
 
       {loading ? (
         <div className="space-y-2">
@@ -36,7 +42,7 @@ export function PortalTodaysTasksPanel({
           <div className="h-8 animate-pulse rounded bg-[#EEF2F5]" />
         </div>
       ) : tasks.length === 0 ? (
-        <p className="rounded-xl bg-[#F4F7F9] px-3 py-6 text-center text-sm text-[#7A8A98]">
+        <p className={dashType.panel.empty}>
           No tasks right now.
         </p>
       ) : (
@@ -61,19 +67,13 @@ export function PortalTodaysTasksPanel({
                 {task.href ? (
                   <Link
                     to={task.href}
-                    className={cn(
-                      'text-sm leading-snug text-[#3D4F5F]',
-                      done && 'text-[#9AA8B5] line-through',
-                    )}
+                    className={cn(dashType.panel.body, done && 'text-[var(--color-neutral-400)] line-through')}
                   >
                     {task.label}
                   </Link>
                 ) : (
                   <span
-                    className={cn(
-                      'text-sm leading-snug text-[#3D4F5F]',
-                      done && 'text-[#9AA8B5] line-through',
-                    )}
+                    className={cn(dashType.panel.body, done && 'text-[var(--color-neutral-400)] line-through')}
                   >
                     {task.label}
                   </span>

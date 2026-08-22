@@ -34,7 +34,6 @@ export function userToFormValues(user: User): CreateUserFormValues {
     office_hours_start: user.office_hours_start ?? '',
     office_hours_end: user.office_hours_end ?? '',
     office_hours_timezone: user.office_hours_timezone ?? 'Asia/Dubai',
-    two_factor_enabled: user.two_factor_enabled,
     max_concurrent_sessions: user.max_concurrent_sessions,
   };
 }

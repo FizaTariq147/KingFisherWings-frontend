@@ -15,6 +15,11 @@ import {
 import { vendorAuthService } from '../services/vendorAuth.service';
 import { useVendorAuthStore } from '../store/vendorAuthStore';
 import type { VendorDashboardPeriod, VendorTaskItem } from '../utils/vendorDashboardFormat';
+import {
+  dashboardBarsFromBuckets,
+  dashboardBarsFromScheduleItems,
+  dashboardBarsFromStatusMap,
+} from '@/lib/dashboardKpiBars';
 
 export default function VendorHomePage() {
   const user = useVendorAuthStore((s) => s.user);
@@ -96,6 +101,34 @@ export default function VendorHomePage() {
   const dataLoading = summary.isLoading || schedule.isLoading || aging.isLoading;
   const partyName = user?.party?.name?.trim();
 
+  const invoiceBars = useMemo(
+    () => dashboardBarsFromStatusMap(summary.data?.byStatus),
+    [summary.data?.byStatus],
+  );
+  const scheduleBars = useMemo(
+    () =>
+      dashboardBarsFromScheduleItems(upcoming, [
+        schedule.data?.dueCount ?? 0,
+        schedule.data?.overdueCount ?? 0,
+      ]),
+    [upcoming, schedule.data?.dueCount, schedule.data?.overdueCount],
+  );
+  const agingBars = useMemo(
+    () => dashboardBarsFromBuckets(aging.data?.buckets),
+    [aging.data?.buckets],
+  );
+  const paidBars = useMemo(() => {
+    const byStatus = summary.data?.byStatus ?? {};
+    const paidStatuses = Object.entries(byStatus)
+      .filter(([key]) => /paid|settled|closed|complete/i.test(key))
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([, count]) => count);
+    if (paidStatuses.length) return paidStatuses;
+    return [summary.data?.paid ?? 0, summary.data?.outstanding ?? 0, summary.data?.overdue ?? 0].filter(
+      (value) => value > 0,
+    );
+  }, [summary.data]);
+
   return (
     <PortalAnimatedPage className="space-y-4">
       {error ? (
@@ -129,6 +162,10 @@ export default function VendorHomePage() {
         overdue={schedule.data?.overdueCount ?? 0}
         agingOutstanding={aging.data?.total ?? summary.data?.outstanding ?? 0}
         paid={summary.data?.paid ?? 0}
+        invoiceBars={invoiceBars}
+        scheduleBars={scheduleBars}
+        agingBars={agingBars}
+        paidBars={paidBars}
         loading={dataLoading}
       />
 

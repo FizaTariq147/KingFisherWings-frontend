@@ -10,12 +10,6 @@ export const AUTH_API = {
   me: '/auth/me',
   sessions: '/auth/sessions',
   revokeSession: (sessionId: string) => `/auth/sessions/${sessionId}/revoke`,
-  /** AuthController_setup2fa — Generate TOTP secret + QR for the current user */
-  twoFactorSetup: '/auth/2fa/setup',
-  /** AuthController_enable2fa — Enable 2FA after verifying a TOTP code */
-  twoFactorEnable: '/auth/2fa/enable',
-  /** AuthController_disable2fa — Disable 2FA (password + optional TOTP/backup) */
-  twoFactorDisable: '/auth/2fa/disable',
   changePassword: '/auth/change-password',
   tenantChangePassword: '/auth/tenant/change-password',
   /** AuthController_invite — send accept-invite email for an INVITED user */

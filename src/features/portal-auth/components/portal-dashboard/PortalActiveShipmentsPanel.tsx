@@ -12,6 +12,7 @@ import {
   statusTone,
 } from '../../utils/portalDashboardFormat';
 import { cn } from '@/lib/utils';
+import { dashType } from '@/lib/dashboardTypography';
 
 type FilterKey = 'all' | 'customs' | 'docs' | 'booked';
 
@@ -70,11 +71,18 @@ export function PortalActiveShipmentsPanel({
     () => active.filter((item) => matchesFilter(item, filter)),
     [active, filter],
   );
+  const visibleRows = filtered.slice(0, 6);
+  const loadingRowCount = Math.min(6, Math.max(1, active.length || 3));
 
   return (
-    <section className="rounded-[20px] bg-white p-5 shadow-[0_10px_30px_rgba(10,41,66,0.05)]">
+    <section className="h-auto w-full self-start rounded-[20px] bg-white p-5 shadow-[0_10px_30px_rgba(10,41,66,0.05)]">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-[15px] font-semibold text-[#0A2942]">Active shipments</h2>
+        <div className="flex items-center gap-2">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#FFF4ED] text-[#FF751F]">
+            <Ship className="h-4 w-4" aria-hidden="true" />
+          </span>
+          <h2 className={dashType.panel.title}>Active shipments</h2>
+        </div>
         <div className="flex flex-wrap items-center gap-1.5">
           {FILTERS.map((item) => (
             <button
@@ -82,10 +90,10 @@ export function PortalActiveShipmentsPanel({
               type="button"
               onClick={() => setFilter(item.id)}
               className={cn(
-                'rounded-full px-3 py-1 text-[11px] font-medium transition-colors',
+                dashType.panel.filterChip,
                 filter === item.id
-                  ? 'bg-[#0A2942] text-white'
-                  : 'text-[#6B7A88] hover:bg-[#F4F7F9]',
+                  ? 'bg-[var(--color-primary)] text-white'
+                  : 'text-[var(--color-neutral-500)] hover:bg-[var(--color-neutral-50)]',
               )}
             >
               {item.label}
@@ -97,7 +105,7 @@ export function PortalActiveShipmentsPanel({
       <div className="overflow-x-auto">
         <table className="min-w-full text-left text-xs">
           <thead>
-            <tr className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9AA8B5]">
+            <tr className={cn(dashType.panel.meta, 'font-semibold uppercase tracking-[0.12em]')}>
               <th className="pb-3 pr-3 font-semibold">Job / Route</th>
               <th className="pb-3 pr-3 font-semibold">Mode</th>
               <th className="pb-3 pr-3 font-semibold">Status</th>
@@ -106,7 +114,7 @@ export function PortalActiveShipmentsPanel({
           </thead>
           <tbody>
             {loading ? (
-              Array.from({ length: 5 }).map((_, i) => (
+              Array.from({ length: loadingRowCount }).map((_, i) => (
                 <tr key={i}>
                   <td colSpan={4} className="py-3">
                     <div className="h-10 animate-pulse rounded-lg bg-[#EEF2F5]" />
@@ -115,23 +123,23 @@ export function PortalActiveShipmentsPanel({
               ))
             ) : error ? (
               <tr>
-                <td colSpan={4} className="py-8 text-sm text-[#C6303E]">
+                <td colSpan={4} className={cn('py-8', dashType.panel.body, 'text-[var(--color-danger-600)]')}>
                   Could not load shipments.
                 </td>
               </tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={4} className="py-8 text-sm text-[#7A8A98]">
+                <td colSpan={4} className={cn('py-8', dashType.panel.body)}>
                   No active shipments for this filter.
                 </td>
               </tr>
             ) : (
-              filtered.slice(0, 6).map((item) => (
+              visibleRows.map((item) => (
                 <tr key={item.id} className="border-t border-[#F1F4F7]">
                   <td className="py-3.5 pr-3">
                     <Link to={`/portal/shipments/${item.id}`} className="block min-w-[180px]">
-                      <p className="font-semibold text-[#0A2942]">{item.reference}</p>
-                      <p className="mt-0.5 text-[11px] text-[#8A98A6]">
+                      <p className={dashType.panel.rowTitle}>{item.reference}</p>
+                      <p className={dashType.panel.rowMeta}>
                         {[item.origin, item.destination].filter(Boolean).join(' → ') || '—'}
                       </p>
                     </Link>
@@ -142,7 +150,7 @@ export function PortalActiveShipmentsPanel({
                   <td className="py-3.5 pr-3">
                     <StatusBadge status={item.status} />
                   </td>
-                  <td className="py-3.5 text-right text-[11px] text-[#6B7A88]">
+                  <td className={cn('py-3.5 text-right', dashType.panel.meta)}>
                     ETA {formatShortDate(item.eta)}
                   </td>
                 </tr>

@@ -2,21 +2,34 @@ import { useEffect, useState } from 'react'
 import { AlertTriangle, Loader2, RefreshCw, ShieldOff } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { useAuthStore } from '@/store/authStore'
+import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore'
+
+function isSuperAdminSurface(): boolean {
+  if (typeof window === 'undefined') return false
+  return window.location.pathname.startsWith('/superadmin')
+}
 
 /**
  * Idle timeout popup (60 minutes of inactivity — not from login).
  * Continue → refresh tokens and keep working (no login).
  * Revoke → POST /auth/sessions/{sessionId}/revoke then sign out.
+ *
+ * ERP-only: never show on Super Admin routes or when a Super Admin session is active.
  */
 export function SessionExpiredModal() {
   const sessionExpired = useAuthStore((s) => s.sessionExpired)
+  const isErpAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const isSuperAdmin = useSuperAdminAuthStore((s) => s.isAuthenticated)
   const continueSession = useAuthStore((s) => s.continueExpiredSession)
   const revokeSession = useAuthStore((s) => s.revokeExpiredSessionAndLogin)
   const [busy, setBusy] = useState<'continue' | 'revoke' | null>(null)
   const [error, setError] = useState<string | null>(null)
 
+  const visible =
+    sessionExpired && isErpAuthenticated && !isSuperAdmin && !isSuperAdminSurface()
+
   useEffect(() => {
-    if (!sessionExpired) {
+    if (!visible) {
       setBusy(null)
       setError(null)
       return
@@ -25,9 +38,9 @@ export function SessionExpiredModal() {
     return () => {
       document.body.style.overflow = ''
     }
-  }, [sessionExpired])
+  }, [visible])
 
-  if (!sessionExpired) return null
+  if (!visible) return null
 
   const handleContinue = async () => {
     setBusy('continue')

@@ -1,0 +1,60 @@
+export const PORTAL_STAT_THEMES = {
+  orange: {
+    card: 'border-[#FF751F]/30 bg-gradient-to-br from-[#FFF4ED] to-[#FFEBDD]',
+    label: 'text-[#C7590F]',
+    value: 'text-[#FF751F]',
+    hint: 'text-[#B56A24]',
+    icon: 'bg-[#FF751F]/15 text-[#FF751F]',
+    glow: 'bg-[#FF751F]/12',
+  },
+  gold: {
+    card: 'border-[#F5A623]/30 bg-gradient-to-br from-[#FFFBEB] to-[#FDF0C8]',
+    label: 'text-[#B8860B]',
+    value: 'text-[#F5A623]',
+    hint: 'text-[#9A7209]',
+    icon: 'bg-[#F5A623]/18 text-[#D4920A]',
+    glow: 'bg-[#F5A623]/12',
+  },
+  navy: {
+    card: 'border-[#2C557A]/30 bg-gradient-to-br from-[#E8EEF4] to-[#D6E3EE]',
+    label: 'text-[#2C557A]',
+    value: 'text-[#0A2942]',
+    hint: 'text-[#4A6882]',
+    icon: 'bg-[#2C557A]/12 text-[#0A2942]',
+    glow: 'bg-[#2C557A]/10',
+  },
+  green: {
+    card: 'border-[#22A35A]/30 bg-gradient-to-br from-[#E7F6EC] to-[#D4EFDC]',
+    label: 'text-[#1B8A4A]',
+    value: 'text-[#22A35A]',
+    hint: 'text-[#3D8A5A]',
+    icon: 'bg-[#22A35A]/15 text-[#1B8A4A]',
+    glow: 'bg-[#22A35A]/10',
+  },
+  rose: {
+    card: 'border-[#E85D6C]/30 bg-gradient-to-br from-[#FCEBEC] to-[#F9D8DB]',
+    label: 'text-[#C6303E]',
+    value: 'text-[#C6303E]',
+    hint: 'text-[#A82835]',
+    icon: 'bg-[#E85D6C]/15 text-[#C6303E]',
+    glow: 'bg-[#E85D6C]/10',
+  },
+  purple: {
+    card: 'border-[#5B3E8C]/25 bg-gradient-to-br from-[#EDE8F4] to-[#E0D6EE]',
+    label: 'text-[#5B3E8C]',
+    value: 'text-[#4A3270]',
+    hint: 'text-[#6B5094]',
+    icon: 'bg-[#5B3E8C]/12 text-[#5B3E8C]',
+    glow: 'bg-[#5B3E8C]/10',
+  },
+  cyan: {
+    card: 'border-[#2BB3C0]/30 bg-gradient-to-br from-[#E8F7F8] to-[#D4F0F2]',
+    label: 'text-[#1A7A86]',
+    value: 'text-[#17808A]',
+    hint: 'text-[#2A8F99]',
+    icon: 'bg-[#2BB3C0]/15 text-[#17808A]',
+    glow: 'bg-[#2BB3C0]/10',
+  },
+} as const;
+
+export type PortalStatTheme = keyof typeof PORTAL_STAT_THEMES;

@@ -1,5 +1,9 @@
 import type { Job } from '@/features/jobs/types/job.types';
 import type { JobStatus, JobType } from '@/features/jobs/constants/job.constants';
+import { isUuid } from '@/lib/isUuid';
+
+const UUID_IN_TEXT_RE =
+  /[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/gi;
 
 export type DashboardPeriod = 'today' | 'week' | 'month';
 
@@ -103,10 +107,203 @@ export function jobMode(jobType: JobType | string): 'Air' | 'Sea' | 'Land' | 'Ot
   return 'Other';
 }
 
+export function looksLikeUuid(value: string): boolean {
+  return isUuid(value.trim());
+}
+
+/** Drop raw UUIDs and uuid>uuid lane keys; keep human-readable labels only. */
+export function sanitizeDisplayLabel(value?: string | null): string | undefined {
+  if (!value?.trim()) return undefined;
+  const trimmed = value.trim();
+  if (looksLikeUuid(trimmed)) return undefined;
+
+  const compositeParts = trimmed
+    .split(/[>→]|(?:\s*->\s*)/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  if (compositeParts.length >= 2 && compositeParts.every((part) => looksLikeUuid(part))) {
+    return undefined;
+  }
+
+  const nonUuidParts = compositeParts.filter((part) => !looksLikeUuid(part));
+  if (nonUuidParts.length >= 2) return nonUuidParts.join(' → ');
+  if (nonUuidParts.length === 1) return nonUuidParts[0];
+
+  const stripped = trimmed
+    .replace(UUID_IN_TEXT_RE, '')
+    .replace(/[>→\-–—|]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (stripped.length >= 2 && !looksLikeUuid(stripped)) return stripped;
+
+  return undefined;
+}
+
 export function jobLane(job: Pick<Job, 'origin_port_code' | 'dest_port_code'>): string {
-  const origin = job.origin_port_code?.trim() || '—';
-  const dest = job.dest_port_code?.trim() || '—';
+  const origin = sanitizeDisplayLabel(job.origin_port_code) ?? '—';
+  const dest = sanitizeDisplayLabel(job.dest_port_code) ?? '—';
   return `${origin} → ${dest}`;
+}
+
+export function jobPortCode(code?: string | null): string {
+  return sanitizeDisplayLabel(code ?? undefined) ?? '—';
+}
+
+export function jobInitials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (!parts.length || name === '—') return 'JB';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return `${parts[0][0] ?? ''}${parts[1][0] ?? ''}`.toUpperCase();
+}
+
+export function jobModeDetail(job: Pick<Job, 'job_type'>): string {
+  const type = String(job.job_type);
+  if (type.startsWith('AIR')) return 'Air';
+  if (type.includes('LCL')) return 'Sea LCL';
+  if (type.startsWith('SEA') || type.startsWith('NVOCC')) return 'Sea FCL';
+  if (type === 'LAND' || type === 'COURIER') return 'Land';
+  return jobMode(job.job_type);
+}
+
+export function durationInDept(updatedAt?: string): string {
+  if (!updatedAt) return '—';
+  const ts = Date.parse(updatedAt);
+  if (Number.isNaN(ts)) return '—';
+  const hours = Math.max(1, Math.floor((Date.now() - ts) / 3_600_000));
+  if (hours < 24) return `${hours} h in dept`;
+  const days = Math.max(1, Math.floor(hours / 24));
+  return `${days} d in dept`;
+}
+
+export type ShipmentStatusChip = 'all' | 'in_transit' | 'customs' | 'docs_due' | 'booked' | 'delivered';
+
+export function shipmentStatusChip(job: Pick<Job, 'status'>): ShipmentStatusChip {
+  if (job.status === 'IN_PROGRESS') return 'in_transit';
+  if (isCustomsHold(job)) return 'customs';
+  if (isDocsPending(job)) return 'docs_due';
+  if (job.status === 'BOOKING_CONFIRMED') return 'booked';
+  if (job.status === 'DELIVERED') return 'delivered';
+  return 'all';
+}
+
+export function shipmentStatusLabel(status: JobStatus): string {
+  switch (status) {
+    case 'IN_PROGRESS':
+      return 'In transit';
+    case 'CUSTOMS_CLEARANCE':
+    case 'ON_HOLD':
+      return 'Customs';
+    case 'DOCS_PENDING':
+      return 'Docs due';
+    case 'BOOKING_CONFIRMED':
+      return 'Booked';
+    case 'DELIVERED':
+      return 'Delivered';
+    default:
+      return status.replace(/_/g, ' ').toLowerCase().replace(/^\w/, (c) => c.toUpperCase());
+  }
+}
+
+export function routeProgressInfo(job: Job): {
+  origin: string;
+  dest: string;
+  pct: number;
+  barColor: string;
+  caption: string;
+} {
+  const origin = jobPortCode(job.origin_port_code);
+  const dest = jobPortCode(job.dest_port_code);
+  const etd = Date.parse(job.etd || job.sea_fcl_details?.etd || '');
+  const eta = Date.parse(job.eta || job.sea_fcl_details?.eta || '');
+  const mode = jobMode(job.job_type);
+  let pct = 35;
+  if (Number.isFinite(etd) && Number.isFinite(eta) && eta > etd) {
+    pct = Math.round(((Date.now() - etd) / (eta - etd)) * 100);
+    pct = Math.min(96, Math.max(8, pct));
+  }
+  if (job.status === 'DELIVERED' || job.status === 'COMPLETED') pct = 100;
+  if (job.status === 'BOOKING_CONFIRMED' || job.status === 'ENQUIRY' || job.status === 'QUOTATION') {
+    pct = 10;
+  }
+
+  let barColor = mode === 'Air' ? '#C7590F' : '#2C557A';
+  if (isCustomsHold(job)) barColor = '#FF751F';
+  if (isDocsPending(job)) barColor = '#C6303E';
+  if (job.status === 'DELIVERED') barColor = '#3BA066';
+
+  let caption = 'En route';
+  if (isCustomsHold(job)) {
+    caption = dest !== '—' ? `Held at ${dest} customs` : 'Held at customs';
+    if (job.updated_at) {
+      const time = new Date(job.updated_at).toLocaleTimeString(undefined, {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+      caption += ` since ${time}`;
+    }
+  } else if (isDocsPending(job)) {
+    caption = 'Documents outstanding';
+  } else if (job.status === 'DELIVERED') {
+    caption = 'Delivered';
+  } else if (Number.isFinite(eta)) {
+    const days = Math.max(0, Math.ceil((eta - Date.now()) / 86_400_000));
+    caption = days === 0 ? 'Arriving today' : `${days} day${days === 1 ? '' : 's'} to go`;
+  }
+
+  return { origin, dest, pct, barColor, caption };
+}
+
+export function jobMetaHints(job: Job): Array<{ text: string; tone: 'success' | 'warning' }> {
+  const hints: Array<{ text: string; tone: 'success' | 'warning' }> = [];
+  const customs = job.sea_fcl_details?.customs_status;
+  if (customs === 'CLEARED' || customs === 'RELEASED') {
+    hints.push({ text: 'Customs cleared', tone: 'success' });
+  }
+  const blType = job.sea_fcl_details?.bl_type;
+  if (blType) hints.push({ text: `BL ${blType}`, tone: 'success' });
+  else if (job.bills_of_lading?.some((bl) => bl.is_surrendered || bl.bl_number)) {
+    hints.push({ text: 'BL released', tone: 'success' });
+  }
+  if (job.documents?.length) {
+    hints.push({ text: `${job.documents.length} document${job.documents.length === 1 ? '' : 's'}`, tone: 'success' });
+  }
+  if (job.is_dg) hints.push({ text: 'DG cargo', tone: 'warning' });
+  if (isDocsPending(job)) hints.push({ text: 'Docs pending', tone: 'warning' });
+  return hints;
+}
+
+export function deptBadgeClass(dept: string): string {
+  switch (dept) {
+    case 'Customs':
+      return 'bg-[#FCE8EA] text-[#C6303E]';
+    case 'Documentation':
+      return 'bg-[#FDECDC] text-[#E07A2F]';
+    case 'Sales':
+      return 'bg-[#FCE8F4] text-[#B83280]';
+    case 'Accounts':
+      return 'bg-[#E7F6EC] text-[#3BA066]';
+    default:
+      return 'bg-[#E8F4F8] text-[#1F8A8A]';
+  }
+}
+
+export function shipmentStatusClass(status: JobStatus): string {
+  switch (status) {
+    case 'IN_PROGRESS':
+      return 'bg-[#E8EEF4] text-[#0A2942]';
+    case 'CUSTOMS_CLEARANCE':
+    case 'ON_HOLD':
+      return 'bg-[#FDECDC] text-[#E07A2F]';
+    case 'DOCS_PENDING':
+      return 'bg-[#FCE8EA] text-[#C6303E]';
+    case 'BOOKING_CONFIRMED':
+      return 'bg-[var(--color-neutral-100)] text-[var(--color-neutral-700)]';
+    case 'DELIVERED':
+      return 'bg-[#E7F6EC] text-[#3BA066]';
+    default:
+      return 'bg-[var(--color-neutral-100)] text-[var(--color-neutral-700)]';
+  }
 }
 
 export function jobClient(job: Pick<Job, 'shipper_name' | 'consignee_name'>): string {

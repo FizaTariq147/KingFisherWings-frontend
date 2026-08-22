@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { CUSTOMS_STATUSES } from '../../constants/job.constants';
+import { CUSTOMS_EXAMINATION_RESULTS, CUSTOMS_STATUSES } from '../../constants/job.constants';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import {
+  useJobCustomsExaminations,
   useJobDamageReports,
   useJobDeposits,
   useJobFreeDays,
@@ -17,9 +18,11 @@ import { jobDisplayNumber } from '../../utils/jobRoute';
 
 interface JobLogisticsPanelProps {
   jobId: string;
+  jobType?: string;
 }
 
-export function JobLogisticsPanel({ jobId }: JobLogisticsPanelProps) {
+export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
+  const isAirImport = jobType === 'AIR_IMPORT';
   const mutations = useJobSubresourceMutations(jobId);
   const { data: deposits = [], refetch: refetchDeposits } = useJobDeposits(jobId);
   const { data: freeDays = [], refetch: refetchFreeDays } = useJobFreeDays(jobId);
@@ -27,6 +30,10 @@ export function JobLogisticsPanel({ jobId }: JobLogisticsPanelProps) {
   const { data: partDeliveries = [], refetch: refetchParts } = useJobPartDeliveries(jobId);
   const { data: pods = [], refetch: refetchPods } = useJobPods(jobId);
   const { data: subJobs = [], refetch: refetchSubJobs } = useJobSubJobs(jobId);
+  const {
+    data: customsExaminations = [],
+    refetch: refetchCustomsExaminations,
+  } = useJobCustomsExaminations(jobId, isAirImport);
 
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -48,7 +55,15 @@ export function JobLogisticsPanel({ jobId }: JobLogisticsPanelProps) {
   const [cfsAsOf, setCfsAsOf] = useState('');
   const [cfsResult, setCfsResult] = useState<unknown>(null);
   const [exportJobId, setExportJobId] = useState('');
+  const [airExportJobId, setAirExportJobId] = useState('');
   const [subCommodity, setSubCommodity] = useState('');
+  const [airStorageAsOf, setAirStorageAsOf] = useState('');
+  const [airStorageResult, setAirStorageResult] = useState<unknown>(null);
+  const [examDate, setExamDate] = useState('');
+  const [examResult, setExamResult] =
+    useState<(typeof CUSTOMS_EXAMINATION_RESULTS)[number]>('HELD');
+  const [examOfficer, setExamOfficer] = useState('');
+  const [examRemarks, setExamRemarks] = useState('');
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
     setError(null);
@@ -65,6 +80,151 @@ export function JobLogisticsPanel({ jobId }: JobLogisticsPanelProps) {
     <div className="space-y-4">
       {error && <p className="text-sm text-[var(--color-danger-600)]">{error}</p>}
       {msg && <p className="text-sm text-[var(--color-success-700)]">{msg}</p>}
+
+      {isAirImport && (
+        <>
+          <Card>
+            <CardHeader>
+              <CardTitle>Air import storage</CardTitle>
+            </CardHeader>
+            <div className="px-4 pb-4 grid gap-2 sm:grid-cols-2">
+              <Input
+                type="date"
+                value={airStorageAsOf}
+                onChange={(e) => setAirStorageAsOf(e.target.value)}
+                placeholder="As of date"
+              />
+              <Button
+                type="button"
+                disabled={mutations.getStorageCalculation.isPending}
+                onClick={() =>
+                  run(async () => {
+                    const result = await mutations.getStorageCalculation.mutateAsync(
+                      airStorageAsOf ? { as_of_date: airStorageAsOf } : {},
+                    );
+                    setAirStorageResult(result);
+                  }, 'Storage calculated.')
+                }
+              >
+                Calculate storage
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={mutations.createStorageInvoice.isPending}
+                onClick={() =>
+                  run(
+                    () => mutations.createStorageInvoice.mutateAsync(),
+                    'Draft storage invoice created.',
+                  )
+                }
+              >
+                Create storage invoice
+              </Button>
+              {airStorageResult != null && (
+                <pre className="sm:col-span-2 text-xs overflow-auto max-h-32">
+                  {JSON.stringify(airStorageResult, null, 2)}
+                </pre>
+              )}
+            </div>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Customs examinations ({customsExaminations.length})</CardTitle>
+            </CardHeader>
+            <div className="px-4 pb-4 space-y-3">
+              {customsExaminations.length === 0 ? (
+                <p className="text-sm text-[var(--color-neutral-400)]">
+                  No examination records.
+                </p>
+              ) : (
+                <pre className="text-xs overflow-auto max-h-32">
+                  {JSON.stringify(customsExaminations, null, 2)}
+                </pre>
+              )}
+              <div className="grid gap-2 sm:grid-cols-2">
+                <Input
+                  type="date"
+                  value={examDate}
+                  onChange={(e) => setExamDate(e.target.value)}
+                />
+                <select
+                  className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
+                  value={examResult}
+                  onChange={(e) =>
+                    setExamResult(
+                      e.target.value as (typeof CUSTOMS_EXAMINATION_RESULTS)[number],
+                    )
+                  }
+                >
+                  {CUSTOMS_EXAMINATION_RESULTS.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+                <Input
+                  placeholder="Examining officer"
+                  value={examOfficer}
+                  onChange={(e) => setExamOfficer(e.target.value)}
+                />
+                <Input
+                  placeholder="Remarks"
+                  value={examRemarks}
+                  onChange={(e) => setExamRemarks(e.target.value)}
+                />
+              </div>
+              <Button
+                type="button"
+                disabled={!examDate || mutations.createCustomsExamination.isPending}
+                onClick={() =>
+                  run(async () => {
+                    await mutations.createCustomsExamination.mutateAsync({
+                      examination_date: examDate,
+                      result: examResult,
+                      examining_officer: examOfficer.trim() || undefined,
+                      remarks: examRemarks.trim() || undefined,
+                    });
+                    setExamRemarks('');
+                    refetchCustomsExaminations();
+                  }, 'Customs examination recorded.')
+                }
+              >
+                Record examination
+              </Button>
+            </div>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Air transhipment link</CardTitle>
+            </CardHeader>
+            <div className="px-4 pb-4 grid gap-2 sm:grid-cols-2">
+              <Input
+                placeholder="Export job UUID *"
+                value={airExportJobId}
+                onChange={(e) => setAirExportJobId(e.target.value)}
+              />
+              <Button
+                type="button"
+                disabled={!airExportJobId || mutations.linkAirTranshipment.isPending}
+                onClick={() =>
+                  run(
+                    () =>
+                      mutations.linkAirTranshipment.mutateAsync({
+                        export_job_id: airExportJobId.trim(),
+                      }),
+                    'Air transhipment linked.',
+                  )
+                }
+              >
+                Link air transhipment
+              </Button>
+            </div>
+          </Card>
+        </>
+      )}
 
       <Card>
         <CardHeader>

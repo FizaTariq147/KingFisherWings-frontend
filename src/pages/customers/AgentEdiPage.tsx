@@ -1,8 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Search, ChevronDown, Maximize2 } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Search, ChevronDown, Maximize2, Download } from 'lucide-react';
 import { FilterField, SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
 import { useCustomerAgentEdi } from '@/features/customers/hooks/useCustomerService';
+import { useCustomerFilterSelectOptions } from '@/features/customers/hooks/useCustomerServiceFilterOptions';
 import type { CustomerShipmentFilters } from '@/features/customers/types/customerService.types';
+import { defaultCustomerShipmentFilters } from '@/features/customers/utils/customerServiceDefaults';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
 import {
   DATE_RANGE_PRESETS,
@@ -10,8 +13,14 @@ import {
   type DateRangePreset,
 } from '@/features/management/utils/managementFilters';
 import { JOB_STATUSES } from '@/features/jobs/constants/job.constants';
+import { downloadAgentEdiXml } from '@/features/customers/utils/agentEdiXml';
+import { customerJobDetailPath } from '@/features/customers/utils/customerServicePaths';
+import { exportShipmentsCsv } from '@/features/customers/utils/exportCustomerReport';
+import { toggleTableFullscreen } from '@/features/customers/utils/tableFullscreen';
 
 export default function AgentEdiPage() {
+  const navigate = useNavigate();
+  const tableRef = useRef<HTMLDivElement>(null);
   const [rows, setRows] = useState('10');
   const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
   const [fromDate, setFromDate] = useState('');
@@ -28,8 +37,10 @@ export default function AgentEdiPage() {
   const [mbl, setMbl] = useState('');
   const [status, setStatus] = useState('All');
   const [search, setSearch] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<CustomerShipmentFilters>({});
+  const [submitted, setSubmitted] = useState(true);
+  const [activeFilters, setActiveFilters] = useState<CustomerShipmentFilters>(() =>
+    defaultCustomerShipmentFilters({ agent_only: true }),
+  );
 
   const applyPreset = (preset: DateRangePreset) => {
     setDatePreset(preset);
@@ -46,6 +57,7 @@ export default function AgentEdiPage() {
   }, []);
 
   const query = useCustomerAgentEdi(activeFilters, submitted);
+  const filters = useCustomerFilterSelectOptions();
   const pageSize = Number(rows) || 10;
   const pageItems = useMemo(() => (query.data ?? []).slice(0, pageSize), [query.data, pageSize]);
 
@@ -66,7 +78,7 @@ export default function AgentEdiPage() {
       mbl: mbl || undefined,
       status,
       search: search.trim() || undefined,
-      limit: 200,
+      limit: 100,
       agent_only: true,
     });
     setSubmitted(true);
@@ -74,8 +86,27 @@ export default function AgentEdiPage() {
 
   return (
     <div className="bg-white border border-gray-200 rounded-md">
-      <div className="px-5 py-3 border-b border-gray-200">
+      <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
         <h2 className="text-[17px] font-medium text-gray-800">Agent EDI Shipment List</h2>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => exportShipmentsCsv(pageItems, 'agent-edi-shipments.csv')}
+            disabled={!pageItems.length}
+            className="flex items-center gap-1.5 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 text-sm px-3 py-1.5 rounded text-gray-700 transition-colors"
+          >
+            Export CSV
+          </button>
+          <button
+            type="button"
+            onClick={() => downloadAgentEdiXml(pageItems)}
+            disabled={!pageItems.length}
+            className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 disabled:opacity-50 text-white text-sm px-3 py-1.5 rounded transition-opacity"
+          >
+            <Download size={14} />
+            Download EDI XML
+          </button>
+        </div>
       </div>
 
       <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-3">
@@ -110,27 +141,27 @@ export default function AgentEdiPage() {
         </FilterField>
 
         <FilterField label="Created Branch">
-          <SelectInput options={['All']} value={branch} onChange={(e) => setBranch(e.target.value)} />
+          <SelectInput options={filters.branches} value={branch} onChange={(e) => setBranch(e.target.value)} />
         </FilterField>
 
         <FilterField label="Client">
-          <SelectInput options={['All']} value={client} onChange={(e) => setClient(e.target.value)} />
+          <SelectInput options={filters.clients} value={client} onChange={(e) => setClient(e.target.value)} />
         </FilterField>
 
         <FilterField label="Sales Person">
-          <SelectInput options={['All']} value={salesPerson} onChange={(e) => setSalesPerson(e.target.value)} />
+          <SelectInput options={filters.salesPersons} value={salesPerson} onChange={(e) => setSalesPerson(e.target.value)} />
         </FilterField>
 
         <FilterField label="Department">
-          <SelectInput options={['All']} value={department} onChange={(e) => setDepartment(e.target.value)} />
+          <SelectInput options={filters.departments} value={department} onChange={(e) => setDepartment(e.target.value)} />
         </FilterField>
 
         <FilterField label="Origin">
-          <SelectInput options={['All']} value={origin} onChange={(e) => setOrigin(e.target.value)} />
+          <SelectInput options={filters.ports} value={origin} onChange={(e) => setOrigin(e.target.value)} />
         </FilterField>
 
         <FilterField label="Destination">
-          <SelectInput options={['All']} value={destination} onChange={(e) => setDestination(e.target.value)} />
+          <SelectInput options={filters.ports} value={destination} onChange={(e) => setDestination(e.target.value)} />
         </FilterField>
 
         <FilterField label="Shipment No.">
@@ -191,7 +222,12 @@ export default function AgentEdiPage() {
             <span className="text-[#FF751F]">➜</span>
             Submit
           </button>
-          <button type="button" className="text-gray-400 hover:text-gray-600 p-1">
+          <button
+            type="button"
+            onClick={() => void toggleTableFullscreen(tableRef)}
+            className="text-gray-400 hover:text-gray-600 p-1"
+            title="Fullscreen table"
+          >
             <Maximize2 size={16} />
           </button>
         </div>
@@ -209,7 +245,7 @@ export default function AgentEdiPage() {
             <Search size={40} className="text-gray-300" />
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" ref={tableRef}>
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
@@ -222,7 +258,11 @@ export default function AgentEdiPage() {
               </thead>
               <tbody>
                 {pageItems.map((item) => (
-                  <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <tr
+                    key={item.id}
+                    onClick={() => navigate(customerJobDetailPath(item))}
+                    className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                  >
                     <td className="px-4 py-2 text-blue-600">{item.shipmentNo}</td>
                     <td className="px-4 py-2 text-gray-700">{item.client}</td>
                     <td className="px-4 py-2 text-gray-700">{item.hbl}</td>
