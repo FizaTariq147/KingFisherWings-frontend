@@ -17,14 +17,24 @@ export function MenuTileCard({ tile, onClick, compact = false }: Props) {
                  hover:border-[#FF751F] hover:shadow-md transition-all duration-150
                  focus:outline-none focus:ring-2 focus:ring-[#FF751F]/40"
     >
-      <div className="flex items-start justify-between mb-4">
-        <h3
-          className={`font-semibold text-[#0A2942] leading-snug ${compact ? 'text-[13px]' : 'text-[15px]'}`}
-        >
-          {tile.title}
-        </h3>
+      <div className="flex items-start justify-between mb-4 gap-3">
+        <div className="min-w-0">
+          <h3
+            className={`font-semibold text-[#0A2942] leading-snug ${compact ? 'text-[13px]' : 'text-[15px]'}`}
+          >
+            {tile.title}
+          </h3>
+          {tile.badgeLoading ? (
+            <p className={`mt-1 text-gray-400 ${compact ? 'text-[10px]' : 'text-xs'}`}>Loading…</p>
+          ) : tile.badge != null ? (
+            <p className={`mt-1 font-medium text-[#FF751F] ${compact ? 'text-[10px]' : 'text-xs'}`}>
+              {tile.badge.toLocaleString()}
+              {tile.badgeHint ? ` ${tile.badgeHint}` : ''}
+            </p>
+          ) : null}
+        </div>
         <span
-          className={`shrink-0 ml-3 w-9 h-9 rounded-full flex items-center justify-center
+          className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center
                       text-white ${tile.iconColor} group-hover:scale-105 transition-transform`}
         >
           <Icon size={18} />

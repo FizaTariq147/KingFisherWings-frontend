@@ -1,10 +1,11 @@
 import type { JSX } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
+import { isAxiosError } from 'axios';
 import { ApiError } from '../../../lib/superAdminApiClient';
 import { useAuthStore } from '@/store/authStore';
 import { safeInternalPath } from '@/lib/safeInternalPath';
@@ -33,11 +34,39 @@ interface LocationState {
   from?: { pathname: string };
 }
 
+function authErrorMessage(error: unknown, fallback: string): string {
+  if (error instanceof ApiError && error.message.trim()) return error.message;
+  if (isAxiosError(error)) {
+    const data = error.response?.data;
+    if (data && typeof data === 'object' && 'message' in data) {
+      const message = (data as { message?: string | string[] }).message;
+      if (Array.isArray(message) && message.length) return message.map(String).join('; ');
+      if (typeof message === 'string' && message.trim()) return message;
+    }
+    if (error.response?.status === 401) {
+      return 'Invalid credentials. Use Register if you do not have a Super Admin account yet.';
+    }
+  }
+  if (error instanceof Error && error.message.trim()) {
+    if (/status code 401/i.test(error.message)) {
+      return 'Invalid credentials. Use Register if you do not have a Super Admin account yet.';
+    }
+    return error.message;
+  }
+  return fallback;
+}
+
 export default function SuperAdminLoginPage(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
   const setSession = useSuperAdminAuthStore((s) => s.setSession);
+  const clearErpSession = useAuthStore((s) => s.clearSession);
   const [mode, setMode] = useState<'login' | 'signup'>('login');
+
+  // Drop leftover ERP idle/session state so the Revoke/Continue modal never appears here.
+  useEffect(() => {
+    clearErpSession();
+  }, [clearErpSession]);
 
   const loginForm = useForm<LoginFormValues>({ resolver: zodResolver(loginSchema) });
   const signupForm = useForm<SignupFormValues>({ resolver: zodResolver(signupSchema) });
@@ -45,19 +74,15 @@ export default function SuperAdminLoginPage(): JSX.Element {
   const loginMutation = useMutation({
     mutationFn: superAdminAuthService.login,
     onSuccess: ({ user, access_token, refresh_token }) => {
-      useAuthStore.setState({
-        user: null,
-        accessToken: null,
-        isAuthenticated: false,
-        error: null,
-      });
+      clearErpSession();
       setSession(user, access_token, refresh_token);
       const from = (location.state as LocationState | null)?.from?.pathname;
       navigate(safeInternalPath(from, { prefix: '/superadmin', fallback: '/superadmin/dashboard' }), { replace: true });
     },
     onError: (error: unknown) => {
-      const message = error instanceof ApiError ? error.message : 'Login failed. Try again.';
-      loginForm.setError('root', { message });
+      loginForm.setError('root', {
+        message: authErrorMessage(error, 'Login failed. Try again.'),
+      });
     },
   });
 
@@ -71,8 +96,9 @@ export default function SuperAdminLoginPage(): JSX.Element {
       });
     },
     onError: (error: unknown) => {
-      const message = error instanceof ApiError ? error.message : 'Signup failed. Try again.';
-      signupForm.setError('root', { message });
+      signupForm.setError('root', {
+        message: authErrorMessage(error, 'Signup failed. Try again.'),
+      });
     },
   });
 

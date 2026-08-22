@@ -65,6 +65,9 @@ export interface JobSeaFclDetail {
   shipping_line_id?: string;
   vessel_id?: string;
   voyage_number?: string;
+  /** Resolved display label (customer module). */
+  shipping_line_name?: string;
+  vessel_name?: string;
   hbl_number?: string;
   mbl_number?: string;
   booking_number?: string;
@@ -233,7 +236,10 @@ export interface Job {
   consignee_id?: string;
   consignee_name?: string;
   agent_id?: string;
+  agent_name?: string;
   salesperson_id?: string;
+  salesperson_name?: string;
+  branch_name?: string;
   ops_user_id?: string;
   origin_port_id?: string;
   dest_port_id?: string;
@@ -548,6 +554,27 @@ export interface UpdateCustomsStatusDto {
 
 export interface LinkTranshipmentDto {
   export_job_id: string;
+}
+
+export type LinkAirTranshipmentDto = LinkTranshipmentDto;
+
+export interface CreateCustomsExaminationDto {
+  examination_date: string;
+  result: 'HELD' | 'RELEASED' | 'SEIZED' | 'QUERY';
+  examining_officer?: string;
+  items_examined?: string;
+  remarks?: string;
+}
+
+export interface StorageCalculationParams {
+  as_of_date?: string;
+}
+
+export interface SendImportNoticeDto {
+  to_email?: string;
+  cc?: string;
+  message?: string;
+  schedule_at?: string;
 }
 
 export interface MasterOption {

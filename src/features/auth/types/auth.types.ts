@@ -11,7 +11,4 @@ export type {
   AuthMeResponse,
   AuthLoginResult,
   UpdateMeDto,
-  TotpVerifyDto,
-  DisableTwoFactorDto,
-  TwoFactorSetupResult,
 } from './auth.api.types';

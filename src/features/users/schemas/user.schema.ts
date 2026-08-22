@@ -48,7 +48,6 @@ const userSecuritySchema = z.object({
     .optional()
     .or(z.literal('')),
   office_hours_timezone: optionalText({ max: 64 }),
-  two_factor_enabled: z.boolean().default(false),
   max_concurrent_sessions: z.number().int().min(1).max(20).default(3),
 });
 

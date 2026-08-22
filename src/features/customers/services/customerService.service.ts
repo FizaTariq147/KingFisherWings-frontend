@@ -1,8 +1,6 @@
-import { crmEnquiriesService } from '@/features/crm/services/crmEnquiries.service';
-import type { EnquiryStatus } from '@/features/crm/constants/crm.constants';
 import { jobService } from '@/features/jobs/services/job.service';
-import type { JobListParams } from '@/features/jobs/types/job.types';
 import { quotationService } from '@/features/quotations/services/quotation.service';
+import { isUuid } from '@/lib/isUuid';
 import type {
   CustomerCostingDetail,
   CustomerEnquiryFilters,
@@ -15,6 +13,12 @@ import type {
   CustomerTrackingRow,
 } from '../types/customerService.types';
 import {
+  CUSTOMER_API_PAGE_LIMIT,
+  fetchAllEnquiriesForCustomerFilters,
+  fetchAllJobsForCustomerFilters,
+  isAllFilterValue,
+} from '../utils/customerServiceApi';
+import {
   applyEnquiryFilters,
   applyJobFilters,
   mapEnquiryToRow,
@@ -24,35 +28,22 @@ import {
   mapJobToTrackingRow,
   mapQuotationAnalytics,
 } from '../utils/normalizeCustomerService';
-
-function isAll(value: string | undefined): boolean {
-  return !value || value === 'All' || value === '-Select-';
-}
-
-function toJobListParams(filters: CustomerShipmentFilters): JobListParams {
-  const params: JobListParams = {
-    page: 1,
-    limit: filters.limit ?? 200,
-    order: 'desc',
-    from_date: filters.from_date,
-    to_date: filters.to_date,
-  };
-  if (!isAll(filters.branch_id)) params.branch_id = filters.branch_id;
-  if (!isAll(filters.salesperson_id)) params.salesperson_id = filters.salesperson_id;
-  if (!isAll(filters.origin)) params.origin_port_id = filters.origin;
-  if (!isAll(filters.destination)) params.dest_port_id = filters.destination;
-  if (!isAll(filters.status)) params.status = filters.status as JobListParams['status'];
-  if (!isAll(filters.job_type)) params.job_type = filters.job_type as JobListParams['job_type'];
-  if (filters.shipment_no?.trim()) params.search = filters.shipment_no.trim();
-  else if (filters.job_no?.trim()) params.search = filters.job_no.trim();
-  else if (filters.search?.trim()) params.search = filters.search.trim();
-  if (filters.sailing_no?.trim()) params.voyage_number = filters.sailing_no.trim();
-  return params;
-}
+import {
+  enrichEnquiriesWithDisplayNames,
+  enrichEnquiryRowsWithDisplayNames,
+  enrichJobsWithDisplayNames,
+} from '../utils/resolveCustomerDisplayNames';
 
 async function fetchFilteredJobs(filters: CustomerShipmentFilters) {
-  const result = await jobService.list(toJobListParams(filters));
-  return applyJobFilters(result.jobs, filters);
+  const { jobs } = await fetchAllJobsForCustomerFilters(filters);
+  const enriched = await enrichJobsWithDisplayNames(jobs);
+  return applyJobFilters(enriched, filters);
+}
+
+async function mapEnquiryResults(items: Awaited<ReturnType<typeof fetchAllEnquiriesForCustomerFilters>>) {
+  const enriched = await enrichEnquiriesWithDisplayNames(items);
+  const rows = enriched.map(mapEnquiryToRow);
+  return enrichEnquiryRowsWithDisplayNames(rows);
 }
 
 export const customerServiceService = {
@@ -85,36 +76,38 @@ export const customerServiceService = {
       jobService.getById(jobId),
       jobService.getPnl(jobId).catch(() => undefined),
     ]);
-    return mapJobCosting(job, pnl);
+    const [enriched] = await enrichJobsWithDisplayNames([job]);
+    return mapJobCosting(enriched, pnl);
   },
 
   async listEnquiries(filters: CustomerEnquiryFilters): Promise<CustomerEnquiryRow[]> {
-    const result = await crmEnquiriesService.list({
-      page: 1,
-      limit: filters.limit ?? 200,
-      status: !isAll(filters.status) ? (filters.status as EnquiryStatus) : undefined,
-      salesperson_id: !isAll(filters.salesperson_id) ? filters.salesperson_id : undefined,
-    });
-    const rows = result.items.map(mapEnquiryToRow);
+    const items = await fetchAllEnquiriesForCustomerFilters(filters);
+    const rows = await mapEnquiryResults(items);
     return applyEnquiryFilters(rows, filters);
   },
 
   async loadPricingDashboard(filters: CustomerPricingFilters): Promise<CustomerPricingPayload> {
-    const [enquiries, analytics] = await Promise.all([
-      crmEnquiriesService.list({
-        page: 1,
-        limit: filters.limit ?? 200,
+    const [enquiryItems, analytics] = await Promise.all([
+      fetchAllEnquiriesForCustomerFilters({
+        ...filters,
         status: 'NEW',
-        salesperson_id: !isAll(filters.salesperson_id) ? filters.salesperson_id : undefined,
+        limit: CUSTOMER_API_PAGE_LIMIT,
       }),
       quotationService.reportAnalytics({
         from_date: filters.from_date,
         to_date: filters.to_date,
-        branch_id: !isAll(filters.branch_id) ? filters.branch_id : undefined,
+        branch_id:
+          !isAllFilterValue(filters.branch_id) && isUuid(filters.branch_id!)
+            ? filters.branch_id
+            : undefined,
+        salesperson_id:
+          !isAllFilterValue(filters.salesperson_id) && isUuid(filters.salesperson_id!)
+            ? filters.salesperson_id
+            : undefined,
       }),
     ]);
 
-    const openEnquiries = applyEnquiryFilters(enquiries.items.map(mapEnquiryToRow), filters);
+    const openEnquiries = applyEnquiryFilters(await mapEnquiryResults(enquiryItems), filters);
     return {
       openEnquiries,
       quotationStats: mapQuotationAnalytics(analytics),

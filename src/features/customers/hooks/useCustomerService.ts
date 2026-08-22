@@ -19,78 +19,87 @@ const keys = {
   pricing: (filters: CustomerPricingFilters) => [...keys.all, 'pricing', filters] as const,
 };
 
-function enabled(active = true) {
-  return Boolean(useAuthStore.getState().accessToken) && active;
+function useCustomerQueryEnabled(active = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return Boolean(accessToken) && active;
 }
 
 export function useCustomerShipments(filters: CustomerShipmentFilters, active = false) {
+  const enabled = useCustomerQueryEnabled(active);
   return useQuery({
     queryKey: keys.shipments(filters),
     queryFn: () => customerServiceService.listShipments(filters),
-    enabled: enabled(active),
+    enabled,
     staleTime: 30_000,
   });
 }
 
 export function useCustomerAgentEdi(filters: CustomerShipmentFilters, active = false) {
+  const enabled = useCustomerQueryEnabled(active);
   return useQuery({
     queryKey: keys.agentEdi(filters),
     queryFn: () => customerServiceService.listAgentEdiShipments(filters),
-    enabled: enabled(active),
+    enabled,
     staleTime: 30_000,
   });
 }
 
 export function useCustomerTracking(filters: CustomerShipmentFilters, active = false) {
+  const enabled = useCustomerQueryEnabled(active);
   return useQuery({
     queryKey: keys.tracking(filters),
     queryFn: () => customerServiceService.listTracking(filters),
-    enabled: enabled(active),
+    enabled,
     staleTime: 30_000,
   });
 }
 
 export function useCustomerSailingSchedule(filters: CustomerShipmentFilters, active = false) {
+  const enabled = useCustomerQueryEnabled(active);
   return useQuery({
     queryKey: keys.sailing(filters),
     queryFn: () => customerServiceService.listSailingSchedule(filters),
-    enabled: enabled(active),
+    enabled,
     staleTime: 30_000,
   });
 }
 
 export function useCustomerCostingShipments(filters: CustomerShipmentFilters, active = false) {
+  const enabled = useCustomerQueryEnabled(active);
   return useQuery({
     queryKey: keys.costing(filters),
     queryFn: () => customerServiceService.listCostingShipments(filters),
-    enabled: enabled(active),
+    enabled,
     staleTime: 30_000,
   });
 }
 
 export function useCustomerJobCosting(jobId: string | null, active = false) {
+  const enabled = useCustomerQueryEnabled(active && Boolean(jobId));
   return useQuery({
     queryKey: keys.costingDetail(jobId ?? ''),
     queryFn: () => customerServiceService.loadJobCosting(jobId!),
-    enabled: enabled(active && Boolean(jobId)),
+    enabled,
     staleTime: 15_000,
   });
 }
 
 export function useCustomerEnquiries(filters: CustomerEnquiryFilters, active = false) {
+  const enabled = useCustomerQueryEnabled(active);
   return useQuery({
     queryKey: keys.enquiries(filters),
     queryFn: () => customerServiceService.listEnquiries(filters),
-    enabled: enabled(active),
+    enabled,
     staleTime: 30_000,
   });
 }
 
 export function useCustomerPricingDashboard(filters: CustomerPricingFilters, active = false) {
+  const enabled = useCustomerQueryEnabled(active);
   return useQuery({
     queryKey: keys.pricing(filters),
     queryFn: () => customerServiceService.loadPricingDashboard(filters),
-    enabled: enabled(active),
+    enabled,
     staleTime: 30_000,
   });
 }

@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Download, Package } from 'lucide-react';
+import { ArrowLeft, Download, Package, Scale, Box } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
@@ -94,13 +94,13 @@ export default function PortalShipmentDetailPage() {
 
       <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-3">
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Pieces" value={data.pieces ?? '—'} Icon={Package} />
+          <PortalStatCard label="Pieces" value={data.pieces ?? '—'} Icon={Package} theme="orange" />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Gross weight" value={data.grossWeight ?? '—'} />
+          <PortalStatCard label="Gross weight" value={data.grossWeight ?? '—'} Icon={Scale} theme="navy" />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Volume (CBM)" value={data.volumeCbm ?? '—'} />
+          <PortalStatCard label="Volume (CBM)" value={data.volumeCbm ?? '—'} Icon={Box} theme="cyan" />
         </PortalAnimatedGridItem>
       </PortalAnimatedGrid>
 

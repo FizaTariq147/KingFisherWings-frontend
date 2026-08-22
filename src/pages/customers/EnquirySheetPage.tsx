@@ -1,8 +1,12 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Wand2, Search, ChevronDown, Maximize2 } from 'lucide-react';
 import { useCustomerEnquiries } from '@/features/customers/hooks/useCustomerService';
+import { useCustomerFilterSelectOptions } from '@/features/customers/hooks/useCustomerServiceFilterOptions';
+import type { CustomerFilterOption } from '@/features/customers/types/customerFilter.types';
 import type { CustomerEnquiryFilters } from '@/features/customers/types/customerService.types';
+import { defaultCustomerEnquiryFilters } from '@/features/customers/utils/customerServiceDefaults';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
 import {
   DATE_RANGE_PRESETS,
@@ -10,6 +14,9 @@ import {
   type DateRangePreset,
 } from '@/features/management/utils/managementFilters';
 import { ENQUIRY_STATUSES } from '@/features/crm/constants/crm.constants';
+import { CUSTOMER_SERVICE_PATHS } from '@/features/customers/utils/customerServicePaths';
+import { exportEnquiriesCsv, exportGroupedCountCsv } from '@/features/customers/utils/exportCustomerReport';
+import { toggleTableFullscreen } from '@/features/customers/utils/tableFullscreen';
 
 function FilterField({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -25,19 +32,22 @@ function SelectInput({
   value,
   onChange,
 }: {
-  options: string[];
+  options: Array<string | CustomerFilterOption>;
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }) {
+  const normalized = options.map((option) =>
+    typeof option === 'string' ? { value: option, label: option } : option,
+  );
   return (
     <select
       value={value}
       onChange={onChange}
       className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm text-gray-700"
     >
-      {options.map((opt) => (
-        <option key={opt} value={opt}>
-          {opt}
+      {normalized.map((opt) => (
+        <option key={`${opt.value}-${opt.label}`} value={opt.value}>
+          {opt.label}
         </option>
       ))}
     </select>
@@ -66,6 +76,9 @@ function DateInput({
 }
 
 export default function EnquirySheetPage() {
+  const navigate = useNavigate();
+  const tableRef = useRef<HTMLDivElement>(null);
+  const [summaryView, setSummaryView] = useState<'sales' | 'department' | null>(null);
   const [rows, setRows] = useState('10');
   const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
   const [fromDate, setFromDate] = useState('');
@@ -77,12 +90,14 @@ export default function EnquirySheetPage() {
   const [origin, setOrigin] = useState('All');
   const [destination, setDestination] = useState('All');
   const [enquiryNo, setEnquiryNo] = useState('');
-  const [createdUser, setCreatedUser] = useState('');
+  const [createdUser, setCreatedUser] = useState('All');
   const [status, setStatus] = useState('All');
   const [search, setSearch] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [loadStartedAt, setLoadStartedAt] = useState<number | null>(null);
-  const [activeFilters, setActiveFilters] = useState<CustomerEnquiryFilters>({});
+  const [submitted, setSubmitted] = useState(true);
+  const [loadStartedAt, setLoadStartedAt] = useState<number | null>(() => Date.now());
+  const [activeFilters, setActiveFilters] = useState<CustomerEnquiryFilters>(() =>
+    defaultCustomerEnquiryFilters(),
+  );
 
   const applyPreset = (preset: DateRangePreset) => {
     setDatePreset(preset);
@@ -99,6 +114,7 @@ export default function EnquirySheetPage() {
   }, []);
 
   const query = useCustomerEnquiries(activeFilters, submitted);
+  const filters = useCustomerFilterSelectOptions();
   const pageSize = Number(rows) || 10;
   const pageItems = useMemo(() => (query.data ?? []).slice(0, pageSize), [query.data, pageSize]);
 
@@ -110,6 +126,23 @@ export default function EnquirySheetPage() {
     }
     return [...map.entries()].sort((a, b) => b[1] - a[1]);
   }, [query.data]);
+
+  const departmentSummary = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const row of query.data ?? []) {
+      const key = row.serviceType || 'Unassigned';
+      map.set(key, (map.get(key) ?? 0) + 1);
+    }
+    return [...map.entries()].sort((a, b) => b[1] - a[1]);
+  }, [query.data]);
+
+  const exportSalesSummary = () => {
+    exportGroupedCountCsv(salesSummary, 'enquiry-salesperson-summary.csv', 'Sales Person');
+  };
+
+  const exportDepartmentSummary = () => {
+    exportGroupedCountCsv(departmentSummary, 'enquiry-department-summary.csv', 'Department / Service');
+  };
 
   const elapsedSeconds =
     loadStartedAt && !query.isLoading ? ((Date.now() - loadStartedAt) / 1000).toFixed(2) : '0.00';
@@ -127,10 +160,10 @@ export default function EnquirySheetPage() {
       origin: origin !== 'All' ? origin : undefined,
       destination: destination !== 'All' ? destination : undefined,
       enquiry_no: enquiryNo || undefined,
-      created_user: createdUser || undefined,
+      created_user: createdUser !== 'All' ? createdUser : undefined,
       status,
       search: search.trim() || undefined,
-      limit: 200,
+      limit: 100,
     });
     setSubmitted(true);
   };
@@ -142,7 +175,11 @@ export default function EnquirySheetPage() {
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">All Enquiry</h2>
           <div className="flex items-center gap-2">
-            <button type="button" className="flex items-center gap-1.5 bg-[#FF751F] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
+            <button
+              type="button"
+              onClick={() => navigate(CUSTOMER_SERVICE_PATHS.createEnquiry)}
+              className="flex items-center gap-1.5 bg-[#FF751F] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity"
+            >
               <Wand2 size={14} />
               Create
             </button>
@@ -181,27 +218,27 @@ export default function EnquirySheetPage() {
           </FilterField>
 
           <FilterField label="Branch">
-            <SelectInput options={['All']} value={branch} onChange={(e) => setBranch(e.target.value)} />
+            <SelectInput options={filters.branches} value={branch} onChange={(e) => setBranch(e.target.value)} />
           </FilterField>
 
           <FilterField label="Client">
-            <SelectInput options={['All']} value={client} onChange={(e) => setClient(e.target.value)} />
+            <SelectInput options={filters.clients} value={client} onChange={(e) => setClient(e.target.value)} />
           </FilterField>
 
           <FilterField label="Sales Person">
-            <SelectInput options={['All']} value={salesPerson} onChange={(e) => setSalesPerson(e.target.value)} />
+            <SelectInput options={filters.salesPersons} value={salesPerson} onChange={(e) => setSalesPerson(e.target.value)} />
           </FilterField>
 
           <FilterField label="Department">
-            <SelectInput options={['All']} value={department} onChange={(e) => setDepartment(e.target.value)} />
+            <SelectInput options={filters.departments} value={department} onChange={(e) => setDepartment(e.target.value)} />
           </FilterField>
 
           <FilterField label="Origin">
-            <SelectInput options={['All']} value={origin} onChange={(e) => setOrigin(e.target.value)} />
+            <SelectInput options={filters.ports} value={origin} onChange={(e) => setOrigin(e.target.value)} />
           </FilterField>
 
           <FilterField label="Destination">
-            <SelectInput options={['All']} value={destination} onChange={(e) => setDestination(e.target.value)} />
+            <SelectInput options={filters.ports} value={destination} onChange={(e) => setDestination(e.target.value)} />
           </FilterField>
 
           <FilterField label="Enquiry No">
@@ -209,7 +246,7 @@ export default function EnquirySheetPage() {
           </FilterField>
 
           <FilterField label="Created User">
-            <TextInput value={createdUser} onChange={(e) => setCreatedUser(e.target.value)} />
+            <SelectInput options={filters.salesPersons} value={createdUser} onChange={(e) => setCreatedUser(e.target.value)} />
           </FilterField>
 
           <FilterField label="Enquiry Status">
@@ -254,7 +291,12 @@ export default function EnquirySheetPage() {
               <span className="text-[#FF751F]">➜</span>
               Submit
             </button>
-            <button type="button" className="text-gray-400 hover:text-gray-600 p-1">
+            <button
+              type="button"
+              onClick={() => void toggleTableFullscreen(tableRef)}
+              className="text-gray-400 hover:text-gray-600 p-1"
+              title="Fullscreen table"
+            >
               <Maximize2 size={16} />
             </button>
           </div>
@@ -272,7 +314,7 @@ export default function EnquirySheetPage() {
               <Search size={40} className="text-gray-300" />
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" ref={tableRef}>
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50">
@@ -286,7 +328,11 @@ export default function EnquirySheetPage() {
                 </thead>
                 <tbody>
                   {pageItems.map((item) => (
-                    <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <tr
+                      key={item.id}
+                      onClick={() => navigate(CUSTOMER_SERVICE_PATHS.enquiryDetail(item.id))}
+                      className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                    >
                       <td className="px-4 py-2 text-blue-600">{item.enquiryNo}</td>
                       <td className="px-4 py-2 text-gray-700">{item.client}</td>
                       <td className="px-4 py-2 text-gray-700">{item.serviceType}</td>
@@ -301,12 +347,34 @@ export default function EnquirySheetPage() {
           )}
         </div>
 
-        <div className="flex items-center gap-2 px-5 py-3 border-t border-gray-200">
-          <button type="button" className="bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
+        <div className="flex flex-wrap items-center gap-2 px-5 py-3 border-t border-gray-200">
+          <button
+            type="button"
+            onClick={() => {
+              setSummaryView('sales');
+              exportSalesSummary();
+            }}
+            className="bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity"
+          >
             Salesperson Wise Summary
           </button>
-          <button type="button" className="bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
+          <button
+            type="button"
+            onClick={() => {
+              setSummaryView('department');
+              exportDepartmentSummary();
+            }}
+            className="bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity"
+          >
             Department Wise Summary
+          </button>
+          <button
+            type="button"
+            onClick={() => exportEnquiriesCsv(query.data ?? [], 'enquiries.csv')}
+            disabled={!query.data?.length}
+            className="border border-gray-300 hover:bg-gray-50 disabled:opacity-50 text-sm px-4 py-2 rounded text-gray-700 transition-colors"
+          >
+            Export CSV
           </button>
           {submitted && salesSummary.length > 0 && (
             <span className="text-xs text-gray-500 ml-2">
@@ -314,6 +382,22 @@ export default function EnquirySheetPage() {
             </span>
           )}
         </div>
+        {summaryView && (summaryView === 'sales' ? salesSummary : departmentSummary).length > 0 && (
+          <div className="px-5 pb-3">
+            <div className="rounded border border-gray-200 bg-gray-50 p-3 text-sm">
+              <p className="font-medium text-gray-800 mb-2">
+                {summaryView === 'sales' ? 'Salesperson summary' : 'Department / service summary'}
+              </p>
+              <ul className="space-y-1 text-gray-700">
+                {(summaryView === 'sales' ? salesSummary : departmentSummary).map(([label, count]) => (
+                  <li key={label}>
+                    {label}: {count}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
         <div className="px-5 pb-4">
           <p className="text-xs text-gray-500">This report took {elapsedSeconds} seconds.</p>
         </div>

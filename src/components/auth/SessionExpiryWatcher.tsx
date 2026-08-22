@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { accessTokenExpiresAtMs } from '@/lib/tenantFromAuth'
+import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore'
 import {
   isSessionIdleExpired,
   SESSION_IDLE_MS,
@@ -15,21 +16,31 @@ const ACTIVITY_EVENTS: (keyof WindowEventMap)[] = [
   'click',
 ]
 
+function isSuperAdminSurface(): boolean {
+  if (typeof window === 'undefined') return false
+  return window.location.pathname.startsWith('/superadmin')
+}
+
 /**
  * Idle timeout is 60 minutes from last activity (not from login).
  * When idle expires, SessionExpiredModal offers Continue (no login) or Revoke.
+ * ERP staff/tenant only — disabled on Super Admin surfaces.
  */
 export function SessionExpiryWatcher() {
   const accessToken = useAuthStore((s) => s.accessToken)
   const lastActiveAt = useAuthStore((s) => s.lastActiveAt)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const sessionExpired = useAuthStore((s) => s.sessionExpired)
+  const isSuperAdmin = useSuperAdminAuthStore((s) => s.isAuthenticated)
   const idleTimerRef = useRef<number | null>(null)
   const jwtTimerRef = useRef<number | null>(null)
   const activityThrottleRef = useRef(0)
 
+  const erpIdleActive =
+    isAuthenticated && !sessionExpired && !isSuperAdmin && !isSuperAdminSurface()
+
   useEffect(() => {
-    if (!isAuthenticated || sessionExpired) return
+    if (!erpIdleActive) return
 
     const onActivity = () => {
       const now = Date.now()
@@ -46,7 +57,7 @@ export function SessionExpiryWatcher() {
         window.removeEventListener(event, onActivity)
       }
     }
-  }, [isAuthenticated, sessionExpired])
+  }, [erpIdleActive])
 
   useEffect(() => {
     const clearTimers = () => {
@@ -62,7 +73,7 @@ export function SessionExpiryWatcher() {
 
     clearTimers()
 
-    if (!isAuthenticated || sessionExpired) return clearTimers
+    if (!erpIdleActive) return clearTimers
 
     if (isSessionIdleExpired(lastActiveAt)) {
       useAuthStore.getState().markSessionExpired()
@@ -86,6 +97,7 @@ export function SessionExpiryWatcher() {
         jwtTimerRef.current = window.setTimeout(async () => {
           const state = useAuthStore.getState()
           if (state.sessionExpired || !state.isAuthenticated) return
+          if (useSuperAdminAuthStore.getState().isAuthenticated || isSuperAdminSurface()) return
           if (isSessionIdleExpired(state.lastActiveAt)) {
             state.markSessionExpired()
             return
@@ -104,7 +116,7 @@ export function SessionExpiryWatcher() {
     }
 
     return clearTimers
-  }, [accessToken, lastActiveAt, isAuthenticated, sessionExpired])
+  }, [accessToken, lastActiveAt, erpIdleActive])
 
   return null
 }

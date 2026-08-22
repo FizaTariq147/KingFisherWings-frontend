@@ -120,6 +120,15 @@ function normalizeNote(raw: unknown): JobNote | null {
   };
 }
 
+function pickRelationName(value: unknown): string | undefined {
+  const nested = asRecord(value);
+  if (!nested) return undefined;
+  return (
+    pickString(nested, 'name', 'full_name', 'fullName', 'company_name', 'companyName', 'party_name', 'partyName', 'display_name', 'displayName') ||
+    undefined
+  );
+}
+
 export function normalizeJob(raw: unknown): Job | null {
   const r = asRecord(unwrapEntity(raw));
   if (!r || !r.id) return null;
@@ -155,11 +164,27 @@ export function normalizeJob(raw: unknown): Job | null {
     department_id: pickString(r, 'department_id', 'departmentId') || undefined,
     parent_job_id: pickString(r, 'parent_job_id', 'parentJobId') || undefined,
     shipper_id: pickString(r, 'shipper_id', 'shipperId'),
-    shipper_name: pickString(r, 'shipper_name', 'shipperName') || undefined,
+    shipper_name:
+      pickString(r, 'shipper_name', 'shipperName') ||
+      pickRelationName(r.shipper ?? r.shipper_party ?? r.shipperParty) ||
+      undefined,
     consignee_id: pickString(r, 'consignee_id', 'consigneeId') || undefined,
-    consignee_name: pickString(r, 'consignee_name', 'consigneeName') || undefined,
+    consignee_name:
+      pickString(r, 'consignee_name', 'consigneeName') ||
+      pickRelationName(r.consignee ?? r.consignee_party ?? r.consigneeParty) ||
+      undefined,
     agent_id: pickString(r, 'agent_id', 'agentId') || undefined,
+    agent_name:
+      pickString(r, 'agent_name', 'agentName') ||
+      pickRelationName(r.agent ?? r.agent_party ?? r.agentParty) ||
+      undefined,
     salesperson_id: pickString(r, 'salesperson_id', 'salespersonId') || undefined,
+    salesperson_name:
+      pickString(r, 'salesperson_name', 'salespersonName') ||
+      pickRelationName(r.salesperson ?? r.sales_person ?? r.salesPerson) ||
+      undefined,
+    branch_name:
+      pickString(r, 'branch_name', 'branchName') || pickRelationName(r.branch) || undefined,
     ops_user_id: pickString(r, 'ops_user_id', 'opsUserId') || undefined,
     origin_port_id: pickString(r, 'origin_port_id', 'originPortId') || undefined,
     dest_port_id: pickString(r, 'dest_port_id', 'destPortId') || undefined,
@@ -212,6 +237,8 @@ export function normalizeJob(raw: unknown): Job | null {
           booking_reference: pickString(sea, 'booking_reference', 'bookingReference') || undefined,
           hbl_number: pickString(sea, 'hbl_number', 'hblNumber') || undefined,
           mbl_number: pickString(sea, 'mbl_number', 'mblNumber') || undefined,
+          etd: pickString(sea, 'etd') || undefined,
+          eta: pickString(sea, 'eta') || undefined,
           port_of_loading_id: pickString(sea, 'port_of_loading_id', 'portOfLoadingId') || undefined,
           port_of_discharge_id:
             pickString(sea, 'port_of_discharge_id', 'portOfDischargeId') || undefined,

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { dashType } from '@/lib/dashboardTypography';
 
 export function DashCard({
   children,
@@ -35,10 +36,8 @@ export function DashCardHeader({
   return (
     <div className="mb-4 flex items-start justify-between gap-3">
       <div className="min-w-0">
-        <h3 className="text-sm font-semibold text-[var(--color-neutral-900)]">{title}</h3>
-        {subtitle ? (
-          <p className="mt-0.5 text-[11px] text-[var(--color-neutral-500)]">{subtitle}</p>
-        ) : null}
+        <h3 className={dashType.panel.title}>{title}</h3>
+        {subtitle ? <p className={dashType.panel.subtitle}>{subtitle}</p> : null}
       </div>
       {action}
     </div>
@@ -47,7 +46,7 @@ export function DashCardHeader({
 
 export function DashEmpty({ children }: { children: ReactNode }) {
   return (
-    <p className="rounded-xl bg-[var(--color-neutral-50)] px-3 py-6 text-center text-sm text-[var(--color-neutral-500)]">
+    <p className={dashType.panel.empty}>
       {children}
     </p>
   );

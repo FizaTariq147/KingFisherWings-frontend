@@ -12,6 +12,7 @@ import { getErrorMessage } from '../../utils/getErrorMessage';
 
 interface JobDocumentsPanelProps {
   jobId: string;
+  jobType?: string;
 }
 
 const GENERATORS = [
@@ -59,7 +60,8 @@ const GENERATORS = [
   },
 ];
 
-export function JobDocumentsPanel({ jobId }: JobDocumentsPanelProps) {
+export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
+  const isAirImport = jobType === 'AIR_IMPORT';
   const { data: documents = [], refetch } = useJobDocuments(jobId);
   const [poll, setPoll] = useState(false);
   const { data: genStatus } = useJobDocumentGenerationStatus(jobId, poll);
@@ -75,6 +77,9 @@ export function JobDocumentsPanel({ jobId }: JobDocumentsPanelProps) {
   const [scheduleAt, setScheduleAt] = useState('');
   const [whatsAppPhone, setWhatsAppPhone] = useState('');
   const [whatsAppMsg, setWhatsAppMsg] = useState('');
+  const [importNoticeEmail, setImportNoticeEmail] = useState('');
+  const [importNoticeCc, setImportNoticeCc] = useState('');
+  const [importNoticeMsg, setImportNoticeMsg] = useState('');
   const fileDownload = useFileDownload();
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
@@ -319,6 +324,67 @@ export function JobDocumentsPanel({ jobId }: JobDocumentsPanelProps) {
           </div>
         </div>
       </Card>
+
+      {isAirImport && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Import notices (email)</CardTitle>
+          </CardHeader>
+          <div className="px-4 pb-4 grid gap-2 sm:grid-cols-2">
+            <Input
+              placeholder="To email (defaults to consignee)"
+              value={importNoticeEmail}
+              onChange={(e) => setImportNoticeEmail(e.target.value)}
+            />
+            <Input
+              placeholder="CC"
+              value={importNoticeCc}
+              onChange={(e) => setImportNoticeCc(e.target.value)}
+            />
+            <Input
+              className="sm:col-span-2"
+              placeholder="Message (optional)"
+              value={importNoticeMsg}
+              onChange={(e) => setImportNoticeMsg(e.target.value)}
+            />
+            <Button
+              type="button"
+              disabled={docs.sendImportNoticeCan.isPending}
+              onClick={() =>
+                run(
+                  () =>
+                    docs.sendImportNoticeCan.mutateAsync({
+                      to_email: importNoticeEmail.trim() || undefined,
+                      cc: importNoticeCc.trim() || undefined,
+                      message: importNoticeMsg.trim() || undefined,
+                    }),
+                  'CAN notice sent.',
+                )
+              }
+            >
+              Email CAN PDF
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={docs.sendImportNoticeDo.isPending}
+              onClick={() =>
+                run(
+                  () =>
+                    docs.sendImportNoticeDo.mutateAsync({
+                      to_email: importNoticeEmail.trim() || undefined,
+                      cc: importNoticeCc.trim() || undefined,
+                      message: importNoticeMsg.trim() || undefined,
+                    }),
+                  'Delivery order notice sent.',
+                )
+              }
+            >
+              Email delivery order PDF
+            </Button>
+          </div>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>

@@ -57,7 +57,6 @@ const FORM_DEFAULTS: Partial<CreateUserFormValues> = {
   office_hours_start: '',
   office_hours_end: '',
   office_hours_timezone: 'Asia/Dubai',
-  two_factor_enabled: false,
   max_concurrent_sessions: 3,
 };
 
@@ -289,7 +288,6 @@ export function UserForm({
                   {...register('avatar_url')}
                 />
               </Grid>
-              <CheckboxField label="Two-factor enabled" {...register('two_factor_enabled')} />
             </div>
           </Card>
         </>

@@ -1,9 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { ChevronDown, Search, Maximize2, RotateCcw } from 'lucide-react';
 import { FilterField, SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
 import { useCustomerCostingShipments, useCustomerJobCosting } from '@/features/customers/hooks/useCustomerService';
+import { useCustomerFilterSelectOptions } from '@/features/customers/hooks/useCustomerServiceFilterOptions';
 import type { CustomerShipmentFilters } from '@/features/customers/types/customerService.types';
+import { defaultCustomerShipmentFilters } from '@/features/customers/utils/customerServiceDefaults';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
 import {
   DATE_RANGE_PRESETS,
@@ -11,10 +14,15 @@ import {
   type DateRangePreset,
 } from '@/features/management/utils/managementFilters';
 import { JOB_STATUSES } from '@/features/jobs/constants/job.constants';
+import { CUSTOMER_SERVICE_PATHS, customerJobDetailPath } from '@/features/customers/utils/customerServicePaths';
+import { exportShipmentsCsv } from '@/features/customers/utils/exportCustomerReport';
+import { toggleTableFullscreen } from '@/features/customers/utils/tableFullscreen';
 
 const columns = ['Origin', 'Client', 'Destination', 'Shipment No.', 'Shipment Date', 'Branch', 'Shipment Status'];
 
 export default function CostingSearchPage() {
+  const navigate = useNavigate();
+  const tableRef = useRef<HTMLDivElement>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
   const [fromDate, setFromDate] = useState('');
@@ -22,14 +30,19 @@ export default function CostingSearchPage() {
   const [branch, setBranch] = useState('All');
   const [client, setClient] = useState('All');
   const [salesPerson, setSalesPerson] = useState('All');
-  const [department, setDepartment] = useState('');
+  const [department, setDepartment] = useState('All');
   const [origin, setOrigin] = useState('All');
   const [destination, setDestination] = useState('All');
   const [shipmentNo, setShipmentNo] = useState('');
+  const [shipper, setShipper] = useState('-Select-');
+  const [consignee, setConsignee] = useState('-Select-');
+  const [createdUser, setCreatedUser] = useState('All');
   const [status, setStatus] = useState('All');
   const [search, setSearch] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<CustomerShipmentFilters>({});
+  const [submitted, setSubmitted] = useState(true);
+  const [activeFilters, setActiveFilters] = useState<CustomerShipmentFilters>(() =>
+    defaultCustomerShipmentFilters(),
+  );
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 
   const applyPreset = (preset: DateRangePreset) => {
@@ -48,6 +61,7 @@ export default function CostingSearchPage() {
 
   const query = useCustomerCostingShipments(activeFilters, submitted);
   const costingQuery = useCustomerJobCosting(selectedJobId, Boolean(selectedJobId));
+  const filters = useCustomerFilterSelectOptions();
 
   const filteredRows = useMemo(() => {
     let rows = query.data ?? [];
@@ -71,12 +85,15 @@ export default function CostingSearchPage() {
       branch_id: branch,
       client,
       salesperson_id: salesPerson,
-      department: department || undefined,
+      department: department !== 'All' ? department : undefined,
       origin,
       destination,
       shipment_no: shipmentNo || undefined,
+      shipper_id: shipper !== '-Select-' ? shipper : undefined,
+      consignee_id: consignee !== '-Select-' ? consignee : undefined,
+      created_user: createdUser !== 'All' ? createdUser : undefined,
       status,
-      limit: 200,
+      limit: 100,
     });
     setSubmitted(true);
     setSelectedJobId(null);
@@ -97,6 +114,13 @@ export default function CostingSearchPage() {
             </button>
             <h2 className="text-[17px] font-medium text-gray-800">Shipment Costing Search</h2>
           </div>
+          <button
+            type="button"
+            onClick={() => navigate(CUSTOMER_SERVICE_PATHS.createJob)}
+            className="bg-[#FF751F] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity"
+          >
+            Create Shipment
+          </button>
         </div>
 
         {!collapsed && (
@@ -132,27 +156,27 @@ export default function CostingSearchPage() {
             </FilterField>
 
             <FilterField label="Created Branch">
-              <SelectInput options={['All']} value={branch} onChange={(e) => setBranch(e.target.value)} />
+              <SelectInput options={filters.branches} value={branch} onChange={(e) => setBranch(e.target.value)} />
             </FilterField>
 
             <FilterField label="Client">
-              <SelectInput options={['All']} value={client} onChange={(e) => setClient(e.target.value)} />
+              <SelectInput options={filters.clients} value={client} onChange={(e) => setClient(e.target.value)} />
             </FilterField>
 
             <FilterField label="Sales Person">
-              <SelectInput options={['All']} value={salesPerson} onChange={(e) => setSalesPerson(e.target.value)} />
+              <SelectInput options={filters.salesPersons} value={salesPerson} onChange={(e) => setSalesPerson(e.target.value)} />
             </FilterField>
 
             <FilterField label="Department">
-              <TextInput placeholder="All" value={department} onChange={(e) => setDepartment(e.target.value)} />
+              <SelectInput options={filters.departments} value={department} onChange={(e) => setDepartment(e.target.value)} />
             </FilterField>
 
             <FilterField label="Origin">
-              <SelectInput options={['All']} value={origin} onChange={(e) => setOrigin(e.target.value)} />
+              <SelectInput options={filters.ports} value={origin} onChange={(e) => setOrigin(e.target.value)} />
             </FilterField>
 
             <FilterField label="Destination">
-              <SelectInput options={['All']} value={destination} onChange={(e) => setDestination(e.target.value)} />
+              <SelectInput options={filters.ports} value={destination} onChange={(e) => setDestination(e.target.value)} />
             </FilterField>
 
             <FilterField label="Shipment No.">
@@ -160,15 +184,15 @@ export default function CostingSearchPage() {
             </FilterField>
 
             <FilterField label="Shipper">
-              <SelectInput options={['-Select-']} value="-Select-" onChange={() => undefined} />
+              <SelectInput options={filters.shippers} value={shipper} onChange={(e) => setShipper(e.target.value)} />
             </FilterField>
 
             <FilterField label="Consignee">
-              <SelectInput options={['-Select-']} value="-Select-" onChange={() => undefined} />
+              <SelectInput options={filters.consignees} value={consignee} onChange={(e) => setConsignee(e.target.value)} />
             </FilterField>
 
             <FilterField label="Created User">
-              <SelectInput options={['']} value="" onChange={() => undefined} />
+              <SelectInput options={filters.salesPersons} value={createdUser} onChange={(e) => setCreatedUser(e.target.value)} />
             </FilterField>
 
             <FilterField label="Status">
@@ -193,7 +217,12 @@ export default function CostingSearchPage() {
       <div className="bg-white border border-gray-200 rounded-md">
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[15px] font-medium text-gray-800">Shipment List</h2>
-          <button type="button" className="text-gray-400 hover:text-gray-600">
+          <button
+            type="button"
+            onClick={() => void toggleTableFullscreen(tableRef)}
+            className="text-gray-400 hover:text-gray-600"
+            title="Fullscreen table"
+          >
             <Maximize2 size={16} />
           </button>
         </div>
@@ -214,18 +243,27 @@ export default function CostingSearchPage() {
             <button type="button" onClick={handleSubmit} className="bg-gray-100 border border-gray-300 hover:bg-gray-200 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors">
               Go
             </button>
-            <div className="relative ml-1">
-              <select className="appearance-none border border-gray-300 rounded px-3 py-1.5 pr-8 text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-[#FF751F]">
-                <option>Primary Report</option>
-              </select>
-              <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-            </div>
-            <div className="relative">
-              <button type="button" className="flex items-center gap-1 border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-600 bg-white">
-                Actions
-                <ChevronDown size={12} />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => exportShipmentsCsv(filteredRows, 'costing-shipments.csv')}
+              disabled={!filteredRows.length}
+              className="ml-1 bg-gray-100 border border-gray-300 hover:bg-gray-200 disabled:opacity-50 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors"
+            >
+              Primary Report
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (selectedJobId) {
+                  const row = filteredRows.find((item) => item.id === selectedJobId);
+                  if (row) navigate(customerJobDetailPath(row));
+                }
+              }}
+              disabled={!selectedJobId}
+              className="flex items-center gap-1 border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50"
+            >
+              View Job
+            </button>
           </div>
 
           <button
@@ -242,7 +280,7 @@ export default function CostingSearchPage() {
           </button>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto" ref={tableRef}>
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-200 bg-white">
@@ -280,6 +318,7 @@ export default function CostingSearchPage() {
                   <tr
                     key={row.id}
                     onClick={() => setSelectedJobId(row.id)}
+                    onDoubleClick={() => navigate(customerJobDetailPath(row))}
                     className={`border-b border-gray-100 cursor-pointer hover:bg-gray-50 ${selectedJobId === row.id ? 'bg-orange-50' : ''}`}
                   >
                     <td className="px-5 py-2.5 text-gray-700">{row.origin}</td>
@@ -305,6 +344,18 @@ export default function CostingSearchPage() {
           <p className="text-sm text-gray-500">
             Selected Shipment No. :{' '}
             <span className="text-gray-700">{costingQuery.data?.shipmentNo || (selectedJobId ? 'Loading…' : '')}</span>
+            {selectedJobId && (
+              <button
+                type="button"
+                onClick={() => {
+                  const row = filteredRows.find((item) => item.id === selectedJobId);
+                  if (row) navigate(customerJobDetailPath(row));
+                }}
+                className="ml-3 text-blue-600 hover:underline text-sm"
+              >
+                View job
+              </button>
+            )}
           </p>
           <p className="text-sm font-semibold text-gray-800 text-center py-2">
             Sale - (Qty x Amount Per Unit x Ex.Rate) | Cost - (Qty x Amount Per Unit x Ex.Rate)

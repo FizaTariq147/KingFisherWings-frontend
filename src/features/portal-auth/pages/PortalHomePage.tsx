@@ -21,10 +21,15 @@ import { PortalPendingQuotesPanel } from '../components/portal-dashboard/PortalP
 import { PortalTodaysTasksPanel } from '../components/portal-dashboard/PortalTodaysTasksPanel';
 import {
   buildPortalTasks,
+  inPeriod,
+  isActiveShipment,
   isCustomsHold,
   isDocsPending,
+  isOpenQuote,
   type PortalDashboardPeriod,
 } from '../utils/portalDashboardFormat';
+import { dashboardBarsFromStatusMap } from '@/lib/dashboardKpiBars';
+import { usePortalInvoiceSummary } from '@/features/portal-invoices/hooks/usePortalInvoices';
 
 function displayValue(
   primary: number | undefined,
@@ -47,7 +52,8 @@ export default function PortalHomePage() {
   const shipmentSummary = usePortalShipmentSummary();
   const quoteSummary = usePortalQuotationSummary();
   const recentShipments = usePortalShipments({ page: 1, limit: 20, order: 'desc' });
-  const recentQuotes = usePortalQuotations({ page: 1, limit: 10, order: 'desc' });
+  const recentQuotes = usePortalQuotations({ page: 1, limit: 50, order: 'desc' });
+  const invoiceSummary = usePortalInvoiceSummary();
 
   useEffect(() => {
     let cancelled = false;
@@ -89,11 +95,53 @@ export default function PortalHomePage() {
     undefined,
     dashboard.isLoading || quoteSummary.isLoading,
   );
-  const outstanding = dashboard.data?.invoicesOutstanding ?? 0;
-  const overdue = dashboard.data?.invoicesOverdue ?? 0;
+  const outstanding =
+    invoiceSummary.data?.outstanding ?? dashboard.data?.invoicesOutstanding ?? 0;
+  const overdue = invoiceSummary.data?.overdue ?? dashboard.data?.invoicesOverdue ?? 0;
+  const invoiceCount = invoiceSummary.data?.total ?? 0;
   const delivered = dashboard.data?.shipmentsDelivered ?? shipmentSummary.data?.delivered ?? 0;
   const onTimePct =
     shipmentTotal > 0 && delivered > 0 ? Math.min(100, Math.round((delivered / shipmentTotal) * 100)) : null;
+
+  const shipmentBars = useMemo(
+    () => dashboardBarsFromStatusMap(shipmentSummary.data?.byStatus),
+    [shipmentSummary.data?.byStatus],
+  );
+  const quoteBars = useMemo(
+    () => dashboardBarsFromStatusMap(quoteSummary.data?.byStatus),
+    [quoteSummary.data?.byStatus],
+  );
+  const invoiceBars = useMemo(
+    () => dashboardBarsFromStatusMap(invoiceSummary.data?.byStatus),
+    [invoiceSummary.data?.byStatus],
+  );
+  const onTimeBars = useMemo(() => {
+    const byStatus = shipmentSummary.data?.byStatus;
+    const statusBars = dashboardBarsFromStatusMap(byStatus);
+    if (statusBars.length >= 2) return statusBars;
+    const delivered = shipmentSummary.data?.delivered ?? 0;
+    const active = shipmentSummary.data?.active ?? 0;
+    const onHold = shipmentSummary.data?.onHold ?? 0;
+    return [delivered, active, onHold].filter((value) => value > 0);
+  }, [shipmentSummary.data]);
+
+  const recentActive = useMemo(
+    () =>
+      shipmentItems.filter(
+        (item) => isActiveShipment(item.status) && inPeriod(item.updatedAt, period),
+      ).length,
+    [shipmentItems, period],
+  );
+  const agingQuotes = useMemo(
+    () =>
+      quoteItems.filter((item) => {
+        if (!isOpenQuote(item.status)) return false;
+        const ts = Date.parse(item.createdAt || item.validUntil || '');
+        if (Number.isNaN(ts)) return false;
+        return (Date.now() - ts) / 86_400_000 >= 5;
+      }).length,
+    [quoteItems],
+  );
 
   const customsHolds = useMemo(
     () => shipmentItems.filter((item) => isCustomsHold(item.status)).length,
@@ -109,6 +157,7 @@ export default function PortalHomePage() {
     dashboard.isLoading ||
     shipmentSummary.isLoading ||
     quoteSummary.isLoading ||
+    invoiceSummary.isLoading ||
     recentShipments.isLoading ||
     recentQuotes.isLoading;
 
@@ -142,14 +191,23 @@ export default function PortalHomePage() {
       <PortalDashboardKpiRow
         activeShipments={shipmentActive}
         shipmentTotal={shipmentTotal}
+        shipmentBars={shipmentBars}
+        recentActive={recentActive}
         pendingQuotes={quoteOpen}
+        quoteBars={quoteBars}
+        agingQuotes={agingQuotes}
         outstanding={outstanding}
         overdue={overdue}
+        invoiceCount={invoiceCount}
+        invoiceBars={invoiceBars}
         onTimePct={onTimePct}
-        loading={dataLoading}
+        onTimeBars={onTimeBars}
+        loadingShipments={dashboard.isLoading || shipmentSummary.isLoading}
+        loadingQuotes={dashboard.isLoading || quoteSummary.isLoading}
+        loadingInvoices={dashboard.isLoading || invoiceSummary.isLoading}
       />
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(300px,0.9fr)]">
+      <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(300px,0.9fr)]">
         <PortalActiveShipmentsPanel
           items={shipmentItems}
           loading={recentShipments.isLoading}

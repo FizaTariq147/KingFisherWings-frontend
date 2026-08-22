@@ -1,5 +1,5 @@
 export { PortalPageHeader } from './PortalPageHeader';
-export { PortalStatCard } from './PortalStatCard';
+export { PortalStatCard, type PortalStatTheme } from './PortalStatCard';
 export { PortalEmptyState } from './PortalEmptyState';
 export { PortalPanel, portalSelectClassName } from './PortalPanel';
 export { PortalPageTransition } from './PortalPageTransition';

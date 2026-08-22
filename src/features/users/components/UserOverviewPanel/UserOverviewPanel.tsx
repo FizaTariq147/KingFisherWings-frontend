@@ -88,7 +88,6 @@ export function UserOverviewPanel({ user }: UserOverviewPanelProps) {
           <DetailRow label="Office hours start" value={user.office_hours_start || '—'} />
           <DetailRow label="Office hours end" value={user.office_hours_end || '—'} />
           <DetailRow label="Office hours timezone" value={user.office_hours_timezone || '—'} />
-          <DetailRow label="Two-factor enabled" value={user.two_factor_enabled ? 'Yes' : 'No'} />
           <DetailRow label="Max concurrent sessions" value={String(user.max_concurrent_sessions)} />
         </dl>
       </Card>

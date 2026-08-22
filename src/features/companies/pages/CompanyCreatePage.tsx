@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { usePlatformOnboardingStore } from '@/features/platform/store/platformOnboardingStore';
 import { CompanyForm } from '../components/CompanyForm';
 import { CompanyTenantSelector } from '../components/CompanyTenantSelector';
-import { useCreateCompany } from '../hooks/useCompanies';
 import { useCompanyTenantScope } from '../hooks/useCompanyTenantScope';
 
 export default function CompanyCreatePage() {
   const navigate = useNavigate();
-  const { tenantId, companiesBasePath, companyPath } = useCompanyTenantScope();
-  const createCompany = useCreateCompany(tenantId);
+  const { tenantId, companiesBasePath } = useCompanyTenantScope();
   const addDraftCompany = usePlatformOnboardingStore((s) => s.addDraftCompany);
   const draftCompanies = usePlatformOnboardingStore((s) => s.draftCompanies);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -32,8 +31,8 @@ export default function CompanyCreatePage() {
         <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Step 1 — Register company</h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
           {isOnboarding
-            ? 'Save the company profile first. It will appear in the company list even before a tenant exists.'
-            : 'Register an additional company under an existing tenant workspace.'}
+            ? 'Saves a local draft for tenant onboarding. Platform Super Admin cannot call ERP /companies — company profiles are stored via /tenants when you create the tenant.'
+            : 'Platform Super Admin cannot create ERP companies. Update this tenant’s company profile from Tenants, or sign in as Tenant Admin for ERP company CRUD.'}
         </p>
       </div>
 
@@ -41,11 +40,11 @@ export default function CompanyCreatePage() {
         <CompanyForm
           mode="create"
           defaultValues={draftCompanies[0] ?? undefined}
-          submitLabel="Save company"
+          submitLabel="Save company draft"
           onSubmit={async (values) => {
             setApiError(null);
             addDraftCompany(values as Parameters<typeof addDraftCompany>[0]);
-            navigate('/superadmin/companies');
+            navigate('/superadmin/tenants/new');
           }}
         />
       ) : (
@@ -69,22 +68,20 @@ export default function CompanyCreatePage() {
             </div>
           )}
 
-          <CompanyForm
-            mode="create"
-            isSubmitting={createCompany.isPending}
-            onSubmit={async (values) => {
-              setApiError(null);
-              try {
-                const company = await createCompany.mutateAsync(
-                  values as Parameters<typeof createCompany.mutateAsync>[0],
-                );
-                navigate(companyPath(`/${company.id}`));
-              } catch (err) {
-                const message = err instanceof Error ? err.message : 'Failed to create company.';
-                setApiError(message);
-              }
-            }}
-          />
+          <Card className="p-6 space-y-3">
+            <p className="text-sm text-[var(--color-neutral-600)]">
+              Company profiles for platform admin come from <code className="text-xs">/tenants</code>
+              . Open the tenant to edit company fields.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={() => navigate(`/superadmin/tenants/${tenantId}/edit`)}>
+                Edit tenant company profile
+              </Button>
+              <Button variant="secondary" onClick={() => navigate(companiesBasePath)}>
+                Back to companies
+              </Button>
+            </div>
+          </Card>
         </>
       )}
     </div>

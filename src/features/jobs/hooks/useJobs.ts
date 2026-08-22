@@ -26,6 +26,9 @@ export const jobKeys = {
   partDeliveries: (id: string) => [...jobKeys.all, 'part-deliveries', id] as const,
   pods: (id: string) => [...jobKeys.all, 'pods', id] as const,
   subJobs: (id: string) => [...jobKeys.all, 'sub-jobs', id] as const,
+  customsExaminations: (id: string) => [...jobKeys.all, 'customs-examinations', id] as const,
+  storageCalculation: (id: string, asOf?: string) =>
+    [...jobKeys.all, 'storage-calculation', id, asOf ?? ''] as const,
 };
 
 export function useInvalidateJobs() {
@@ -257,6 +260,28 @@ export function useJobSubJobs(id: string, enabled = true) {
   return useQuery({
     queryKey: jobKeys.subJobs(id),
     queryFn: () => jobService.listSubJobs(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+export function useJobCustomsExaminations(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.customsExaminations(id),
+    queryFn: () => jobService.listCustomsExaminations(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+export function useJobStorageCalculation(
+  id: string,
+  asOf?: string,
+  enabled = false,
+) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.storageCalculation(id, asOf),
+    queryFn: () => jobService.getStorageCalculation(id, { as_of_date: asOf }),
     enabled: Boolean(accessToken) && isUuid(id) && enabled,
   });
 }

@@ -9,15 +9,19 @@ import type {
   CreateJobContainerDto,
   CreateJobDepositDto,
   CreateJobDocumentDto,
+  CreateCustomsExaminationDto,
   CreatePartDeliveryDto,
   CreatePaymentRequestFromJobDto,
   CreateProofOfDeliveryDto,
   CreateStuffingRecordDto,
   CreateSubJobDto,
   FinalizeJobDocumentDto,
+  LinkAirTranshipmentDto,
   LinkTranshipmentDto,
   ReturnContainerDto,
+  SendImportNoticeDto,
   SplitContainerDto,
+  StorageCalculationParams,
   SubmitSiDto,
   SubmitVgmDto,
   UpdateAirJobDetailDto,
@@ -240,6 +244,32 @@ export function useJobSubresourceMutations(jobId: string) {
     linkTranshipment: useMutation({
       mutationFn: (dto: LinkTranshipmentDto) => jobService.linkTranshipment(jobId, dto),
       onSuccess: refresh,
+    }),
+    linkAirTranshipment: useMutation({
+      mutationFn: (dto: LinkAirTranshipmentDto) =>
+        jobService.linkAirTranshipment(jobId, dto),
+      onSuccess: refresh,
+    }),
+    getStorageCalculation: useMutation({
+      mutationFn: (params?: StorageCalculationParams) =>
+        jobService.getStorageCalculation(jobId, params),
+    }),
+    createStorageInvoice: useMutation({
+      mutationFn: () => jobService.createStorageInvoice(jobId),
+      onSuccess: refresh,
+    }),
+    createCustomsExamination: useMutation({
+      mutationFn: (dto: CreateCustomsExaminationDto) =>
+        jobService.createCustomsExamination(jobId, dto),
+      onSuccess: refresh,
+    }),
+    sendImportNoticeCan: useMutation({
+      mutationFn: (dto?: SendImportNoticeDto) =>
+        jobService.sendImportNoticeCan(jobId, dto),
+    }),
+    sendImportNoticeDo: useMutation({
+      mutationFn: (dto?: SendImportNoticeDto) =>
+        jobService.sendImportNoticeDo(jobId, dto),
     }),
   };
 }

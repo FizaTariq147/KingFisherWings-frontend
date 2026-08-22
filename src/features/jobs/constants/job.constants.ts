@@ -114,6 +114,15 @@ export const CUSTOMS_STATUSES = [
   'RELEASED',
 ] as const;
 
+export const CUSTOMS_EXAMINATION_RESULTS = [
+  'HELD',
+  'RELEASED',
+  'SEIZED',
+  'QUERY',
+] as const;
+
+export type CustomsExaminationResult = (typeof CUSTOMS_EXAMINATION_RESULTS)[number];
+
 export type CustomsStatus = (typeof CUSTOMS_STATUSES)[number];
 
 export type JobDocumentType = (typeof JOB_DOCUMENT_TYPES)[number];

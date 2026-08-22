@@ -160,7 +160,7 @@ export default function PortalLoginPage() {
   const closeToHub = () => navigate('/login');
 
   return (
-    <AuthLandingShell onAdminClick={() => navigate('/login?admin=1')}>
+    <AuthLandingShell onAdminClick={() => navigate('/login?admin=1')} videoOnly>
       <LoginPopupFrame
         title={inviteToken ? 'Accept invite' : 'Customer Portal Sign In'}
         onClose={closeToHub}

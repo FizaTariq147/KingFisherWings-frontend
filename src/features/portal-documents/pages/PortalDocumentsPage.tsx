@@ -61,6 +61,7 @@ export default function PortalDocumentsPage() {
               label="Total documents"
               value={summary.data?.total ?? (summary.isLoading ? '…' : 0)}
               Icon={FileText}
+              theme="cyan"
             />
           </div>
         </div>

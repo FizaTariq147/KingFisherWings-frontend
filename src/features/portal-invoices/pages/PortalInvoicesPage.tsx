@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Download, FileText } from 'lucide-react';
+import { Download, AlertCircle, CheckCircle2, Clock, FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -139,10 +139,38 @@ export default function PortalInvoicesPage() {
         </p>
       ) : null}
       <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <PortalAnimatedGridItem><PortalStatCard label="Total" value={summary.data?.total ?? (summary.isLoading ? '…' : 0)} Icon={FileText} /></PortalAnimatedGridItem>
-        <PortalAnimatedGridItem><PortalStatCard label="Outstanding" value={summary.data?.outstanding ?? (summary.isLoading ? '…' : 0)} /></PortalAnimatedGridItem>
-        <PortalAnimatedGridItem><PortalStatCard label="Overdue" value={summary.data?.overdue ?? (summary.isLoading ? '…' : 0)} /></PortalAnimatedGridItem>
-        <PortalAnimatedGridItem><PortalStatCard label="Paid" value={summary.data?.paid ?? (summary.isLoading ? '…' : 0)} tone="accent" /></PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard
+            label="Total"
+            value={summary.data?.total ?? (summary.isLoading ? '…' : 0)}
+            Icon={FileText}
+            theme="navy"
+          />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard
+            label="Outstanding"
+            value={summary.data?.outstanding ?? (summary.isLoading ? '…' : 0)}
+            Icon={Clock}
+            theme="gold"
+          />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard
+            label="Overdue"
+            value={summary.data?.overdue ?? (summary.isLoading ? '…' : 0)}
+            Icon={AlertCircle}
+            theme="rose"
+          />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard
+            label="Paid"
+            value={summary.data?.paid ?? (summary.isLoading ? '…' : 0)}
+            Icon={CheckCircle2}
+            theme="green"
+          />
+        </PortalAnimatedGridItem>
       </PortalAnimatedGrid>
       <PortalPanel padded>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

@@ -10,7 +10,6 @@ import MyProfilePage from '../features/auth/pages/MyProfilePage'
 import SessionManagementPage from '../pages/settings/SessionManagementPage'
 import SettingsMenuPage from '../pages/settings/SettingsMenuPage'
 import LoginSecurityPage from '../pages/settings/LoginSecurityPage'
-import TwoFactorSetupPage from '../pages/settings/TwoFactorSetupPage'
 import Forbidden from '../pages/errors/Forbidden'
 import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
@@ -120,9 +119,18 @@ import CrmBudgetsPage from '../features/crm/pages/CrmBudgetsPage'
 import CrmEmailMarketingPage from '../features/crm/pages/CrmEmailMarketingPage'
 import HrMenuPage from '../pages/hr/HrMenuPage'
 import EmployeesListPage from '../pages/hr/EmployeesListPage'
+import EmployeeProfile from '../pages/hr/EmployeeProfile'
+import EmployeeFormPage from '../features/hr/pages/EmployeeFormPage'
 import LeaveRequestPage from '../pages/hr/LeaveRequestPage'
+import LeaveCalendar from '../pages/hr/LeaveCalendar'
 import PayRollPage from '../pages/hr/PayRollPage'
 import SalaryLedgerPage from '../pages/hr/SalaryLedgerPage'
+import HrReportsPage from '../pages/hr/HrReportsPage'
+import LoansPage from '../pages/hr/LoansPage'
+import TimesheetsPage from '../pages/hr/TimesheetsPage'
+import EvaluationsPage from '../pages/hr/EvaluationsPage'
+import LettersPage from '../pages/hr/LettersPage'
+import LeavePoliciesPage from '../pages/hr/LeavePoliciesPage'
 import NvoccMenuPage from '../pages/nvocc/NvoccMenuPage'
 import AllJobsPage from '../pages/nvocc/AllJobsPage'
 import BookingListPage from '../pages/nvocc/BookingListPage'
@@ -454,14 +462,23 @@ export const router = createBrowserRouter([
           { path: '/nvocc/:id', element: <Placeholder title="NVOCC Detail" /> },
           { path: '/hr', element: <HrMenuPage /> },
           { path: '/hr/employee-master', element: <EmployeesListPage /> },
+          { path: '/hr/employee-master/new', element: <EmployeeFormPage /> },
+          { path: '/hr/employee-master/:id', element: <EmployeeProfile /> },
+          { path: '/hr/employee-master/:id/edit', element: <EmployeeFormPage /> },
           { path: '/hr/leave-request', element: <LeaveRequestPage /> },
+          { path: '/hr/leave', element: <LeaveCalendar /> },
+          { path: '/hr/leave-policies', element: <LeavePoliciesPage /> },
+          { path: '/hr/timesheets', element: <TimesheetsPage /> },
           { path: '/hr/pay-roll', element: <PayRollPage /> },
           { path: '/hr/salary-upload', element: <SalaryLedgerPage /> },
+          { path: '/hr/loans', element: <LoansPage /> },
+          { path: '/hr/evaluations', element: <EvaluationsPage /> },
+          { path: '/hr/letters', element: <LettersPage /> },
+          { path: '/hr/reports', element: <HrReportsPage /> },
           { path: '/reports', element: <Placeholder title="Reports" /> },
           { path: '/settings', element: <SettingsMenuPage /> },
           { path: '/settings/sessions', element: <SessionManagementPage /> },
           { path: '/settings/login-security', element: <LoginSecurityPage /> },
-          { path: '/settings/two-factor', element: <TwoFactorSetupPage /> },
           {
             element: (
               <ProtectedRoute

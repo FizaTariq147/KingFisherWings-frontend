@@ -1,9 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Search, ChevronDown, Maximize2 } from 'lucide-react';
 import { FilterField, SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
 import { useCustomerTracking } from '@/features/customers/hooks/useCustomerService';
+import { useCustomerFilterSelectOptions } from '@/features/customers/hooks/useCustomerServiceFilterOptions';
 import type { CustomerShipmentFilters } from '@/features/customers/types/customerService.types';
+import { defaultCustomerShipmentFilters } from '@/features/customers/utils/customerServiceDefaults';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
 import {
   DATE_RANGE_PRESETS,
@@ -11,8 +14,13 @@ import {
   type DateRangePreset,
 } from '@/features/management/utils/managementFilters';
 import { JOB_STATUSES, JOB_TYPE_WIZARD_OPTIONS } from '@/features/jobs/constants/job.constants';
+import { CUSTOMER_SERVICE_PATHS, customerJobDetailPath } from '@/features/customers/utils/customerServicePaths';
+import { exportShipmentsCsv } from '@/features/customers/utils/exportCustomerReport';
+import { toggleTableFullscreen } from '@/features/customers/utils/tableFullscreen';
 
 export default function ShipmentTrackingPage() {
+  const navigate = useNavigate();
+  const tableRef = useRef<HTMLDivElement>(null);
   const [rows, setRows] = useState('5');
   const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
   const [fromDate, setFromDate] = useState('');
@@ -30,8 +38,10 @@ export default function ShipmentTrackingPage() {
   const [status, setStatus] = useState('All');
   const [jobType, setJobType] = useState('All');
   const [search, setSearch] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<CustomerShipmentFilters>({});
+  const [submitted, setSubmitted] = useState(true);
+  const [activeFilters, setActiveFilters] = useState<CustomerShipmentFilters>(() =>
+    defaultCustomerShipmentFilters(),
+  );
 
   const applyPreset = (preset: DateRangePreset) => {
     setDatePreset(preset);
@@ -48,6 +58,7 @@ export default function ShipmentTrackingPage() {
   }, []);
 
   const query = useCustomerTracking(activeFilters, submitted);
+  const filters = useCustomerFilterSelectOptions();
   const pageSize = Number(rows) || 5;
   const pageItems = useMemo(() => (query.data ?? []).slice(0, pageSize), [query.data, pageSize]);
 
@@ -69,7 +80,7 @@ export default function ShipmentTrackingPage() {
       status,
       job_type: jobType,
       search: search.trim() || undefined,
-      limit: 200,
+      limit: 100,
     });
     setSubmitted(true);
   };
@@ -80,6 +91,13 @@ export default function ShipmentTrackingPage() {
       <div className="bg-white border border-gray-200 rounded-md">
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">Shipment Tracking</h2>
+          <button
+            type="button"
+            onClick={() => navigate(CUSTOMER_SERVICE_PATHS.createJob)}
+            className="bg-[#FF751F] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity"
+          >
+            Create Shipment
+          </button>
         </div>
 
         <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-3">
@@ -114,27 +132,27 @@ export default function ShipmentTrackingPage() {
           </FilterField>
 
           <FilterField label="Created Branch">
-            <SelectInput options={['All']} value={branch} onChange={(e) => setBranch(e.target.value)} />
+            <SelectInput options={filters.branches} value={branch} onChange={(e) => setBranch(e.target.value)} />
           </FilterField>
 
           <FilterField label="Client">
-            <SelectInput options={['All']} value={client} onChange={(e) => setClient(e.target.value)} />
+            <SelectInput options={filters.clients} value={client} onChange={(e) => setClient(e.target.value)} />
           </FilterField>
 
           <FilterField label="Sales Person">
-            <SelectInput options={['All']} value={salesPerson} onChange={(e) => setSalesPerson(e.target.value)} />
+            <SelectInput options={filters.salesPersons} value={salesPerson} onChange={(e) => setSalesPerson(e.target.value)} />
           </FilterField>
 
           <FilterField label="Department">
-            <SelectInput options={['All']} value={department} onChange={(e) => setDepartment(e.target.value)} />
+            <SelectInput options={filters.departments} value={department} onChange={(e) => setDepartment(e.target.value)} />
           </FilterField>
 
           <FilterField label="Origin">
-            <SelectInput options={['All']} value={origin} onChange={(e) => setOrigin(e.target.value)} />
+            <SelectInput options={filters.ports} value={origin} onChange={(e) => setOrigin(e.target.value)} />
           </FilterField>
 
           <FilterField label="Destination">
-            <SelectInput options={['All']} value={destination} onChange={(e) => setDestination(e.target.value)} />
+            <SelectInput options={filters.ports} value={destination} onChange={(e) => setDestination(e.target.value)} />
           </FilterField>
 
           <FilterField label="Shipment No.">
@@ -201,9 +219,13 @@ export default function ShipmentTrackingPage() {
               <option>25</option>
               <option>50</option>
             </select>
-            <button type="button" className="flex items-center gap-1 border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-600 bg-white">
-              Options
-              <ChevronDown size={12} />
+            <button
+              type="button"
+              onClick={() => exportShipmentsCsv(pageItems, 'shipment-tracking.csv')}
+              disabled={!pageItems.length}
+              className="bg-gray-100 border border-gray-300 hover:bg-gray-200 disabled:opacity-50 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors"
+            >
+              Export CSV
             </button>
           </div>
 
@@ -212,7 +234,12 @@ export default function ShipmentTrackingPage() {
               <span className="text-[#FF751F]">➜</span>
               Submit
             </button>
-            <button type="button" className="text-gray-400 hover:text-gray-600 p-1">
+            <button
+              type="button"
+              onClick={() => void toggleTableFullscreen(tableRef)}
+              className="text-gray-400 hover:text-gray-600 p-1"
+              title="Fullscreen table"
+            >
               <Maximize2 size={16} />
             </button>
           </div>
@@ -230,7 +257,7 @@ export default function ShipmentTrackingPage() {
               <Search size={40} className="text-gray-300" />
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" ref={tableRef}>
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50">
@@ -244,7 +271,11 @@ export default function ShipmentTrackingPage() {
                 </thead>
                 <tbody>
                   {pageItems.map((item) => (
-                    <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <tr
+                      key={item.id}
+                      onClick={() => navigate(customerJobDetailPath(item))}
+                      className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                    >
                       <td className="px-4 py-2 text-blue-600">{item.shipmentNo}</td>
                       <td className="px-4 py-2 text-gray-700">{item.client}</td>
                       <td className="px-4 py-2 text-gray-700">{item.status}</td>

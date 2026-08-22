@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useJobs } from '@/features/jobs/hooks/useJobs';
 import { useInvoices, useOverdueInvoices } from '@/features/invoices/hooks/useInvoices';
@@ -7,9 +6,7 @@ import { useArAging } from '@/features/arApAging/hooks/useArApAging';
 import { useMisOperational } from '@/features/glMisDashboard/hooks/useGlMis';
 import { useCrmFollowUps, usePatchCrmFollowUp } from '@/features/crm/hooks/useCrmFollowUps';
 import { useNotifications } from '@/features/notifications/hooks/useNotifications';
-import { useSavedReports } from '@/features/glSavedReports/hooks/useSavedReports';
-import { SAVED_REPORT_TYPE_LABELS } from '@/features/glSavedReports/constants/savedReport.constants';
-import type { AgingLine } from '@/features/arApAging/types/arApAging.types';
+import { computeAgingTotals, resolveAgingBucketValues } from '@/features/arApAging/utils/normalizeArApAging';
 import { DashboardHeader, DashboardAlertPills } from '../components/DashboardHeader';
 import { DashboardKpiRow } from '../components/DashboardKpiRow';
 import { ActiveShipmentsPanel } from '../components/ActiveShipmentsPanel';
@@ -22,97 +19,114 @@ import { useCrmReportQuery } from '../hooks/useCrmReportQuery';
 import { useDashboardJobCounts, useDashboardPendingQuoteStats } from '../hooks/useDashboardJobCounts';
 import { isoDate, pickNumber } from '../utils/dashboardFormat';
 
-function sumAging(lines: AgingLine[]): AgingLine {
-  return lines.reduce(
-    (acc, line) => ({
-      current: acc.current + (line.current || 0),
-      days_1_30: acc.days_1_30 + (line.days_1_30 || 0),
-      days_31_60: acc.days_31_60 + (line.days_31_60 || 0),
-      days_61_90: acc.days_61_90 + (line.days_61_90 || 0),
-      days_over_90: acc.days_over_90 + (line.days_over_90 || 0),
-      total: acc.total + (line.total || 0),
-    }),
-    {
-      current: 0,
-      days_1_30: 0,
-      days_31_60: 0,
-      days_61_90: 0,
-      days_over_90: 0,
-      total: 0,
-    },
-  );
+function extractOnTime(rows: Record<string, unknown>[]) {
+  const percents: number[] = [];
+  const volumes: number[] = [];
+  let target: number | null = null;
+  for (const row of rows) {
+    const otp = pickNumber(row, [
+      'on_time',
+      'ontime',
+      'on_time_pct',
+      'on_time_percent',
+      'otp',
+      'delivery_otp',
+      'ontime_pct',
+      'on_time_rate',
+    ]);
+    if (otp != null) percents.push(otp <= 1 && otp >= 0 ? otp * 100 : otp);
+    const volume = pickNumber(row, [
+      'jobs',
+      'job_count',
+      'shipments',
+      'delivered',
+      'delivered_count',
+      'volume',
+      'count',
+    ]);
+    if (volume != null) volumes.push(volume);
+    const rowTarget = pickNumber(row, [
+      'target',
+      'otp_target',
+      'on_time_target',
+      'target_pct',
+      'target_percent',
+    ]);
+    if (rowTarget != null && target == null) {
+      target = rowTarget <= 1 && rowTarget > 0 ? rowTarget * 100 : rowTarget;
+    }
+  }
+  const pct =
+    percents.length === 0
+      ? null
+      : percents.reduce((sum, n) => sum + n, 0) / percents.length;
+  return {
+    pct,
+    target,
+    bars: percents.length >= 2 ? percents : volumes.length ? volumes : percents,
+  };
 }
-
-const PERIOD_LABEL: Record<string, string> = {
-  today: 'Today',
-  week: 'This week',
-  month: 'This month',
-};
 
 export function DashboardPage() {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const { period, setPeriod, range } = useDashboardPeriod();
   const today = isoDate(new Date());
+
+  const revenueRange = useMemo(() => {
+    const end = new Date();
+    const start = new Date(end.getFullYear(), end.getMonth() - 5, 1);
+    return { from: isoDate(start), to: isoDate(end) };
+  }, []);
+
+  const tradeLaneRange = useMemo(() => {
+    const end = new Date();
+    const start = new Date(end);
+    start.setDate(end.getDate() - 89);
+    return { from: isoDate(start), to: isoDate(end) };
+  }, []);
 
   const jobsQuery = useJobs({ page: 1, limit: 50, order: 'desc' });
   const jobCounts = useDashboardJobCounts();
   const quoteStats = useDashboardPendingQuoteStats();
   const invoicesQuery = useInvoices({ page: 1, limit: 8 });
   const overdueQuery = useOverdueInvoices();
-  const agingQuery = useArAging({});
+  const agingQuery = useArAging({ as_of: range.to });
   const operational = useMisOperational({ from_date: range.from, to_date: range.to });
-  const monthlySales = useCrmReportQuery('monthly_sales', range);
-  const topCustomers = useCrmReportQuery('top_customers', range);
-  const tradeLane = useCrmReportQuery('trade_lane', range);
+  const monthlySales = useCrmReportQuery('monthly_sales', revenueRange);
+  const topCustomers = useCrmReportQuery('top_customers', revenueRange);
+  const tradeLane = useCrmReportQuery('trade_lane', tradeLaneRange);
   const followUps = useCrmFollowUps({ page: 1, limit: 10, from: today, to: today });
   const patchFollowUp = usePatchCrmFollowUp();
   const notifications = useNotifications({ page: 1, limit: 8 });
-  const savedReports = useSavedReports();
 
-  const agingTotals = useMemo(() => {
-    if (agingQuery.data?.totals) return agingQuery.data.totals;
-    return sumAging(agingQuery.data?.lines ?? []);
-  }, [agingQuery.data]);
+  const agingTotals = useMemo(
+    () => computeAgingTotals(agingQuery.data),
+    [agingQuery.data],
+  );
 
   const receivables = agingTotals.total || 0;
-  const agingBars = [
-    agingTotals.current,
-    agingTotals.days_1_30,
-    agingTotals.days_31_60,
-    agingTotals.days_61_90,
-    agingTotals.days_over_90,
-  ];
+  const agingBars = resolveAgingBucketValues(agingTotals);
 
-  const jobBars = jobCounts.data
-    ? [
-        jobCounts.data.byStatus.IN_PROGRESS ?? 0,
-        jobCounts.data.byStatus.CUSTOMS_CLEARANCE ?? 0,
-        jobCounts.data.byStatus.DOCS_PENDING ?? 0,
-        jobCounts.data.byStatus.BOOKING_CONFIRMED ?? 0,
-      ]
-    : [];
+  const jobBars = jobCounts.data?.bars ?? [];
+  const quoteBars = quoteStats.data?.bars ?? [];
 
-  const quoteBars = quoteStats.data
-    ? Object.values(quoteStats.data.byStatus)
-    : [];
+  const agingQuoteStats = useMemo(() => {
+    const quotations = quoteStats.data?.quotations ?? [];
+    const ages = quotations.map((item) => {
+      const ts = Date.parse(item.created_at || item.quotation_date || '');
+      if (Number.isNaN(ts)) return 0;
+      return Math.max(0, Math.round((Date.now() - ts) / 86_400_000));
+    });
+    return {
+      count: ages.filter((days) => days >= 5).length,
+      oldestDays: ages.length ? Math.max(...ages) : 0,
+    };
+  }, [quoteStats.data]);
 
-  const onTimePct = useMemo(() => {
-    const rows = operational.data?.rows ?? [];
-    for (const row of rows) {
-      const n = pickNumber(row, [
-        'on_time',
-        'ontime',
-        'on_time_pct',
-        'on_time_percent',
-        'otp',
-        'delivery_otp',
-      ]);
-      if (n == null) continue;
-      return n <= 1 ? n * 100 : n;
-    }
-    return null;
-  }, [operational.data]);
+  const onTime = useMemo(
+    () => extractOnTime(operational.data?.rows ?? []),
+    [operational.data],
+  );
 
   const agingReport = agingQuery.data
     ? { ...agingQuery.data, totals: agingTotals }
@@ -145,20 +159,37 @@ export function DashboardPage() {
 
         <DashboardKpiRow
           activeJobs={jobCounts.data?.active ?? 0}
+          inTransit={jobCounts.data?.inTransit ?? 0}
+          atOrigin={jobCounts.data?.atOrigin ?? 0}
+          newJobs={jobCounts.data?.newJobs ?? 0}
           jobBars={jobBars}
           pendingQuotes={quoteStats.data?.totalPending ?? 0}
+          agingQuotes={agingQuoteStats.count}
+          oldestQuoteDays={agingQuoteStats.oldestDays}
           quoteBars={quoteBars}
           receivables={receivables}
+          overdue30={
+            (agingTotals.days_31_60 || 0) +
+            (agingTotals.days_61_90 || 0) +
+            (agingTotals.days_over_90 || 0)
+          }
           agingBars={agingBars}
-          onTimePct={onTimePct}
-          loading={jobCounts.isLoading || quoteStats.isLoading || agingQuery.isLoading}
+          onTimePct={onTime.pct}
+          onTimeTarget={onTime.target}
+          onTimeBars={onTime.bars}
+          loadingJobs={jobCounts.isLoading}
+          loadingQuotes={quoteStats.isLoading}
+          loadingReceivables={agingQuery.isLoading}
+          loadingOnTime={operational.isLoading}
         />
 
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(280px,0.9fr)]">
+        <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(280px,0.9fr)]">
           <ActiveShipmentsPanel
             jobs={jobsQuery.data?.jobs ?? []}
             isLoading={jobsQuery.isLoading}
             isError={jobsQuery.isError}
+            isFetching={jobsQuery.isFetching}
+            lastUpdated={jobsQuery.dataUpdatedAt}
             onRefresh={() => void jobsQuery.refetch()}
             userId={user?.id}
           />
@@ -190,6 +221,8 @@ export function DashboardPage() {
               report={agingReport}
               isLoading={agingQuery.isLoading}
               isError={agingQuery.isError}
+              isFetching={agingQuery.isFetching}
+              onRefresh={() => void agingQuery.refetch()}
             />
           </div>
         </div>
@@ -217,17 +250,7 @@ export function DashboardPage() {
           />
         </div>
 
-        <ReportsHubPanel
-          scheduled={(savedReports.data ?? []).map((r) => ({
-            id: r.id,
-            name: r.name,
-            type: SAVED_REPORT_TYPE_LABELS[r.report_type] ?? r.report_type,
-          }))}
-          isLoading={savedReports.isLoading}
-          isError={savedReports.isError}
-          periodLabel={PERIOD_LABEL[period] ?? 'This month'}
-          onGenerate={() => navigate('/gl/reports')}
-        />
+        <ReportsHubPanel />
       </div>
     </div>
   );

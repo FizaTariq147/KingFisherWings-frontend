@@ -1,16 +1,34 @@
 export interface EmployeeRow {
   id: string;
   branch: string;
+  branchId: string;
   name: string;
+  firstName: string;
+  lastName: string;
   code: string;
   type: string;
   designation: string;
+  designationId: string;
   department: string;
+  departmentId: string;
   birthDate: string;
   employment: string;
   gender: string;
   grade: string;
   joinDate: string;
   mobile: string;
-  status: 'ACTIVE' | 'INACTIVE';
+  email: string;
+  nationality: string;
+  status: string;
+  visaExpiry: string;
+  passportExpiry: string;
+  contractType: string;
+  basicSalary: number;
+  housingAllowance: number;
+  transportAllowance: number;
+  emergencyName: string;
+  emergencyPhone: string;
+  maritalStatus: string;
+  iban: string;
+  bankName: string;
 }
