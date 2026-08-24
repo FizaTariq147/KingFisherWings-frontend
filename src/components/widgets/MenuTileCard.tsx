@@ -20,7 +20,7 @@ export function MenuTileCard({ tile, onClick, compact = false }: Props) {
       <div className="flex items-start justify-between mb-4 gap-3">
         <div className="min-w-0">
           <h3
-            className={`font-semibold text-[#0A2942] leading-snug ${compact ? 'text-[13px]' : 'text-[15px]'}`}
+            className={`font-semibold text-[#0A2942] leading-snug ${compact ? 'text-[12px]' : 'text-[14px]'}`}
           >
             {tile.title}
           </h3>

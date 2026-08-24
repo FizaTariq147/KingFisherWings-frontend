@@ -9,6 +9,30 @@ import { AppAnimatedGrid, AppAnimatedGridItem } from '@/components/motion';
 
 export type ModuleMenuViewMode = 'cards' | 'list';
 
+const VIEW_STORAGE_PREFIX = 'module-menu-view:';
+
+function slugifyTitle(title: string): string {
+  return title.toLowerCase().replace(/\s+/g, '-');
+}
+
+function readStoredViewMode(key: string, fallback: ModuleMenuViewMode): ModuleMenuViewMode {
+  try {
+    const stored = localStorage.getItem(`${VIEW_STORAGE_PREFIX}${key}`);
+    if (stored === 'cards' || stored === 'list') return stored;
+  } catch {
+    // ignore storage read errors
+  }
+  return fallback;
+}
+
+function writeStoredViewMode(key: string, mode: ModuleMenuViewMode): void {
+  try {
+    localStorage.setItem(`${VIEW_STORAGE_PREFIX}${key}`, mode);
+  } catch {
+    // ignore storage write errors
+  }
+}
+
 type ModuleMenuShellProps = {
   title: string;
   tiles: MenuTile[];
@@ -18,10 +42,16 @@ type ModuleMenuShellProps = {
   compact?: boolean;
   /** Page background. */
   className?: string;
-  /** Show Cards / List toggle. Default view is cards. */
+  /** Show Cards / List toggle (on by default for all module menus). */
   enableViewToggle?: boolean;
   /** Initial view when toggle is enabled. */
   defaultView?: ModuleMenuViewMode;
+  /** Optional key for persisting cards/list preference in localStorage. */
+  viewStorageKey?: string;
+  /** Appended to every tile navigation query (e.g. from=reports). */
+  linkSearch?: string;
+  /** Override section heading classes (e.g. quieter labels on Reports). */
+  sectionHeadingClassName?: string;
 };
 
 function ViewToggleButton({
@@ -63,12 +93,32 @@ export function ModuleMenuShell({
   featuredTile,
   compact = false,
   className = 'bg-gray-50',
-  enableViewToggle = false,
+  enableViewToggle = true,
   defaultView = 'cards',
+  viewStorageKey,
+  linkSearch,
+  sectionHeadingClassName,
 }: ModuleMenuShellProps) {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
-  const [viewMode, setViewMode] = useState<ModuleMenuViewMode>(defaultView);
+  const storageKey = viewStorageKey ?? slugifyTitle(title);
+  const [viewMode, setViewMode] = useState<ModuleMenuViewMode>(() =>
+    enableViewToggle ? readStoredViewMode(storageKey, defaultView) : defaultView,
+  );
+
+  const goTo = (path: string) => {
+    if (!linkSearch?.trim()) {
+      navigate(path);
+      return;
+    }
+    const separator = path.includes('?') ? '&' : '?';
+    navigate(`${path}${separator}${linkSearch.trim()}`);
+  };
+
+  const setViewModePersisted = (mode: ModuleMenuViewMode) => {
+    setViewMode(mode);
+    if (enableViewToggle) writeStoredViewMode(storageKey, mode);
+  };
 
   const allTiles = useMemo(
     () => (featuredTile ? [...tiles, featuredTile] : tiles),
@@ -105,7 +155,7 @@ export function ModuleMenuShell({
       return (
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white divide-y divide-gray-100">
           {groupTiles.map((tile) => (
-            <MenuTileListRow key={tile.id} tile={tile} onClick={navigate} compact={compact} />
+            <MenuTileListRow key={tile.id} tile={tile} onClick={goTo} compact={compact} />
           ))}
         </div>
       );
@@ -115,7 +165,7 @@ export function ModuleMenuShell({
       <AppAnimatedGrid className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {groupTiles.map((tile) => (
           <AppAnimatedGridItem key={tile.id}>
-            <MenuTileCard tile={tile} onClick={navigate} compact={compact} />
+            <MenuTileCard tile={tile} onClick={goTo} compact={compact} />
           </AppAnimatedGridItem>
         ))}
       </AppAnimatedGrid>
@@ -123,7 +173,7 @@ export function ModuleMenuShell({
   };
 
   return (
-    <div className={`relative min-h-screen ${className}`}>
+    <div className={`flex min-h-full flex-col ${className}`}>
       <div className="bg-white border-b border-gray-200 px-6 py-3 flex flex-wrap items-center justify-end gap-2">
         <label htmlFor={`module-menu-search-${title}`} className="text-sm text-gray-600">
           Search
@@ -144,7 +194,7 @@ export function ModuleMenuShell({
           value=""
           onChange={(e) => {
             const path = e.target.value;
-            if (path) navigate(path);
+            if (path) goTo(path);
             e.target.value = '';
           }}
         >
@@ -158,7 +208,7 @@ export function ModuleMenuShell({
       </div>
 
       <div className={`bg-[#0A2942] px-6 ${compact ? 'py-2' : 'py-3'}`}>
-        <p className={`text-white ${compact ? 'text-xs' : 'text-sm'}`}>
+        <p className={`text-white ${compact ? 'text-[11px]' : 'text-xs'}`}>
           <span className="text-white/60">Menu</span>
           <span className="text-white/40 mx-2">/</span>
           <span className="font-medium">{title}</span>
@@ -170,12 +220,15 @@ export function ModuleMenuShell({
         </p>
       </div>
 
-      <div className="p-6 space-y-8 pb-24">
+      <div className="flex-1 p-6 space-y-8">
         {sectionGroups.map((group) => (
           <div key={group.label ?? 'default'} className="space-y-4">
             {group.label ? (
               <h2
-                className={`font-semibold uppercase tracking-wide text-gray-500 ${compact ? 'text-xs' : 'text-sm'}`}
+                className={
+                  sectionHeadingClassName ??
+                  `font-semibold uppercase tracking-wide text-gray-500 ${compact ? 'text-[10px]' : 'text-xs'}`
+                }
               >
                 {group.label}
               </h2>
@@ -194,23 +247,25 @@ export function ModuleMenuShell({
       </div>
 
       {enableViewToggle ? (
-        <div
-          className="fixed bottom-5 right-5 z-20 flex items-center gap-1 rounded-xl border border-gray-200 bg-white p-1 shadow-lg"
-          role="group"
-          aria-label="View mode"
-        >
-          <ViewToggleButton
-            active={viewMode === 'cards'}
-            label="Cards"
-            icon={LayoutGrid}
-            onClick={() => setViewMode('cards')}
-          />
-          <ViewToggleButton
-            active={viewMode === 'list'}
-            label="List"
-            icon={List}
-            onClick={() => setViewMode('list')}
-          />
+        <div className="sticky bottom-5 z-30 flex justify-end px-5 pb-2 pt-2 pointer-events-none">
+          <div
+            className="pointer-events-auto flex items-center gap-1 rounded-xl border border-gray-200 bg-white p-1 shadow-lg"
+            role="group"
+            aria-label="View mode"
+          >
+            <ViewToggleButton
+              active={viewMode === 'cards'}
+              label="Cards"
+              icon={LayoutGrid}
+              onClick={() => setViewModePersisted('cards')}
+            />
+            <ViewToggleButton
+              active={viewMode === 'list'}
+              label="List"
+              icon={List}
+              onClick={() => setViewModePersisted('list')}
+            />
+          </div>
         </div>
       ) : null}
     </div>

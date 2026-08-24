@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { PageBackLink } from '@/components/ui/PageBackLink';
+import { ReportsPageBackLink } from '@/features/reports/components/ReportsPageBackLink';
 import { Search, ChevronDown, Heart } from 'lucide-react';
 import { useManagementProfitability } from '@/features/management/hooks/useManagement';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
@@ -36,10 +36,10 @@ export default function ManagementReportsMisPage() {
 
   return (
     <div className="space-y-3">
-      <PageBackLink to="/management" label="Back to Management" />
+      <ReportsPageBackLink fallbackTo="/management" fallbackLabel="Back to Management" />
       <div className="bg-white border border-gray-200 rounded-md">
         <div className="px-5 py-3 border-b border-gray-200">
-          <h2 className="text-[17px] font-medium text-gray-800">Reports - MIS</h2>
+          <h2 className="text-sm font-medium text-gray-800">Reports - MIS</h2>
         </div>
 
         <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-3">

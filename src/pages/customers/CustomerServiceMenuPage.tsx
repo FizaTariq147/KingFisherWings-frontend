@@ -31,8 +31,6 @@ export default function CustomerServiceMenuPage() {
       title="Customers"
       tiles={tiles}
       compact
-      enableViewToggle
-      defaultView="cards"
     />
   );
 }

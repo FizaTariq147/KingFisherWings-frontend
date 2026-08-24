@@ -9,6 +9,11 @@ import { hrService } from '../../features/hr/services/hr.service';
 import { DOCUMENT_TYPES, labelEnum } from '../../features/hr/constants/hr.constants';
 import {
   createDocumentSchema,
+  createDependentSchema,
+  createEmploymentHistorySchema,
+  createQualificationSchema,
+  createSkillSchema,
+  linkUserSchema,
   parseWithFieldErrors,
   type FieldErrors,
 } from '../../features/hr/schemas/hr.schema';
@@ -28,13 +33,14 @@ const statusVariant: Record<string, 'success' | 'warning' | 'danger' | 'neutral'
   REJECTED: 'danger',
 };
 
-type Tab = 'personal' | 'documents' | 'leave' | 'salary' | 'emergency';
+type Tab = 'personal' | 'documents' | 'leave' | 'salary' | 'emergency' | 'career';
 
 const tabs: { key: Tab; label: string }[] = [
   { key: 'personal', label: 'Personal Info' },
   { key: 'documents', label: 'Documents' },
   { key: 'leave', label: 'Leave Summary' },
   { key: 'salary', label: 'Salary History' },
+  { key: 'career', label: 'Career' },
   { key: 'emergency', label: 'Emergency Contact' },
 ];
 
@@ -47,6 +53,18 @@ export default function EmployeeProfile() {
   const [docType, setDocType] = useState(DOCUMENT_TYPES[0]);
   const [docNo, setDocNo] = useState('');
   const [docExpiry, setDocExpiry] = useState('');
+  const [careerModal, setCareerModal] = useState<'history' | 'qualification' | 'skill' | 'dependent' | 'link' | null>(
+    null,
+  );
+  const [employerName, setEmployerName] = useState('');
+  const [jobTitle, setJobTitle] = useState('');
+  const [qualTitle, setQualTitle] = useState('');
+  const [qualInstitution, setQualInstitution] = useState('');
+  const [skillName, setSkillName] = useState('');
+  const [skillLevel, setSkillLevel] = useState('');
+  const [depName, setDepName] = useState('');
+  const [depRelation, setDepRelation] = useState<'SPOUSE' | 'CHILD' | 'OTHER'>('SPOUSE');
+  const [linkUserId, setLinkUserId] = useState('');
   const [actionError, setActionError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
@@ -71,7 +89,25 @@ export default function EmployeeProfile() {
   const { data: dependents = [] } = useQuery({
     queryKey: ['hr', 'employee-dependents', id],
     queryFn: () => hrService.listDependents(id),
-    enabled: Boolean(id) && activeTab === 'emergency',
+    enabled: Boolean(id) && (activeTab === 'emergency' || activeTab === 'career'),
+  });
+
+  const { data: history = [] } = useQuery({
+    queryKey: ['hr', 'employee-history', id],
+    queryFn: () => hrService.listEmploymentHistory(id),
+    enabled: Boolean(id) && activeTab === 'career',
+  });
+
+  const { data: qualifications = [] } = useQuery({
+    queryKey: ['hr', 'employee-qualifications', id],
+    queryFn: () => hrService.listQualifications(id),
+    enabled: Boolean(id) && activeTab === 'career',
+  });
+
+  const { data: skills = [] } = useQuery({
+    queryKey: ['hr', 'employee-skills', id],
+    queryFn: () => hrService.listSkills(id),
+    enabled: Boolean(id) && activeTab === 'career',
   });
 
   const addDocument = useMutation({
@@ -89,6 +125,81 @@ export default function EmployeeProfile() {
     },
     onError: (err) => setActionError(err instanceof Error ? err.message : 'Could not add document.'),
   });
+
+  const submitCareer = async () => {
+    setActionError(null);
+    try {
+      if (careerModal === 'history') {
+        const parsed = parseWithFieldErrors(createEmploymentHistorySchema, {
+          employer_name: employerName,
+          job_title: jobTitle.trim() || undefined,
+        });
+        if (!parsed.success) {
+          setFieldErrors(parsed.fieldErrors);
+          setActionError(parsed.message);
+          return;
+        }
+        await hrService.addEmploymentHistory(id, parsed.data);
+        void queryClient.invalidateQueries({ queryKey: ['hr', 'employee-history', id] });
+      } else if (careerModal === 'qualification') {
+        const parsed = parseWithFieldErrors(createQualificationSchema, {
+          title: qualTitle,
+          institution: qualInstitution.trim() || undefined,
+        });
+        if (!parsed.success) {
+          setFieldErrors(parsed.fieldErrors);
+          setActionError(parsed.message);
+          return;
+        }
+        await hrService.addQualification(id, parsed.data);
+        void queryClient.invalidateQueries({ queryKey: ['hr', 'employee-qualifications', id] });
+      } else if (careerModal === 'skill') {
+        const parsed = parseWithFieldErrors(createSkillSchema, {
+          name: skillName,
+          level: skillLevel.trim() || undefined,
+        });
+        if (!parsed.success) {
+          setFieldErrors(parsed.fieldErrors);
+          setActionError(parsed.message);
+          return;
+        }
+        await hrService.addSkill(id, parsed.data);
+        void queryClient.invalidateQueries({ queryKey: ['hr', 'employee-skills', id] });
+      } else if (careerModal === 'dependent') {
+        const parsed = parseWithFieldErrors(createDependentSchema, {
+          full_name: depName,
+          relation: depRelation,
+        });
+        if (!parsed.success) {
+          setFieldErrors(parsed.fieldErrors);
+          setActionError(parsed.message);
+          return;
+        }
+        await hrService.addDependent(id, parsed.data);
+        void queryClient.invalidateQueries({ queryKey: ['hr', 'employee-dependents', id] });
+      } else if (careerModal === 'link') {
+        const parsed = parseWithFieldErrors(linkUserSchema, { user_id: linkUserId });
+        if (!parsed.success) {
+          setFieldErrors(parsed.fieldErrors);
+          setActionError(parsed.message);
+          return;
+        }
+        await hrService.linkEmployeeUser(id, { user_id: parsed.data.user_id });
+      }
+      setCareerModal(null);
+      setFieldErrors({});
+      setEmployerName('');
+      setJobTitle('');
+      setQualTitle('');
+      setQualInstitution('');
+      setSkillName('');
+      setSkillLevel('');
+      setDepName('');
+      setLinkUserId('');
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : 'Could not save.');
+    }
+  };
 
   const submitDocument = () => {
     setActionError(null);
@@ -248,6 +359,69 @@ export default function EmployeeProfile() {
           </div>
         )}
 
+        {activeTab === 'career' && (
+          <div className="space-y-4 text-sm">
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" onClick={() => { setFieldErrors({}); setCareerModal('history'); }}>
+                + Employment history
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => { setFieldErrors({}); setCareerModal('qualification'); }}>
+                + Qualification
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => { setFieldErrors({}); setCareerModal('skill'); }}>
+                + Skill
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => { setFieldErrors({}); setCareerModal('dependent'); }}>
+                + Dependent
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => { setFieldErrors({}); setCareerModal('link'); }}>
+                Link user account
+              </Button>
+            </div>
+            <div>
+              <p className="font-medium mb-2">Employment history</p>
+              {history.length === 0 ? (
+                <p className="text-gray-500">No history yet.</p>
+              ) : (
+                history.map((row) => (
+                  <p key={row.id} className="border rounded p-2 mb-2">
+                    {row.employer_name}
+                    {row.job_title ? ` · ${row.job_title}` : ''}
+                    {row.start_date ? ` (${row.start_date}${row.end_date ? `–${row.end_date}` : ''})` : ''}
+                  </p>
+                ))
+              )}
+            </div>
+            <div>
+              <p className="font-medium mb-2">Qualifications</p>
+              {qualifications.length === 0 ? (
+                <p className="text-gray-500">No qualifications yet.</p>
+              ) : (
+                qualifications.map((row) => (
+                  <p key={row.id} className="border rounded p-2 mb-2">
+                    {row.title}
+                    {row.institution ? ` · ${row.institution}` : ''}
+                    {row.year_awarded ? ` · ${row.year_awarded}` : ''}
+                  </p>
+                ))
+              )}
+            </div>
+            <div>
+              <p className="font-medium mb-2">Skills</p>
+              {skills.length === 0 ? (
+                <p className="text-gray-500">No skills yet.</p>
+              ) : (
+                skills.map((row) => (
+                  <p key={row.id} className="border rounded p-2 mb-2">
+                    {row.name}
+                    {row.level ? ` · ${row.level}` : ''}
+                  </p>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
         {activeTab === 'emergency' && (
           <div className="space-y-3 text-sm">
             <p><strong>Name:</strong> {employee.emergencyName || '—'}</p>
@@ -320,6 +494,92 @@ export default function EmployeeProfile() {
               <span className="mt-1 block text-xs text-red-600">{fieldErrors.expires_at}</span>
             ) : null}
           </label>
+        </div>
+      </Modal>
+
+      <Modal
+        open={Boolean(careerModal)}
+        onClose={() => setCareerModal(null)}
+        title={
+          careerModal === 'history'
+            ? 'Add employment history'
+            : careerModal === 'qualification'
+              ? 'Add qualification'
+              : careerModal === 'skill'
+                ? 'Add skill'
+                : careerModal === 'dependent'
+                  ? 'Add dependent'
+                  : 'Link user account'
+        }
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setCareerModal(null)}>
+              Cancel
+            </Button>
+            <Button onClick={() => void submitCareer()}>Save</Button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          {careerModal === 'history' && (
+            <>
+              <label className="block text-sm">
+                <span className="block text-xs text-gray-600 mb-1">Employer *</span>
+                <input className="w-full h-9 border rounded px-3" value={employerName} onChange={(e) => setEmployerName(e.target.value)} />
+              </label>
+              <label className="block text-sm">
+                <span className="block text-xs text-gray-600 mb-1">Job title</span>
+                <input className="w-full h-9 border rounded px-3" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} />
+              </label>
+            </>
+          )}
+          {careerModal === 'qualification' && (
+            <>
+              <label className="block text-sm">
+                <span className="block text-xs text-gray-600 mb-1">Title *</span>
+                <input className="w-full h-9 border rounded px-3" value={qualTitle} onChange={(e) => setQualTitle(e.target.value)} />
+              </label>
+              <label className="block text-sm">
+                <span className="block text-xs text-gray-600 mb-1">Institution</span>
+                <input className="w-full h-9 border rounded px-3" value={qualInstitution} onChange={(e) => setQualInstitution(e.target.value)} />
+              </label>
+            </>
+          )}
+          {careerModal === 'skill' && (
+            <>
+              <label className="block text-sm">
+                <span className="block text-xs text-gray-600 mb-1">Skill *</span>
+                <input className="w-full h-9 border rounded px-3" value={skillName} onChange={(e) => setSkillName(e.target.value)} />
+              </label>
+              <label className="block text-sm">
+                <span className="block text-xs text-gray-600 mb-1">Level</span>
+                <input className="w-full h-9 border rounded px-3" value={skillLevel} onChange={(e) => setSkillLevel(e.target.value)} />
+              </label>
+            </>
+          )}
+          {careerModal === 'dependent' && (
+            <>
+              <label className="block text-sm">
+                <span className="block text-xs text-gray-600 mb-1">Full name *</span>
+                <input className="w-full h-9 border rounded px-3" value={depName} onChange={(e) => setDepName(e.target.value)} />
+              </label>
+              <label className="block text-sm">
+                <span className="block text-xs text-gray-600 mb-1">Relation *</span>
+                <select className="w-full h-9 border rounded px-3" value={depRelation} onChange={(e) => setDepRelation(e.target.value as typeof depRelation)}>
+                  <option value="SPOUSE">Spouse</option>
+                  <option value="CHILD">Child</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </label>
+            </>
+          )}
+          {careerModal === 'link' && (
+            <label className="block text-sm">
+              <span className="block text-xs text-gray-600 mb-1">User ID (UUID) *</span>
+              <input className="w-full h-9 border rounded px-3" value={linkUserId} onChange={(e) => setLinkUserId(e.target.value)} placeholder="Staff user UUID" />
+              {fieldErrors.user_id ? <span className="text-xs text-red-600">{fieldErrors.user_id}</span> : null}
+            </label>
+          )}
         </div>
       </Modal>
     </div>

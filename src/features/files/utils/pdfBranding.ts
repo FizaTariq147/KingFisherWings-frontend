@@ -21,7 +21,7 @@ const DEFAULTS = {
   documentType: '',
   documentNumber: '',
   documentDate: '',
-  footerLine: 'KingFisher Wings — KingFisher Tech Gold',
+  footerLine: 'KingFisher Wings - KingFisher Tech Gold',
 } as const;
 
 export type ResolvedPdfBranding = {
@@ -145,6 +145,18 @@ export function invoicePdfBranding(
     documentType: 'INVOICE',
     documentNumber: invoiceNumber,
     title: invoiceNumber,
+    documentDate,
+  };
+}
+
+export function letterPdfBranding(
+  letterReference: string,
+  documentDate?: string,
+): PdfBrandingOptions {
+  return {
+    documentType: 'HR LETTER',
+    documentNumber: letterReference,
+    title: letterReference,
     documentDate,
   };
 }

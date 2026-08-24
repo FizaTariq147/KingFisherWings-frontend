@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import type { VendorUser } from '../types/vendorAuth.types';
 
 interface VendorAuthState {
@@ -39,6 +39,8 @@ export const useVendorAuthStore = create<VendorAuthState>()(
     }),
     {
       name: 'kfg-vendor-auth',
+      // sessionStorage: tokens do not survive browser restart (better than localStorage).
+      storage: createJSONStorage(() => sessionStorage),
       onRehydrateStorage: () => {
         return (_state, error) => {
           if (error) return;

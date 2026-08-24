@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Card } from '@/components/ui/Card';
 import { hrService } from '@/features/hr/services/hr.service';
+import { ReportsPageBackLink } from '@/features/reports/components/ReportsPageBackLink';
 
 function asRows(raw: unknown[]): Record<string, string>[] {
   return raw.map((item, index) => {
@@ -74,8 +74,8 @@ export default function HrReportsPage() {
 
   return (
     <div className="space-y-4">
-      <PageBackLink to="/hr" label="Back to HR" />
-      <h1 className="text-lg font-semibold text-gray-800">Reports - HR</h1>
+      <ReportsPageBackLink fallbackTo="/hr" fallbackLabel="Back to HR" />
+      <h1 className="text-sm font-semibold text-gray-800">Reports - HR</h1>
 
       <Card>
         <div className="flex items-center justify-between mb-3">

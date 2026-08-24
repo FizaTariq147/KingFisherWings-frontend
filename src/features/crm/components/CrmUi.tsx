@@ -1,11 +1,20 @@
 import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
-import { PageBackLink } from '@/components/ui/PageBackLink';
+import { ReportsPageBackLink } from '@/features/reports/components/ReportsPageBackLink';
 import { Button } from '@/components/ui/Button';
 
 export const inputClass = 'w-full rounded-lg border border-[var(--color-neutral-200)] bg-white px-3 py-2 text-sm text-[var(--color-neutral-800)] outline-none focus:border-[var(--color-primary-400)]';
 
 export function CrmPageHeader({ title, description, actions }: { title: string; description: string; actions?: ReactNode }) {
-  return <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><PageBackLink to="/sales" label="Back to Sales" /><h2 className="mt-1 text-lg font-semibold text-[var(--color-neutral-800)]">{title}</h2><p className="mt-1 text-sm text-[var(--color-neutral-500)]">{description}</p></div>{actions && <div className="flex flex-wrap gap-2">{actions}</div>}</div>;
+  return (
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <ReportsPageBackLink fallbackTo="/sales" fallbackLabel="Back to Sales" />
+        <h2 className="mt-1 text-sm font-semibold text-[var(--color-neutral-800)]">{title}</h2>
+        <p className="mt-1 text-xs text-[var(--color-neutral-500)]">{description}</p>
+      </div>
+      {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
+    </div>
+  );
 }
 export function Field({
   label,

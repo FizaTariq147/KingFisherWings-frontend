@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { PageBackLink } from '@/components/ui/PageBackLink';
+import { ReportsPageBackLink } from '@/features/reports/components/ReportsPageBackLink';
 import { ScanLine, Search, ChevronDown, Heart } from 'lucide-react';
 import { useSalesVisitingCards } from '@/features/sales/hooks/useSales';
 import { getErrorMessage } from '@/features/crm/utils/getErrorMessage';
@@ -29,10 +29,10 @@ export default function VisitingCardListPage() {
 
   return (
     <div className="space-y-3">
-      <PageBackLink to="/sales" label="Back to Sales" />
+      <ReportsPageBackLink fallbackTo="/sales" fallbackLabel="Back to Sales" />
       <div className="bg-white border border-gray-200 rounded-md">
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
-          <h2 className="text-[17px] font-medium text-gray-800">Visiting Card List</h2>
+          <h2 className="text-sm font-medium text-gray-800">Visiting Card List</h2>
           <div className="flex items-center gap-2">
             <Link
               to="/sales/lead/new"

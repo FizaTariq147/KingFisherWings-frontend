@@ -13,6 +13,7 @@ import LoginSecurityPage from '../pages/settings/LoginSecurityPage'
 import Forbidden from '../pages/errors/Forbidden'
 import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
+import ReportsMenuPage from '../pages/reports/ReportsMenuPage'
 
 import CustomerServiceMenuPage from '../pages/customers/CustomerServiceMenuPage'
 import VendorServiceMenuPage from '../pages/vendors/VendorServiceMenuPage'
@@ -132,6 +133,7 @@ import EvaluationsPage from '../pages/hr/EvaluationsPage'
 import LettersPage from '../pages/hr/LettersPage'
 import LeavePoliciesPage from '../pages/hr/LeavePoliciesPage'
 import NvoccMenuPage from '../pages/nvocc/NvoccMenuPage'
+import NvoccReportsPage from '../pages/nvocc/NvoccReportsPage'
 import AllJobsPage from '../pages/nvocc/AllJobsPage'
 import BookingListPage from '../pages/nvocc/BookingListPage'
 import EnquiryListPage from '../pages/nvocc/EnquiryListPage'
@@ -147,6 +149,7 @@ import UserAccessPage from '../pages/management/UserAccessPage'
 import UserWisePerformancePage from '../pages/management/UserWisePerformancePage'
 import ManagementReportsMisPage from '../pages/management/ManagementReportsMisPage'
 import DocumentationMenuPage from '../pages/documentation/DocumentationMenuPage'
+import DocumentationReportsPage from '../pages/documentation/DocumentationReportsPage'
 import AllJobsPageDocumentation from '../pages/documentation/AllJobsPage'
 import BoeDashboardPage from '../pages/documentation/BoeDashboardPage'
 import BayanEdiJobListPage from '../pages/documentation/BayanEdiJobListPage'
@@ -415,6 +418,7 @@ export const router = createBrowserRouter([
           {path: '/documentation/ccn-fwb-fhl-edi-job-list', element: <CcnFwbFhlEdiJobListPage />},
           {path: '/documentation/cgm-edi-vessel-list', element: <CgmEdiVesselListPage />},
           {path: '/documentation/cargo-tracking-air', element: <AirCargoTrackingPage />},
+          { path: '/documentation/reports', element: <DocumentationReportsPage /> },
           
 
           {
@@ -459,23 +463,29 @@ export const router = createBrowserRouter([
           { path: '/nvocc/enquiry-list', element: <EnquiryListPage /> },
           { path: '/nvocc/load-list', element: <LoadListPage /> },
           {path: '/nvocc/vessel-voyage-master', element: <VesselVoyageMasterPage />},
+          { path: '/nvocc/reports', element: <NvoccReportsPage /> },
           { path: '/nvocc/:id', element: <Placeholder title="NVOCC Detail" /> },
-          { path: '/hr', element: <HrMenuPage /> },
-          { path: '/hr/employee-master', element: <EmployeesListPage /> },
-          { path: '/hr/employee-master/new', element: <EmployeeFormPage /> },
-          { path: '/hr/employee-master/:id', element: <EmployeeProfile /> },
-          { path: '/hr/employee-master/:id/edit', element: <EmployeeFormPage /> },
-          { path: '/hr/leave-request', element: <LeaveRequestPage /> },
-          { path: '/hr/leave', element: <LeaveCalendar /> },
-          { path: '/hr/leave-policies', element: <LeavePoliciesPage /> },
-          { path: '/hr/timesheets', element: <TimesheetsPage /> },
-          { path: '/hr/pay-roll', element: <PayRollPage /> },
-          { path: '/hr/salary-upload', element: <SalaryLedgerPage /> },
-          { path: '/hr/loans', element: <LoansPage /> },
-          { path: '/hr/evaluations', element: <EvaluationsPage /> },
-          { path: '/hr/letters', element: <LettersPage /> },
-          { path: '/hr/reports', element: <HrReportsPage /> },
-          { path: '/reports', element: <Placeholder title="Reports" /> },
+          {
+            element: <ProtectedRoute requirePermissions={['menu_hr']} />,
+            children: [
+              { path: '/hr', element: <HrMenuPage /> },
+              { path: '/hr/employee-master', element: <EmployeesListPage /> },
+              { path: '/hr/employee-master/new', element: <EmployeeFormPage /> },
+              { path: '/hr/employee-master/:id', element: <EmployeeProfile /> },
+              { path: '/hr/employee-master/:id/edit', element: <EmployeeFormPage /> },
+              { path: '/hr/leave-request', element: <LeaveRequestPage /> },
+              { path: '/hr/leave', element: <LeaveCalendar /> },
+              { path: '/hr/leave-policies', element: <LeavePoliciesPage /> },
+              { path: '/hr/timesheets', element: <TimesheetsPage /> },
+              { path: '/hr/pay-roll', element: <PayRollPage /> },
+              { path: '/hr/salary-upload', element: <SalaryLedgerPage /> },
+              { path: '/hr/loans', element: <LoansPage /> },
+              { path: '/hr/evaluations', element: <EvaluationsPage /> },
+              { path: '/hr/letters', element: <LettersPage /> },
+              { path: '/hr/reports', element: <HrReportsPage /> },
+            ],
+          },
+          { path: '/reports', element: <ReportsMenuPage /> },
           { path: '/settings', element: <SettingsMenuPage /> },
           { path: '/settings/sessions', element: <SessionManagementPage /> },
           { path: '/settings/login-security', element: <LoginSecurityPage /> },

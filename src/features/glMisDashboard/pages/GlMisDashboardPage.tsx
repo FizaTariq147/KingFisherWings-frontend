@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { ReportsBackButton } from '@/features/reports/components/ReportsBackButton';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -36,7 +36,6 @@ function GenericTable({ rows }: { rows: Record<string, unknown>[] }) {
 }
 
 export default function GlMisDashboardPage() {
-  const navigate = useNavigate();
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [companyId, setCompanyId] = useState('');
@@ -61,14 +60,8 @@ export default function GlMisDashboardPage() {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
         <div>
-          <button
-            type="button"
-            className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] mb-1"
-            onClick={() => navigate('/accounts')}
-          >
-            ← Accounts
-          </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">MIS Dashboard</h2>
+          <ReportsBackButton fallbackTo="/accounts" fallbackLabel="Back to Accounts" />
+          <h2 className="text-sm font-semibold text-[var(--color-neutral-800)]">MIS Dashboard</h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
             Management KPIs, profitability analytics, and operational metrics.
           </p>

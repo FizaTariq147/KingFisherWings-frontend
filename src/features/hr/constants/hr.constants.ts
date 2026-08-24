@@ -58,6 +58,22 @@ export const LETTER_TYPES = [
   'REFERENCE',
 ] as const;
 
+export const LETTER_TYPE_OPTIONS: ReadonlyArray<{
+  type: (typeof LETTER_TYPES)[number];
+  description: string;
+}> = [
+  { type: 'APPOINTMENT', description: 'Confirm a new employee appointment.' },
+  { type: 'CONFIRMATION', description: 'Confirm employment after probation.' },
+  { type: 'SALARY_REVISION', description: 'Notify an employee of a salary revision.' },
+  { type: 'WARNING', description: 'Issue an official warning to an employee.' },
+  { type: 'EXPERIENCE', description: 'Experience certificate for past employment.' },
+  { type: 'EMPLOYMENT_CERT', description: 'Certificate of current employment.' },
+  { type: 'NOC', description: 'No objection certificate for employee requests.' },
+  { type: 'RESIGNATION_ACCEPTANCE', description: 'Acknowledge and accept a resignation.' },
+  { type: 'END_OF_SERVICE', description: 'Confirm end of service and clearance.' },
+  { type: 'REFERENCE', description: 'Reference letter for verification purposes.' },
+];
+
 export const TIMESHEET_STATUSES = ['DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED'] as const;
 
 export const LOAN_STATUSES = ['PENDING', 'APPROVED', 'REJECTED', 'ACTIVE', 'CLOSED'] as const;

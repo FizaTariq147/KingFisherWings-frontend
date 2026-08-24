@@ -13,6 +13,7 @@ import {
   TableRow,
 } from '@/components/ui/Table';
 import { CHART_OF_ACCOUNT_ROUTE_PREFIX } from '../api/chartOfAccount.api';
+import { ReportsBackButton } from '@/features/reports/components/ReportsBackButton';
 import { useTrialBalance } from '../hooks/useChartOfAccounts';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
@@ -43,14 +44,8 @@ export default function TrialBalancePage() {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <button
-            type="button"
-            className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] mb-1"
-            onClick={() => navigate(CHART_OF_ACCOUNT_ROUTE_PREFIX)}
-          >
-            ← Chart of Accounts
-          </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Trial balance</h2>
+          <ReportsBackButton fallbackTo={CHART_OF_ACCOUNT_ROUTE_PREFIX} fallbackLabel="Back to Chart of Accounts" />
+          <h2 className="text-sm font-semibold text-[var(--color-neutral-800)]">Trial balance</h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
             Posted voucher lines + opening balances (GET /gl/accounts/reports/trial-balance).
           </p>

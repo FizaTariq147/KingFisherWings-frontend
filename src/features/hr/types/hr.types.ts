@@ -131,6 +131,61 @@ export interface DependentRecord {
   visa_no: string;
 }
 
+export interface CreateDependentDto {
+  full_name: string;
+  relation: 'SPOUSE' | 'CHILD' | 'OTHER';
+  date_of_birth?: string;
+  passport_no?: string;
+  passport_expires_at?: string;
+  visa_no?: string;
+  visa_expires_at?: string;
+}
+
+export interface EmploymentHistoryRecord {
+  id: string;
+  employer_name: string;
+  job_title: string;
+  start_date: string;
+  end_date: string;
+  remarks: string;
+}
+
+export interface CreateEmploymentHistoryDto {
+  employer_name: string;
+  job_title?: string;
+  start_date?: string;
+  end_date?: string;
+  remarks?: string;
+}
+
+export interface QualificationRecord {
+  id: string;
+  title: string;
+  institution: string;
+  year_awarded: number | null;
+}
+
+export interface CreateQualificationDto {
+  title: string;
+  institution?: string;
+  year_awarded?: number;
+}
+
+export interface SkillRecord {
+  id: string;
+  name: string;
+  level: string;
+}
+
+export interface CreateSkillDto {
+  name: string;
+  level?: string;
+}
+
+export interface LinkUserDto {
+  user_id: string;
+}
+
 export interface PayrollLineRecord {
   id?: string;
   employee_id: string;
@@ -296,6 +351,8 @@ export interface EvaluationRecord {
   status: string;
   self_score?: number;
   manager_score?: number;
+  self_submitted?: boolean;
+  manager_submitted?: boolean;
 }
 
 export interface CreateEvaluationDto {
@@ -316,12 +373,29 @@ export interface LetterRecord {
   letter_type: string;
   generated_at: string;
   status: string;
+  pdf_url?: string;
+  file_url?: string;
+  file_path?: string;
 }
 
 export interface GenerateLetterDto {
   employee_id: string;
   letter_type: LetterType;
   payload?: Record<string, unknown>;
+}
+
+export interface LetterGenerateResult {
+  letter: LetterRecord | null;
+  pdfBlob?: Blob;
+  pdfUrl?: string;
+}
+
+export interface LetterPdfInfo {
+  pdf_url?: string;
+  pdfBlob?: Blob;
+  letter_id?: string;
+  letter?: LetterRecord;
+  status?: string;
 }
 
 export interface AttendanceRecord {

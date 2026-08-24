@@ -1,23 +1,44 @@
 import { axiosInstance } from '@/lib/axios';
+import { filesService } from '@/features/files/services/files.service';
+import { isStoredFileUrl, parseFilesApiUrl } from '@/features/files/utils/parseFilesApiUrl';
+import { letterPdfBranding } from '@/features/files/utils/pdfBranding';
+import { openBlobInNewTab, triggerBlobDownload, triggerBrandedPdfDownload } from '@/features/files/utils/triggerBlobDownload';
+import { resolveSessionTenantIdFromAuth, companyIdFromAccessToken, resolveCompanyIdFromUserLike } from '@/lib/tenantFromAuth';
+import { isUuid } from '@/lib/isUuid';
+import { withGatewayRetry } from '@/lib/wakeApi';
+import { useAuthStore } from '@/store/authStore';
+import { fetchTenantCompanyOptions } from '@/features/users/hooks/useTenantCompanies';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { masterService } from '@/features/masters/services/master.service';
 import { HR_API } from '../api/hr.api';
 import { LEAVE_STATUSES } from '../constants/hr.constants';
 import type { EmployeeRow } from '../types/employee.types';
+import { generateHrLetterPdfFallback } from '../utils/generateHrLetterPdfFallback';
+import { letterPdfInfoFromGenerateResult, letterPdfReference } from '../utils/normalizeLetterPdf';
 import type {
   AdvanceRecord,
   AttendanceRecord,
   CreateAdvanceDto,
+  CreateDependentDto,
   CreateEmployeeDto,
+  CreateEmploymentHistoryDto,
   CreateEvaluationCycleDto,
   CreateEvaluationDto,
   CreateLoanDto,
+  CreateQualificationDto,
+  CreateSkillDto,
   CreateTimesheetDto,
   DependentRecord,
+  EmploymentHistoryRecord,
+  LinkUserDto,
+  QualificationRecord,
+  SkillRecord,
   EvaluationCycleRecord,
   EvaluationRecord,
   EvaluationTemplateRecord,
   GenerateLetterDto,
+  LetterGenerateResult,
+  LetterPdfInfo,
   HrDocumentRecord,
   HrOption,
   LeavePolicyDto,
@@ -108,6 +129,67 @@ function nestedName(value: unknown): string {
   return str(record, 'name', 'title', 'code', 'label');
 }
 
+function nestedPersonName(value: unknown): string {
+  if (typeof value === 'string' && value.trim()) return value.trim();
+  const record = asRecord(value);
+  if (!record) return '';
+  const firstName = str(record, 'first_name', 'firstName');
+  const lastName = str(record, 'last_name', 'lastName');
+  return (
+    str(record, 'name', 'full_name', 'fullName', 'title', 'label') ||
+    `${firstName} ${lastName}`.trim()
+  );
+}
+
+function averageScoreObject(value: unknown): number | undefined {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+  const values = Object.values(value as Record<string, unknown>).filter(
+    (item): item is number => typeof item === 'number' && Number.isFinite(item),
+  );
+  if (!values.length) return undefined;
+  const avg = values.reduce((sum, score) => sum + score, 0) / values.length;
+  return Math.round(avg * 10) / 10;
+}
+
+function pickEvaluationScore(record: Record<string, unknown>, ...keys: string[]): number | undefined {
+  for (const key of keys) {
+    const direct = num(record, key);
+    if (direct > 0) return direct;
+    const nested = averageScoreObject(record[key]);
+    if (nested != null && nested > 0) return nested;
+  }
+  return undefined;
+}
+
+function hasSubmittedFlag(record: Record<string, unknown>, ...keys: string[]): boolean {
+  for (const key of keys) {
+    const value = record[key];
+    if (value === true) return true;
+    if (typeof value === 'string' && value.trim()) return true;
+  }
+  return false;
+}
+
+function inferEvaluationSubmission(
+  record: Record<string, unknown>,
+  status: string,
+  selfScore?: number,
+  managerScore?: number,
+): { self_submitted: boolean; manager_submitted: boolean } {
+  const normalizedStatus = status.toUpperCase();
+  const self_submitted =
+    hasSubmittedFlag(record, 'self_submitted', 'selfSubmitted') ||
+    hasSubmittedFlag(record, 'self_submitted_at', 'selfSubmittedAt') ||
+    selfScore != null ||
+    /SELF_SUBMITTED|SELF_COMPLETE|SELF_REVIEW/i.test(normalizedStatus);
+  const manager_submitted =
+    hasSubmittedFlag(record, 'manager_submitted', 'managerSubmitted') ||
+    hasSubmittedFlag(record, 'manager_submitted_at', 'managerSubmittedAt') ||
+    managerScore != null ||
+    /MANAGER_SUBMITTED|MANAGER_COMPLETE|MANAGER_REVIEW/i.test(normalizedStatus);
+  return { self_submitted, manager_submitted };
+}
+
 function nestedId(value: unknown): string {
   const record = asRecord(value);
   return record ? str(record, 'id') : typeof value === 'string' ? value : '';
@@ -128,13 +210,54 @@ function dayDiff(from: string, to: string): number {
 function formatAxiosError(error: unknown): Error {
   if (error instanceof Error && !(error as { response?: unknown }).response) return error;
   const axiosErr = error as {
-    response?: { data?: { message?: string | string[] }; status?: number };
+    response?: { data?: { message?: string | string[]; error?: string }; status?: number };
     message?: string;
   };
   const message = axiosErr.response?.data?.message;
   if (Array.isArray(message)) return new Error(message.map(String).join('; '));
-  if (typeof message === 'string' && message.trim()) return new Error(message);
+  if (typeof message === 'string' && message.trim()) {
+    if (axiosErr.response?.status === 500 && /internal server error/i.test(message)) {
+      return new Error(
+        'Payroll run could not be created (server error). Check that company is set, the month is not duplicated, and salary components are seeded.',
+      );
+    }
+    return new Error(message);
+  }
   return new Error(axiosErr.message || 'Request failed');
+}
+
+function resolveHrCompanyId(override?: string): string {
+  const trimmed = override?.trim();
+  if (trimmed && isUuid(trimmed)) return trimmed;
+  const { accessToken, user } = useAuthStore.getState();
+  const fromSession =
+    user?.companyId?.trim() ||
+    resolveCompanyIdFromUserLike(user) ||
+    companyIdFromAccessToken(accessToken) ||
+    '';
+  return fromSession && isUuid(fromSession) ? fromSession : '';
+}
+
+async function resolveHrCompanyIdForPayroll(override?: string): Promise<string> {
+  const direct = resolveHrCompanyId(override);
+  if (direct) return direct;
+
+  try {
+    const companies = await fetchTenantCompanyOptions();
+    if (companies.length === 1) return companies[0]!.id;
+    const { accessToken, user } = useAuthStore.getState();
+    const sessionHint =
+      user?.companyId?.trim() ||
+      resolveCompanyIdFromUserLike(user) ||
+      companyIdFromAccessToken(accessToken) ||
+      '';
+    const matched = companies.find((company) => company.id === sessionHint);
+    if (matched) return matched.id;
+  } catch {
+    // fall through to error below
+  }
+
+  return '';
 }
 
 function compact<T extends object>(dto: T): T {
@@ -290,6 +413,47 @@ function normalizeDependent(raw: unknown): DependentRecord | null {
   };
 }
 
+function normalizeEmploymentHistory(raw: unknown): EmploymentHistoryRecord | null {
+  const record = asRecord(raw);
+  if (!record) return null;
+  const id = str(record, 'id');
+  if (!id) return null;
+  return {
+    id,
+    employer_name: str(record, 'employer_name', 'employer'),
+    job_title: str(record, 'job_title', 'title'),
+    start_date: dateOnly(str(record, 'start_date')),
+    end_date: dateOnly(str(record, 'end_date')),
+    remarks: str(record, 'remarks', 'notes'),
+  };
+}
+
+function normalizeQualification(raw: unknown): QualificationRecord | null {
+  const record = asRecord(raw);
+  if (!record) return null;
+  const id = str(record, 'id');
+  if (!id) return null;
+  const year = num(record, 'year_awarded', 'year');
+  return {
+    id,
+    title: str(record, 'title', 'name'),
+    institution: str(record, 'institution', 'school'),
+    year_awarded: year > 0 ? year : null,
+  };
+}
+
+function normalizeSkill(raw: unknown): SkillRecord | null {
+  const record = asRecord(raw);
+  if (!record) return null;
+  const id = str(record, 'id');
+  if (!id) return null;
+  return {
+    id,
+    name: str(record, 'name', 'skill'),
+    level: str(record, 'level'),
+  };
+}
+
 function normalizeComponent(raw: unknown): SalaryComponentRecord | null {
   const record = asRecord(raw);
   if (!record) return null;
@@ -309,13 +473,17 @@ function normalizeTimesheet(raw: unknown): TimesheetRecord | null {
   if (!record) return null;
   const id = str(record, 'id');
   if (!id) return null;
+  const employee_id = str(record, 'employee_id', 'employeeId') || nestedId(record.employee);
   return {
     id,
-    employee_id: str(record, 'employee_id') || nestedId(record.employee),
-    employee: nestedName(record.employee) || str(record, 'employee_name') || '—',
+    employee_id,
+    employee:
+      nestedPersonName(record.employee) ||
+      str(record, 'employee_name', 'employeeName', 'employee_full_name', 'full_name') ||
+      '—',
     work_date: dateOnly(str(record, 'work_date', 'date')),
     hours: num(record, 'hours'),
-    overtime_hours: num(record, 'overtime_hours'),
+    overtime_hours: num(record, 'overtime_hours', 'overtimeHours'),
     status: str(record, 'status') || 'DRAFT',
     notes: str(record, 'notes'),
   };
@@ -408,15 +576,201 @@ function normalizeEvaluation(raw: unknown): EvaluationRecord | null {
   if (!record) return null;
   const id = str(record, 'id');
   if (!id) return null;
+  const employeeId = str(record, 'employee_id') || nestedId(record.employee);
+  const status = str(record, 'status') || 'DRAFT';
+  const self_score = pickEvaluationScore(
+    record,
+    'self_score',
+    'selfScore',
+    'self_rating',
+    'selfRating',
+    'self_total',
+    'selfTotal',
+    'self_scores',
+    'selfScores',
+  );
+  const manager_score = pickEvaluationScore(
+    record,
+    'manager_score',
+    'managerScore',
+    'manager_rating',
+    'managerRating',
+    'manager_total',
+    'managerTotal',
+    'manager_scores',
+    'managerScores',
+  );
+  const submission = inferEvaluationSubmission(record, status, self_score, manager_score);
   return {
     id,
     cycle_id: str(record, 'cycle_id') || nestedId(record.cycle),
-    employee_id: str(record, 'employee_id') || nestedId(record.employee),
-    employee: nestedName(record.employee) || str(record, 'employee_name') || '—',
-    status: str(record, 'status') || 'DRAFT',
-    self_score: num(record, 'self_score') || undefined,
-    manager_score: num(record, 'manager_score') || undefined,
+    employee_id: employeeId,
+    employee:
+      nestedPersonName(record.employee) ||
+      str(record, 'employee_name', 'employeeName', 'employee_full_name', 'full_name') ||
+      '—',
+    status,
+    self_score,
+    manager_score,
+    ...submission,
   };
+}
+
+function isPdfArrayBuffer(data: ArrayBuffer): boolean {
+  if (data.byteLength < 4) return false;
+  const bytes = new Uint8Array(data);
+  return bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46;
+}
+
+function isLetterFileReference(value: string): boolean {
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  if (/(^|\/)hr\/letters(\/|$)/i.test(trimmed)) return false;
+  if (parseFilesApiUrl(trimmed)) return true;
+  if (/\.pdf(?:$|[?#])/i.test(trimmed)) return true;
+  if (/^data:application\/pdf/i.test(trimmed)) return true;
+  if (/^https?:\/\/.+\/files\//i.test(trimmed)) return true;
+  return false;
+}
+
+function base64ToPdfBlob(base64: string): Blob {
+  const normalized = base64.replace(/^data:application\/pdf;base64,/, '').trim();
+  const binary = atob(normalized);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new Blob([bytes], { type: 'application/pdf' });
+}
+
+function extractLetterPdfBase64(raw: unknown, depth = 0): string {
+  if (depth > 4 || raw == null) return '';
+  if (typeof raw === 'string' && raw.length > 100 && /^[A-Za-z0-9+/=\r\n]+$/.test(raw.trim())) {
+    return raw.trim();
+  }
+  const record = asRecord(raw);
+  if (!record) return '';
+  for (const key of [
+    'pdf_base64',
+    'pdfBase64',
+    'base64',
+    'pdf_content',
+    'content_base64',
+    'file_base64',
+  ]) {
+    const value = record[key];
+    if (typeof value === 'string' && value.trim()) {
+      const trimmed = value.trim();
+      if (trimmed.length > 100 && /^[A-Za-z0-9+/=\r\n]+$/.test(trimmed)) return trimmed;
+    }
+  }
+  const pdfValue = record.pdf;
+  if (typeof pdfValue === 'string' && pdfValue.trim()) {
+    const trimmed = pdfValue.trim();
+    if (trimmed.length > 100 && /^[A-Za-z0-9+/=\r\n]+$/.test(trimmed)) return trimmed;
+  }
+  for (const key of ['file', 'document', 'pdf', 'storage', 'data']) {
+    const nested = extractLetterPdfBase64(record[key], depth + 1);
+    if (nested) return nested;
+  }
+  return '';
+}
+
+function extractLetterFileReference(raw: unknown, depth = 0): string {
+  if (depth > 4 || raw == null) return '';
+  if (typeof raw === 'string' && isLetterFileReference(raw)) return raw.trim();
+  const record = asRecord(raw);
+  if (!record) return '';
+  for (const key of [
+    'pdf_url',
+    'file_url',
+    'file_path',
+    'storage_path',
+    'storage_key',
+    'filename',
+    'file_name',
+    'fileName',
+    'path',
+    'download_url',
+    'document_url',
+    'pdf_path',
+    'pdfPath',
+    'rendered_pdf_url',
+    'object_key',
+    's3_key',
+  ]) {
+    const value = record[key];
+    if (typeof value === 'string' && isLetterFileReference(value)) return value.trim();
+  }
+  for (const key of ['file', 'document', 'pdf', 'storage', 'attachment', 'result']) {
+    const nested = extractLetterFileReference(record[key], depth + 1);
+    if (nested) return nested;
+  }
+  return '';
+}
+
+function resolveLetterStoredUrl(url: string): string {
+  if (/^https?:\/\//i.test(url) || url.startsWith('blob:') || url.startsWith('data:')) {
+    return url;
+  }
+  if (parseFilesApiUrl(url)) return url;
+  if (/^\/files\//i.test(url) || /^\/backend\/files\//i.test(url)) {
+    return url.startsWith('/backend/') ? url.replace(/^\/backend/, '') : url;
+  }
+  if (/^[^/]+\/.+\.pdf$/i.test(url)) {
+    return `/files/${url.replace(/^\/+/, '')}`;
+  }
+  if (/^[^/]+\.pdf$/i.test(url)) {
+    const { accessToken, user } = useAuthStore.getState();
+    const tenantId = resolveSessionTenantIdFromAuth({ accessToken, user });
+    if (tenantId) return `/files/${tenantId}/${url.replace(/^\/+/, '')}`;
+  }
+  const base = String(import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
+  if (url.startsWith('/') && isLetterFileReference(url)) return `${base}${url}`;
+  return url;
+}
+
+function letterPdfFilename(letterType: string, employeeId: string): string {
+  const type = letterType.toLowerCase().replace(/_/g, '-');
+  const suffix = employeeId.trim().slice(0, 8) || 'employee';
+  return `hr-letter-${type}-${suffix}-${new Date().toISOString().slice(0, 10)}.pdf`;
+}
+
+function parseGenerateLetterResponse(
+  data: ArrayBuffer,
+  contentType: string,
+  _dto: GenerateLetterDto,
+): LetterGenerateResult {
+  const parsed = parseLetterPdfArrayBuffer(data, contentType);
+  const letter = parsed.letter ?? null;
+  // Ignore server PDF bytes — backend currently returns a blank template with
+  // checkbox fields for every letter type instead of a filled letter PDF.
+  return {
+    letter,
+    pdfUrl: parsed.pdf_url,
+    pdfBlob: undefined,
+  };
+}
+
+function formatArrayBufferAxiosError(error: unknown): Error {
+  const axiosErr = error as {
+    response?: { data?: ArrayBuffer | unknown; status?: number };
+    message?: string;
+  };
+  const raw = axiosErr.response?.data;
+  if (raw instanceof ArrayBuffer && raw.byteLength > 0 && raw.byteLength < 8192) {
+    try {
+      const text = new TextDecoder().decode(raw);
+      const parsed = JSON.parse(text) as { message?: string | string[]; error?: string };
+      const message = parsed.message;
+      if (Array.isArray(message)) return new Error(message.map(String).join('; '));
+      if (typeof message === 'string' && message.trim()) return new Error(message);
+      if (typeof parsed.error === 'string' && parsed.error.trim()) return new Error(parsed.error);
+    } catch {
+      /* fall through */
+    }
+  }
+  return formatAxiosError(error);
 }
 
 function normalizeLetter(raw: unknown): LetterRecord | null {
@@ -424,6 +778,8 @@ function normalizeLetter(raw: unknown): LetterRecord | null {
   if (!record) return null;
   const id = str(record, 'id');
   if (!id) return null;
+  const fileRef = extractLetterFileReference(record);
+  const pdf_url = fileRef ? resolveLetterStoredUrl(fileRef) : undefined;
   return {
     id,
     employee_id: str(record, 'employee_id') || nestedId(record.employee),
@@ -431,7 +787,83 @@ function normalizeLetter(raw: unknown): LetterRecord | null {
     letter_type: str(record, 'letter_type', 'type'),
     generated_at: dateOnly(str(record, 'generated_at', 'created_at')),
     status: str(record, 'status') || 'GENERATED',
+    pdf_url,
+    file_url: pdf_url,
+    file_path: fileRef && !pdf_url?.includes('/files/') ? fileRef : str(record, 'file_path') || undefined,
   };
+}
+
+function parseLetterPdfArrayBuffer(
+  data: ArrayBuffer,
+  contentType: string | undefined,
+): { pdf_url?: string; pdfBlob?: Blob; letter?: LetterRecord | null } {
+  const type = String(contentType ?? '');
+  if (type.includes('application/pdf') || isPdfArrayBuffer(data)) {
+    return { pdfBlob: new Blob([data], { type: 'application/pdf' }) };
+  }
+
+  const text = new TextDecoder().decode(data).trim();
+  if (!text.startsWith('{') && !text.startsWith('[')) return {};
+
+  try {
+    const json = JSON.parse(text) as unknown;
+    const record = unwrapOne(json) ?? asRecord(json);
+    const letter = normalizeLetter(record ?? json);
+    const base64 = extractLetterPdfBase64(record ?? json);
+    if (base64) {
+      return { pdfBlob: base64ToPdfBlob(base64), letter };
+    }
+    const fileRef = extractLetterFileReference(record ?? json);
+    const pdf_url = fileRef ? resolveLetterStoredUrl(fileRef) : letter?.pdf_url;
+    return {
+      pdf_url: pdf_url && isLetterFileReference(pdf_url) ? pdf_url : undefined,
+      letter,
+    };
+  } catch {
+    return {};
+  }
+}
+
+async function resolveLetterPdfFromApi(id: string): Promise<LetterPdfInfo> {
+  try {
+    const { data } = await axiosInstance.get<unknown>(HR_API.letter(id));
+    const letter = normalizeLetter(unwrapOne(data) ?? data);
+    if (letter) {
+      return {
+        letter_id: id,
+        letter,
+        status: 'READY',
+      };
+    }
+  } catch {
+    /* fall through */
+  }
+
+  return { letter_id: id, status: 'PENDING' };
+}
+
+async function openResolvedLetterPdf(
+  letter: LetterRecord,
+  pdfBlob: Blob | undefined,
+  pdfUrl: string | undefined,
+  getEmployee: (id: string) => Promise<EmployeeRow>,
+): Promise<void> {
+  const displayName = letterPdfFilename(letter.letter_type, letter.employee_id);
+  const branding = letterPdfBranding(letterPdfReference(letter), letter.generated_at);
+  if (pdfBlob) {
+    await openBlobInNewTab(pdfBlob, undefined, { filename: displayName, branding });
+    return;
+  }
+  if (pdfUrl && isStoredFileUrl(pdfUrl)) {
+    await filesService.openStoredFile(pdfUrl, { displayName });
+    return;
+  }
+  const info = await buildFallbackLetterPdfInfo(letter, getEmployee);
+  if (info.pdfBlob) {
+    await openBlobInNewTab(info.pdfBlob, undefined, { filename: displayName, branding });
+    return;
+  }
+  throw new Error('No PDF is available for this letter yet.');
 }
 
 function normalizeAttendance(raw: unknown): AttendanceRecord | null {
@@ -464,7 +896,32 @@ async function listMasterOptions(basePath: string): Promise<HrOption[]> {
   }
 }
 
-async function triggerBlobDownload(path: string, filename: string): Promise<void> {
+async function buildFallbackLetterPdfInfo(
+  letter: LetterRecord,
+  getEmployee: (id: string) => Promise<EmployeeRow>,
+): Promise<LetterPdfInfo> {
+  const employee = letter.employee_id
+    ? await getEmployee(letter.employee_id).catch(() => null)
+    : null;
+  const blob = await generateHrLetterPdfFallback(letter, employee);
+  return {
+    pdf_url: URL.createObjectURL(blob),
+    pdfBlob: blob,
+    letter_id: letter.id || undefined,
+    letter,
+    status: 'READY',
+  };
+}
+
+async function ensureLetterPdfInfo(
+  _info: LetterPdfInfo,
+  letter: LetterRecord,
+  getEmployee: (id: string) => Promise<EmployeeRow>,
+): Promise<LetterPdfInfo> {
+  return buildFallbackLetterPdfInfo(letter, getEmployee);
+}
+
+async function downloadBlobFromPath(path: string, filename: string): Promise<void> {
   const { data } = await axiosInstance.get<Blob>(path, { responseType: 'blob' });
   const blob = data instanceof Blob ? data : new Blob([data]);
   const href = URL.createObjectURL(blob);
@@ -589,6 +1046,79 @@ export const hrService = {
       return unwrapList(data)
         .map(normalizeDependent)
         .filter((row): row is DependentRecord => Boolean(row));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async addDependent(employeeId: string, dto: CreateDependentDto): Promise<void> {
+    try {
+      await axiosInstance.post(HR_API.employeeDependents(employeeId), compact(dto));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async listEmploymentHistory(employeeId: string): Promise<EmploymentHistoryRecord[]> {
+    try {
+      const { data } = await axiosInstance.get<unknown>(HR_API.employeeEmploymentHistory(employeeId));
+      return unwrapList(data)
+        .map(normalizeEmploymentHistory)
+        .filter((row): row is EmploymentHistoryRecord => Boolean(row));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async addEmploymentHistory(employeeId: string, dto: CreateEmploymentHistoryDto): Promise<void> {
+    try {
+      await axiosInstance.post(HR_API.employeeEmploymentHistory(employeeId), compact(dto));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async listQualifications(employeeId: string): Promise<QualificationRecord[]> {
+    try {
+      const { data } = await axiosInstance.get<unknown>(HR_API.employeeQualifications(employeeId));
+      return unwrapList(data)
+        .map(normalizeQualification)
+        .filter((row): row is QualificationRecord => Boolean(row));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async addQualification(employeeId: string, dto: CreateQualificationDto): Promise<void> {
+    try {
+      await axiosInstance.post(HR_API.employeeQualifications(employeeId), compact(dto));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async listSkills(employeeId: string): Promise<SkillRecord[]> {
+    try {
+      const { data } = await axiosInstance.get<unknown>(HR_API.employeeSkills(employeeId));
+      return unwrapList(data)
+        .map(normalizeSkill)
+        .filter((row): row is SkillRecord => Boolean(row));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async addSkill(employeeId: string, dto: CreateSkillDto): Promise<void> {
+    try {
+      await axiosInstance.post(HR_API.employeeSkills(employeeId), compact(dto));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async linkEmployeeUser(employeeId: string, dto: LinkUserDto): Promise<void> {
+    try {
+      await axiosInstance.post(HR_API.employeeLinkUser(employeeId), dto);
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -752,9 +1282,24 @@ export const hrService = {
     payroll_year: number;
     payroll_month: number;
     currency_code?: string;
+    company_id?: string;
   }): Promise<PayrollRunRecord | null> {
+    const company_id = await resolveHrCompanyIdForPayroll(dto.company_id);
+    if (!company_id) {
+      throw new Error(
+        'Select a company for this payroll run. Ask your Tenant Admin to set up a company profile if none appear.',
+      );
+    }
     try {
-      const { data } = await axiosInstance.post<unknown>(HR_API.payrollRuns, dto);
+      const { data } = await axiosInstance.post<unknown>(
+        HR_API.payrollRuns,
+        compact({
+          payroll_year: dto.payroll_year,
+          payroll_month: dto.payroll_month,
+          currency_code: dto.currency_code,
+          company_id,
+        }),
+      );
       return normalizePayroll(unwrapOne(data) ?? data);
     } catch (error) {
       throw formatAxiosError(error);
@@ -820,7 +1365,7 @@ export const hrService = {
 
   async downloadWps(id: string, year: string, month: string): Promise<void> {
     try {
-      await triggerBlobDownload(HR_API.payrollRunWpsExport(id), `wps-${year}-${month}.xlsx`);
+      await downloadBlobFromPath(HR_API.payrollRunWpsExport(id), `wps-${year}-${month}.xlsx`);
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -828,7 +1373,7 @@ export const hrService = {
 
   async downloadWpsSif(id: string, year: string, month: string): Promise<void> {
     try {
-      await triggerBlobDownload(HR_API.payrollRunWpsSif(id), `wps-${year}-${month}.sif`);
+      await downloadBlobFromPath(HR_API.payrollRunWpsSif(id), `wps-${year}-${month}.sif`);
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -1159,13 +1704,121 @@ export const hrService = {
     }
   },
 
-  async generateLetter(dto: GenerateLetterDto): Promise<LetterRecord | null> {
+  async generateLetter(dto: GenerateLetterDto): Promise<LetterGenerateResult> {
     try {
-      const { data } = await axiosInstance.post<unknown>(HR_API.lettersGenerate, compact(dto));
-      return normalizeLetter(unwrapOne(data) ?? data);
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post<ArrayBuffer>(HR_API.lettersGenerate, compact(dto), {
+          responseType: 'arraybuffer',
+        }),
+      );
+      const contentType = String(res.headers?.['content-type'] ?? '');
+      return parseGenerateLetterResponse(res.data, contentType, dto);
     } catch (error) {
-      throw formatAxiosError(error);
+      throw formatArrayBufferAxiosError(error);
     }
+  },
+
+  async generateLetterPdf(dto: GenerateLetterDto): Promise<LetterPdfInfo> {
+    const result = await this.generateLetter(dto);
+    let info = letterPdfInfoFromGenerateResult(result);
+    const letterId = info.letter_id || info.letter?.id;
+    if (!info.pdfBlob && letterId) {
+      const resolved = await resolveLetterPdfFromApi(letterId);
+      info = {
+        ...info,
+        ...resolved,
+        letter: info.letter ?? resolved.letter,
+        letter_id: letterId,
+      };
+    }
+    const letter =
+      info.letter ??
+      (letterId ? await this.getLetter(letterId) : null) ??
+      ({
+        id: letterId || '',
+        employee_id: dto.employee_id,
+        employee: '—',
+        letter_type: dto.letter_type,
+        generated_at: new Date().toISOString().slice(0, 10),
+        status: 'GENERATED',
+      } satisfies LetterRecord);
+    return ensureLetterPdfInfo(
+      info,
+      { ...letter, letter_type: dto.letter_type },
+      (id) => this.getEmployee(id),
+    );
+  },
+
+  async getLetterPdf(id: string): Promise<LetterPdfInfo> {
+    const resolved = await resolveLetterPdfFromApi(id);
+    const letter = resolved.letter ?? (await this.getLetter(id));
+    if (!letter) return { status: 'NOT_FOUND' };
+    return ensureLetterPdfInfo(
+      { ...resolved, letter_id: id, letter },
+      letter,
+      (empId) => this.getEmployee(empId),
+    );
+  },
+
+  async openLetterPdf(source: LetterRecord | string): Promise<void> {
+    const id = typeof source === 'string' ? source : source.id;
+    const info = await this.getLetterPdf(id);
+    const letter = info.letter ?? (await this.getLetter(id));
+    if (!letter) throw new Error('Letter not found.');
+    const displayName = letterPdfFilename(letter.letter_type, letter.employee_id);
+    const branding = letterPdfBranding(letterPdfReference(letter), letter.generated_at);
+    if (info.pdfBlob) {
+      await openBlobInNewTab(info.pdfBlob, undefined, { filename: displayName, branding });
+      return;
+    }
+    if (!info.pdf_url) throw new Error('Could not open letter PDF.');
+    if (info.pdf_url.startsWith('blob:')) {
+      const response = await fetch(info.pdf_url);
+      const blob = await response.blob();
+      await openBlobInNewTab(blob, undefined, { filename: displayName, branding });
+      return;
+    }
+    await filesService.openStoredFile(info.pdf_url, { displayName });
+  },
+
+  async openGeneratedLetterPdf(
+    result: LetterGenerateResult,
+    fallbackType: string,
+    fallbackEmployeeId: string,
+  ): Promise<void> {
+    const letter: LetterRecord =
+      result.letter ?? {
+        id: '',
+        employee_id: fallbackEmployeeId,
+        employee: '—',
+        letter_type: fallbackType,
+        generated_at: '',
+        status: 'GENERATED',
+      };
+    await openResolvedLetterPdf(letter, result.pdfBlob, result.pdfUrl, (empId) =>
+      this.getEmployee(empId),
+    );
+  },
+
+  async downloadLetterPdf(source: LetterRecord | string): Promise<void> {
+    const id = typeof source === 'string' ? source : source.id;
+    const info = await this.getLetterPdf(id);
+    const letter = info.letter ?? (await this.getLetter(id));
+    if (!letter) throw new Error('Letter not found.');
+    const displayName = letterPdfFilename(letter.letter_type, letter.employee_id);
+    const branding = letterPdfBranding(letterPdfReference(letter), letter.generated_at);
+    if (info.pdfBlob) {
+      await triggerBrandedPdfDownload(info.pdfBlob, displayName, { filename: displayName, branding });
+      return;
+    }
+    if (!info.pdf_url) throw new Error('Could not download letter PDF.');
+    if (info.pdf_url.startsWith('blob:')) {
+      const response = await fetch(info.pdf_url);
+      const blob = await response.blob();
+      await triggerBrandedPdfDownload(blob, displayName, { filename: displayName, branding });
+      return;
+    }
+    await filesService.downloadStoredFile(info.pdf_url, { displayName });
   },
 
   async getLetter(id: string): Promise<LetterRecord | null> {

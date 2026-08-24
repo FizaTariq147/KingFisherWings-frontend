@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { PageBackLink } from '@/components/ui/PageBackLink';
+import { ReportsPageBackLink } from '@/features/reports/components/ReportsPageBackLink';
 import { Search, ChevronDown, Heart, Users, BarChart2, ClipboardList, PieChart as PieChartIcon, Headphones, FileText, DollarSign, CreditCard, RotateCw, ListChecks } from 'lucide-react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useManagementReport } from '@/features/management/hooks/useManagement';
@@ -120,11 +120,11 @@ export default function ManagementDashboardReportsPage() {
 
   return (
     <div className="space-y-3">
-      <PageBackLink to="/management" label="Back to Management" />
+      <ReportsPageBackLink fallbackTo="/management" fallbackLabel="Back to Management" />
       <div className="bg-white border border-gray-200 rounded-md">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
-          <h2 className="text-[17px] font-medium text-gray-800">Management Dashboard - Reports</h2>
+          <h2 className="text-sm font-medium text-gray-800">Management Dashboard - Reports</h2>
         </div>
 
         {/* Filter grid */}

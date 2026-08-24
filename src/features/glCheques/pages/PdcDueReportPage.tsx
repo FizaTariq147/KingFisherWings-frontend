@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ReportsBackButton } from '@/features/reports/components/ReportsBackButton';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -29,14 +30,8 @@ export default function PdcDueReportPage() {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <button
-            type="button"
-            className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] mb-1"
-            onClick={() => navigate(CHEQUE_ROUTE_PREFIX)}
-          >
-            ← Cheques
-          </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">PDC due report</h2>
+          <ReportsBackButton fallbackTo={CHEQUE_ROUTE_PREFIX} fallbackLabel="Back to Cheques" />
+          <h2 className="text-sm font-semibold text-[var(--color-neutral-800)]">PDC due report</h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
             Post-dated cheques due within N days (GET /gl/cheques/reports/pdc-due).
           </p>

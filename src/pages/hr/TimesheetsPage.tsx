@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
@@ -32,8 +32,18 @@ export default function TimesheetsPage() {
 
   const { data: employees = [] } = useQuery({
     queryKey: ['hr', 'employees', 'timesheets'],
-    queryFn: () => hrService.listEmployees({ limit: 100, status: 'ACTIVE' }),
+    queryFn: () => hrService.listEmployees({ limit: 200 }),
   });
+
+  const employeeNameById = useMemo(
+    () => new Map(employees.map((employee) => [employee.id, employee.name])),
+    [employees],
+  );
+
+  const activeEmployees = useMemo(
+    () => employees.filter((employee) => !employee.status || employee.status === 'ACTIVE' || employee.status === 'PROBATION'),
+    [employees],
+  );
 
   const { data: timesheets = [], isLoading, isError, error } = useQuery({
     queryKey: ['hr', 'timesheets', from, to, employeeFilter, statusFilter],
@@ -201,7 +211,9 @@ export default function TimesheetsPage() {
                 timesheets.map((row) => (
                   <tr key={row.id} className="border-b border-gray-100">
                     <td className="px-4 py-2">{row.work_date}</td>
-                    <td className="px-4 py-2">{row.employee}</td>
+                    <td className="px-4 py-2">
+                      {employeeNameById.get(row.employee_id) || row.employee}
+                    </td>
                     <td className="px-4 py-2">{row.hours}</td>
                     <td className="px-4 py-2">{row.overtime_hours}</td>
                     <td className="px-4 py-2">{labelEnum(row.status)}</td>
@@ -253,7 +265,7 @@ export default function TimesheetsPage() {
               onChange={(e) => setEmployeeId(e.target.value)}
             >
               <option value="">Select…</option>
-              {employees.map((emp) => (
+              {activeEmployees.map((emp) => (
                 <option key={emp.id} value={emp.id}>
                   {emp.name}
                 </option>
