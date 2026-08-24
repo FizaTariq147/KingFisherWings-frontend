@@ -1,0 +1,1 @@
+export { LetterTypeGrid } from './LetterTypeGrid';

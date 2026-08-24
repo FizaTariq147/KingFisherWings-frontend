@@ -44,12 +44,12 @@ function authErrorMessage(error: unknown, fallback: string): string {
       if (typeof message === 'string' && message.trim()) return message;
     }
     if (error.response?.status === 401) {
-      return 'Invalid credentials. Use Register if you do not have a Super Admin account yet.';
+      return 'Invalid credentials. Check email and password.';
     }
   }
   if (error instanceof Error && error.message.trim()) {
     if (/status code 401/i.test(error.message)) {
-      return 'Invalid credentials. Use Register if you do not have a Super Admin account yet.';
+      return 'Invalid credentials. Check email and password.';
     }
     return error.message;
   }
@@ -61,12 +61,18 @@ export default function SuperAdminLoginPage(): JSX.Element {
   const location = useLocation();
   const setSession = useSuperAdminAuthStore((s) => s.setSession);
   const clearErpSession = useAuthStore((s) => s.clearSession);
+  const allowSignup =
+    import.meta.env.DEV || import.meta.env.VITE_ALLOW_SUPERADMIN_SIGNUP === 'true';
   const [mode, setMode] = useState<'login' | 'signup'>('login');
 
   // Drop leftover ERP idle/session state so the Revoke/Continue modal never appears here.
   useEffect(() => {
     clearErpSession();
   }, [clearErpSession]);
+
+  useEffect(() => {
+    if (!allowSignup && mode === 'signup') setMode('login');
+  }, [allowSignup, mode]);
 
   const loginForm = useForm<LoginFormValues>({ resolver: zodResolver(loginSchema) });
   const signupForm = useForm<SignupFormValues>({ resolver: zodResolver(signupSchema) });
@@ -113,28 +119,32 @@ export default function SuperAdminLoginPage(): JSX.Element {
           <p className="mt-1 text-sm text-gray-500">Super Admin Portal</p>
         </div>
 
-        <div className="mb-6 flex rounded-md border border-gray-200 p-1 text-sm">
-          <button
-            type="button"
-            className={`flex-1 rounded py-1.5 font-medium ${
-              mode === 'login' ? 'bg-[var(--color-primary)] text-white' : 'text-gray-600'
-            }`}
-            onClick={() => setMode('login')}
-          >
-            Sign in
-          </button>
-          <button
-            type="button"
-            className={`flex-1 rounded py-1.5 font-medium ${
-              mode === 'signup' ? 'bg-[var(--color-primary)] text-white' : 'text-gray-600'
-            }`}
-            onClick={() => setMode('signup')}
-          >
-            Register
-          </button>
-        </div>
+        {allowSignup ? (
+          <div className="mb-6 flex rounded-md border border-gray-200 p-1 text-sm">
+            <button
+              type="button"
+              className={`flex-1 rounded py-1.5 font-medium ${
+                mode === 'login' ? 'bg-[var(--color-primary)] text-white' : 'text-gray-600'
+              }`}
+              onClick={() => setMode('login')}
+            >
+              Sign in
+            </button>
+            <button
+              type="button"
+              className={`flex-1 rounded py-1.5 font-medium ${
+                mode === 'signup' ? 'bg-[var(--color-primary)] text-white' : 'text-gray-600'
+              }`}
+              onClick={() => setMode('signup')}
+            >
+              Register
+            </button>
+          </div>
+        ) : (
+          <p className="mb-6 text-center text-sm text-gray-500">Sign in with your platform account</p>
+        )}
 
-        {mode === 'login' ? (
+        {mode === 'login' || !allowSignup ? (
           <>
             {loginForm.formState.errors.root && (
               <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">

@@ -71,6 +71,7 @@ export const HR_API = {
   letters: '/hr/letters',
   lettersGenerate: '/hr/letters/generate',
   letter: (id: string) => `/hr/letters/${id}`,
+  letterPdf: (id: string) => `/hr/letters/${id}/pdf`,
 } as const;
 
 export const VESSEL_SCHEDULES_API = {

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 export interface SuperAdminUser {
   id: string;
@@ -31,6 +31,15 @@ export const useSuperAdminAuthStore = create<SuperAdminAuthState>()(
       logout: () =>
         set({ user: null, accessToken: null, refreshToken: null, isAuthenticated: false }),
     }),
-    { name: 'kfg-superadmin-auth' },
+    {
+      name: 'kfg-superadmin-auth',
+      storage: createJSONStorage(() => sessionStorage),
+      // Never persist access tokens — refresh only (align with ERP authStore).
+      partialize: (state) => ({
+        user: state.user,
+        refreshToken: state.refreshToken,
+        isAuthenticated: Boolean(state.refreshToken),
+      }),
+    },
   ),
 );

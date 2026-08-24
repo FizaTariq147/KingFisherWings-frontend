@@ -317,6 +317,40 @@ export const generateLetterSchema = z.object({
   letter_type: z.enum(LETTER_TYPES, { error: 'Select a letter type' }),
 });
 
+export const createDependentSchema = z.object({
+  full_name: requiredText({ min: 1, max: 200 }),
+  relation: z.enum(['SPOUSE', 'CHILD', 'OTHER'], { error: 'Select a relation' }),
+  date_of_birth: dateString({ required: false }).optional(),
+  passport_no: optionalTextUndef({ max: 80 }),
+  visa_no: optionalTextUndef({ max: 80 }),
+});
+
+export const createEmploymentHistorySchema = z.object({
+  employer_name: requiredText({ min: 1, max: 200 }),
+  job_title: optionalTextUndef({ max: 200 }),
+  start_date: dateString({ required: false }).optional(),
+  end_date: dateString({ required: false }).optional(),
+  remarks: optionalTextUndef({ max: 500 }),
+});
+
+export const createQualificationSchema = z.object({
+  title: requiredText({ min: 1, max: 200 }),
+  institution: optionalTextUndef({ max: 200 }),
+  year_awarded: amountField({ required: false, min: 1950, max: 2100, maxDecimals: 0 }).optional(),
+});
+
+export const createSkillSchema = z.object({
+  name: requiredText({ min: 1, max: 200 }),
+  level: optionalTextUndef({ max: 50 }),
+});
+
+export const linkUserSchema = z.object({
+  user_id: z.preprocess(
+    emptyToUndefined,
+    z.string({ error: 'Select a user' }).refine((value) => isUuid(value), 'Select a valid user'),
+  ),
+});
+
 export const createEvaluationSchema = z.object({
   cycle_id: z.preprocess(
     emptyToUndefined,

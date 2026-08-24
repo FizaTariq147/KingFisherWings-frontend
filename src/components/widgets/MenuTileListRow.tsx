@@ -28,7 +28,7 @@ export function MenuTileListRow({ tile, onClick, compact = false }: Props) {
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
           <h3
-            className={`font-semibold text-[#0A2942] ${compact ? 'text-[13px]' : 'text-[15px]'}`}
+            className={`font-semibold text-[#0A2942] ${compact ? 'text-[12px]' : 'text-[14px]'}`}
           >
             {tile.title}
           </h3>

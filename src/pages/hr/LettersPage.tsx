@@ -1,29 +1,32 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { PageBackLink } from '@/components/ui/PageBackLink';
-import { Button } from '@/components/ui/Button';
-import { Modal } from '@/components/ui/Modal';
-import { Plus } from 'lucide-react';
+import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
+import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
+import { letterPdfBranding } from '@/features/files/utils/pdfBranding';
+import { LetterTypeGrid } from '@/features/hr/components/LetterTypeGrid';
+import { labelEnum } from '@/features/hr/constants/hr.constants';
 import { hrService } from '@/features/hr/services/hr.service';
-import { LETTER_TYPES, labelEnum } from '@/features/hr/constants/hr.constants';
-import {
-  generateLetterSchema,
-  parseWithFieldErrors,
-  type FieldErrors,
-} from '@/features/hr/schemas/hr.schema';
-import type { LetterType } from '@/features/hr/types/hr.types';
+import type { LetterRecord, LetterType } from '@/features/hr/types/hr.types';
+import { letterPdfReference } from '@/features/hr/utils/normalizeLetterPdf';
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
+}
 
 export default function LettersPage() {
   const queryClient = useQueryClient();
   const [employeeId, setEmployeeId] = useState('');
-  const [generateOpen, setGenerateOpen] = useState(false);
-  const [genEmployeeId, setGenEmployeeId] = useState('');
-  const [letterType, setLetterType] = useState<LetterType>('EMPLOYMENT_CERT');
-  const [payloadJson, setPayloadJson] = useState('{}');
+  const [generatingType, setGeneratingType] = useState<LetterType | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [viewLetterId, setViewLetterId] = useState<string | null>(null);
-  const [viewContent, setViewContent] = useState<string>('');
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [readyOpen, setReadyOpen] = useState(false);
+  const [readyUrl, setReadyUrl] = useState<string | null>(null);
+  const [readyBlob, setReadyBlob] = useState<Blob | null>(null);
+  const [readyLetter, setReadyLetter] = useState<LetterRecord | null>(null);
+  const [openingId, setOpeningId] = useState<string | null>(null);
 
   const { data: employees = [] } = useQuery({
     queryKey: ['hr', 'employees', 'letters'],
@@ -36,66 +39,107 @@ export default function LettersPage() {
     enabled: Boolean(employeeId),
   });
 
-  const refresh = () => void queryClient.invalidateQueries({ queryKey: ['hr', 'letters'] });
-
   const generate = useMutation({
-    mutationFn: async () => {
-      const parsed = parseWithFieldErrors(generateLetterSchema, {
-        employee_id: genEmployeeId,
-        letter_type: letterType,
-      });
-      if (!parsed.success) {
-        setFieldErrors(parsed.fieldErrors);
-        throw new Error(parsed.message);
-      }
-      let payload: Record<string, unknown> | undefined;
-      if (payloadJson.trim() && payloadJson.trim() !== '{}') {
-        try {
-          payload = JSON.parse(payloadJson) as Record<string, unknown>;
-        } catch {
-          throw new Error('Payload must be valid JSON.');
-        }
-      }
-      return hrService.generateLetter({ ...parsed.data, payload });
-    },
-    onSuccess: (letter) => {
-      setGenerateOpen(false);
-      setFieldErrors({});
-      if (letter?.employee_id) setEmployeeId(letter.employee_id);
-      refresh();
-    },
-    onError: (err) => setActionError(err instanceof Error ? err.message : 'Could not generate letter.'),
+    mutationFn: (dto: Parameters<typeof hrService.generateLetterPdf>[0]) =>
+      hrService.generateLetterPdf(dto),
   });
 
-  const viewLetter = async (id: string) => {
+  const refresh = () => void queryClient.invalidateQueries({ queryKey: ['hr', 'letters'] });
+
+  const generateForType = async (letterType: LetterType) => {
+    if (!employeeId) {
+      setActionError('Select an employee before generating a letter.');
+      return;
+    }
+
+    setActionError(null);
+    setActionMessage(null);
+    setGeneratingType(letterType);
+
     try {
-      setActionError(null);
-      const letter = await hrService.getLetter(id);
-      setViewContent(JSON.stringify(letter, null, 2));
-      setViewLetterId(id);
+      let info = await generate.mutateAsync({
+        employee_id: employeeId,
+        letter_type: letterType,
+      });
+      const letterId = info.letter_id || info.letter?.id;
+
+      for (let attempt = 0; attempt < 3 && !info.pdfBlob && letterId; attempt += 1) {
+        if (attempt > 0) await sleep(1500);
+        info = await hrService.getLetterPdf(letterId);
+      }
+
+      if (!info.pdfBlob) {
+        throw new Error('Could not build the letter PDF. Please try again.');
+      }
+
+      const letter =
+        info.letter ??
+        ({
+          id: letterId || '',
+          employee_id: employeeId,
+          employee: employees.find((emp) => emp.id === employeeId)?.name || '—',
+          letter_type: letterType,
+          generated_at: new Date().toISOString().slice(0, 10),
+          status: 'GENERATED',
+        } satisfies LetterRecord);
+
+      setReadyLetter(letter);
+      setReadyBlob(info.pdfBlob);
+      setReadyUrl(info.pdf_url ?? null);
+      setReadyOpen(true);
+      setActionMessage(`${labelEnum(letterType)} PDF generated.`);
+      refresh();
     } catch (err) {
-      setActionError(err instanceof Error ? err.message : 'Could not load letter.');
+      setActionError(err instanceof Error ? err.message : 'Could not generate letter PDF.');
+    } finally {
+      setGeneratingType(null);
     }
   };
+
+  const openExistingPdf = async (letter: LetterRecord) => {
+    setActionError(null);
+    setActionMessage(null);
+    setOpeningId(letter.id);
+    try {
+      const info = await hrService.getLetterPdf(letter.id);
+      if (!info.pdfBlob) {
+        throw new Error('Could not load the letter PDF bytes. Please try again.');
+      }
+      setReadyLetter(info.letter ?? letter);
+      setReadyBlob(info.pdfBlob);
+      setReadyUrl(info.pdf_url ?? null);
+      setReadyOpen(true);
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : 'Could not open letter PDF.');
+    } finally {
+      setOpeningId(null);
+    }
+  };
+
+  const readyReference = readyLetter ? letterPdfReference(readyLetter) : 'HR-LETTER';
+  const readyFileName = formatPdfFilename(readyReference, 'hr-letter');
+  const selectedEmployee = employees.find((emp) => emp.id === employeeId);
 
   return (
     <div className="space-y-4">
       <PageBackLink to="/hr" label="Back to HR" />
-      <div className="flex items-center justify-between flex-wrap gap-2">
+      <div>
         <h1 className="text-lg font-semibold text-gray-800">HR Letters</h1>
-        <Button type="button" onClick={() => setGenerateOpen(true)}>
-          <Plus size={14} className="mr-1" />
-          Generate letter
-        </Button>
+        <p className="text-sm text-gray-500 mt-1">
+          Choose a letter type below to generate a branded PDF for an employee.
+        </p>
       </div>
 
       <div className="bg-white border border-gray-200 rounded-md p-4">
-        <label className="text-sm flex flex-col gap-1 max-w-xs">
-          Employee
+        <label className="text-sm flex flex-col gap-1 max-w-md">
+          <span className="font-medium text-[#0A2942]">Employee</span>
           <select
             className="border rounded px-2 py-1.5"
             value={employeeId}
-            onChange={(e) => setEmployeeId(e.target.value)}
+            onChange={(e) => {
+              setEmployeeId(e.target.value);
+              setActionError(null);
+            }}
           >
             <option value="">Select employee…</option>
             {employees.map((emp) => (
@@ -105,113 +149,94 @@ export default function LettersPage() {
             ))}
           </select>
         </label>
+        {!employeeId ? (
+          <p className="text-xs text-gray-500 mt-2">Select an employee to enable letter generation.</p>
+        ) : selectedEmployee ? (
+          <p className="text-xs text-gray-500 mt-2">Generating letters for {selectedEmployee.name}.</p>
+        ) : null}
       </div>
 
-      {actionError && <p className="text-sm text-red-600">{actionError}</p>}
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold text-[#0A2942]">Letter types</h2>
+        <LetterTypeGrid
+          disabled={!employeeId || generate.isPending}
+          generatingType={generatingType}
+          onSelect={(type) => void generateForType(type)}
+        />
+      </section>
 
-      {!employeeId ? (
-        <p className="text-sm text-gray-500">Select an employee to view generated letters.</p>
-      ) : isLoading ? (
-        <p className="text-sm text-gray-500">Loading letters…</p>
-      ) : isError ? (
-        <p className="text-sm text-red-600">{error instanceof Error ? error.message : 'Could not load letters.'}</p>
-      ) : (
-        <div className="bg-white border border-gray-200 rounded-md overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b">
-                {['Type', 'Generated', 'Status', 'Actions'].map((col) => (
-                  <th key={col} className="text-left px-4 py-2 font-semibold text-[#0A2942]">
-                    {col}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {letters.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="px-4 py-6 text-gray-500 text-center">
-                    No letters for this employee.
-                  </td>
-                </tr>
-              ) : (
-                letters.map((letter) => (
-                  <tr key={letter.id} className="border-b border-gray-100">
-                    <td className="px-4 py-2">{labelEnum(letter.letter_type)}</td>
-                    <td className="px-4 py-2">{letter.generated_at || '—'}</td>
-                    <td className="px-4 py-2">{letter.status}</td>
-                    <td className="px-4 py-2">
-                      <button
-                        type="button"
-                        className="text-xs text-blue-700 hover:underline"
-                        onClick={() => void viewLetter(letter.id)}
-                      >
-                        View
-                      </button>
-                    </td>
+      {actionMessage ? <p className="text-sm text-green-700">{actionMessage}</p> : null}
+      {actionError ? <p className="text-sm text-red-600">{actionError}</p> : null}
+
+      {employeeId ? (
+        <section className="space-y-3">
+          <h2 className="text-sm font-semibold text-[#0A2942]">Generated letters</h2>
+          {isLoading ? (
+            <p className="text-sm text-gray-500">Loading letters…</p>
+          ) : isError ? (
+            <p className="text-sm text-red-600">
+              {error instanceof Error ? error.message : 'Could not load letters.'}
+            </p>
+          ) : (
+            <div className="bg-white border border-gray-200 rounded-md overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    {['Type', 'Generated', 'Status', 'PDF'].map((col) => (
+                      <th key={col} className="text-left px-4 py-2 font-semibold text-[#0A2942]">
+                        {col}
+                      </th>
+                    ))}
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+                </thead>
+                <tbody>
+                  {letters.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="px-4 py-6 text-gray-500 text-center">
+                        No letters for this employee yet.
+                      </td>
+                    </tr>
+                  ) : (
+                    letters.map((letter) => (
+                      <tr key={letter.id} className="border-b border-gray-100">
+                        <td className="px-4 py-2">{labelEnum(letter.letter_type)}</td>
+                        <td className="px-4 py-2">{letter.generated_at || '—'}</td>
+                        <td className="px-4 py-2">{letter.status}</td>
+                        <td className="px-4 py-2">
+                          <button
+                            type="button"
+                            className="text-xs text-blue-700 hover:underline disabled:opacity-50"
+                            disabled={openingId === letter.id}
+                            onClick={() => void openExistingPdf(letter)}
+                          >
+                            {openingId === letter.id ? 'Opening…' : 'Open PDF'}
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      ) : null}
 
-      <Modal open={generateOpen} onClose={() => setGenerateOpen(false)} title="Generate HR letter">
-        <div className="space-y-3">
-          <label className="text-sm block">
-            Employee
-            <select
-              className="mt-1 w-full border rounded px-2 py-1.5"
-              value={genEmployeeId}
-              onChange={(e) => setGenEmployeeId(e.target.value)}
-            >
-              <option value="">Select…</option>
-              {employees.map((emp) => (
-                <option key={emp.id} value={emp.id}>
-                  {emp.name}
-                </option>
-              ))}
-            </select>
-            {fieldErrors.employee_id && <span className="text-red-600 text-xs">{fieldErrors.employee_id}</span>}
-          </label>
-          <label className="text-sm block">
-            Letter type
-            <select
-              className="mt-1 w-full border rounded px-2 py-1.5"
-              value={letterType}
-              onChange={(e) => setLetterType(e.target.value as LetterType)}
-            >
-              {LETTER_TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {labelEnum(t)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="text-sm block">
-            Template payload (optional JSON)
-            <textarea
-              className="mt-1 w-full border rounded px-2 py-1.5 font-mono text-xs"
-              rows={4}
-              value={payloadJson}
-              onChange={(e) => setPayloadJson(e.target.value)}
-            />
-          </label>
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="secondary" onClick={() => setGenerateOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="button" onClick={() => generate.mutate()} disabled={generate.isPending}>
-              {generate.isPending ? 'Generating…' : 'Generate'}
-            </Button>
-          </div>
-        </div>
-      </Modal>
-
-      <Modal open={Boolean(viewLetterId)} onClose={() => setViewLetterId(null)} title="Letter details">
-        <pre className="text-xs bg-gray-50 p-3 rounded overflow-auto max-h-96 whitespace-pre-wrap">{viewContent}</pre>
-      </Modal>
+      <PdfReadyModal
+        open={readyOpen}
+        onClose={() => {
+          setReadyOpen(false);
+          setReadyUrl(null);
+          setReadyBlob(null);
+          setReadyLetter(null);
+        }}
+        blob={readyBlob}
+        url={readyUrl}
+        title="HR letter PDF ready"
+        fileName={readyFileName}
+        branding={letterPdfBranding(readyReference, readyLetter?.generated_at)}
+        description="Your HR letter PDF was created successfully."
+      />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import type { PortalUser } from '../types/portalAuth.types';
 
 interface PortalAuthState {
@@ -39,6 +39,8 @@ export const usePortalAuthStore = create<PortalAuthState>()(
     }),
     {
       name: 'kfg-portal-auth',
+      // sessionStorage: tokens do not survive browser restart (better than localStorage).
+      storage: createJSONStorage(() => sessionStorage),
       onRehydrateStorage: () => {
         return (_state, error) => {
           if (error) return;

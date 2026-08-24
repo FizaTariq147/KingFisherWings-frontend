@@ -74,6 +74,14 @@ function drawHeader(
 ): void {
   const { width, baseY, headerPt, accent, branding, logo, titleFont, bodyFont, pageIndex } = opts;
   const topY = baseY + headerPt;
+  const docType = (branding.documentType || 'DOCUMENT').toUpperCase();
+  const referenceLabel =
+    docType === 'HR LETTER' || docType === 'HR-LETTER'
+      ? 'Letter No:'
+      : docType === 'INVOICE'
+        ? 'Invoice No:'
+        : 'Quote No:';
+  const documentLabel = `${referenceLabel} ${branding.documentNumber || branding.title}`;
 
   page.drawRectangle({ x: 0, y: baseY, width, height: headerPt, color: rgb(1, 1, 1) });
   page.drawRectangle({ x: 0, y: topY - 3, width, height: 3, color: accent });
@@ -111,10 +119,9 @@ function drawHeader(
       color: RULE,
     });
 
-    const docType = (branding.documentType || 'DOCUMENT').toUpperCase();
-    const quoteLabel = `Quote No: ${branding.documentNumber || branding.title}`;
-    page.drawText(docType, { x: MARGIN_X, y: baseY + 14, size: 8.5, font: titleFont, color: accent });
-    drawRightText(page, quoteLabel, width - MARGIN_X, baseY + 14, 8.5, bodyFont, BODY);
+    const docTypeLine = docType;
+    page.drawText(docTypeLine, { x: MARGIN_X, y: baseY + 14, size: 8.5, font: titleFont, color: accent });
+    drawRightText(page, documentLabel, width - MARGIN_X, baseY + 14, 8.5, bodyFont, BODY);
     if (branding.documentDate) {
       drawRightText(page, branding.documentDate, width - MARGIN_X, baseY + 4, 7.5, bodyFont, MUTED);
     }
@@ -134,8 +141,7 @@ function drawHeader(
     color: accent,
   });
 
-  const quoteLabel = `Quote No: ${branding.documentNumber || branding.title}`;
-  drawRightText(page, quoteLabel, width - MARGIN_X, baseY + headerPt / 2 - 4, 8, bodyFont, MUTED);
+  drawRightText(page, documentLabel, width - MARGIN_X, baseY + headerPt / 2 - 4, 8, bodyFont, MUTED);
 }
 
 function drawFooter(

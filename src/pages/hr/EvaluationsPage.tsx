@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Plus } from 'lucide-react';
 import { hrService } from '@/features/hr/services/hr.service';
+import type { EvaluationRecord } from '@/features/hr/types/hr.types';
 import {
   createEvaluationSchema,
   evaluationCycleSchema,
@@ -21,6 +22,25 @@ const DEFAULT_KPIS = JSON.stringify(
   2,
 );
 
+function isEvaluationFinalized(ev: EvaluationRecord): boolean {
+  return /FINALIZED|COMPLETE|CLOSED/i.test(ev.status);
+}
+
+function isManagerSubmitted(ev: EvaluationRecord): boolean {
+  return Boolean(ev.manager_submitted || ev.manager_score != null);
+}
+
+function isSelfSubmitted(ev: EvaluationRecord): boolean {
+  return Boolean(ev.self_submitted || ev.self_score != null);
+}
+
+function formatEvaluationScore(ev: EvaluationRecord, kind: 'self' | 'manager'): string {
+  const score = kind === 'self' ? ev.self_score : ev.manager_score;
+  if (score != null) return String(score);
+  const submitted = kind === 'self' ? isSelfSubmitted(ev) : isManagerSubmitted(ev);
+  return submitted ? 'Submitted' : '—';
+}
+
 export default function EvaluationsPage() {
   const queryClient = useQueryClient();
   const year = new Date().getFullYear();
@@ -28,6 +48,7 @@ export default function EvaluationsPage() {
   const [cycleFilter, setCycleFilter] = useState('');
   const [employeeFilter, setEmployeeFilter] = useState('');
   const [actionError, setActionError] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   const [templateOpen, setTemplateOpen] = useState(false);
@@ -54,6 +75,11 @@ export default function EvaluationsPage() {
     queryKey: ['hr', 'employees', 'evaluations'],
     queryFn: () => hrService.listEmployees({ limit: 100, status: 'ACTIVE' }),
   });
+
+  const employeeNameById = useMemo(
+    () => new Map(employees.map((employee) => [employee.id, employee.name])),
+    [employees],
+  );
 
   const { data: templates = [] } = useQuery({
     queryKey: ['hr', 'evaluation-templates'],
@@ -160,20 +186,46 @@ export default function EvaluationsPage() {
       } catch {
         throw new Error('Scores must be valid JSON object.');
       }
+      if (!scores || typeof scores !== 'object' || Array.isArray(scores) || !Object.keys(scores).length) {
+        throw new Error('Enter at least one KPI score.');
+      }
+      for (const [key, value] of Object.entries(scores)) {
+        if (typeof value !== 'number' || !Number.isFinite(value)) {
+          throw new Error(`Score for "${key}" must be a number.`);
+        }
+      }
       const dto = { scores, comments: scoreComments.trim() || undefined };
       if (scoreMode === 'self') await hrService.submitSelfEvaluation(id, dto);
       else await hrService.submitManagerEvaluation(id, dto);
     },
     onSuccess: () => {
       setScoreOpen(null);
+      setActionError(null);
+      setActionMessage(
+        scoreMode === 'manager'
+          ? 'Manager evaluation submitted. You can now finalize this evaluation.'
+          : 'Self evaluation submitted. Next: submit the manager score, then finalize.',
+      );
       refresh();
     },
     onError: (err) => setActionError(err instanceof Error ? err.message : 'Could not submit scores.'),
   });
 
   const finalize = useMutation({
-    mutationFn: (id: string) => hrService.finalizeEvaluation(id),
-    onSuccess: refresh,
+    mutationFn: (ev: EvaluationRecord) => {
+      if (isEvaluationFinalized(ev)) {
+        throw new Error('This evaluation is already finalized.');
+      }
+      if (!isManagerSubmitted(ev)) {
+        throw new Error('Submit the manager score before finalizing this evaluation.');
+      }
+      return hrService.finalizeEvaluation(ev.id);
+    },
+    onSuccess: () => {
+      setActionError(null);
+      setActionMessage('Evaluation finalized.');
+      refresh();
+    },
     onError: (err) => setActionError(err instanceof Error ? err.message : 'Finalize failed.'),
   });
 
@@ -204,6 +256,7 @@ export default function EvaluationsPage() {
       </div>
 
       {actionError && <p className="text-sm text-red-600">{actionError}</p>}
+      {actionMessage && <p className="text-sm text-green-700">{actionMessage}</p>}
 
       {tab === 'templates' && (
         <div className="space-y-3">
@@ -330,38 +383,56 @@ export default function EvaluationsPage() {
                   ) : (
                     evaluations.map((ev) => (
                       <tr key={ev.id} className="border-b border-gray-100">
-                        <td className="px-4 py-2">{ev.employee}</td>
+                        <td className="px-4 py-2">
+                          {employeeNameById.get(ev.employee_id) || ev.employee}
+                        </td>
                         <td className="px-4 py-2">{ev.status}</td>
-                        <td className="px-4 py-2">{ev.self_score ?? '—'}</td>
-                        <td className="px-4 py-2">{ev.manager_score ?? '—'}</td>
+                        <td className="px-4 py-2">{formatEvaluationScore(ev, 'self')}</td>
+                        <td className="px-4 py-2">{formatEvaluationScore(ev, 'manager')}</td>
                         <td className="px-4 py-2 flex gap-2 flex-wrap">
-                          <button
-                            type="button"
-                            className="text-xs text-blue-700 hover:underline"
-                            onClick={() => {
-                              setScoreMode('self');
-                              setScoreOpen(ev.id);
-                            }}
-                          >
-                            Self score
-                          </button>
-                          <button
-                            type="button"
-                            className="text-xs text-indigo-700 hover:underline"
-                            onClick={() => {
-                              setScoreMode('manager');
-                              setScoreOpen(ev.id);
-                            }}
-                          >
-                            Manager score
-                          </button>
-                          <button
-                            type="button"
-                            className="text-xs text-green-700 hover:underline"
-                            onClick={() => finalize.mutate(ev.id)}
-                          >
-                            Finalize
-                          </button>
+                          {!isEvaluationFinalized(ev) ? (
+                            <>
+                              <button
+                                type="button"
+                                className="text-xs text-blue-700 hover:underline disabled:opacity-50"
+                                disabled={submitScores.isPending}
+                                onClick={() => {
+                                  setActionError(null);
+                                  setScoreMode('self');
+                                  setScoreOpen(ev.id);
+                                }}
+                              >
+                                Self score
+                              </button>
+                              <button
+                                type="button"
+                                className="text-xs text-indigo-700 hover:underline disabled:opacity-50"
+                                disabled={submitScores.isPending}
+                                onClick={() => {
+                                  setActionError(null);
+                                  setScoreMode('manager');
+                                  setScoreOpen(ev.id);
+                                }}
+                              >
+                                Manager score
+                              </button>
+                              <button
+                                type="button"
+                                className="text-xs text-green-700 hover:underline disabled:opacity-50"
+                                disabled={finalize.isPending || !isManagerSubmitted(ev)}
+                                title={
+                                  isManagerSubmitted(ev)
+                                    ? 'Finalize this evaluation'
+                                    : 'Submit manager score first'
+                                }
+                                onClick={() => finalize.mutate(ev)}
+                              >
+                                Finalize
+                              </button>
+                            </>
+                          ) : (
+                            <span className="text-xs text-gray-500">Finalized</span>
+                          )}
                         </td>
                       </tr>
                     ))
@@ -489,6 +560,11 @@ export default function EvaluationsPage() {
         title={scoreMode === 'self' ? 'Submit self evaluation' : 'Submit manager evaluation'}
       >
         <div className="space-y-3">
+          {scoreMode === 'manager' ? (
+            <p className="text-xs text-gray-500">
+              Manager submission is required before you can finalize this evaluation.
+            </p>
+          ) : null}
           <label className="text-sm block">
             Scores (JSON: KPI id → score)
             <textarea

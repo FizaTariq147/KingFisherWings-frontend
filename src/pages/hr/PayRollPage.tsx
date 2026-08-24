@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
@@ -13,6 +13,9 @@ import {
   payslipEmailSchema,
   type FieldErrors,
 } from '../../features/hr/schemas/hr.schema';
+import { useAuthStore } from '@/store/authStore';
+import { companyIdFromAccessToken } from '@/lib/tenantFromAuth';
+import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 
 function formatGratuity(value: unknown): Record<string, string> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -40,6 +43,7 @@ export default function PayRollPage() {
   const [payYear, setPayYear] = useState(String(new Date().getFullYear()));
   const [payMonth, setPayMonth] = useState(String(new Date().getMonth() + 1));
   const [payCurrency, setPayCurrency] = useState('AED');
+  const [payCompanyId, setPayCompanyId] = useState('');
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [payslipEmployeeId, setPayslipEmployeeId] = useState('');
   const [gratuityEmployeeId, setGratuityEmployeeId] = useState('');
@@ -53,6 +57,23 @@ export default function PayRollPage() {
   const [glDeduction, setGlDeduction] = useState('');
   const [glBonusPercent, setGlBonusPercent] = useState('');
   const queryClient = useQueryClient();
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const sessionCompanyId = useAuthStore((s) => s.user?.companyId) || companyIdFromAccessToken(accessToken);
+
+  const resolveCreateCompanyId = () => payCompanyId.trim() || sessionCompanyId || '';
+
+  const { data: companies = [], isLoading: companiesLoading } = useTenantCompanies(createOpen);
+
+  useEffect(() => {
+    if (!createOpen || companies.length === 0) return;
+    setPayCompanyId((current) => {
+      if (current && companies.some((company) => company.id === current)) return current;
+      if (sessionCompanyId && companies.some((company) => company.id === sessionCompanyId)) {
+        return sessionCompanyId;
+      }
+      return companies.length === 1 ? companies[0]!.id : current;
+    });
+  }, [createOpen, companies, sessionCompanyId]);
 
   const { data: runs = [], isLoading, isError, error } = useQuery({
     queryKey: ['hr', 'payroll-runs'],
@@ -83,8 +104,12 @@ export default function PayRollPage() {
   };
 
   const createRun = useMutation({
-    mutationFn: (dto: { payroll_year: number; payroll_month: number; currency_code: string }) =>
-      hrService.createPayrollRun(dto),
+    mutationFn: (dto: {
+      payroll_year: number;
+      payroll_month: number;
+      currency_code: string;
+      company_id?: string;
+    }) => hrService.createPayrollRun(dto),
     onSuccess: (run) => {
       setActionError(null);
       setActionMessage('Payroll run created.');
@@ -118,10 +143,30 @@ export default function PayRollPage() {
       payroll_year: Number(payYear),
       payroll_month: Number(payMonth),
       currency_code: payCurrency.trim() || 'AED',
+      company_id: resolveCreateCompanyId() || undefined,
     });
     if (!parsed.success) {
       setFieldErrors(parsed.fieldErrors);
       setActionError(parsed.message);
+      return;
+    }
+    const duplicate = runs.some(
+      (run) =>
+        Number(run.year) === parsed.data.payroll_year &&
+        Number(run.month) === parsed.data.payroll_month,
+    );
+    if (duplicate) {
+      setActionError(
+        `A payroll run already exists for ${parsed.data.payroll_month}/${parsed.data.payroll_year}. Select it from the list or choose another month.`,
+      );
+      return;
+    }
+    if (!resolveCreateCompanyId()) {
+      setActionError(
+        companies.length === 0
+          ? 'No company profile found for your tenant. Ask your Tenant Admin to set up a company first.'
+          : 'Select a company for this payroll run.',
+      );
       return;
     }
     setFieldErrors({});
@@ -129,6 +174,7 @@ export default function PayRollPage() {
       payroll_year: parsed.data.payroll_year,
       payroll_month: parsed.data.payroll_month,
       currency_code: parsed.data.currency_code,
+      company_id: resolveCreateCompanyId(),
     });
   };
 
@@ -220,12 +266,17 @@ export default function PayRollPage() {
   };
 
   const now = new Date();
-  const prepare = () => {
-    setPayYear(String(now.getFullYear()));
-    setPayMonth(String(now.getMonth() + 1));
-    setPayCurrency('AED');
+  const openCreateModal = (year: number, month: number, currency: string) => {
+    setPayYear(String(year));
+    setPayMonth(String(month));
+    setPayCurrency(currency);
+    setPayCompanyId(sessionCompanyId || '');
     setFieldErrors({});
     setCreateOpen(true);
+  };
+
+  const prepare = () => {
+    openCreateModal(now.getFullYear(), now.getMonth() + 1, 'AED');
   };
 
   const copy = () => {
@@ -233,11 +284,7 @@ export default function PayRollPage() {
     const year = selected ? Number(selected.year) : now.getFullYear();
     const nextMonth = month === 12 ? 1 : month + 1;
     const nextYear = month === 12 ? year + 1 : year;
-    setPayYear(String(nextYear));
-    setPayMonth(String(nextMonth));
-    setPayCurrency(selected?.currency ?? 'AED');
-    setFieldErrors({});
-    setCreateOpen(true);
+    openCreateModal(nextYear, nextMonth, selected?.currency ?? 'AED');
   };
 
   const exportTimesheets = async () => {
@@ -558,7 +605,10 @@ export default function PayRollPage() {
             <Button variant="secondary" onClick={() => setCreateOpen(false)}>
               Cancel
             </Button>
-            <Button disabled={createRun.isPending} onClick={submitCreate}>
+            <Button
+              disabled={createRun.isPending || companiesLoading || companies.length === 0}
+              onClick={submitCreate}
+            >
               {createRun.isPending ? 'Creating…' : 'Create'}
             </Button>
           </>
@@ -599,6 +649,30 @@ export default function PayRollPage() {
               onChange={(e) => setPayCurrency(e.target.value.toUpperCase())}
             />
             {fieldErrors.currency_code ? <span className="text-xs text-red-600">{fieldErrors.currency_code}</span> : null}
+          </label>
+          <label className="block text-sm">
+            <span className="block text-xs text-gray-600 mb-1">Company *</span>
+            {companiesLoading ? (
+              <p className="text-sm text-gray-500 py-2">Loading companies…</p>
+            ) : companies.length === 0 ? (
+              <p className="text-sm text-amber-700 py-2">
+                No company found for your tenant. Ask your Tenant Admin to set up a company profile.
+              </p>
+            ) : (
+              <select
+                className={`w-full h-9 border rounded px-3 ${fieldErrors.company_id ? 'border-red-400' : ''}`}
+                value={payCompanyId}
+                onChange={(e) => setPayCompanyId(e.target.value)}
+              >
+                <option value="">Select company…</option>
+                {companies.map((company) => (
+                  <option key={company.id} value={company.id}>
+                    {company.code ? `${company.name} (${company.code})` : company.name}
+                  </option>
+                ))}
+              </select>
+            )}
+            {fieldErrors.company_id ? <span className="text-xs text-red-600">{fieldErrors.company_id}</span> : null}
           </label>
         </div>
       </Modal>

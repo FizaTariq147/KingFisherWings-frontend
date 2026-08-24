@@ -68,9 +68,29 @@ async function formatAxiosError(error: unknown): Promise<Error> {
 }
 
 function resolveTenantId(explicit?: string): string {
-  if (explicit && explicit.trim()) return explicit.trim();
   const { accessToken, user } = useAuthStore.getState();
-  return resolveSessionTenantIdFromAuth({ accessToken, user });
+  const sessionTenant = resolveSessionTenantIdFromAuth({ accessToken, user });
+  // Never trust a client-supplied tenantId that differs from the JWT/session tenant.
+  if (explicit && explicit.trim()) {
+    const requested = explicit.trim();
+    if (sessionTenant && requested !== sessionTenant) {
+      throw new Error('File tenant does not match your session.');
+    }
+    return sessionTenant || requested;
+  }
+  return sessionTenant;
+}
+
+function sanitizeDownloadFilename(filename: string): string {
+  const trimmed = filename.trim();
+  if (!trimmed) throw new Error('Filename is required.');
+  if (trimmed.includes('..') || trimmed.includes('/') || trimmed.includes('\\')) {
+    throw new Error('Invalid filename.');
+  }
+  if (!/^[\w.\- ()[\]]+$/i.test(trimmed)) {
+    throw new Error('Invalid filename characters.');
+  }
+  return trimmed;
 }
 
 function guessFilenameFromUrl(url: string, fallback = 'download'): string {
@@ -101,8 +121,7 @@ export const filesService = {
     const tenantId = resolveTenantId(params.tenantId);
     if (!tenantId) throw new Error('Tenant context is required to download files.');
 
-    const filename = params.filename.trim();
-    if (!filename) throw new Error('Filename is required.');
+    const filename = sanitizeDownloadFilename(params.filename);
 
     try {
       const res = await withGatewayRetry(() =>
