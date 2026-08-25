@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { useInlineValidation } from '@/lib/validation';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import { useJobStuffingRecords } from '../../hooks/useJobs';
+import { createStuffingRecordSchema } from '../../schemas/job.schema';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
 interface JobStuffingPanelProps {
@@ -13,6 +15,7 @@ interface JobStuffingPanelProps {
 export function JobStuffingPanel({ jobId }: JobStuffingPanelProps) {
   const { data: records = [], refetch } = useJobStuffingRecords(jobId);
   const mutations = useJobSubresourceMutations(jobId);
+  const validation = useInlineValidation();
   const [error, setError] = useState<string | null>(null);
   const [supervisor, setSupervisor] = useState('');
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
@@ -28,9 +31,29 @@ export function JobStuffingPanel({ jobId }: JobStuffingPanelProps) {
     }
   };
 
+  const create = async () => {
+    const ok = await validation.runValidated(
+      createStuffingRecordSchema,
+      {
+        supervisor_name: supervisor.trim(),
+        stuffing_date: date.trim(),
+        notes: notes.trim() || undefined,
+      },
+      async (dto) => {
+        await mutations.createStuffing.mutateAsync(dto);
+        setSupervisor('');
+        setNotes('');
+        refetch();
+      },
+    );
+    if (!ok) setError(null);
+  };
+
   return (
     <div className="space-y-4">
-      {error && <p className="text-sm text-[var(--color-danger-600)]">{error}</p>}
+      {(error || validation.formError) && (
+        <p className="text-sm text-[var(--color-danger-600)]">{error || validation.formError}</p>
+      )}
       <Card>
         <CardHeader>
           <CardTitle>Stuffing records</CardTitle>
@@ -98,29 +121,35 @@ export function JobStuffingPanel({ jobId }: JobStuffingPanelProps) {
           <Input
             placeholder="Supervisor name *"
             value={supervisor}
-            onChange={(e) => setSupervisor(e.target.value)}
+            error={validation.fieldError('supervisor_name')}
+            onChange={(e) => {
+              setSupervisor(e.target.value);
+              validation.clearField('supervisor_name');
+            }}
           />
-          <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          <Input
+            type="date"
+            value={date}
+            error={validation.fieldError('stuffing_date')}
+            onChange={(e) => {
+              setDate(e.target.value);
+              validation.clearField('stuffing_date');
+            }}
+          />
           <Input
             placeholder="Notes"
             value={notes}
-            onChange={(e) => setNotes(e.target.value)}
+            error={validation.fieldError('notes')}
+            onChange={(e) => {
+              setNotes(e.target.value);
+              validation.clearField('notes');
+            }}
             className="sm:col-span-2"
           />
           <Button
             type="button"
-            disabled={!supervisor || !date || mutations.createStuffing.isPending}
-            onClick={() =>
-              run(async () => {
-                await mutations.createStuffing.mutateAsync({
-                  supervisor_name: supervisor,
-                  stuffing_date: date,
-                  notes: notes || undefined,
-                });
-                setSupervisor('');
-                setNotes('');
-              })
-            }
+            disabled={mutations.createStuffing.isPending}
+            onClick={() => void create()}
           >
             Create record
           </Button>

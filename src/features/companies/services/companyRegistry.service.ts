@@ -129,9 +129,8 @@ export function companyFromTenant(tenant: Tenant): RegistryCompany | null {
 }
 
 async function fetchTenants(): Promise<Tenant[]> {
-  const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(TENANT_API.list, {
-    params: { limit: 200 },
-  });
+  // GET /tenants only accepts optional `search` (Swagger) — no limit/page query.
+  const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(TENANT_API.list);
   return normalizeTenants(unwrapList(res.data?.data ?? res.data));
 }
 

@@ -80,6 +80,9 @@ export {
 } from './mapApiErrors';
 export type { ServerErrorMapOptions } from './mapApiErrors';
 export { useAppForm } from './useAppForm';
+export { parseWithFieldErrors, zodFieldErrors } from './parseSchema';
+export type { FieldErrors } from './parseSchema';
+export { useInlineValidation } from './useInlineValidation';
 export {
   suggestCodeFromName,
   suggestInitialsFromName,

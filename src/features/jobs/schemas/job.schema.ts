@@ -367,6 +367,33 @@ export const sendWhatsAppStatusSchema = z.object({
   message: requiredText({ min: 1, max: 1000 }),
 });
 
+export const assignCargoToContainerFormSchema = z.object({
+  container_id: z.string().uuid('Select a container'),
+  cargo_id: z.string().uuid('Select cargo'),
+});
+
+export const prorateCostFormSchema = z.object({
+  charge_code_id: z.string().uuid('Enter a valid charge code UUID'),
+});
+
+export const splitContainerFormSchema = z.object({
+  container_id: z.string().uuid('Select a container'),
+  portions: z
+    .array(
+      z.object({
+        consignee_id: optionalUuid(),
+        packages: integerField({ required: false, min: 0, allowNegative: false }),
+        gross_weight: amountField({
+          required: false,
+          min: 0,
+          allowNegative: false,
+          maxDecimals: 3,
+        }),
+      }),
+    )
+    .min(1, 'Add at least one split portion'),
+});
+
 export type CreateJobFormValues = z.infer<typeof createJobSchema>;
 export type UpdateJobFormValues = z.infer<typeof updateJobSchema>;
 export type CreateJobChargeFormValues = z.infer<typeof createJobChargeSchema>;

@@ -1,32 +1,21 @@
 import { Briefcase } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { axiosInstance } from '@/lib/axios'
-
-interface RecentJob {
-  jobNumber: string
-  customer:  string
-  mode:      string
-  status:    string
-  createdAt: string
-}
+import { useRecentJobs } from '@/features/jobs/hooks/useJobDashboard'
 
 const STATUS_COLORS: Record<string, string> = {
+  'Enquiry': 'var(--color-info-500)',
+  'Quotation': 'var(--color-info-500)',
+  'Booking Confirmed': 'var(--color-info-500)',
   'In Progress': 'var(--color-info-500)',
-  'Completed':   'var(--color-success-500)',
-  'On Hold':     'var(--color-warning-500)',
-  'Cancelled':   'var(--color-danger-500)',
+  'Docs Pending': 'var(--color-warning-500)',
+  'Customs Clearance': 'var(--color-warning-500)',
+  'Delivered': 'var(--color-success-500)',
+  'Completed': 'var(--color-success-500)',
+  'On Hold': 'var(--color-warning-500)',
+  'Cancelled': 'var(--color-danger-500)',
 }
 
 export default function RecentJobsWidget() {
-  const [data, setData]       = useState<RecentJob[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    axiosInstance
-      .get<RecentJob[]>('/api/jobs/recent?limit=5')
-      .then(({ data }) => setData(data))
-      .finally(() => setLoading(false))
-  }, [])
+  const { data = [], isLoading } = useRecentJobs(5)
 
   return (
     <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5">
@@ -37,7 +26,7 @@ export default function RecentJobsWidget() {
         <span className="text-xs font-medium text-[var(--color-neutral-500)]">Recent Jobs</span>
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="space-y-2">
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="h-8 bg-[var(--color-neutral-100)] rounded animate-pulse" />

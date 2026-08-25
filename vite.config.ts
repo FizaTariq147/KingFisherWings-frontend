@@ -15,6 +15,11 @@ const dirname =
 export default defineConfig({
   plugins: [react(), tailwindcss()],
 
+  // Vite 8 Rolldown can hang while crawling three.js / R3F. Serve those raw.
+  optimizeDeps: {
+    exclude: ['three', '@react-three/fiber', '@react-three/drei'],
+  },
+
   server: {
     host: true,
     allowedHosts: true,

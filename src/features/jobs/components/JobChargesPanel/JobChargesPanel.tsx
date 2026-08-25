@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { useInlineValidation } from '@/lib/validation';
 import { useJobActions, useJobChargeMutations } from '../../hooks/useJobActions';
+import {
+  createJobChargeSchema,
+  prorateCostFormSchema,
+} from '../../schemas/job.schema';
 import type { Job, JobCharge } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
@@ -15,6 +20,8 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const charges = job.charges ?? [];
   const mutations = useJobChargeMutations(job.id);
   const actions = useJobActions(job.id);
+  const validation = useInlineValidation();
+  const prorateValidation = useInlineValidation();
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [chargeCodeId, setChargeCodeId] = useState('');
@@ -35,9 +42,48 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     }
   };
 
+  const addCharge = async () => {
+    const ok = await validation.runValidated(
+      createJobChargeSchema,
+      {
+        charge_code_id: chargeCodeId.trim(),
+        description: description.trim(),
+        unit_price: unitPrice === '' ? undefined : Number(unitPrice),
+        currency_code: currency.trim(),
+      },
+      async (dto) => {
+        await mutations.create.mutateAsync(dto);
+        setChargeCodeId('');
+        setDescription('');
+        setUnitPrice('');
+        setMsg('Charge added.');
+        onChanged?.();
+      },
+    );
+    if (!ok) setError(null);
+  };
+
+  const prorate = async () => {
+    const ok = await prorateValidation.runValidated(
+      prorateCostFormSchema,
+      { charge_code_id: prorateCodeId.trim() },
+      async (dto) => {
+        await actions.prorateCost.mutateAsync(dto.charge_code_id);
+        setProrateCodeId('');
+        setMsg('Cost prorated.');
+        onChanged?.();
+      },
+    );
+    if (!ok) setError(null);
+  };
+
   return (
     <div className="space-y-4">
-      {error && <p className="text-sm text-[var(--color-danger-600)]">{error}</p>}
+      {(error || validation.formError || prorateValidation.formError) && (
+        <p className="text-sm text-[var(--color-danger-600)]">
+          {error || validation.formError || prorateValidation.formError}
+        </p>
+      )}
       {msg && <p className="text-sm text-[var(--color-success-700)]">{msg}</p>}
       <Card>
         <CardHeader>
@@ -105,42 +151,50 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
         </CardHeader>
         <div className="px-4 pb-4 grid gap-3 sm:grid-cols-2">
           <Input
+            label="Charge code UUID"
             placeholder="Charge code UUID"
             value={chargeCodeId}
-            onChange={(e) => setChargeCodeId(e.target.value)}
+            error={validation.fieldError('charge_code_id')}
+            onChange={(e) => {
+              setChargeCodeId(e.target.value);
+              validation.clearField('charge_code_id');
+            }}
           />
           <Input
+            label="Description"
             placeholder="Description"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            error={validation.fieldError('description')}
+            onChange={(e) => {
+              setDescription(e.target.value);
+              validation.clearField('description');
+            }}
           />
           <Input
+            label="Unit price"
             placeholder="Unit price"
             type="number"
             value={unitPrice}
-            onChange={(e) => setUnitPrice(e.target.value)}
+            error={validation.fieldError('unit_price')}
+            onChange={(e) => {
+              setUnitPrice(e.target.value);
+              validation.clearField('unit_price');
+            }}
           />
           <Input
+            label="Currency"
             placeholder="Currency"
             value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
+            error={validation.fieldError('currency_code')}
+            onChange={(e) => {
+              setCurrency(e.target.value);
+              validation.clearField('currency_code');
+            }}
           />
           <Button
             type="button"
             disabled={mutations.create.isPending}
-            onClick={() =>
-              run(async () => {
-                await mutations.create.mutateAsync({
-                  charge_code_id: chargeCodeId,
-                  description,
-                  unit_price: Number(unitPrice),
-                  currency_code: currency.toUpperCase(),
-                });
-                setChargeCodeId('');
-                setDescription('');
-                setUnitPrice('');
-              }, 'Charge added.')
-            }
+            onClick={() => void addCharge()}
             className="sm:col-span-2 w-fit"
           >
             Add charge
@@ -152,23 +206,27 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
         <CardHeader>
           <CardTitle>Prorate master cost to houses</CardTitle>
         </CardHeader>
-        <div className="px-4 pb-4 flex flex-wrap gap-2 items-center">
-          <Input
-            placeholder="Charge code UUID to prorate"
-            value={prorateCodeId}
-            onChange={(e) => setProrateCodeId(e.target.value)}
-            className="max-w-xs"
-          />
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={!prorateCodeId || actions.prorateCost.isPending}
-            onClick={() =>
-              run(() => actions.prorateCost.mutateAsync(prorateCodeId), 'Cost prorated.')
-            }
-          >
-            Prorate cost
-          </Button>
+        <div className="px-4 pb-4 space-y-2">
+          <div className="flex flex-wrap gap-2 items-start">
+            <Input
+              placeholder="Charge code UUID to prorate"
+              value={prorateCodeId}
+              error={prorateValidation.fieldError('charge_code_id')}
+              onChange={(e) => {
+                setProrateCodeId(e.target.value);
+                prorateValidation.clearField('charge_code_id');
+              }}
+              className="max-w-xs"
+            />
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={actions.prorateCost.isPending}
+              onClick={() => void prorate()}
+            >
+              Prorate cost
+            </Button>
+          </div>
         </div>
       </Card>
     </div>

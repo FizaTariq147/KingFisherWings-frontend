@@ -2,17 +2,31 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { useInlineValidation } from '@/lib/validation';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import { useJobCargo } from '../../hooks/useJobs';
+import { createJobCargoSchema } from '../../schemas/job.schema';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
 interface JobCargoPanelProps {
   jobId: string;
 }
 
+function emptyToUndef(value: string): string | undefined {
+  const t = value.trim();
+  return t ? t : undefined;
+}
+
+function numberOrUndef(value: string): number | undefined {
+  if (value.trim() === '') return undefined;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : undefined;
+}
+
 export function JobCargoPanel({ jobId }: JobCargoPanelProps) {
   const { data: cargo = [], refetch } = useJobCargo(jobId);
   const mutations = useJobSubresourceMutations(jobId);
+  const validation = useInlineValidation();
   const [error, setError] = useState<string | null>(null);
   const [description, setDescription] = useState('');
   const [packages, setPackages] = useState('');
@@ -30,9 +44,34 @@ export function JobCargoPanel({ jobId }: JobCargoPanelProps) {
     }
   };
 
+  const add = async () => {
+    const ok = await validation.runValidated(
+      createJobCargoSchema,
+      {
+        description: emptyToUndef(description),
+        packages: numberOrUndef(packages),
+        gross_weight: numberOrUndef(gross),
+        measurement: numberOrUndef(volume),
+        hs_code: emptyToUndef(hs),
+      },
+      async (dto) => {
+        await mutations.createCargo.mutateAsync(dto);
+        setDescription('');
+        setPackages('');
+        setGross('');
+        setVolume('');
+        setHs('');
+        refetch();
+      },
+    );
+    if (!ok) setError(null);
+  };
+
   return (
     <div className="space-y-4">
-      {error && <p className="text-sm text-[var(--color-danger-600)]">{error}</p>}
+      {(error || validation.formError) && (
+        <p className="text-sm text-[var(--color-danger-600)]">{error || validation.formError}</p>
+      )}
       <Card>
         <CardHeader>
           <CardTitle>Cargo lines</CardTitle>
@@ -105,48 +144,57 @@ export function JobCargoPanel({ jobId }: JobCargoPanelProps) {
           <Input
             placeholder="Description"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            error={validation.fieldError('description')}
+            onChange={(e) => {
+              setDescription(e.target.value);
+              validation.clearField('description');
+            }}
             className="sm:col-span-2"
           />
           <Input
             placeholder="Packages"
             type="number"
             value={packages}
-            onChange={(e) => setPackages(e.target.value)}
+            error={validation.fieldError('packages')}
+            onChange={(e) => {
+              setPackages(e.target.value);
+              validation.clearField('packages');
+            }}
           />
           <Input
             placeholder="Gross weight"
             type="number"
             value={gross}
-            onChange={(e) => setGross(e.target.value)}
+            error={validation.fieldError('gross_weight')}
+            onChange={(e) => {
+              setGross(e.target.value);
+              validation.clearField('gross_weight');
+            }}
           />
           <Input
             placeholder="Volume CBM"
             type="number"
             value={volume}
-            onChange={(e) => setVolume(e.target.value)}
+            error={validation.fieldError('measurement')}
+            onChange={(e) => {
+              setVolume(e.target.value);
+              validation.clearField('measurement');
+            }}
           />
-          <Input placeholder="HS code" value={hs} onChange={(e) => setHs(e.target.value)} />
+          <Input
+            placeholder="HS code"
+            value={hs}
+            error={validation.fieldError('hs_code')}
+            onChange={(e) => {
+              setHs(e.target.value);
+              validation.clearField('hs_code');
+            }}
+          />
           <Button
             type="button"
             className="sm:col-span-2 w-fit"
             disabled={mutations.createCargo.isPending}
-            onClick={() =>
-              run(async () => {
-                await mutations.createCargo.mutateAsync({
-                  description: description || undefined,
-                  packages: packages ? Number(packages) : undefined,
-                  gross_weight: gross ? Number(gross) : undefined,
-                  volume_cbm: volume ? Number(volume) : undefined,
-                  hs_code: hs || undefined,
-                });
-                setDescription('');
-                setPackages('');
-                setGross('');
-                setVolume('');
-                setHs('');
-              })
-            }
+            onClick={() => void add()}
           >
             Add cargo
           </Button>
