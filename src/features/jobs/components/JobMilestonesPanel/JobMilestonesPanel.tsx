@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { useInlineValidation } from '@/lib/validation';
 import { useJobMilestoneMutations } from '../../hooks/useJobActions';
 import { useJobMilestones } from '../../hooks/useJobs';
+import { createJobMilestoneSchema } from '../../schemas/job.schema';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
 interface JobMilestonesPanelProps {
@@ -13,6 +15,7 @@ interface JobMilestonesPanelProps {
 export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
   const { data: milestones = [], refetch } = useJobMilestones(jobId);
   const mutations = useJobMilestoneMutations(jobId);
+  const validation = useInlineValidation();
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -30,20 +33,23 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
   };
 
   const add = async () => {
-    if (!name.trim()) return;
-    setError(null);
-    try {
-      await mutations.create.mutateAsync({ milestone: name.trim() });
-      setName('');
-      refetch();
-    } catch (err) {
-      setError(getErrorMessage(err));
-    }
+    const ok = await validation.runValidated(
+      createJobMilestoneSchema,
+      { milestone: name.trim() },
+      async (dto) => {
+        await mutations.create.mutateAsync(dto);
+        setName('');
+        refetch();
+      },
+    );
+    if (!ok) setError(null);
   };
 
   return (
     <div className="space-y-4">
-      {error && <p className="text-sm text-[var(--color-danger-600)]">{error}</p>}
+      {(error || validation.formError) && (
+        <p className="text-sm text-[var(--color-danger-600)]">{error || validation.formError}</p>
+      )}
       <Card>
         <CardHeader>
           <CardTitle>Milestones</CardTitle>
@@ -87,9 +93,17 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
         <CardHeader>
           <CardTitle>Add custom milestone</CardTitle>
         </CardHeader>
-        <div className="px-4 pb-4 flex gap-2">
-          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Milestone name" />
-          <Button type="button" disabled={mutations.create.isPending} onClick={add}>
+        <div className="px-4 pb-4 flex gap-2 items-start">
+          <Input
+            value={name}
+            error={validation.fieldError('milestone')}
+            onChange={(e) => {
+              setName(e.target.value);
+              validation.clearField('milestone');
+            }}
+            placeholder="Milestone name"
+          />
+          <Button type="button" disabled={mutations.create.isPending} onClick={() => void add()}>
             Add
           </Button>
         </div>

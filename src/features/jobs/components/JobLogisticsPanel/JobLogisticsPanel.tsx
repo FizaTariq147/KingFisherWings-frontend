@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { parseWithFieldErrors } from '@/lib/validation';
 import { CUSTOMS_EXAMINATION_RESULTS, CUSTOMS_STATUSES } from '../../constants/job.constants';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import {
@@ -13,6 +14,13 @@ import {
   useJobPods,
   useJobSubJobs,
 } from '../../hooks/useJobs';
+import {
+  createDamageReportSchema,
+  createJobDepositSchema,
+  createPartDeliverySchema,
+  createProofOfDeliverySchema,
+  upsertContainerFreeDaysSchema,
+} from '../../schemas/job.schema';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { jobDisplayNumber } from '../../utils/jobRoute';
 
@@ -383,16 +391,17 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           </div>
           <Button
             type="button"
-            disabled={
-              !depositType || !depositAmount || mutations.createDeposit.isPending
-            }
+            disabled={mutations.createDeposit.isPending}
             onClick={() =>
               run(async () => {
-                await mutations.createDeposit.mutateAsync({
+                const parsed = parseWithFieldErrors(createJobDepositSchema, {
                   deposit_type: depositType.trim(),
-                  deposit_amount: Number(depositAmount),
+                  deposit_amount:
+                    depositAmount === '' ? undefined : Number(depositAmount),
                   currency_code: depositCurrency || undefined,
                 });
+                if (!parsed.success) throw new Error(parsed.message);
+                await mutations.createDeposit.mutateAsync(parsed.data);
                 setDepositAmount('');
                 refetchDeposits();
               }, 'Deposit added.')
@@ -427,15 +436,17 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           <div className="flex flex-wrap gap-2">
             <Button
               type="button"
-              disabled={!freeContainerId || mutations.upsertFreeDays.isPending}
+              disabled={mutations.upsertFreeDays.isPending}
               onClick={() =>
                 run(async () => {
-                  await mutations.upsertFreeDays.mutateAsync({
+                  const parsed = parseWithFieldErrors(upsertContainerFreeDaysSchema, {
                     container_id: freeContainerId.trim(),
                     free_days_allowed: freeDaysAllowed
                       ? Number(freeDaysAllowed)
                       : undefined,
                   });
+                  if (!parsed.success) throw new Error(parsed.message);
+                  await mutations.upsertFreeDays.mutateAsync(parsed.data);
                   refetchFreeDays();
                 }, 'Free days saved.')
               }
@@ -478,12 +489,14 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           />
           <Button
             type="button"
-            disabled={!damageDesc.trim() || mutations.createDamageReport.isPending}
+            disabled={mutations.createDamageReport.isPending}
             onClick={() =>
               run(async () => {
-                await mutations.createDamageReport.mutateAsync({
+                const parsed = parseWithFieldErrors(createDamageReportSchema, {
                   damage_description: damageDesc.trim(),
                 });
+                if (!parsed.success) throw new Error(parsed.message);
+                await mutations.createDamageReport.mutateAsync(parsed.data);
                 setDamageDesc('');
                 refetchDamage();
               }, 'Damage report created.')
@@ -519,15 +532,16 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           </div>
           <Button
             type="button"
-            disabled={
-              !partDate || !partPackages || mutations.createPartDelivery.isPending
-            }
+            disabled={mutations.createPartDelivery.isPending}
             onClick={() =>
               run(async () => {
-                await mutations.createPartDelivery.mutateAsync({
+                const parsed = parseWithFieldErrors(createPartDeliverySchema, {
                   delivery_date: partDate,
-                  packages_delivered: Number(partPackages),
+                  packages_delivered:
+                    partPackages === '' ? undefined : Number(partPackages),
                 });
+                if (!parsed.success) throw new Error(parsed.message);
+                await mutations.createPartDelivery.mutateAsync(parsed.data);
                 setPartPackages('');
                 refetchParts();
               }, 'Part delivery recorded.')
@@ -551,12 +565,14 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           <Input type="date" value={podDate} onChange={(e) => setPodDate(e.target.value)} />
           <Button
             type="button"
-            disabled={!podDate || mutations.createPod.isPending}
+            disabled={mutations.createPod.isPending}
             onClick={() =>
               run(async () => {
-                await mutations.createPod.mutateAsync({
+                const parsed = parseWithFieldErrors(createProofOfDeliverySchema, {
                   actual_delivery_date: podDate,
                 });
+                if (!parsed.success) throw new Error(parsed.message);
+                await mutations.createPod.mutateAsync(parsed.data);
                 refetchPods();
               }, 'POD recorded.')
             }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { useInlineValidation } from '@/lib/validation';
 import { jobService } from '../../services/job.service';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import {
@@ -9,6 +10,11 @@ import {
   useJobContainers,
   useJobContainersFill,
 } from '../../hooks/useJobs';
+import {
+  assignCargoToContainerFormSchema,
+  createJobContainerSchema,
+  splitContainerFormSchema,
+} from '../../schemas/job.schema';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
 interface JobContainersPanelProps {
@@ -20,6 +26,9 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
   const { data: fill, refetch: refetchFill } = useJobContainersFill(jobId);
   const { data: cargo = [] } = useJobCargo(jobId);
   const mutations = useJobSubresourceMutations(jobId);
+  const addValidation = useInlineValidation();
+  const assignValidation = useInlineValidation();
+  const splitValidation = useInlineValidation();
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [singleFill, setSingleFill] = useState<unknown>(null);
@@ -44,9 +53,77 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
     }
   };
 
+  const addContainer = async () => {
+    const ok = await addValidation.runValidated(
+      createJobContainerSchema,
+      {
+        container_type_id: containerTypeId.trim(),
+        container_number: containerNumber.trim() || undefined,
+        seal_number: sealNumber.trim() || undefined,
+      },
+      async (dto) => {
+        await mutations.createContainer.mutateAsync(dto);
+        setContainerTypeId('');
+        setContainerNumber('');
+        setSealNumber('');
+        setMsg('Container added.');
+        await Promise.all([refetch(), refetchFill()]);
+      },
+    );
+    if (!ok) setError(null);
+  };
+
+  const assignCargo = async () => {
+    const ok = await assignValidation.runValidated(
+      assignCargoToContainerFormSchema,
+      {
+        container_id: assignContainerId,
+        cargo_id: assignCargoId,
+      },
+      async (dto) => {
+        await mutations.assignCargo.mutateAsync({
+          containerId: dto.container_id,
+          dto: { cargo_id: dto.cargo_id },
+        });
+        setMsg('Cargo assigned.');
+        await Promise.all([refetch(), refetchFill()]);
+      },
+    );
+    if (!ok) setError(null);
+  };
+
+  const splitContainer = async () => {
+    let portions: unknown;
+    try {
+      portions = JSON.parse(splitJson);
+    } catch {
+      splitValidation.setFormError('Split portions must be valid JSON');
+      return;
+    }
+    const ok = await splitValidation.runValidated(
+      splitContainerFormSchema,
+      { container_id: assignContainerId, portions },
+      async (dto) => {
+        await mutations.splitContainer.mutateAsync({
+          containerId: dto.container_id,
+          dto: { portions: dto.portions },
+        });
+        setMsg('Container split queued.');
+        await Promise.all([refetch(), refetchFill()]);
+      },
+    );
+    if (!ok) setError(null);
+  };
+
+  const banner =
+    error ||
+    addValidation.formError ||
+    assignValidation.formError ||
+    splitValidation.formError;
+
   return (
     <div className="space-y-4">
-      {error && <p className="text-sm text-[var(--color-danger-600)]">{error}</p>}
+      {banner && <p className="text-sm text-[var(--color-danger-600)]">{banner}</p>}
       {msg && <p className="text-sm text-[var(--color-success-700)]">{msg}</p>}
 
       <Card>
@@ -63,7 +140,6 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
                 container_number?: string;
                 seal_number?: string;
                 status?: string;
-                container_type_id?: string;
               };
               return (
                 <div
@@ -176,33 +252,34 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
           <Input
             placeholder="Container type UUID *"
             value={containerTypeId}
-            onChange={(e) => setContainerTypeId(e.target.value)}
+            error={addValidation.fieldError('container_type_id')}
+            onChange={(e) => {
+              setContainerTypeId(e.target.value);
+              addValidation.clearField('container_type_id');
+            }}
           />
           <Input
             placeholder="Container number"
             value={containerNumber}
-            onChange={(e) => setContainerNumber(e.target.value)}
+            error={addValidation.fieldError('container_number')}
+            onChange={(e) => {
+              setContainerNumber(e.target.value);
+              addValidation.clearField('container_number');
+            }}
           />
           <Input
             placeholder="Seal number"
             value={sealNumber}
-            onChange={(e) => setSealNumber(e.target.value)}
+            error={addValidation.fieldError('seal_number')}
+            onChange={(e) => {
+              setSealNumber(e.target.value);
+              addValidation.clearField('seal_number');
+            }}
           />
           <Button
             type="button"
-            disabled={!containerTypeId || mutations.createContainer.isPending}
-            onClick={() =>
-              run(async () => {
-                await mutations.createContainer.mutateAsync({
-                  container_type_id: containerTypeId,
-                  container_number: containerNumber || undefined,
-                  seal_number: sealNumber || undefined,
-                });
-                setContainerTypeId('');
-                setContainerNumber('');
-                setSealNumber('');
-              }, 'Container added.')
-            }
+            disabled={mutations.createContainer.isPending}
+            onClick={() => void addContainer()}
           >
             Add container
           </Button>
@@ -214,50 +291,68 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
           <CardTitle>Assign cargo to container</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 grid gap-2 sm:grid-cols-2">
-          <select
-            className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
-            value={assignContainerId}
-            onChange={(e) => setAssignContainerId(e.target.value)}
-          >
-            <option value="">Select container…</option>
-            {containers.map((raw) => {
-              const c = raw as { id: string; container_number?: string };
-              return (
-                <option key={c.id} value={c.id}>
-                  {c.container_number || c.id.slice(0, 8)}
-                </option>
-              );
-            })}
-          </select>
-          <select
-            className="h-9 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
-            value={assignCargoId}
-            onChange={(e) => setAssignCargoId(e.target.value)}
-          >
-            <option value="">Select cargo…</option>
-            {cargo.map((raw) => {
-              const c = raw as { id: string; description?: string };
-              return (
-                <option key={c.id} value={c.id}>
-                  {c.description || c.id.slice(0, 8)}
-                </option>
-              );
-            })}
-          </select>
+          <div className="space-y-1">
+            <select
+              className={`h-9 w-full rounded-md border px-3 text-sm ${
+                assignValidation.fieldError('container_id')
+                  ? 'border-[var(--color-danger-500)]'
+                  : 'border-[var(--color-neutral-200)]'
+              }`}
+              value={assignContainerId}
+              onChange={(e) => {
+                setAssignContainerId(e.target.value);
+                assignValidation.clearField('container_id');
+              }}
+            >
+              <option value="">Select container…</option>
+              {containers.map((raw) => {
+                const c = raw as { id: string; container_number?: string };
+                return (
+                  <option key={c.id} value={c.id}>
+                    {c.container_number || c.id.slice(0, 8)}
+                  </option>
+                );
+              })}
+            </select>
+            {assignValidation.fieldError('container_id') && (
+              <p className="text-xs text-[var(--color-danger-500)]">
+                {assignValidation.fieldError('container_id')}
+              </p>
+            )}
+          </div>
+          <div className="space-y-1">
+            <select
+              className={`h-9 w-full rounded-md border px-3 text-sm ${
+                assignValidation.fieldError('cargo_id')
+                  ? 'border-[var(--color-danger-500)]'
+                  : 'border-[var(--color-neutral-200)]'
+              }`}
+              value={assignCargoId}
+              onChange={(e) => {
+                setAssignCargoId(e.target.value);
+                assignValidation.clearField('cargo_id');
+              }}
+            >
+              <option value="">Select cargo…</option>
+              {cargo.map((raw) => {
+                const c = raw as { id: string; description?: string };
+                return (
+                  <option key={c.id} value={c.id}>
+                    {c.description || c.id.slice(0, 8)}
+                  </option>
+                );
+              })}
+            </select>
+            {assignValidation.fieldError('cargo_id') && (
+              <p className="text-xs text-[var(--color-danger-500)]">
+                {assignValidation.fieldError('cargo_id')}
+              </p>
+            )}
+          </div>
           <Button
             type="button"
             className="sm:col-span-2 w-fit"
-            disabled={!assignContainerId || !assignCargoId}
-            onClick={() =>
-              run(
-                () =>
-                  mutations.assignCargo.mutateAsync({
-                    containerId: assignContainerId,
-                    dto: { cargo_id: assignCargoId },
-                  }),
-                'Cargo assigned.',
-              )
-            }
+            onClick={() => void assignCargo()}
           >
             Assign cargo
           </Button>
@@ -270,9 +365,16 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
         </CardHeader>
         <div className="px-4 pb-4 space-y-2">
           <select
-            className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
+            className={`h-9 w-full rounded-md border px-3 text-sm ${
+              splitValidation.fieldError('container_id')
+                ? 'border-[var(--color-danger-500)]'
+                : 'border-[var(--color-neutral-200)]'
+            }`}
             value={assignContainerId}
-            onChange={(e) => setAssignContainerId(e.target.value)}
+            onChange={(e) => {
+              setAssignContainerId(e.target.value);
+              splitValidation.clearField('container_id');
+            }}
           >
             <option value="">Select container…</option>
             {containers.map((raw) => {
@@ -284,28 +386,29 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
               );
             })}
           </select>
+          {splitValidation.fieldError('container_id') && (
+            <p className="text-xs text-[var(--color-danger-500)]">
+              {splitValidation.fieldError('container_id')}
+            </p>
+          )}
           <textarea
-            className="w-full min-h-[80px] rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-xs font-mono"
+            className={`w-full min-h-[80px] rounded-md border px-3 py-2 text-xs font-mono ${
+              splitValidation.fieldError('portions')
+                ? 'border-[var(--color-danger-500)]'
+                : 'border-[var(--color-neutral-200)]'
+            }`}
             value={splitJson}
-            onChange={(e) => setSplitJson(e.target.value)}
+            onChange={(e) => {
+              setSplitJson(e.target.value);
+              splitValidation.clearField('portions');
+            }}
           />
-          <Button
-            type="button"
-            disabled={!assignContainerId}
-            onClick={() =>
-              run(async () => {
-                const portions = JSON.parse(splitJson) as Array<{
-                  consignee_id: string;
-                  packages?: number;
-                  gross_weight?: number;
-                }>;
-                await mutations.splitContainer.mutateAsync({
-                  containerId: assignContainerId,
-                  dto: { portions },
-                });
-              }, 'Container split queued.')
-            }
-          >
+          {splitValidation.fieldError('portions') && (
+            <p className="text-xs text-[var(--color-danger-500)]">
+              {splitValidation.fieldError('portions')}
+            </p>
+          )}
+          <Button type="button" onClick={() => void splitContainer()}>
             Split container
           </Button>
         </div>

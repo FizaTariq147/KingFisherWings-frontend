@@ -109,8 +109,8 @@ export const salesMenu: MenuTile[] = [
 export const reportsSalesTile: MenuTile = {
   id: 'reports-sales',
   title: 'Reports - Sales',
-  description: 'Pipeline, win/loss, budget vs actual, enquiry conversion, overdue follow-ups, and other CRM sales reports.',
+  description: 'Pipeline, win/loss, budget vs actual, enquiry conversion, visiting cards, and other CRM sales reports.',
   icon: FileText,
   iconColor: 'bg-sky-500',
-  path: '/sales/sales-dashboard',
+  path: '/sales/reports',
 };

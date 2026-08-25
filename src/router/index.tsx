@@ -103,6 +103,7 @@ import AwbStockCreatePage from '../features/awbStock/pages/AwbStockCreatePage'
 import AwbStockDetailPage from '../features/awbStock/pages/AwbStockDetailPage'
 import AwbStockEditPage from '../features/awbStock/pages/AwbStockEditPage'
 import SalesMenuPage from '../pages/sales/SalesMenuPage'
+import SalesReportsPage from '../pages/sales/SalesReportsPage'
 import ClientRequestListPage from '../pages/sales/ClientRequestListPage'
 import RateChargesPage from '../pages/sales/RateChargesPage'
 import ShipmentsListSalesPage from '../pages/sales/ShipmentsListSalesPage'
@@ -531,6 +532,7 @@ export const router = createBrowserRouter([
           {path: '/sales/rate-charges', element: <RateChargesPage />},
           {path: '/sales/sales-budget', element: <CrmBudgetsPage />},
           {path: '/sales/sales-dashboard', element: <CrmDashboardPage />},
+          {path: '/sales/reports', element: <SalesReportsPage />},
           {path: '/sales/email-marketing', element: <CrmEmailMarketingPage />},
           {path: '/sales/shipments-list', element: <ShipmentsListSalesPage />},
           {path: '/sales/visiting-card-list', element: <VisitingCardListPage />},

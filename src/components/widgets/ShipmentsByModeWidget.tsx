@@ -1,17 +1,5 @@
 import { Ship } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { axiosInstance } from '@/lib/axios'
-
-interface ModeBreakdown {
-  mode:    string
-  count:   number
-  percent: number
-}
-
-interface ShipmentsSummary {
-  total:      number
-  breakdown:  ModeBreakdown[]
-}
+import { useShipmentsByModeSummary } from '@/features/jobs/hooks/useJobDashboard'
 
 const MODE_COLORS: Record<string, string> = {
   'Air Export':  'var(--color-mode-air)',
@@ -21,15 +9,7 @@ const MODE_COLORS: Record<string, string> = {
 }
 
 export default function ShipmentsByModeWidget() {
-  const [data, setData]       = useState<ShipmentsSummary | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    axiosInstance
-      .get<ShipmentsSummary>('/api/jobs/summary/by-mode')
-      .then(({ data }) => setData(data))
-      .finally(() => setLoading(false))
-  }, [])
+  const { data, isLoading } = useShipmentsByModeSummary()
 
   return (
     <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5">
@@ -38,14 +18,14 @@ export default function ShipmentsByModeWidget() {
           <Ship size={14} style={{ color: 'var(--color-primary-600)' }} aria-hidden="true" />
         </div>
         <span className="text-xs font-medium text-[var(--color-neutral-500)]">Shipments by Mode</span>
-        {!loading && data && (
+        {!isLoading && data && (
           <span className="ml-auto text-xs font-semibold text-[var(--color-neutral-700)]">
             {data.total} total
           </span>
         )}
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-4 bg-[var(--color-neutral-100)] rounded animate-pulse" />

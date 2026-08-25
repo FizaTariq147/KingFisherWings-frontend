@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { JobForm } from '../components/JobForm';
@@ -14,11 +13,9 @@ export default function JobEditPage() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const segment = (segmentFromPath(pathname) ?? 'air-export') as JobSegmentKey;
-  const segmentConfig = JOB_SEGMENTS[segment];
   const prefix = jobRoutePrefix(segment);
   const { data: job, isLoading, isError, error } = useJob(id);
   const update = useUpdateJob(id);
-  const [saveError, setSaveError] = useState<string | null>(null);
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -37,11 +34,6 @@ export default function JobEditPage() {
       <div>
         <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Edit job</h2>
       </div>
-      {saveError && (
-        <div role="alert" className="text-sm text-[var(--color-danger-600)]">
-          {saveError}
-        </div>
-      )}
       <JobForm
         mode="edit"
         jobTypeOptions={
@@ -53,13 +45,8 @@ export default function JobEditPage() {
         isSubmitting={update.isPending}
         onCancel={() => navigate(`${prefix}/${id}`)}
         onSubmit={async (values) => {
-          setSaveError(null);
-          try {
-            await update.mutateAsync(values as UpdateJobFormValues);
-            navigate(`${prefix}/${id}`);
-          } catch (err) {
-            setSaveError(getErrorMessage(err));
-          }
+          await update.mutateAsync(values as UpdateJobFormValues);
+          navigate(`${prefix}/${id}`);
         }}
       />
     </div>

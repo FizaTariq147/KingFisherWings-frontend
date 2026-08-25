@@ -1,8 +1,10 @@
 import { type Resolver } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { FieldError } from '@/components/ui/FieldError/FieldError';
 import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
@@ -31,9 +33,14 @@ interface JobFormProps {
   isSubmitting?: boolean;
 }
 
-function FieldError({ message }: { message?: string }) {
-  if (!message) return null;
-  return <p className="text-xs text-[var(--color-danger-500)]">{message}</p>;
+function FieldErrorMessage({ message }: { message?: string }) {
+  return <FieldError message={message} />;
+}
+
+function textareaClass(hasError?: boolean) {
+  return `w-full min-h-[72px] rounded-md border px-3 py-2 text-sm focus:outline-none focus:border-[var(--color-primary-500)] ${
+    hasError ? 'border-[var(--color-danger-500)]' : 'border-[var(--color-neutral-200)]'
+  }`;
 }
 
 function partyOptions(parties: Array<{ id: string; name?: string; code?: string }>) {
@@ -89,6 +96,7 @@ export function JobForm({
     control,
     watch,
     handleValidatedSubmit,
+    applyApiErrors,
     formState: { errors },
   } = useAppForm<CreateJobFormValues>({
     resolver: zodResolver(schema) as Resolver<CreateJobFormValues>,
@@ -106,6 +114,8 @@ export function JobForm({
   const fieldError = (name: keyof CreateJobFormValues) =>
     errors[name]?.message as string | undefined;
 
+  const [apiError, setApiError] = useState<string | null>(null);
+
   const portOpts: Array<{ value: string; label: string }> = [];
   for (const p of ports) {
     if (!isUuid(String(p.id))) continue;
@@ -120,10 +130,31 @@ export function JobForm({
 
   return (
     <form
-      onSubmit={handleValidatedSubmit((values) => onSubmit(values))}
+      onSubmit={handleValidatedSubmit(async (values) => {
+        setApiError(null);
+        try {
+          await onSubmit(values);
+        } catch (err) {
+          const banner = applyApiErrors(err, { onRoot: setApiError });
+          if (banner) setApiError(banner);
+        }
+      })}
       className="space-y-4 max-w-4xl"
       noValidate
     >
+      {apiError && (
+        <div
+          role="alert"
+          className="rounded-lg border px-4 py-3 text-sm"
+          style={{
+            background: 'var(--color-danger-100)',
+            borderColor: '#FECACA',
+            color: 'var(--color-danger-700)',
+          }}
+        >
+          {apiError}
+        </div>
+      )}
       <Card>
         <CardHeader>
           <CardTitle>Basic information</CardTitle>
@@ -173,21 +204,25 @@ export function JobForm({
                 </div>
               </>
             )}
-            <FieldError message={fieldError('job_type')} />
+            <FieldErrorMessage message={fieldError('job_type')} />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1">
               <label htmlFor="job-incoterms" className="text-xs font-medium text-[var(--color-neutral-500)]">Incoterms</label>
-              <Input id="job-incoterms" {...register('incoterms')} placeholder="e.g. FOB" />
-              <FieldError message={fieldError('incoterms')} />
+              <Input
+                id="job-incoterms"
+                error={fieldError('incoterms')}
+                {...register('incoterms')}
+                placeholder="e.g. FOB"
+              />
             </div>
             <div className="space-y-1">
               <label htmlFor="job-etd" className="text-xs font-medium text-[var(--color-neutral-500)]">ETD</label>
-              <Input id="job-etd" type="date" {...register('etd')} />
+              <Input id="job-etd" type="date" error={fieldError('etd')} {...register('etd')} />
             </div>
             <div className="space-y-1">
               <label htmlFor="job-eta" className="text-xs font-medium text-[var(--color-neutral-500)]">ETA</label>
-              <Input id="job-eta" type="date" {...register('eta')} />
+              <Input id="job-eta" type="date" error={fieldError('eta')} {...register('eta')} />
             </div>
           </div>
         </div>
@@ -290,12 +325,11 @@ export function JobForm({
         <div className="p-4 pt-0 grid gap-4 sm:grid-cols-2">
           <div className="space-y-1 sm:col-span-2">
             <label htmlFor="job-commodity" className="text-xs font-medium text-[var(--color-neutral-500)]">Commodity</label>
-            <Input id="job-commodity" {...register('commodity')} />
-            <FieldError message={fieldError('commodity')} />
+            <Input id="job-commodity" error={fieldError('commodity')} {...register('commodity')} />
           </div>
           <div className="space-y-1">
             <label htmlFor="job-hs-code" className="text-xs font-medium text-[var(--color-neutral-500)]">HS code</label>
-            <Input id="job-hs-code" {...register('hs_code')} />
+            <Input id="job-hs-code" error={fieldError('hs_code')} {...register('hs_code')} />
           </div>
           <div className="space-y-1">
             <label htmlFor="job-pieces" className="text-xs font-medium text-[var(--color-neutral-500)]">Pieces</label>
@@ -303,6 +337,7 @@ export function JobForm({
               id="job-pieces"
               type="number"
               step="1"
+              error={fieldError('pieces')}
               {...register('pieces', {
                 setValueAs: (v) =>
                   v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
@@ -317,6 +352,7 @@ export function JobForm({
               id="job-gross-weight"
               type="number"
               step="0.001"
+              error={fieldError('gross_weight')}
               {...register('gross_weight', {
                 setValueAs: (v) =>
                   v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
@@ -331,6 +367,7 @@ export function JobForm({
               id="job-chargeable-weight"
               type="number"
               step="0.001"
+              error={fieldError('chargeable_weight')}
               {...register('chargeable_weight', {
                 setValueAs: (v) =>
                   v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
@@ -343,6 +380,7 @@ export function JobForm({
               id="job-volume-cbm"
               type="number"
               step="0.001"
+              error={fieldError('volume_cbm')}
               {...register('volume_cbm', {
                 setValueAs: (v) =>
                   v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
@@ -389,6 +427,7 @@ export function JobForm({
               id="job-container-count"
               type="number"
               step="1"
+              error={fieldError('container_count')}
               {...register('container_count', {
                 setValueAs: (v) =>
                   v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
@@ -409,9 +448,10 @@ export function JobForm({
             </label>
             <textarea
               id="job-customer-remarks"
-              className="w-full min-h-[72px] rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
+              className={textareaClass(Boolean(fieldError('customer_remarks')))}
               {...register('customer_remarks')}
             />
+            <FieldErrorMessage message={fieldError('customer_remarks')} />
           </div>
           <div className="space-y-1">
             <label htmlFor="job-notes" className="text-xs font-medium text-[var(--color-neutral-500)]">
@@ -419,9 +459,10 @@ export function JobForm({
             </label>
             <textarea
               id="job-notes"
-              className="w-full min-h-[72px] rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
+              className={textareaClass(Boolean(fieldError('notes')))}
               {...register('notes')}
             />
+            <FieldErrorMessage message={fieldError('notes')} />
           </div>
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" {...register('is_dg')} />
@@ -429,7 +470,7 @@ export function JobForm({
           </label>
           <div className="space-y-1">
             <label htmlFor="job-dg-class" className="text-xs font-medium text-[var(--color-neutral-500)]">DG class</label>
-            <Input id="job-dg-class" {...register('dg_class')} />
+            <Input id="job-dg-class" error={fieldError('dg_class')} {...register('dg_class')} />
           </div>
         </div>
       </Card>

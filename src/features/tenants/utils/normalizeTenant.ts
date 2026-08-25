@@ -74,17 +74,35 @@ function pickCompanyCode(raw: Record<string, unknown>): string {
 
 function pickTotalUsers(raw: Record<string, unknown>): number | undefined {
   const stats = asRecord(raw.stats) || asRecord(raw.statistics) || asRecord(raw._count);
-  return coerceOptionalNumber(
+  const fromScalar = coerceOptionalNumber(
     raw.total_users ??
       raw.users_count ??
       raw.user_count ??
       raw.totalUsers ??
       raw.usersCount ??
       raw.userCount ??
+      raw.created_users ??
+      raw.createdUsers ??
+      raw.created_users_count ??
+      raw.createdUsersCount ??
       stats?.users ??
       stats?.user ??
-      stats?.total_users,
+      stats?.total_users ??
+      stats?.Users,
   );
+  if (fromScalar != null) return fromScalar;
+
+  for (const key of ['users', 'Users', 'tenant_users', 'tenantUsers', 'created_users', 'createdUsers']) {
+    const value = raw[key];
+    if (Array.isArray(value)) {
+      const live = value.filter((item) => {
+        const row = asRecord(item);
+        return row && !(row.deleted_at || row.deletedAt);
+      });
+      if (live.length > 0 || value.length === 0) return live.length;
+    }
+  }
+  return undefined;
 }
 
 function pickDeletedAt(raw: Record<string, unknown>): string | null {

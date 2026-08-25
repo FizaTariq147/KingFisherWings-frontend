@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { JobForm } from '../components/JobForm';
@@ -11,7 +10,6 @@ import {
 } from '../constants/job.constants';
 import { useCreateJob } from '../hooks/useJobs';
 import type { CreateJobFormValues } from '../types/job.types';
-import { getErrorMessage } from '../utils/getErrorMessage';
 import { jobDetailPath, jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 
 function defaultTypeForSegment(segment: JobSegmentKey | null): JobType {
@@ -32,7 +30,6 @@ export default function JobCreatePage() {
   const segment = segmentFromPath(pathname);
   const isGenericCreate = pathname === '/jobs/new' || !segment;
   const create = useCreateJob();
-  const [error, setError] = useState<string | null>(null);
 
   const queryType = parseJobTypeParam(searchParams.get('job_type'));
   const defaultJobType = queryType ?? defaultTypeForSegment(segment);
@@ -52,19 +49,6 @@ export default function JobCreatePage() {
           for air and FCL exports.
         </p>
       </div>
-      {error && (
-        <div
-          role="alert"
-          className="rounded-lg border px-4 py-3 text-sm"
-          style={{
-            background: 'var(--color-danger-100)',
-            borderColor: '#FECACA',
-            color: 'var(--color-danger-700)',
-          }}
-        >
-          {error}
-        </div>
-      )}
       <JobForm
         mode="create"
         jobTypeOptions={JOB_TYPE_WIZARD_OPTIONS}
@@ -72,13 +56,8 @@ export default function JobCreatePage() {
         isSubmitting={create.isPending}
         onCancel={() => navigate(backPath)}
         onSubmit={async (values) => {
-          setError(null);
-          try {
-            const created = await create.mutateAsync(values as CreateJobFormValues);
-            navigate(jobDetailPath(created));
-          } catch (err) {
-            setError(getErrorMessage(err));
-          }
+          const created = await create.mutateAsync(values as CreateJobFormValues);
+          navigate(jobDetailPath(created));
         }}
       />
     </div>

@@ -1,24 +1,8 @@
 import { Briefcase } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { axiosInstance } from '@/lib/axios'
-
-interface OpenJobsSummary {
-  total:      number
-  airExport:  number
-  seaExport:  number
-  seaImport:  number
-}
+import { useOpenJobsSummary } from '@/features/jobs/hooks/useJobDashboard'
 
 export default function OpenJobsWidget() {
-  const [data, setData]       = useState<OpenJobsSummary | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    axiosInstance
-      .get<OpenJobsSummary>('/api/jobs/summary/open')
-      .then(({ data }) => setData(data))
-      .finally(() => setLoading(false))
-  }, [])
+  const { data, isLoading } = useOpenJobsSummary()
 
   return (
     <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5">
@@ -28,7 +12,7 @@ export default function OpenJobsWidget() {
         </div>
         <span className="text-xs font-medium text-[var(--color-neutral-500)]">Open Jobs</span>
       </div>
-      {loading ? (
+      {isLoading ? (
         <div className="h-8 w-16 bg-[var(--color-neutral-100)] rounded animate-pulse" />
       ) : (
         <>

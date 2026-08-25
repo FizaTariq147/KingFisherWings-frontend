@@ -76,7 +76,11 @@ export function ReportsHubPage({ title, backTo, backLabel, tiles }: ReportsHubPa
           ))}
 
           {filtered.length === 0 ? (
-            <p className="text-sm text-gray-500 py-8 text-center">No reports match your search.</p>
+            <p className="text-sm text-gray-500 py-8 text-center">
+              {tiles.length === 0
+                ? 'No reports available for this module yet.'
+                : 'No reports match your search.'}
+            </p>
           ) : null}
         </div>
       </div>

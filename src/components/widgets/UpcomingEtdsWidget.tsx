@@ -1,25 +1,8 @@
 import { Calendar } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { axiosInstance } from '@/lib/axios'
-
-interface EtdItem {
-  jobNumber: string
-  vessel:    string
-  etd:       string   // ISO date string
-  pol:       string
-  pod:       string
-}
+import { useUpcomingEtds } from '@/features/jobs/hooks/useJobDashboard'
 
 export default function UpcomingEtdsWidget() {
-  const [data, setData]       = useState<EtdItem[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    axiosInstance
-      .get<EtdItem[]>('/api/jobs/summary/upcoming-etds')
-      .then(({ data }) => setData(data))
-      .finally(() => setLoading(false))
-  }, [])
+  const { data = [], isLoading } = useUpcomingEtds(7)
 
   return (
     <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5">
@@ -30,7 +13,7 @@ export default function UpcomingEtdsWidget() {
         <span className="text-xs font-medium text-[var(--color-neutral-500)]">Upcoming ETDs (7 days)</span>
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-8 bg-[var(--color-neutral-100)] rounded animate-pulse" />
