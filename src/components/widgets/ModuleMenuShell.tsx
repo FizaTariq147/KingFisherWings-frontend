@@ -52,6 +52,8 @@ type ModuleMenuShellProps = {
   linkSearch?: string;
   /** Override section heading classes (e.g. quieter labels on Reports). */
   sectionHeadingClassName?: string;
+  /** Hide the dark “Menu / Title” bar above tiles. */
+  hideTitleBar?: boolean;
 };
 
 function ViewToggleButton({
@@ -98,6 +100,7 @@ export function ModuleMenuShell({
   viewStorageKey,
   linkSearch,
   sectionHeadingClassName,
+  hideTitleBar = false,
 }: ModuleMenuShellProps) {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
@@ -207,18 +210,20 @@ export function ModuleMenuShell({
         </select>
       </div>
 
-      <div className={`bg-[#0A2942] px-6 ${compact ? 'py-2' : 'py-3'}`}>
-        <p className={`text-white ${compact ? 'text-[11px]' : 'text-xs'}`}>
-          <span className="text-white/60">Menu</span>
-          <span className="text-white/40 mx-2">/</span>
-          <span className="font-medium">{title}</span>
-          {query.trim() ? (
-            <span className="text-white/50 ml-3 font-normal">
-              {filtered.length} of {allTiles.length}
-            </span>
-          ) : null}
-        </p>
-      </div>
+      {!hideTitleBar ? (
+        <div className={`bg-[#0A2942] px-6 ${compact ? 'py-2' : 'py-3'}`}>
+          <p className={`text-white ${compact ? 'text-[11px]' : 'text-xs'}`}>
+            <span className="text-white/60">Menu</span>
+            <span className="text-white/40 mx-2">/</span>
+            <span className="font-medium">{title}</span>
+            {query.trim() ? (
+              <span className="text-white/50 ml-3 font-normal">
+                {filtered.length} of {allTiles.length}
+              </span>
+            ) : null}
+          </p>
+        </div>
+      ) : null}
 
       <div className="flex-1 p-6 space-y-8">
         {sectionGroups.map((group) => (

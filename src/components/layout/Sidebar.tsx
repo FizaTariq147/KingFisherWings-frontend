@@ -20,6 +20,7 @@ import {
   Globe,
   Briefcase,
   Truck,
+  Warehouse,
   LogOut,
   Loader2,
   Search,
@@ -53,6 +54,8 @@ interface NavItem {
   permissionAny?: PermissionKey[];
   adminOnly?: boolean;
   iconStyle?: NavIconStyle;
+  /** Highlight when pathname starts with this prefix (e.g. sub-routes). */
+  activePrefix?: string;
 }
 
 type NavGroupId = 'workspace' | 'operations' | 'business';
@@ -127,6 +130,7 @@ const SIDEBAR_ICON_STYLES: Record<string, NavIconStyle> = {
   '/settings': navStyle('#64748B'),
   '/audit-log': navStyle('#4F46E5'),
   '/masters': navStyle('#A855F7'),
+  '/warehouse': navStyle('#0D9488'),
   '/organization': navStyle('#06B6D4'),
   '/parties': navStyle('#CA8A04'),
   '/admin/users': navStyle('#C026D3'),
@@ -304,7 +308,14 @@ const OPS_NAV_ITEMS: NavItem[] = [
     permissionAny: ['menu_accounts', 'menu_finance'],
   },
   { label: 'NVOCC', path: '/nvocc', Icon: Building2, permission: 'menu_nvocc' },
-  { label: 'HR', path: '/hr', Icon: UserCircle, permission: 'menu_hr' },
+  { label: 'HR', path: '/hr', Icon: UserCircle, permission: 'menu_hr', activePrefix: '/hr' },
+  {
+    label: 'Warehouse',
+    path: '/warehouse',
+    Icon: Warehouse,
+    permission: 'menu_hr',
+    activePrefix: '/warehouse',
+  },
   { label: 'Reports', path: '/reports', Icon: BarChart3, permission: 'menu_reports' },
   { label: 'Sales', path: '/sales', Icon: Percent, permission: 'menu_sales' as PermissionKey },
   { label: 'Settings', path: '/settings', Icon: Settings, permission: 'menu_settings' },
@@ -507,6 +518,10 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
                 iconStyle={item.iconStyle}
                 collapsed={collapsed}
                 onNavigate={onNavigate}
+                resolveActive={(isActive) =>
+                  isActive ||
+                  Boolean(item.activePrefix && location.pathname.startsWith(item.activePrefix))
+                }
               />
             ))}
           </div>
