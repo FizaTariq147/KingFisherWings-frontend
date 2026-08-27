@@ -379,7 +379,7 @@ export function optionalUrlOrEmpty() {
   );
 }
 
-export function requiredUuid(message = V.uuid) {
+export function requiredUuid(message: string = V.uuid) {
   return z.preprocess(
     emptyToUndefined,
     z.string({ error: V.required }).refine((v) => isUuid(v), message),

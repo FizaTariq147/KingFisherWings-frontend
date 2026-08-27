@@ -163,6 +163,22 @@ import MastersMenuPage from '../pages/masters/MastersMenuPage'
 import MasterResourceListPage from '../features/masters/pages/MasterResourceListPage'
 import MasterResourceFormPage from '../features/masters/pages/MasterResourceFormPage'
 import MasterResourceDetailPage from '../features/masters/pages/MasterResourceDetailPage'
+import WarehouseMenuPage from '../pages/warehouse/WarehouseMenuPage'
+import WmsSettingsPage from '../features/wms/pages/WmsSettingsPage'
+import WmsItemsListPage from '../features/wms/pages/WmsItemsListPage'
+import WmsItemFormPage from '../features/wms/pages/WmsItemFormPage'
+import WmsItemDetailPage from '../features/wms/pages/WmsItemDetailPage'
+import WmsAsnListPage from '../features/wms/pages/WmsAsnListPage'
+import WmsAsnCreatePage from '../features/wms/pages/WmsAsnCreatePage'
+import WmsAsnDetailPage from '../features/wms/pages/WmsAsnDetailPage'
+import WmsGrnListPage from '../features/wms/pages/WmsGrnListPage'
+import WmsGrnCreatePage from '../features/wms/pages/WmsGrnCreatePage'
+import WmsGrnDetailPage from '../features/wms/pages/WmsGrnDetailPage'
+import WmsGdoListPage from '../features/wms/pages/WmsGdoListPage'
+import WmsGdoCreatePage from '../features/wms/pages/WmsGdoCreatePage'
+import WmsGdoDetailPage from '../features/wms/pages/WmsGdoDetailPage'
+import WmsStockPage from '../features/wms/pages/WmsStockPage'
+import WmsStoragePage from '../features/wms/pages/WmsStoragePage'
 
 import { SuperAdminProtectedRoute } from '../features/superadmin/components/SuperAdminProtectedRoute/SuperAdminProtectedRoute'
 import SuperAdminLoginPage from '../features/superadmin/pages/SuperAdminLoginPage'
@@ -484,6 +500,23 @@ export const router = createBrowserRouter([
               { path: '/hr/evaluations', element: <EvaluationsPage /> },
               { path: '/hr/letters', element: <LettersPage /> },
               { path: '/hr/reports', element: <HrReportsPage /> },
+              { path: '/warehouse', element: <WarehouseMenuPage /> },
+              { path: '/warehouse/settings', element: <WmsSettingsPage /> },
+              { path: '/warehouse/items', element: <WmsItemsListPage /> },
+              { path: '/warehouse/items/new', element: <WmsItemFormPage /> },
+              { path: '/warehouse/items/:id/edit', element: <WmsItemFormPage /> },
+              { path: '/warehouse/items/:id', element: <WmsItemDetailPage /> },
+              { path: '/warehouse/asns', element: <WmsAsnListPage /> },
+              { path: '/warehouse/asns/new', element: <WmsAsnCreatePage /> },
+              { path: '/warehouse/asns/:id', element: <WmsAsnDetailPage /> },
+              { path: '/warehouse/grns', element: <WmsGrnListPage /> },
+              { path: '/warehouse/grns/new', element: <WmsGrnCreatePage /> },
+              { path: '/warehouse/grns/:id', element: <WmsGrnDetailPage /> },
+              { path: '/warehouse/gdos', element: <WmsGdoListPage /> },
+              { path: '/warehouse/gdos/new', element: <WmsGdoCreatePage /> },
+              { path: '/warehouse/gdos/:id', element: <WmsGdoDetailPage /> },
+              { path: '/warehouse/stock', element: <WmsStockPage /> },
+              { path: '/warehouse/storage', element: <WmsStoragePage /> },
             ],
           },
           { path: '/reports', element: <ReportsMenuPage /> },
