@@ -134,6 +134,7 @@ export const createJobBaseSchema = z.object({
   department_id: optionalUuid(),
   parent_job_id: optionalUuid(),
   consignee_id: optionalUuid(),
+  billing_party_id: optionalUuid(),
   agent_id: optionalUuid(),
   salesperson_id: optionalUuid(),
   ops_user_id: optionalUuid(),

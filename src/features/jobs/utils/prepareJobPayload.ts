@@ -9,6 +9,7 @@ export const JOB_FORM_DEFAULTS: CreateJobDto = {
   department_id: '',
   parent_job_id: '',
   consignee_id: '',
+  billing_party_id: '',
   agent_id: '',
   salesperson_id: '',
   ops_user_id: '',
@@ -38,6 +39,7 @@ const UUID_OPTIONAL_KEYS = [
   'department_id',
   'parent_job_id',
   'consignee_id',
+  'billing_party_id',
   'agent_id',
   'salesperson_id',
   'ops_user_id',
@@ -128,6 +130,8 @@ export function prepareJobPayload(
     delete payload.dg_class;
   }
 
+  // Do not auto-inject billing_party_id — some tenants 500 when it duplicates shipper FK context.
+
   return omitEmpty(payload);
 }
 
@@ -136,9 +140,36 @@ export function prepareMinimalJobCreatePayload(
   values: CreateJobDto | UpdateJobDto,
 ): Record<string, unknown> {
   const full = prepareJobPayload(values);
+  const jobType = String(full.job_type ?? '');
+
+  // FCL create seeds sea_fcl_details + milestones; optional FKs/dates often trigger opaque 500s.
+  if (/SEA_FCL_/i.test(jobType)) {
+    return {
+      job_type: full.job_type,
+      shipper_id: full.shipper_id,
+    };
+  }
+
+  // SERVICE_JOB: keep header-only fields — ports/containers from quotations often break create.
+  if (jobType === 'SERVICE_JOB') {
+    const out: Record<string, unknown> = {
+      job_type: full.job_type,
+      shipper_id: full.shipper_id,
+    };
+    for (const key of ['company_id', 'branch_id', 'department_id', 'salesperson_id', 'notes'] as const) {
+      if (full[key] !== undefined) out[key] = full[key];
+    }
+    return out;
+  }
+
   const keep = [
     'job_type',
     'shipper_id',
+    'company_id',
+    'branch_id',
+    'department_id',
+    'billing_party_id',
+    'salesperson_id',
     'consignee_id',
     'origin_port_id',
     'dest_port_id',
@@ -162,6 +193,17 @@ export function prepareMinimalJobCreatePayload(
   return out;
 }
 
+/** Absolute minimum body — used as last retry when FCL still 500s. */
+export function prepareBareJobCreatePayload(
+  values: CreateJobDto | UpdateJobDto,
+): Record<string, unknown> {
+  const full = prepareJobPayload(values);
+  return {
+    job_type: full.job_type,
+    shipper_id: full.shipper_id,
+  };
+}
+
 export function jobToFormValues(job: Job) {
   return {
     job_type: job.job_type,
@@ -171,6 +213,7 @@ export function jobToFormValues(job: Job) {
     department_id: job.department_id ?? '',
     parent_job_id: job.parent_job_id ?? '',
     consignee_id: job.consignee_id ?? '',
+    billing_party_id: job.billing_party_id ?? '',
     agent_id: job.agent_id ?? '',
     salesperson_id: job.salesperson_id ?? '',
     ops_user_id: job.ops_user_id ?? '',

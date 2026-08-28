@@ -21,6 +21,10 @@ export const QUOTATION_API = {
   pdf: (id: string) => `/quotations/${id}/pdf`,
   pdfStatus: (id: string) => `/quotations/${id}/pdf/status`,
   sendEmail: (id: string) => `/quotations/${id}/send-email`,
+  tariffs: '/quotations/tariffs',
+  tariffById: (id: string) => `/quotations/tariffs/${id}`,
+  zipDistances: '/quotations/zip-distances',
+  zipDistanceById: (id: string) => `/quotations/zip-distances/${id}`,
   reports: {
     chargewise: '/quotations/reports/chargewise',
     analytics: '/quotations/reports/analytics',

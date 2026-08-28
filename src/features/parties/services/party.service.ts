@@ -90,9 +90,10 @@ function assertPartyId(id?: string): asserts id is string {
 }
 
 function buildListQuery(params: PartyListParams): Record<string, string | number> {
+  const limit = Math.min(Math.max(Number(params.limit ?? 20) || 20, 1), 100);
   const query: Record<string, string | number> = {
-    page: params.page ?? 1,
-    limit: params.limit ?? 20,
+    page: Math.max(Number(params.page ?? 1) || 1, 1),
+    limit,
     order: params.order ?? 'asc',
   };
   if (params.search?.trim()) query.search = params.search.trim();

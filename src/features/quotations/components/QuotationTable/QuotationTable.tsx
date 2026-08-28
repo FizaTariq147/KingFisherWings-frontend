@@ -7,8 +7,20 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table';
+import { isUuid } from '@/lib/isUuid';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { useParties } from '@/features/parties/hooks/useParties';
+import { useMemo } from 'react';
 import { JOB_TYPE_LABELS } from '../../constants/quotation.constants';
 import type { PaginationMeta, Quotation } from '../../types/quotation.types';
+import {
+  buildPortLabelMap,
+  formatQuotationDate,
+  quotationCustomerLabel,
+  quotationRouteLabel,
+  quotationTotalLabel,
+} from '../../utils/quotationDisplay';
 import { quotationDisplayNumber } from '../../utils/normalizeQuotation';
 import { QuotationActionMenu } from '../QuotationActionMenu';
 import { QuotationStatusBadge } from '../QuotationStatusBadge';
@@ -48,6 +60,25 @@ export function QuotationTable({
   onArchive,
   emptyMessage = 'No quotations found',
 }: QuotationTableProps) {
+  const { data: ports = [] } = useMasterOptions('ports', MASTER_PATHS.ports, true);
+  const { data: customersResult } = useParties({
+    page: 1,
+    limit: 500,
+    party_type: 'CUSTOMER',
+    order: 'asc',
+  });
+
+  const portMap = useMemo(() => buildPortLabelMap(ports), [ports]);
+  const partyMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const p of customersResult?.parties ?? []) {
+      if (!isUuid(p.id)) continue;
+      const label = [p.code, p.name].filter(Boolean).join(' — ') || p.id.slice(0, 8);
+      map.set(p.id, label);
+    }
+    return map;
+  }, [customersResult?.parties]);
+
   return (
     <div className="relative space-y-3">
       <AppFetchBar active={Boolean(isFetching)} className="absolute top-0 left-0 right-0 z-10" />
@@ -81,19 +112,13 @@ export function QuotationTable({
                 <TableCell mono>{quotationDisplayNumber(q)}</TableCell>
                 <TableCell>
                   <div className="font-medium text-[var(--color-neutral-800)]">
-                    {q.customer_name || q.customer_id.slice(0, 8)}
+                    {quotationCustomerLabel(q, partyMap)}
                   </div>
                 </TableCell>
                 <TableCell>{JOB_TYPE_LABELS[q.job_type] ?? q.job_type}</TableCell>
-                <TableCell mono>
-                  {(q.origin_port_code || '—') + ' → ' + (q.dest_port_code || '—')}
-                </TableCell>
-                <TableCell>{q.valid_until || '—'}</TableCell>
-                <TableCell mono>
-                  {q.total_amount != null
-                    ? `${q.currency_code} ${q.total_amount.toLocaleString()}`
-                    : '—'}
-                </TableCell>
+                <TableCell mono>{quotationRouteLabel(q, portMap)}</TableCell>
+                <TableCell>{formatQuotationDate(q.valid_until)}</TableCell>
+                <TableCell mono>{quotationTotalLabel(q)}</TableCell>
                 <TableCell onClick={(e) => e.stopPropagation()}>
                   <QuotationStatusBadge status={q.status} />
                 </TableCell>

@@ -16,6 +16,7 @@ import {
 import { useQuotationConfirmState } from '../hooks/useQuotationConfirmState';
 import { useDeleteQuotation, useQuotation, useQuotationRevisions } from '../hooks/useQuotations';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import { quotationDisplayNumber } from '../utils/normalizeQuotation';
 import { recalculateQuotationTotals } from '../utils/recalculateQuotationTotals';
 
@@ -323,7 +324,12 @@ export default function QuotationDetailPage() {
                     ? String((q as { job_id?: string }).job_id ?? '')
                     : '';
                 if (jobId) {
-                  navigate(`/jobs/${jobId}`);
+                  navigate(
+                    jobDetailPath({
+                      id: jobId,
+                      job_type: (q as { job_type?: string }).job_type ?? quotation.job_type,
+                    }),
+                  );
                   return q;
                 }
                 return q;

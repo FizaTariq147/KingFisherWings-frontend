@@ -1,8 +1,14 @@
 import { axiosInstance } from '@/lib/axios';
 import type { ApiEnvelope } from '@/lib/apiEnvelope';
 import { isUuid } from '@/lib/isUuid';
+import { resolveSessionCompanyIdAsync } from '@/lib/resolveSessionCompanyId';
 import { withGatewayRetry } from '@/lib/wakeApi';
+import { ensureJobNumberFormatReady } from '@/features/organization/utils/ensureJobNumberFormat';
+import { normalizeJob } from '@/features/jobs/utils/normalizeJob';
+import { quotationToCreateJobDto } from '../utils/createJobFromQuotation';
 import { QUOTATION_API } from '../api/quotation.api';
+import { JOB_POST_AXIOS_CONFIG } from '@/features/jobs/utils/buildJobCreateCandidates';
+import { ensureJobBranchReady, resolveOptionalBranchId } from '@/features/jobs/utils/ensureJobBranchReady';
 import {
   normalizeQuotation,
   normalizeQuotationLine,
@@ -15,6 +21,7 @@ import {
   prepareQuotationPayload,
 } from '../utils/prepareQuotationPayload';
 import { normalizeQuotationPdfInfo } from '../utils/normalizeQuotationPdf';
+import { quotationTotalAmount } from '../utils/quotationDisplay';
 import type {
   ApprovalDecisionDto,
   CreateOnlineQuoteDto,
@@ -145,6 +152,64 @@ function assertId(id: string, label = 'quotation'): asserts id is string {
   if (!id || !isUuid(id)) throw new Error(`Invalid ${label} id.`);
 }
 
+function mergeQuotationForList(base: Quotation, detail: Quotation): Quotation {
+  return {
+    ...base,
+    customer_name: base.customer_name || detail.customer_name,
+    origin_port_id: base.origin_port_id || detail.origin_port_id,
+    dest_port_id: base.dest_port_id || detail.dest_port_id,
+    origin_port_code: base.origin_port_code || detail.origin_port_code,
+    dest_port_code: base.dest_port_code || detail.dest_port_code,
+    origin_port_name: base.origin_port_name || detail.origin_port_name,
+    dest_port_name: base.dest_port_name || detail.dest_port_name,
+    subtotal: base.subtotal ?? detail.subtotal,
+    tax_total: base.tax_total ?? detail.tax_total,
+    total_amount: base.total_amount ?? detail.total_amount,
+    revenue_total: base.revenue_total ?? detail.revenue_total,
+    cost_total: base.cost_total ?? detail.cost_total,
+    discount_percent: base.discount_percent ?? detail.discount_percent,
+    discount_amount: base.discount_amount ?? detail.discount_amount,
+    lines: base.lines?.length ? base.lines : detail.lines,
+    currency_code: base.currency_code || detail.currency_code,
+  };
+}
+
+function needsListEnrichment(q: Quotation): boolean {
+  const hasRouteIds = Boolean(q.origin_port_id || q.dest_port_id);
+  const hasRouteLabels = Boolean(
+    q.origin_port_code || q.dest_port_code || q.origin_port_name || q.dest_port_name,
+  );
+  return hasRouteIds && !hasRouteLabels;
+}
+
+async function enrichQuotationsForList(quotations: Quotation[]): Promise<Quotation[]> {
+  const targets = quotations.filter(
+    (q) => quotationTotalAmount(q) == null || needsListEnrichment(q),
+  );
+  if (!targets.length) return quotations;
+
+  const detailById = new Map<string, Quotation>();
+  await Promise.all(
+    targets.slice(0, 25).map(async (q) => {
+      try {
+        const res = await withGatewayRetry(() =>
+          axiosInstance.get<ApiEnvelope<Quotation> | Quotation>(QUOTATION_API.byId(q.id)),
+        );
+        const detail = normalizeQuotation(unwrapEntity(res.data));
+        if (detail) detailById.set(q.id, detail);
+      } catch {
+        // Keep list row as-is when detail fetch fails.
+      }
+    }),
+  );
+
+  if (!detailById.size) return quotations;
+  return quotations.map((q) => {
+    const detail = detailById.get(q.id);
+    return detail ? mergeQuotationForList(q, detail) : q;
+  });
+}
+
 function buildListQuery(
   params: QuotationListParams | QuotationReportParams,
 ): Record<string, string | number> {
@@ -200,11 +265,95 @@ function buildAnalyticsQuery(
 
 async function postAction(url: string, body?: unknown): Promise<Quotation> {
   const res = await withGatewayRetry(() =>
-    axiosInstance.post<unknown>(url, body ?? {}),
+    body !== undefined
+      ? axiosInstance.post<unknown>(url, body)
+      : axiosInstance.post<unknown>(url),
   );
   const quotation = normalizeQuotation(unwrapEntity(res.data));
   if (!quotation) throw new Error('Action succeeded but no quotation was returned.');
   return quotation;
+}
+
+function extractJobIdFromConvertResponse(raw: unknown): string {
+  const root = asRecord(raw);
+  const data = asRecord(root?.data) ?? root;
+  if (!data) return '';
+  const nestedJob = asRecord(data.job);
+  const candidates = [
+    data.job_id,
+    data.jobId,
+    nestedJob?.id,
+    root?.job_id,
+    root?.jobId,
+  ];
+  for (const value of candidates) {
+    const id = String(value ?? '');
+    if (isUuid(id)) return id;
+  }
+  const asJob = normalizeJob(data);
+  if (asJob?.id) return asJob.id;
+  return '';
+}
+
+async function postConvertToJob(id: string, quotation: Quotation): Promise<Quotation> {
+  // Swagger: POST /quotations/{id}/convert-to-job has no request body — server reads WON quotation.
+  const res = await withGatewayRetry(() =>
+    axiosInstance.post<unknown>(
+      QUOTATION_API.convertToJob(id),
+      undefined,
+      JOB_POST_AXIOS_CONFIG,
+    ),
+  );
+  const raw = unwrapEntity(res.data);
+  const updated = normalizeQuotation(raw);
+  if (updated) return updated;
+
+  const jobId = extractJobIdFromConvertResponse(raw);
+  if (jobId) {
+    return { ...quotation, job_id: jobId, status: 'CONVERTED' };
+  }
+
+  // API often returns 201 with empty body — reload quotation for job_id / CONVERTED status.
+  try {
+    const refreshRes = await withGatewayRetry(() =>
+      axiosInstance.get<unknown>(QUOTATION_API.byId(id)),
+    );
+    const refreshed = normalizeQuotation(unwrapEntity(refreshRes.data));
+    if (refreshed && (refreshed.job_id || refreshed.status === 'CONVERTED')) {
+      return refreshed;
+    }
+  } catch {
+    /* fall through */
+  }
+
+  throw new Error('Convert succeeded but no job id was returned.');
+}
+
+async function createJobFallbackFromQuotation(quotation: Quotation): Promise<Quotation> {
+  const { jobService } = await import('@/features/jobs/services/job.service');
+  const job = await jobService.create(await quotationToCreateJobDto(quotation));
+  return {
+    ...quotation,
+    job_id: job.id,
+    status: 'CONVERTED',
+  };
+}
+
+async function withSessionCompany<T extends { company_id?: string }>(dto: T): Promise<T> {
+  if (dto.company_id && isUuid(dto.company_id)) return dto;
+  const companyId = await resolveSessionCompanyIdAsync();
+  if (!companyId) return dto;
+  return { ...dto, company_id: companyId };
+}
+
+async function withSessionQuotationContext<
+  T extends { company_id?: string; branch_id?: string },
+>(dto: T): Promise<T> {
+  let out = await withSessionCompany(dto);
+  if (out.branch_id && isUuid(out.branch_id)) return out;
+  const branchId = await resolveOptionalBranchId(out.company_id);
+  if (!branchId) return out;
+  return { ...out, branch_id: branchId };
 }
 
 export const quotationService = {
@@ -214,7 +363,7 @@ export const quotationService = {
         axiosInstance.get<unknown>(QUOTATION_API.list, { params: buildListQuery(params) }),
       );
       const { items, meta } = unwrapList(res.data);
-      const quotations = normalizeQuotations(items);
+      const quotations = await enrichQuotationsForList(normalizeQuotations(items));
       return { quotations, meta: normalizeMeta(meta, quotations.length, params) };
     } catch (error) {
       throw formatAxiosError(error);
@@ -237,10 +386,11 @@ export const quotationService = {
 
   async create(dto: CreateQuotationDto): Promise<Quotation> {
     try {
+      const withCompany = await withSessionQuotationContext(dto);
       const res = await withGatewayRetry(() =>
         axiosInstance.post<unknown>(
           QUOTATION_API.create,
-          prepareQuotationPayload(dto as Record<string, unknown>),
+          prepareQuotationPayload(withCompany as Record<string, unknown>),
         ),
       );
       const quotation = normalizeQuotation(unwrapEntity(res.data));
@@ -254,10 +404,11 @@ export const quotationService = {
   async update(id: string, dto: UpdateQuotationDto): Promise<Quotation> {
     assertId(id);
     try {
+      const withCompany = await withSessionQuotationContext(dto);
       const res = await withGatewayRetry(() =>
         axiosInstance.patch<unknown>(
           QUOTATION_API.byId(id),
-          prepareQuotationPayload(dto as Record<string, unknown>),
+          prepareQuotationPayload(withCompany as Record<string, unknown>),
         ),
       );
       const quotation = normalizeQuotation(unwrapEntity(res.data));
@@ -423,9 +574,53 @@ export const quotationService = {
 
   async convertToJob(id: string): Promise<Quotation> {
     assertId(id);
+    let quotation: Quotation | undefined;
     try {
-      return await postAction(QUOTATION_API.convertToJob(id));
+      quotation = await this.getById(id);
+      if (quotation.status !== 'WON') {
+        throw new Error(
+          `Quotation must be WON before convert (current status: ${quotation.status}).`,
+        );
+      }
+
+      const companyId =
+        quotation.company_id && isUuid(quotation.company_id)
+          ? quotation.company_id
+          : await resolveSessionCompanyIdAsync();
+
+      if (!companyId || !isUuid(companyId)) {
+        throw new Error(
+          'This quotation has no Company. Open the quotation, select Company on the form, save, then convert — or ensure your user is linked to a company.',
+        );
+      }
+
+      quotation = { ...quotation, company_id: companyId };
+
+      await ensureJobNumberFormatReady();
+      const branchId = await ensureJobBranchReady(quotation.company_id);
+
+      try {
+        return await postConvertToJob(id, { ...quotation, branch_id: branchId });
+      } catch (convertErr) {
+        const convertStatus = (convertErr as { response?: { status?: number } })?.response
+          ?.status;
+        if (convertStatus !== 500) {
+          if ((convertErr as { response?: unknown }).response) {
+            throw formatAxiosError(convertErr);
+          }
+          throw convertErr;
+        }
+
+        try {
+          return await createJobFallbackFromQuotation({ ...quotation, branch_id: branchId });
+        } catch (fallbackErr) {
+          throw formatAxiosError(fallbackErr);
+        }
+      }
     } catch (error) {
+      if (error instanceof Error && !(error as { response?: unknown }).response) {
+        throw error;
+      }
       throw formatAxiosError(error);
     }
   },

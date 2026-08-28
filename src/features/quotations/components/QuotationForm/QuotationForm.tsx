@@ -1,6 +1,7 @@
 import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -12,6 +13,7 @@ import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { loadPartyCurrencyOptions } from '@/features/parties/utils/partyCurrencyOptions';
+import { getErrorMessage } from '@/features/parties/utils/getErrorMessage';
 import {
   INCOTERMS,
   JOB_TYPE_LABELS,
@@ -49,15 +51,20 @@ export function QuotationForm({
 }: QuotationFormProps) {
   const schema = mode === 'create' ? createQuotationSchema : updateQuotationSchema;
   const { data: companies = [] } = useTenantCompanies(true);
-  const { data: customersResult } = useParties({
+  const {
+    data: customersResult,
+    isLoading: customersLoading,
+    isError: customersError,
+    error: customersErr,
+  } = useParties({
     page: 1,
-    limit: 200,
+    limit: 100,
     party_type: 'CUSTOMER',
     order: 'asc',
   });
   const { data: carriersResult } = useParties({
     page: 1,
-    limit: 200,
+    limit: 100,
     order: 'asc',
   });
   const { data: ports = [] } = useMasterOptions('ports', MASTER_PATHS.ports, true);
@@ -94,6 +101,7 @@ export function QuotationForm({
     applyApiErrors,
     watch,
     reset,
+    setValue,
     formState: { errors },
   } = useAppForm<CreateQuotationFormValues>({
     resolver: zodResolver(schema) as Resolver<CreateQuotationFormValues>,
@@ -106,6 +114,12 @@ export function QuotationForm({
   useEffect(() => {
     onValuesChangeRef.current?.(watched);
   }, [watched]);
+
+  useEffect(() => {
+    if (watched.company_id) return;
+    const first = companies.find((c) => isUuid(c.id));
+    if (first) setValue('company_id', first.id);
+  }, [companies, watched.company_id, setValue]);
 
   const fieldError = (name: keyof CreateQuotationFormValues) =>
     errors[name]?.message as string | undefined;
@@ -172,7 +186,9 @@ export function QuotationForm({
             <FieldError message={fieldError('valid_until')} />
           </div>
           <div className="space-y-1">
-            <label htmlFor="company_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Company</label>
+            <label htmlFor="company_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
+              Company <span className="text-[var(--color-danger-500)]">*</span>
+            </label>
             <select id="company_id" className={selectClass} {...register('company_id')}>
               <option value="">Select…</option>
               {(() => {
@@ -234,9 +250,13 @@ export function QuotationForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1 sm:col-span-2">
-            <label htmlFor="customer_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Customer *</label>
+            <label htmlFor="customer_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
+              Customer *
+            </label>
             <select id="customer_id" className={selectClass} {...register('customer_id')}>
-              <option value="">Select customer…</option>
+              <option value="">
+                {customersLoading ? 'Loading customers…' : 'Select customer…'}
+              </option>
               {customers.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.code ? `${c.name} (${c.code})` : c.name}
@@ -244,6 +264,21 @@ export function QuotationForm({
               ))}
             </select>
             <FieldError message={fieldError('customer_id')} />
+            {customersError ? (
+              <p className="text-xs text-[var(--color-danger-600)]">
+                Could not load customers: {getErrorMessage(customersErr)}
+              </p>
+            ) : null}
+            {!customersLoading && !customersError && customers.length === 0 ? (
+              <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                No customers found. The quotation customer list only shows parties with type{' '}
+                <strong>Customer</strong>. Create one under{' '}
+                <Link className="font-medium underline" to="/parties/new">
+                  Parties → New party
+                </Link>
+                , set <strong>Party type = Customer</strong>, save, then return here.
+              </p>
+            ) : null}
           </div>
           <Input
             label="Salesperson ID"

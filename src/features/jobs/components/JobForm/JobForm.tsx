@@ -73,12 +73,12 @@ export function JobForm({
   );
   const { data: partiesResult } = useParties({
     page: 1,
-    limit: 300,
+    limit: 100,
     order: 'asc',
   });
   const { data: agentsResult } = useParties({
     page: 1,
-    limit: 300,
+    limit: 100,
     party_type: 'AGENT',
     order: 'asc',
   });

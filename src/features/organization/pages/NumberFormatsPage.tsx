@@ -32,6 +32,7 @@ import {
 } from '../hooks/useNumberFormats';
 import { createNumberFormatSchema } from '../schemas/organization.schema';
 import type { NumberFormat, NumberFormatFormValues } from '../types/organization.types';
+import { synthesizeNumberFormatPreview } from '../utils/normalizeOrganization';
 import { numberFormatToFormValues } from '../utils/prepareOrganizationPayload';
 
 const selectClass =
@@ -228,10 +229,20 @@ export default function NumberFormatsPage() {
     setActionError(null);
     try {
       const result = await previewMutation.mutateAsync(documentType);
+      let text = result.preview?.trim() || '';
+      if (!text) {
+        const format = data.find((f) => String(f.document_type) === documentType);
+        if (format) text = synthesizeNumberFormatPreview(format);
+      }
       setPreviewByType((prev) => ({
         ...prev,
-        [documentType]: result.preview || '—',
+        [documentType]: text || '—',
       }));
+      if (!text) {
+        setActionError(
+          'Preview returned empty from the API. Edit this format, turn OFF “Include branch code”, save, and try Preview again.',
+        );
+      }
     } catch (err) {
       setActionError(getServerErrorMessage(err));
     }
