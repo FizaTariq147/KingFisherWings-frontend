@@ -8,7 +8,7 @@ import { JobFilters } from '../components/JobFilters';
 import { JobTable } from '../components/JobTable';
 import {
   DEFAULT_JOB_PAGE_SIZE,
-  JOB_TYPE_WIZARD_OPTIONS,
+  JOB_TYPES,
   type JobStatus,
   type JobType,
 } from '../constants/job.constants';
@@ -36,6 +36,9 @@ function variantConfig(variant: HubAllJobsVariant) {
   if (variant === 'nvocc') {
     return {
       jobTypes: NVOCC_JOB_TYPES as JobType[],
+      /** Client-side type filter after fetch (NVOCC-only hub). */
+      filterJobTypes: NVOCC_JOB_TYPES as JobType[],
+      jobTypeFilterLabel: 'All NVOCC types',
       createPath: '/jobs/new?job_type=NVOCC_EXPORT',
       showUploadManifest: false,
       subtitle: 'NVOCC export and import jobs.',
@@ -43,14 +46,18 @@ function variantConfig(variant: HubAllJobsVariant) {
   }
   if (variant === 'documentation') {
     return {
-      jobTypes: JOB_TYPE_WIZARD_OPTIONS as JobType[],
+      jobTypes: [...JOB_TYPES],
+      filterJobTypes: undefined,
+      jobTypeFilterLabel: 'All job types',
       createPath: '/jobs/new',
       showUploadManifest: true,
       subtitle: 'Jobs available for documentation and manifests.',
     };
   }
   return {
-    jobTypes: JOB_TYPE_WIZARD_OPTIONS as JobType[],
+    jobTypes: [...JOB_TYPES],
+    filterJobTypes: undefined,
+    jobTypeFilterLabel: 'All job types',
     createPath: '/jobs/new',
     showUploadManifest: false,
     subtitle: 'Operations overview of all jobs for MIS.',
@@ -94,7 +101,7 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
       search: debouncedSearch.trim() || undefined,
       status: status || undefined,
       job_type: jobType || undefined,
-      job_types: jobType ? undefined : config.jobTypes,
+      job_types: !jobType ? config.filterJobTypes : undefined,
       order,
       from_date: fromDate || undefined,
       to_date: toDate || undefined,
@@ -186,6 +193,7 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
           jobType={jobType}
           onJobTypeChange={setJobType}
           jobTypeOptions={config.jobTypes}
+          jobTypeAllLabel={config.jobTypeFilterLabel}
           order={order}
           onOrderChange={setOrder}
           fromDate={fromDate}

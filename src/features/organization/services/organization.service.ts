@@ -23,6 +23,7 @@ import {
   normalizeNumberFormats,
   normalizeOrganizationProfile,
   normalizePaginationMeta,
+  synthesizeNumberFormatPreview,
   unwrapEntity,
   unwrapList,
 } from '../utils/normalizeOrganization';
@@ -232,7 +233,24 @@ export const organizationService = {
       const res = await withGatewayRetry(() =>
         axiosInstance.get<unknown>(ORGANIZATION_API.numberFormatPreview(documentType)),
       );
-      return normalizeNumberFormatPreview(res.data);
+      const normalized = normalizeNumberFormatPreview(res.data);
+      if (normalized.preview) return normalized;
+
+      // Fallback: API sometimes returns {} / unexpected shape — build from saved format.
+      try {
+        const format = await this.getNumberFormat(documentType);
+        const synthesized = synthesizeNumberFormatPreview(format);
+        if (synthesized) {
+          return {
+            preview: synthesized,
+            document_type: format.document_type || documentType,
+            next_sequence: Math.max(1, Number(format.current_sequence ?? 0) + 1),
+          };
+        }
+      } catch {
+        /* ignore fallback errors */
+      }
+      return normalized;
     } catch (error) {
       throw formatAxiosError(error);
     }

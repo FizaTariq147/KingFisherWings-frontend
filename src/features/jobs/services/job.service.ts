@@ -1,7 +1,10 @@
 import { axiosInstance } from '@/lib/axios';
 import { isUuid } from '@/lib/isUuid';
+import { resolveSessionCompanyIdAsync } from '@/lib/resolveSessionCompanyId';
 import { withGatewayRetry } from '@/lib/wakeApi';
-import { JOB_API, QUOTATION_CONVERT_TO_JOB } from '../api/job.api';
+import { enrichJobsWithDisplayNames } from '@/features/customers/utils/resolveCustomerDisplayNames';
+import { ensureJobNumberFormatReady } from '@/features/organization/utils/ensureJobNumberFormat';
+import { JOB_API } from '../api/job.api';
 import {
   normalizeJob,
   normalizeJobs,
@@ -9,14 +12,17 @@ import {
   unwrapEntity,
   unwrapList,
 } from '../utils/normalizeJob';
-import {
-  prepareJobPayload,
-  prepareMinimalJobCreatePayload,
-} from '../utils/prepareJobPayload';
+import { JOB_POST_AXIOS_CONFIG } from '../utils/buildJobCreateCandidates';
+import { ensureJobBranchReady } from '../utils/ensureJobBranchReady';
+import { prepareJobPayload } from '../utils/prepareJobPayload';
 import type {
   AssignCargoToContainerDto,
+  AssignLandTruckerDto,
+  AttachLclHouseDto,
   CalculateCfsStorageDto,
+  ConfirmCourierBookingDto,
   CreateBillOfLadingDto,
+  CreateCourierPodDto,
   CreateDamageReportDto,
   CreateJobCargoDto,
   CreateJobChargeDto,
@@ -27,30 +33,41 @@ import type {
   CreateJobNoteDto,
   CreateCustomMilestoneDto,
   CreateCustomsExaminationDto,
+  CreateLandPodDto,
   CreatePartDeliveryDto,
   CreatePaymentRequestFromJobDto,
   CreateProofOfDeliveryDto,
   CreateStuffingRecordDto,
   CreateSubJobDto,
+  CreateTransportRequestDto,
   FinalizeJobDocumentDto,
   GenerateJobDocumentDto,
   Job,
   JobListParams,
   JobListResult,
   JobPnl,
+  LclCfsStorageCalculationDto,
   LinkAirTranshipmentDto,
+  LinkCourierJobDto,
+  LinkLclTranshipmentDto,
+  LinkLclWmsStorageDto,
   LinkTranshipmentDto,
+  RecordLandBorderCrossingDto,
+  RecordLandPickupDto,
   ReturnContainerDto,
+  ScanCourierCheckpointDto,
   SchedulePreAlertDto,
   SendImportNoticeDto,
   SendPreAlertDto,
   SendWhatsAppStatusDto,
   SplitContainerDto,
   StorageCalculationParams,
+  SubmitLclSiDto,
   SubmitSiDto,
   SubmitVgmDto,
   UpdateAirJobDetailDto,
   UpdateBillOfLadingDto,
+  UpdateCourierJobDetailDto,
   UpdateCustomsStatusDto,
   UpdateJobCargoDto,
   UpdateJobChargeDto,
@@ -60,7 +77,9 @@ import type {
   UpdateJobDto,
   UpdateJobMilestoneDto,
   UpdateJobNoteDto,
+  UpdateLandJobDetailDto,
   UpdateSeaFclJobDetailDto,
+  UpdateSeaLclJobDetailDto,
   UpdateStuffingRecordDto,
   UpsertContainerFreeDaysDto,
 } from '../types/job.types';
@@ -68,14 +87,46 @@ import type {
 function formatAxiosError(error: unknown): Error {
   if (error instanceof Error && !(error as { response?: unknown }).response) return error;
   const axiosErr = error as {
-    response?: { data?: { message?: string | string[]; error?: string } };
+    response?: {
+      status?: number;
+      data?: {
+        message?: string | string[] | Record<string, unknown>;
+        error?: string;
+        details?: string | string[] | Record<string, unknown>;
+        detail?: string;
+        cause?: string | { message?: string };
+      };
+    };
     message?: string;
   };
   const data = axiosErr.response?.data;
-  const message = data?.message;
-  if (Array.isArray(message)) return new Error(message.map(String).join('; '));
-  if (typeof message === 'string' && message.trim()) return new Error(message);
-  if (typeof data?.error === 'string' && data.error.trim()) return new Error(data.error);
+  const chunks: string[] = [];
+
+  const pushMsg = (value: unknown) => {
+    if (typeof value === 'string' && value.trim()) chunks.push(value.trim());
+    else if (Array.isArray(value)) {
+      for (const item of value) {
+        if (typeof item === 'string' && item.trim()) chunks.push(item.trim());
+        else if (item && typeof item === 'object') {
+          const rec = item as Record<string, unknown>;
+          if (typeof rec.message === 'string' && rec.message.trim()) chunks.push(rec.message.trim());
+        }
+      }
+    } else if (value && typeof value === 'object') {
+      const rec = value as Record<string, unknown>;
+      if (typeof rec.message === 'string' && rec.message.trim()) chunks.push(rec.message.trim());
+    }
+  };
+
+  pushMsg(data?.message);
+  pushMsg(data?.error);
+  pushMsg(data?.details);
+  pushMsg(data?.detail);
+  pushMsg(data?.cause);
+
+  // Deduplicate while preserving order
+  const unique = [...new Set(chunks.filter(Boolean))];
+  if (unique.length) return new Error(unique.join(' — '));
   return new Error(axiosErr.message || 'Request failed');
 }
 
@@ -107,6 +158,9 @@ function buildListQuery(params: JobListParams): Record<string, string | number |
   if (params.shipping_line_id) query.shipping_line_id = params.shipping_line_id;
   if (params.voyage_number) query.voyage_number = params.voyage_number;
   if (params.container_type_id) query.container_type_id = params.container_type_id;
+  if (params.vehicle_number?.trim()) query.vehicle_number = params.vehicle_number.trim();
+  if (params.trucker_id) query.trucker_id = params.trucker_id;
+  if (params.tracking_number?.trim()) query.tracking_number = params.tracking_number.trim();
   return query;
 }
 
@@ -147,6 +201,7 @@ export const jobService = {
       if (params.job_types?.length && !params.job_type) {
         jobs = jobs.filter((j) => params.job_types!.includes(j.job_type));
       }
+      jobs = await enrichJobsWithDisplayNames(jobs);
       return {
         jobs,
         meta: normalizePaginationMeta(meta, jobs.length, params),
@@ -162,41 +217,24 @@ export const jobService = {
   },
 
   async create(dto: CreateJobDto): Promise<Job> {
-    const primary = prepareJobPayload(dto);
-    try {
-      return await request(
-        () => axiosInstance.post(JOB_API.list, primary),
-        normalizeJob,
-      );
-    } catch (firstError) {
-      const status = (firstError as { response?: { status?: number } })?.response
-        ?.status;
-      const msg =
-        firstError instanceof Error ? firstError.message : String(firstError);
-      const isOpaque500 =
-        status === 500 || /internal server error/i.test(msg);
+    await ensureJobNumberFormatReady();
 
-      // FCL create often seeds sea_fcl_details + milestones; opaque 500s can come
-      // from optional fields. Retry a minimal swagger-valid body once.
-      if (isOpaque500) {
-        const minimal = prepareMinimalJobCreatePayload(dto);
-        try {
-          return await request(
-            () => axiosInstance.post(JOB_API.list, minimal),
-            normalizeJob,
-          );
-        } catch (retryError) {
-          const jobType = String(primary.job_type ?? '');
-          if (/SEA_FCL_/i.test(jobType) && isOpaque500) {
-            throw new Error(
-              `${msg}. FCL create failed on the API (often while seeding sea FCL details/milestones). Confirm JOB_NUMBER is active under Organization → Number Formats, retry with only shipper + job type, and check Render logs for JobsController_create.`,
-            );
-          }
-          throw retryError instanceof Error ? retryError : firstError;
-        }
-      }
-      throw firstError;
-    }
+    const companyId = await resolveSessionCompanyIdAsync(
+      typeof dto.company_id === 'string' ? dto.company_id : undefined,
+    );
+    const branchId = await ensureJobBranchReady(companyId || undefined);
+
+    const dtoWithContext: CreateJobDto = {
+      ...(companyId && !dto.company_id ? { ...dto, company_id: companyId } : dto),
+      branch_id: branchId,
+    };
+
+    const body = prepareJobPayload(dtoWithContext);
+
+    return request(
+      () => axiosInstance.post(JOB_API.list, body, JOB_POST_AXIOS_CONFIG),
+      normalizeJob,
+    );
   },
 
   async update(id: string, dto: UpdateJobDto): Promise<Job> {
@@ -250,6 +288,206 @@ export const jobService = {
       () => axiosInstance.patch(JOB_API.seaFclDetails(id), dto),
       normalizeJob,
     );
+  },
+
+  async updateSeaLclDetails(id: string, dto: UpdateSeaLclJobDetailDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.patch(JOB_API.seaLclDetails(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async submitLclSi(id: string, dto: SubmitLclSiDto = {}): Promise<Job> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.submitLclSi(id), dto), normalizeJob);
+  },
+
+  async updateCourierDetails(id: string, dto: UpdateCourierJobDetailDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.patch(JOB_API.courierDetails(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async listCourierCheckpoints(id: string): Promise<unknown[]> {
+    assertId(id);
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.courierCheckpoints(id)));
+    return unwrapList(res.data).items;
+  },
+
+  async confirmCourierBooking(id: string, dto: ConfirmCourierBookingDto = {}): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.courierConfirmBooking(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async linkCourierExport(id: string, dto: LinkCourierJobDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.courierLinkExport(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async linkCourierImport(id: string, dto: LinkCourierJobDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.courierLinkImport(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async createCourierPod(id: string, dto: CreateCourierPodDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.courierPod(id), dto));
+  },
+
+  async scanCourierCheckpoint(id: string, dto: ScanCourierCheckpointDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.courierScanCheckpoint(id), dto));
+  },
+
+  async updateLandDetails(id: string, dto: UpdateLandJobDetailDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.patch(JOB_API.landDetails(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async assignLandTrucker(id: string, dto: AssignLandTruckerDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.landAssignTrucker(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async recordLandPickup(id: string, dto: RecordLandPickupDto = {}): Promise<Job> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.landPickup(id), dto), normalizeJob);
+  },
+
+  async recordLandBorderCrossing(
+    id: string,
+    dto: RecordLandBorderCrossingDto,
+  ): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.landBorderCrossing(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async upsertLandCrossBorder(id: string, dto: UpdateLandJobDetailDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.patch(JOB_API.landCrossBorder(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async createLandPod(id: string, dto: CreateLandPodDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.landPod(id), dto));
+  },
+
+  async getLclConsolidation(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.lclConsolidation(id)));
+  },
+
+  async attachLclHouse(id: string, dto: AttachLclHouseDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.lclAttachHouse(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async detachLclHouse(id: string, houseJobId: string): Promise<Job> {
+    assertId(id);
+    if (!houseJobId || !isUuid(houseJobId)) throw new Error('Invalid house job id.');
+    return request(
+      () => axiosInstance.post(JOB_API.lclDetachHouse(id, houseJobId)),
+      normalizeJob,
+    );
+  },
+
+  async calculateLclCfsStorage(
+    id: string,
+    dto: LclCfsStorageCalculationDto = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.lclCfsStorageCalculate(id), dto));
+  },
+
+  async createLclCfsStorageInvoice(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.lclCfsStorageInvoice(id)));
+  },
+
+  async linkLclTranshipment(id: string, dto: LinkLclTranshipmentDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.lclTranshipmentLink(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async linkLclWmsStorage(id: string, dto: LinkLclWmsStorageDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.lclWmsStorageLink(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async markLclCargoReceivedAtCfs(id: string): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.lclMilestoneCargoReceivedAtCfs(id)),
+      normalizeJob,
+    );
+  },
+
+  async markLclCfsDevanningCompleted(id: string): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.lclMilestoneCfsDevanningCompleted(id)),
+      normalizeJob,
+    );
+  },
+
+  async markLclCfsStuffingCompleted(id: string): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.lclMilestoneCfsStuffingCompleted(id)),
+      normalizeJob,
+    );
+  },
+
+  async markLclConsolidationStarted(id: string): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.lclMilestoneConsolidationStarted(id)),
+      normalizeJob,
+    );
+  },
+
+  async listTransportRequests(id: string): Promise<unknown[]> {
+    assertId(id);
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.transportRequests(id)));
+    return unwrapList(res.data).items;
+  },
+
+  async createTransportRequest(id: string, dto: CreateTransportRequestDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.transportRequests(id), dto));
   },
 
   async submitSi(id: string, dto: SubmitSiDto = {}): Promise<Job> {
@@ -768,9 +1006,13 @@ export const jobService = {
 
   async convertFromQuotation(quotationId: string): Promise<Job> {
     assertId(quotationId);
-    return request(
-      () => axiosInstance.post(QUOTATION_CONVERT_TO_JOB(quotationId)),
-      normalizeJob,
+    const { quotationService } = await import(
+      '@/features/quotations/services/quotation.service'
     );
+    const quotation = await quotationService.convertToJob(quotationId);
+    if (quotation.job_id && isUuid(quotation.job_id)) {
+      return this.getById(quotation.job_id);
+    }
+    throw new Error('Convert succeeded but no job id was returned.');
   },
 };

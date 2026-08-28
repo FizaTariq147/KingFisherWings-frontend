@@ -17,6 +17,8 @@ interface JobFiltersProps {
   jobType: '' | JobType;
   onJobTypeChange: (v: '' | JobType) => void;
   jobTypeOptions: JobType[];
+  /** Label for empty job-type filter (default: segment-scoped lists). */
+  jobTypeAllLabel?: string;
   order: 'asc' | 'desc';
   onOrderChange: (v: 'asc' | 'desc') => void;
   fromDate?: string;
@@ -35,6 +37,7 @@ export function JobFilters({
   jobType,
   onJobTypeChange,
   jobTypeOptions,
+  jobTypeAllLabel = 'All types in segment',
   order,
   onOrderChange,
   fromDate = '',
@@ -73,7 +76,7 @@ export function JobFilters({
         className={selectClass}
         aria-label="Filter by job type"
       >
-        <option value="">All types in segment</option>
+        <option value="">{jobTypeAllLabel}</option>
         {jobTypeOptions.map((t) => (
           <option key={t} value={t}>
             {JOB_TYPE_LABELS[t]}

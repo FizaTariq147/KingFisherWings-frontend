@@ -35,7 +35,7 @@ function pickString(record: Record<string, unknown>, ...keys: string[]): string 
 function pickPortCode(value: unknown): string {
   const nested = asRecord(value);
   if (!nested) return '';
-  return pickString(nested, 'code', 'port_code', 'portCode', 'iata_code', 'unlocode');
+  return pickString(nested, 'code', 'port_code', 'portCode', 'iata_code', 'un_locode', 'unLocode', 'unlocode');
 }
 
 export function unwrapEntity(raw: unknown): unknown {
@@ -123,10 +123,36 @@ function normalizeNote(raw: unknown): JobNote | null {
 function pickRelationName(value: unknown): string | undefined {
   const nested = asRecord(value);
   if (!nested) return undefined;
-  return (
+  const code = pickString(nested, 'code', 'party_code', 'partyCode');
+  const name =
     pickString(nested, 'name', 'full_name', 'fullName', 'company_name', 'companyName', 'party_name', 'partyName', 'display_name', 'displayName') ||
-    undefined
-  );
+    '';
+  if (code && name) return `${code} — ${name}`;
+  if (name) return name;
+  return code || undefined;
+}
+
+function pickJobScheduleDates(
+  r: Record<string, unknown>,
+  air: Record<string, unknown> | null,
+  sea: Record<string, unknown> | null,
+  seaLcl: Record<string, unknown> | null,
+): { etd?: string; eta?: string } {
+  const etd =
+    pickString(r, 'etd', 'ETD') ||
+    pickString(sea ?? {}, 'etd') ||
+    pickString(seaLcl ?? {}, 'etd') ||
+    pickString(air ?? {}, 'flight_date', 'flightDate') ||
+    '';
+  const eta =
+    pickString(r, 'eta', 'ETA') ||
+    pickString(sea ?? {}, 'eta') ||
+    pickString(seaLcl ?? {}, 'eta') ||
+    '';
+  return {
+    etd: etd ? etd.slice(0, 10) : undefined,
+    eta: eta ? eta.slice(0, 10) : undefined,
+  };
 }
 
 export function normalizeJob(raw: unknown): Job | null {
@@ -153,6 +179,10 @@ export function normalizeJob(raw: unknown): Job | null {
 
   const air = asRecord(r.air_details ?? r.airDetails);
   const sea = asRecord(r.sea_fcl_details ?? r.seaFclDetails);
+  const seaLcl = asRecord(r.sea_lcl_details ?? r.seaLclDetails);
+  const courier = asRecord(r.courier_details ?? r.courierDetails);
+  const land = asRecord(r.land_details ?? r.landDetails);
+  const schedule = pickJobScheduleDates(r, air, sea, seaLcl);
 
   return {
     id: str(r.id),
@@ -173,6 +203,7 @@ export function normalizeJob(raw: unknown): Job | null {
       pickString(r, 'consignee_name', 'consigneeName') ||
       pickRelationName(r.consignee ?? r.consignee_party ?? r.consigneeParty) ||
       undefined,
+    billing_party_id: pickString(r, 'billing_party_id', 'billingPartyId') || undefined,
     agent_id: pickString(r, 'agent_id', 'agentId') || undefined,
     agent_name:
       pickString(r, 'agent_name', 'agentName') ||
@@ -192,11 +223,13 @@ export function normalizeJob(raw: unknown): Job | null {
       pickString(r, 'origin_port_code', 'originPortCode') ||
       pickPortCode(r.origin_port ?? r.originPort) ||
       pickPortCode(sea?.port_of_loading ?? sea?.portOfLoading) ||
+      pickPortCode(seaLcl?.port_of_loading ?? seaLcl?.portOfLoading) ||
       undefined,
     dest_port_code:
       pickString(r, 'dest_port_code', 'destPortCode') ||
       pickPortCode(r.dest_port ?? r.destPort) ||
       pickPortCode(sea?.port_of_discharge ?? sea?.portOfDischarge) ||
+      pickPortCode(seaLcl?.port_of_discharge ?? seaLcl?.portOfDischarge) ||
       undefined,
     commodity: pickString(r, 'commodity') || undefined,
     hs_code: pickString(r, 'hs_code', 'hsCode') || undefined,
@@ -212,8 +245,8 @@ export function normalizeJob(raw: unknown): Job | null {
     notes: pickString(r, 'notes') || undefined,
     customer_remarks: pickString(r, 'customer_remarks', 'customerRemarks') || undefined,
     tags: Array.isArray(r.tags) ? r.tags.map(String) : undefined,
-    etd: pickString(r, 'etd') || undefined,
-    eta: pickString(r, 'eta') || undefined,
+    etd: schedule.etd,
+    eta: schedule.eta,
     created_at: pickString(r, 'created_at', 'createdAt') || undefined,
     updated_at: pickString(r, 'updated_at', 'updatedAt') || undefined,
     air_details: air
@@ -242,6 +275,46 @@ export function normalizeJob(raw: unknown): Job | null {
           port_of_loading_id: pickString(sea, 'port_of_loading_id', 'portOfLoadingId') || undefined,
           port_of_discharge_id:
             pickString(sea, 'port_of_discharge_id', 'portOfDischargeId') || undefined,
+        }
+      : undefined,
+    sea_lcl_details: seaLcl
+      ? {
+          shipping_line_id: pickString(seaLcl, 'shipping_line_id', 'shippingLineId') || undefined,
+          vessel_id: pickString(seaLcl, 'vessel_id', 'vesselId') || undefined,
+          voyage_number: pickString(seaLcl, 'voyage_number', 'voyageNumber') || undefined,
+          booking_number: pickString(seaLcl, 'booking_number', 'bookingNumber') || undefined,
+          hbl_number: pickString(seaLcl, 'hbl_number', 'hblNumber') || undefined,
+          mbl_number: pickString(seaLcl, 'mbl_number', 'mblNumber') || undefined,
+          etd: pickString(seaLcl, 'etd') || undefined,
+          eta: pickString(seaLcl, 'eta') || undefined,
+          port_of_loading_id:
+            pickString(seaLcl, 'port_of_loading_id', 'portOfLoadingId') || undefined,
+          port_of_discharge_id:
+            pickString(seaLcl, 'port_of_discharge_id', 'portOfDischargeId') || undefined,
+          consolidation_number:
+            pickString(seaLcl, 'consolidation_number', 'consolidationNumber') || undefined,
+        }
+      : undefined,
+    courier_details: courier
+      ? {
+          courier_vendor_id:
+            pickString(courier, 'courier_vendor_id', 'courierVendorId') || undefined,
+          tracking_number: pickString(courier, 'tracking_number', 'trackingNumber') || undefined,
+          service_type: pickString(courier, 'service_type', 'serviceType') || undefined,
+          pickup_address: pickString(courier, 'pickup_address', 'pickupAddress') || undefined,
+          delivery_address:
+            pickString(courier, 'delivery_address', 'deliveryAddress') || undefined,
+        }
+      : undefined,
+    land_details: land
+      ? {
+          trucker_id: pickString(land, 'trucker_id', 'truckerId') || undefined,
+          vehicle_number: pickString(land, 'vehicle_number', 'vehicleNumber') || undefined,
+          driver_name: pickString(land, 'driver_name', 'driverName') || undefined,
+          origin_city_country:
+            pickString(land, 'origin_city_country', 'originCityCountry') || undefined,
+          destination_city_country:
+            pickString(land, 'destination_city_country', 'destinationCityCountry') || undefined,
         }
       : undefined,
     charges,

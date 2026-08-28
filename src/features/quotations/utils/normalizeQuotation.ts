@@ -18,6 +18,22 @@ function str(value: unknown): string | undefined {
   return s || undefined;
 }
 
+function pickStr(r: Record<string, unknown>, ...keys: string[]): string | undefined {
+  for (const key of keys) {
+    const v = str(r[key]);
+    if (v) return v;
+  }
+  return undefined;
+}
+
+function pickPortCode(port: Record<string, unknown> | null): string | undefined {
+  if (!port) return undefined;
+  return (
+    pickStr(port, 'code', 'un_locode', 'unLocode', 'unlocode', 'port_code', 'portCode') ||
+    undefined
+  );
+}
+
 function num(value: unknown): number | undefined {
   if (value == null || value === '') return undefined;
   const n = Number(value);
@@ -85,9 +101,13 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
   if (!id || !isUuid(id)) return null;
 
   const customer_id = str(r.customer_id) ?? '';
-  const nestedCustomer = asRecord(r.customer);
-  const nestedOrigin = asRecord(r.origin_port) ?? asRecord(r.origin);
-  const nestedDest = asRecord(r.dest_port) ?? asRecord(r.destination);
+  const nestedCustomer =
+    asRecord(r.customer) ?? asRecord(r.customer_party) ?? asRecord(r.party);
+  const nestedCompany = asRecord(r.company);
+  const nestedOrigin =
+    asRecord(r.origin_port) ?? asRecord(r.origin) ?? asRecord(r.originPort);
+  const nestedDest =
+    asRecord(r.dest_port) ?? asRecord(r.destination) ?? asRecord(r.destPort);
   const nestedSales = asRecord(r.salesperson);
   const nestedCarrier = asRecord(r.carrier);
 
@@ -99,28 +119,34 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     quotation_number: str(r.quotation_number) ?? str(r.quote_no) ?? str(r.quote_number),
     quote_no: str(r.quote_no) ?? str(r.quotation_number),
     status: normalizeStatus(r.status),
-    company_id: str(r.company_id),
+    company_id:
+      pickStr(r, 'company_id', 'companyId') ?? pickStr(nestedCompany ?? {}, 'id'),
     job_type: normalizeJobType(r.job_type),
     customer_id,
     customer_name:
-      str(r.customer_name) ??
-      str(nestedCustomer?.name) ??
-      str(nestedCustomer?.party_name),
-    salesperson_id: str(r.salesperson_id),
+      pickStr(r, 'customer_name', 'customerName') ??
+      pickStr(nestedCustomer ?? {}, 'name', 'party_name', 'display_name', 'company_name'),
+    salesperson_id: pickStr(r, 'salesperson_id', 'salespersonId'),
     salesperson_name:
-      str(r.salesperson_name) ??
+      pickStr(r, 'salesperson_name', 'salespersonName') ??
       ([str(nestedSales?.first_name), str(nestedSales?.last_name)].filter(Boolean).join(' ') ||
         str(nestedSales?.name)),
-    branch_id: str(r.branch_id),
-    department_id: str(r.department_id),
-    carrier_id: str(r.carrier_id),
-    carrier_name: str(r.carrier_name) ?? str(nestedCarrier?.name),
-    origin_port_id: str(r.origin_port_id),
-    dest_port_id: str(r.dest_port_id),
-    origin_port_code: str(r.origin_port_code) ?? str(nestedOrigin?.code) ?? str(nestedOrigin?.unlocode),
-    dest_port_code: str(r.dest_port_code) ?? str(nestedDest?.code) ?? str(nestedDest?.unlocode),
-    origin_port_name: str(r.origin_port_name) ?? str(nestedOrigin?.name),
-    dest_port_name: str(r.dest_port_name) ?? str(nestedDest?.name),
+    branch_id: pickStr(r, 'branch_id', 'branchId'),
+    department_id: pickStr(r, 'department_id', 'departmentId'),
+    carrier_id: pickStr(r, 'carrier_id', 'carrierId'),
+    carrier_name: pickStr(r, 'carrier_name', 'carrierName') ?? str(nestedCarrier?.name),
+    origin_port_id: pickStr(r, 'origin_port_id', 'originPortId'),
+    dest_port_id: pickStr(r, 'dest_port_id', 'destPortId'),
+    origin_port_code:
+      pickStr(r, 'origin_port_code', 'originPortCode') ??
+      pickPortCode(nestedOrigin) ??
+      undefined,
+    dest_port_code:
+      pickStr(r, 'dest_port_code', 'destPortCode') ??
+      pickPortCode(nestedDest) ??
+      undefined,
+    origin_port_name: pickStr(r, 'origin_port_name', 'originPortName') ?? str(nestedOrigin?.name),
+    dest_port_name: pickStr(r, 'dest_port_name', 'destPortName') ?? str(nestedDest?.name),
     incoterm: str(r.incoterm),
     commodity: str(r.commodity),
     hs_code: str(r.hs_code),
@@ -138,17 +164,24 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     remarks: str(r.remarks),
     internal_notes: str(r.internal_notes),
     transit_time_days: num(r.transit_time_days),
-    valid_until: str(r.valid_until),
-    quotation_date: str(r.quotation_date) ?? str(r.created_at)?.slice(0, 10),
-    currency_code: (str(r.currency_code) ?? 'AED').toUpperCase(),
-    exchange_rate: num(r.exchange_rate) ?? 1,
-    discount_percent: num(r.discount_percent),
-    discount_amount: num(r.discount_amount),
+    valid_until: pickStr(r, 'valid_until', 'validUntil')?.slice(0, 10),
+    quotation_date: pickStr(r, 'quotation_date', 'quotationDate') ?? str(r.created_at)?.slice(0, 10),
+    currency_code: (pickStr(r, 'currency_code', 'currencyCode') ?? 'AED').toUpperCase(),
+    exchange_rate: num(r.exchange_rate ?? r.exchangeRate) ?? 1,
+    discount_percent: num(r.discount_percent ?? r.discountPercent),
+    discount_amount: num(r.discount_amount ?? r.discountAmount),
     subtotal: num(r.subtotal),
-    tax_total: num(r.tax_total),
-    total_amount: num(r.total_amount) ?? num(r.total) ?? num(r.grand_total),
-    cost_total: num(r.cost_total),
-    revenue_total: num(r.revenue_total),
+    tax_total: num(r.tax_total ?? r.taxTotal),
+    total_amount:
+      num(r.total_amount ?? r.totalAmount) ??
+      num(r.total) ??
+      num(r.grand_total ?? r.grandTotal) ??
+      num(r.sale_total ?? r.saleTotal) ??
+      num(asRecord(r.totals)?.total_amount) ??
+      num(asRecord(r.totals)?.total) ??
+      num(r.revenue_total ?? r.revenueTotal),
+    cost_total: num(r.cost_total ?? r.costTotal),
+    revenue_total: num(r.revenue_total ?? r.revenueTotal),
     gp_amount: num(r.gp_amount),
     gp_percent: num(r.gp_percent),
     contact_name:

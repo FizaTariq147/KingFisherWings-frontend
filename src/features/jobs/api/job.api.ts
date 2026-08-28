@@ -1,4 +1,4 @@
-/** Jobs REST paths — Swagger tag Jobs (Bearer JWT). 115 ops under /jobs. */
+/** Jobs REST paths — Swagger tag Jobs (Bearer JWT). 121 ops under /jobs. */
 export const JOB_API = {
   list: '/jobs',
   byId: (id: string) => `/jobs/${id}`,
@@ -11,7 +11,9 @@ export const JOB_API = {
 
   airDetails: (id: string) => `/jobs/${id}/air-details`,
   seaFclDetails: (id: string) => `/jobs/${id}/sea-fcl-details`,
+  seaLclDetails: (id: string) => `/jobs/${id}/sea-lcl-details`,
   submitSi: (id: string) => `/jobs/${id}/sea-fcl-details/si-submission`,
+  submitLclSi: (id: string) => `/jobs/${id}/sea-lcl-details/si-submission`,
   submitVgm: (id: string) => `/jobs/${id}/sea-fcl-details/vgm-submission`,
   cutoffs: (id: string) => `/jobs/${id}/cutoffs`,
   customsStatus: (id: string) => `/jobs/${id}/customs-status`,
@@ -23,6 +25,40 @@ export const JOB_API = {
   importNoticeCanSend: (id: string) => `/jobs/${id}/import-notices/can/send`,
   importNoticeDoSend: (id: string) => `/jobs/${id}/import-notices/do/send`,
   transhipmentLink: (id: string) => `/jobs/${id}/transhipment-link`,
+
+  courierDetails: (id: string) => `/jobs/${id}/courier-details`,
+  courierCheckpoints: (id: string) => `/jobs/${id}/courier/checkpoints`,
+  courierConfirmBooking: (id: string) => `/jobs/${id}/courier/confirm-booking`,
+  courierLinkExport: (id: string) => `/jobs/${id}/courier/link-export`,
+  courierLinkImport: (id: string) => `/jobs/${id}/courier/link-import`,
+  courierPod: (id: string) => `/jobs/${id}/courier/pod`,
+  courierScanCheckpoint: (id: string) => `/jobs/${id}/courier/scan-checkpoint`,
+
+  landDetails: (id: string) => `/jobs/${id}/land-details`,
+  landAssignTrucker: (id: string) => `/jobs/${id}/land/assign-trucker`,
+  landBorderCrossing: (id: string) => `/jobs/${id}/land/border-crossing`,
+  landCrossBorder: (id: string) => `/jobs/${id}/land/cross-border`,
+  landPickup: (id: string) => `/jobs/${id}/land/pickup`,
+  landPod: (id: string) => `/jobs/${id}/land/pod`,
+
+  lclConsolidation: (id: string) => `/jobs/${id}/lcl-consolidation`,
+  lclAttachHouse: (id: string) => `/jobs/${id}/lcl/attach-house`,
+  lclDetachHouse: (id: string, houseJobId: string) =>
+    `/jobs/${id}/lcl/detach-house/${houseJobId}`,
+  lclCfsStorageCalculate: (id: string) => `/jobs/${id}/lcl/cfs-storage/calculate`,
+  lclCfsStorageInvoice: (id: string) => `/jobs/${id}/lcl/cfs-storage-invoice`,
+  lclTranshipmentLink: (id: string) => `/jobs/${id}/lcl/transhipment-link`,
+  lclWmsStorageLink: (id: string) => `/jobs/${id}/lcl/wms-storage-link`,
+  lclMilestoneCargoReceivedAtCfs: (id: string) =>
+    `/jobs/${id}/lcl/milestones/cargo-received-at-cfs`,
+  lclMilestoneCfsDevanningCompleted: (id: string) =>
+    `/jobs/${id}/lcl/milestones/cfs-devanning-completed`,
+  lclMilestoneCfsStuffingCompleted: (id: string) =>
+    `/jobs/${id}/lcl/milestones/cfs-stuffing-completed`,
+  lclMilestoneConsolidationStarted: (id: string) =>
+    `/jobs/${id}/lcl/milestones/consolidation-started`,
+
+  transportRequests: (id: string) => `/jobs/${id}/transport-requests`,
 
   containers: (id: string) => `/jobs/${id}/containers`,
   container: (id: string, containerId: string) => `/jobs/${id}/containers/${containerId}`,
@@ -115,6 +151,3 @@ export const JOB_API = {
   schedulePreAlert: (id: string) => `/jobs/${id}/pre-alert/schedule`,
   whatsappStatus: (id: string) => `/jobs/${id}/whatsapp/status`,
 } as const;
-
-export const QUOTATION_CONVERT_TO_JOB = (quotationId: string) =>
-  `/quotations/${quotationId}/convert-to-job`;

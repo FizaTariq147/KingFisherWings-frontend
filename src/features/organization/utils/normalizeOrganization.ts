@@ -157,16 +157,71 @@ export function normalizeNumberFormats(raw: unknown[]): NumberFormat[] {
 }
 
 export function normalizeNumberFormatPreview(raw: unknown): NumberFormatPreview {
-  const data = asRecord(unwrapEntity(raw)) ?? {};
+  const entity = unwrapEntity(raw);
+
+  // Some APIs return a bare string/number under `data`
+  if (typeof entity === 'string' && entity.trim()) {
+    return { preview: entity.trim() };
+  }
+  if (typeof entity === 'number' && Number.isFinite(entity)) {
+    return { preview: String(entity) };
+  }
+
+  const data = asRecord(entity) ?? asRecord(raw) ?? {};
   const preview =
     str(data.preview) ||
     str(data.next_number) ||
     str(data.nextNumber) ||
+    str(data.formatted) ||
+    str(data.formatted_number) ||
+    str(data.formattedNumber) ||
+    str(data.document_number) ||
+    str(data.documentNumber) ||
+    str(data.number) ||
+    str(data.sample) ||
+    str(data.example) ||
     str(data.value) ||
-    (typeof raw === 'string' ? raw : '');
+    str(data.result) ||
+    (typeof raw === 'string' ? raw.trim() : '');
+
   return {
     preview,
     document_type: str(data.document_type ?? data.documentType) || undefined,
-    next_sequence: num(data.next_sequence ?? data.nextSequence ?? data.current_sequence),
+    next_sequence: num(
+      data.next_sequence ??
+        data.nextSequence ??
+        data.current_sequence ??
+        data.currentSequence ??
+        data.sequence,
+    ),
   };
+}
+
+/** Build a local preview when the API returns an empty preview payload. */
+export function synthesizeNumberFormatPreview(format: {
+  prefix?: string;
+  separator?: string;
+  include_year?: boolean;
+  year_digits?: number;
+  include_month?: boolean;
+  sequence_length?: number;
+  current_sequence?: number | null;
+  include_branch_code?: boolean;
+}): string {
+  const sep = format.separator ?? '/';
+  const parts: string[] = [];
+  if (format.prefix) parts.push(format.prefix);
+  if (format.include_branch_code) parts.push('BR');
+  if (format.include_year !== false) {
+    const digits = format.year_digits === 4 ? 4 : 2;
+    const year = new Date().getFullYear();
+    parts.push(digits === 4 ? String(year) : String(year).slice(-2));
+  }
+  if (format.include_month) {
+    parts.push(String(new Date().getMonth() + 1).padStart(2, '0'));
+  }
+  const seqLen = Math.min(Math.max(format.sequence_length ?? 5, 3), 10);
+  const next = Math.max(1, Number(format.current_sequence ?? 0) + 1);
+  parts.push(String(next).padStart(seqLen, '0'));
+  return parts.join(sep);
 }

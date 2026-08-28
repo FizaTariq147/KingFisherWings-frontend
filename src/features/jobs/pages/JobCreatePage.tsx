@@ -32,7 +32,8 @@ export default function JobCreatePage() {
   const create = useCreateJob();
 
   const queryType = parseJobTypeParam(searchParams.get('job_type'));
-  const defaultJobType = queryType ?? defaultTypeForSegment(segment);
+  const defaultJobType =
+    queryType ?? (isGenericCreate ? 'SERVICE_JOB' : defaultTypeForSegment(segment));
 
   const backPath = isGenericCreate ? '/dashboard' : jobRoutePrefix(segment!);
   const backLabel = isGenericCreate
@@ -45,8 +46,7 @@ export default function JobCreatePage() {
       <div>
         <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create job</h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Select a job type, then shipper and shipment details. Milestones are seeded automatically
-          for air and FCL exports.
+          Pick a shipper and create. Company and branch are filled from your session when available.
         </p>
       </div>
       <JobForm

@@ -18,6 +18,9 @@ export function segmentForJobType(jobType: JobType): JobSegmentKey {
   >) {
     if (seg.jobTypes.includes(jobType)) return key;
   }
+  // Non-segment types (SERVICE_JOB, LAND, COURIER, …) — detail page loads by id.
+  if (jobType === 'SEA_FCL_IMPORT' || jobType === 'SEA_LCL_IMPORT') return 'sea-import';
+  if (jobType.startsWith('SEA_') || jobType === 'NVOCC_EXPORT') return 'sea-export';
   return 'air-export';
 }
 

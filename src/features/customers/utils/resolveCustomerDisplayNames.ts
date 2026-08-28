@@ -36,13 +36,34 @@ function userLabel(user: {
 
 async function buildPartyNameMap(ids: string[]): Promise<Map<string, string>> {
   const map = new Map<string, string>();
+  const wanted = new Set(ids);
+  if (!wanted.size) return map;
+
+  const partyLabel = (party: { id?: string; code?: string; name?: string }) => {
+    const label = [party.code, party.name].filter(Boolean).join(' — ');
+    return label && label !== '—' ? label : party.name?.trim() || '';
+  };
+
+  try {
+    const result = await partyService.list({ page: 1, limit: 500, order: 'asc' });
+    for (const party of result.parties) {
+      const id = String(party.id ?? '');
+      if (!wanted.has(id)) continue;
+      const label = partyLabel(party);
+      if (label) map.set(id, label);
+    }
+  } catch {
+    /* fall through to per-id fetch */
+  }
+
   await Promise.all(
-    ids.map(async (id) => {
+    ids.filter((id) => !map.has(id)).map(async (id) => {
       try {
         const party = await partyService.getById(id);
-        if (party.name && party.name !== '—') map.set(id, party.name);
+        const label = partyLabel(party);
+        if (label) map.set(id, label);
       } catch {
-        // Party may be deleted or inaccessible — keep row without name.
+        /* Party may be deleted or inaccessible — keep row without name. */
       }
     }),
   );
@@ -135,18 +156,32 @@ export async function enrichJobsWithDisplayNames(jobs: Job[]): Promise<Job[]> {
       .catch(() => new Map<string, string>()),
   ]);
 
-  return jobs.map((job) => ({
-    ...job,
-    shipper_name: job.shipper_name || parties.get(job.shipper_id) || job.shipper_name,
-    consignee_name:
-      job.consignee_name || (job.consignee_id ? parties.get(job.consignee_id) : undefined) || job.consignee_name,
-    agent_name: job.agent_name || (job.agent_id ? parties.get(job.agent_id) : undefined) || job.agent_name,
-    salesperson_name:
-      job.salesperson_name || (job.salesperson_id ? users.get(job.salesperson_id) : undefined) || job.salesperson_name,
-    branch_name: job.branch_name || (job.branch_id ? branches.get(job.branch_id) : undefined) || job.branch_name,
-    origin_port_code: resolvePortLabel(job.origin_port_code, job.origin_port_id, ports),
-    dest_port_code: resolvePortLabel(job.dest_port_code, job.dest_port_id, ports),
-    sea_fcl_details: job.sea_fcl_details
+  return jobs.map((job) => {
+    const etd =
+      job.etd ||
+      job.sea_fcl_details?.etd ||
+      job.sea_lcl_details?.etd ||
+      job.air_details?.flight_date;
+    const eta = job.eta || job.sea_fcl_details?.eta || job.sea_lcl_details?.eta;
+
+    return {
+      ...job,
+      shipper_name: job.shipper_name || parties.get(job.shipper_id) || job.shipper_name,
+      consignee_name:
+        job.consignee_name ||
+        (job.consignee_id ? parties.get(job.consignee_id) : undefined) ||
+        job.consignee_name,
+      agent_name: job.agent_name || (job.agent_id ? parties.get(job.agent_id) : undefined) || job.agent_name,
+      salesperson_name:
+        job.salesperson_name ||
+        (job.salesperson_id ? users.get(job.salesperson_id) : undefined) ||
+        job.salesperson_name,
+      branch_name: job.branch_name || (job.branch_id ? branches.get(job.branch_id) : undefined) || job.branch_name,
+      origin_port_code: resolvePortLabel(job.origin_port_code, job.origin_port_id, ports),
+      dest_port_code: resolvePortLabel(job.dest_port_code, job.dest_port_id, ports),
+      etd: etd ? String(etd).slice(0, 10) : job.etd,
+      eta: eta ? String(eta).slice(0, 10) : job.eta,
+      sea_fcl_details: job.sea_fcl_details
       ? {
           ...job.sea_fcl_details,
           shipping_line_id: job.sea_fcl_details.shipping_line_id,
@@ -160,7 +195,8 @@ export async function enrichJobsWithDisplayNames(jobs: Job[]): Promise<Job[]> {
             undefined,
         }
       : undefined,
-  }));
+    };
+  });
 }
 
 export async function enrichEnquiryRowsWithDisplayNames(rows: CustomerEnquiryRow[]): Promise<CustomerEnquiryRow[]> {

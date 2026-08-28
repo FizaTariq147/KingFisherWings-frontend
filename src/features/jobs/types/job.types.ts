@@ -42,6 +42,9 @@ export interface JobListParams {
   container_type_id?: string;
   /** Client-side: filter list to segment job types (not sent if single job_type set). */
   job_types?: JobType[];
+  vehicle_number?: string;
+  trucker_id?: string;
+  tracking_number?: string;
 }
 
 /** Matches Swagger UpdateAirJobDetailDto / nested air_details. */
@@ -105,6 +108,85 @@ export interface JobSeaFclDetail {
   linked_export_job_id?: string;
   cfs_storage_rate_per_day?: number;
   cfs_storage_start_date?: string;
+}
+
+/** Matches Swagger UpdateSeaLclJobDetailDto / nested sea_lcl_details. */
+export interface JobSeaLclDetail {
+  shipping_line_id?: string;
+  vessel_id?: string;
+  voyage_number?: string;
+  booking_number?: string;
+  carrier_booking_ref?: string;
+  hbl_number?: string;
+  mbl_number?: string;
+  place_of_receipt?: string;
+  place_of_delivery?: string;
+  etd?: string;
+  eta?: string;
+  actual_eta?: string;
+  incoterms?: string;
+  freight_terms?: string;
+  bl_type?: string;
+  port_of_loading_id?: string;
+  port_of_discharge_id?: string;
+  transhipment_port?: string;
+  sailed_at?: string;
+  si_cutoff?: string;
+  si_submitted_at?: string;
+  si_version?: number;
+  consolidation_number?: string;
+  cfs_warehouse_id?: string;
+  cfs_storage_free_days?: number;
+  cfs_storage_rate_per_day?: number;
+  cfs_storage_start_date?: string;
+  storage_rate_basis?: string;
+  wms_storage_charge_id?: string;
+  customs_broker_id?: string;
+  customs_entry_number?: string;
+  customs_examination_details?: string;
+  customs_duty_amount?: number;
+  customs_tax_amount?: number;
+  customs_clearance_date?: string;
+  customs_status?: string;
+  linked_export_job_id?: string;
+}
+
+/** Matches Swagger UpdateCourierJobDetailDto / nested courier_details. */
+export interface JobCourierDetail {
+  courier_vendor_id?: string;
+  tracking_number?: string;
+  service_type?: string;
+  label_format?: string;
+  barcode_value?: string;
+  pickup_address?: string;
+  delivery_address?: string;
+  length_cm?: number;
+  width_cm?: number;
+  height_cm?: number;
+  linked_export_job_id?: string;
+  linked_import_job_id?: string;
+}
+
+/** Matches Swagger UpdateLandJobDetailDto / nested land_details. */
+export interface JobLandDetail {
+  trucker_id?: string;
+  vehicle_number?: string;
+  vehicle_type?: string;
+  driver_name?: string;
+  driver_license?: string;
+  origin_city_country?: string;
+  destination_city_country?: string;
+  etd?: string;
+  eta?: string;
+  incoterms?: string;
+  freight_terms?: string;
+  border_origin_country?: string;
+  border_destination_country?: string;
+  border_declaration_number?: string;
+  border_hs_code?: string;
+  border_commodity?: string;
+  border_declared_value?: number;
+  cross_border_docs_required?: boolean;
 }
 
 export interface JobCharge {
@@ -235,6 +317,7 @@ export interface Job {
   shipper_name?: string;
   consignee_id?: string;
   consignee_name?: string;
+  billing_party_id?: string;
   agent_id?: string;
   agent_name?: string;
   salesperson_id?: string;
@@ -265,6 +348,9 @@ export interface Job {
   updated_at?: string;
   air_details?: JobAirDetail;
   sea_fcl_details?: JobSeaFclDetail;
+  sea_lcl_details?: JobSeaLclDetail;
+  courier_details?: JobCourierDetail;
+  land_details?: JobLandDetail;
   charges?: JobCharge[];
   milestones?: JobMilestone[];
   notes_list?: JobNote[];
@@ -322,6 +408,9 @@ export interface UpdateJobMilestoneDto {
 
 export type UpdateAirJobDetailDto = Partial<JobAirDetail>;
 export type UpdateSeaFclJobDetailDto = Partial<JobSeaFclDetail>;
+export type UpdateSeaLclJobDetailDto = Partial<JobSeaLclDetail>;
+export type UpdateCourierJobDetailDto = Partial<JobCourierDetail>;
+export type UpdateLandJobDetailDto = Partial<JobLandDetail>;
 
 export interface CreateJobContainerDto {
   container_type_id: string;
@@ -398,6 +487,90 @@ export interface SchedulePreAlertDto {
 export interface SendWhatsAppStatusDto {
   to_phone: string;
   message: string;
+}
+
+export interface SubmitLclSiDto {
+  si_submitted_at?: string;
+  si_version?: number;
+}
+
+export interface LinkCourierJobDto {
+  linked_job_id: string;
+}
+
+export interface ConfirmCourierBookingDto {
+  tracking_number?: string;
+  service_type?: string;
+  label_format?: string;
+}
+
+export interface ScanCourierCheckpointDto {
+  checkpoint?: string;
+  location?: string;
+  scanned_at?: string;
+  barcode_scanned?: string;
+  notes?: string;
+}
+
+export interface CreateCourierPodDto {
+  actual_delivery_date?: string;
+  delivered_by?: string;
+  received_by?: string;
+  signature_image_path?: string;
+  remarks?: string;
+}
+
+export interface AssignLandTruckerDto {
+  trucker_id?: string;
+  vehicle_number?: string;
+  vehicle_type?: string;
+  driver_name?: string;
+  driver_license?: string;
+}
+
+export interface RecordLandPickupDto {
+  picked_up_at?: string;
+}
+
+export interface RecordLandBorderCrossingDto {
+  border_declaration_number?: string;
+  crossed_at?: string;
+  milestone?: string;
+}
+
+export interface CreateLandPodDto {
+  actual_delivery_date?: string;
+  delivered_by?: string;
+  received_by?: string;
+  signature_image_path?: string;
+  remarks?: string;
+}
+
+export interface AttachLclHouseDto {
+  house_job_id: string;
+}
+
+export interface LinkLclTranshipmentDto {
+  export_job_id: string;
+}
+
+export interface LinkLclWmsStorageDto {
+  wms_storage_charge_id: string;
+}
+
+export interface LclCfsStorageCalculationDto {
+  as_of_date?: string;
+}
+
+export interface CreateTransportRequestDto {
+  request_type?: string;
+  pickup_address?: string;
+  delivery_address?: string;
+  cargo_details?: string;
+  distance_km?: number;
+  zip_distance_id?: string;
+  scheduled_pickup_datetime?: string;
+  scheduled_delivery_datetime?: string;
 }
 
 export interface SubmitSiDto {
