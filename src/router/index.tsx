@@ -140,6 +140,15 @@ import BookingListPage from '../pages/nvocc/BookingListPage'
 import EnquiryListPage from '../pages/nvocc/EnquiryListPage'
 import LoadListPage from '../pages/nvocc/LoadListPage'
 import VesselVoyageMasterPage from '../pages/nvocc/VesselVoyageMasterPage'
+import TariffListPage from '../pages/nvocc/TariffListPage'
+import NvoccTariffDetailPage from '@/features/nvocc/pages/NvoccTariffDetailPage'
+import NvoccTariffCreatePage from '@/features/nvocc/pages/NvoccTariffCreatePage'
+import NvoccVoyageDetailPage from '@/features/nvocc/pages/NvoccVoyageDetailPage'
+import NvoccVoyageCreatePage from '@/features/nvocc/pages/NvoccVoyageCreatePage'
+import NvoccEnquiryDetailPage from '@/features/nvocc/pages/NvoccEnquiryDetailPage'
+import NvoccEnquiryCreatePage from '@/features/nvocc/pages/NvoccEnquiryCreatePage'
+import NvoccBookingDetailPage from '@/features/nvocc/pages/NvoccBookingDetailPage'
+import NvoccBookingCreatePage from '@/features/nvocc/pages/NvoccBookingCreatePage'
 import ManagementMenuPage from '../pages/management/ManagementMenuPage'
 import AllJobMisPage from '../pages/management/AllJobsMisPage'
 import ComplaintsPage from '../pages/management/ComplaintsPage'
@@ -476,12 +485,20 @@ export const router = createBrowserRouter([
           {path: '/management/reports', element: <ManagementReportsMisPage />},
           { path: '/nvocc', element: <NvoccMenuPage /> },
           { path: '/nvocc/all-jobs', element: <AllJobsPage /> },
+          { path: '/nvocc/tariffs', element: <TariffListPage /> },
+          { path: '/nvocc/tariffs/new', element: <NvoccTariffCreatePage /> },
+          { path: '/nvocc/tariffs/:id', element: <NvoccTariffDetailPage /> },
           { path: '/nvocc/booking-list', element: <BookingListPage /> },
+          { path: '/nvocc/bookings/new', element: <NvoccBookingCreatePage /> },
+          { path: '/nvocc/bookings/:id', element: <NvoccBookingDetailPage /> },
           { path: '/nvocc/enquiry-list', element: <EnquiryListPage /> },
+          { path: '/nvocc/enquiries/new', element: <NvoccEnquiryCreatePage /> },
+          { path: '/nvocc/enquiries/:id', element: <NvoccEnquiryDetailPage /> },
           { path: '/nvocc/load-list', element: <LoadListPage /> },
           {path: '/nvocc/vessel-voyage-master', element: <VesselVoyageMasterPage />},
+          { path: '/nvocc/voyages/new', element: <NvoccVoyageCreatePage /> },
+          { path: '/nvocc/voyages/:id', element: <NvoccVoyageDetailPage /> },
           { path: '/nvocc/reports', element: <NvoccReportsPage /> },
-          { path: '/nvocc/:id', element: <Placeholder title="NVOCC Detail" /> },
           {
             element: <ProtectedRoute requirePermissions={['menu_hr']} />,
             children: [
