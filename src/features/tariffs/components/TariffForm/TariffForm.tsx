@@ -16,7 +16,6 @@ import {
 } from '../../constants/tariff.constants';
 import { createTariffSchema, updateTariffSchema } from '../../schemas/tariff.schema';
 import type { CreateTariffFormValues, UpdateTariffFormValues } from '../../types/tariff.types';
-import { buildTariffDemoValues } from '../../utils/tariffDemoData';
 import { TARIFF_FORM_DEFAULTS } from '../../utils/tariffToFormValues';
 
 const selectClass =
@@ -77,7 +76,6 @@ export function TariffForm({
   const {
     register,
     handleValidatedSubmit,
-    reset,
     watch,
     formState: { errors, isSubmitted, isValid },
   } = useAppForm<CreateTariffFormValues>({
@@ -100,19 +98,6 @@ export function TariffForm({
     value: String(p.id),
     label: [p.code, p.name].filter(Boolean).join(' — ') || String(p.id),
   }));
-
-  const fillDemo = () => {
-    const chargeCodeId = chargeCodes.map((c) => String(c.id)).find((id) => isUuid(id));
-    if (!chargeCodeId) return;
-    reset(
-      buildTariffDemoValues({
-        chargeCodeId,
-        // Do not send optional FKs on create — backend often 500s on bad/mismatched refs.
-        // Lane fields can be edited after create.
-        currencyCode: String(currencies[0]?.value ?? 'AED'),
-      }),
-    );
-  };
 
   const uuidSelect = {
     setValueAs: (v: unknown) => {
@@ -338,16 +323,6 @@ export function TariffForm({
       </Card>
 
       <div className="flex justify-end gap-2">
-        {mode === 'create' && (
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={fillDemo}
-            disabled={!chargeCodes.some((c) => isUuid(String(c.id)))}
-          >
-            Fill demo data
-          </Button>
-        )}
         <Button type="button" variant="secondary" onClick={onCancel} disabled={isSubmitting}>
           Cancel
         </Button>

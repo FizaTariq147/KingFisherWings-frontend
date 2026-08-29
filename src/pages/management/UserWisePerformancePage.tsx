@@ -18,7 +18,7 @@ export default function UserWisePerformancePage() {
   const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
   const [search, setSearch] = useState('');
   const [appliedSearch, setAppliedSearch] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(true);
 
   const params = useMemo(
     () => ({
@@ -43,6 +43,7 @@ export default function UserWisePerformancePage() {
 
   useEffect(() => {
     applyPreset('this_month');
+    setSubmitted(true);
   }, []);
 
   const filteredItems = useMemo(() => {
@@ -195,12 +196,7 @@ export default function UserWisePerformancePage() {
         </div>
 
         <div className="min-h-56">
-          {!submitted ? (
-            <div className="flex flex-col items-center justify-center h-56 gap-2">
-              <Search size={40} className="text-gray-300" />
-              <p className="text-sm text-gray-500">Set dates and click Submit to load performance data.</p>
-            </div>
-          ) : loading ? (
+          {loading ? (
             <div className="flex items-center justify-center h-56 text-sm text-gray-400">Loading performance data…</div>
           ) : query.isError ? (
             <div className="flex items-center justify-center h-56 px-5 text-sm text-red-600 text-center">

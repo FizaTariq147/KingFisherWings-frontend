@@ -1,4 +1,4 @@
-import { BookOpen, Headphones, ListChecks, Anchor, Truck } from 'lucide-react';
+import { BookOpen, Headphones, ListChecks, Anchor, Truck, Tags } from 'lucide-react';
 import type { MenuTile } from '../../customers/types/menu.types';
 
 export const nvoccMenu: MenuTile[] = [
@@ -9,6 +9,14 @@ export const nvoccMenu: MenuTile[] = [
     icon: BookOpen,
     iconColor: 'bg-sky-500',
     path: '/nvocc/all-jobs',
+  },
+  {
+    id: 'nvocc-tariffs',
+    title: 'Tariffs',
+    description: 'Maintain NVOCC freight tariffs, surcharges, and validity by trade lane.',
+    icon: Tags,
+    iconColor: 'bg-amber-500',
+    path: '/nvocc/tariffs',
   },
   {
     id: 'booking-list',

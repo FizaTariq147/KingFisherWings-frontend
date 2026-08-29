@@ -14,7 +14,6 @@ import { loadPartyCurrencyOptions } from '@/features/parties/utils/partyCurrency
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { createInvoiceSchema, updateInvoiceSchema } from '../../schemas/invoice.schema';
 import type { CreateInvoiceFormValues, UpdateInvoiceFormValues } from '../../types/invoice.types';
-import { buildInvoiceDemoValues } from '../../utils/invoiceDemoData';
 import { INVOICE_FORM_DEFAULTS } from '../../utils/invoiceToFormValues';
 
 const selectClass =
@@ -69,7 +68,6 @@ export function InvoiceForm({
     register,
     control,
     handleValidatedSubmit,
-    reset,
     applyApiErrors,
     formState: { errors, isSubmitted, isValid },
   } = useAppForm<CreateInvoiceFormValues>({
@@ -92,23 +90,6 @@ export function InvoiceForm({
       const s = String(v).trim();
       return s && isUuid(s) ? s : undefined;
     },
-  };
-
-  const fillDemo = () => {
-    const partyId = parties[0]?.id;
-    if (!partyId) return;
-    const companyId = companies.find((c) => isUuid(String(c.id)))?.id;
-    const branchId = branches.find((b) => isUuid(String(b.id)))?.id;
-    const departmentId = departments.find((d) => isUuid(String(d.id)))?.id;
-    reset(
-      buildInvoiceDemoValues({
-        partyId,
-        currencyCode: String(currencies[0]?.value ?? 'AED'),
-        companyId: companyId ? String(companyId) : undefined,
-        branchId: branchId ? String(branchId) : undefined,
-        departmentId: departmentId ? String(departmentId) : undefined,
-      }),
-    );
   };
 
   return (
@@ -139,13 +120,8 @@ export function InvoiceForm({
       )}
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <CardHeader>
           <CardTitle>Invoice header</CardTitle>
-          {mode === 'create' && (
-            <Button type="button" variant="secondary" onClick={fillDemo} disabled={!parties[0]}>
-              Demo data
-            </Button>
-          )}
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1 sm:col-span-2">

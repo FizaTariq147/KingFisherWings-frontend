@@ -1,169 +1,141 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
-import { Plus, Search, ChevronDown, Heart, X, AlignJustify } from 'lucide-react';
+import { Heart, Plus } from 'lucide-react';
 import { SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
-
-interface MasterItem {
-  id: string;
-  label: string;
-  checked: boolean;
-}
-
-const initialItems: MasterItem[] = [{ id: 'pod', label: 'POD', checked: true }];
+import { NVOCC_VOYAGE_STATUSES, nvoccLabel } from '@/features/nvocc/constants/nvocc.constants';
+import type { NvoccVoyageStatus } from '@/features/nvocc/constants/nvocc.constants';
+import { useNvoccVoyages } from '@/features/nvocc/hooks/useNvocc';
+import { NvoccListState, NvoccStatusBadge, nvoccTdClass, nvoccThClass } from '@/features/nvocc/components/NvoccUi';
+import { formatNvoccDate, nvoccDisplayNumber } from '@/features/nvocc/utils/normalizeNvocc';
+import type { NvoccVoyageListParams } from '@/features/nvocc/types/nvocc.types';
 
 export default function VesselVoyageMasterPage() {
-  const [rows, setRows] = useState('10');
-  const [items, setItems] = useState<MasterItem[]>(initialItems);
-  const [expanded, setExpanded] = useState(true);
-
-  const toggleItem = (id: string) => {
-    setItems((prev) => prev.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item)));
-  };
-
-  const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  };
+  const [draft, setDraft] = useState<NvoccVoyageListParams>({});
+  const [applied, setApplied] = useState<NvoccVoyageListParams>({});
+  const query = useNvoccVoyages(applied);
+  const rows = useMemo(() => query.data?.items ?? [], [query.data?.items]);
 
   return (
     <div className="space-y-3">
       <PageBackLink to="/nvocc" label="Back to NVOCC" />
       <div className="bg-white border border-gray-200 rounded-md">
-        {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <h2 className="text-[17px] font-medium text-gray-800">Vessel Voyage Master List</h2>
-          <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity">
-              <Plus size={14} />
-              Create
-            </button>
-          </div>
+          <Link
+            to="/nvocc/voyages/new"
+            className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity"
+          >
+            <Plus size={14} />
+            Create
+          </Link>
         </div>
 
-        {/* Filter row + Submit pinned top-right */}
-        <div className="p-5 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-          <div className="flex flex-wrap items-start gap-x-8 gap-y-3">
-            <label className="flex items-start gap-3">
-              <span className="text-sm text-gray-700 pt-2">From ETD Date</span>
-              <div className="w-40">
-                <DateInput value="30-MAR-26" />
-              </div>
-            </label>
-
-            <label className="flex items-start gap-3">
-              <span className="text-sm text-gray-700 pt-2">To ETD Date</span>
-              <div className="w-40">
-                <DateInput value="16-OCT-26" />
-              </div>
-            </label>
-
-            <label className="flex items-start gap-3">
-              <span className="w-14 shrink-0 text-sm text-gray-700 pt-2 text-right">Vessel</span>
-              <div className="w-52">
-                <TextInput />
-              </div>
-            </label>
-
-            <label className="flex items-start gap-3">
-              <span className="w-10 shrink-0 text-sm text-gray-700 pt-2 text-right">POL</span>
-              <div className="w-52">
-                <SelectInput options={['-Select-']} />
-              </div>
-            </label>
-
-            <label className="flex items-start gap-3">
-              <span className="w-10 shrink-0 text-sm text-gray-700 pt-2 text-right">POD</span>
-              <div className="w-52">
-                <SelectInput options={['-Select-']} />
-              </div>
-            </label>
-          </div>
+        <div className="p-5 flex flex-wrap items-start gap-x-8 gap-y-3">
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">From ETD</span>
+            <div className="w-40">
+              <DateInput
+                value={draft.etd_from ?? ''}
+                onChange={(e) => setDraft((prev) => ({ ...prev, etd_from: e.target.value || undefined }))}
+              />
+            </div>
+          </label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">To ETD</span>
+            <div className="w-40">
+              <DateInput
+                value={draft.etd_to ?? ''}
+                onChange={(e) => setDraft((prev) => ({ ...prev, etd_to: e.target.value || undefined }))}
+              />
+            </div>
+          </label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Status</span>
+            <div className="w-44">
+              <SelectInput
+                options={['All', ...NVOCC_VOYAGE_STATUSES.map((s) => ({ value: s, label: nvoccLabel(s) }))]}
+                value={draft.voyage_status ?? 'All'}
+                onChange={(e) =>
+                  setDraft((prev) => ({
+                    ...prev,
+                    voyage_status:
+                      e.target.value === 'All' ? undefined : (e.target.value as NvoccVoyageStatus),
+                  }))
+                }
+              />
+            </div>
+          </label>
+          <label className="flex items-start gap-3">
+            <span className="text-sm text-gray-700 pt-2">Search</span>
+            <div className="w-52">
+              <TextInput
+                value={draft.search ?? ''}
+                onChange={(e) => setDraft((prev) => ({ ...prev, search: e.target.value || undefined }))}
+              />
+            </div>
+          </label>
         </div>
 
-        {/* Search toolbar with inline Submit */}
         <div className="flex items-center justify-between px-5 py-3 border-t border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1 border border-gray-300 rounded px-2.5 py-1.5 text-sm text-gray-600 bg-white">
-              <Search size={13} />
-              <ChevronDown size={12} />
-            </button>
-            <input
-              type="text"
-              className="border border-gray-300 rounded px-3 py-1.5 text-sm w-56 focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]"
-            />
-            <button className="bg-gray-100 border border-gray-300 hover:bg-gray-200 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors">
-              Search
-            </button>
-            <span className="text-sm text-gray-500 ml-2">Rows</span>
-            <select
-              value={rows}
-              onChange={(e) => setRows(e.target.value)}
-              className="border border-gray-300 rounded px-2 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#FF751F]"
-            >
-              <option>5</option>
-              <option>10</option>
-              <option>25</option>
-              <option>50</option>
-            </select>
-            <button className="flex items-center gap-1 border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-600 bg-white">
-              Options
-              <ChevronDown size={12} />
-            </button>
-          </div>
-
-          <button className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity">
+          <div className="text-sm text-gray-500">{query.data?.meta.total ?? 0} voyage(s)</div>
+          <button
+            type="button"
+            onClick={() => setApplied({ ...draft })}
+            className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity"
+          >
             <span className="text-[#FF751F]">➜</span>
             Submit
           </button>
         </div>
 
-        {/* Collapsible checkbox-item panel */}
-        <div className="bg-[#F5F7FA]">
-          <div className="flex items-start px-3 py-2 gap-2">
-            <button
-              onClick={() => setExpanded(!expanded)}
-              className="mt-2 text-gray-500 hover:text-gray-700"
-            >
-              <ChevronDown size={14} className={`transition-transform ${expanded ? '' : '-rotate-90'}`} />
-            </button>
-
-            {expanded && (
-              <div className="flex-1 space-y-2">
-                {items.map((item) => (
-                  <div key={item.id} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={item.checked}
-                      onChange={() => toggleItem(item.id)}
-                      className="w-4 h-4 rounded border-gray-300 text-[#0A2942] focus:ring-[#FF751F]"
-                    />
-                    <div className="flex items-center gap-2 border border-gray-300 rounded bg-white px-2 py-1.5 flex-1 max-w-xs">
-                      <span className="w-6 h-6 rounded bg-[#0A2942] flex items-center justify-center text-white shrink-0">
-                        <AlignJustify size={13} />
-                      </span>
-                      <a href="#" className="text-sm text-blue-600 hover:underline">
-                        {item.label}
-                      </a>
-                    </div>
-                    <button onClick={() => removeItem(item.id)} className="text-gray-400 hover:text-gray-600">
-                      <X size={16} />
-                    </button>
-                  </div>
+        <NvoccListState
+          loading={query.isLoading}
+          error={query.isError ? query.error : undefined}
+          empty={!query.isLoading && !query.isError && rows.length === 0}
+        />
+        {!query.isLoading && !query.isError && rows.length > 0 && (
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead className="border-b border-gray-200 bg-gray-50">
+                <tr>
+                  <th className={nvoccThClass}>Voyage</th>
+                  <th className={nvoccThClass}>Vessel</th>
+                  <th className={nvoccThClass}>POL</th>
+                  <th className={nvoccThClass}>POD</th>
+                  <th className={nvoccThClass}>ETD</th>
+                  <th className={nvoccThClass}>ETA</th>
+                  <th className={nvoccThClass}>MBL</th>
+                  <th className={nvoccThClass}>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row) => (
+                  <tr key={row.id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <td className={nvoccTdClass}>
+                      <Link className="font-medium text-blue-600 hover:underline" to={`/nvocc/voyages/${row.id}`}>
+                        {nvoccDisplayNumber(row, 'Voyage')}
+                      </Link>
+                    </td>
+                    <td className={nvoccTdClass}>{row.vessel_name ?? row.vessel_id ?? '—'}</td>
+                    <td className={nvoccTdClass}>{row.pol_name ?? row.pol_id ?? '—'}</td>
+                    <td className={nvoccTdClass}>{row.pod_name ?? row.pod_id ?? '—'}</td>
+                    <td className={nvoccTdClass}>{formatNvoccDate(row.etd)}</td>
+                    <td className={nvoccTdClass}>{formatNvoccDate(row.eta)}</td>
+                    <td className={nvoccTdClass}>{row.mbl_number ?? '—'}</td>
+                    <td className={nvoccTdClass}>
+                      <NvoccStatusBadge status={row.voyage_status} />
+                    </td>
+                  </tr>
                 ))}
-              </div>
-            )}
+              </tbody>
+            </table>
           </div>
-        </div>
-
-        {/* Results area — empty state */}
-        <div className="flex items-center justify-center h-56 border-t border-gray-200">
-          <Search size={40} className="text-gray-300" />
-        </div>
+        )}
       </div>
 
-      {/* Floating Favorites button */}
       <div className="mt-4">
-        <button className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
+        <button type="button" className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
           <Heart size={14} />
           Favorites
         </button>

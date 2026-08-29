@@ -3,7 +3,6 @@ import type { Tariff } from '../types/tariff.types';
 
 /**
  * Create defaults leave required fields empty so Zod/RHF validation runs on submit.
- * Use Fill demo data for Swagger-shaped samples.
  */
 export const TARIFF_FORM_DEFAULTS: Partial<CreateTariffFormValues> = {
   service_type: 'AIR_EXPORT',

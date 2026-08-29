@@ -18,7 +18,6 @@ import type {
   CreatePaymentRequestFormValues,
   UpdatePaymentRequestFormValues,
 } from '../../types/paymentRequest.types';
-import { buildPaymentRequestDemoValues } from '../../utils/paymentRequestDemoData';
 import { PAYMENT_REQUEST_FORM_DEFAULTS } from '../../utils/paymentRequestToFormValues';
 
 const selectClass =
@@ -61,7 +60,6 @@ export function PaymentRequestForm({
   const {
     register,
     handleValidatedSubmit,
-    reset,
     applyApiErrors,
     formState: { errors, isSubmitted, isValid },
   } = useAppForm<CreatePaymentRequestFormValues>({
@@ -79,18 +77,6 @@ export function PaymentRequestForm({
       const s = String(v).trim();
       return s && isUuid(s) ? s : undefined;
     },
-  };
-
-  const fillDemo = () => {
-    const partyId = parties[0]?.id;
-    if (!partyId) return;
-    reset(
-      buildPaymentRequestDemoValues({
-        partyId,
-        currencyCode: String(currencies[0]?.value ?? 'AED'),
-        invoiceId: invoices[0]?.id,
-      }),
-    );
   };
 
   return (
@@ -121,13 +107,8 @@ export function PaymentRequestForm({
       )}
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <CardHeader>
           <CardTitle>Payment request</CardTitle>
-          {mode === 'create' && (
-            <Button type="button" variant="secondary" onClick={fillDemo} disabled={!parties[0]}>
-              Demo data
-            </Button>
-          )}
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1 sm:col-span-2">

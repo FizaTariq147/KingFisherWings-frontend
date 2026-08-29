@@ -16,7 +16,6 @@ import {
   Settings,
   BarChart3,
   Percent,
-  Shield,
   Globe,
   Briefcase,
   Truck,
@@ -128,7 +127,6 @@ const SIDEBAR_ICON_STYLES: Record<string, NavIconStyle> = {
   '/reports': navStyle('#DC2626'),
   '/sales': navStyle('#F43F5E'),
   '/settings': navStyle('#64748B'),
-  '/audit-log': navStyle('#4F46E5'),
   '/masters': navStyle('#A855F7'),
   '/warehouse': navStyle('#0D9488'),
   '/organization': navStyle('#06B6D4'),
@@ -319,7 +317,6 @@ const OPS_NAV_ITEMS: NavItem[] = [
   { label: 'Reports', path: '/reports', Icon: BarChart3, permission: 'menu_reports' },
   { label: 'Sales', path: '/sales', Icon: Percent, permission: 'menu_sales' as PermissionKey },
   { label: 'Settings', path: '/settings', Icon: Settings, permission: 'menu_settings' },
-  { label: 'Audit Log', path: '/audit-log', Icon: Shield, permission: 'menu_settings' },
 ];
 
 const NAV_GROUPS: NavGroup[] = [

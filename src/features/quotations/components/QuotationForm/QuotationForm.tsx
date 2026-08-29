@@ -22,7 +22,6 @@ import {
 import { createQuotationSchema, updateQuotationSchema } from '../../schemas/quotation.schema';
 import type { CreateQuotationFormValues, UpdateQuotationFormValues } from '../../types/quotation.types';
 import { QUOTATION_FORM_DEFAULTS } from '../../utils/quotationToFormValues';
-import { buildQuotationDemoValues } from '../../utils/quotationDemoData';
 
 const selectClass =
   'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm text-[var(--color-neutral-800)] focus:outline-none focus:border-[var(--color-primary-500)]';
@@ -100,7 +99,6 @@ export function QuotationForm({
     handleValidatedSubmit,
     applyApiErrors,
     watch,
-    reset,
     setValue,
     formState: { errors },
   } = useAppForm<CreateQuotationFormValues>({
@@ -123,25 +121,6 @@ export function QuotationForm({
 
   const fieldError = (name: keyof CreateQuotationFormValues) =>
     errors[name]?.message as string | undefined;
-
-  const fillDemo = () => {
-    const customerId = customers[0]?.id;
-    if (!customerId) return;
-    const portIds: string[] = [];
-    for (const p of ports) {
-      const id = String(p.id);
-      if (isUuid(id)) portIds.push(id);
-    }
-    reset(
-      buildQuotationDemoValues({
-        customerId,
-        companyId: companies[0]?.id,
-        originPortId: portIds[0],
-        destPortId: portIds[1] || portIds[0],
-        currencyCode: String(currencies[0]?.code ?? 'AED'),
-      }),
-    );
-  };
 
   const portOptions: Array<{ value: string; label: string }> = [];
   for (const p of ports) {
@@ -502,21 +481,6 @@ export function QuotationForm({
       </Card>
 
       <div className="flex flex-wrap justify-end gap-2">
-        {mode === 'create' && (
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={fillDemo}
-            disabled={isSubmitting || customers.length === 0}
-            title={
-              customers.length === 0
-                ? 'Create a customer party first'
-                : 'Fill realistic demo values using the first available masters'
-            }
-          >
-            Fill demo data
-          </Button>
-        )}
         <Button type="button" variant="secondary" onClick={onCancel} disabled={isSubmitting}>
           Cancel
         </Button>

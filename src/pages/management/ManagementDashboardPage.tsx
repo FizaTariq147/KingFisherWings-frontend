@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Maximize2, ChevronRight } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { useManagementDashboard } from '@/features/management/hooks/useManagement';
 import { mapDashboardCharts } from '@/features/management/utils/normalizeManagement';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
@@ -12,6 +12,19 @@ interface ChartDataPoint {
   month: string;
   [series: string]: string | number;
 }
+
+const CHART_COLORS = [
+  '#FF751F',
+  '#0A2942',
+  '#14b8a6',
+  '#a855f7',
+  '#ef4444',
+  '#eab308',
+  '#0ea5e9',
+  '#ec4899',
+  '#22c55e',
+  '#f97316',
+];
 
 const sidebarLinks = [
   { label: 'Sales', target: 'enquiries' as const, color: 'text-green-600' },
@@ -81,15 +94,33 @@ function BarChartOrEmpty({
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-        <YAxis tick={{ fontSize: 11 }} />
-        <Tooltip />
+      <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+        <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#6b7280' }} />
+        <YAxis tick={{ fontSize: 11, fill: '#6b7280' }} />
+        <Tooltip
+          cursor={{ fill: 'rgba(255, 117, 31, 0.08)' }}
+          contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb' }}
+        />
         <Legend wrapperStyle={{ fontSize: 11 }} />
-        {keys.map((key) => (
-          <Bar key={key} dataKey={key} />
-        ))}
+        {keys.map((key, index) => {
+          const color = CHART_COLORS[index % CHART_COLORS.length];
+          return (
+            <Bar
+              key={key}
+              dataKey={key}
+              fill={color}
+              radius={[4, 4, 0, 0]}
+              maxBarSize={keys.length === 1 ? 48 : 32}
+            >
+              {keys.length === 1
+                ? data.map((_, i) => (
+                    <Cell key={`cell-${i}`} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                  ))
+                : null}
+            </Bar>
+          );
+        })}
       </BarChart>
     </ResponsiveContainer>
   );

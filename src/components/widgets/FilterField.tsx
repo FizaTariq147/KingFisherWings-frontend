@@ -60,14 +60,18 @@ export function TextInput({
   placeholder,
   value,
   onChange,
+  onBlur,
   type = 'text',
   className,
+  maxLength,
 }: {
   placeholder?: string;
   value?: string;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (event: ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   className?: string;
+  maxLength?: number;
 }) {
   return (
     <input
@@ -75,6 +79,8 @@ export function TextInput({
       placeholder={placeholder}
       value={value}
       onChange={onChange}
+      onBlur={onBlur}
+      maxLength={maxLength}
       className={
         className ??
         'w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]'
@@ -86,10 +92,12 @@ export function TextInput({
 export function DateInput({
   value,
   onChange,
+  onBlur,
   type = 'date',
 }: {
   value?: string;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (event: ChangeEvent<HTMLInputElement>) => void;
   type?: 'date' | 'text';
 }) {
   if (type === 'date') {
@@ -98,6 +106,7 @@ export function DateInput({
         type="date"
         value={value ?? ''}
         onChange={onChange}
+        onBlur={onBlur}
         className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]"
       />
     );

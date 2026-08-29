@@ -22,7 +22,6 @@ import type {
   CreateGlPaymentFormValues,
   UpdateGlPaymentFormValues,
 } from '../../types/glPayment.types';
-import { GL_PAYMENT_DEMO_CREATE, GL_PAYMENT_DEMO_VENDOR } from '../../utils/glPaymentDemoData';
 import { GL_PAYMENT_FORM_DEFAULTS } from '../../utils/glPaymentToFormValues';
 
 const selectClass =
@@ -62,7 +61,6 @@ export function GlPaymentForm({
     register,
     control,
     watch,
-    reset,
     handleValidatedSubmit,
     formState: { errors, isSubmitted, isValid },
   } = useAppForm<CreateGlPaymentFormValues>({
@@ -72,10 +70,8 @@ export function GlPaymentForm({
   });
 
   const paymentMethod = watch('payment_method');
-  const direction = watch('direction');
   const fieldError = (name: keyof CreateGlPaymentFormValues) =>
     errors[name]?.message as string | undefined;
-  const showDemo = mode === 'create' && import.meta.env.DEV;
 
   const uuidSelect = {
     setValueAs: (v: unknown) => {
@@ -110,27 +106,8 @@ export function GlPaymentForm({
       )}
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <CardHeader>
           <CardTitle>Payment details</CardTitle>
-          {showDemo && (
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => {
-                const demo =
-                  direction === 'PAYMENT' ? GL_PAYMENT_DEMO_VENDOR : GL_PAYMENT_DEMO_CREATE;
-                reset({
-                  ...GL_PAYMENT_FORM_DEFAULTS,
-                  ...demo,
-                  ...defaultValues,
-                  direction: direction ?? demo.direction,
-                  party_id: parties[0]?.id || demo.party_id || '',
-                });
-              }}
-            >
-              Demo data
-            </Button>
-          )}
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">

@@ -15,7 +15,6 @@ export default function ManagementReportsMisPage() {
   const [branchId, setBranchId] = useState('');
   const [search, setSearch] = useState('');
   const [groupBy, setGroupBy] = useState<'customer' | 'job_type' | 'branch' | 'salesperson'>('customer');
-  const [submitted, setSubmitted] = useState(false);
 
   const { data: branches = [] } = useMasterOptions('branches', MASTER_PATHS.branches, true);
 
@@ -27,7 +26,7 @@ export default function ManagementReportsMisPage() {
     }),
     [fromDate, toDate, branchId],
   );
-  const query = useManagementProfitability(params, groupBy, submitted);
+  const query = useManagementProfitability(params, groupBy, true);
   const rawRows = useMemo(() => normalizeReportRows(query.data), [query.data]);
   const filteredRows = useMemo(() => filterRowsBySearch(rawRows, search), [rawRows, search]);
   const pageSize = Number(rows) || 10;
@@ -126,22 +125,15 @@ export default function ManagementReportsMisPage() {
           </div>
           <button
             type="button"
-            onClick={() => {
-              setSubmitted(true);
-              if (submitted) void query.refetch();
-            }}
+            onClick={() => void query.refetch()}
             className="bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity"
           >
-            Submit
+            Refresh
           </button>
         </div>
 
         <div className="min-h-56">
-          {!submitted ? (
-            <div className="flex items-center justify-center h-56">
-              <Search size={40} className="text-gray-300" />
-            </div>
-          ) : query.isLoading ? (
+          {query.isLoading || query.isFetching ? (
             <div className="flex items-center justify-center h-56 text-sm text-gray-400">Loading…</div>
           ) : query.isError ? (
             <div className="flex items-center justify-center h-56 px-5 text-sm text-red-600 text-center">

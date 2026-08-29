@@ -21,7 +21,6 @@ export default function ComplaintsPage() {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [search, setSearch] = useState('');
-  const [submitted, setSubmitted] = useState(false);
   const query = useManagementComplaints(status === 'All' ? undefined : status);
 
   const applyPreset = (preset: DateRangePreset) => {
@@ -46,7 +45,7 @@ export default function ComplaintsPage() {
     if (fromDate || toDate) {
       list = list.filter((x) => isWithinDateRange(x.createdAt, fromDate, toDate));
     }
-    if (submitted && search.trim()) {
+    if (search.trim()) {
       const q = search.trim().toLowerCase();
       list = list.filter(
         (x) =>
@@ -57,7 +56,7 @@ export default function ComplaintsPage() {
       );
     }
     return list;
-  }, [query.data, category, fromDate, toDate, search, submitted]);
+  }, [query.data, category, fromDate, toDate, search]);
 
   const pageSize = Number(rows) || 5;
   const pageItems = items.slice(0, pageSize);
@@ -161,7 +160,6 @@ export default function ComplaintsPage() {
             />
             <button
               type="button"
-              onClick={() => setSubmitted(true)}
               className="bg-gray-100 border border-gray-300 hover:bg-gray-200 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors"
             >
               Search
@@ -188,12 +186,11 @@ export default function ComplaintsPage() {
               type="button"
               onClick={() => {
                 if (!fromDate && !toDate && datePreset !== 'custom') applyPreset(datePreset);
-                setSubmitted(true);
                 void query.refetch();
               }}
               className="bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity"
             >
-              Submit
+              Refresh
             </button>
             <button type="button" className="text-gray-400 hover:text-gray-600 p-1">
               <Maximize2 size={16} />
@@ -208,9 +205,10 @@ export default function ComplaintsPage() {
             <div className="flex items-center justify-center h-56 px-5 text-sm text-red-600 text-center">
               {getErrorMessage(query.error, 'Could not load complaints.')}
             </div>
-          ) : !submitted || pageItems.length === 0 ? (
-            <div className="flex items-center justify-center h-56">
+          ) : pageItems.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-56 gap-2">
               <Search size={40} className="text-gray-300" />
+              <p className="text-sm text-gray-500">No complaints match the current filters.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
