@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ReportsPageBackLink } from '@/features/reports/components/ReportsPageBackLink';
 import { Search, ChevronDown, Heart, Users, BarChart2, ClipboardList, PieChart as PieChartIcon, Headphones, FileText, DollarSign, CreditCard, RotateCw, ListChecks } from 'lucide-react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -46,7 +46,7 @@ const filterSelectClass =
   'w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F] bg-white';
 
 export default function ManagementDashboardReportsPage() {
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(true);
   const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
@@ -117,6 +117,11 @@ export default function ManagementDashboardReportsPage() {
       setToDate(range.to_date);
     }
   };
+
+  useEffect(() => {
+    applyPreset('this_month');
+    setSubmitted(true);
+  }, []);
 
   return (
     <div className="space-y-3">
@@ -361,8 +366,8 @@ export default function ManagementDashboardReportsPage() {
 
         {/* Note */}
         <div className="px-5 py-2.5 border-b border-gray-200">
-          <p className="text-xs text-red-600 italic font-medium">
-            Note: After click the submit button disabled buttons will enable
+          <p className="text-xs text-gray-500 italic">
+            Select a report below to load live data for the chosen filters.
           </p>
         </div>
 

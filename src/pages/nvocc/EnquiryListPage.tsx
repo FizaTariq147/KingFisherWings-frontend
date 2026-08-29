@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Wand2, Heart } from 'lucide-react';
 import { FilterField, SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
-import { NVOCC_ENQUIRY_STATUSES, NVOCC_PAGE_SIZE, nvoccLabel } from '@/features/nvocc/constants/nvocc.constants';
+import { NVOCC_ENQUIRY_STATUSES, nvoccLabel } from '@/features/nvocc/constants/nvocc.constants';
 import type { NvoccEnquiryStatus } from '@/features/nvocc/constants/nvocc.constants';
 import { useNvoccEnquiries } from '@/features/nvocc/hooks/useNvocc';
 import { NvoccListState, NvoccStatusBadge, nvoccTdClass, nvoccThClass } from '@/features/nvocc/components/NvoccUi';
@@ -11,8 +11,8 @@ import { formatNvoccDate, nvoccDisplayNumber } from '@/features/nvocc/utils/norm
 import type { NvoccEnquiryListParams } from '@/features/nvocc/types/nvocc.types';
 
 export default function EnquiryListPage() {
-  const [draft, setDraft] = useState<NvoccEnquiryListParams>({ limit: NVOCC_PAGE_SIZE });
-  const [applied, setApplied] = useState<NvoccEnquiryListParams>({ limit: NVOCC_PAGE_SIZE });
+  const [draft, setDraft] = useState<NvoccEnquiryListParams>({});
+  const [applied, setApplied] = useState<NvoccEnquiryListParams>({});
   const query = useNvoccEnquiries(applied);
   const rows = useMemo(() => query.data?.items ?? [], [query.data?.items]);
 
@@ -77,7 +77,7 @@ export default function EnquiryListPage() {
           <div className="text-sm text-gray-500">{query.data?.meta.total ?? 0} enquiry(ies)</div>
           <button
             type="button"
-            onClick={() => setApplied({ ...draft, limit: NVOCC_PAGE_SIZE })}
+            onClick={() => setApplied({ ...draft })}
             className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity"
           >
             <span className="text-[#FF751F]">➜</span>

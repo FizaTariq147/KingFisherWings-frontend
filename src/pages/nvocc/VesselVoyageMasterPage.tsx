@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Heart, Plus } from 'lucide-react';
 import { SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
-import { NVOCC_PAGE_SIZE, NVOCC_VOYAGE_STATUSES, nvoccLabel } from '@/features/nvocc/constants/nvocc.constants';
+import { NVOCC_VOYAGE_STATUSES, nvoccLabel } from '@/features/nvocc/constants/nvocc.constants';
 import type { NvoccVoyageStatus } from '@/features/nvocc/constants/nvocc.constants';
 import { useNvoccVoyages } from '@/features/nvocc/hooks/useNvocc';
 import { NvoccListState, NvoccStatusBadge, nvoccTdClass, nvoccThClass } from '@/features/nvocc/components/NvoccUi';
@@ -11,8 +11,8 @@ import { formatNvoccDate, nvoccDisplayNumber } from '@/features/nvocc/utils/norm
 import type { NvoccVoyageListParams } from '@/features/nvocc/types/nvocc.types';
 
 export default function VesselVoyageMasterPage() {
-  const [draft, setDraft] = useState<NvoccVoyageListParams>({ limit: NVOCC_PAGE_SIZE });
-  const [applied, setApplied] = useState<NvoccVoyageListParams>({ limit: NVOCC_PAGE_SIZE });
+  const [draft, setDraft] = useState<NvoccVoyageListParams>({});
+  const [applied, setApplied] = useState<NvoccVoyageListParams>({});
   const query = useNvoccVoyages(applied);
   const rows = useMemo(() => query.data?.items ?? [], [query.data?.items]);
 
@@ -81,7 +81,7 @@ export default function VesselVoyageMasterPage() {
           <div className="text-sm text-gray-500">{query.data?.meta.total ?? 0} voyage(s)</div>
           <button
             type="button"
-            onClick={() => setApplied({ ...draft, limit: NVOCC_PAGE_SIZE })}
+            onClick={() => setApplied({ ...draft })}
             className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity"
           >
             <span className="text-[#FF751F]">➜</span>

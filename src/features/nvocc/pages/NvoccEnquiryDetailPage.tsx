@@ -1,10 +1,19 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
+import { FieldError } from '@/components/ui/FieldError/FieldError';
+import { TextInput } from '@/components/widgets/FilterField';
+import { NvoccFormField } from '@/features/nvocc/components/NvoccFormField';
 import { NvoccListState, NvoccStatusBadge } from '@/features/nvocc/components/NvoccUi';
 import { useNvoccEnquiry, useNvoccEnquiryActions } from '@/features/nvocc/hooks/useNvocc';
+import {
+  markNvoccEnquiryLostFormSchema,
+  sendNvoccRateFormSchema,
+} from '@/features/nvocc/schemas/nvocc.schema';
 import { formatNvoccDate, nvoccDisplayNumber } from '@/features/nvocc/utils/normalizeNvocc';
 import { extractAxiosErrorDetail } from '@/lib/extractAxiosErrorDetail';
+import { useInlineValidation } from '@/lib/validation';
 
 function Field({ label, value }: { label: string; value?: string | number | null }) {
   return (
@@ -21,6 +30,13 @@ export default function NvoccEnquiryDetailPage() {
   const query = useNvoccEnquiry(id);
   const actions = useNvoccEnquiryActions(id);
   const enquiry = query.data;
+
+  const [showRateForm, setShowRateForm] = useState(false);
+  const [showLostForm, setShowLostForm] = useState(false);
+  const [rateForm, setRateForm] = useState({ to_email: '', cc_email: '', subject: '', message: '' });
+  const [lossReason, setLossReason] = useState('');
+  const rateValidation = useInlineValidation();
+  const lostValidation = useInlineValidation();
 
   const run = async (fn: () => Promise<unknown>) => {
     try {
@@ -55,30 +71,65 @@ export default function NvoccEnquiryDetailPage() {
               >
                 Convert to booking
               </Button>
-              <Button
-                variant="secondary"
-                disabled={actions.sendRate.isPending}
-                onClick={() => {
-                  const to_email = window.prompt('Send rate to email:');
-                  if (!to_email) return;
-                  run(() => actions.sendRate.mutateAsync({ to_email }));
-                }}
-              >
+              <Button variant="secondary" onClick={() => { setShowRateForm((v) => !v); setShowLostForm(false); }}>
                 Send rate
               </Button>
-              <Button
-                variant="secondary"
-                disabled={actions.markLost.isPending}
-                onClick={() => {
-                  const loss_reason = window.prompt('Loss reason:');
-                  if (!loss_reason) return;
-                  run(() => actions.markLost.mutateAsync({ loss_reason }));
-                }}
-              >
+              <Button variant="secondary" onClick={() => { setShowLostForm((v) => !v); setShowRateForm(false); }}>
                 Mark lost
               </Button>
             </div>
           </div>
+
+          {showRateForm && (
+            <form
+              className="space-y-3 rounded-md border border-gray-200 bg-white p-4"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                rateValidation.clearErrors();
+                await rateValidation.runValidated(sendNvoccRateFormSchema, rateForm, async (parsed) => {
+                  await actions.sendRate.mutateAsync(parsed);
+                  setShowRateForm(false);
+                });
+              }}
+            >
+              <h2 className="text-sm font-semibold text-gray-800">Send rate email</h2>
+              <NvoccFormField label="To email" required error={rateValidation.fieldError('to_email')}>
+                <TextInput value={rateForm.to_email} onChange={(e) => setRateForm((p) => ({ ...p, to_email: e.target.value }))} placeholder="customer@example.com" />
+              </NvoccFormField>
+              <NvoccFormField label="CC email" error={rateValidation.fieldError('cc_email')}>
+                <TextInput value={rateForm.cc_email} onChange={(e) => setRateForm((p) => ({ ...p, cc_email: e.target.value }))} />
+              </NvoccFormField>
+              <NvoccFormField label="Subject" error={rateValidation.fieldError('subject')}>
+                <TextInput value={rateForm.subject} onChange={(e) => setRateForm((p) => ({ ...p, subject: e.target.value }))} />
+              </NvoccFormField>
+              <NvoccFormField label="Message" error={rateValidation.fieldError('message')}>
+                <TextInput value={rateForm.message} onChange={(e) => setRateForm((p) => ({ ...p, message: e.target.value }))} />
+              </NvoccFormField>
+              <FieldError message={rateValidation.formError} />
+              <Button type="submit" disabled={actions.sendRate.isPending}>Send</Button>
+            </form>
+          )}
+
+          {showLostForm && (
+            <form
+              className="space-y-3 rounded-md border border-gray-200 bg-white p-4"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                lostValidation.clearErrors();
+                await lostValidation.runValidated(markNvoccEnquiryLostFormSchema, { loss_reason: lossReason }, async (parsed) => {
+                  await actions.markLost.mutateAsync(parsed);
+                  setShowLostForm(false);
+                });
+              }}
+            >
+              <h2 className="text-sm font-semibold text-gray-800">Mark enquiry lost</h2>
+              <NvoccFormField label="Loss reason" required error={lostValidation.fieldError('loss_reason')}>
+                <TextInput value={lossReason} onChange={(e) => setLossReason(e.target.value)} placeholder="e.g. Price too high" />
+              </NvoccFormField>
+              <FieldError message={lostValidation.formError} />
+              <Button type="submit" variant="secondary" disabled={actions.markLost.isPending}>Mark lost</Button>
+            </form>
+          )}
 
           <dl className="grid gap-4 rounded-md border border-gray-200 bg-white p-5 sm:grid-cols-2 lg:grid-cols-3">
             <Field label="Customer" value={enquiry.customer_name ?? enquiry.customer_id} />

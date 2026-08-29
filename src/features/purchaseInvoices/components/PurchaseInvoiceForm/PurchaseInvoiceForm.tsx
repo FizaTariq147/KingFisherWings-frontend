@@ -20,7 +20,6 @@ import type {
   CreatePurchaseInvoiceFormValues,
   UpdatePurchaseInvoiceFormValues,
 } from '../../types/purchaseInvoice.types';
-import { buildPurchaseInvoiceDemoValues } from '../../utils/purchaseInvoiceDemoData';
 import { PURCHASE_INVOICE_FORM_DEFAULTS } from '../../utils/purchaseInvoiceToFormValues';
 
 const selectClass =
@@ -79,7 +78,6 @@ export function PurchaseInvoiceForm({
     register,
     control,
     handleValidatedSubmit,
-    reset,
     applyApiErrors,
     formState: { errors, isSubmitted, isValid },
   } = useAppForm<CreatePurchaseInvoiceFormValues>({
@@ -102,23 +100,6 @@ export function PurchaseInvoiceForm({
       const s = String(v).trim();
       return s && isUuid(s) ? s : undefined;
     },
-  };
-
-  const fillDemo = () => {
-    const partyId = parties[0]?.id;
-    if (!partyId) return;
-    const companyId = companies.find((c) => isUuid(String(c.id)))?.id;
-    const branchId = branches.find((b) => isUuid(String(b.id)))?.id;
-    const departmentId = departments.find((d) => isUuid(String(d.id)))?.id;
-    reset(
-      buildPurchaseInvoiceDemoValues({
-        partyId,
-        currencyCode: String(currencies[0]?.value ?? 'AED'),
-        companyId: companyId ? String(companyId) : undefined,
-        branchId: branchId ? String(branchId) : undefined,
-        departmentId: departmentId ? String(departmentId) : undefined,
-      }),
-    );
   };
 
   return (
@@ -149,13 +130,8 @@ export function PurchaseInvoiceForm({
       )}
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <CardHeader>
           <CardTitle>Purchase invoice header</CardTitle>
-          {mode === 'create' && (
-            <Button type="button" variant="secondary" onClick={fillDemo} disabled={!parties[0]}>
-              Demo data
-            </Button>
-          )}
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1 sm:col-span-2">

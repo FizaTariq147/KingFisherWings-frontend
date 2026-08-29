@@ -10,7 +10,6 @@ import { invoiceDisplayNumber } from '@/features/invoices/utils/normalizeInvoice
 import { useInvoices } from '@/features/invoices/hooks/useInvoices';
 import { createCreditNoteSchema } from '../../schemas/creditNote.schema';
 import type { CreateCreditNoteFormValues } from '../../types/creditNote.types';
-import { buildCreditNoteDemoValues } from '../../utils/creditNoteDemoData';
 
 const selectClass =
   'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]';
@@ -79,7 +78,6 @@ export function CreditNoteForm({
     register,
     control,
     handleValidatedSubmit,
-    reset,
     applyApiErrors,
     formState: { errors, isSubmitted, isValid },
   } = useAppForm<CreateCreditNoteFormValues>({
@@ -95,12 +93,6 @@ export function CreditNoteForm({
 
   const fieldError = (name: keyof CreateCreditNoteFormValues) =>
     errors[name]?.message as string | undefined;
-
-  const fillDemo = () => {
-    const creditedInvoiceId = invoiceOptions[0]?.id;
-    if (!creditedInvoiceId) return;
-    reset(buildCreditNoteDemoValues({ creditedInvoiceId }));
-  };
 
   return (
     <form
@@ -130,11 +122,8 @@ export function CreditNoteForm({
       )}
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <CardHeader>
           <CardTitle>Credit note</CardTitle>
-          <Button type="button" variant="secondary" onClick={fillDemo} disabled={!invoiceOptions[0]}>
-            Demo data
-          </Button>
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1 sm:col-span-2">

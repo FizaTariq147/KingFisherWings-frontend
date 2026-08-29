@@ -1,4 +1,5 @@
 import { extractAxiosErrorDetail } from '@/lib/extractAxiosErrorDetail';
+import { formatNvoccPermissionError } from './nvoccPermissions';
 import type { PaginationMeta } from '../types/nvocc.types';
 
 export function asRecord(value: unknown): Record<string, unknown> | null {
@@ -39,22 +40,29 @@ export function normalizeMeta(
   params: { page?: number; limit?: number },
 ): PaginationMeta {
   const record = asRecord(raw);
-  const page = Number(record?.page ?? params.page ?? 1) || 1;
-  const limit = Number(record?.limit ?? params.limit ?? 20) || 20;
   const total = Number(record?.total ?? record?.total_count ?? count) || count;
+  const limit = Number(record?.limit ?? params.limit ?? count) || count || 20;
+  const page = Number(record?.page ?? params.page ?? 1) || 1;
   const totalPages =
     Number(record?.totalPages ?? record?.total_pages) || Math.max(1, Math.ceil(total / limit));
   return { page, limit, total, totalPages };
 }
 
-export function formatNvoccError(error: unknown): Error {
-  return new Error(extractAxiosErrorDetail(error));
+export function formatNvoccError(error: unknown, opts?: { isTenantAdmin?: boolean }): Error {
+  const detail = extractAxiosErrorDetail(error);
+  return new Error(formatNvoccPermissionError(detail, opts));
 }
 
 export function queryParams(params: object) {
   return Object.fromEntries(
     Object.entries(params).filter(([, value]) => value !== '' && value !== undefined && value !== null),
   );
+}
+
+/** NVOCC list endpoints reject page/limit — only send Swagger-documented filters. */
+export function nvoccListQueryParams(params: object) {
+  const { page: _page, limit: _limit, ...rest } = params as Record<string, unknown>;
+  return queryParams(rest);
 }
 
 export function str(value: unknown): string | undefined {

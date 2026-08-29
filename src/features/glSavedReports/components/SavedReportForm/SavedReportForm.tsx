@@ -15,10 +15,6 @@ import type {
   CreateSavedReportFormValues,
   UpdateSavedReportFormValues,
 } from '../../types/savedReport.types';
-import {
-  SAVED_REPORT_DEMO_AR_AGING,
-  SAVED_REPORT_DEMO_PL,
-} from '../../utils/savedReportDemoData';
 import { SAVED_REPORT_FORM_DEFAULTS } from '../../utils/savedReportToFormValues';
 
 const selectClass =
@@ -70,7 +66,6 @@ export function SavedReportForm({
     control,
     watch,
     setValue,
-    reset,
     handleValidatedSubmit,
     formState: { errors, isSubmitted, isValid },
   } = useAppForm<CreateSavedReportFormValues>({
@@ -82,7 +77,6 @@ export function SavedReportForm({
   const filtersJson = filtersToJson(watch('filters'));
   const fieldError = (name: keyof CreateSavedReportFormValues) =>
     errors[name]?.message as string | undefined;
-  const showDemo = mode === 'create' && import.meta.env.DEV;
 
   const uuidSelect = {
     setValueAs: (v: unknown) => {
@@ -117,38 +111,8 @@ export function SavedReportForm({
       )}
 
       <Card>
-        <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
+        <CardHeader>
           <CardTitle>Saved report configuration</CardTitle>
-          {showDemo && (
-            <div className="flex flex-wrap gap-2">
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() =>
-                  reset({
-                    ...SAVED_REPORT_FORM_DEFAULTS,
-                    ...SAVED_REPORT_DEMO_PL,
-                    ...defaultValues,
-                  })
-                }
-              >
-                Demo P&L
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() =>
-                  reset({
-                    ...SAVED_REPORT_FORM_DEFAULTS,
-                    ...SAVED_REPORT_DEMO_AR_AGING,
-                    ...defaultValues,
-                  })
-                }
-              >
-                Demo AR Aging
-              </Button>
-            </div>
-          )}
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <Input label="Name *" error={fieldError('name')} {...register('name')} />

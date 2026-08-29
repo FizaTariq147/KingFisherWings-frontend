@@ -14,6 +14,9 @@ export type PermissionKey =
   | 'menu_masters'
   | 'menu_reports'
   | 'menu_settings'
+  // NVOCC action permissions (backend Guards)
+  | 'nvocc.read'
+  | 'nvocc.manage'
   // GL action permissions (backend Guards)
   | 'gl.manage_coa'
   | 'gl.view_coa'

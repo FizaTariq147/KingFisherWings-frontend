@@ -22,7 +22,6 @@ import type {
   CreateChartOfAccountFormValues,
   UpdateChartOfAccountFormValues,
 } from '../../types/chartOfAccount.types';
-import { CHART_OF_ACCOUNT_DEMO_CREATE } from '../../utils/chartOfAccountDemoData';
 import { CHART_OF_ACCOUNT_FORM_DEFAULTS } from '../../utils/chartOfAccountToFormValues';
 import { chartOfAccountDisplayLabel } from '../../utils/normalizeChartOfAccount';
 
@@ -59,7 +58,6 @@ export function ChartOfAccountForm({
   const {
     register,
     control,
-    reset,
     handleValidatedSubmit,
     formState: { errors, isSubmitted, isValid },
   } = useAppForm<CreateChartOfAccountFormValues>({
@@ -71,7 +69,6 @@ export function ChartOfAccountForm({
     errors[name]?.message as string | undefined;
 
   const showFormErrors = isSubmitted && !isValid;
-  const showDemo = mode === 'create' && import.meta.env.DEV;
 
   return (
     <form
@@ -96,23 +93,8 @@ export function ChartOfAccountForm({
       )}
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <CardHeader>
           <CardTitle>Identity</CardTitle>
-          {showDemo && (
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() =>
-                reset({
-                  ...CHART_OF_ACCOUNT_FORM_DEFAULTS,
-                  ...CHART_OF_ACCOUNT_DEMO_CREATE,
-                  ...defaultValues,
-                })
-              }
-            >
-              Demo data
-            </Button>
-          )}
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <Input

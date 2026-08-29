@@ -14,7 +14,7 @@ export default function LoadListPage() {
   const [voyageId, setVoyageId] = useState('');
   const [appliedVoyageId, setAppliedVoyageId] = useState('');
 
-  const voyagesQuery = useNvoccVoyages({ limit: 100 });
+  const voyagesQuery = useNvoccVoyages({});
   const loadListQuery = useNvoccLoadList(appliedVoyageId, { enabled: Boolean(appliedVoyageId) });
 
   const voyageOptions = useMemo(() => {

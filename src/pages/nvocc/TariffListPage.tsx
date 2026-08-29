@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Heart, Plus } from 'lucide-react';
 import { SelectInput, TextInput } from '../../components/widgets/FilterField';
-import { NVOCC_PAGE_SIZE, NVOCC_TARIFF_STATUSES, nvoccLabel } from '@/features/nvocc/constants/nvocc.constants';
+import { NVOCC_TARIFF_STATUSES, nvoccLabel } from '@/features/nvocc/constants/nvocc.constants';
 import type { NvoccTariffStatus } from '@/features/nvocc/constants/nvocc.constants';
 import { useNvoccTariffs } from '@/features/nvocc/hooks/useNvocc';
 import { NvoccListState, NvoccStatusBadge, nvoccTdClass, nvoccThClass } from '@/features/nvocc/components/NvoccUi';
@@ -11,8 +11,8 @@ import { formatNvoccDate, nvoccDisplayNumber } from '@/features/nvocc/utils/norm
 import type { NvoccTariffListParams } from '@/features/nvocc/types/nvocc.types';
 
 export default function TariffListPage() {
-  const [draft, setDraft] = useState<NvoccTariffListParams>({ limit: NVOCC_PAGE_SIZE });
-  const [applied, setApplied] = useState<NvoccTariffListParams>({ limit: NVOCC_PAGE_SIZE });
+  const [draft, setDraft] = useState<NvoccTariffListParams>({});
+  const [applied, setApplied] = useState<NvoccTariffListParams>({});
   const query = useNvoccTariffs(applied);
 
   const rows = useMemo(() => query.data?.items ?? [], [query.data?.items]);
@@ -62,7 +62,7 @@ export default function TariffListPage() {
           </div>
           <button
             type="button"
-            onClick={() => setApplied({ ...draft, limit: NVOCC_PAGE_SIZE })}
+            onClick={() => setApplied({ ...draft })}
             className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity"
           >
             <span className="text-[#FF751F]">➜</span>

@@ -15,7 +15,6 @@ import {
 } from '../../constants/cheque.constants';
 import { createChequeSchema, updateChequeSchema } from '../../schemas/cheque.schema';
 import type { CreateChequeFormValues, UpdateChequeFormValues } from '../../types/cheque.types';
-import { CHEQUE_DEMO_PAYABLE, CHEQUE_DEMO_RECEIVABLE_PDC } from '../../utils/chequeDemoData';
 import { CHEQUE_FORM_DEFAULTS } from '../../utils/chequeToFormValues';
 
 const selectClass =
@@ -53,7 +52,6 @@ export function ChequeForm({
     register,
     control,
     watch,
-    reset,
     handleValidatedSubmit,
     formState: { errors, isSubmitted, isValid },
   } = useAppForm<CreateChequeFormValues>({
@@ -63,10 +61,8 @@ export function ChequeForm({
   });
 
   const isPdc = watch('is_pdc');
-  const chequeType = watch('cheque_type');
   const fieldError = (name: keyof CreateChequeFormValues) =>
     errors[name]?.message as string | undefined;
-  const showDemo = mode === 'create' && import.meta.env.DEV;
 
   const uuidSelect = {
     setValueAs: (v: unknown) => {
@@ -101,27 +97,8 @@ export function ChequeForm({
       )}
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <CardHeader>
           <CardTitle>Cheque / PDC details</CardTitle>
-          {showDemo && (
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => {
-                const demo =
-                  chequeType === 'PAYABLE' ? CHEQUE_DEMO_PAYABLE : CHEQUE_DEMO_RECEIVABLE_PDC;
-                reset({
-                  ...CHEQUE_FORM_DEFAULTS,
-                  ...demo,
-                  ...defaultValues,
-                  cheque_type: chequeType ?? demo.cheque_type,
-                  party_id: parties[0]?.id || demo.party_id || '',
-                });
-              }}
-            >
-              Demo data
-            </Button>
-          )}
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <Input

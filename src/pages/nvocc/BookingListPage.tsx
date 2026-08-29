@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Heart } from 'lucide-react';
 import { FilterField, SelectInput, TextInput } from '../../components/widgets/FilterField';
-import { NVOCC_CARGO_TYPES, NVOCC_PAGE_SIZE } from '@/features/nvocc/constants/nvocc.constants';
+import { NVOCC_CARGO_TYPES } from '@/features/nvocc/constants/nvocc.constants';
 import { useNvoccBookings } from '@/features/nvocc/hooks/useNvocc';
 import { NvoccListState, NvoccStatusBadge, nvoccTdClass, nvoccThClass } from '@/features/nvocc/components/NvoccUi';
 import { nvoccDisplayNumber } from '@/features/nvocc/utils/normalizeNvocc';
@@ -11,8 +11,8 @@ import type { NvoccBookingListParams } from '@/features/nvocc/types/nvocc.types'
 import type { NvoccCargoType } from '@/features/nvocc/constants/nvocc.constants';
 
 export default function BookingListPage() {
-  const [draft, setDraft] = useState<NvoccBookingListParams>({ limit: NVOCC_PAGE_SIZE });
-  const [applied, setApplied] = useState<NvoccBookingListParams>({ limit: NVOCC_PAGE_SIZE });
+  const [draft, setDraft] = useState<NvoccBookingListParams>({});
+  const [applied, setApplied] = useState<NvoccBookingListParams>({});
   const query = useNvoccBookings(applied);
   const rows = useMemo(() => query.data?.items ?? [], [query.data?.items]);
 
@@ -77,7 +77,7 @@ export default function BookingListPage() {
           <div className="text-sm text-gray-500">{query.data?.meta.total ?? 0} booking(s)</div>
           <button
             type="button"
-            onClick={() => setApplied({ ...draft, limit: NVOCC_PAGE_SIZE })}
+            onClick={() => setApplied({ ...draft })}
             className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity"
           >
             <span className="text-[#FF751F]">➜</span>

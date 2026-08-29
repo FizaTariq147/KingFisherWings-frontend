@@ -122,7 +122,7 @@ export default function TenantDetailPage() {
       onClick: () =>
         runAction(
           () => syncPermissions.mutateAsync(id!),
-          'Permissions synced. Have the Tenant Admin sign out and sign back in so new keys (e.g. portal.manage_users, gl.manage_coa) appear in their token.',
+          'Permissions synced. Have the Tenant Admin sign out and sign back in so new keys (e.g. portal.manage_users, gl.manage_coa, nvocc.manage) appear in their token.',
         ),
       variant: 'secondary' as const,
     },

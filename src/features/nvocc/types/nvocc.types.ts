@@ -157,8 +157,6 @@ export interface NvoccLoadListItem {
 export interface NvoccTariffListParams {
   status?: NvoccTariffStatus;
   search?: string;
-  page?: number;
-  limit?: number;
 }
 
 export interface NvoccVoyageListParams {
@@ -169,8 +167,6 @@ export interface NvoccVoyageListParams {
   etd_from?: string;
   etd_to?: string;
   search?: string;
-  page?: number;
-  limit?: number;
 }
 
 export interface NvoccEnquiryListParams {
@@ -180,8 +176,6 @@ export interface NvoccEnquiryListParams {
   salesperson_id?: string;
   date_from?: string;
   date_to?: string;
-  page?: number;
-  limit?: number;
 }
 
 export interface NvoccBookingListParams {
@@ -190,8 +184,6 @@ export interface NvoccBookingListParams {
   cargo_type?: NvoccCargoType;
   booking_status?: string;
   search?: string;
-  page?: number;
-  limit?: number;
 }
 
 export interface CreateNvoccTariffDto {

@@ -19,7 +19,6 @@ import type {
   CreateVoucherFormValues,
   UpdateVoucherFormValues,
 } from '../../types/voucher.types';
-import { buildVoucherDemoValues } from '../../utils/voucherDemoData';
 import { VOUCHER_FORM_DEFAULTS } from '../../utils/voucherToFormValues';
 
 const selectClass =
@@ -54,7 +53,6 @@ export function VoucherForm({
   const {
     register,
     control,
-    reset,
     handleValidatedSubmit,
     formState: { errors, isSubmitted, isValid },
   } = useAppForm<CreateVoucherFormValues>({
@@ -70,7 +68,6 @@ export function VoucherForm({
 
   const fieldError = (name: keyof CreateVoucherFormValues) =>
     errors[name]?.message as string | undefined;
-  const showDemo = mode === 'create' && import.meta.env.DEV;
 
   const uuidSelect = {
     setValueAs: (v: unknown) => {
@@ -112,28 +109,8 @@ export function VoucherForm({
       )}
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <CardHeader>
           <CardTitle>Voucher header</CardTitle>
-          {showDemo && (
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => {
-                const demo = buildVoucherDemoValues(
-                  accounts[0]?.id,
-                  accounts[1]?.id ?? accounts[0]?.id,
-                );
-                reset({
-                  ...VOUCHER_FORM_DEFAULTS,
-                  ...demo,
-                  ...defaultValues,
-                  lines: demo.lines ?? [],
-                });
-              }}
-            >
-              Demo data
-            </Button>
-          )}
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">

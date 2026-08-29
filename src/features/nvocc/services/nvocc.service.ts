@@ -40,6 +40,7 @@ import {
 import {
   formatNvoccError,
   normalizeMeta,
+  nvoccListQueryParams,
   prepareNvoccPayload,
   queryParams,
   unwrapEntity,
@@ -52,10 +53,10 @@ async function listResource<T>(
   normalizer: (raw: unknown) => T | null,
   listKeys: string[] = [],
 ): Promise<ListResult<T>> {
-  const res = await withGatewayRetry(() => axiosInstance.get(path, { params: queryParams(params) }));
+  const res = await withGatewayRetry(() => axiosInstance.get(path, { params: nvoccListQueryParams(params) }));
   const raw = unwrapList(res.data, listKeys);
   const items = normalizeMany(raw.items, normalizer);
-  return { items, meta: normalizeMeta(raw.meta, items.length, params as { page?: number; limit?: number }) };
+  return { items, meta: normalizeMeta(raw.meta, items.length, {}) };
 }
 
 async function getResource<T>(
