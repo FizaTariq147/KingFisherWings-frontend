@@ -62,7 +62,7 @@ export function ChartOfAccountTable({
           ) : (
             accounts.map((a) => (
               <TableRow key={a.id} className="cursor-pointer">
-                <TableCell mono className="font-medium">
+                <TableCell>
                   <button
                     type="button"
                     className="text-left underline-offset-2 hover:underline"
@@ -74,7 +74,7 @@ export function ChartOfAccountTable({
                 <TableCell>
                   <button
                     type="button"
-                    className="font-medium text-left"
+                    className="text-left"
                     onClick={() => onView(a)}
                   >
                     {a.account_name}
@@ -86,10 +86,8 @@ export function ChartOfAccountTable({
                   ) : null}
                 </TableCell>
                 <TableCell>{ACCOUNT_GROUP_LABELS[a.account_group] ?? a.account_group}</TableCell>
-                <TableCell className="text-sm">
-                  {ACCOUNT_TYPE_LABELS[a.account_type] ?? a.account_type}
-                </TableCell>
-                <TableCell className="text-xs text-[var(--color-neutral-500)]">
+                <TableCell>{ACCOUNT_TYPE_LABELS[a.account_type] ?? a.account_type}</TableCell>
+                <TableCell>
                   {[
                     a.is_header ? 'Header' : null,
                     a.is_postable !== false ? 'Postable' : 'Non-postable',

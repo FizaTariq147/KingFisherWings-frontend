@@ -72,8 +72,11 @@ function absoluteAssetUrl(url: string): string {
 function writeLoadingPreview(targetWindow: Window): void {
   try {
     targetWindow.document.title = 'Loading PDF…';
-    targetWindow.document.body.innerHTML =
-      '<p style="font-family:system-ui,sans-serif;padding:1.5rem;color:#555">Loading PDF…</p>';
+    targetWindow.document.body.replaceChildren();
+    const paragraph = targetWindow.document.createElement('p');
+    paragraph.style.cssText = 'font-family:system-ui,sans-serif;padding:1.5rem;color:#555';
+    paragraph.textContent = 'Loading PDF…';
+    targetWindow.document.body.append(paragraph);
   } catch {
     /* ignore */
   }
@@ -97,7 +100,9 @@ export function openPdfBlobInNewTab(
 ): void {
   const objectUrl = URL.createObjectURL(blob);
   const previewWindow =
-    targetWindow && !targetWindow.closed ? targetWindow : window.open(objectUrl, '_blank');
+    targetWindow && !targetWindow.closed
+      ? targetWindow
+      : window.open(objectUrl, '_blank', 'noopener,noreferrer');
   if (!previewWindow) {
     URL.revokeObjectURL(objectUrl);
     throw new Error('Pop-up blocked. Allow pop-ups to preview this file.');
@@ -109,19 +114,27 @@ export function openPdfBlobInNewTab(
   window.setTimeout(() => URL.revokeObjectURL(objectUrl), 300_000);
 }
 
+/** Fetch PDF bytes and apply header/footer overlay (no new tab). */
+export async function fetchBrandedPdfBlob(
+  url: string,
+  options?: PdfBrandingOptions,
+): Promise<Blob> {
+  const { ensureBrandedPdfBlob } = await import('./stampPdfBranding');
+  const response = await fetch(absoluteAssetUrl(url));
+  if (!response.ok) throw new Error('Could not load PDF.');
+  const blob = await response.blob();
+  return ensureBrandedPdfBlob(blob, options);
+}
+
 /** Fetch, apply header/footer overlay, and open the PDF. */
 export async function openBrandedPdfUrl(url: string, options?: PdfBrandingOptions): Promise<void> {
-  const preview = window.open('about:blank', '_blank');
+  const preview = window.open('about:blank', '_blank', 'noopener,noreferrer');
   if (!preview) {
     throw new Error('Pop-up blocked. Allow pop-ups to preview this file.');
   }
   writeLoadingPreview(preview);
 
-  const { ensureBrandedPdfBlob } = await import('./stampPdfBranding');
-  const response = await fetch(absoluteAssetUrl(url));
-  if (!response.ok) throw new Error('Could not load PDF.');
-  const blob = await response.blob();
-  const stamped = await ensureBrandedPdfBlob(blob, options);
+  const stamped = await fetchBrandedPdfBlob(url, options);
   openPdfBlobInNewTab(stamped, preview);
 }
 

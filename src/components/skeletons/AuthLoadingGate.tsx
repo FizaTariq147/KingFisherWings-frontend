@@ -23,6 +23,7 @@ export function AuthLoadingGate({ children }: AuthLoadingGateProps) {
   const accessToken = useAuthStore((s) => s.accessToken)
   const refreshToken = useAuthStore((s) => s.refreshToken)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const storeAuthenticated = isAuthenticated && Boolean(accessToken)
   const refreshAccessToken = useAuthStore((s) => s.refreshAccessToken)
   const clearSession = useAuthStore((s) => s.clearSession)
   const restoringRef = useRef(false)
@@ -57,8 +58,11 @@ export function AuthLoadingGate({ children }: AuthLoadingGateProps) {
     return <>{children}</>
   }
 
-  const waitingForMe = !!accessToken && !!authCtx?.isLoading
-  if (restoring || waitingForMe) {
+  const waitingForMe =
+    Boolean(accessToken) && (!authCtx?.user || Boolean(authCtx?.isLoading))
+  const waitingForStoreSession = storeAuthenticated && !accessToken
+
+  if (restoring || waitingForMe || waitingForStoreSession) {
     return (
       <>
         <AppMotionStyles />

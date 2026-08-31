@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { erpPostAuthPath } from '@/features/auth/utils/postLoginPath'
+import { stripSensitiveSearchParams } from '@/lib/stripSensitiveSearchParams'
 import { wakeApi } from '@/lib/wakeApi'
 import { AuthLandingShell } from '@/features/auth/components/AuthLandingShell'
 import { AcceptInvitePopup } from '@/features/auth/components/AcceptInvitePopup'
@@ -389,10 +390,19 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  const inviteToken = (searchParams.get('token') || searchParams.get('invite') || '').trim()
+  const [inviteToken] = useState(() => {
+    const params = new URLSearchParams(window.location.search)
+    return (params.get('token') || params.get('invite') || '').trim()
+  })
   const [loginOpen, setLoginOpen] = useState(() => searchParams.get('admin') === '1' && !inviteToken)
   const [inviteOpen, setInviteOpen] = useState(() => Boolean(inviteToken))
   const [inviteDone, setInviteDone] = useState(false)
+
+  useEffect(() => {
+    if (inviteToken) {
+      stripSensitiveSearchParams(searchParams, setSearchParams)
+    }
+  }, [inviteToken, searchParams, setSearchParams])
 
   useEffect(() => {
     if (isAuthenticated && !inviteToken) {

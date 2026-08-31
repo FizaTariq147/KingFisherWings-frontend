@@ -2,15 +2,14 @@ import { Download, ExternalLink } from 'lucide-react';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
+import { PdfViewerModal } from '@/features/files/components/PdfViewerModal';
 import { useFileDownload } from '@/features/files/hooks/useFileDownload';
-import { isPdfUrl, openBrandedPdfUrl, type PdfBrandingOptions } from '@/features/files/utils/pdfBranding';
+import { usePdfViewer } from '@/features/files/hooks/usePdfViewer';
+import { filesService } from '@/features/files/services/files.service';
+import { isPdfUrl, type PdfBrandingOptions } from '@/features/files/utils/pdfBranding';
 import { stripPdfExtension } from '@/features/files/utils/pdfFilename';
 import { isStoredFileUrl } from '@/features/files/utils/parseFilesApiUrl';
-import {
-  openBlobInNewTab,
-  triggerBrandedPdfDownload,
-} from '@/features/files/utils/triggerBlobDownload';
-import { openSafeHttpUrl } from '@/lib/safeHttpUrl';
+import { triggerBrandedPdfDownload } from '@/features/files/utils/triggerBlobDownload';
 
 export interface PdfReadyModalProps {
   open: boolean;
@@ -26,7 +25,7 @@ export interface PdfReadyModalProps {
 }
 
 /**
- * Shown after PDF generation succeeds — Download + Open in new tab.
+ * Shown after PDF generation succeeds — Download + Preview (inline, no pop-ups).
  */
 export function PdfReadyModal({
   open,
@@ -38,7 +37,8 @@ export function PdfReadyModal({
   description = 'Your PDF was created successfully.',
   branding,
 }: PdfReadyModalProps) {
-  const { openStoredFile, downloadStoredFile, isPending, error, clearError } = useFileDownload();
+  const { downloadStoredFile, isPending, error, clearError } = useFileDownload();
+  const viewer = usePdfViewer();
   const ready = Boolean(blob || url);
   const brandingOptions = {
     ...branding,
@@ -52,29 +52,20 @@ export function PdfReadyModal({
     if (open) clearError();
   }, [open, clearError]);
 
-  const handleOpen = () => {
+  const handlePreview = () => {
     if (blob) {
-      void openBlobInNewTab(blob, undefined, blobOptions).catch(() => undefined);
+      viewer.showBlob(blob, { fileName, title, branding: brandingOptions });
       return;
     }
     if (!url) return;
     if (url.startsWith('blob:')) {
-      window.open(url, '_blank', 'noopener,noreferrer');
+      viewer.showSrc(url, { fileName, title, branding: brandingOptions });
       return;
     }
-    if (isStoredFileUrl(url)) {
-      void openStoredFile(url, storedFileOptions).catch(() => undefined);
-      return;
-    }
-    if (isPdfUrl(url, fileName)) {
-      try {
-        void openBrandedPdfUrl(url, brandingOptions);
-      } catch {
-        openSafeHttpUrl(url);
-      }
-      return;
-    }
-    openSafeHttpUrl(url);
+    void viewer.loadPreview(
+      () => filesService.fetchStoredPdfBlob(url, storedFileOptions),
+      { fileName, title, branding: brandingOptions },
+    );
   };
 
   const handleDownload = () => {
@@ -93,11 +84,7 @@ export function PdfReadyModal({
       anchor.remove();
       return;
     }
-    if (isStoredFileUrl(url)) {
-      void downloadStoredFile(url, storedFileOptions).catch(() => undefined);
-      return;
-    }
-    if (isPdfUrl(url, fileName)) {
+    if (isStoredFileUrl(url) || isPdfUrl(url, fileName)) {
       void downloadStoredFile(url, storedFileOptions).catch(() => undefined);
       return;
     }
@@ -112,37 +99,51 @@ export function PdfReadyModal({
   };
 
   return (
-    <Modal open={open} onClose={onClose} title={ready ? title : 'Generating PDF'} size="sm" layer="nested">
-      <div className="space-y-4">
-        <p className="text-sm text-[var(--color-neutral-600)]">
-          {ready ? description : 'Please wait while the PDF is generated…'}
-        </p>
-
-        {error ? (
-          <p role="alert" className="text-sm text-[var(--color-danger-600)]">
-            {error}
+    <>
+      <Modal open={open} onClose={onClose} title={ready ? title : 'Generating PDF'} size="sm" layer="nested">
+        <div className="space-y-4">
+          <p className="text-sm text-[var(--color-neutral-600)]">
+            {ready ? description : 'Please wait while the PDF is generated…'}
           </p>
-        ) : null}
 
-        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Close
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={!ready || isPending}
-            onClick={handleDownload}
-          >
-            <Download size={16} aria-hidden="true" />
-            {isPending ? 'Working…' : 'Download'}
-          </Button>
-          <Button type="button" disabled={!ready || isPending} onClick={handleOpen}>
-            <ExternalLink size={16} aria-hidden="true" />
-            Open in new tab
-          </Button>
+          {error ? (
+            <p role="alert" className="text-sm text-[var(--color-danger-600)]">
+              {error}
+            </p>
+          ) : null}
+
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Button type="button" variant="secondary" onClick={onClose}>
+              Close
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={!ready || isPending}
+              onClick={handleDownload}
+            >
+              <Download size={16} aria-hidden="true" />
+              {isPending ? 'Working…' : 'Download'}
+            </Button>
+            <Button type="button" disabled={!ready || isPending} onClick={handlePreview}>
+              <ExternalLink size={16} aria-hidden="true" />
+              Preview PDF
+            </Button>
+          </div>
         </div>
-      </div>
-    </Modal>
+      </Modal>
+
+      <PdfViewerModal
+        open={viewer.open}
+        onClose={viewer.close}
+        src={viewer.src}
+        blob={viewer.blob}
+        fileName={viewer.fileName}
+        title={viewer.title}
+        loading={viewer.loading}
+        error={viewer.error}
+        branding={viewer.branding}
+      />
+    </>
   );
 }

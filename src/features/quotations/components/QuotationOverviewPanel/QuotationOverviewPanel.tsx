@@ -1,4 +1,5 @@
 import { JOB_TYPE_LABELS } from '../../constants/quotation.constants';
+import { useQuotationResolvedLabels } from '../../hooks/useQuotationResolvedLabels';
 import type { Quotation } from '../../types/quotation.types';
 import { formatQuotationRemarks } from '../../utils/formatQuotationRemarks';
 import { quotationDisplayNumber } from '../../utils/normalizeQuotation';
@@ -17,6 +18,8 @@ interface QuotationOverviewPanelProps {
 }
 
 export function QuotationOverviewPanel({ quotation: q }: QuotationOverviewPanelProps) {
+  const { customerLabel, originLabel, destinationLabel } = useQuotationResolvedLabels(q);
+
   const remarks = formatQuotationRemarks(q.remarks, {
     contactName: q.contact_name,
     createdByName: q.created_by_name,
@@ -42,7 +45,7 @@ export function QuotationOverviewPanel({ quotation: q }: QuotationOverviewPanelP
           Customer information
         </h3>
         <dl>
-          <Row label="Customer" value={q.customer_name || q.customer_id} />
+          <Row label="Customer" value={customerLabel} />
           <Row label="Contact" value={q.contact_name} />
           <Row label="Email" value={q.contact_email} />
           <Row label="Phone" value={q.contact_phone} />
@@ -55,19 +58,8 @@ export function QuotationOverviewPanel({ quotation: q }: QuotationOverviewPanelP
           Shipment information
         </h3>
         <dl>
-          <Row
-            label="Origin"
-            value={
-              [q.origin_port_code, q.origin_port_name].filter(Boolean).join(' — ') ||
-              q.origin_port_id
-            }
-          />
-          <Row
-            label="Destination"
-            value={
-              [q.dest_port_code, q.dest_port_name].filter(Boolean).join(' — ') || q.dest_port_id
-            }
-          />
+          <Row label="Origin" value={originLabel} />
+          <Row label="Destination" value={destinationLabel} />
           <Row label="Incoterm" value={q.incoterm} />
           <Row label="Commodity" value={q.commodity} />
           <Row label="HS code" value={q.hs_code} />

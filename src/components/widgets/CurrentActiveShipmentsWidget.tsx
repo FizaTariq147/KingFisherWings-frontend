@@ -74,7 +74,7 @@ export function CurrentActiveShipmentsWidget() {
             const path = jobDetailPath(job);
             return (
               <TableRow key={job.id}>
-                <TableCell mono className="text-[var(--color-primary)]">
+                <TableCell className="text-[var(--color-primary)]">
                   <Link
                     to={path}
                     className="hover:underline focus:outline-none focus:underline"
@@ -85,7 +85,7 @@ export function CurrentActiveShipmentsWidget() {
                 <TableCell className="max-w-[220px] truncate">
                   <div title={client}>{client}</div>
                 </TableCell>
-                <TableCell mono className="text-[var(--color-primary)]">
+                <TableCell className="text-[var(--color-primary)]">
                   <Link
                     to={path}
                     className="hover:underline focus:outline-none focus:underline"

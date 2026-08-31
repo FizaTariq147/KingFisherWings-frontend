@@ -33,6 +33,7 @@ Start here for the eight core areas of the application:
 | [Tenant module](./modules/tenant.md) | Super-admin tenant CRUD deep dive |
 | [Tenant API](./modules/tenant-api.md) | Swagger-derived REST reference for `/tenants` |
 | [Tenant implementation plan](./modules/tenant-implementation-plan.md) | Phased plan to ship the tenant module |
+| [Documentation backend plan](./modules/documentation-backend-plan.md) | Backend API plan for Documentation module (from frontend screens) |
 
 ---
 

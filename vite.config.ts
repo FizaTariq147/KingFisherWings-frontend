@@ -12,8 +12,12 @@ const dirname =
     ? __dirname
     : path.dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react(), tailwindcss()],
+
+  esbuild: {
+    drop: mode === 'production' ? ['console', 'debugger'] : [],
+  },
 
   // Vite 8 Rolldown can hang while crawling three.js / R3F. Serve those raw.
   optimizeDeps: {
@@ -22,7 +26,7 @@ export default defineConfig({
 
   server: {
     host: true,
-    allowedHosts: true,
+    allowedHosts: ['localhost', '127.0.0.1', '.localhost'],
     proxy: {
       '/backend': {
         target: 'https://kingfisherwings-backend.onrender.com',
@@ -63,4 +67,4 @@ export default defineConfig({
       },
     ],
   },
-});
+}));

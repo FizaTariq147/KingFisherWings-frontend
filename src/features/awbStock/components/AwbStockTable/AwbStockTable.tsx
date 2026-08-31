@@ -65,27 +65,27 @@ export function AwbStockTable({
                 onClick={() => onView(b)}
               >
                 <TableCell>
-                  <div className="font-medium text-[var(--color-neutral-800)]">
+                  <div>
                     {b.airline_code || b.airline_name || b.airline_id.slice(0, 8)}
                   </div>
                   {b.airline_name && b.airline_code ? (
                     <div className="text-xs text-[var(--color-neutral-400)]">{b.airline_name}</div>
                   ) : null}
                 </TableCell>
-                <TableCell mono>{b.prefix}</TableCell>
-                <TableCell mono>
+                <TableCell>{b.prefix}</TableCell>
+                <TableCell>
                   {b.range_from.toLocaleString()} – {b.range_to.toLocaleString()}
                 </TableCell>
                 <TableCell>
                   {b.branch_name || (b.branch_id ? b.branch_id.slice(0, 8) : '—')}
                 </TableCell>
-                <TableCell mono>
+                <TableCell>
                   {b.remaining ?? '—'}
                   {b.total_count != null ? (
                     <span className="text-[var(--color-neutral-400)]"> / {b.total_count}</span>
                   ) : null}
                 </TableCell>
-                <TableCell mono>{b.low_stock_threshold ?? '—'}</TableCell>
+                <TableCell>{b.low_stock_threshold ?? '—'}</TableCell>
                 <TableCell onClick={(e) => e.stopPropagation()}>
                   <AwbStockStatusBadge batch={b} />
                 </TableCell>

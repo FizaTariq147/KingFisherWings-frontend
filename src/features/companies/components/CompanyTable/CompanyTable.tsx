@@ -70,21 +70,21 @@ export function CompanyTable({
           )}
           {companies.map((c) => (
             <TableRow key={c.is_draft ? `draft-${c.id}` : c.id}>
-              <TableCell mono>{c.code}</TableCell>
+              <TableCell>{c.code}</TableCell>
               <TableCell>
                 <button
                   type="button"
                   onClick={() => navigate(detailPath(c.id))}
                   className="text-left"
                 >
-                  <p className="font-medium text-[var(--color-neutral-800)] hover:text-[var(--color-primary-600)]">
+                  <p className="hover:text-[var(--color-primary-600)]">
                     {c.name}
                   </p>
                   <p className="text-xs text-[var(--color-neutral-400)]">{c.email}</p>
                 </button>
               </TableCell>
               {showTenant && (
-                <TableCell className="hidden lg:table-cell text-sm text-[var(--color-neutral-600)]">
+                <TableCell className="hidden lg:table-cell">
                   {c.tenant_name || '—'}
                 </TableCell>
               )}

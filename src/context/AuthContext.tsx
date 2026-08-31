@@ -16,11 +16,31 @@ import {
 import {
   isTenantUserManagerRole,
   menuKeysFromStaffAccess,
+  resolveAuthRoleSlug,
 } from '@/features/users/constants/userPermissions'
 import { bootstrapLocaleSession, clearLocaleSession } from '@/features/locale/bootstrap/localeBootstrap'
 import { pickPreferredCountryCode } from '@/store/locale/localeSlice'
 import { useAuthStore } from '@/store/authStore'
 import type { AuthUser, PermissionKey, Role } from '@/types/auth.types'
+
+function authMeErrorStatus(err: unknown): number | undefined {
+  return (err as { response?: { status?: number } })?.response?.status
+}
+
+function authMeErrorMessage(err: unknown): string {
+  const data = (err as { response?: { data?: { message?: unknown } } })?.response?.data
+  if (!data || typeof data !== 'object') return ''
+  const message = (data as { message?: unknown }).message
+  if (typeof message === 'string') return message
+  if (Array.isArray(message) && typeof message[0] === 'string') return message[0]
+  return ''
+}
+
+function isSubscriptionBlockedError(err: unknown): boolean {
+  const status = authMeErrorStatus(err)
+  const message = authMeErrorMessage(err).toLowerCase()
+  return status === 403 && message.includes('subscription')
+}
 
 export interface AuthContextValue {
   user:             AuthUser | null
@@ -144,13 +164,54 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
   }
 }
 
+/** Hydrate AuthContext from Zustand immediately after login (before /auth/me returns). */
+function seedUserFromAuthStore(accessToken: string): AuthUser | null {
+  const storeUser = useAuthStore.getState().user
+  if (!storeUser) return null
+
+  const roleSlug = resolveAuthRoleSlug(storeUser.role)
+  const fromJwt = permissionsFromAccessToken(accessToken)
+  const isTenantAdmin = isTenantUserManagerRole(roleSlug)
+  let permissions = [...new Set(fromJwt)] as PermissionKey[]
+  if (!isTenantAdmin) {
+    permissions = [...new Set([...permissions, 'menu_dashboard', 'menu_settings'])] as PermissionKey[]
+  }
+
+  const id = storeUser.id || storeUser.email
+  if (!id) return null
+
+  return {
+    id,
+    name: storeUser.name || storeUser.email,
+    email: storeUser.email,
+    tenantId:
+      storeUser.tenantId ||
+      tenantIdFromAccessToken(accessToken) ||
+      resolveSessionTenantIdFromAuth({
+        accessToken,
+        user: { id, role: roleSlug, tenantId: storeUser.tenantId },
+      }) ||
+      '',
+    companyId: storeUser.companyId || companyIdFromAccessToken(accessToken) || undefined,
+    role: {
+      id: roleSlug,
+      name: storeUser.role || roleSlug,
+      slug: roleSlug,
+    },
+    permissions,
+    product: storeUser.product,
+    mustChangePassword: storeUser.mustChangePassword,
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const accessToken = useAuthStore((s) => s.accessToken)
   const storeLogout = useAuthStore((s) => s.logout)
   const patchSessionUser = useAuthStore((s) => s.patchSessionUser)
+  const setSubscriptionBlocked = useAuthStore((s) => s.setSubscriptionBlocked)
   const [user, setUser]       = useState<AuthUser | null>(DEV_BYPASS_AUTH ? MOCK_USER : null)
   const [isLoading, setLoading] = useState(!DEV_BYPASS_AUTH)
-  const fetchedRef            = useRef(false)
+  const lastAccessTokenRef    = useRef<string | null>(null)
 
   useEffect(() => {
     if (DEV_BYPASS_AUTH) {
@@ -159,14 +220,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (!accessToken) {
+      lastAccessTokenRef.current = null
       setUser(null)
       setLoading(false)
-      fetchedRef.current = false
+      setSubscriptionBlocked(null)
       clearLocaleSession()
       return
     }
-    if (fetchedRef.current) return
-    fetchedRef.current = true
+
+    const seeded = seedUserFromAuthStore(accessToken)
+    if (seeded) setUser(seeded)
+
+    if (lastAccessTokenRef.current === accessToken) {
+      return
+    }
+    lastAccessTokenRef.current = accessToken
 
     setLoading(true)
     authService
@@ -194,6 +262,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           normalized.companyId = companyIdFromAccessToken(accessToken) || undefined
         }
         setUser(normalized)
+        setSubscriptionBlocked(null)
         // Keep Zustand in sync so services (user.service) can resolve tenant without AuthContext.
         // Never overwrite a known tenantId with an empty /me payload.
         // Preserve mustChangePassword from login when /me omits the flag.
@@ -212,12 +281,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         })
         bootstrapLocaleSession(pickPreferredCountryCode(data))
       })
-      .catch(() => {
-        setUser(null)
-        void storeLogout()
+      .catch((err) => {
+        const seeded = seedUserFromAuthStore(accessToken)
+        const status = authMeErrorStatus(err)
+
+        if (isSubscriptionBlockedError(err)) {
+          setSubscriptionBlocked(authMeErrorMessage(err) || 'Tenant subscription has expired.')
+          if (seeded) setUser(seeded)
+          return
+        }
+
+        setSubscriptionBlocked(null)
+
+        // Invalid session — sign out. Otherwise keep the login payload so navigation works.
+        if (status === 401 || !seeded) {
+          setUser(null)
+          void storeLogout()
+          return
+        }
+
+        setUser(seeded)
       })
       .finally(() => setLoading(false))
-  }, [accessToken, storeLogout, patchSessionUser])
+  }, [accessToken, storeLogout, patchSessionUser, setSubscriptionBlocked])
 
   const hasPermission    = useCallback((...keys: PermissionKey[]) => {
     if (DEV_BYPASS_AUTH) return true

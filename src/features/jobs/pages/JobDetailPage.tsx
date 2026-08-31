@@ -17,6 +17,7 @@ import { JobStuffingPanel } from '../components/JobStuffingPanel';
 import { JOB_STATUS_LABELS, JOB_SEGMENTS, type JobSegmentKey } from '../constants/job.constants';
 import { useJobActions } from '../hooks/useJobActions';
 import { useJobConfirmState } from '../hooks/useJobConfirmState';
+import { useJobResolvedLabels } from '../hooks/useJobResolvedLabels';
 import { useJob, useJobHouseJobs } from '../hooks/useJobs';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import {
@@ -52,6 +53,15 @@ export default function JobDetailPage() {
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
+
+  const { shipperLabel } = useJobResolvedLabels(
+    job ?? {
+      id: '',
+      job_type: 'AIR_EXPORT',
+      status: 'DRAFT',
+      shipper_id: '',
+    },
+  );
 
   const tabs = useMemo(() => {
     if (!job) return [];
@@ -203,7 +213,7 @@ export default function JobDetailPage() {
       )}
       <DetailPageTemplate
         title={jobDisplayNumber(job)}
-        subtitle={`${segmentLabel} · ${job.shipper_name || job.shipper_id}`}
+        subtitle={`${segmentLabel} · ${shipperLabel}`}
         statusLabel={JOB_STATUS_LABELS[job.status] ?? job.status}
         statusTone={statusTone(job.status)}
         tabs={tabs}

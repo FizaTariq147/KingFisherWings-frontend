@@ -121,7 +121,7 @@ export function ListPageTemplate<T>({
                   className={`border-b border-slate-50 last:border-0 ${onRowClick ? 'cursor-pointer hover:bg-surface' : ''}`}
                 >
                   {columns.map((c) => (
-                    <td key={c.key} className={`py-3 text-slate-700 ${c.className ?? ''}`}>
+                    <td key={c.key} className={`py-3 text-sm font-normal text-slate-700 ${c.className ?? ''}`}>
                       {c.render ? c.render(row) : String((row as Record<string, unknown>)[c.key] ?? '—')}
                     </td>
                   ))}

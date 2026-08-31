@@ -65,16 +65,12 @@ export function BankAccountTable({
               return (
                 <TableRow key={account.id}>
                   <TableCell>
-                    <div className="font-medium text-[var(--color-neutral-800)]">
-                      {account.bank_name}
-                    </div>
+                    <div>{account.bank_name}</div>
                   </TableCell>
                   <TableCell>{account.account_name || '—'}</TableCell>
-                  <TableCell mono>{account.account_number || '—'}</TableCell>
-                  <TableCell mono className="text-xs">
-                    {account.iban || '—'}
-                  </TableCell>
-                  <TableCell mono>{account.swift_code || '—'}</TableCell>
+                  <TableCell>{account.account_number || '—'}</TableCell>
+                  <TableCell>{account.iban || '—'}</TableCell>
+                  <TableCell>{account.swift_code || '—'}</TableCell>
                   <TableCell>{account.currency_code || '—'}</TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-1">

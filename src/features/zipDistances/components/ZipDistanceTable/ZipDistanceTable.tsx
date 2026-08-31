@@ -65,18 +65,18 @@ export function ZipDistanceTable({
                 onClick={() => onView(item)}
               >
                 <TableCell>
-                  <div className="font-mono text-[var(--color-neutral-800)]">{item.from_zip}</div>
+                  <div>{item.from_zip}</div>
                   {item.from_city ? (
                     <div className="text-xs text-[var(--color-neutral-400)]">{item.from_city}</div>
                   ) : null}
                 </TableCell>
                 <TableCell>
-                  <div className="font-mono text-[var(--color-neutral-800)]">{item.to_zip}</div>
+                  <div>{item.to_zip}</div>
                   {item.to_city ? (
                     <div className="text-xs text-[var(--color-neutral-400)]">{item.to_city}</div>
                   ) : null}
                 </TableCell>
-                <TableCell mono>{item.distance.toLocaleString()}</TableCell>
+                <TableCell>{item.distance.toLocaleString()}</TableCell>
                 <TableCell>{item.unit}</TableCell>
                 <TableCell onClick={(e) => e.stopPropagation()}>
                   <ZipDistanceStatusBadge item={item} />

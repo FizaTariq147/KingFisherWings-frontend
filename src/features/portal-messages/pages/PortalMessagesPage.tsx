@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
+import { ATTACHMENT_UPLOAD_OPTIONS, handleValidatedFileInput } from '@/lib/fileUploadValidation';
 import { PortalApiError } from '@/lib/portalApiClient';
 import {
   PortalAnimatedList,
@@ -197,7 +198,14 @@ function MessageThreadRow({ message }: { message: PortalMessage }) {
                   type="file"
                   key={replyFile ? replyFile.name : 'reply-no-file'}
                   className="block w-full text-sm text-[var(--color-neutral-700)] file:mr-3 file:rounded-md file:border-0 file:bg-[var(--color-neutral-100)] file:px-3 file:py-1.5 file:text-sm"
-                  onChange={(e) => setReplyFile(e.target.files?.[0] ?? null)}
+                  onChange={(e) =>
+                    handleValidatedFileInput(
+                      e.target.files,
+                      setReplyFile,
+                      undefined,
+                      ATTACHMENT_UPLOAD_OPTIONS,
+                    )
+                  }
                 />
                 <Button type="submit" size="sm" disabled={reply.isPending || !replyBody.trim()}>
                   {reply.isPending ? 'Sending…' : 'Reply'}
@@ -320,7 +328,14 @@ export default function PortalMessagesPage() {
               type="file"
               key={attachment ? attachment.name : 'message-no-file'}
               className="block w-full text-sm text-[var(--color-neutral-700)] file:mr-3 file:rounded-md file:border-0 file:bg-[var(--color-neutral-100)] file:px-3 file:py-1.5 file:text-sm"
-              onChange={(e) => setAttachment(e.target.files?.[0] ?? null)}
+              onChange={(e) =>
+                handleValidatedFileInput(
+                  e.target.files,
+                  setAttachment,
+                  (message) => setFormError(message),
+                  ATTACHMENT_UPLOAD_OPTIONS,
+                )
+              }
             />
             {attachment ? (
               <p className="mt-1 text-xs text-[var(--color-neutral-500)]">{attachment.name}</p>

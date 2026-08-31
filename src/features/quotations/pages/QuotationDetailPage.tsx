@@ -15,6 +15,7 @@ import {
 } from '../hooks/useQuotationActions';
 import { useQuotationConfirmState } from '../hooks/useQuotationConfirmState';
 import { useDeleteQuotation, useQuotation, useQuotationRevisions } from '../hooks/useQuotations';
+import { useQuotationResolvedLabels } from '../hooks/useQuotationResolvedLabels';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import { quotationDisplayNumber } from '../utils/normalizeQuotation';
@@ -53,6 +54,14 @@ export default function QuotationDetailPage() {
       }),
     [lines, quotation?.discount_percent, quotation?.discount_amount],
   );
+
+  const { customerLabel } = useQuotationResolvedLabels(quotation ?? {
+    id: '',
+    customer_id: '',
+    status: 'DRAFT',
+    job_type: 'SEA_EXPORT',
+    currency_code: 'USD',
+  });
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -178,7 +187,7 @@ export default function QuotationDetailPage() {
 
       <DetailPageTemplate
         title={title}
-        subtitle={quotation.customer_name || quotation.customer_id}
+        subtitle={customerLabel}
         statusLabel={STATUS_LABELS[status] ?? status}
         statusTone={statusTone(status)}
         onBack={() => navigate('/quotations/all')}

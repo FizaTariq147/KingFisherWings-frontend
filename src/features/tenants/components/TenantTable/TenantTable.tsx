@@ -110,11 +110,9 @@ export function TenantTable({
           {tenants.map((t) => (
             <TableRow key={t.id}>
               <TableCell>
-                <p className="font-medium text-[var(--color-neutral-800)]">
-                  {t.company_name || '—'}
-                </p>
+                <p>{t.company_name || '—'}</p>
                 {t.company_code ? (
-                  <p className="text-xs font-mono text-[var(--color-neutral-400)]">{t.company_code}</p>
+                  <p className="text-xs text-[var(--color-neutral-400)]">{t.company_code}</p>
                 ) : null}
               </TableCell>
               <TableCell>
@@ -123,13 +121,13 @@ export function TenantTable({
                   onClick={() => navigate(`/superadmin/tenants/${t.id}`)}
                   className="text-left"
                 >
-                  <p className="font-medium text-[var(--color-neutral-800)] hover:text-[var(--color-primary-600)] transition-colors">
+                  <p className="hover:text-[var(--color-primary-600)] transition-colors">
                     {t.display_name || t.name}
                   </p>
                   <p className="text-xs text-[var(--color-neutral-400)]">{formatTenantSlug(t.slug)}</p>
                 </button>
               </TableCell>
-              <TableCell className="hidden xl:table-cell text-sm text-[var(--color-neutral-600)]">
+              <TableCell className="hidden xl:table-cell">
                 {t.domain || '—'}
               </TableCell>
               <TableCell className="hidden md:table-cell capitalize">

@@ -141,7 +141,7 @@ export default function JobList() {
           <TableBody>
             {filtered.map((j) => (
               <TableRow key={j.id}>
-                <TableCell mono>{j.jobNo}</TableCell>
+                <TableCell>{j.jobNo}</TableCell>
                 <TableCell>
                   <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${typeColors[j.type]}`}>
                     {j.type}
@@ -153,8 +153,8 @@ export default function JobList() {
                   </span>
                 </TableCell>
                 <TableCell>{j.client}</TableCell>
-                <TableCell mono>{j.etd}</TableCell>
-                <TableCell mono>{j.eta}</TableCell>
+                <TableCell>{j.etd}</TableCell>
+                <TableCell>{j.eta}</TableCell>
                 <TableCell>
                   <Badge variant={statusVariant[j.status]}>{j.status}</Badge>
                 </TableCell>

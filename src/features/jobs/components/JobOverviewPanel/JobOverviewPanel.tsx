@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { JOB_TYPE_LABELS, JOB_STATUS_LABELS } from '../../constants/job.constants';
+import { useJobResolvedLabels } from '../../hooks/useJobResolvedLabels';
 import type { Job } from '../../types/job.types';
 import { jobDisplayNumber } from '../../utils/jobRoute';
 
@@ -14,6 +15,8 @@ function Row({ label, value }: { label: string; value?: string | number | null }
 }
 
 export function JobOverviewPanel({ job }: { job: Job }) {
+  const { shipperLabel, consigneeLabel, agentLabel } = useJobResolvedLabels(job);
+
   return (
     <div className="space-y-4">
       <Card>
@@ -34,9 +37,9 @@ export function JobOverviewPanel({ job }: { job: Job }) {
           <CardTitle>Parties</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4">
-          <Row label="Shipper" value={job.shipper_name || job.shipper_id} />
-          <Row label="Consignee" value={job.consignee_name || job.consignee_id} />
-          <Row label="Agent" value={job.agent_id} />
+          <Row label="Shipper" value={shipperLabel} />
+          <Row label="Consignee" value={consigneeLabel} />
+          <Row label="Agent" value={agentLabel} />
         </div>
       </Card>
       <Card>

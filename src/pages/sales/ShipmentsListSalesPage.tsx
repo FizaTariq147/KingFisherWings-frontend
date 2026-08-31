@@ -1,9 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
 import { FilterField, SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
+import { useCustomerFilterSelectOptions } from '@/features/customers/hooks/useCustomerServiceFilterOptions';
 import { useSalesShipments } from '@/features/sales/hooks/useSales';
 import type { SalesShipmentFilters } from '@/features/sales/types/sales.types';
+import { defaultCustomerShipmentFilters } from '@/features/customers/utils/customerServiceDefaults';
 import { getErrorMessage } from '@/features/crm/utils/getErrorMessage';
 import {
   DATE_RANGE_PRESETS,
@@ -11,18 +14,24 @@ import {
   type DateRangePreset,
 } from '@/features/management/utils/managementFilters';
 import { JOB_STATUSES, JOB_TYPE_WIZARD_OPTIONS } from '@/features/jobs/constants/job.constants';
+import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 
 export default function ShipmentsListSalesPage() {
+  const navigate = useNavigate();
+  const initialRange = resolveDateRangePreset('this_month');
   const [rows, setRows] = useState('5');
   const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
+  const [fromDate, setFromDate] = useState(initialRange?.from_date ?? '');
+  const [toDate, setToDate] = useState(initialRange?.to_date ?? '');
   const [branch, setBranch] = useState('All');
   const [client, setClient] = useState('All');
   const [salesPerson, setSalesPerson] = useState('All');
-  const [department, setDepartment] = useState('');
+  const [department, setDepartment] = useState('All');
   const [origin, setOrigin] = useState('All');
   const [destination, setDestination] = useState('All');
+  const [shipper, setShipper] = useState('-Select-');
+  const [consignee, setConsignee] = useState('-Select-');
+  const [createdUser, setCreatedUser] = useState('All');
   const [shipmentNo, setShipmentNo] = useState('');
   const [hbl, setHbl] = useState('');
   const [jobNo, setJobNo] = useState('');
@@ -30,8 +39,10 @@ export default function ShipmentsListSalesPage() {
   const [status, setStatus] = useState('All');
   const [jobType, setJobType] = useState('All');
   const [search, setSearch] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<SalesShipmentFilters>({});
+  const [submitted, setSubmitted] = useState(true);
+  const [activeFilters, setActiveFilters] = useState<SalesShipmentFilters>(() =>
+    defaultCustomerShipmentFilters(),
+  );
 
   const applyPreset = (preset: DateRangePreset) => {
     setDatePreset(preset);
@@ -48,20 +59,37 @@ export default function ShipmentsListSalesPage() {
   }, []);
 
   const query = useSalesShipments(activeFilters, submitted);
+  const filters = useCustomerFilterSelectOptions();
   const pageSize = Number(rows) || 5;
   const pageItems = useMemo(() => (query.data ?? []).slice(0, pageSize), [query.data, pageSize]);
 
-  const handleSubmit = () => {
-    if (!fromDate && !toDate && datePreset !== 'custom') applyPreset(datePreset);
+  const resolveFormDates = () => {
+    if (fromDate || toDate) {
+      return { from_date: fromDate || undefined, to_date: toDate || undefined };
+    }
+    if (datePreset !== 'custom') {
+      const range = resolveDateRangePreset(datePreset);
+      if (range) return range;
+    }
+    return { from_date: undefined, to_date: undefined };
+  };
+
+  const handleSubmit = (event?: FormEvent) => {
+    event?.preventDefault();
+    const dates = resolveFormDates();
+    if (dates.from_date && !fromDate) setFromDate(dates.from_date);
+    if (dates.to_date && !toDate) setToDate(dates.to_date);
     setActiveFilters({
-      from_date: fromDate || undefined,
-      to_date: toDate || undefined,
+      ...dates,
       branch_id: branch,
       client,
       salesperson_id: salesPerson,
-      department: department || undefined,
+      department: department !== 'All' ? department : undefined,
       origin,
       destination,
+      shipper_id: shipper !== '-Select-' ? shipper : undefined,
+      consignee_id: consignee !== '-Select-' ? consignee : undefined,
+      created_user: createdUser !== 'All' ? createdUser : undefined,
       shipment_no: shipmentNo || undefined,
       hbl: hbl || undefined,
       job_no: jobNo || undefined,
@@ -69,7 +97,7 @@ export default function ShipmentsListSalesPage() {
       status,
       job_type: jobType,
       search: search.trim() || undefined,
-      limit: 200,
+      limit: 100,
     });
     setSubmitted(true);
   };
@@ -82,7 +110,10 @@ export default function ShipmentsListSalesPage() {
           <h2 className="text-[17px] font-medium text-gray-800">Shipment List - Sales</h2>
         </div>
 
-        <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-3">
+        <form
+          onSubmit={handleSubmit}
+          className="p-5 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-3"
+        >
           <FilterField label="Date Range">
             <div className="flex gap-2">
               <div className="w-28 shrink-0">
@@ -106,35 +137,47 @@ export default function ShipmentsListSalesPage() {
           </FilterField>
 
           <FilterField label="From Date">
-            <DateInput value={fromDate} onChange={(e) => { setFromDate(e.target.value); setDatePreset('custom'); }} />
+            <DateInput
+              value={fromDate}
+              onChange={(e) => {
+                setFromDate(e.target.value);
+                setDatePreset('custom');
+              }}
+            />
           </FilterField>
 
           <FilterField label="To Date">
-            <DateInput value={toDate} onChange={(e) => { setToDate(e.target.value); setDatePreset('custom'); }} />
+            <DateInput
+              value={toDate}
+              onChange={(e) => {
+                setToDate(e.target.value);
+                setDatePreset('custom');
+              }}
+            />
           </FilterField>
 
           <FilterField label="Created Branch">
-            <SelectInput options={['All']} value={branch} onChange={(e) => setBranch(e.target.value)} />
+            <SelectInput options={filters.branches} value={branch} onChange={(e) => setBranch(e.target.value)} />
           </FilterField>
 
           <FilterField label="Client">
-            <SelectInput options={['All']} value={client} onChange={(e) => setClient(e.target.value)} />
+            <SelectInput options={filters.clients} value={client} onChange={(e) => setClient(e.target.value)} />
           </FilterField>
 
           <FilterField label="Sales Person">
-            <SelectInput options={['All']} value={salesPerson} onChange={(e) => setSalesPerson(e.target.value)} />
+            <SelectInput options={filters.salesPersons} value={salesPerson} onChange={(e) => setSalesPerson(e.target.value)} />
           </FilterField>
 
           <FilterField label="Department">
-            <TextInput placeholder="All" value={department} onChange={(e) => setDepartment(e.target.value)} />
+            <SelectInput options={filters.departments} value={department} onChange={(e) => setDepartment(e.target.value)} />
           </FilterField>
 
           <FilterField label="Origin">
-            <SelectInput options={['All']} value={origin} onChange={(e) => setOrigin(e.target.value)} />
+            <SelectInput options={filters.ports} value={origin} onChange={(e) => setOrigin(e.target.value)} />
           </FilterField>
 
           <FilterField label="Destination">
-            <SelectInput options={['All']} value={destination} onChange={(e) => setDestination(e.target.value)} />
+            <SelectInput options={filters.ports} value={destination} onChange={(e) => setDestination(e.target.value)} />
           </FilterField>
 
           <FilterField label="Shipment No.">
@@ -154,15 +197,15 @@ export default function ShipmentsListSalesPage() {
           </FilterField>
 
           <FilterField label="Shipper">
-            <SelectInput options={['-Select-']} value="-Select-" onChange={() => undefined} />
+            <SelectInput options={filters.shippers} value={shipper} onChange={(e) => setShipper(e.target.value)} />
           </FilterField>
 
           <FilterField label="Consignee">
-            <SelectInput options={['-Select-']} value="-Select-" onChange={() => undefined} />
+            <SelectInput options={filters.consignees} value={consignee} onChange={(e) => setConsignee(e.target.value)} />
           </FilterField>
 
           <FilterField label="Created User">
-            <SelectInput options={['']} value="" onChange={() => undefined} />
+            <SelectInput options={filters.salesPersons} value={createdUser} onChange={(e) => setCreatedUser(e.target.value)} />
           </FilterField>
 
           <FilterField label="Shipment Status">
@@ -172,7 +215,7 @@ export default function ShipmentsListSalesPage() {
           <FilterField label="Type">
             <SelectInput options={['All', ...JOB_TYPE_WIZARD_OPTIONS]} value={jobType} onChange={(e) => setJobType(e.target.value)} />
           </FilterField>
-        </div>
+        </form>
 
         <div className="flex items-center justify-between px-5 py-3 border-t border-b border-gray-200 bg-[#F5F7FA]">
           <div className="flex items-center gap-2">
@@ -187,7 +230,7 @@ export default function ShipmentsListSalesPage() {
               onChange={(e) => setSearch(e.target.value)}
               className="border border-gray-300 rounded px-3 py-1.5 text-sm w-56 focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]"
             />
-            <button type="button" onClick={handleSubmit} className="bg-gray-100 border border-gray-300 hover:bg-gray-200 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors">
+            <button type="button" onClick={() => handleSubmit()} className="bg-gray-100 border border-gray-300 hover:bg-gray-200 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors">
               Search
             </button>
             <span className="text-sm text-gray-500 ml-2">Rows</span>
@@ -208,7 +251,7 @@ export default function ShipmentsListSalesPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <button type="button" onClick={handleSubmit} className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity">
+            <button type="button" onClick={() => handleSubmit()} className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity">
               <span className="text-[#FF751F]">➜</span>
               Submit
             </button>
@@ -225,9 +268,11 @@ export default function ShipmentsListSalesPage() {
             <div className="flex items-center justify-center h-56 px-5 text-sm text-red-600 text-center">
               {getErrorMessage(query.error, 'Could not load shipments.')}
             </div>
-          ) : !submitted || pageItems.length === 0 ? (
-            <div className="flex items-center justify-center h-56">
-              <Search size={40} className="text-gray-300" />
+          ) : pageItems.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-56 px-5 text-center">
+              <Search size={40} className="text-gray-300 mb-3" />
+              <p className="text-sm text-gray-500">No shipments match your filters.</p>
+              <p className="text-xs text-gray-400 mt-1">Try a wider date range or clear status/type filters.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -240,17 +285,23 @@ export default function ShipmentsListSalesPage() {
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Origin</th>
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Destination</th>
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Status</th>
+                    <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">ETD</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pageItems.map((item) => (
-                    <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <tr
+                      key={item.id}
+                      onClick={() => navigate(jobDetailPath({ id: item.id, job_type: item.jobType }))}
+                      className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                    >
                       <td className="px-4 py-2 text-blue-600">{item.shipmentNo}</td>
                       <td className="px-4 py-2 text-gray-700">{item.client}</td>
                       <td className="px-4 py-2 text-gray-700">{item.salesPerson}</td>
                       <td className="px-4 py-2 text-gray-700">{item.origin}</td>
                       <td className="px-4 py-2 text-gray-700">{item.destination}</td>
                       <td className="px-4 py-2 text-gray-700">{item.status}</td>
+                      <td className="px-4 py-2 text-gray-700">{item.etd}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -258,6 +309,12 @@ export default function ShipmentsListSalesPage() {
             </div>
           )}
         </div>
+
+        {submitted && !query.isLoading && (
+          <div className="px-5 py-3 border-t border-gray-200">
+            <span className="text-xs text-gray-500">{query.data?.length ?? 0} shipment(s)</span>
+          </div>
+        )}
       </div>
 
       <div className="mt-4">

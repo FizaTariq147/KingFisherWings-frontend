@@ -14,8 +14,9 @@ import {
   triggerBlobDownload,
   triggerBrandedPdfDownload,
 } from '../utils/triggerBlobDownload';
-import { isPdfBlob, isPdfUrl, openBrandedPdfUrl } from '../utils/pdfBranding';
+import { isPdfBlob, isPdfUrl, fetchBrandedPdfBlob, openBrandedPdfUrl } from '../utils/pdfBranding';
 import { resolvePdfDownloadFilename, stripPdfExtension } from '../utils/pdfFilename';
+import { ensureBrandedPdfBlob } from '../utils/stampPdfBranding';
 
 async function readAxiosErrorData(data: unknown): Promise<unknown> {
   if (typeof Blob !== 'undefined' && data instanceof Blob) {
@@ -184,21 +185,53 @@ export const filesService = {
     triggerBlobDownload(blob, downloadName);
   },
 
+  /** Load a stored or external PDF for inline preview (authenticated GET when needed). */
+  async fetchStoredPdfBlob(url: string, options?: FileDisplayOptions): Promise<Blob> {
+    const parsed = parseFilesApiUrl(url);
+    const displayName = options?.displayName ?? (parsed?.filename || guessFilenameFromUrl(url));
+    const downloadName = resolvePdfDownloadFilename(displayName, options?.branding);
+    const branding = {
+      ...options?.branding,
+      title: options?.branding?.title || stripPdfExtension(downloadName),
+      documentNumber: options?.branding?.documentNumber || stripPdfExtension(downloadName),
+    };
+
+    if (!parsed) {
+      if (!isSafeHttpUrl(url)) {
+        throw new Error('Blocked an unsafe file URL.');
+      }
+      if (isPdfUrl(url, displayName)) {
+        return fetchBrandedPdfBlob(url, branding);
+      }
+      throw new Error('Preview is only available for PDF files.');
+    }
+
+    const blob = await this.downloadBlob({
+      tenantId: parsed.tenantId,
+      filename: parsed.filename,
+    });
+    if (isPdfBlob(blob, downloadName)) {
+      return ensureBrandedPdfBlob(blob, branding);
+    }
+    return blob;
+  },
+
   /** Fetch by tenant + filename, then open or save in the browser. */
   async download(
     params: FileDownloadParams,
     action: StoredFileAction = 'download',
     options?: FileDisplayOptions,
+    previewWindow?: Window | null,
   ): Promise<void> {
     const name = options?.displayName?.trim() || params.filename;
     const blobOptions = { filename: name, branding: options?.branding };
     if (action === 'open') {
-      const preview = openBlankPreviewTab(blobOptions);
+      const preview = previewWindow ?? openBlankPreviewTab(blobOptions);
       try {
         const blob = await this.downloadBlob(params, options);
         await openBlobInNewTab(blob, preview, blobOptions);
       } catch (err) {
-        preview.close();
+        if (!previewWindow) preview.close();
         throw err;
       }
       return;

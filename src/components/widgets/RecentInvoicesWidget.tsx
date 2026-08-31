@@ -63,7 +63,7 @@ export function RecentInvoicesWidget() {
         <TableBody>
           {invoices.map((inv) => (
             <TableRow key={inv.id}>
-              <TableCell mono className="text-[var(--color-primary)]">
+              <TableCell className="text-[var(--color-primary)]">
                 <Link
                   to={`/invoices/${inv.id}`}
                   className="hover:underline focus:outline-none focus:underline"
@@ -75,7 +75,7 @@ export function RecentInvoicesWidget() {
                 <div title={inv.party_name || undefined}>{inv.party_name || '—'}</div>
               </TableCell>
               <TableCell>{formatInvoiceDate(inv.invoice_date || inv.created_at)}</TableCell>
-              <TableCell mono className="text-right">
+              <TableCell className="text-right">
                 {formatAmount(inv.total_amount, inv.currency_code)}
               </TableCell>
             </TableRow>
