@@ -26,7 +26,13 @@ export default defineConfig(({ mode }) => ({
 
   server: {
     host: true,
-    allowedHosts: ['localhost', '127.0.0.1', '.localhost'],
+    allowedHosts: [
+      'localhost',
+      '127.0.0.1',
+      '.localhost',
+      'kingfisherwings-frontend.onrender.com',
+      '.onrender.com',
+    ],
     proxy: {
       '/backend': {
         target: 'https://kingfisherwings-backend.onrender.com',
@@ -38,6 +44,17 @@ export default defineConfig(({ mode }) => ({
         cookieDomainRewrite: 'localhost',
       },
     },
+  },
+
+  preview: {
+    host: true,
+    allowedHosts: [
+      'localhost',
+      '127.0.0.1',
+      '.localhost',
+      'kingfisherwings-frontend.onrender.com',
+      '.onrender.com',
+    ],
   },
 
   resolve: {
