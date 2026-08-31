@@ -41,21 +41,19 @@ export function WmsStockTable({
               key={row.id ?? `${row.item_id}-${row.warehouse_id}-${idx}`}
               className="border-b border-[var(--color-neutral-100)]"
             >
-              <td className="px-3 py-2.5">
-                <div className="font-medium text-[var(--color-neutral-800)]">
-                  {row.item_code || row.item_id?.slice(0, 8) || '—'}
-                </div>
+              <td className="px-3 py-2.5 text-sm font-normal">
+                <div>{row.item_code || row.item_id?.slice(0, 8) || '—'}</div>
                 {row.item_name ? (
                   <div className="text-xs text-[var(--color-neutral-500)]">{row.item_name}</div>
                 ) : null}
               </td>
-              <td className="px-3 py-2.5 text-[var(--color-neutral-600)]">
+              <td className="px-3 py-2.5 text-sm font-normal text-[var(--color-neutral-800)]">
                 {row.warehouse_name || row.warehouse_id?.slice(0, 8) || '—'}
               </td>
-              <td className="px-3 py-2.5 font-medium">{row.quantity ?? '—'}</td>
-              <td className="px-3 py-2.5 text-[var(--color-neutral-500)]">{row.uom_code ?? '—'}</td>
+              <td className="px-3 py-2.5 text-sm font-normal">{row.quantity ?? '—'}</td>
+              <td className="px-3 py-2.5 text-sm font-normal">{row.uom_code ?? '—'}</td>
               {extraColumns.map((col) => (
-                <td key={col.key} className="px-3 py-2.5 text-[var(--color-neutral-600)]">
+                <td key={col.key} className="px-3 py-2.5 text-sm font-normal">
                   {col.render ? col.render(row) : String(row[col.key] ?? '—')}
                 </td>
               ))}

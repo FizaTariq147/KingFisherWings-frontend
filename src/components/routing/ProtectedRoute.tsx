@@ -23,17 +23,20 @@ export default function ProtectedRoute({
   requireAnyRole,
 }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading, hasPermission, hasAnyPermission, hasRole } = useAuth()
+  const accessToken = useAuthStore((s) => s.accessToken)
+  const storeAuthenticated = useAuthStore((s) => s.isAuthenticated && Boolean(s.accessToken))
   const storeUser = useAuthStore((s) => s.user)
   const mustChangePassword = Boolean(storeUser?.mustChangePassword)
   const location = useLocation()
+  const sessionPending = Boolean(accessToken) && !isAuthenticated
 
   // ── Auth still resolving — show full shell skeleton so layout doesn't flash
-  if (isLoading) {
+  if (isLoading || sessionPending) {
     return <AppShellSkeleton />
   }
 
-  // ── Not authenticated
-  if (!isAuthenticated) {
+  // ── Not authenticated (fallback if store lost token before context cleared)
+  if (!isAuthenticated && !storeAuthenticated) {
     return <Navigate to={redirectTo} state={{ from: location }} replace />
   }
 

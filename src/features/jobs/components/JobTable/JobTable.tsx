@@ -67,7 +67,7 @@ export function JobTable({
                 <TableCell>
                   <button
                     type="button"
-                    className="text-left font-mono text-xs hover:underline"
+                    className="text-left hover:underline"
                     onClick={() => onView(j)}
                   >
                     {jobDisplayNumber(j)}
@@ -76,9 +76,7 @@ export function JobTable({
                 <TableCell>{JOB_TYPE_LABELS[j.job_type] ?? j.job_type}</TableCell>
                 <TableCell>{jobPartyLabel(j, 'shipper')}</TableCell>
                 <TableCell>{jobPartyLabel(j, 'consignee')}</TableCell>
-                <TableCell mono className="text-xs">
-                  {jobScheduleLabel(j)}
-                </TableCell>
+                <TableCell>{jobScheduleLabel(j)}</TableCell>
                 <TableCell>
                   <JobStatusBadge job={j} />
                 </TableCell>

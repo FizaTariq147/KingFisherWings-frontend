@@ -109,16 +109,12 @@ export function QuotationTable({
                 className="cursor-pointer"
                 onClick={() => onView(q)}
               >
-                <TableCell mono>{quotationDisplayNumber(q)}</TableCell>
-                <TableCell>
-                  <div className="font-medium text-[var(--color-neutral-800)]">
-                    {quotationCustomerLabel(q, partyMap)}
-                  </div>
-                </TableCell>
+                <TableCell>{quotationDisplayNumber(q)}</TableCell>
+                <TableCell>{quotationCustomerLabel(q, partyMap)}</TableCell>
                 <TableCell>{JOB_TYPE_LABELS[q.job_type] ?? q.job_type}</TableCell>
-                <TableCell mono>{quotationRouteLabel(q, portMap)}</TableCell>
+                <TableCell>{quotationRouteLabel(q, portMap)}</TableCell>
                 <TableCell>{formatQuotationDate(q.valid_until)}</TableCell>
-                <TableCell mono>{quotationTotalLabel(q)}</TableCell>
+                <TableCell>{quotationTotalLabel(q)}</TableCell>
                 <TableCell onClick={(e) => e.stopPropagation()}>
                   <QuotationStatusBadge status={q.status} />
                 </TableCell>

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { handleValidatedFileInput } from '@/lib/fileUploadValidation';
 import { LayoutGrid, List, Plus, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -112,8 +113,18 @@ export default function CrmLeadsPage() {
                 accept=".csv,text/csv"
                 className="hidden"
                 onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) importer.mutate(file);
+                  handleValidatedFileInput(
+                    e.target.files,
+                    (file) => {
+                      if (file) importer.mutate(file);
+                    },
+                    undefined,
+                    {
+                      maxBytes: 5 * 1024 * 1024,
+                      allowedExtensions: ['csv'],
+                      allowedMimeTypes: ['text/csv', 'application/vnd.ms-excel'],
+                    },
+                  );
                 }}
               />
             </label>

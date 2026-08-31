@@ -130,6 +130,9 @@ interface AuthState {
   error: string | null
   /** True when idle timeout or refresh failed — show SessionExpiredModal. */
   sessionExpired: boolean
+  /** GET /auth/me blocked the tenant (e.g. subscription expired) — keep login session. */
+  subscriptionBlocked: boolean
+  subscriptionMessage: string | null
 }
 
 interface AuthActions {
@@ -145,6 +148,7 @@ interface AuthActions {
   clearMustChangePassword: () => void
   touchSessionActivity: () => void
   markSessionExpired: () => void
+  setSubscriptionBlocked: (message: string | null) => void
   /** Continue after idle expiry — refresh tokens, stay signed in (no login). */
   continueExpiredSession: () => Promise<void>
   /** POST /auth/sessions/{id}/revoke then clear and go to login. */
@@ -191,6 +195,8 @@ async function applyLoginSuccess(
     isLoading: false,
     error: null,
     sessionExpired: false,
+    subscriptionBlocked: false,
+    subscriptionMessage: null,
   })
 
   // Best-effort: bind real sessions-table id for POST /auth/sessions/{id}/revoke
@@ -209,6 +215,8 @@ function clearAuthState(): Partial<AuthState> {
     isAuthenticated: false,
     error: null,
     sessionExpired: false,
+    subscriptionBlocked: false,
+    subscriptionMessage: null,
   }
 }
 
@@ -224,9 +232,11 @@ export const useAuthStore = create<AuthStore>()(
       isLoading: false,
       error: null,
       sessionExpired: false,
+      subscriptionBlocked: false,
+      subscriptionMessage: null,
 
       loginTenant: async (dto) => {
-        set({ isLoading: true, error: null, sessionExpired: false })
+        set({ isLoading: true, error: null, sessionExpired: false, subscriptionBlocked: false, subscriptionMessage: null })
         set({
           accessToken: null,
           refreshToken: null,
@@ -259,7 +269,7 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       loginStaff: async (dto) => {
-        set({ isLoading: true, error: null, sessionExpired: false })
+        set({ isLoading: true, error: null, sessionExpired: false, subscriptionBlocked: false, subscriptionMessage: null })
         set({
           accessToken: null,
           refreshToken: null,
@@ -406,6 +416,13 @@ export const useAuthStore = create<AuthStore>()(
         set({
           sessionExpired: true,
           // Keep tokens/sessionId so Continue / Revoke can run without login.
+        })
+      },
+
+      setSubscriptionBlocked: (message) => {
+        set({
+          subscriptionBlocked: Boolean(message),
+          subscriptionMessage: message,
         })
       },
 

@@ -136,7 +136,7 @@ export function UserTable({
                   onClick={() => navigate(detailPath(user.id))}
                   className="text-left"
                 >
-                  <p className="font-medium text-[var(--color-neutral-800)] hover:text-[var(--color-primary-600)]">
+                  <p className="hover:text-[var(--color-primary-600)]">
                     {user.first_name} {user.last_name}
                   </p>
                   <p className="text-xs text-[var(--color-neutral-400)]">{user.phone || '—'}</p>
@@ -147,7 +147,7 @@ export function UserTable({
               <TableCell>
                 <UserStatusBadge user={user} />
               </TableCell>
-              <TableCell className="hidden md:table-cell text-sm text-[var(--color-neutral-500)]">
+              <TableCell className="hidden md:table-cell">
                 {formatDate(user.last_login_at)}
               </TableCell>
               <TableCell className="text-right">

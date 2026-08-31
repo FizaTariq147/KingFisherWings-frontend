@@ -57,7 +57,7 @@ export function InvoiceTable({
           ) : (
             invoices.map((inv) => (
               <TableRow key={inv.id} className="cursor-pointer">
-                <TableCell mono>
+                <TableCell>
                   <button
                     type="button"
                     className="text-left underline-offset-2 hover:underline"
@@ -69,7 +69,7 @@ export function InvoiceTable({
                 <TableCell>
                   <button
                     type="button"
-                    className="font-medium text-left text-[var(--color-neutral-800)]"
+                    className="text-left"
                     onClick={() => onView(inv)}
                   >
                     {inv.party_name || inv.party_id.slice(0, 8)}
@@ -82,7 +82,7 @@ export function InvoiceTable({
                 </TableCell>
                 <TableCell>{inv.invoice_date || '—'}</TableCell>
                 <TableCell>{inv.due_date || '—'}</TableCell>
-                <TableCell mono>
+                <TableCell>
                   {inv.total_amount != null
                     ? `${inv.currency_code} ${inv.total_amount.toLocaleString()}`
                     : '—'}

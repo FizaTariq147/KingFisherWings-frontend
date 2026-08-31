@@ -1,14 +1,20 @@
+import { useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { AlertCircle, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { stripSensitiveSearchParams } from '@/lib/stripSensitiveSearchParams'
 
 /**
  * Token-based reset is NOT in Swagger Auth tag.
  * Keep the route so old email links land on a clear message.
  */
 export default function ResetPasswordPage() {
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const hasToken = Boolean(searchParams.get('token'))
+
+  useEffect(() => {
+    stripSensitiveSearchParams(searchParams, setSearchParams)
+  }, [searchParams, setSearchParams])
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface)] px-4">

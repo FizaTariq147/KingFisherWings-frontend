@@ -9,7 +9,7 @@ import { QUOTATION_FORM_DEFAULTS } from '../utils/quotationToFormValues';
 
 function loadDraft(): Partial<CreateQuotationFormValues> | null {
   try {
-    const raw = localStorage.getItem(QUOTATION_CREATE_DRAFT_KEY);
+    const raw = sessionStorage.getItem(QUOTATION_CREATE_DRAFT_KEY);
     if (!raw) return null;
     return JSON.parse(raw) as Partial<CreateQuotationFormValues>;
   } catch {
@@ -19,7 +19,7 @@ function loadDraft(): Partial<CreateQuotationFormValues> | null {
 
 function saveDraft(values: CreateQuotationFormValues) {
   try {
-    localStorage.setItem(QUOTATION_CREATE_DRAFT_KEY, JSON.stringify(values));
+    sessionStorage.setItem(QUOTATION_CREATE_DRAFT_KEY, JSON.stringify(values));
   } catch {
     // ignore quota
   }
@@ -27,7 +27,7 @@ function saveDraft(values: CreateQuotationFormValues) {
 
 function clearDraft() {
   try {
-    localStorage.removeItem(QUOTATION_CREATE_DRAFT_KEY);
+    sessionStorage.removeItem(QUOTATION_CREATE_DRAFT_KEY);
   } catch {
     // ignore
   }

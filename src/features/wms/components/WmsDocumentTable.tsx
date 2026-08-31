@@ -49,20 +49,20 @@ export function WmsDocumentTable({
               key={doc.id}
               className="border-b border-[var(--color-neutral-100)] hover:bg-[var(--color-neutral-50)]"
             >
-              <td className="px-3 py-2.5 font-medium text-[var(--color-neutral-800)]">
+              <td className="px-3 py-2.5 text-sm font-normal text-[var(--color-neutral-800)]">
                 {displayDocNumber(doc)}
               </td>
-              <td className="px-3 py-2.5">
+              <td className="px-3 py-2.5 text-sm font-normal">
                 <span
                   className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${statusClass(doc.status)}`}
                 >
                   {doc.status ?? '—'}
                 </span>
               </td>
-              <td className="px-3 py-2.5 text-[var(--color-neutral-600)]">
+              <td className="px-3 py-2.5 text-sm font-normal text-[var(--color-neutral-600)]">
                 {doc.warehouse_id ? String(doc.warehouse_id).slice(0, 8) : '—'}
               </td>
-              <td className="px-3 py-2.5 text-[var(--color-neutral-500)]">
+              <td className="px-3 py-2.5 text-sm font-normal text-[var(--color-neutral-800)]">
                 {doc.created_at ? new Date(doc.created_at).toLocaleDateString() : '—'}
               </td>
               <td className="px-3 py-2.5 text-right">

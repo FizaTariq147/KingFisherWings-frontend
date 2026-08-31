@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
@@ -17,6 +17,7 @@ import {
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
 import { vendorErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import { safeInternalPath } from '@/lib/safeInternalPath';
+import { stripSensitiveSearchParams } from '@/lib/stripSensitiveSearchParams';
 import { useVendorAuthBootstrap } from '../hooks/useVendorAuthBootstrap';
 import { vendorAuthService } from '../services/vendorAuth.service';
 import { useVendorAuthStore } from '../store/vendorAuthStore';
@@ -60,8 +61,11 @@ export default function VendorLoginPage() {
   useApplyTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
-  const inviteToken = (searchParams.get('token') || searchParams.get('invite') || '').trim();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [inviteToken] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return (params.get('token') || params.get('invite') || '').trim();
+  });
   const setSession = useVendorAuthStore((s) => s.setSession);
   const { ready, accessToken } = useVendorAuthBootstrap();
   const [showPassword, setShowPassword] = useState(false);
@@ -75,6 +79,12 @@ export default function VendorLoginPage() {
     resolver: zodResolver(inviteSchema),
     defaultValues: { full_name: '', password: '', confirm: '' },
   });
+
+  useEffect(() => {
+    if (inviteToken) {
+      stripSensitiveSearchParams(searchParams, setSearchParams);
+    }
+  }, [inviteToken, searchParams, setSearchParams]);
 
   const applySession = async (user: Parameters<typeof setSession>[0], token: string, refresh: string) => {
     clearOtherAuthSessions();

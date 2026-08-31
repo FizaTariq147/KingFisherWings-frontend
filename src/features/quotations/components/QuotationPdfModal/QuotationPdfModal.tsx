@@ -185,7 +185,7 @@ export function QuotationPdfModal({
 
           {poll && !displayError ? (
             <p className="text-xs text-[var(--color-neutral-500)]">
-              Generation queued. A popup opens when the PDF is ready.
+              Generation queued. Preview opens when the PDF is ready.
               {statusData ? ` Status: ${statusText}.` : ''}
             </p>
           ) : null}

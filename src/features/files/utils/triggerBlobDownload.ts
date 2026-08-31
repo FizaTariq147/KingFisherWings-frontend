@@ -39,14 +39,17 @@ export async function triggerBrandedPdfDownload(
 }
 
 export function openBlankPreviewTab(_options?: BlobOpenOptions): Window {
-  const opened = window.open('about:blank', '_blank');
+  const opened = window.open('about:blank', '_blank', 'noopener,noreferrer');
   if (!opened) {
     throw new Error('Pop-up blocked. Allow pop-ups to preview this file.');
   }
   try {
     opened.document.title = 'Loading…';
-    opened.document.body.innerHTML =
-      '<p style="font-family:system-ui,sans-serif;padding:1.5rem;color:#555">Loading preview…</p>';
+    opened.document.body.replaceChildren();
+    const paragraph = opened.document.createElement('p');
+    paragraph.style.cssText = 'font-family:system-ui,sans-serif;padding:1.5rem;color:#555';
+    paragraph.textContent = 'Loading preview…';
+    opened.document.body.append(paragraph);
   } catch {
     /* ignore */
   }

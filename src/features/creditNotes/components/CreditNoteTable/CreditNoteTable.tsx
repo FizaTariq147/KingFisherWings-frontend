@@ -56,7 +56,7 @@ export function CreditNoteTable({
           ) : (
             creditNotes.map((cn) => (
               <TableRow key={cn.id} className="cursor-pointer">
-                <TableCell mono>
+                <TableCell>
                   <button
                     type="button"
                     className="text-left underline-offset-2 hover:underline"
@@ -68,7 +68,7 @@ export function CreditNoteTable({
                 <TableCell>
                   <button
                     type="button"
-                    className="font-medium text-left text-[var(--color-neutral-800)]"
+                    className="text-left"
                     onClick={() => onView(cn)}
                   >
                     {cn.party_name || (cn.party_id ? cn.party_id.slice(0, 8) : '—')}
@@ -80,7 +80,7 @@ export function CreditNoteTable({
                     : '—'}
                 </TableCell>
                 <TableCell>{cn.invoice_date || '—'}</TableCell>
-                <TableCell mono>
+                <TableCell>
                   {cn.total_amount != null
                     ? `${cn.currency_code ?? ''} ${cn.total_amount.toLocaleString()}`.trim()
                     : '—'}

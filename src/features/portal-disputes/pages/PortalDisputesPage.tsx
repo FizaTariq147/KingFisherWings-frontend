@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
+import { ATTACHMENT_UPLOAD_OPTIONS, handleValidatedFileInput } from '@/lib/fileUploadValidation';
 import { PortalApiError } from '@/lib/portalApiClient';
 import {
   PortalAnimatedList,
@@ -224,7 +225,14 @@ export default function PortalDisputesPage() {
               type="file"
               key={attachment ? attachment.name : 'dispute-no-file'}
               className="block w-full text-sm text-[var(--color-neutral-700)] file:mr-3 file:rounded-md file:border-0 file:bg-[var(--color-neutral-100)] file:px-3 file:py-1.5 file:text-sm"
-              onChange={(e) => setAttachment(e.target.files?.[0] ?? null)}
+              onChange={(e) =>
+                handleValidatedFileInput(
+                  e.target.files,
+                  setAttachment,
+                  undefined,
+                  ATTACHMENT_UPLOAD_OPTIONS,
+                )
+              }
             />
             {attachment ? (
               <p className="mt-1 text-xs text-[var(--color-neutral-500)]">{attachment.name}</p>

@@ -67,15 +67,15 @@ export function PartyTable({
           ) : (
             parties.map((party) => (
               <TableRow key={party.id}>
-                <TableCell mono>{party.code || '—'}</TableCell>
+                <TableCell>{party.code || '—'}</TableCell>
                 <TableCell>
-                  <div className="font-medium text-[var(--color-neutral-800)]">{party.name}</div>
+                  <div>{party.name}</div>
                   {party.short_name ? (
                     <div className="text-xs text-[var(--color-neutral-400)]">{party.short_name}</div>
                   ) : null}
                 </TableCell>
                 <TableCell>{PARTY_TYPE_LABELS[party.party_type] ?? party.party_type}</TableCell>
-                <TableCell mono>{party.country_code || '—'}</TableCell>
+                <TableCell>{party.country_code || '—'}</TableCell>
                 <TableCell>
                   <PartyCreditBadge status={party.credit_status} />
                 </TableCell>

@@ -55,13 +55,13 @@ export function AgingTable({ lines, totals, onOpenStatement }: AgingTableProps) 
                   {line.party_id && onOpenStatement ? (
                     <button
                       type="button"
-                      className="text-left hover:underline font-medium"
+                      className="text-left hover:underline"
                       onClick={() => onOpenStatement(line)}
                     >
                       {line.party_name || line.party_code || line.party_id.slice(0, 8)}
                     </button>
                   ) : (
-                    <span className="font-medium">
+                    <span>
                       {line.party_name || line.party_code || line.party_id || '—'}
                     </span>
                   )}
@@ -70,17 +70,17 @@ export function AgingTable({ lines, totals, onOpenStatement }: AgingTableProps) 
                   ) : null}
                 </TableCell>
                 {buckets.map((key) => (
-                  <TableCell key={key} mono>
+                  <TableCell key={key}>
                     {fmt(line[key], line.currency_code)}
                   </TableCell>
                 ))}
               </TableRow>
             ))}
             {totals ? (
-              <TableRow className="font-semibold bg-[var(--color-neutral-50)]">
+              <TableRow className="bg-[var(--color-neutral-50)]">
                 <TableCell>{totals.party_name || 'Totals'}</TableCell>
                 {buckets.map((key) => (
-                  <TableCell key={key} mono>
+                  <TableCell key={key}>
                     {fmt(totals[key], totals.currency_code)}
                   </TableCell>
                 ))}

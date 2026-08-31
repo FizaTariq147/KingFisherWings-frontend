@@ -78,7 +78,7 @@ export function CurrentActiveJobsWidget() {
             const path = jobDetailPath(job);
             return (
               <TableRow key={job.id}>
-                <TableCell mono className="text-[var(--color-primary)]">
+                <TableCell className="text-[var(--color-primary)]">
                   <Link
                     to={path}
                     className="hover:underline focus:outline-none focus:underline"

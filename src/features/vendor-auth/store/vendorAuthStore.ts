@@ -39,17 +39,12 @@ export const useVendorAuthStore = create<VendorAuthState>()(
     }),
     {
       name: 'kfg-vendor-auth',
-      // sessionStorage: tokens do not survive browser restart (better than localStorage).
       storage: createJSONStorage(() => sessionStorage),
-      onRehydrateStorage: () => {
-        return (_state, error) => {
-          if (error) return;
-          const { accessToken, isAuthenticated } = useVendorAuthStore.getState();
-          if (isAuthenticated && !accessToken) {
-            useVendorAuthStore.getState().logout();
-          }
-        };
-      },
+      partialize: (state) => ({
+        user: state.user,
+        refreshToken: state.refreshToken,
+        isAuthenticated: Boolean(state.refreshToken),
+      }),
     },
   ),
 );

@@ -61,8 +61,7 @@ export default function SuperAdminLoginPage(): JSX.Element {
   const location = useLocation();
   const setSession = useSuperAdminAuthStore((s) => s.setSession);
   const clearErpSession = useAuthStore((s) => s.clearSession);
-  const allowSignup =
-    import.meta.env.DEV || import.meta.env.VITE_ALLOW_SUPERADMIN_SIGNUP === 'true';
+  const allowSignup = import.meta.env.DEV;
   const [mode, setMode] = useState<'login' | 'signup'>('login');
 
   // Drop leftover ERP idle/session state so the Revoke/Continue modal never appears here.

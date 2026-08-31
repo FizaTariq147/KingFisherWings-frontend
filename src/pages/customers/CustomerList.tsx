@@ -161,22 +161,18 @@ export default function CustomerList() {
           <TableBody>
             {filtered.map((c) => (
               <TableRow key={c.id}>
-                <TableCell mono>{c.code}</TableCell>
-                <TableCell className="font-medium">{c.name}</TableCell>
-                <TableCell className="text-[var(--color-neutral-400)]">{c.email}</TableCell>
-                <TableCell mono>{c.phone}</TableCell>
+                <TableCell>{c.code}</TableCell>
+                <TableCell>{c.name}</TableCell>
+                <TableCell>{c.email}</TableCell>
+                <TableCell>{c.phone}</TableCell>
                 <TableCell>{c.country}</TableCell>
                 <TableCell>
                   <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${typeColors[c.type]}`}>
                     {c.type}
                   </span>
                 </TableCell>
-                <TableCell mono>{c.totalShipments}</TableCell>
-                <TableCell mono className={
-                  c.outstandingAR > 0
-                    ? 'text-[var(--color-warning-500)] font-semibold'
-                    : 'text-[var(--color-success-500)]'
-                }>
+                <TableCell>{c.totalShipments}</TableCell>
+                <TableCell>
                   {c.outstandingAR > 0 ? `AED ${c.outstandingAR.toLocaleString()}` : 'Clear'}
                 </TableCell>
                 <TableCell>

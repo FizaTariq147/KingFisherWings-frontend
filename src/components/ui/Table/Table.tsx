@@ -49,8 +49,9 @@ export function TableHead({ children, className }: { children: React.ReactNode; 
   );
 }
 
-export function TableCell({ children, mono, className, colSpan }: {
+export function TableCell({ children, mono: _mono, className, colSpan }: {
   children: React.ReactNode;
+  /** @deprecated Ignored — list cells use one typography style app-wide. */
   mono?: boolean;
   className?: string;
   colSpan?: number;
@@ -59,8 +60,7 @@ export function TableCell({ children, mono, className, colSpan }: {
     <td
       colSpan={colSpan}
       className={cn(
-      'px-4 py-3 text-[var(--color-neutral-800)]',
-      mono && 'font-mono text-xs',
+      'px-4 py-3 text-sm font-normal text-[var(--color-neutral-800)]',
       className
     )}>
       {children}

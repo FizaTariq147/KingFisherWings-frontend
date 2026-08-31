@@ -49,7 +49,7 @@ export function PaymentRequestTable({
           ) : (
             paymentRequests.map((pr) => (
               <TableRow key={pr.id} className="cursor-pointer">
-                <TableCell mono>
+                <TableCell>
                   <button
                     type="button"
                     className="text-left underline-offset-2 hover:underline"
@@ -61,13 +61,13 @@ export function PaymentRequestTable({
                 <TableCell>
                   <button
                     type="button"
-                    className="font-medium text-left"
+                    className="text-left"
                     onClick={() => onView(pr)}
                   >
                     {pr.party_name || pr.party_id.slice(0, 8)}
                   </button>
                 </TableCell>
-                <TableCell mono>
+                <TableCell>
                   {`${pr.currency_code} ${pr.amount.toLocaleString()}`}
                 </TableCell>
                 <TableCell>{pr.due_date || '—'}</TableCell>

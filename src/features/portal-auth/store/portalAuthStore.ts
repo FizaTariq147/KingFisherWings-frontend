@@ -39,17 +39,13 @@ export const usePortalAuthStore = create<PortalAuthState>()(
     }),
     {
       name: 'kfg-portal-auth',
-      // sessionStorage: tokens do not survive browser restart (better than localStorage).
       storage: createJSONStorage(() => sessionStorage),
-      onRehydrateStorage: () => {
-        return (_state, error) => {
-          if (error) return;
-          const { accessToken, isAuthenticated } = usePortalAuthStore.getState();
-          if (isAuthenticated && !accessToken) {
-            usePortalAuthStore.getState().logout();
-          }
-        };
-      },
+      // Never persist access tokens — refresh on bootstrap (align with ERP / Super Admin).
+      partialize: (state) => ({
+        user: state.user,
+        refreshToken: state.refreshToken,
+        isAuthenticated: Boolean(state.refreshToken),
+      }),
     },
   ),
 );

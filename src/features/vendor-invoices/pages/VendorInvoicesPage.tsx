@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { PDF_UPLOAD_OPTIONS, handleValidatedFileInput } from '@/lib/fileUploadValidation';
 import { Download, FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -219,7 +220,9 @@ export default function VendorInvoicesPage() {
               accept="application/pdf"
               key={file ? file.name : 'invoice-no-file'}
               className="block w-full text-sm text-[var(--color-neutral-700)] file:mr-3 file:rounded-md file:border-0 file:bg-[var(--color-neutral-100)] file:px-3 file:py-1.5 file:text-sm"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              onChange={(e) =>
+                handleValidatedFileInput(e.target.files, setFile, undefined, PDF_UPLOAD_OPTIONS)
+              }
             />
           </label>
           <div className="sm:col-span-2 lg:col-span-3">
