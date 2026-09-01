@@ -34,7 +34,6 @@ export interface UserSecurity {
   office_hours_start?: string;
   office_hours_end?: string;
   office_hours_timezone?: string;
-  two_factor_enabled: boolean;
   max_concurrent_sessions: number;
 }
 

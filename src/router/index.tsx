@@ -168,6 +168,22 @@ import BulkCostEntryPage from '../pages/documentation/BulkCostEntryPage'
 import CcnFwbFhlEdiJobListPage from '../pages/documentation/CcnFwbFhlEdiJobListPage'
 import CgmEdiVesselListPage from '../pages/documentation/CgmEdiVesselListPage'
 import AirCargoTrackingPage from '../pages/documentation/AirCargoTrackingPage'
+import ChargeTemplateListPage from '../pages/documentation/ChargeTemplateListPage'
+import ContainerNoUploadPage from '../pages/documentation/ContainerNoUploadPage'
+import ContainerTransportUploadPage from '../pages/documentation/ContainerTransportUploadPage'
+import DpworldTrackingUploadPage from '../pages/documentation/DpworldTrackingUploadPage'
+import DubaiEqoEdiPage from '../pages/documentation/DubaiEqoEdiPage'
+import ExportAirPage from '../pages/documentation/ExportAirPage'
+import IalEdiJobListPage from '../pages/documentation/IalEdiJobListPage'
+import JobDownloadPage from '../pages/documentation/JobDownloadPage'
+import OmanEqoEdiPage from '../pages/documentation/OmanEqoEdiPage'
+import PaymentRequestMonitorPage from '../pages/documentation/PaymentRequestMonitorPage'
+import SeaExportFclPage from '../pages/documentation/SeaExportFclPage'
+import SeaExportLclPage from '../pages/documentation/SeaExportLclPage'
+import TruckPositionUploadPage from '../pages/documentation/TruckPositionUploadPage'
+import UpdateDoClosedJobPage from '../pages/documentation/UpdateDoClosedJobPage'
+import UaeMpciMonitorPage from '../pages/documentation/UaeMpciMonitorPage'
+import VoucherBatchProcessingPage from '../pages/documentation/VoucherBatchProcessingPage'
 import MastersMenuPage from '../pages/masters/MastersMenuPage'
 import MasterResourceListPage from '../features/masters/pages/MasterResourceListPage'
 import MasterResourceFormPage from '../features/masters/pages/MasterResourceFormPage'
@@ -447,7 +463,23 @@ export const router = createBrowserRouter([
               {path: '/documentation/bulk-cost-entry', element: <BulkCostEntryPage />},
               {path: '/documentation/ccn-fwb-fhl-edi-job-list', element: <CcnFwbFhlEdiJobListPage />},
               {path: '/documentation/cgm-edi-vessel-list', element: <CgmEdiVesselListPage />},
-              {path: '/documentation/cargo-tracking-air', element: <AirCargoTrackingPage />},
+              { path: '/documentation/cargo-tracking-air', element: <AirCargoTrackingPage /> },
+              { path: '/documentation/charge-template-list', element: <ChargeTemplateListPage /> },
+              { path: '/documentation/container-no-upload', element: <ContainerNoUploadPage /> },
+              { path: '/documentation/container-transport-upload', element: <ContainerTransportUploadPage /> },
+              { path: '/documentation/dpword-tracking-file-upload', element: <DpworldTrackingUploadPage /> },
+              { path: '/documentation/dubai-eqo-edi', element: <DubaiEqoEdiPage /> },
+              { path: '/documentation/export-air', element: <ExportAirPage /> },
+              { path: '/documentation/ial-edi-job-list', element: <IalEdiJobListPage /> },
+              { path: '/documentation/job-download', element: <JobDownloadPage /> },
+              { path: '/documentation/oman-eqo-edi', element: <OmanEqoEdiPage /> },
+              { path: '/documentation/payment-request-monitor', element: <PaymentRequestMonitorPage /> },
+              { path: '/documentation/sea-export-fcl', element: <SeaExportFclPage /> },
+              { path: '/documentation/sea-export-lcl', element: <SeaExportLclPage /> },
+              { path: '/documentation/truck-position-upload', element: <TruckPositionUploadPage /> },
+              { path: '/documentation/uae-mpci-monitor', element: <UaeMpciMonitorPage /> },
+              { path: '/documentation/update-do-closed-job', element: <UpdateDoClosedJobPage /> },
+              { path: '/documentation/voucher-batch-processing', element: <VoucherBatchProcessingPage /> },
               { path: '/documentation/reports', element: <DocumentationReportsPage /> },
             ],
           },

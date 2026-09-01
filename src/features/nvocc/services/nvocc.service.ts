@@ -1,5 +1,9 @@
 import { axiosInstance } from '@/lib/axios';
 import { withGatewayRetry } from '@/lib/wakeApi';
+import type {
+  GenerateJobDocumentDto,
+  SendPreAlertDto,
+} from '@/features/jobs/types/job.types';
 import { NVOCC_API } from '../api/nvocc.api';
 import type {
   AssignLoadListContainerDto,
@@ -19,8 +23,11 @@ import type {
   NvoccTariff,
   NvoccTariffListParams,
   NvoccTariffLookupParams,
+  NvoccTradeLaneReportParams,
+  NvoccUtilizationReportParams,
   NvoccVoyage,
   NvoccVoyageListParams,
+  RecordNvoccMblReceivedDto,
   SendCutoffReminderDto,
   SendNvoccRateDto,
   UpdateNvoccBookingDto,
@@ -295,6 +302,15 @@ export const nvoccVoyageService = {
       throw formatNvoccError(error);
     }
   },
+
+  async pnl(voyageId: string): Promise<Record<string, unknown>> {
+    try {
+      const res = await withGatewayRetry(() => axiosInstance.get(NVOCC_API.voyages.pnl(voyageId)));
+      return (unwrapEntity(res.data) as Record<string, unknown>) ?? {};
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
 };
 
 export const nvoccEnquiryService = {
@@ -480,6 +496,131 @@ export const nvoccBookingService = {
         }),
       );
       return res.data as Blob;
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+};
+
+async function postNvoccJobDocument(
+  path: string,
+  dto: GenerateJobDocumentDto = {},
+): Promise<Record<string, unknown>> {
+  try {
+    const raw = await mutateResource('post', path, prepareNvoccPayload(dto));
+    return (raw as Record<string, unknown>) ?? {};
+  } catch (error) {
+    throw formatNvoccError(error);
+  }
+}
+
+export const nvoccJobService = {
+  async generationStatus(jobId: string): Promise<Record<string, unknown>> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(NVOCC_API.jobs.generationStatus(jobId)),
+      );
+      return (unwrapEntity(res.data) as Record<string, unknown>) ?? {};
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  hblDraft: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.hblDraft(jobId), dto),
+  hblOriginal: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.hblOriginal(jobId), dto),
+  hblExpressRelease: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.hblExpressRelease(jobId), dto),
+  surrenderNotice: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.surrenderNotice(jobId), dto),
+  mbl: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.mbl(jobId), dto),
+  preCan: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.preCan(jobId), dto),
+  can: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.can(jobId), dto),
+  deliveryOrder: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.deliveryOrder(jobId), dto),
+  preAlertPdf: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.preAlertPdf(jobId), dto),
+  bookingConfirmation: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.bookingConfirmation(jobId), dto),
+  stuffingReport: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.stuffingReport(jobId), dto),
+  cargoManifest: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.cargoManifest(jobId), dto),
+  jobCard: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.jobCard(jobId), dto),
+  jobPnl: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.jobPnl(jobId), dto),
+  proformaInvoice: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.proformaInvoice(jobId), dto),
+
+  async mblReceived(jobId: string, dto: RecordNvoccMblReceivedDto = {}): Promise<Record<string, unknown>> {
+    try {
+      const raw = await mutateResource('patch', NVOCC_API.jobs.mblReceived(jobId), prepareNvoccPayload(dto));
+      return (raw as Record<string, unknown>) ?? {};
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async sendPreAlert(jobId: string, dto: SendPreAlertDto): Promise<Record<string, unknown>> {
+    try {
+      const raw = await mutateResource('post', NVOCC_API.jobs.sendPreAlert(jobId), prepareNvoccPayload(dto));
+      return (raw as Record<string, unknown>) ?? {};
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async submitSi(jobId: string): Promise<Record<string, unknown>> {
+    try {
+      const raw = await mutateResource('post', NVOCC_API.jobs.submitSi(jobId));
+      return (raw as Record<string, unknown>) ?? {};
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async submitVgm(jobId: string): Promise<Record<string, unknown>> {
+    try {
+      const raw = await mutateResource('post', NVOCC_API.jobs.submitVgm(jobId));
+      return (raw as Record<string, unknown>) ?? {};
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async podReceived(jobId: string): Promise<Record<string, unknown>> {
+    try {
+      const raw = await mutateResource('post', NVOCC_API.jobs.podReceived(jobId));
+      return (raw as Record<string, unknown>) ?? {};
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+};
+
+export const nvoccReportService = {
+  async tradeLaneProfitability(params: NvoccTradeLaneReportParams = {}): Promise<Record<string, unknown>> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(NVOCC_API.reports.tradeLaneProfitability, { params: queryParams(params) }),
+      );
+      return (unwrapEntity(res.data) as Record<string, unknown>) ?? {};
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async utilization(params: NvoccUtilizationReportParams = {}): Promise<Record<string, unknown>> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(NVOCC_API.reports.utilization, { params: queryParams(params) }),
+      );
+      return (unwrapEntity(res.data) as Record<string, unknown>) ?? {};
     } catch (error) {
       throw formatNvoccError(error);
     }

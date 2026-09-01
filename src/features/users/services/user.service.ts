@@ -324,7 +324,6 @@ export const userService = {
           can_see_ar_ap: false,
           can_see_mgmt_reports: false,
           can_see_job_pnl: false,
-          two_factor_enabled: false,
           allowed_ips: [],
           allowed_mac_addresses: [],
           max_concurrent_sessions: 3,

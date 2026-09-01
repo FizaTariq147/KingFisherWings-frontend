@@ -15,7 +15,6 @@ const BOOLEAN_DEFAULTS: Pick<
   | 'can_see_ar_ap'
   | 'can_see_mgmt_reports'
   | 'can_see_job_pnl'
-  | 'two_factor_enabled'
 > = {
   is_salesperson: false,
   is_cs_rep: false,
@@ -30,7 +29,6 @@ const BOOLEAN_DEFAULTS: Pick<
   can_see_ar_ap: false,
   can_see_mgmt_reports: false,
   can_see_job_pnl: false,
-  two_factor_enabled: false,
 };
 
 export function normalizeUser(raw: Record<string, unknown>): User {
