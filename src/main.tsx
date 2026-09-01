@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider } from 'react-router-dom'
+import { ErpAccessBlockedModal } from './components/auth/ErpAccessBlockedModal'
 import { SessionExpiredModal } from './components/auth/SessionExpiredModal'
 import { SubscriptionExpiredModal } from './components/auth/SubscriptionExpiredModal'
 import { SessionExpiryWatcher } from './components/auth/SessionExpiryWatcher'
@@ -23,6 +24,7 @@ createRoot(document.getElementById('root')!).render(
             <SessionExpiryWatcher />
             <SessionExpiredModal />
             <SubscriptionExpiredModal />
+            <ErpAccessBlockedModal />
             <RouterProvider router={router} />
           </AuthLoadingGate>
         </AuthProvider>

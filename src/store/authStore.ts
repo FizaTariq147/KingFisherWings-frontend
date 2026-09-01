@@ -133,6 +133,9 @@ interface AuthState {
   /** GET /auth/me blocked the tenant (e.g. subscription expired) — keep login session. */
   subscriptionBlocked: boolean
   subscriptionMessage: string | null
+  /** Protected ERP APIs returned REQUIRES_2FA_SETUP after login. */
+  erpAccessBlocked: boolean
+  erpAccessMessage: string | null
 }
 
 interface AuthActions {
@@ -149,6 +152,7 @@ interface AuthActions {
   touchSessionActivity: () => void
   markSessionExpired: () => void
   setSubscriptionBlocked: (message: string | null) => void
+  setErpAccessBlocked: (message: string | null) => void
   /** Continue after idle expiry — refresh tokens, stay signed in (no login). */
   continueExpiredSession: () => Promise<void>
   /** POST /auth/sessions/{id}/revoke then clear and go to login. */
@@ -197,6 +201,8 @@ async function applyLoginSuccess(
     sessionExpired: false,
     subscriptionBlocked: false,
     subscriptionMessage: null,
+    erpAccessBlocked: false,
+    erpAccessMessage: null,
   })
 
   // Best-effort: bind real sessions-table id for POST /auth/sessions/{id}/revoke
@@ -217,6 +223,8 @@ function clearAuthState(): Partial<AuthState> {
     sessionExpired: false,
     subscriptionBlocked: false,
     subscriptionMessage: null,
+    erpAccessBlocked: false,
+    erpAccessMessage: null,
   }
 }
 
@@ -234,9 +242,19 @@ export const useAuthStore = create<AuthStore>()(
       sessionExpired: false,
       subscriptionBlocked: false,
       subscriptionMessage: null,
+      erpAccessBlocked: false,
+      erpAccessMessage: null,
 
       loginTenant: async (dto) => {
-        set({ isLoading: true, error: null, sessionExpired: false, subscriptionBlocked: false, subscriptionMessage: null })
+        set({
+          isLoading: true,
+          error: null,
+          sessionExpired: false,
+          subscriptionBlocked: false,
+          subscriptionMessage: null,
+          erpAccessBlocked: false,
+          erpAccessMessage: null,
+        })
         set({
           accessToken: null,
           refreshToken: null,
@@ -269,7 +287,15 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       loginStaff: async (dto) => {
-        set({ isLoading: true, error: null, sessionExpired: false, subscriptionBlocked: false, subscriptionMessage: null })
+        set({
+          isLoading: true,
+          error: null,
+          sessionExpired: false,
+          subscriptionBlocked: false,
+          subscriptionMessage: null,
+          erpAccessBlocked: false,
+          erpAccessMessage: null,
+        })
         set({
           accessToken: null,
           refreshToken: null,
@@ -423,6 +449,13 @@ export const useAuthStore = create<AuthStore>()(
         set({
           subscriptionBlocked: Boolean(message),
           subscriptionMessage: message,
+        })
+      },
+
+      setErpAccessBlocked: (message) => {
+        set({
+          erpAccessBlocked: Boolean(message),
+          erpAccessMessage: message,
         })
       },
 

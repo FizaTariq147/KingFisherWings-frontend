@@ -1,6 +1,7 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import { AUTH_API } from '@/features/auth/api/auth.api'
 import { matchesAnyApiPath } from '@/lib/apiPath'
+import { erpAccessBlockMessage } from '@/lib/detectErpAccessBlock'
 import { useAuthStore } from '@/store/authStore'
 
 interface RetryConfig extends InternalAxiosRequestConfig {
@@ -72,6 +73,14 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const original = error.config as RetryConfig | undefined
+
+    const erpBlockMessage = erpAccessBlockMessage(
+      error.response?.status,
+      error.response?.data,
+    )
+    if (erpBlockMessage && useAuthStore.getState().isAuthenticated) {
+      useAuthStore.getState().setErpAccessBlocked(erpBlockMessage)
+    }
 
     if (!original || original._retry) return Promise.reject(error)
     if (isAuthNoRefreshRetryUrl(original.url)) return Promise.reject(error)

@@ -143,7 +143,6 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
 
     if (loginMode === 'staff') {
       const values = parsed.data as StaffFormValues
-      // AuthController_login (LoginDto): tenant_slug + email + password
       await loginStaff({
         tenant_slug: values.tenant_slug,
         email: values.email,

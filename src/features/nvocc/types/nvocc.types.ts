@@ -350,3 +350,18 @@ export interface NvoccTariffLookupParams {
   cargo_type?: NvoccCargoType;
   customer_id?: string;
 }
+
+export interface NvoccTradeLaneReportParams {
+  from?: string;
+  to?: string;
+  group_by?: string;
+}
+
+export interface NvoccUtilizationReportParams {
+  voyage_status?: NvoccVoyageStatus;
+  from?: string;
+}
+
+export interface RecordNvoccMblReceivedDto {
+  mbl_number?: string;
+}

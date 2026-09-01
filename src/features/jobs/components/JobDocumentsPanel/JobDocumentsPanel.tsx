@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { StoredFileLink } from '@/features/files/components/StoredFileLink';
 import { useFileDownload } from '@/features/files/hooks/useFileDownload';
+import { NvoccJobDocumentsPanel } from '@/features/nvocc/components/NvoccJobDocumentsPanel';
+import { isNvoccJobType } from '@/features/nvocc/hooks/useNvoccJobs';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -61,6 +63,10 @@ const GENERATORS = [
 ];
 
 export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
+  if (isNvoccJobType(jobType)) {
+    return <NvoccJobDocumentsPanel jobId={jobId} />;
+  }
+
   const isAirImport = jobType === 'AIR_IMPORT';
   const { data: documents = [], refetch } = useJobDocuments(jobId);
   const [poll, setPoll] = useState(false);

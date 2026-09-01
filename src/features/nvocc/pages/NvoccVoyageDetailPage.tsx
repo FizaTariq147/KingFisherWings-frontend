@@ -1,9 +1,18 @@
+import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
+import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { NvoccListState, NvoccStatusBadge } from '@/features/nvocc/components/NvoccUi';
 import { useNvoccVoyage, useNvoccVoyageActions } from '@/features/nvocc/hooks/useNvocc';
+import { useNvoccVoyagePnl } from '@/features/nvocc/hooks/useNvoccReports';
 import { formatNvoccDate, nvoccDisplayNumber } from '@/features/nvocc/utils/normalizeNvocc';
+import {
+  extractReportMetrics,
+  extractReportRows,
+  formatReportCell,
+  formatReportLabel,
+} from '@/features/nvocc/utils/normalizeNvoccReports';
 import { nvoccLabel } from '@/features/nvocc/constants/nvocc.constants';
 import { extractAxiosErrorDetail } from '@/lib/extractAxiosErrorDetail';
 
@@ -21,7 +30,10 @@ export default function NvoccVoyageDetailPage() {
   const navigate = useNavigate();
   const query = useNvoccVoyage(id);
   const actions = useNvoccVoyageActions(id);
+  const pnlQuery = useNvoccVoyagePnl(id);
   const voyage = query.data;
+  const pnlMetrics = useMemo(() => extractReportMetrics(pnlQuery.data), [pnlQuery.data]);
+  const pnlRows = useMemo(() => extractReportRows(pnlQuery.data), [pnlQuery.data]);
 
   const run = async (fn: () => Promise<unknown>) => {
     try {
@@ -100,6 +112,60 @@ export default function NvoccVoyageDetailPage() {
             <Field label="Status" value={nvoccLabel(voyage.voyage_status)} />
             <Field label="Remarks" value={voyage.remarks} />
           </dl>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Voyage P&L</CardTitle>
+            </CardHeader>
+            <div className="px-4 pb-4 space-y-4">
+              {pnlQuery.isLoading ? (
+                <p className="text-sm text-gray-500">Loading P&L…</p>
+              ) : pnlQuery.isError ? (
+                <p className="text-sm text-red-600">{extractAxiosErrorDetail(pnlQuery.error)}</p>
+              ) : pnlMetrics.length === 0 && pnlRows.length === 0 ? (
+                <p className="text-sm text-gray-500">No P&L data available.</p>
+              ) : (
+                <>
+                  {pnlMetrics.length > 0 && (
+                    <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                      {pnlMetrics.map((m) => (
+                        <div key={m.key} className="rounded-md border border-gray-200 bg-gray-50 px-3 py-2">
+                          <dt className="text-xs uppercase tracking-wide text-gray-500">{m.label}</dt>
+                          <dd className="mt-1 text-sm font-semibold text-gray-900">{m.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  )}
+                  {pnlRows.length > 0 && (
+                    <div className="overflow-x-auto">
+                      <table className="min-w-[480px] w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-gray-200 text-left text-xs uppercase text-gray-500">
+                            {Object.keys(pnlRows[0] ?? {}).map((col) => (
+                              <th key={col} className="py-2 pr-4 font-medium">
+                                {formatReportLabel(col)}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {pnlRows.map((row, index) => (
+                            <tr key={String(row.id ?? index)} className="border-b border-gray-100">
+                              {Object.keys(pnlRows[0] ?? {}).map((col) => (
+                                <td key={col} className="py-2 pr-4">
+                                  {formatReportCell(row[col])}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </Card>
         </>
       )}
     </div>
