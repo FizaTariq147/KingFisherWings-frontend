@@ -14,13 +14,16 @@ import {
   PortalPanel,
   PortalStatCard,
 } from '@/features/portal-auth/components/portal-ui';
-import { useDownloadPortalInvoicePdf, usePortalInvoice } from '../hooks/usePortalInvoices';
+import { useDownloadPortalInvoicePdf, usePortalInvoice, usePortalInvoicePaymentProofs, useUploadPortalInvoicePaymentProof } from '../hooks/usePortalInvoices';
+import { PaymentProofList, PaymentProofUploadForm } from '@/features/payment-proofs/components/PaymentProofPanels';
 
 export default function PortalInvoiceDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError, error, refetch } = usePortalInvoice(id);
   const download = useDownloadPortalInvoicePdf();
+  const { data: proofs = [] } = usePortalInvoicePaymentProofs(id);
+  const uploadProof = useUploadPortalInvoicePaymentProof(id);
   const [pdfError, setPdfError] = useState<string | null>(null);
 
   if (isLoading) return <PortalLoadingState label="Loading invoice…" />;
@@ -118,6 +121,16 @@ export default function PortalInvoiceDetailPage() {
             ))}
           </PortalAnimatedList>
         )}
+      </PortalPanel>
+      <PortalPanel padded className="space-y-4">
+        <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Payment proofs</h2>
+        <PaymentProofList proofs={proofs} />
+        <PaymentProofUploadForm
+          disabled={uploadProof.isPending}
+          onUpload={async (file, dto) => {
+            await uploadProof.mutateAsync({ file, dto });
+          }}
+        />
       </PortalPanel>
     </div>
   );

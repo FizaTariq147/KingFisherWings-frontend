@@ -12,6 +12,7 @@ import type {
   PortalQuotationListItem,
   PortalQuotationListResult,
   PortalQuotationSummary,
+  PortalQuotationPackage,
 } from '../types/portalQuotations.types';
 
 function portLabel(record: Record<string, unknown>, side: 'origin' | 'dest'): string {
@@ -131,6 +132,11 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
     volumeCbm: pickNumber(data.volume_cbm, data.volumeCbm),
     specialRequirements:
       pickString(data.special_requirements, data.specialRequirements, data.notes) || undefined,
+    source: pickString(data.source) || undefined,
+    negotiationRound: pickNumber(data.negotiation_round, data.negotiationRound),
+    convertedJobNumber:
+      pickString(data.converted_job_number, data.convertedJobNumber, data.job_number) || undefined,
+    packages: normalizePortalPackages(data.packages),
     pdfUrl: (() => {
       const raw = pickString(
         data.customer_pdf_url,
@@ -153,4 +159,23 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
       ) ?? undefined,
     lines,
   };
+}
+
+function normalizePortalPackages(raw: unknown): PortalQuotationPackage[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const packages: PortalQuotationPackage[] = [];
+  for (const entry of raw) {
+    const r = asRecord(entry);
+    if (!r) continue;
+    packages.push({
+      id: pickString(r.id) || undefined,
+      lengthCm: pickNumber(r.length_cm, r.lengthCm),
+      widthCm: pickNumber(r.width_cm, r.widthCm),
+      heightCm: pickNumber(r.height_cm, r.heightCm),
+      grossWeightKg: pickNumber(r.gross_weight_kg, r.grossWeightKg),
+      pieces: pickNumber(r.pieces),
+      cbm: pickNumber(r.cbm, r.volume_cbm),
+    });
+  }
+  return packages.length ? packages : undefined;
 }

@@ -10,7 +10,18 @@ export const vendorPaymentKeys = {
     [...vendorPaymentKeys.all(scope), 'list', params] as const,
   advances: (scope: string, params: VendorPaymentListParams) =>
     ['vendor', scope, 'advances', params] as const,
+  summary: (scope: string) => [...vendorPaymentKeys.all(scope), 'summary'] as const,
 };
+
+export function useVendorPaymentsSummary(enabled = true) {
+  const accessToken = useVendorAuthStore((s) => s.accessToken);
+  const scope = useVendorQueryScope();
+  return useQuery({
+    queryKey: vendorPaymentKeys.summary(scope),
+    queryFn: () => vendorPaymentsService.summary(),
+    enabled: Boolean(accessToken) && enabled && scope !== 'anon',
+  });
+}
 
 export function useVendorPayments(params: VendorPaymentListParams) {
   const accessToken = useVendorAuthStore((s) => s.accessToken);

@@ -1,4 +1,5 @@
 import { extractAxiosErrorDetail } from '@/lib/extractAxiosErrorDetail';
+import { formatDocumentationPermissionError } from './documentationPermissions';
 import type { PaginationMeta } from '../types/documentation.types';
 
 export function asRecord(value: unknown): Record<string, unknown> | null {
@@ -47,8 +48,9 @@ export function normalizeMeta(
   return { page, limit, total, totalPages };
 }
 
-export function formatDocumentationError(error: unknown): Error {
-  return new Error(extractAxiosErrorDetail(error));
+export function formatDocumentationError(error: unknown, opts?: { isTenantAdmin?: boolean }): Error {
+  const detail = extractAxiosErrorDetail(error);
+  return new Error(formatDocumentationPermissionError(detail, opts));
 }
 
 export function queryParams(params: object) {

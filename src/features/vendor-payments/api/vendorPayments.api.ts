@@ -1,5 +1,6 @@
 export const VENDOR_PAYMENTS_API = {
   list: '/vendor/payments',
+  summary: '/vendor/payments/summary',
   remittance: (id: string) => `/vendor/payments/${encodeURIComponent(id)}/remittance.pdf`,
 } as const;
 

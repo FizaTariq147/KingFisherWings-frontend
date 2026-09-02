@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/Button';
 import { CountrySelect } from '@/components/ui/CountrySelect';
 import { Input } from '@/components/ui/Input';
-import { isUuid } from '@/lib/isUuid';
 import { PortalApiError } from '@/lib/portalApiClient';
+import { SearchableSelect } from '@/features/masters/components/SearchableSelect';
 import { JOB_TYPES, JOB_TYPE_LABELS } from '@/features/quotations/constants/quotation.constants';
 import {
   PortalPageHeader,
@@ -16,76 +15,42 @@ import {
 } from '@/features/portal-auth/components/portal-ui';
 import {
   usePortalLocaleCurrency,
+  usePortalPortOptions,
+  usePortalQuotationEstimate,
+  usePortalServiceCatalog,
   useRequestPortalQuotation,
 } from '../hooks/usePortalQuotations';
-import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
+import {
+  portalBookQuoteSchema,
+  type PortalBookQuoteFormValues,
+  type PortalBookQuotePayload,
+} from '../schemas/portalQuotation.schema';
+import { portalPortsToSelectOptions } from '../utils/loadPortalPortOptions';
+import { applyPortalRouteFields } from '../utils/preparePortalQuotationRequest';
 
-const optionalUuid = z
-  .string()
-  .trim()
-  .optional()
-  .or(z.literal(''))
-  .refine((v) => !v || isUuid(v), 'Enter a valid UUID');
+function numberInputProps(fieldError?: string) {
+  return {
+    type: 'number' as const,
+    step: 'any' as const,
+    min: 0,
+    error: fieldError,
+  };
+}
 
-const optionalNonNegative = z
-  .string()
-  .optional()
-  .or(z.literal(''))
-  .refine((v) => {
-    if (!v?.trim()) return true;
-    const n = Number(v);
-    return Number.isFinite(n) && n >= 0;
-  }, 'Must be 0 or greater');
-
-const schema = z.object({
-  job_type: z.enum(JOB_TYPES, { required_error: 'Job type is required' }),
-  currency_code: z
-    .string()
-    .trim()
-    .min(1, 'Select a country to set currency')
-    .transform((v) => v.toUpperCase())
-    .pipe(z.string().length(3, 'Currency could not be resolved for this country')),
-  origin_port_id: optionalUuid,
-  dest_port_id: optionalUuid,
-  commodity: z.string().trim().max(500, 'Commodity is too long').optional().or(z.literal('')),
-  gross_weight: optionalNonNegative,
-  chargeable_weight: optionalNonNegative,
-  volume_cbm: optionalNonNegative,
-  pieces: optionalNonNegative,
-  special_requirements: z
-    .string()
-    .trim()
-    .max(2000, 'Special requirements are too long')
-    .optional()
-    .or(z.literal('')),
-  valid_until: z
-    .string()
-    .optional()
-    .or(z.literal(''))
-    .refine((v) => {
-      if (!v) return true;
-      const d = Date.parse(v);
-      if (Number.isNaN(d)) return false;
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return d >= today.getTime();
-    }, 'Valid-until date must be today or later'),
-});
-
-type FormValues = z.input<typeof schema>;
-
-function parseOptionalNumber(value?: string): number | undefined {
-  if (!value?.trim()) return undefined;
-  const n = Number(value);
-  return Number.isFinite(n) && n >= 0 ? n : undefined;
+function optionalNumberValue(value: unknown): number | undefined {
+  if (value === '' || value == null) return undefined;
+  const n = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(n) ? n : undefined;
 }
 
 export default function PortalBookPage() {
   const navigate = useNavigate();
   const requestQuote = useRequestPortalQuotation();
-  const portalUser = usePortalAuthStore((s) => s.user);
+  const estimateQuote = usePortalQuotationEstimate();
   const [error, setError] = useState<string | null>(null);
   const [countryCode, setCountryCode] = useState('AE');
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [estimatePreview, setEstimatePreview] = useState<string | null>(null);
 
   const {
     data: localeCurrency,
@@ -94,27 +59,38 @@ export default function PortalBookPage() {
     error: currencyQueryError,
   } = usePortalLocaleCurrency(countryCode);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
+  const portsQuery = usePortalPortOptions();
+  const portOptions = useMemo(
+    () => portalPortsToSelectOptions(portsQuery.data ?? []),
+    [portsQuery.data],
+  );
+
+  const form = useForm<PortalBookQuoteFormValues>({
+    resolver: zodResolver(portalBookQuoteSchema),
     mode: 'onBlur',
     reValidateMode: 'onChange',
     defaultValues: {
       job_type: 'AIR_EXPORT',
       currency_code: '',
-      origin_port_id: '',
-      dest_port_id: '',
+      origin_port: '',
+      dest_port: '',
       commodity: '',
-      gross_weight: '',
-      chargeable_weight: '',
-      volume_cbm: '',
-      pieces: '',
+      gross_weight: undefined,
+      chargeable_weight: undefined,
+      volume_cbm: undefined,
+      pieces: undefined,
       special_requirements: '',
       valid_until: '',
     },
   });
 
-  const { setValue, watch } = form;
+  const { setValue, watch, control, register, formState } = form;
   const currencyCode = watch('currency_code');
+  const resolvedCurrencyCode =
+    typeof currencyCode === 'string' && currencyCode.trim() ? currencyCode.trim() : '';
+  const jobType = watch('job_type');
+  const serviceCatalog = usePortalServiceCatalog(jobType);
+  const { errors } = formState;
 
   useEffect(() => {
     if (!localeCurrency) {
@@ -123,6 +99,18 @@ export default function PortalBookPage() {
     }
     setValue('currency_code', localeCurrency, { shouldValidate: true });
   }, [localeCurrency, setValue]);
+
+  const portHint =
+    portsQuery.isLoading
+      ? 'Loading port list…'
+      : portsQuery.isError
+        ? 'Port list unavailable — type the exact port or airport name (e.g. Dubai, Jebel Ali).'
+        : portOptions.length > 0
+          ? 'Search by port code or name, or type your own.'
+          : 'Type origin port name or code (e.g. DXB — Dubai).';
+
+  const submitDisabled =
+    requestQuote.isPending || currencyLoading || currencyError || !resolvedCurrencyCode;
 
   return (
     <div className="mx-auto max-w-2xl space-y-5">
@@ -144,24 +132,31 @@ export default function PortalBookPage() {
         <form
           className="space-y-4"
           noValidate
-          onSubmit={form.handleSubmit(async (values) => {
+          onSubmit={form.handleSubmit(async (rawValues) => {
             setError(null);
+            const values = rawValues as PortalBookQuotePayload;
             try {
-              const created = await requestQuote.mutateAsync({
-                job_type: values.job_type,
-                currency_code: String(values.currency_code).trim().toUpperCase(),
-                origin_port_id: values.origin_port_id?.trim() || undefined,
-                dest_port_id: values.dest_port_id?.trim() || undefined,
-                commodity: values.commodity?.trim() || undefined,
-                gross_weight: parseOptionalNumber(values.gross_weight),
-                chargeable_weight: parseOptionalNumber(values.chargeable_weight),
-                volume_cbm: parseOptionalNumber(values.volume_cbm),
-                pieces: parseOptionalNumber(values.pieces),
-                special_requirements: values.special_requirements?.trim() || undefined,
-                valid_until: values.valid_until || undefined,
-                contact_name: portalUser?.fullName?.trim() || undefined,
-                contact_email: portalUser?.email?.trim() || undefined,
-              });
+              const payload = applyPortalRouteFields(
+                {
+                  job_type: values.job_type,
+                  currency_code: values.currency_code || resolvedCurrencyCode || 'AED',
+                  commodity: values.commodity?.trim() || undefined,
+                  gross_weight: values.gross_weight,
+                  chargeable_weight: values.chargeable_weight,
+                  volume_cbm: values.volume_cbm,
+                  pieces: values.pieces,
+                  special_requirements: values.special_requirements?.trim() || undefined,
+                  valid_until: values.valid_until || undefined,
+                  ...(selectedServices.length ? { service_codes: selectedServices } : {}),
+                },
+                {
+                  origin_port: values.origin_port,
+                  dest_port: values.dest_port,
+                },
+                portsQuery.data ?? [],
+              );
+
+              const created = await requestQuote.mutateAsync(payload);
               if (created.id && created.id !== 'new') {
                 navigate(`/portal/quotes/${created.id}`);
               } else {
@@ -180,17 +175,15 @@ export default function PortalBookPage() {
             <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
               Job type <span className="text-[var(--color-danger-500)]">*</span>
             </span>
-            <select className={portalSelectClassName} {...form.register('job_type')}>
+            <select className={portalSelectClassName} {...register('job_type')}>
               {JOB_TYPES.map((t) => (
                 <option key={t} value={t}>
                   {JOB_TYPE_LABELS[t] ?? t}
                 </option>
               ))}
             </select>
-            {form.formState.errors.job_type && (
-              <p className="mt-1 text-xs text-[var(--color-danger-500)]">
-                {form.formState.errors.job_type.message}
-              </p>
+            {errors.job_type && (
+              <p className="mt-1 text-xs text-[var(--color-danger-500)]">{errors.job_type.message}</p>
             )}
           </label>
 
@@ -204,7 +197,7 @@ export default function PortalBookPage() {
                 setCountryCode(iso);
                 setValue('currency_code', '', { shouldValidate: false });
               }}
-              error={form.formState.errors.currency_code?.message}
+              error={errors.currency_code?.message}
               hint={
                 currencyLoading
                   ? 'Resolving currency…'
@@ -213,7 +206,7 @@ export default function PortalBookPage() {
                     : 'Select a country to set the quote currency'
               }
             />
-            <input type="hidden" {...form.register('currency_code')} />
+            <input type="hidden" {...register('currency_code')} />
             {currencyError && (
               <p className="text-xs text-[var(--color-danger-500)]">
                 {currencyQueryError instanceof Error
@@ -222,83 +215,169 @@ export default function PortalBookPage() {
               </p>
             )}
           </div>
-          <Input
-            label="Origin port ID (optional)"
-            hint="UUID"
-            error={form.formState.errors.origin_port_id?.message}
-            {...form.register('origin_port_id')}
+
+          <Controller
+            name="origin_port"
+            control={control}
+            render={({ field }) => (
+              <SearchableSelect
+                name="origin_port"
+                label="Origin port"
+                required
+                value={typeof field.value === 'string' ? field.value : ''}
+                options={portOptions}
+                onChange={field.onChange}
+                allowManualValue
+                allowManualUuid={false}
+                placeholder="e.g. DXB — Dubai"
+                hint={portHint}
+                error={errors.origin_port?.message}
+              />
+            )}
           />
-          <Input
-            label="Destination port ID (optional)"
-            hint="UUID"
-            error={form.formState.errors.dest_port_id?.message}
-            {...form.register('dest_port_id')}
+
+          <Controller
+            name="dest_port"
+            control={control}
+            render={({ field }) => (
+              <SearchableSelect
+                name="dest_port"
+                label="Destination port"
+                required
+                value={typeof field.value === 'string' ? field.value : ''}
+                options={portOptions}
+                onChange={field.onChange}
+                allowManualValue
+                allowManualUuid={false}
+                placeholder="e.g. LHR — London Heathrow"
+                hint={portHint}
+                error={errors.dest_port?.message}
+              />
+            )}
           />
+
           <Input
             label="Commodity"
-            error={form.formState.errors.commodity?.message}
-            {...form.register('commodity')}
+            hint="Required if weight, volume, and pieces are all empty"
+            error={errors.commodity?.message}
+            {...register('commodity')}
           />
+
           <div className="grid gap-3 sm:grid-cols-2">
             <Input
-              label="Gross weight"
-              type="number"
-              step="any"
-              min={0}
-              error={form.formState.errors.gross_weight?.message}
-              {...form.register('gross_weight')}
+              label="Gross weight (kg)"
+              {...numberInputProps(errors.gross_weight?.message)}
+              {...register('gross_weight', { setValueAs: optionalNumberValue })}
             />
             <Input
-              label="Chargeable weight"
-              type="number"
-              step="any"
-              min={0}
-              error={form.formState.errors.chargeable_weight?.message}
-              {...form.register('chargeable_weight')}
+              label="Chargeable weight (kg)"
+              {...numberInputProps(errors.chargeable_weight?.message)}
+              {...register('chargeable_weight', { setValueAs: optionalNumberValue })}
             />
             <Input
               label="Volume (CBM)"
-              type="number"
-              step="any"
-              min={0}
-              error={form.formState.errors.volume_cbm?.message}
-              {...form.register('volume_cbm')}
+              {...numberInputProps(errors.volume_cbm?.message)}
+              {...register('volume_cbm', { setValueAs: optionalNumberValue })}
             />
             <Input
               label="Pieces"
               type="number"
-              min={0}
               step={1}
-              error={form.formState.errors.pieces?.message}
-              {...form.register('pieces')}
+              min={0}
+              error={errors.pieces?.message}
+              {...register('pieces', { setValueAs: optionalNumberValue })}
             />
           </div>
+
           <Input
             label="Valid until"
             type="date"
-            error={form.formState.errors.valid_until?.message}
-            {...form.register('valid_until')}
+            error={errors.valid_until?.message}
+            {...register('valid_until')}
           />
+
           <label className="block text-sm">
             <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
               Special requirements
             </span>
             <textarea
               className="min-h-[96px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:border-[var(--color-primary-500)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-500)]"
-              {...form.register('special_requirements')}
+              maxLength={2000}
+              {...register('special_requirements')}
             />
-            {form.formState.errors.special_requirements && (
+            {errors.special_requirements && (
               <p className="mt-1 text-xs text-[var(--color-danger-500)]">
-                {form.formState.errors.special_requirements.message}
+                {errors.special_requirements.message}
               </p>
             )}
           </label>
 
-          <Button
-            type="submit"
-            className="w-full sm:w-auto"
-            disabled={requestQuote.isPending || currencyLoading || !currencyCode}
-          >
+          {serviceCatalog.data?.length ? (
+            <div className="space-y-2 rounded-md border border-[var(--color-neutral-200)] p-3">
+              <p className="text-sm font-medium">Optional services</p>
+              {serviceCatalog.data.map((service) => (
+                <label key={service.code} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={selectedServices.includes(service.code)}
+                    onChange={(e) => {
+                      setSelectedServices((prev) =>
+                        e.target.checked
+                          ? [...prev, service.code]
+                          : prev.filter((code) => code !== service.code),
+                      );
+                    }}
+                  />
+                  <span>
+                    {service.name} ({service.currencyCode || ''} {service.unitPrice ?? ''})
+                  </span>
+                </label>
+              ))}
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={estimateQuote.isPending}
+                onClick={() => {
+                  setEstimatePreview(null);
+                  const values = form.getValues() as PortalBookQuotePayload;
+                  void estimateQuote
+                    .mutateAsync({
+                      job_type: values.job_type,
+                      currency_code: values.currency_code,
+                      gross_weight: values.gross_weight,
+                      chargeable_weight: values.chargeable_weight,
+                      volume_cbm: values.volume_cbm,
+                      pieces: values.pieces,
+                      valid_until: values.valid_until || undefined,
+                      ...(selectedServices.length ? { service_codes: selectedServices } : {}),
+                    })
+                    .then((result) => {
+                      const total =
+                        result.total ??
+                        result.lines.reduce((sum, line) => sum + (line.amount ?? 0), 0);
+                      setEstimatePreview(
+                        `Estimated ${result.currencyCode || values.currency_code} ${total} · CBM ${result.volumeCbm ?? '—'}`,
+                      );
+                    })
+                    .catch((err) =>
+                      setError(
+                        err instanceof PortalApiError || err instanceof Error
+                          ? err.message
+                          : 'Estimate failed.',
+                      ),
+                    );
+                }}
+              >
+                {estimateQuote.isPending ? 'Estimating…' : 'Preview estimate'}
+              </Button>
+              {estimatePreview ? (
+                <p className="text-xs text-[var(--color-neutral-600)]">{estimatePreview}</p>
+              ) : null}
+            </div>
+          ) : null}
+
+          <Button type="submit" className="w-full sm:w-auto" disabled={submitDisabled}>
             {requestQuote.isPending ? 'Submitting…' : 'Submit quote request'}
           </Button>
         </form>

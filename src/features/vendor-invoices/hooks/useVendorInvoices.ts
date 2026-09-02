@@ -10,6 +10,9 @@ export const vendorInvoiceKeys = {
   list: (scope: string, params: VendorInvoiceListParams) =>
     [...vendorInvoiceKeys.all(scope), 'list', params] as const,
   detail: (scope: string, id: string) => [...vendorInvoiceKeys.all(scope), 'detail', id] as const,
+  openItems: (scope: string) => [...vendorInvoiceKeys.all(scope), 'open-items'] as const,
+  paymentProofs: (scope: string, invoiceId: string) =>
+    [...vendorInvoiceKeys.all(scope), 'payment-proofs', invoiceId] as const,
 };
 
 export function useVendorInvoiceSummary(enabled = true) {
@@ -73,6 +76,38 @@ export function useSubmitVendorInvoice() {
     mutationFn: (dto: VendorInvoiceSubmitDto) => vendorInvoicesService.submit(dto),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: vendorInvoiceKeys.all(scope) });
+    },
+  });
+}
+
+export function useVendorInvoiceOpenItems(enabled = true) {
+  const accessToken = useVendorAuthStore((s) => s.accessToken);
+  const scope = useVendorQueryScope();
+  return useQuery({
+    queryKey: vendorInvoiceKeys.openItems(scope),
+    queryFn: () => vendorInvoicesService.openItems(),
+    enabled: Boolean(accessToken) && enabled && scope !== 'anon',
+  });
+}
+
+export function useVendorInvoicePaymentProofs(invoiceId: string) {
+  const accessToken = useVendorAuthStore((s) => s.accessToken);
+  const scope = useVendorQueryScope();
+  return useQuery({
+    queryKey: vendorInvoiceKeys.paymentProofs(scope, invoiceId),
+    queryFn: () => vendorInvoicesService.listPaymentProofs(invoiceId),
+    enabled: Boolean(accessToken) && Boolean(invoiceId) && scope !== 'anon',
+  });
+}
+
+export function useUploadVendorInvoicePaymentProof(invoiceId: string) {
+  const qc = useQueryClient();
+  const scope = useVendorQueryScope();
+  return useMutation({
+    mutationFn: ({ file, dto }: { file: File; dto: import('@/features/payment-proofs/types/paymentProof.types').UploadPaymentProofDto }) =>
+      vendorInvoicesService.uploadPaymentProof(invoiceId, file, dto),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: vendorInvoiceKeys.paymentProofs(scope, invoiceId) });
     },
   });
 }

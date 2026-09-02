@@ -1,13 +1,19 @@
 import { useState } from 'react';
+import { StoredFileLink } from '@/features/files/components/StoredFileLink';
+import { useFileDownload } from '@/features/files/hooks/useFileDownload';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { useJobDocuments } from '@/features/jobs/hooks/useJobs';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
+import { resolveJobDocumentFileUrl } from '@/features/jobs/utils/resolveJobDocumentFileUrl';
+import { resolveSessionTenantIdFromAuth } from '@/lib/tenantFromAuth';
+import { useAuthStore } from '@/store/authStore';
 import {
   useNvoccJobActions,
   useNvoccJobGenerationStatus,
 } from '../hooks/useNvoccJobs';
+import { JobDocumentGenerationStatusCard } from '@/features/jobs/components/JobDocumentGenerationStatusCard';
 
 const DOCUMENT_GENERATORS = [
   { key: 'hblDraft', label: 'HBL draft' },
@@ -35,6 +41,10 @@ interface NvoccJobDocumentsPanelProps {
 
 export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
   const { data: documents = [], refetch } = useJobDocuments(jobId);
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const user = useAuthStore((s) => s.user);
+  const tenantId = resolveSessionTenantIdFromAuth({ accessToken, user });
+  const fileDownload = useFileDownload();
   const actions = useNvoccJobActions(jobId);
   const [poll, setPoll] = useState(false);
   const { data: genStatus } = useNvoccJobGenerationStatus(jobId, poll);
@@ -85,8 +95,11 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
                 id: string;
                 document_type?: string;
                 file_name?: string;
+                file_url?: string;
+                s3_key?: string;
                 status?: string;
               };
+              const fileUrl = resolveJobDocumentFileUrl(d, tenantId);
               return (
                 <div
                   key={d.id}
@@ -97,6 +110,33 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
                     <p className="text-xs text-[var(--color-neutral-400)]">
                       {d.document_type} · {d.status || '—'}
                     </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {fileUrl ? (
+                      <>
+                        <StoredFileLink
+                          url={fileUrl}
+                          label="View"
+                          displayName={d.file_name}
+                          className="text-sm text-[var(--color-primary-600)] underline"
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="secondary"
+                          disabled={fileDownload.isPending}
+                          onClick={() =>
+                            void fileDownload.downloadStoredFile(fileUrl, d.file_name)
+                          }
+                        >
+                          Download
+                        </Button>
+                      </>
+                    ) : (
+                      <span className="text-xs text-[var(--color-neutral-400)]">
+                        File link not available yet
+                      </span>
+                    )}
                   </div>
                 </div>
               );
@@ -200,14 +240,7 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
       </Card>
 
       {poll && genStatus != null && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Generation status</CardTitle>
-          </CardHeader>
-          <pre className="px-4 pb-4 text-xs overflow-auto max-h-40">
-            {JSON.stringify(genStatus, null, 2)}
-          </pre>
-        </Card>
+        <JobDocumentGenerationStatusCard status={genStatus} polling />
       )}
     </div>
   );

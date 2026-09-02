@@ -19,6 +19,13 @@ export type PermissionKey =
   // NVOCC action permissions (backend Guards)
   | 'nvocc.read'
   | 'nvocc.manage'
+  // Documentation action permissions (backend Guards)
+  | 'documentation.read'
+  | 'documentation.manage'
+  | 'documentation.edi.read'
+  | 'documentation.edi.submit'
+  | 'documentation.upload'
+  | 'documentation.mpci'
   // GL action permissions (backend Guards)
   | 'gl.manage_coa'
   | 'gl.view_coa'
@@ -34,6 +41,9 @@ export type PermissionKey =
   // Customer portal admin (Parties → )
   | 'portal.manage_users'
   | 'portal.manage_permissions'
+  | 'quotations.service_catalog.manage'
+  | 'quotations.negotiate'
+  | 'invoices.review_payment_proofs'
   | (string & {})
 
 export interface Permission {

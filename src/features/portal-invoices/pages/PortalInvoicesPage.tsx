@@ -28,6 +28,7 @@ import {
   useExportPortalInvoicesCsv,
   usePortalInvoiceSummary,
   usePortalInvoices,
+  usePortalInvoiceOpenItems,
 } from '../hooks/usePortalInvoices';
 
 export default function PortalInvoicesPage() {
@@ -43,6 +44,7 @@ export default function PortalInvoicesPage() {
   const [exportError, setExportError] = useState<string | null>(null);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [filterSaved, setFilterSaved] = useState(false);
+  const [viewOpenOnly, setViewOpenOnly] = useState(false);
 
   useEffect(() => {
     if (filtersReady || prefs.isLoading) return;
@@ -64,10 +66,13 @@ export default function PortalInvoicesPage() {
     to_date: toDate || undefined,
   }), [page, search, status, fromDate, toDate]);
   const summary = usePortalInvoiceSummary();
-  const { data, isLoading, isError, error, refetch, isFetching } = usePortalInvoices(params);
+  const openItems = usePortalInvoiceOpenItems(viewOpenOnly);
+  const allInvoices = usePortalInvoices(params);
+  const active = viewOpenOnly ? openItems : allInvoices;
   const download = useDownloadPortalInvoicePdf();
-  const items = data?.items ?? [];
-  const meta = data?.meta;
+  const items = active.data?.items ?? [];
+  const meta = active.data?.meta;
+  const { isLoading, isError, error, refetch, isFetching } = active;
 
   return (
     <div className="space-y-5">
@@ -202,6 +207,19 @@ export default function PortalInvoicesPage() {
           />
         </div>
       </PortalPanel>
+      <div>
+        <Button
+          type="button"
+          size="sm"
+          variant={viewOpenOnly ? 'primary' : 'secondary'}
+          onClick={() => {
+            setPage(1);
+            setViewOpenOnly((v) => !v);
+          }}
+        >
+          {viewOpenOnly ? 'Showing open items' : 'Show open items only'}
+        </Button>
+      </div>
       <PortalPanel>
         <PortalFetchBar active={isFetching && !isLoading} />
         {isLoading ? (

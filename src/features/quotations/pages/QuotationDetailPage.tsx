@@ -4,6 +4,7 @@ import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
 import { QuotationEmailModal } from '../components/QuotationEmailModal';
 import { QuotationLinesEditor } from '../components/QuotationLinesEditor';
+import { QuotationNegotiationPanel } from '../components/QuotationNegotiationPanel';
 import { QuotationOverviewPanel } from '../components/QuotationOverviewPanel';
 import { QuotationPdfModal } from '../components/QuotationPdfModal';
 import { QuotationStatusBadge } from '../components/QuotationStatusBadge';
@@ -234,6 +235,17 @@ export default function QuotationDetailPage() {
                 lines={lines}
                 currencyCode={quotation.currency_code}
                 editable={editable}
+              />
+            ),
+          },
+          {
+            key: 'negotiation',
+            label: 'Negotiation',
+            content: (
+              <QuotationNegotiationPanel
+                quotationId={id}
+                status={status}
+                onUpdated={() => void refetch()}
               />
             ),
           },

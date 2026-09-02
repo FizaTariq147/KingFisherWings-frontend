@@ -3,6 +3,7 @@ import {
   normalizeMeta,
   pickNumber,
   pickString,
+  unwrapData,
   unwrapList,
 } from '@/features/vendor-shared/normalize';
 import type {
@@ -24,7 +25,14 @@ function normalizeItem(raw: unknown): VendorPaymentRequest | null {
     amount: pickNumber(r.amount, r.total),
     currencyCode: pickString(r.currency_code, r.currencyCode, r.currency) || undefined,
     notes: pickString(r.notes, r.remarks) || undefined,
+    paymentId: pickString(r.payment_id, r.paymentId) || undefined,
+    approvedAt: pickString(r.approved_at, r.approvedAt) || undefined,
+    paidAt: pickString(r.paid_at, r.paidAt) || undefined,
   };
+}
+
+export function normalizePaymentRequestDetail(raw: unknown): VendorPaymentRequest | null {
+  return normalizeItem(unwrapData(raw) ?? raw);
 }
 
 export function normalizePaymentRequestList(

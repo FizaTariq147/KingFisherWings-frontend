@@ -9,6 +9,10 @@ import type {
   PortalQuotationListResult,
   PortalQuotationRejectDto,
   PortalQuotationRequestDto,
+  PortalQuotationEstimateDto,
+  PortalQuotationCounterOfferDto,
+  PortalQuotationEstimateResult,
+  PortalServiceCatalogItem,
   PortalQuotationSummary,
 } from '../types/portalQuotations.types';
 import {
@@ -16,6 +20,12 @@ import {
   normalizeQuotationList,
   normalizeQuotationSummary,
 } from '../utils/normalizePortalQuotations';
+import {
+  normalizePortalEstimate,
+  normalizePortalServiceCatalog,
+} from '../utils/normalizePortalQuotationExtended';
+import { normalizeNegotiationTimeline } from '@/features/quotations/utils/normalizeQuotationExtended';
+import type { NegotiationTimeline } from '@/features/quotations/types/quotationExtended.types';
 
 export const portalQuotationsService = {
   async summary(): Promise<PortalQuotationSummary> {
@@ -61,6 +71,30 @@ export const portalQuotationsService = {
     const detail = normalizeQuotationDetail(res.data);
     if (detail) return detail;
     return this.getById(id);
+  },
+
+  async serviceCatalog(jobType?: string): Promise<PortalServiceCatalogItem[]> {
+    const res = await portalApiClient.get(PORTAL_QUOTATIONS_API.serviceCatalog, {
+      params: jobType ? { job_type: jobType } : undefined,
+    });
+    return normalizePortalServiceCatalog(res.data);
+  },
+
+  async estimate(dto: PortalQuotationEstimateDto): Promise<PortalQuotationEstimateResult> {
+    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.estimate, dto);
+    return normalizePortalEstimate(res.data);
+  },
+
+  async counterOffer(id: string, dto: PortalQuotationCounterOfferDto): Promise<PortalQuotationDetail> {
+    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.counterOffer(id), dto);
+    const detail = normalizeQuotationDetail(res.data);
+    if (detail) return detail;
+    return this.getById(id);
+  },
+
+  async negotiation(id: string): Promise<NegotiationTimeline> {
+    const res = await portalApiClient.get(PORTAL_QUOTATIONS_API.negotiation(id));
+    return normalizeNegotiationTimeline(res.data);
   },
 
   async downloadPdf(

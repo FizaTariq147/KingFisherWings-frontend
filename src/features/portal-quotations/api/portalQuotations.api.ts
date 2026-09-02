@@ -1,10 +1,14 @@
 export const PORTAL_QUOTATIONS_API = {
   summary: '/portal/quotations/summary',
   list: '/portal/quotations',
+  serviceCatalog: '/portal/quotations/service-catalog',
+  estimate: '/portal/quotations/estimate',
   request: '/portal/quotations/request',
   detail: (id: string) => `/portal/quotations/${encodeURIComponent(id)}`,
   accept: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/accept`,
   reject: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/reject`,
+  counterOffer: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/counter-offer`,
+  negotiation: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/negotiation`,
   pdf: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/pdf`,
 } as const;
 

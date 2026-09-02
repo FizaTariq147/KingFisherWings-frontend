@@ -1,4 +1,7 @@
 import { portalApiClient, PortalApiError } from '@/lib/portalApiClient';
+import { buildPaymentProofFormData } from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
+import type { PaymentProof, UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
+import { normalizePaymentProof, normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
 import { invoicePdfBranding } from '@/features/files/utils/pdfBranding';
 import { formatPdfFilename, stripPdfExtension } from '@/features/files/utils/pdfFilename';
 import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
@@ -55,6 +58,30 @@ export const portalInvoicesService = {
   async list(params: PortalInvoiceListParams = {}): Promise<PortalInvoiceListResult> {
     const res = await portalApiClient.get(PORTAL_INVOICES_API.list, { params });
     return normalizeInvoiceList(res.data, params);
+  },
+  async openItems(): Promise<PortalInvoiceListResult> {
+    const res = await portalApiClient.get(PORTAL_INVOICES_API.openItems);
+    return normalizeInvoiceList(res.data, {});
+  },
+  async listPaymentProofs(invoiceId: string): Promise<PaymentProof[]> {
+    const res = await portalApiClient.get(PORTAL_INVOICES_API.paymentProofs(invoiceId));
+    return normalizePaymentProofList(res.data);
+  },
+  async uploadPaymentProof(
+    invoiceId: string,
+    file: File,
+    dto: UploadPaymentProofDto,
+  ): Promise<PaymentProof> {
+    const form = buildPaymentProofFormData(file, {
+      ...(dto.amount != null ? { amount: String(dto.amount) } : {}),
+      ...(dto.payment_date ? { payment_date: dto.payment_date } : {}),
+      ...(dto.reference ? { reference: dto.reference } : {}),
+      ...(dto.notes ? { notes: dto.notes } : {}),
+    });
+    const res = await portalApiClient.post(PORTAL_INVOICES_API.paymentProofs(invoiceId), form);
+    const proof = normalizePaymentProof(res.data);
+    if (!proof) throw new Error('Upload failed.');
+    return proof;
   },
   async exportCsv(params: PortalInvoiceListParams = {}): Promise<void> {
     await downloadPortalBlob(PORTAL_INVOICES_API.exportCsv, 'invoices.csv', {

@@ -7,6 +7,7 @@ import { StoredFileLink } from '@/features/files/components/StoredFileLink';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { invoicePdfBranding } from '@/features/files/utils/pdfBranding';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
+import { StaffPaymentProofReviewPanel } from '@/features/payment-proofs/components/StaffPaymentProofReviewPanel';
 import { InvoiceEmailModal } from '../components/InvoiceEmailModal';
 import { InvoiceLinesEditor } from '../components/InvoiceLinesEditor';
 import { InvoiceStatusBadge } from '../components/InvoiceStatusBadge';
@@ -293,6 +294,14 @@ export default function InvoiceDetailPage() {
                         No PDF yet. Use Generate PDF.
                       </p>
                     )}
+                  </div>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Payment proofs</CardTitle>
+                  </CardHeader>
+                  <div className="p-4 pt-0">
+                    <StaffPaymentProofReviewPanel invoiceId={id} />
                   </div>
                 </Card>
                 <InvoiceLinesEditor
