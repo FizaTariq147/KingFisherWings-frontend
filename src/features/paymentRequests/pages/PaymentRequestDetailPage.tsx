@@ -107,7 +107,11 @@ export default function PaymentRequestDetailPage() {
       ? [
           {
             label: 'Mark paid',
-            onClick: () => void run(() => markPaid.mutateAsync(), 'Marked as paid.'),
+            onClick: () =>
+              void run(
+                () => markPaid.mutateAsync(),
+                'Marked as paid. A GL payment was created and invoice balances were updated.',
+              ),
             variant: 'primary' as const,
           },
         ]

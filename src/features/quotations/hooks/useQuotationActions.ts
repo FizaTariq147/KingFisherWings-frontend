@@ -8,6 +8,7 @@ import type {
   MarkLostDto,
   SendQuotationEmailDto,
 } from '../types/quotation.types';
+import { clearCustomerQuoteDecision } from '../utils/customerQuoteDecision';
 import { quotationKeys, useInvalidateQuotations } from './useQuotations';
 
 /** Detail-page actions bound to a single quotation id. */
@@ -16,29 +17,34 @@ export function useQuotationActions(quotationId: string) {
   const queryClient = useQueryClient();
   const id = quotationId;
 
+  const afterStatusChange = () => {
+    clearCustomerQuoteDecision(id);
+    invalidate(id);
+  };
+
   const submit = useMutation({
     mutationFn: () => quotationService.submit(id),
-    onSuccess: () => invalidate(id),
+    onSuccess: afterStatusChange,
   });
   const approve = useMutation({
     mutationFn: (dto: ApprovalDecisionDto = {}) => quotationService.approve(id, dto),
-    onSuccess: () => invalidate(id),
+    onSuccess: afterStatusChange,
   });
   const reject = useMutation({
     mutationFn: (dto: ApprovalDecisionDto = {}) => quotationService.reject(id, dto),
-    onSuccess: () => invalidate(id),
+    onSuccess: afterStatusChange,
   });
   const send = useMutation({
     mutationFn: () => quotationService.send(id),
-    onSuccess: () => invalidate(id),
+    onSuccess: afterStatusChange,
   });
   const markWon = useMutation({
     mutationFn: () => quotationService.markWon(id),
-    onSuccess: () => invalidate(id),
+    onSuccess: afterStatusChange,
   });
   const markLost = useMutation({
     mutationFn: (dto: MarkLostDto) => quotationService.markLost(id, dto),
-    onSuccess: () => invalidate(id),
+    onSuccess: afterStatusChange,
   });
   const duplicate = useMutation({
     mutationFn: () => quotationService.duplicate(id),
@@ -46,15 +52,19 @@ export function useQuotationActions(quotationId: string) {
   });
   const convertToJob = useMutation({
     mutationFn: () => quotationService.convertToJob(id),
-    onSuccess: () => invalidate(id),
+    onSuccess: afterStatusChange,
+  });
+  const fulfillApproved = useMutation({
+    mutationFn: () => quotationService.fulfillApprovedQuotation(id),
+    onSuccess: afterStatusChange,
   });
   const archive = useMutation({
     mutationFn: () => quotationService.archive(id),
-    onSuccess: () => invalidate(id),
+    onSuccess: afterStatusChange,
   });
   const expire = useMutation({
     mutationFn: () => quotationService.expire(id),
-    onSuccess: () => invalidate(id),
+    onSuccess: afterStatusChange,
   });
   const sendEmail = useMutation({
     mutationFn: (dto: SendQuotationEmailDto) => quotationService.sendEmail(id, dto),
@@ -77,6 +87,7 @@ export function useQuotationActions(quotationId: string) {
     markLost,
     duplicate,
     convertToJob,
+    fulfillApproved,
     archive,
     expire,
     sendEmail,
@@ -96,25 +107,40 @@ export function useQuotationLifecycleMutations() {
     approve: useMutation({
       mutationFn: ({ id, dto }: { id: string; dto?: ApprovalDecisionDto }) =>
         quotationService.approve(id, dto ?? {}),
-      onSuccess: (_d, { id }) => invalidate(id),
+      onSuccess: (_d, { id }) => {
+        clearCustomerQuoteDecision(id);
+        invalidate(id);
+      },
     }),
     reject: useMutation({
       mutationFn: ({ id, dto }: { id: string; dto?: ApprovalDecisionDto }) =>
         quotationService.reject(id, dto ?? {}),
-      onSuccess: (_d, { id }) => invalidate(id),
+      onSuccess: (_d, { id }) => {
+        clearCustomerQuoteDecision(id);
+        invalidate(id);
+      },
     }),
     send: useMutation({
       mutationFn: (id: string) => quotationService.send(id),
-      onSuccess: (_d, id) => invalidate(id),
+      onSuccess: (_d, id) => {
+        clearCustomerQuoteDecision(id);
+        invalidate(id);
+      },
     }),
     markWon: useMutation({
       mutationFn: (id: string) => quotationService.markWon(id),
-      onSuccess: (_d, id) => invalidate(id),
+      onSuccess: (_d, id) => {
+        clearCustomerQuoteDecision(id);
+        invalidate(id);
+      },
     }),
     markLost: useMutation({
       mutationFn: ({ id, dto }: { id: string; dto: MarkLostDto }) =>
         quotationService.markLost(id, dto),
-      onSuccess: (_d, { id }) => invalidate(id),
+      onSuccess: (_d, { id }) => {
+        clearCustomerQuoteDecision(id);
+        invalidate(id);
+      },
     }),
     duplicate: useMutation({
       mutationFn: (id: string) => quotationService.duplicate(id),

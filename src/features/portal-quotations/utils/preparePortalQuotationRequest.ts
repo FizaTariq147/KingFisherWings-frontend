@@ -1,5 +1,4 @@
 import { isUuid } from '@/lib/isUuid';
-import type { PortalQuotationRequestDto } from '../types/portalQuotations.types';
 import type { PortalPortOption } from './loadPortalPortOptions';
 
 export interface PortalQuotationFormRoute {
@@ -62,15 +61,21 @@ function appendUnresolvedRouteNotes(
   return base ? `${routeLine}\n\n${base}` : routeLine;
 }
 
+type PortalRoutableDto = {
+  origin_port_id?: string;
+  dest_port_id?: string;
+  special_requirements?: string;
+};
+
 /**
  * Portal quote API accepts `origin_port_id` / `dest_port_id` only.
  * Resolve names against the reference port list; otherwise note route in special_requirements.
  */
-export function applyPortalRouteFields(
-  dto: PortalQuotationRequestDto,
+export function applyPortalRouteFields<T extends PortalRoutableDto>(
+  dto: T,
   route: PortalQuotationFormRoute,
   ports: PortalPortOption[] = [],
-): PortalQuotationRequestDto {
+): T {
   const next = { ...dto };
   const originRaw = route.origin_port?.trim();
   const destRaw = route.dest_port?.trim();

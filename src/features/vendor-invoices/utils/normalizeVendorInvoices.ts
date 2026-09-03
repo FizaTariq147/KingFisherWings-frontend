@@ -108,7 +108,14 @@ export function normalizeInvoiceListItem(raw: unknown): VendorInvoiceListItem | 
     invoiceDate: pickString(r.invoice_date, r.invoiceDate, r.date) || undefined,
     dueDate: pickString(r.due_date, r.dueDate) || undefined,
     totalAmount: pickNumber(r.total_amount, r.totalAmount, r.amount, r.total),
-    outstandingBalance: pickNumber(r.outstanding_balance, r.outstandingBalance, r.balance),
+    paidAmount: pickNumber(r.amount_paid, r.paid_amount, r.paidAmount, r.paid),
+    outstandingBalance: pickNumber(
+      r.balance_due,
+      r.balanceDue,
+      r.outstanding_balance,
+      r.outstandingBalance,
+      r.balance,
+    ),
     reference: pickString(r.reference, r.vendor_ref, r.vendorRef) || undefined,
   };
 }
@@ -134,7 +141,6 @@ export function normalizeInvoiceDetail(raw: unknown): VendorInvoiceDetail | null
     ...base,
     subtotal: pickNumber(data.subtotal),
     taxTotal: pickNumber(data.tax_total, data.taxTotal),
-    paidAmount: pickNumber(data.paid_amount, data.paidAmount),
     remarks: pickString(data.remarks, data.notes) || undefined,
     pdfUrl: pickInvoicePdfUrl(data),
     lines: linesRaw.map(normalizeLine).filter((l): l is VendorInvoiceLine => Boolean(l)),

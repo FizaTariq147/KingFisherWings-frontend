@@ -8,6 +8,7 @@ export const PARTY_TYPES = [
   'CFS_PORT_AGENT',
   'WAREHOUSE',
   'SUPPLIER',
+  'VENDOR',
   'OVERSEAS_AGENT',
   'OTHER',
 ] as const;
@@ -27,6 +28,7 @@ export const PARTY_TYPE_LABELS: Record<PartyType, string> = {
   CFS_PORT_AGENT: 'CFS / Port Agent',
   WAREHOUSE: 'Warehouse',
   SUPPLIER: 'Supplier',
+  VENDOR: 'Vendor',
   OVERSEAS_AGENT: 'Overseas Agent',
   OTHER: 'Other',
 };

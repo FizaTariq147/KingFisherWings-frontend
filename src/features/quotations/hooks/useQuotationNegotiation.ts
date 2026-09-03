@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/authStore';
 import { quotationNegotiationService } from '../services/quotationNegotiation.service';
 import type { ApprovalDecisionDto } from '../types/quotation.types';
 import type { NegotiationRejectDto, ReviseAndSendDto } from '../types/quotationExtended.types';
+import { clearCustomerQuoteDecision } from '../utils/customerQuoteDecision';
 import { useInvalidateQuotations } from './useQuotations';
 
 export const negotiationKeys = {
@@ -17,6 +18,9 @@ export function useQuotationNegotiation(quotationId: string, enabled = true) {
     queryKey: negotiationKeys.timeline(quotationId),
     queryFn: () => quotationNegotiationService.getTimeline(quotationId),
     enabled: Boolean(token) && isUuid(quotationId) && enabled,
+    staleTime: 3_000,
+    refetchInterval: enabled ? 5_000 : false,
+    refetchIntervalInBackground: false,
   });
 }
 
@@ -24,6 +28,7 @@ export function useQuotationNegotiationActions(quotationId: string) {
   const invalidate = useInvalidateQuotations();
   const qc = useQueryClient();
   const onSuccess = () => {
+    clearCustomerQuoteDecision(quotationId);
     invalidate(quotationId);
     void qc.invalidateQueries({ queryKey: negotiationKeys.timeline(quotationId) });
   };

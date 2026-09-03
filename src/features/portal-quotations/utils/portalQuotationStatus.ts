@@ -1,13 +1,31 @@
-import type { PortalQuotationDetail, PortalQuotationListItem } from '../types/portalQuotations.types';
 import {
   canPortalCustomerRespond as canRespondCanonical,
   coerceQuotationStatus,
   isCustomerApprovedStatus,
   isCustomerDisapprovedStatus,
 } from '@/features/quotations/utils/quotationStatus';
+import type { PortalQuotationDetail, PortalQuotationListItem } from '../types/portalQuotations.types';
 
 export function normalizePortalQuoteStatus(status?: string): string {
   return coerceQuotationStatus(status || 'DRAFT');
+}
+
+/**
+ * After a successful portal accept/reject, POST body (and sometimes immediate GET)
+ * can still return the prior open status. Force the customer decision onto the
+ * detail used for cache/UI so list + detail update immediately.
+ */
+export function applyPortalCustomerDecisionStatus(
+  detail: PortalQuotationDetail,
+  decision: 'accept' | 'reject',
+): PortalQuotationDetail {
+  const current = normalizePortalQuoteStatus(detail.status);
+  if (decision === 'reject') {
+    if (isCustomerApprovedStatus(current) || current === 'CONVERTED') return detail;
+    return { ...detail, status: 'REJECTED' };
+  }
+  if (isCustomerDisapprovedStatus(current) || current === 'EXPIRED') return detail;
+  return { ...detail, status: 'APPROVED' };
 }
 
 export function portalQuoteHasPricing(

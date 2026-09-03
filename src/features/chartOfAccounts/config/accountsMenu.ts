@@ -1,4 +1,4 @@
-import { BookOpen, Network, Scale, FileStack, Banknote, Landmark, BarChart3, LineChart, Bookmark } from 'lucide-react';
+import { BookOpen, Network, Scale, FileStack, Banknote, Landmark, BarChart3, LineChart, Bookmark, ClipboardList } from 'lucide-react';
 import type { MenuTile } from '../../customers/types/menu.types';
 
 /** Accounts hub tiles — modules only; create actions live on each list page. */
@@ -10,6 +10,22 @@ export const accountsMenu: MenuTile[] = [
     icon: Banknote,
     iconColor: 'bg-emerald-600',
     path: '/gl/payments',
+  },
+  {
+    id: 'ar-open-items',
+    title: 'AR open items',
+    description: 'Customer invoices with amount paid vs balance due per party.',
+    icon: ClipboardList,
+    iconColor: 'bg-sky-600',
+    path: '/gl/ar/open-items',
+  },
+  {
+    id: 'ap-open-items',
+    title: 'AP open items',
+    description: 'Purchase invoices with paid vs pending balance per vendor.',
+    icon: ClipboardList,
+    iconColor: 'bg-indigo-600',
+    path: '/gl/ap/open-items',
   },
   {
     id: 'all-cheques-pdc',

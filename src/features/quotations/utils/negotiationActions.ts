@@ -40,7 +40,11 @@ function isCounterEvent(type: string): boolean {
 
 function isCustomerActor(actor?: string): boolean {
   const a = normalizeNegotiationActor(actor);
-  return a.includes('CUSTOMER') || a.includes('PORTAL');
+  return (
+    a.includes('CUSTOMER') ||
+    a.includes('PORTAL') ||
+    a.includes('VENDOR') // vendor cost negotiation counterparty
+  );
 }
 
 function isTenantActor(actor?: string): boolean {

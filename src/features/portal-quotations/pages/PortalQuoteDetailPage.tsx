@@ -14,6 +14,7 @@ import {
   PortalPanel,
   PortalStatCard,
 } from '@/features/portal-auth/components/portal-ui';
+import { QuotationStatusBadge } from '@/features/quotations/components/QuotationStatusBadge';
 import { PortalQuotationDecisionPanel } from '../components/PortalQuotationDecisionPanel';
 import { PortalQuotationNegotiationPanel } from '../components/PortalQuotationNegotiationPanel';
 import { usePortalQuotation } from '../hooks/usePortalQuotations';
@@ -27,6 +28,8 @@ const PDF_LIKELY_STATUSES = new Set([
   'WON',
   'CONVERTED',
   'ACCEPTED',
+  'CUSTOMER_REVIEW',
+  'NEGOTIATING',
 ]);
 
 export default function PortalQuoteDetailPage() {
@@ -89,7 +92,7 @@ export default function PortalQuoteDetailPage() {
         }
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            {data.status ? <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge> : null}
+            {data.status ? <QuotationStatusBadge status={data.status} /> : null}
             {total != null ? (
               <Badge variant="neutral">
                 {data.currencyCode || 'AED'}{' '}
@@ -137,7 +140,8 @@ export default function PortalQuoteDetailPage() {
         quote={data}
         onSuccess={(message) => {
           setActionSuccess(message);
-          void refetch();
+          // Status is patched by accept/reject mutations — avoid refetch overwriting
+          // REJECTED/APPROVED with a lagged GET that still returns SENT.
         }}
       />
 

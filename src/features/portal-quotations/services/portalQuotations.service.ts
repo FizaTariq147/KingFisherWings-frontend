@@ -25,6 +25,8 @@ import {
   normalizePortalServiceCatalog,
   filterPortalServiceCatalogByJobType,
 } from '../utils/normalizePortalQuotationExtended';
+import { applyPortalCustomerDecisionStatus } from '../utils/portalQuotationStatus';
+import { rememberCustomerQuoteDecision } from '@/features/quotations/utils/customerQuoteDecision';
 import { normalizeNegotiationTimeline } from '@/features/quotations/utils/normalizeQuotationExtended';
 import type { NegotiationTimeline } from '@/features/quotations/types/quotationExtended.types';
 
@@ -62,25 +64,46 @@ export const portalQuotationsService = {
 
   async accept(id: string, dto: { message?: string } = {}): Promise<PortalQuotationDetail> {
     // OpenAPI PortalQuotationAcceptDto — optional message; send {} so validators get a JSON body.
-    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.accept(id), dto);
-    const detail = normalizeQuotationDetail(res.data);
-    if (detail) return detail;
-    return this.getById(id);
+    await portalApiClient.post(PORTAL_QUOTATIONS_API.accept(id), dto);
+    // Always re-fetch: POST often echoes the prior open status.
+    const fresh = await this.getById(id);
+    const closed = applyPortalCustomerDecisionStatus(fresh, 'accept');
+    rememberCustomerQuoteDecision(id, 'APPROVED');
+    return {
+      ...closed,
+      raw: {
+        ...(closed.raw ?? {}),
+        portal_decision_server_status: fresh.status,
+      },
+    };
   },
 
   async reject(id: string, dto: PortalQuotationRejectDto): Promise<PortalQuotationDetail> {
-    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.reject(id), dto);
-    const detail = normalizeQuotationDetail(res.data);
-    if (detail) return detail;
-    return this.getById(id);
+    // OpenAPI: marks quote DISAPPROVED (UI coerces/shows as Rejected).
+    await portalApiClient.post(PORTAL_QUOTATIONS_API.reject(id), dto);
+    // Always re-fetch: POST 201 body often still has SENT / CUSTOMER_REVIEW / NEGOTIATING.
+    const fresh = await this.getById(id);
+    const closed = applyPortalCustomerDecisionStatus(fresh, 'reject');
+    rememberCustomerQuoteDecision(id, 'REJECTED');
+    return {
+      ...closed,
+      raw: {
+        ...(closed.raw ?? {}),
+        portal_decision_server_status: fresh.status,
+      },
+    };
   },
 
-  async serviceCatalog(jobType?: string): Promise<PortalServiceCatalogItem[]> {
+  async serviceCatalog(jobType: string): Promise<PortalServiceCatalogItem[]> {
+    const trimmed = jobType.trim();
+    if (!trimmed) {
+      throw new PortalApiError('job_type is required for the portal service catalog.', 400);
+    }
     const res = await portalApiClient.get(PORTAL_QUOTATIONS_API.serviceCatalog, {
-      params: jobType ? { job_type: jobType } : undefined,
+      params: { job_type: trimmed },
     });
     const items = normalizePortalServiceCatalog(res.data);
-    return filterPortalServiceCatalogByJobType(items, jobType);
+    return filterPortalServiceCatalogByJobType(items, trimmed);
   },
 
   async estimate(dto: PortalQuotationEstimateDto): Promise<PortalQuotationEstimateResult> {

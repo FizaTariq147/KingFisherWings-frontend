@@ -131,6 +131,8 @@ export interface Quotation {
   parent_quotation_id?: string;
   revision_number?: number;
   job_id?: string;
+  /** Draft customer invoice created on convert / customer approve. */
+  invoice_id?: string;
   deleted_at?: string | null;
   created_at?: string;
   updated_at?: string;

@@ -41,6 +41,7 @@ const PANEL_STATUSES = new Set([
   'INTERNALLY_APPROVED',
   'APPROVED',
   'DISAPPROVED',
+  'REJECTED',
   'WON',
   'LOST',
 ]);

@@ -15,7 +15,9 @@ import {
 } from '@/lib/tenantFromAuth'
 import {
   isTenantUserManagerRole,
+  hasStaffAccessFlags,
   menuKeysFromStaffAccess,
+  mergeStaffPermissions,
   resolveAuthRoleSlug,
 } from '@/features/users/constants/userPermissions'
 import { bootstrapLocaleSession, clearLocaleSession } from '@/features/locale/bootstrap/localeBootstrap'
@@ -139,12 +141,15 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
   const isTenantAdmin =
     isTenantUserManagerRole(role.slug) || isTenantUserManagerRole(role.name)
 
-  // Staff: merge JWT/menu keys with Tenant Admin visibility / functional flags.
-  // Always keep dashboard + settings so signed-in staff are not locked out of the shell.
-  let permissions = [...new Set([...fromMe, ...fromJwt, ...fromStaffFlags])] as PermissionKey[]
-  if (!isTenantAdmin) {
-    permissions = [...new Set([...permissions, 'menu_dashboard', 'menu_settings'])] as PermissionKey[]
-  }
+  // Staff: Tenant Admin functional/visibility flags own `menu_*` when present on /auth/me.
+  // JWT role menus must not re-open Finance/Ops the admin turned off.
+  const permissions = mergeStaffPermissions({
+    fromMe,
+    fromJwt,
+    fromStaffFlags,
+    staffFlagsPresent: hasStaffAccessFlags(record),
+    isTenantAdmin,
+  })
 
   // undefined = /me omitted the flag (keep login-session value); boolean = trust /me
   const mustChangePassword = hasMustChangePasswordFlag(record)

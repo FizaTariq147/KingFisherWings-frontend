@@ -79,9 +79,18 @@ export function PortalQuotationDecisionPanel({
           notes: rejectNotes.trim() || undefined,
         },
       })
-      .then(() => {
+      .then((result) => {
         setShowReject(false);
-        onSuccess?.('Quotation rejected.');
+        const serverStatus = String(
+          (result.raw as { portal_decision_server_status?: string } | undefined)
+            ?.portal_decision_server_status || '',
+        );
+        const serverStillOpen = canPortalCustomerRespondToQuote(serverStatus, result);
+        onSuccess?.(
+          serverStillOpen
+            ? 'Quotation marked rejected here. The server still reports Negotiating — ask your forwarder to click Mark rejected in ERP if it stays open.'
+            : 'Quotation rejected.',
+        );
       })
       .catch((err) => {
         setActionError(formatPortalQuotationActionError(getServerErrorMessage(err)));

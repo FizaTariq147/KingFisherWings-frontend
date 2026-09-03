@@ -31,14 +31,14 @@ const CONFIG: Record<
   'mark-won': {
     title: 'Mark as approved?',
     description: (label) =>
-      `${label} will be marked customer-approved (ops override after send).`,
+      `${label} will be marked customer-approved, then a job and draft customer invoice are created automatically.`,
     confirmLabel: 'Mark approved',
     variant: 'primary',
   },
   convert: {
     title: 'Convert to job?',
     description: (label) =>
-      `${label} will create a job, copy revenue charges, and create a draft customer invoice when the API supports it.`,
+      `${label} will create a job, copy revenue charges, and create a draft customer invoice.`,
     confirmLabel: 'Convert',
     variant: 'primary',
   },

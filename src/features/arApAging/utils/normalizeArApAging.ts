@@ -374,3 +374,93 @@ export function normalizeStatementReport(raw: unknown, partyId?: string) {
     raw,
   };
 }
+
+function normalizeOpenItemLine(raw: unknown): import('../types/arApAging.types').OpenItemLine | null {
+  const r = asRecord(raw);
+  if (!r) return null;
+  const id = str(r.id) ?? str(r.invoice_id) ?? str(r.document_id);
+  if (!id) return null;
+  const party = asRecord(r.party) ?? asRecord(r.customer) ?? asRecord(r.vendor);
+  return {
+    id,
+    number:
+      str(r.invoice_number) ??
+      str(r.number) ??
+      str(r.document_number) ??
+      str(r.ref) ??
+      id,
+    partyId: str(r.party_id) ?? str(r.partyId) ?? str(party?.id),
+    partyName:
+      str(r.party_name) ??
+      str(r.partyName) ??
+      str(r.customer_name) ??
+      str(r.vendor_name) ??
+      str(party?.name),
+    invoiceDate: str(r.invoice_date) ?? str(r.invoiceDate) ?? str(r.date),
+    dueDate: str(r.due_date) ?? str(r.dueDate),
+    currencyCode: (str(r.currency_code) ?? str(r.currencyCode) ?? str(r.currency))?.toUpperCase(),
+    status: str(r.status),
+    totalAmount:
+      num(r.total_amount) ||
+      num(r.totalAmount) ||
+      num(r.total) ||
+      undefined,
+    paidAmount:
+      num(r.amount_paid) ||
+      num(r.paid_amount) ||
+      num(r.paidAmount) ||
+      num(r.paid) ||
+      undefined,
+    balanceDue:
+      num(r.balance_due) ||
+      num(r.balanceDue) ||
+      num(r.outstanding_balance) ||
+      num(r.outstandingBalance) ||
+      num(r.balance) ||
+      num(r.pending) ||
+      undefined,
+    raw: r,
+  };
+}
+
+export function normalizeOpenItemsReport(
+  raw: unknown,
+  partyId?: string,
+): import('../types/arApAging.types').OpenItemsResult {
+  const envelope = asRecord(raw);
+  const nested = asRecord(envelope?.data);
+  const root = nested ?? envelope ?? {};
+  const list =
+    (Array.isArray(root.items) && root.items) ||
+    (Array.isArray(root.open_items) && root.open_items) ||
+    (Array.isArray(root.invoices) && root.invoices) ||
+    (Array.isArray(root.results) && root.results) ||
+    (Array.isArray(raw) && raw) ||
+    (Array.isArray(envelope?.data) && (envelope.data as unknown[])) ||
+    [];
+
+  const items = (list as unknown[])
+    .map(normalizeOpenItemLine)
+    .filter((x): x is import('../types/arApAging.types').OpenItemLine => Boolean(x));
+
+  const totalOutstanding =
+    num(root.total_outstanding) ||
+    num(root.outstanding) ||
+    items.reduce((s, i) => s + (i.balanceDue ?? 0), 0) ||
+    undefined;
+  const totalPaid =
+    num(root.total_paid) ||
+    num(root.paid) ||
+    items.reduce((s, i) => s + (i.paidAmount ?? 0), 0) ||
+    undefined;
+
+  return {
+    items,
+    partyId: str(root.party_id) ?? partyId,
+    partyName: str(root.party_name) ?? str(root.name),
+    currencyCode: (str(root.currency_code) ?? str(root.currencyCode))?.toUpperCase(),
+    totalOutstanding: totalOutstanding || undefined,
+    totalPaid: totalPaid || undefined,
+    raw,
+  };
+}

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FileText, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
@@ -16,6 +16,8 @@ import {
   portalSelectClassName,
 } from '@/features/portal-auth/components/portal-ui';
 import { PORTAL_JOB_TYPES } from '@/features/portal-shipments/api/portalShipments.api';
+import { QuotationStatusBadge } from '@/features/quotations/components/QuotationStatusBadge';
+import { ensureCustomerQuoteDecisionStorageMigrated } from '@/features/quotations/utils/customerQuoteDecision';
 import { usePortalQuotations } from '../hooks/usePortalQuotations';
 import {
   canPortalCustomerRespondToQuote,
@@ -24,6 +26,9 @@ import {
 
 export default function PortalQuotesPage() {
   const navigate = useNavigate();
+  useEffect(() => {
+    ensureCustomerQuoteDecisionStorageMigrated();
+  }, []);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [jobType, setJobType] = useState('');
@@ -182,7 +187,7 @@ export default function PortalQuotesPage() {
                   </Link>
                   <div className="flex shrink-0 flex-col items-stretch gap-2 sm:items-end">
                     <div className="flex flex-wrap items-center justify-end gap-2">
-                      {q.status ? <Badge variant="info">{q.status.replaceAll('_', ' ')}</Badge> : null}
+                      {q.status ? <QuotationStatusBadge status={q.status} /> : null}
                       {needsResponse ? (
                         <Badge variant="warning">Action required</Badge>
                       ) : null}

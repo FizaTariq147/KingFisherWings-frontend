@@ -14,6 +14,7 @@ import { JobOpsPanel } from '../components/JobOpsPanel';
 import { JobOverviewPanel } from '../components/JobOverviewPanel';
 import { JobPnlPanel } from '../components/JobPnlPanel';
 import { JobStuffingPanel } from '../components/JobStuffingPanel';
+import { JobVendorOffersPanel } from '@/features/vendor-job-offers/components/JobVendorOffersPanel';
 import { JOB_STATUS_LABELS, JOB_SEGMENTS, type JobSegmentKey } from '../constants/job.constants';
 import { useJobActions } from '../hooks/useJobActions';
 import { useJobConfirmState } from '../hooks/useJobConfirmState';
@@ -85,6 +86,11 @@ export default function JobDetailPage() {
       { key: 'pnl', label: 'P&L', content: <JobPnlPanel jobId={id} /> },
       { key: 'milestones', label: 'Milestones', content: <JobMilestonesPanel jobId={id} /> },
       { key: 'notes', label: 'Notes', content: <JobNotesPanel jobId={id} /> },
+      {
+        key: 'vendor-offers',
+        label: 'Vendor offers',
+        content: <JobVendorOffersPanel jobId={id} currencyCode={job.currency_code} />,
+      },
       { key: 'documents', label: 'Documents', content: <JobDocumentsPanel jobId={id} jobType={job.job_type} /> },
       {
         key: 'logistics',

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
@@ -15,10 +15,15 @@ import {
   useQuotationPdf,
 } from '../hooks/useQuotationActions';
 import { useQuotationConfirmState } from '../hooks/useQuotationConfirmState';
+import { useQuotationNegotiation } from '../hooks/useQuotationNegotiation';
 import { useDeleteQuotation, useQuotation, useQuotationRevisions } from '../hooks/useQuotations';
 import { useQuotationResolvedLabels } from '../hooks/useQuotationResolvedLabels';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
+import {
+  isAwaitingCustomerDecision,
+  resolveCustomerFacingQuoteStatus,
+} from '../utils/customerQuoteDecision';
 import { quotationDisplayNumber } from '../utils/normalizeQuotation';
 import { recalculateQuotationTotals } from '../utils/recalculateQuotationTotals';
 import {
@@ -59,6 +64,16 @@ export default function QuotationDetailPage() {
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [pdfOpen, setPdfOpen] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
+  const autoFulfillAttempted = useRef<string | null>(null);
+
+  const negotiationEnabled =
+    Boolean(id) &&
+    Boolean(quotation) &&
+    (isAwaitingCustomerDecision(quotation.status) ||
+      ['APPROVED', 'REJECTED', 'DISAPPROVED', 'WON', 'LOST', 'CUSTOMER_REVIEW', 'SENT', 'NEGOTIATING'].includes(
+        coerceQuotationStatus(quotation.status),
+      ));
+  const { data: negotiationTimeline } = useQuotationNegotiation(id, negotiationEnabled);
 
   const lines = quotation?.lines ?? [];
   const totals = useMemo(
@@ -69,6 +84,67 @@ export default function QuotationDetailPage() {
       }),
     [lines, quotation?.discount_percent, quotation?.discount_amount],
   );
+
+  const status = useMemo(() => {
+    if (!quotation) return 'DRAFT' as const;
+    return (
+      resolveCustomerFacingQuoteStatus(
+        quotation.id,
+        quotation.status,
+        quotation as unknown as Record<string, unknown>,
+        {
+          useMemory: true,
+          negotiationEvents: negotiationTimeline?.events,
+        },
+      ) ?? coerceQuotationStatus(quotation.status)
+    );
+  }, [quotation, negotiationTimeline?.events]);
+
+  // Customer Approved (portal or staff) → auto create job + draft invoice once.
+  useEffect(() => {
+    if (!quotation || !id) return;
+    if (status !== 'APPROVED') return;
+    if (quotation.job_id && quotation.invoice_id) return;
+    if (autoFulfillAttempted.current === id) return;
+    if (actions.fulfillApproved.isPending || pending) return;
+
+    autoFulfillAttempted.current = id;
+    setActionError(null);
+    void actions.fulfillApproved
+      .mutateAsync()
+      .then((result) => {
+        const jobId =
+          result && typeof result === 'object' && 'job_id' in result
+            ? String((result as { job_id?: string }).job_id ?? '')
+            : '';
+        const invoiceId =
+          result && typeof result === 'object' && 'invoice_id' in result
+            ? String((result as { invoice_id?: string }).invoice_id ?? '')
+            : '';
+        if (jobId || invoiceId) {
+          setActionMessage(
+            invoiceId
+              ? 'Quote approved — job and draft customer invoice created automatically.'
+              : 'Quote approved — job created. Draft invoice may still be pending.',
+          );
+        }
+        void refetch();
+      })
+      .catch((err) => {
+        autoFulfillAttempted.current = null;
+        setActionError(
+          getErrorMessage(err) ||
+            'Could not auto-create job/invoice from approved quote. Use Convert to job.',
+        );
+      });
+  }, [
+    actions.fulfillApproved,
+    id,
+    pending,
+    quotation,
+    refetch,
+    status,
+  ]);
 
   const { customerLabel } = useQuotationResolvedLabels(quotation ?? {
     id: '',
@@ -95,7 +171,6 @@ export default function QuotationDetailPage() {
     );
   }
 
-  const status = coerceQuotationStatus(quotation.status);
   /** Full quotation form edit / submit — drafts only */
   const editable = isQuotationDraftEditable(status);
   /** Charge lines can be updated while preparing / negotiating the offer */
@@ -375,7 +450,11 @@ export default function QuotationDetailPage() {
                 'Rejected.',
               );
             if (kind === 'send') return run(() => actions.send.mutateAsync(), 'Sent.');
-            if (kind === 'mark-won') return run(() => actions.markWon.mutateAsync(), 'Marked won.');
+            if (kind === 'mark-won')
+              return run(
+                () => actions.markWon.mutateAsync(),
+                'Approved — job and draft customer invoice created.',
+              );
             if (kind === 'mark-lost' && extra?.reason)
               return run(
                 () =>
@@ -394,6 +473,10 @@ export default function QuotationDetailPage() {
                   q && typeof q === 'object' && 'job_id' in q
                     ? String((q as { job_id?: string }).job_id ?? '')
                     : '';
+                const invoiceId =
+                  q && typeof q === 'object' && 'invoice_id' in q
+                    ? String((q as { invoice_id?: string }).invoice_id ?? '')
+                    : '';
                 if (jobId) {
                   navigate(
                     jobDetailPath({
@@ -404,7 +487,7 @@ export default function QuotationDetailPage() {
                   return q;
                 }
                 return q;
-              }, 'Converted to job.');
+              }, 'Converted to job and draft customer invoice created.');
             if (kind === 'archive') return run(() => actions.archive.mutateAsync(), 'Archived.');
             if (kind === 'expire') return run(() => actions.expire.mutateAsync(), 'Expired.');
             if (kind === 'delete')

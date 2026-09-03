@@ -323,10 +323,24 @@ export default function VendorInvoicesPage() {
                     {[
                       inv.invoiceDate,
                       inv.dueDate ? `Due ${inv.dueDate}` : null,
-                      formatVendorMoney(inv.totalAmount, inv.currencyCode),
                     ]
                       .filter(Boolean)
                       .join(' · ') || '—'}
+                  </div>
+                  <div className="mt-0.5 text-xs tabular-nums text-[var(--color-neutral-600)]">
+                    {[
+                      formatVendorMoney(inv.totalAmount, inv.currencyCode)
+                        ? `Total ${formatVendorMoney(inv.totalAmount, inv.currencyCode)}`
+                        : null,
+                      inv.paidAmount != null
+                        ? `Paid ${formatVendorMoney(inv.paidAmount, inv.currencyCode)}`
+                        : null,
+                      inv.outstandingBalance != null
+                        ? `Due ${formatVendorMoney(inv.outstandingBalance, inv.currencyCode)}`
+                        : null,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
                   </div>
                 </Link>
                 <div className="flex items-center gap-2 shrink-0">

@@ -97,10 +97,10 @@ export default function VendorInvoiceDetailPage() {
           <PortalStatCard label="Total" value={formatVendorMoney(data.totalAmount, data.currencyCode)} />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Outstanding" value={formatVendorMoney(data.outstandingBalance, data.currencyCode)} />
+          <PortalStatCard label="Paid" value={formatVendorMoney(data.paidAmount, data.currencyCode)} />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Paid" value={formatVendorMoney(data.paidAmount, data.currencyCode)} />
+          <PortalStatCard label="Balance due" value={formatVendorMoney(data.outstandingBalance, data.currencyCode)} />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
           <PortalStatCard label="Tax" value={formatVendorMoney(data.taxTotal, data.currencyCode)} />

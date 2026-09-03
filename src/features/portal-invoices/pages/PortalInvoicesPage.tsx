@@ -240,6 +240,11 @@ export default function PortalInvoicesPage() {
                   <div className="text-xs text-[var(--color-neutral-500)]">
                     {[inv.invoiceDate, inv.dueDate ? `Due ${inv.dueDate}` : null, inv.currencyCode].filter(Boolean).join(' · ') || '—'}
                   </div>
+                  <div className="mt-0.5 text-xs tabular-nums text-[var(--color-neutral-600)]">
+                    Total {inv.totalAmount ?? '—'}
+                    {inv.paidAmount != null ? ` · Paid ${inv.paidAmount}` : ''}
+                    {inv.outstandingBalance != null ? ` · Due ${inv.outstandingBalance}` : ''}
+                  </div>
                 </Link>
                 <div className="flex items-center gap-2 shrink-0">
                   {inv.status ? <Badge variant="info">{inv.status.replaceAll('_', ' ')}</Badge> : null}

@@ -50,7 +50,14 @@ export function normalizeInvoiceListItem(raw: unknown): PortalInvoiceListItem | 
     invoiceDate: pickString(r.invoice_date, r.invoiceDate) || undefined,
     dueDate: pickString(r.due_date, r.dueDate) || undefined,
     totalAmount: pickNumber(r.total_amount, r.totalAmount, r.total),
-    outstandingBalance: pickNumber(r.outstanding_balance, r.outstandingBalance, r.balance),
+    paidAmount: pickNumber(r.amount_paid, r.paid_amount, r.paidAmount, r.paid),
+    outstandingBalance: pickNumber(
+      r.balance_due,
+      r.balanceDue,
+      r.outstanding_balance,
+      r.outstandingBalance,
+      r.balance,
+    ),
     jobId: pickString(r.job_id, r.jobId) || undefined,
   };
 }
@@ -69,7 +76,7 @@ export function normalizeInvoiceDetail(raw: unknown): PortalInvoiceDetail | null
     ...base,
     subtotal: pickNumber(data.subtotal),
     taxTotal: pickNumber(data.tax_total, data.taxTotal),
-    paidAmount: pickNumber(data.paid_amount, data.paidAmount),
+    paidAmount: pickNumber(data.amount_paid, data.paid_amount, data.paidAmount, data.paid),
     remarks: pickString(data.remarks) || undefined,
     lines: linesRaw.map(normalizeInvoiceLine).filter((l): l is PortalInvoiceLine => Boolean(l)),
   };

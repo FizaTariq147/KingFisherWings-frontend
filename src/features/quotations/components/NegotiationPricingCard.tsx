@@ -10,22 +10,41 @@ interface NegotiationPricingCardProps {
   pricing?: NegotiationPricing | null;
   currencyCode?: string;
   title?: string;
+  tenantOfferLabel?: string;
+  counterOfferLabel?: string;
+  counterLinesLabel?: string;
+  emptyTenantHint?: string;
   /** When negotiation is closed, show settled total instead of a live counter. */
   settlement?: NegotiationSettlement | null;
+  /** Who accepted labels for settlement copy. */
+  settlementAcceptLabels?: {
+    counterpartyAcceptedTenant?: string;
+    tenantAcceptedCounter?: string;
+  };
 }
 
-/** Displays tenant offer vs customer counter from negotiation_pricing. */
+/** Displays tenant offer vs counter from negotiation_pricing (quotes or vendor cost). */
 export function NegotiationPricingCard({
   pricing,
   currencyCode,
   title = 'Negotiation pricing',
+  tenantOfferLabel = 'Tenant offer (revenue)',
+  counterOfferLabel = 'Customer counter',
+  counterLinesLabel = 'Customer proposed lines',
+  emptyTenantHint = 'No priced total yet — update charge lines, then revise and send.',
   settlement,
+  settlementAcceptLabels,
 }: NegotiationPricingCardProps) {
   if (!pricing && !settlement?.closed) return null;
   const currency = pricing?.currencyCode || currencyCode;
   const tenantOffer = pricing?.tenantProposedTotal ?? pricing?.revenueTotal;
   const closed = Boolean(settlement?.closed);
   const showLiveCounter = !closed && pricing?.customerProposedTotal != null;
+  const counterpartyAccepted =
+    settlementAcceptLabels?.counterpartyAcceptedTenant ??
+    'Customer accepted the tenant offer';
+  const tenantAccepted =
+    settlementAcceptLabels?.tenantAcceptedCounter ?? 'Tenant accepted the customer counter';
 
   return (
     <div className="rounded-md border border-[var(--color-neutral-200)] p-3 space-y-3 text-sm">
@@ -41,7 +60,7 @@ export function NegotiationPricingCard({
           </div>
           {settlement?.acceptedBy === 'CUSTOMER' ? (
             <p className="text-xs text-[var(--color-neutral-600)]">
-              Customer accepted the tenant offer
+              {counterpartyAccepted}
               {settlement.customerAbandonedCounter && settlement.lastCustomerCounter != null
                 ? ` (their counter of ${money(settlement.lastCustomerCounter, currency)} was not applied).`
                 : '.'}
@@ -49,7 +68,7 @@ export function NegotiationPricingCard({
           ) : null}
           {settlement?.acceptedBy === 'TENANT' ? (
             <p className="text-xs text-[var(--color-neutral-600)]">
-              Tenant accepted the customer counter
+              {tenantAccepted}
               {settlement.lastCustomerCounter != null
                 ? ` of ${money(settlement.lastCustomerCounter, currency)}.`
                 : '.'}
@@ -57,24 +76,21 @@ export function NegotiationPricingCard({
           ) : null}
           {settlement?.acceptedBy == null && settlement?.lastCustomerCounter != null ? (
             <p className="text-xs text-[var(--color-neutral-500)]">
-              Last customer counter (not pending):{' '}
-              {money(settlement.lastCustomerCounter, currency)}
+              Last counter (not pending): {money(settlement.lastCustomerCounter, currency)}
             </p>
           ) : null}
         </div>
       ) : (
         <div className="grid gap-2 sm:grid-cols-2">
           <div>
-            <p className="text-xs text-[var(--color-neutral-500)]">Tenant offer (revenue)</p>
+            <p className="text-xs text-[var(--color-neutral-500)]">{tenantOfferLabel}</p>
             <p className="font-semibold tabular-nums">{money(tenantOffer, currency)}</p>
             {tenantOffer == null ? (
-              <p className="text-xs text-[var(--color-neutral-400)] mt-0.5">
-                No priced total yet — update charge lines, then revise and send.
-              </p>
+              <p className="text-xs text-[var(--color-neutral-400)] mt-0.5">{emptyTenantHint}</p>
             ) : null}
           </div>
           <div>
-            <p className="text-xs text-[var(--color-neutral-500)]">Customer counter</p>
+            <p className="text-xs text-[var(--color-neutral-500)]">{counterOfferLabel}</p>
             <p className="font-semibold tabular-nums">
               {money(showLiveCounter ? pricing?.customerProposedTotal : undefined, currency)}
             </p>
@@ -90,7 +106,7 @@ export function NegotiationPricingCard({
       {!closed && pricing?.customerProposedLines?.length ? (
         <div>
           <p className="text-xs font-medium text-[var(--color-neutral-600)] mb-1">
-            Customer proposed lines
+            {counterLinesLabel}
           </p>
           <ul className="space-y-1">
             {pricing.customerProposedLines.map((line, i) => (

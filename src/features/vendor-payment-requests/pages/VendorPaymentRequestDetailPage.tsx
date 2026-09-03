@@ -40,12 +40,20 @@ export default function VendorPaymentRequestDetailPage() {
         title={data.number || data.id}
         description="Payment request detail"
         actions={
-          data.status ? (
+          data.paidAt ? (
+            <Badge variant="success">Paid</Badge>
+          ) : data.status ? (
             <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge>
-          ) : undefined
+          ) : (
+            <Badge variant="warning">Pending</Badge>
+          )
         }
       />
       <PortalPanel padded className="space-y-2 text-sm">
+        <p>
+          <span className="text-[var(--color-neutral-500)]">Payment status: </span>
+          <strong>{data.paidAt ? 'Paid' : data.status === 'APPROVED' ? 'Approved · pending payment' : data.status || 'Pending'}</strong>
+        </p>
         <p>
           <span className="text-[var(--color-neutral-500)]">Amount: </span>
           {formatVendorMoney(data.amount, data.currencyCode) || '—'}

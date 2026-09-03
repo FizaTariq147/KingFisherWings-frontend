@@ -81,6 +81,9 @@ import SavedReportDetailPage from '../features/glSavedReports/pages/SavedReportD
 import SavedReportEditPage from '../features/glSavedReports/pages/SavedReportEditPage'
 import ArAgingPage from '../features/arApAging/pages/ArAgingPage'
 import ApAgingPage from '../features/arApAging/pages/ApAgingPage'
+import ArOpenItemsPage from '../features/arApAging/pages/ArOpenItemsPage'
+import ApOpenItemsPage from '../features/arApAging/pages/ApOpenItemsPage'
+import ArStatementPage from '../features/arApAging/pages/ArStatementPage'
 import {
   OnlineTariffCreatePage,
   OnlineTariffDetailPage,
@@ -236,6 +239,8 @@ import VendorHomePage from '../features/vendor-auth/pages/VendorHomePage'
 import VendorAccountPage from '../features/vendor-auth/pages/VendorAccountPage'
 import VendorInvoicesPage from '../features/vendor-invoices/pages/VendorInvoicesPage'
 import VendorInvoiceDetailPage from '../features/vendor-invoices/pages/VendorInvoiceDetailPage'
+import VendorJobsPage from '../features/vendor-job-offers/pages/VendorJobsPage'
+import VendorJobDetailPage from '../features/vendor-job-offers/pages/VendorJobDetailPage'
 import VendorPaymentsPage from '../features/vendor-payments/pages/VendorPaymentsPage'
 import VendorAdvancesPage from '../features/vendor-payments/pages/VendorAdvancesPage'
 import VendorCreditNotesPage from '../features/vendor-credit-notes/pages/VendorCreditNotesPage'
@@ -264,6 +269,7 @@ import PartyListPage from '../features/parties/pages/PartyListPage'
 import PartyCreatePage from '../features/parties/pages/PartyCreatePage'
 import PartyDetailPage from '../features/parties/pages/PartyDetailPage'
 import PartyEditPage from '../features/parties/pages/PartyEditPage'
+import PartyTransactionSummaryPage from '../features/parties/pages/PartyTransactionSummaryPage'
 import OrganizationShell from '../features/organization/pages/OrganizationShell'
 import OrganizationProfilePage from '../features/organization/pages/OrganizationProfilePage'
 import BankAccountsPage from '../features/organization/pages/BankAccountsPage'
@@ -358,6 +364,8 @@ export const router = createBrowserRouter([
         element: <VendorShell />,
         children: [
           { index: true, element: <VendorHomePage /> },
+          { path: 'jobs', element: <VendorJobsPage /> },
+          { path: 'jobs/:id', element: <VendorJobDetailPage /> },
           { path: 'invoices', element: <VendorInvoicesPage /> },
           { path: 'invoices/:id', element: <VendorInvoiceDetailPage /> },
           { path: 'payments', element: <VendorPaymentsPage /> },
@@ -398,7 +406,9 @@ export const router = createBrowserRouter([
             ],
           },
           {
-            element: <ProtectedRoute requirePermissions={['menu_finance']} />,
+            element: (
+              <ProtectedRoute requireAnyPermission={['menu_vendors', 'menu_finance']} />
+            ),
             children: [{ path: '/vendors', element: <VendorServiceMenuPage /> }],
           },
           {
@@ -412,6 +422,7 @@ export const router = createBrowserRouter([
               { path: '/parties/new', element: <PartyCreatePage /> },
               { path: '/parties/:id', element: <PartyDetailPage /> },
               { path: '/parties/:id/edit', element: <PartyEditPage /> },
+              { path: '/parties/:id/transaction-summary', element: <PartyTransactionSummaryPage /> },
               {
                 path: '/organization',
                 element: <OrganizationShell />,
@@ -715,6 +726,9 @@ export const router = createBrowserRouter([
               { path: '/gl/saved-reports/:id', element: <SavedReportDetailPage /> },
               { path: '/gl/ar/aging', element: <ArAgingPage /> },
               { path: '/gl/ap/aging', element: <ApAgingPage /> },
+              { path: '/gl/ar/open-items', element: <ArOpenItemsPage /> },
+              { path: '/gl/ap/open-items', element: <ApOpenItemsPage /> },
+              { path: '/gl/ar/statement/:partyId', element: <ArStatementPage /> },
             ],
           },
         ],

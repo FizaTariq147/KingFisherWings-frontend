@@ -17,16 +17,21 @@ export interface PortalQuotationRejectDto {
 }
 
 export interface PortalCargoPackageDto {
-  length_cm: number;
-  width_cm: number;
-  height_cm: number;
+  /** Prefer cm or m — OpenAPI CargoPackageDto accepts either. */
+  length_cm?: number;
+  width_cm?: number;
+  height_cm?: number;
+  length_m?: number;
+  width_m?: number;
+  height_m?: number;
+  /** Required by estimate API. */
   gross_weight_kg: number;
   pieces?: number;
 }
 
 export interface PortalQuotationEstimateDto {
   job_type: string;
-  currency_code?: string;
+  currency_code: string;
   origin_port_id?: string;
   dest_port_id?: string;
   commodity?: string;
@@ -38,8 +43,10 @@ export interface PortalQuotationEstimateDto {
   special_requirements?: string;
   valid_until?: string;
   container_count?: number;
-  packages?: PortalCargoPackageDto[];
-  service_codes?: string[];
+  /** Required by POST /portal/quotations/estimate */
+  packages: PortalCargoPackageDto[];
+  /** Required by POST /portal/quotations/estimate */
+  service_codes: string[];
 }
 
 export interface PortalQuotationCounterOfferDto {
@@ -54,6 +61,10 @@ export interface PortalQuotationCounterOfferDto {
   }>;
 }
 
+/**
+ * POST /portal/quotations/request — enquiry only.
+ * Do not send packages or service_codes (forbidden / estimate-only).
+ */
 export interface PortalQuotationRequestDto {
   job_type: string;
   currency_code: string;
@@ -68,8 +79,6 @@ export interface PortalQuotationRequestDto {
   special_requirements?: string;
   valid_until?: string;
   container_count?: number;
-  packages?: PortalCargoPackageDto[];
-  /** Not accepted by POST /portal/quotations — use estimate endpoint only. */
 }
 
 export interface PortalServiceCatalogItem {

@@ -8,7 +8,7 @@ import {
   unwrapList,
 } from '@/features/portal-shared/normalize';
 import { normalizeNegotiationPricing } from '@/features/quotations/utils/normalizeQuotationExtended';
-import { coerceQuotationStatus } from '@/features/quotations/utils/quotationStatus';
+import { resolveCustomerFacingQuoteStatus } from '@/features/quotations/utils/customerQuoteDecision';
 import type {
   PortalQuotationDetail,
   PortalQuotationListItem,
@@ -83,10 +83,9 @@ export function normalizeQuotationListItem(raw: unknown): PortalQuotationListIte
     id,
     number:
       pickString(record.number, record.quotation_number, record.quotationNumber, record.ref) || id,
-    status: (() => {
-      const rawStatus = pickString(record.status);
-      return rawStatus ? coerceQuotationStatus(rawStatus) : undefined;
-    })(),
+    status: resolveCustomerFacingQuoteStatus(id, pickString(record.status) || undefined, record, {
+      useMemory: true,
+    }),
     jobType: pickString(record.job_type, record.jobType) || undefined,
     currencyCode: pickString(record.currency_code, record.currencyCode, record.currency) || undefined,
     origin: portLabel(record, 'origin') || undefined,

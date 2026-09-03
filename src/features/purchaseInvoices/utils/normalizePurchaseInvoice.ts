@@ -109,8 +109,9 @@ export function normalizePurchaseInvoice(raw: unknown): PurchaseInvoice | null {
     subtotal: num(r.subtotal),
     tax_total: num(r.tax_total) ?? num(r.vat_amount),
     total_amount: num(r.total_amount) ?? num(r.total),
-    paid_amount: num(r.paid_amount),
-    outstanding_balance: num(r.outstanding_balance) ?? num(r.balance),
+    paid_amount: num(r.paid_amount) ?? num(r.amount_paid) ?? num(r.paid),
+    outstanding_balance:
+      num(r.outstanding_balance) ?? num(r.balance_due) ?? num(r.balanceDue) ?? num(r.balance),
     deleted_at: (str(r.deleted_at) as string | null | undefined) ?? null,
     created_at: str(r.created_at),
     updated_at: str(r.updated_at),

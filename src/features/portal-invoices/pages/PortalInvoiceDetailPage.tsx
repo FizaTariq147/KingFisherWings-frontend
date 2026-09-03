@@ -99,8 +99,8 @@ export default function PortalInvoiceDetailPage() {
       ) : null}
       <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <PortalAnimatedGridItem><PortalStatCard label="Total" value={data.totalAmount ?? '—'} /></PortalAnimatedGridItem>
-        <PortalAnimatedGridItem><PortalStatCard label="Outstanding" value={data.outstandingBalance ?? '—'} /></PortalAnimatedGridItem>
         <PortalAnimatedGridItem><PortalStatCard label="Paid" value={data.paidAmount ?? '—'} /></PortalAnimatedGridItem>
+        <PortalAnimatedGridItem><PortalStatCard label="Balance due" value={data.outstandingBalance ?? '—'} /></PortalAnimatedGridItem>
         <PortalAnimatedGridItem><PortalStatCard label="Currency" value={data.currencyCode || '—'} /></PortalAnimatedGridItem>
       </PortalAnimatedGrid>
       {data.remarks ? <PortalPanel padded><p className="text-sm text-[var(--color-neutral-700)]">{data.remarks}</p></PortalPanel> : null}

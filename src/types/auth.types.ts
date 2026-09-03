@@ -8,6 +8,7 @@ export type PermissionKey =
   | 'menu_jobs_sea_import'
   | 'menu_documentation'
   | 'menu_finance'
+  | 'menu_vendors'
   | 'menu_accounts'
   | 'menu_nvocc'
   | 'menu_hr'

@@ -31,6 +31,9 @@ export const PARTY_API = {
     `/parties/${partyId}/vendor-users/${id}/resend-invite`,
   /** Parties → vendor document rights */
   vendorPermissions: (partyId: string) => `/parties/${partyId}/vendor-permissions`,
+  /** Customer transaction summary (may 404 until backend ships). */
+  transactionSummary: (id: string) => `/parties/${id}/transaction-summary`,
+  sendTransactionSummary: (id: string) => `/parties/${id}/transaction-summary/send`,
 } as const;
 
 export const PARTY_PORTAL_DOCUMENT_TYPES = [

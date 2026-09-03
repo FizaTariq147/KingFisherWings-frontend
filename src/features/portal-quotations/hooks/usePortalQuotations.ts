@@ -1,4 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { QueryClient } from '@tanstack/react-query';
 import { usePortalQueryScope } from '@/features/portal-shared/usePortalQueryScope';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import { PortalApiError } from '@/lib/portalApiClient';
@@ -6,12 +7,17 @@ import { portalQuotationsService } from '../services/portalQuotations.service';
 import { fetchLocaleCurrencyForCountry } from '../utils/loadPortalCurrencyOptions';
 import { fetchPortalPortOptions } from '../utils/loadPortalPortOptions';
 import type {
+  PortalQuotationDetail,
   PortalQuotationListParams,
+  PortalQuotationListResult,
   PortalQuotationRejectDto,
   PortalQuotationRequestDto,
   PortalQuotationEstimateDto,
   PortalQuotationCounterOfferDto,
 } from '../types/portalQuotations.types';
+import {
+  applyPortalCustomerDecisionStatus,
+} from '../utils/portalQuotationStatus';
 
 export const portalQuotationKeys = {
   all: (scope: string) => ['portal', scope, 'quotations'] as const,
@@ -27,6 +33,48 @@ export const portalQuotationKeys = {
   negotiation: (scope: string, id: string) =>
     [...portalQuotationKeys.all(scope), 'negotiation', id] as const,
 };
+
+function patchPortalQuotationCaches(
+  qc: QueryClient,
+  scope: string,
+  quote: PortalQuotationDetail,
+) {
+  if (!quote.id) return;
+  qc.setQueryData(portalQuotationKeys.detail(scope, quote.id), quote);
+  qc.setQueriesData<PortalQuotationListResult>(
+    { queryKey: [...portalQuotationKeys.all(scope), 'list'] },
+    (old) => {
+      if (!old?.items?.length) return old;
+      return {
+        ...old,
+        items: old.items.map((item) =>
+          item.id === quote.id
+            ? {
+                ...item,
+                status: quote.status,
+                currencyCode: quote.currencyCode ?? item.currencyCode,
+                number: quote.number || item.number,
+              }
+            : item,
+        ),
+      };
+    },
+  );
+}
+
+async function syncPortalQuotationAfterDecision(
+  qc: QueryClient,
+  scope: string,
+  quote: PortalQuotationDetail,
+  decision: 'accept' | 'reject',
+) {
+  const closed = applyPortalCustomerDecisionStatus(quote, decision);
+  // Do not refetch list/detail here — live API often still returns NEGOTIATING after a
+  // successful reject/accept, which would wipe the updated badge.
+  patchPortalQuotationCaches(qc, scope, closed);
+  void qc.invalidateQueries({ queryKey: portalQuotationKeys.summary(scope) });
+  void qc.invalidateQueries({ queryKey: portalQuotationKeys.negotiation(scope, closed.id) });
+}
 
 /** Port list for quote booking (portal reference API, not staff `/masters/*`). */
 export function usePortalPortOptions(enabled = true) {
@@ -99,12 +147,9 @@ export function useAcceptPortalQuotation() {
   const scope = usePortalQueryScope();
   return useMutation({
     mutationFn: (id: string) => portalQuotationsService.accept(id, {}),
-    onSuccess: (q) => {
-      void qc.invalidateQueries({ queryKey: portalQuotationKeys.all(scope) });
-      if (scope !== 'anon' && q.id) {
-        qc.setQueryData(portalQuotationKeys.detail(scope, q.id), q);
-        void qc.invalidateQueries({ queryKey: portalQuotationKeys.negotiation(scope, q.id) });
-      }
+    onSuccess: async (q) => {
+      if (scope === 'anon' || !q.id) return;
+      await syncPortalQuotationAfterDecision(qc, scope, q, 'accept');
     },
   });
 }
@@ -115,12 +160,9 @@ export function useRejectPortalQuotation() {
   return useMutation({
     mutationFn: ({ id, dto }: { id: string; dto: PortalQuotationRejectDto }) =>
       portalQuotationsService.reject(id, dto),
-    onSuccess: (q) => {
-      void qc.invalidateQueries({ queryKey: portalQuotationKeys.all(scope) });
-      if (scope !== 'anon' && q.id) {
-        qc.setQueryData(portalQuotationKeys.detail(scope, q.id), q);
-        void qc.invalidateQueries({ queryKey: portalQuotationKeys.negotiation(scope, q.id) });
-      }
+    onSuccess: async (q) => {
+      if (scope === 'anon' || !q.id) return;
+      await syncPortalQuotationAfterDecision(qc, scope, q, 'reject');
     },
   });
 }
@@ -142,10 +184,12 @@ export function useRequestPortalQuotation() {
 export function usePortalServiceCatalog(jobType?: string, enabled = true) {
   const accessToken = usePortalAuthStore((s) => s.accessToken);
   const scope = usePortalQueryScope();
+  const trimmedJobType = jobType?.trim() || '';
   return useQuery({
-    queryKey: portalQuotationKeys.serviceCatalog(scope, jobType),
-    queryFn: () => portalQuotationsService.serviceCatalog(jobType),
-    enabled: Boolean(accessToken) && enabled && scope !== 'anon',
+    queryKey: portalQuotationKeys.serviceCatalog(scope, trimmedJobType),
+    queryFn: () => portalQuotationsService.serviceCatalog(trimmedJobType),
+    enabled:
+      Boolean(accessToken) && enabled && scope !== 'anon' && Boolean(trimmedJobType),
     staleTime: 5 * 60_000,
   });
 }
