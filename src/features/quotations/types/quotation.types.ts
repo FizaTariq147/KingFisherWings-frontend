@@ -119,6 +119,8 @@ export interface Quotation {
   total_amount?: number;
   cost_total?: number;
   revenue_total?: number;
+  /** Live negotiation offer/counter snapshot from GET /quotations/:id */
+  negotiation_pricing?: import('./quotationExtended.types').NegotiationPricing;
   gp_amount?: number;
   gp_percent?: number;
   contact_name?: string;
@@ -129,6 +131,8 @@ export interface Quotation {
   parent_quotation_id?: string;
   revision_number?: number;
   job_id?: string;
+  /** Draft customer invoice created on convert / customer approve. */
+  invoice_id?: string;
   deleted_at?: string | null;
   created_at?: string;
   updated_at?: string;

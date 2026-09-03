@@ -17,6 +17,7 @@ export interface VendorInvoiceListItem {
   invoiceDate?: string;
   dueDate?: string;
   totalAmount?: number;
+  paidAmount?: number;
   outstandingBalance?: number;
   reference?: string;
 }
@@ -32,7 +33,6 @@ export interface VendorInvoiceLine {
 export interface VendorInvoiceDetail extends VendorInvoiceListItem {
   subtotal?: number;
   taxTotal?: number;
-  paidAmount?: number;
   remarks?: string;
   pdfUrl?: string;
   lines: VendorInvoiceLine[];

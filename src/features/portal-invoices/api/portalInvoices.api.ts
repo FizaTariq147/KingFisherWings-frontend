@@ -1,9 +1,11 @@
 export const PORTAL_INVOICES_API = {
   summary: '/portal/invoices/summary',
   list: '/portal/invoices',
+  openItems: '/portal/invoices/open-items',
   exportCsv: '/portal/invoices/export.csv',
   detail: (id: string) => `/portal/invoices/${encodeURIComponent(id)}`,
   pdf: (id: string) => `/portal/invoices/${encodeURIComponent(id)}/pdf`,
+  paymentProofs: (id: string) => `/portal/invoices/${encodeURIComponent(id)}/payment-proofs`,
 } as const;
 
 export const PORTAL_INVOICE_STATUSES = [

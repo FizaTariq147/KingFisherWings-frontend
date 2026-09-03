@@ -12,12 +12,12 @@ test.beforeEach(() => {
 });
 
 test.describe('Regression — Recent integrations', () => {
-  test('hub All Jobs pages load (NVOCC, Documentation, Management)', async ({ page }) => {
+  test('hub All Jobs pages load (NVOCC, Management) and Documentation menu loads', async ({ page }) => {
     await page.goto('/nvocc/all-jobs');
     await expect(page).toHaveURL(/\/nvocc\/all-jobs/);
 
-    await page.goto('/documentation/all-jobs');
-    await expect(page).toHaveURL(/\/documentation\/all-jobs/);
+    await page.goto('/documentation');
+    await expect(page).toHaveURL(/\/documentation$/);
 
     await page.goto('/management/all-jobs-mis');
     await expect(page).toHaveURL(/\/management\/all-jobs-mis/);

@@ -51,12 +51,12 @@ export function PortalTopbar({
         <Link
           to="/portal/alerts"
           className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center text-[#5B6B7A] hover:text-[#0A2942]"
-          aria-label="Alerts"
+          aria-label={unreadCount > 0 ? `Alerts, ${unreadCount} unread` : 'Alerts'}
         >
           <Bell size={20} strokeWidth={1.8} />
           {unreadCount > 0 ? (
-            <span className="absolute right-1 top-1 h-4 min-w-4 rounded-full bg-[#FF751F] px-1 text-center text-[10px] font-semibold leading-4 text-white">
-              {unreadCount > 9 ? '9+' : unreadCount}
+            <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#FF751F] px-1 text-center text-[10px] font-semibold leading-none text-white">
+              {unreadCount > 99 ? '99+' : unreadCount}
             </span>
           ) : null}
         </Link>

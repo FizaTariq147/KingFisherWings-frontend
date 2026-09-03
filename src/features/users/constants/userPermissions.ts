@@ -26,28 +26,72 @@ export const USER_FUNCTIONAL_FLAGS = [
 
 export type UserFunctionalFlag = (typeof USER_FUNCTIONAL_FLAGS)[number];
 
+const STAFF_FLAG_KEYS = [...USER_FUNCTIONAL_FLAGS, ...USER_VISIBILITY_PERMISSIONS] as const;
+
+const SNAKE_TO_CAMEL: Record<string, string> = {
+  is_salesperson: 'isSalesperson',
+  is_cs_rep: 'isCsRep',
+  is_operations: 'isOperations',
+  is_finance: 'isFinance',
+  can_see_sales: 'canSeeSales',
+  can_see_cost: 'canSeeCost',
+  can_see_gp: 'canSeeGp',
+  can_see_invoices: 'canSeeInvoices',
+  can_see_payments: 'canSeePayments',
+  can_see_bank_balances: 'canSeeBankBalances',
+  can_see_ar_ap: 'canSeeArAp',
+  can_see_mgmt_reports: 'canSeeMgmtReports',
+  can_see_job_pnl: 'canSeeJobPnl',
+};
+
 function readTruthyFlag(record: Record<string, unknown>, key: string): boolean {
-  const value = record[key];
+  const camel = SNAKE_TO_CAMEL[key];
+  const value = record[key] ?? (camel ? record[camel] : undefined);
   return value === true || value === 'true' || value === 1 || value === '1';
+}
+
+/** True when /auth/me (or user payload) includes Tenant Admin staff access flags. */
+export function hasStaffAccessFlags(record: Record<string, unknown>): boolean {
+  return STAFF_FLAG_KEYS.some((key) => {
+    const camel = SNAKE_TO_CAMEL[key];
+    return key in record || (camel != null && camel in record);
+  });
+}
+
+export function isMenuPermissionKey(key: string): boolean {
+  return key.startsWith('menu_');
 }
 
 /**
  * Map Tenant Admin user flags / visibility permissions (from GET /auth/me)
  * onto sidebar `menu_*` keys so staff nav matches what was assigned at create/edit.
+ *
+ * Functional flags drive modules:
+ * - Sales → Sales + Quotations (+ Customers)
+ * - Operations → Air/Sea jobs + Documentation + NVOCC
+ * - Finance → Finance hub (invoices, payment requests, …)
+ * - CS → Customers (+ Vendors)
+ *
+ * Visibility flags refine Accounts / Reports; `can_see_invoices` alone does NOT open Finance.
  */
 export function menuKeysFromStaffAccess(record: Record<string, unknown>): PermissionKey[] {
   const keys = new Set<PermissionKey>();
 
-  if (readTruthyFlag(record, 'is_cs_rep')) {
+  const isSales = readTruthyFlag(record, 'is_salesperson') || readTruthyFlag(record, 'can_see_sales');
+  const isCs = readTruthyFlag(record, 'is_cs_rep');
+  const isOps = readTruthyFlag(record, 'is_operations');
+  const isFinance = readTruthyFlag(record, 'is_finance');
+
+  if (isCs || isSales || isOps) {
     keys.add('menu_customers');
   }
 
-  if (readTruthyFlag(record, 'is_salesperson') || readTruthyFlag(record, 'can_see_sales')) {
+  if (isSales) {
     keys.add('menu_sales');
     keys.add('menu_quotations');
   }
 
-  if (readTruthyFlag(record, 'is_operations') || readTruthyFlag(record, 'can_see_job_pnl')) {
+  if (isOps || readTruthyFlag(record, 'can_see_job_pnl')) {
     keys.add('menu_jobs_air_export');
     keys.add('menu_jobs_sea_export');
     keys.add('menu_jobs_sea_import');
@@ -55,16 +99,22 @@ export function menuKeysFromStaffAccess(record: Record<string, unknown>): Permis
     keys.add('menu_nvocc');
   }
 
-  if (readTruthyFlag(record, 'is_operations')) {
+  if (isOps) {
     keys.add('menu_quotations');
   }
 
-  if (readTruthyFlag(record, 'is_finance') || readTruthyFlag(record, 'can_see_invoices')) {
+  // Finance module requires the Finance functional flag — not can_see_invoices alone.
+  if (isFinance) {
     keys.add('menu_finance');
   }
 
+  // Vendors are a separate module (not the same as Finance invoices).
+  if (isFinance || isCs) {
+    keys.add('menu_vendors');
+  }
+
   if (
-    readTruthyFlag(record, 'is_finance') ||
+    isFinance ||
     readTruthyFlag(record, 'can_see_payments') ||
     readTruthyFlag(record, 'can_see_ar_ap') ||
     readTruthyFlag(record, 'can_see_bank_balances')
@@ -78,6 +128,44 @@ export function menuKeysFromStaffAccess(record: Record<string, unknown>): Permis
   }
 
   return [...keys];
+}
+
+/**
+ * Build the effective permission list for a signed-in staff user.
+ * When Tenant Admin flags are present on /auth/me, those define `menu_*` keys
+ * (JWT role menus cannot re-open Finance/Ops the admin turned off).
+ * Action permissions (quotations.negotiate, gl.*, …) still come from JWT / me.
+ */
+export function mergeStaffPermissions(opts: {
+  fromMe: string[];
+  fromJwt: string[];
+  fromStaffFlags: PermissionKey[];
+  staffFlagsPresent: boolean;
+  isTenantAdmin: boolean;
+}): PermissionKey[] {
+  const { fromMe, fromJwt, fromStaffFlags, staffFlagsPresent, isTenantAdmin } = opts;
+
+  if (isTenantAdmin) {
+    return [...new Set([...fromMe, ...fromJwt, ...fromStaffFlags])] as PermissionKey[];
+  }
+
+  const nonMenu = [...fromMe, ...fromJwt].filter((key) => !isMenuPermissionKey(key));
+
+  if (staffFlagsPresent) {
+    return [
+      ...new Set([
+        ...fromStaffFlags,
+        ...nonMenu,
+        'menu_dashboard',
+        'menu_settings',
+      ]),
+    ] as PermissionKey[];
+  }
+
+  // /me had no staff flags — fall back to JWT / role menus so older tenants still work.
+  return [
+    ...new Set([...fromMe, ...fromJwt, ...fromStaffFlags, 'menu_dashboard', 'menu_settings']),
+  ] as PermissionKey[];
 }
 
 /**

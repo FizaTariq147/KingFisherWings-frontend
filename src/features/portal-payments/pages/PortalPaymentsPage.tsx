@@ -13,7 +13,8 @@ import {
   PortalPageHeader,
   PortalPanel,
 } from '@/features/portal-auth/components/portal-ui';
-import { usePortalPayments } from '../hooks/usePortalPayments';
+import { usePortalPayments, usePortalPaymentsSummary } from '../hooks/usePortalPayments';
+import { PortalAnimatedGrid, PortalAnimatedGridItem, PortalStatCard } from '@/features/portal-auth/components/portal-ui';
 
 export default function PortalPaymentsPage() {
   const [page, setPage] = useState(1);
@@ -31,12 +32,37 @@ export default function PortalPaymentsPage() {
     [page, search, fromDate, toDate],
   );
   const { data, isLoading, isError, error, refetch, isFetching } = usePortalPayments(params);
+  const summary = usePortalPaymentsSummary();
   const items = data?.items ?? [];
   const meta = data?.meta;
 
   return (
     <div className="space-y-5">
       <PortalPageHeader title="Payments" description="Receipts and payment history for your account." />
+      {summary.data ? (
+        <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2">
+          <PortalAnimatedGridItem>
+            <PortalStatCard
+              label="Outstanding"
+              value={
+                summary.data.totalOutstanding != null
+                  ? `${summary.data.currencyCode || ''} ${summary.data.totalOutstanding}`.trim()
+                  : '—'
+              }
+            />
+          </PortalAnimatedGridItem>
+          <PortalAnimatedGridItem>
+            <PortalStatCard
+              label="Paid YTD"
+              value={
+                summary.data.totalPaidYtd != null
+                  ? `${summary.data.currencyCode || ''} ${summary.data.totalPaidYtd}`.trim()
+                  : '—'
+              }
+            />
+          </PortalAnimatedGridItem>
+        </PortalAnimatedGrid>
+      ) : null}
       <PortalPanel padded>
         <div className="grid gap-3 sm:grid-cols-3">
           <Input

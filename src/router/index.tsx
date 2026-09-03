@@ -30,6 +30,7 @@ import QuotationCreatePage from '../features/quotations/pages/QuotationCreatePag
 import QuotationDetailPage from '../features/quotations/pages/QuotationDetailPage'
 import QuotationEditPage from '../features/quotations/pages/QuotationEditPage'
 import QuotationReportsPage from '../features/quotations/pages/QuotationReportsPage'
+import ServiceCatalogPage from '../features/quotations/pages/ServiceCatalogPage'
 import QuotationOnlineQuotePage from '../features/quotations/pages/QuotationOnlineQuotePage'
 import FinanceMenuPage from '../pages/finance/FinanceMenuPage'
 import AccountsMenuPage from '../pages/accounts/AccountsMenuPage'
@@ -80,6 +81,9 @@ import SavedReportDetailPage from '../features/glSavedReports/pages/SavedReportD
 import SavedReportEditPage from '../features/glSavedReports/pages/SavedReportEditPage'
 import ArAgingPage from '../features/arApAging/pages/ArAgingPage'
 import ApAgingPage from '../features/arApAging/pages/ApAgingPage'
+import ArOpenItemsPage from '../features/arApAging/pages/ArOpenItemsPage'
+import ApOpenItemsPage from '../features/arApAging/pages/ApOpenItemsPage'
+import ArStatementPage from '../features/arApAging/pages/ArStatementPage'
 import {
   OnlineTariffCreatePage,
   OnlineTariffDetailPage,
@@ -160,7 +164,6 @@ import UserWisePerformancePage from '../pages/management/UserWisePerformancePage
 import ManagementReportsMisPage from '../pages/management/ManagementReportsMisPage'
 import DocumentationMenuPage from '../pages/documentation/DocumentationMenuPage'
 import DocumentationReportsPage from '../pages/documentation/DocumentationReportsPage'
-import AllJobsPageDocumentation from '../pages/documentation/AllJobsPage'
 import BoeDashboardPage from '../pages/documentation/BoeDashboardPage'
 import BayanEdiJobListPage from '../pages/documentation/BayanEdiJobListPage'
 import BayanEdiShipmentHouseListPage from '../pages/documentation/BayanEdiShipmentHouseListPage'
@@ -173,17 +176,12 @@ import ContainerNoUploadPage from '../pages/documentation/ContainerNoUploadPage'
 import ContainerTransportUploadPage from '../pages/documentation/ContainerTransportUploadPage'
 import DpworldTrackingUploadPage from '../pages/documentation/DpworldTrackingUploadPage'
 import DubaiEqoEdiPage from '../pages/documentation/DubaiEqoEdiPage'
-import ExportAirPage from '../pages/documentation/ExportAirPage'
 import IalEdiJobListPage from '../pages/documentation/IalEdiJobListPage'
 import JobDownloadPage from '../pages/documentation/JobDownloadPage'
 import OmanEqoEdiPage from '../pages/documentation/OmanEqoEdiPage'
-import PaymentRequestMonitorPage from '../pages/documentation/PaymentRequestMonitorPage'
-import SeaExportFclPage from '../pages/documentation/SeaExportFclPage'
-import SeaExportLclPage from '../pages/documentation/SeaExportLclPage'
 import TruckPositionUploadPage from '../pages/documentation/TruckPositionUploadPage'
 import UpdateDoClosedJobPage from '../pages/documentation/UpdateDoClosedJobPage'
 import UaeMpciMonitorPage from '../pages/documentation/UaeMpciMonitorPage'
-import VoucherBatchProcessingPage from '../pages/documentation/VoucherBatchProcessingPage'
 import MastersMenuPage from '../pages/masters/MastersMenuPage'
 import MasterResourceListPage from '../features/masters/pages/MasterResourceListPage'
 import MasterResourceFormPage from '../features/masters/pages/MasterResourceFormPage'
@@ -241,12 +239,15 @@ import VendorHomePage from '../features/vendor-auth/pages/VendorHomePage'
 import VendorAccountPage from '../features/vendor-auth/pages/VendorAccountPage'
 import VendorInvoicesPage from '../features/vendor-invoices/pages/VendorInvoicesPage'
 import VendorInvoiceDetailPage from '../features/vendor-invoices/pages/VendorInvoiceDetailPage'
+import VendorJobsPage from '../features/vendor-job-offers/pages/VendorJobsPage'
+import VendorJobDetailPage from '../features/vendor-job-offers/pages/VendorJobDetailPage'
 import VendorPaymentsPage from '../features/vendor-payments/pages/VendorPaymentsPage'
 import VendorAdvancesPage from '../features/vendor-payments/pages/VendorAdvancesPage'
 import VendorCreditNotesPage from '../features/vendor-credit-notes/pages/VendorCreditNotesPage'
 import VendorCreditPage from '../features/vendor-credit/pages/VendorCreditPage'
 import VendorSchedulePage from '../features/vendor-schedule/pages/VendorSchedulePage'
 import VendorPaymentRequestsPage from '../features/vendor-payment-requests/pages/VendorPaymentRequestsPage'
+import VendorPaymentRequestDetailPage from '../features/vendor-payment-requests/pages/VendorPaymentRequestDetailPage'
 import VendorDisputesPage from '../features/vendor-disputes/pages/VendorDisputesPage'
 import VendorTdsPage from '../features/vendor-tds/pages/VendorTdsPage'
 import PublicTrackPage from '../features/public-track/pages/PublicTrackPage'
@@ -268,6 +269,7 @@ import PartyListPage from '../features/parties/pages/PartyListPage'
 import PartyCreatePage from '../features/parties/pages/PartyCreatePage'
 import PartyDetailPage from '../features/parties/pages/PartyDetailPage'
 import PartyEditPage from '../features/parties/pages/PartyEditPage'
+import PartyTransactionSummaryPage from '../features/parties/pages/PartyTransactionSummaryPage'
 import OrganizationShell from '../features/organization/pages/OrganizationShell'
 import OrganizationProfilePage from '../features/organization/pages/OrganizationProfilePage'
 import BankAccountsPage from '../features/organization/pages/BankAccountsPage'
@@ -362,6 +364,8 @@ export const router = createBrowserRouter([
         element: <VendorShell />,
         children: [
           { index: true, element: <VendorHomePage /> },
+          { path: 'jobs', element: <VendorJobsPage /> },
+          { path: 'jobs/:id', element: <VendorJobDetailPage /> },
           { path: 'invoices', element: <VendorInvoicesPage /> },
           { path: 'invoices/:id', element: <VendorInvoiceDetailPage /> },
           { path: 'payments', element: <VendorPaymentsPage /> },
@@ -370,6 +374,7 @@ export const router = createBrowserRouter([
           { path: 'schedule', element: <VendorSchedulePage /> },
           { path: 'credit', element: <VendorCreditPage /> },
           { path: 'payment-requests', element: <VendorPaymentRequestsPage /> },
+          { path: 'payment-requests/:id', element: <VendorPaymentRequestDetailPage /> },
           { path: 'disputes', element: <VendorDisputesPage /> },
           { path: 'tds', element: <VendorTdsPage /> },
           { path: 'account', element: <VendorAccountPage /> },
@@ -401,7 +406,9 @@ export const router = createBrowserRouter([
             ],
           },
           {
-            element: <ProtectedRoute requirePermissions={['menu_finance']} />,
+            element: (
+              <ProtectedRoute requireAnyPermission={['menu_vendors', 'menu_finance']} />
+            ),
             children: [{ path: '/vendors', element: <VendorServiceMenuPage /> }],
           },
           {
@@ -415,6 +422,7 @@ export const router = createBrowserRouter([
               { path: '/parties/new', element: <PartyCreatePage /> },
               { path: '/parties/:id', element: <PartyDetailPage /> },
               { path: '/parties/:id/edit', element: <PartyEditPage /> },
+              { path: '/parties/:id/transaction-summary', element: <PartyTransactionSummaryPage /> },
               {
                 path: '/organization',
                 element: <OrganizationShell />,
@@ -456,30 +464,24 @@ export const router = createBrowserRouter([
             element: <ProtectedRoute requirePermissions={['menu_documentation']} />,
             children: [
               { path: '/documentation', element: <DocumentationMenuPage /> },
-              {path: '/documentation/all-jobs', element: <AllJobsPageDocumentation />},
-              {path: '/documentation/boe-dashboard', element: <BoeDashboardPage />},
-              {path: '/documentation/bayan-edi-job-list', element: <BayanEdiJobListPage />},
-              {path: '/documentation/bayan-edi-shipment-house-list', element: <BayanEdiShipmentHouseListPage />},
-              {path: '/documentation/bulk-cost-entry', element: <BulkCostEntryPage />},
-              {path: '/documentation/ccn-fwb-fhl-edi-job-list', element: <CcnFwbFhlEdiJobListPage />},
-              {path: '/documentation/cgm-edi-vessel-list', element: <CgmEdiVesselListPage />},
+              { path: '/documentation/boe-dashboard', element: <BoeDashboardPage /> },
+              { path: '/documentation/bayan-edi-job-list', element: <BayanEdiJobListPage /> },
+              { path: '/documentation/bayan-edi-shipment-house-list', element: <BayanEdiShipmentHouseListPage /> },
+              { path: '/documentation/bulk-cost-entry', element: <BulkCostEntryPage /> },
+              { path: '/documentation/ccn-fwb-fhl-edi-job-list', element: <CcnFwbFhlEdiJobListPage /> },
+              { path: '/documentation/cgm-edi-vessel-list', element: <CgmEdiVesselListPage /> },
               { path: '/documentation/cargo-tracking-air', element: <AirCargoTrackingPage /> },
               { path: '/documentation/charge-template-list', element: <ChargeTemplateListPage /> },
               { path: '/documentation/container-no-upload', element: <ContainerNoUploadPage /> },
               { path: '/documentation/container-transport-upload', element: <ContainerTransportUploadPage /> },
               { path: '/documentation/dpword-tracking-file-upload', element: <DpworldTrackingUploadPage /> },
               { path: '/documentation/dubai-eqo-edi', element: <DubaiEqoEdiPage /> },
-              { path: '/documentation/export-air', element: <ExportAirPage /> },
               { path: '/documentation/ial-edi-job-list', element: <IalEdiJobListPage /> },
               { path: '/documentation/job-download', element: <JobDownloadPage /> },
               { path: '/documentation/oman-eqo-edi', element: <OmanEqoEdiPage /> },
-              { path: '/documentation/payment-request-monitor', element: <PaymentRequestMonitorPage /> },
-              { path: '/documentation/sea-export-fcl', element: <SeaExportFclPage /> },
-              { path: '/documentation/sea-export-lcl', element: <SeaExportLclPage /> },
               { path: '/documentation/truck-position-upload', element: <TruckPositionUploadPage /> },
               { path: '/documentation/uae-mpci-monitor', element: <UaeMpciMonitorPage /> },
               { path: '/documentation/update-do-closed-job', element: <UpdateDoClosedJobPage /> },
-              { path: '/documentation/voucher-batch-processing', element: <VoucherBatchProcessingPage /> },
               { path: '/documentation/reports', element: <DocumentationReportsPage /> },
             ],
           },
@@ -491,6 +493,7 @@ export const router = createBrowserRouter([
               { path: '/quotations/new', element: <QuotationCreatePage /> },
               { path: '/quotations/online-quote', element: <QuotationOnlineQuotePage /> },
               { path: '/quotations/reports', element: <QuotationReportsPage /> },
+              { path: '/quotations/service-catalog', element: <ServiceCatalogPage /> },
               { path: '/quotations/tariff-master', element: <OnlineTariffListPage /> },
               { path: '/quotations/tariff-master/new', element: <OnlineTariffCreatePage /> },
               { path: '/quotations/tariff-master/:id/edit', element: <OnlineTariffEditPage /> },
@@ -723,6 +726,9 @@ export const router = createBrowserRouter([
               { path: '/gl/saved-reports/:id', element: <SavedReportDetailPage /> },
               { path: '/gl/ar/aging', element: <ArAgingPage /> },
               { path: '/gl/ap/aging', element: <ApAgingPage /> },
+              { path: '/gl/ar/open-items', element: <ArOpenItemsPage /> },
+              { path: '/gl/ap/open-items', element: <ApOpenItemsPage /> },
+              { path: '/gl/ar/statement/:partyId', element: <ArStatementPage /> },
             ],
           },
         ],

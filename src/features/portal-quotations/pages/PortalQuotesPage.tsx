@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FileText, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
@@ -16,10 +16,19 @@ import {
   portalSelectClassName,
 } from '@/features/portal-auth/components/portal-ui';
 import { PORTAL_JOB_TYPES } from '@/features/portal-shipments/api/portalShipments.api';
+import { QuotationStatusBadge } from '@/features/quotations/components/QuotationStatusBadge';
+import { ensureCustomerQuoteDecisionStorageMigrated } from '@/features/quotations/utils/customerQuoteDecision';
 import { usePortalQuotations } from '../hooks/usePortalQuotations';
+import {
+  canPortalCustomerRespondToQuote,
+  portalQuoteTotalAmount,
+} from '../utils/portalQuotationStatus';
 
 export default function PortalQuotesPage() {
   const navigate = useNavigate();
+  useEffect(() => {
+    ensureCustomerQuoteDecisionStorageMigrated();
+  }, []);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [jobType, setJobType] = useState('');
@@ -84,16 +93,17 @@ export default function PortalQuotesPage() {
               {[
                 'DRAFT',
                 'SUBMITTED',
-                'APPROVED',
+                'INTERNALLY_APPROVED',
                 'REJECTED',
                 'SENT',
-                'WON',
-                'LOST',
+                'CUSTOMER_REVIEW',
+                'NEGOTIATING',
+                'APPROVED',
                 'EXPIRED',
                 'CONVERTED',
               ].map((s) => (
                 <option key={s} value={s}>
-                  {s}
+                  {s.replaceAll('_', ' ')}
                 </option>
               ))}
             </select>
@@ -149,13 +159,16 @@ export default function PortalQuotesPage() {
           />
         ) : (
           <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
-            {items.map((q) => (
+            {items.map((q) => {
+              const needsResponse = canPortalCustomerRespondToQuote(q.status, q);
+              const total = portalQuoteTotalAmount(q);
+              return (
               <PortalAnimatedListItem key={q.id}>
-                <Link
-                  to={`/portal/quotes/${q.id}`}
-                  className="flex items-center justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-[var(--color-neutral-50)]"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
+                <div className="flex flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+                  <Link
+                    to={`/portal/quotes/${q.id}`}
+                    className="flex min-w-0 flex-1 items-center gap-3 transition-colors hover:opacity-90"
+                  >
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-secondary-100)] text-[var(--color-secondary-700)]">
                       <FileText size={16} aria-hidden="true" />
                     </div>
@@ -164,19 +177,34 @@ export default function PortalQuotesPage() {
                       <div className="text-xs text-[var(--color-neutral-500)] truncate">
                         {[q.origin, q.destination].filter(Boolean).join(' → ') || q.jobType || '—'}
                       </div>
+                      {total != null ? (
+                        <div className="text-xs font-medium text-[var(--color-neutral-700)]">
+                          {q.currencyCode || 'AED'}{' '}
+                          {total.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        </div>
+                      ) : null}
                     </div>
-                  </div>
-                  <div className="flex shrink-0 flex-col items-end gap-1">
-                    {q.status ? <Badge variant="info">{q.status}</Badge> : null}
-                    {(q.status || '').toUpperCase() === 'SENT' ? (
-                      <span className="text-[11px] font-medium text-[var(--color-secondary-700)]">
-                        Accept or reject
-                      </span>
+                  </Link>
+                  <div className="flex shrink-0 flex-col items-stretch gap-2 sm:items-end">
+                    <div className="flex flex-wrap items-center justify-end gap-2">
+                      {q.status ? <QuotationStatusBadge status={q.status} /> : null}
+                      {needsResponse ? (
+                        <Badge variant="warning">Action required</Badge>
+                      ) : null}
+                    </div>
+                    {needsResponse ? (
+                      <Link
+                        to={`/portal/quotes/${q.id}`}
+                        className="inline-flex h-8 items-center justify-center rounded-md bg-[var(--color-secondary)] px-3 text-xs font-semibold text-white hover:opacity-90"
+                      >
+                        Approve or reject
+                      </Link>
                     ) : null}
                   </div>
-                </Link>
+                </div>
               </PortalAnimatedListItem>
-            ))}
+            );
+            })}
           </PortalAnimatedList>
         )}
       </PortalPanel>

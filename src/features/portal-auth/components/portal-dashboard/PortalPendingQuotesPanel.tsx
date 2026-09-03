@@ -8,6 +8,7 @@ import {
   quoteAmount,
   quoteCurrency,
 } from '../../utils/portalDashboardFormat';
+import { canPortalCustomerRespondToQuote } from '@/features/portal-quotations/utils/portalQuotationStatus';
 import { dashType } from '@/lib/dashboardTypography';
 import { cn } from '@/lib/utils';
 
@@ -51,6 +52,7 @@ export function PortalPendingQuotesPanel({
         <ul className="space-y-1">
           {pending.slice(0, 3).map((item) => {
             const amount = quoteAmount(item);
+            const needsResponse = canPortalCustomerRespondToQuote(item.status, item);
             return (
               <li key={item.id}>
                 <Link to={`/portal/quotes/${item.id}`} className="block rounded-xl px-1 py-2.5 hover:bg-white/5">
@@ -58,7 +60,9 @@ export function PortalPendingQuotesPanel({
                     <div className="min-w-0">
                       <p className={cn(dashType.panel.rowTitle, 'font-medium text-white')}>{item.number}</p>
                       <p className={cn(dashType.panel.rowMeta, 'uppercase tracking-wide text-white/45')}>
-                        {formatStatusLabel(item.jobType ?? item.status)}
+                        {needsResponse
+                          ? 'Approve or reject'
+                          : formatStatusLabel(item.jobType ?? item.status)}
                       </p>
                     </div>
                     <p className={cn(dashType.panel.rowTitle, 'text-[#FF9A4A]')}>

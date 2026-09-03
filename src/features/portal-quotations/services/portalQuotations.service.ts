@@ -9,6 +9,10 @@ import type {
   PortalQuotationListResult,
   PortalQuotationRejectDto,
   PortalQuotationRequestDto,
+  PortalQuotationEstimateDto,
+  PortalQuotationCounterOfferDto,
+  PortalQuotationEstimateResult,
+  PortalServiceCatalogItem,
   PortalQuotationSummary,
 } from '../types/portalQuotations.types';
 import {
@@ -16,6 +20,15 @@ import {
   normalizeQuotationList,
   normalizeQuotationSummary,
 } from '../utils/normalizePortalQuotations';
+import {
+  normalizePortalEstimate,
+  normalizePortalServiceCatalog,
+  filterPortalServiceCatalogByJobType,
+} from '../utils/normalizePortalQuotationExtended';
+import { applyPortalCustomerDecisionStatus } from '../utils/portalQuotationStatus';
+import { rememberCustomerQuoteDecision } from '@/features/quotations/utils/customerQuoteDecision';
+import { normalizeNegotiationTimeline } from '@/features/quotations/utils/normalizeQuotationExtended';
+import type { NegotiationTimeline } from '@/features/quotations/types/quotationExtended.types';
 
 export const portalQuotationsService = {
   async summary(): Promise<PortalQuotationSummary> {
@@ -49,18 +62,65 @@ export const portalQuotationsService = {
     };
   },
 
-  async accept(id: string): Promise<PortalQuotationDetail> {
-    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.accept(id));
+  async accept(id: string, dto: { message?: string } = {}): Promise<PortalQuotationDetail> {
+    // OpenAPI PortalQuotationAcceptDto — optional message; send {} so validators get a JSON body.
+    await portalApiClient.post(PORTAL_QUOTATIONS_API.accept(id), dto);
+    // Always re-fetch: POST often echoes the prior open status.
+    const fresh = await this.getById(id);
+    const closed = applyPortalCustomerDecisionStatus(fresh, 'accept');
+    rememberCustomerQuoteDecision(id, 'APPROVED');
+    return {
+      ...closed,
+      raw: {
+        ...(closed.raw ?? {}),
+        portal_decision_server_status: fresh.status,
+      },
+    };
+  },
+
+  async reject(id: string, dto: PortalQuotationRejectDto): Promise<PortalQuotationDetail> {
+    // OpenAPI: marks quote DISAPPROVED (UI coerces/shows as Rejected).
+    await portalApiClient.post(PORTAL_QUOTATIONS_API.reject(id), dto);
+    // Always re-fetch: POST 201 body often still has SENT / CUSTOMER_REVIEW / NEGOTIATING.
+    const fresh = await this.getById(id);
+    const closed = applyPortalCustomerDecisionStatus(fresh, 'reject');
+    rememberCustomerQuoteDecision(id, 'REJECTED');
+    return {
+      ...closed,
+      raw: {
+        ...(closed.raw ?? {}),
+        portal_decision_server_status: fresh.status,
+      },
+    };
+  },
+
+  async serviceCatalog(jobType: string): Promise<PortalServiceCatalogItem[]> {
+    const trimmed = jobType.trim();
+    if (!trimmed) {
+      throw new PortalApiError('job_type is required for the portal service catalog.', 400);
+    }
+    const res = await portalApiClient.get(PORTAL_QUOTATIONS_API.serviceCatalog, {
+      params: { job_type: trimmed },
+    });
+    const items = normalizePortalServiceCatalog(res.data);
+    return filterPortalServiceCatalogByJobType(items, trimmed);
+  },
+
+  async estimate(dto: PortalQuotationEstimateDto): Promise<PortalQuotationEstimateResult> {
+    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.estimate, dto);
+    return normalizePortalEstimate(res.data);
+  },
+
+  async counterOffer(id: string, dto: PortalQuotationCounterOfferDto): Promise<PortalQuotationDetail> {
+    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.counterOffer(id), dto);
     const detail = normalizeQuotationDetail(res.data);
     if (detail) return detail;
     return this.getById(id);
   },
 
-  async reject(id: string, dto: PortalQuotationRejectDto): Promise<PortalQuotationDetail> {
-    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.reject(id), dto);
-    const detail = normalizeQuotationDetail(res.data);
-    if (detail) return detail;
-    return this.getById(id);
+  async negotiation(id: string): Promise<NegotiationTimeline> {
+    const res = await portalApiClient.get(PORTAL_QUOTATIONS_API.negotiation(id));
+    return normalizeNegotiationTimeline(res.data);
   },
 
   async downloadPdf(

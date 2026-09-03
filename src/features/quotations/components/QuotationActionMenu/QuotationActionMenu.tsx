@@ -11,6 +11,12 @@ import {
 } from 'lucide-react';
 import { KebabMenu, MenuItem } from '@/components/ui/KebabMenu';
 import type { Quotation } from '../../types/quotation.types';
+import {
+  canArchiveQuotation,
+  canStaffInternallyApprove,
+  canStaffSendToCustomer,
+  isQuotationDraftEditable,
+} from '../../utils/quotationStatus';
 
 interface QuotationActionMenuProps {
   quotation: Quotation;
@@ -40,12 +46,12 @@ export function QuotationActionMenu({
   onArchive,
 }: QuotationActionMenuProps) {
   const status = quotation.status;
-  const canEdit = status === 'DRAFT' || status === 'REJECTED';
-  const canSubmit = status === 'DRAFT' || status === 'REJECTED';
-  const canApprove = status === 'SUBMITTED';
-  const canSend = status === 'APPROVED';
+  const canEdit = isQuotationDraftEditable(status);
+  const canSubmit = isQuotationDraftEditable(status);
+  const canApprove = canStaffInternallyApprove(status);
+  const canSend = canStaffSendToCustomer(status);
   const canDelete = status === 'DRAFT';
-  const canArchive = ['WON', 'LOST', 'EXPIRED', 'CONVERTED'].includes(status);
+  const canArchive = canArchiveQuotation(status);
 
   return (
     <KebabMenu disabled={disabled} menuClassName="w-52" aria-label="Quotation actions">
@@ -90,7 +96,7 @@ export function QuotationActionMenu({
           {canApprove && (
             <>
               <MenuItem
-                label="Approve"
+                label="Internally approve"
                 icon={<ThumbsUp className="h-3.5 w-3.5" />}
                 onClick={() => {
                   close();

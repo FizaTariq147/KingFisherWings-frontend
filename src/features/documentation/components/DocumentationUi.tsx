@@ -28,9 +28,15 @@ export function DocumentationListState({
     );
   }
   if (error) {
+    const message =
+      typeof error === 'string'
+        ? error
+        : error instanceof Error
+          ? error.message
+          : extractAxiosErrorDetail(error);
     return (
       <div className="flex h-56 items-center justify-center px-6 text-center text-sm text-red-600">
-        {extractAxiosErrorDetail(error)}
+        {message}
       </div>
     );
   }

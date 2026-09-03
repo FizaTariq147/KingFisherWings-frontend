@@ -1,11 +1,13 @@
 import { isUuid } from '@/lib/isUuid';
 import {
   JOB_TYPES,
-  QUOTATION_STATUSES,
   type JobType,
   type QuotationStatus,
 } from '../constants/quotation.constants';
 import type { Quotation, QuotationLine } from '../types/quotation.types';
+import { normalizeNegotiationPricing } from './normalizeQuotationExtended';
+import { coerceQuotationStatus } from './quotationStatus';
+import { resolveCustomerFacingQuoteStatus } from './customerQuoteDecision';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -47,11 +49,15 @@ function bool(value: unknown): boolean | undefined {
   return undefined;
 }
 
-function normalizeStatus(value: unknown): QuotationStatus {
-  const raw = String(value ?? 'DRAFT').trim().toUpperCase();
-  return (QUOTATION_STATUSES as readonly string[]).includes(raw)
-    ? (raw as QuotationStatus)
-    : 'DRAFT';
+function normalizeStatus(
+  value: unknown,
+  id?: string,
+  record?: Record<string, unknown>,
+): QuotationStatus {
+  return (
+    resolveCustomerFacingQuoteStatus(id, value, record, { useMemory: true }) ??
+    coerceQuotationStatus(value)
+  );
 }
 
 function normalizeJobType(value: unknown): JobType {
@@ -118,7 +124,7 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     id,
     quotation_number: str(r.quotation_number) ?? str(r.quote_no) ?? str(r.quote_number),
     quote_no: str(r.quote_no) ?? str(r.quotation_number),
-    status: normalizeStatus(r.status),
+    status: normalizeStatus(r.status, id, r),
     company_id:
       pickStr(r, 'company_id', 'companyId') ?? pickStr(nestedCompany ?? {}, 'id'),
     job_type: normalizeJobType(r.job_type),
@@ -182,6 +188,7 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
       num(r.revenue_total ?? r.revenueTotal),
     cost_total: num(r.cost_total ?? r.costTotal),
     revenue_total: num(r.revenue_total ?? r.revenueTotal),
+    negotiation_pricing: normalizeNegotiationPricing(r),
     gp_amount: num(r.gp_amount),
     gp_percent: num(r.gp_percent),
     contact_name:
@@ -195,7 +202,8 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     lost_notes: str(r.lost_notes),
     parent_quotation_id: str(r.parent_quotation_id),
     revision_number: num(r.revision_number),
-    job_id: str(r.job_id),
+    job_id: str(r.job_id) ?? str(r.jobId),
+    invoice_id: str(r.invoice_id) ?? str(r.invoiceId) ?? str(asRecord(r.invoice)?.id),
     deleted_at: (str(r.deleted_at) as string | null | undefined) ?? null,
     created_at: str(r.created_at),
     updated_at: str(r.updated_at),

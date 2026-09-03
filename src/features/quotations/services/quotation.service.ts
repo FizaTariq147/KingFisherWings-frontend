@@ -295,8 +295,56 @@ function extractJobIdFromConvertResponse(raw: unknown): string {
   return '';
 }
 
-async function postConvertToJob(id: string, quotation: Quotation): Promise<Quotation> {
-  // Swagger: POST /quotations/{id}/convert-to-job has no request body — server reads WON quotation.
+function extractInvoiceIdFromConvertResponse(raw: unknown): string {
+  const root = asRecord(raw);
+  const data = asRecord(root?.data) ?? root;
+  if (!data) return '';
+  const nestedInvoice = asRecord(data.invoice);
+  const candidates = [
+    data.invoice_id,
+    data.invoiceId,
+    nestedInvoice?.id,
+    root?.invoice_id,
+    root?.invoiceId,
+  ];
+  for (const value of candidates) {
+    const id = String(value ?? '');
+    if (isUuid(id)) return id;
+  }
+  return '';
+}
+
+export type ConvertToJobResult = Quotation & {
+  job_id?: string;
+  invoice_id?: string;
+};
+
+async function ensureDraftInvoiceForJob(
+  jobId: string,
+  existingInvoiceId?: string,
+): Promise<string | undefined> {
+  if (existingInvoiceId && isUuid(existingInvoiceId)) return existingInvoiceId;
+  try {
+    const { invoiceService } = await import('@/features/invoices/services/invoice.service');
+    const invoice = await invoiceService.createFromJob(jobId);
+    return invoice.id;
+  } catch (err) {
+    // Convert already succeeded — don't fail the whole flow if invoice already exists / 409.
+    const status = (err as { response?: { status?: number } })?.response?.status;
+    if (status === 409 || status === 400) return existingInvoiceId;
+    throw err;
+  }
+}
+
+async function withDraftInvoice(result: ConvertToJobResult): Promise<ConvertToJobResult> {
+  const jobId = result.job_id;
+  if (!jobId || !isUuid(jobId)) return result;
+  const invoiceId = await ensureDraftInvoiceForJob(jobId, result.invoice_id);
+  return invoiceId ? { ...result, invoice_id: invoiceId } : result;
+}
+
+async function postConvertToJob(id: string, quotation: Quotation): Promise<ConvertToJobResult> {
+  // POST /quotations/{id}/convert-to-job — v2 may return { job, invoice }.
   const res = await withGatewayRetry(() =>
     axiosInstance.post<unknown>(
       QUOTATION_API.convertToJob(id),
@@ -305,22 +353,36 @@ async function postConvertToJob(id: string, quotation: Quotation): Promise<Quota
     ),
   );
   const raw = unwrapEntity(res.data);
+  const invoiceId = extractInvoiceIdFromConvertResponse(raw) || extractInvoiceIdFromConvertResponse(res.data);
   const updated = normalizeQuotation(raw);
-  if (updated) return updated;
-
-  const jobId = extractJobIdFromConvertResponse(raw);
-  if (jobId) {
-    return { ...quotation, job_id: jobId, status: 'CONVERTED' };
+  if (updated) {
+    return {
+      ...updated,
+      ...(invoiceId ? { invoice_id: invoiceId } : {}),
+      ...(extractJobIdFromConvertResponse(raw) ? { job_id: extractJobIdFromConvertResponse(raw) } : {}),
+    };
   }
 
-  // API often returns 201 with empty body — reload quotation for job_id / CONVERTED status.
+  const jobId = extractJobIdFromConvertResponse(raw) || extractJobIdFromConvertResponse(res.data);
+  if (jobId) {
+    return {
+      ...quotation,
+      job_id: jobId,
+      status: 'CONVERTED',
+      ...(invoiceId ? { invoice_id: invoiceId } : {}),
+    };
+  }
+
   try {
     const refreshRes = await withGatewayRetry(() =>
       axiosInstance.get<unknown>(QUOTATION_API.byId(id)),
     );
     const refreshed = normalizeQuotation(unwrapEntity(refreshRes.data));
     if (refreshed && (refreshed.job_id || refreshed.status === 'CONVERTED')) {
-      return refreshed;
+      return {
+        ...refreshed,
+        ...(invoiceId ? { invoice_id: invoiceId } : {}),
+      };
     }
   } catch {
     /* fall through */
@@ -545,13 +607,43 @@ export const quotationService = {
     }
   },
 
-  async markWon(id: string): Promise<Quotation> {
+  async markWon(id: string): Promise<ConvertToJobResult> {
     assertId(id);
     try {
-      return await postAction(QUOTATION_API.markWon(id));
+      // Customer accepted → APPROVED, then auto-create job + draft invoice.
+      await postAction(QUOTATION_API.markWon(id));
+      return await this.convertToJob(id);
     } catch (error) {
       throw formatAxiosError(error);
     }
+  },
+
+  /**
+   * When portal already set APPROVED, staff ERP auto-creates job + draft invoice.
+   * No-op if already converted / has a job.
+   */
+  async fulfillApprovedQuotation(id: string): Promise<ConvertToJobResult | Quotation> {
+    assertId(id);
+    const quotation = await this.getById(id);
+    const { canConvertQuotationToJob, coerceQuotationStatus } = await import(
+      '../utils/quotationStatus'
+    );
+    const status = coerceQuotationStatus(quotation.status);
+    if (quotation.job_id || status === 'CONVERTED') {
+      if (quotation.job_id && !quotation.invoice_id) {
+        try {
+          const invoiceId = await ensureDraftInvoiceForJob(quotation.job_id);
+          return invoiceId ? { ...quotation, invoice_id: invoiceId } : quotation;
+        } catch {
+          return quotation;
+        }
+      }
+      return quotation;
+    }
+    if (!canConvertQuotationToJob(status)) {
+      return quotation;
+    }
+    return this.convertToJob(id);
   },
 
   async markLost(id: string, dto: MarkLostDto): Promise<Quotation> {
@@ -572,14 +664,15 @@ export const quotationService = {
     }
   },
 
-  async convertToJob(id: string): Promise<Quotation> {
+  async convertToJob(id: string): Promise<ConvertToJobResult> {
     assertId(id);
     let quotation: Quotation | undefined;
     try {
       quotation = await this.getById(id);
-      if (quotation.status !== 'WON') {
+      const { canConvertQuotationToJob } = await import('../utils/quotationStatus');
+      if (!canConvertQuotationToJob(quotation.status)) {
         throw new Error(
-          `Quotation must be WON before convert (current status: ${quotation.status}).`,
+          `Quotation must be customer-approved before convert (current status: ${quotation.status}).`,
         );
       }
 
@@ -600,7 +693,9 @@ export const quotationService = {
       const branchId = await ensureJobBranchReady(quotation.company_id);
 
       try {
-        return await postConvertToJob(id, { ...quotation, branch_id: branchId });
+        return await withDraftInvoice(
+          await postConvertToJob(id, { ...quotation, branch_id: branchId }),
+        );
       } catch (convertErr) {
         const convertStatus = (convertErr as { response?: { status?: number } })?.response
           ?.status;
@@ -612,7 +707,9 @@ export const quotationService = {
         }
 
         try {
-          return await createJobFallbackFromQuotation({ ...quotation, branch_id: branchId });
+          return await withDraftInvoice(
+            await createJobFallbackFromQuotation({ ...quotation, branch_id: branchId }),
+          );
         } catch (fallbackErr) {
           throw formatAxiosError(fallbackErr);
         }

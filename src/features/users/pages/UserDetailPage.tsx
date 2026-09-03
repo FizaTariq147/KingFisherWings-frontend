@@ -7,6 +7,7 @@ import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { UserConfirmModal } from '../components/UserConfirmModal';
 import { UserDetailSkeleton } from '../components/UserDetailSkeleton';
 import { UserOverviewPanel } from '../components/UserOverviewPanel';
+import { UserPermissionMatrixSection } from '../components/UserPermissionMatrixSection';
 import { UserStatusBadge } from '../components/UserStatusBadge';
 import { useUserConfirmState } from '../hooks/useUserConfirmState';
 import { useUserTenantScope } from '../hooks/useUserTenantScope';
@@ -264,6 +265,11 @@ export default function UserDetailPage() {
             key: 'overview',
             label: 'Overview',
             content: <UserOverviewPanel user={user} />,
+          },
+          {
+            key: 'permissions',
+            label: 'Permissions matrix',
+            content: <UserPermissionMatrixSection userId={user.id} />,
           },
         ]}
       />

@@ -198,7 +198,22 @@ export default function PurchaseInvoiceDetailPage() {
                           : undefined
                       }
                     />
-                    <Field label="Outstanding" value={invoice.outstanding_balance} />
+                    <Field
+                      label="Paid"
+                      value={
+                        invoice.paid_amount != null
+                          ? `${invoice.currency_code} ${invoice.paid_amount}`
+                          : undefined
+                      }
+                    />
+                    <Field
+                      label="Balance due"
+                      value={
+                        invoice.outstanding_balance != null
+                          ? `${invoice.currency_code} ${invoice.outstanding_balance}`
+                          : undefined
+                      }
+                    />
                     <Field label="Remarks" value={invoice.remarks} />
                     <Field label="Internal notes" value={invoice.internal_notes} />
                   </dl>

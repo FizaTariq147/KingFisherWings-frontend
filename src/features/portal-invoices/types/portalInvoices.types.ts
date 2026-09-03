@@ -15,6 +15,9 @@ export interface PortalInvoiceLine {
 export interface PortalInvoiceListItem {
   id: string; number: string; status?: string; currencyCode?: string;
   invoiceDate?: string; dueDate?: string; totalAmount?: number;
+  /** Amount already paid (partial payments) */
+  paidAmount?: number;
+  /** Remaining balance (balance_due) */
   outstandingBalance?: number; jobId?: string;
 }
 export interface PortalInvoiceDetail extends PortalInvoiceListItem {

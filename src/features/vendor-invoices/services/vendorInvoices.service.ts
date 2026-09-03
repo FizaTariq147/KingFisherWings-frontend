@@ -1,4 +1,7 @@
 import { vendorApiClient, VendorApiError } from '@/lib/vendorApiClient';
+import type { PaymentProof, UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
+import { normalizePaymentProof, normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
+import { buildPaymentProofFormData } from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
 import { downloadVendorBlob, resolveVendorDownloadUrl } from '@/features/vendor-shared/downloadVendorBlob';
 import { safeDownloadFilename } from '@/features/vendor-shared/normalize';
 import { postVendorWithOptionalFile } from '@/features/vendor-shared/vendorMultipart';
@@ -41,6 +44,33 @@ export const vendorInvoicesService = {
   async list(params: VendorInvoiceListParams = {}): Promise<VendorInvoiceListResult> {
     const res = await vendorApiClient.get(VENDOR_INVOICES_API.list, { params });
     return normalizeInvoiceList(res.data, params);
+  },
+
+  async openItems(): Promise<VendorInvoiceListResult> {
+    const res = await vendorApiClient.get(VENDOR_INVOICES_API.openItems);
+    return normalizeInvoiceList(res.data, {});
+  },
+
+  async listPaymentProofs(invoiceId: string): Promise<PaymentProof[]> {
+    const res = await vendorApiClient.get(VENDOR_INVOICES_API.paymentProofs(invoiceId));
+    return normalizePaymentProofList(res.data);
+  },
+
+  async uploadPaymentProof(
+    invoiceId: string,
+    file: File,
+    dto: UploadPaymentProofDto,
+  ): Promise<PaymentProof> {
+    const form = buildPaymentProofFormData(file, {
+      ...(dto.amount != null ? { amount: String(dto.amount) } : {}),
+      ...(dto.payment_date ? { payment_date: dto.payment_date } : {}),
+      ...(dto.reference ? { reference: dto.reference } : {}),
+      ...(dto.notes ? { notes: dto.notes } : {}),
+    });
+    const res = await vendorApiClient.post(VENDOR_INVOICES_API.paymentProofs(invoiceId), form);
+    const proof = normalizePaymentProof(res.data);
+    if (!proof) throw new Error('Upload failed.');
+    return proof;
   },
 
   async exportCsv(params: VendorInvoiceListParams = {}): Promise<void> {

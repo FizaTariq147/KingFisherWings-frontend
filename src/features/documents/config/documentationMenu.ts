@@ -1,19 +1,12 @@
 import {
-  BookOpen, LayoutDashboard, FileCheck, Home, Receipt, Ship, Container,
-  Anchor, Package, Truck, FileSpreadsheet, Download, FileText, DollarSign,
+  LayoutDashboard, FileCheck, Home, Receipt, Ship, Container,
+  Anchor, Truck, FileSpreadsheet, Download, FileText,
   MapPin, RefreshCw, CheckSquare, FileBarChart,
 } from 'lucide-react';
 import type { MenuTile } from '../../customers/types/menu.types';
 
+/** Tiles backed by live `/documentation/*` APIs only. */
 export const documentationMenu: MenuTile[] = [
-  {
-    id: 'all-jobs',
-    title: 'All Jobs',
-    description: 'To view all the jobs list by salesperson wise, customer wise and report segment wise.',
-    icon: BookOpen,
-    iconColor: 'bg-sky-500',
-    path: '/documentation/all-jobs',
-  },
   {
     id: 'boe-dashboard',
     title: 'BOE Dashboard',
@@ -111,14 +104,6 @@ export const documentationMenu: MenuTile[] = [
     path: '/documentation/dubai-eqo-edi',
   },
   {
-    id: 'export-air',
-    title: 'Export-Air',
-    description: 'To view an export jobs list and create a new air export job through this menu.',
-    icon: Package,
-    iconColor: 'bg-gray-400',
-    path: '/documentation/export-air',
-  },
-  {
     id: 'ial-edi-job-list',
     title: 'IAL EDI Job List',
     description: 'This EDI for India Shippers/Forwarders, its provided based on India ICEGATE EDI format.',
@@ -141,30 +126,6 @@ export const documentationMenu: MenuTile[] = [
     icon: Anchor,
     iconColor: 'bg-teal-500',
     path: '/documentation/oman-eqo-edi',
-  },
-  {
-    id: 'payment-request-monitor',
-    title: 'Payment Request Monitor',
-    description: 'To view all the payment Request list and to create pending payment Requests to internal team for to pay the pending voucher.',
-    icon: DollarSign,
-    iconColor: 'bg-emerald-500',
-    path: '/documentation/payment-request-monitor',
-  },
-  {
-    id: 'sea-export-fcl',
-    title: 'Sea Export-FCL',
-    description: 'To view sea export-FCL job list and create a new sea export-FCL job through this menu.',
-    icon: Ship,
-    iconColor: 'bg-emerald-500',
-    path: '/documentation/sea-export-fcl',
-  },
-  {
-    id: 'sea-export-lcl',
-    title: 'Sea Export-LCL',
-    description: 'To view sea export-LCL job list and create a new sea export-LCL job through this menu.',
-    icon: Ship,
-    iconColor: 'bg-lime-500',
-    path: '/documentation/sea-export-lcl',
   },
   {
     id: 'truck-position-upload',
@@ -190,17 +151,8 @@ export const documentationMenu: MenuTile[] = [
     iconColor: 'bg-orange-500',
     path: '/documentation/update-do-closed-job',
   },
-  {
-    id: 'voucher-batch-processing',
-    title: 'Voucher Batch Processing',
-    description: 'Batch processing is a bulk status change process from any status to status in a single click.',
-    icon: RefreshCw,
-    iconColor: 'bg-red-400',
-    path: '/documentation/voucher-batch-processing',
-  },
 ];
 
-// Rendered separately with the centered layout, same pattern as other Reports tiles
 export const reportsDocsTile: MenuTile = {
   id: 'reports-docs',
   title: 'Reports - Docs',

@@ -19,7 +19,14 @@ export const quotationsMenu: MenuTile[] = [
     path: '/quotations/online-quote',
   },
   {
-    id: 'online-tariff-master',
+    id: 'service-catalog',
+    title: 'Service catalog',
+    description: 'Tenant service pricing for quotations and the customer portal.',
+    icon: FileText,
+    iconColor: 'bg-indigo-500',
+    path: '/quotations/service-catalog',
+  },
+  {
     title: 'Online Tariff Master',
     description: 'To maintain quote charges with sale cost and charges details',
     icon: Image,

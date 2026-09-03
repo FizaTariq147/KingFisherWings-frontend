@@ -26,6 +26,7 @@ import {
   useDownloadVendorInvoicePdf,
   useExportVendorInvoicesCsv,
   useSubmitVendorInvoice,
+  useVendorInvoiceOpenItems,
   useVendorInvoiceSummary,
   useVendorInvoices,
 } from '../hooks/useVendorInvoices';
@@ -50,6 +51,7 @@ export default function VendorInvoicesPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [viewOpenOnly, setViewOpenOnly] = useState(false);
 
   const params = useMemo(
     () => ({
@@ -64,12 +66,15 @@ export default function VendorInvoicesPage() {
   );
 
   const summary = useVendorInvoiceSummary();
-  const { data, isLoading, isError, error, refetch, isFetching } = useVendorInvoices(params);
+  const openItems = useVendorInvoiceOpenItems(viewOpenOnly);
+  const allInvoices = useVendorInvoices(params);
+  const active = viewOpenOnly ? openItems : allInvoices;
   const download = useDownloadVendorInvoicePdf();
   const exportCsv = useExportVendorInvoicesCsv();
   const submit = useSubmitVendorInvoice();
-  const items = data?.items ?? [];
-  const meta = data?.meta;
+  const items = active.data?.items ?? [];
+  const meta = active.data?.meta;
+  const { isLoading, isError, error, refetch, isFetching } = active;
 
   return (
     <div className="space-y-5">
@@ -282,6 +287,20 @@ export default function VendorInvoicesPage() {
         </div>
       </PortalPanel>
 
+      <div className="flex justify-end">
+        <Button
+          type="button"
+          size="sm"
+          variant={viewOpenOnly ? 'primary' : 'secondary'}
+          onClick={() => {
+            setPage(1);
+            setViewOpenOnly((v) => !v);
+          }}
+        >
+          {viewOpenOnly ? 'Showing open items' : 'Show open items only'}
+        </Button>
+      </div>
+
       <PortalPanel>
         <PortalFetchBar active={isFetching && !isLoading} />
         {isLoading ? (
@@ -304,10 +323,24 @@ export default function VendorInvoicesPage() {
                     {[
                       inv.invoiceDate,
                       inv.dueDate ? `Due ${inv.dueDate}` : null,
-                      formatVendorMoney(inv.totalAmount, inv.currencyCode),
                     ]
                       .filter(Boolean)
                       .join(' · ') || '—'}
+                  </div>
+                  <div className="mt-0.5 text-xs tabular-nums text-[var(--color-neutral-600)]">
+                    {[
+                      formatVendorMoney(inv.totalAmount, inv.currencyCode)
+                        ? `Total ${formatVendorMoney(inv.totalAmount, inv.currencyCode)}`
+                        : null,
+                      inv.paidAmount != null
+                        ? `Paid ${formatVendorMoney(inv.paidAmount, inv.currencyCode)}`
+                        : null,
+                      inv.outstandingBalance != null
+                        ? `Due ${formatVendorMoney(inv.outstandingBalance, inv.currencyCode)}`
+                        : null,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
                   </div>
                 </Link>
                 <div className="flex items-center gap-2 shrink-0">

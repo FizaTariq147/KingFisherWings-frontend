@@ -248,17 +248,29 @@ export const documentationDeliveryOrderService = {
   },
 };
 
+async function listEdiResource<T extends DocumentationRecord>(
+  path: string,
+  params: object,
+  listKeys: string[] = [],
+): Promise<ListResult<T>> {
+  try {
+    return await listResource(path, params, listKeys);
+  } catch (error) {
+    throw formatDocumentationError(error);
+  }
+}
+
 export const documentationEdiService = {
   bayanJobs: (params?: DocumentationListParams) =>
-    listResource(DOCUMENTATION_API.edi.bayan.jobs, params ?? {}, ['jobs']),
+    listEdiResource(DOCUMENTATION_API.edi.bayan.jobs, params ?? {}, ['jobs']),
   bayanShipments: (params?: DocumentationListParams) =>
-    listResource(DOCUMENTATION_API.edi.bayan.shipments, params ?? {}, ['shipments']),
+    listEdiResource(DOCUMENTATION_API.edi.bayan.shipments, params ?? {}, ['shipments']),
   bayanGenerate: (jobId: string) => mutateRecord('post', DOCUMENTATION_API.edi.bayan.generate(jobId)),
   bayanSubmit: (jobId: string) => mutateRecord('post', DOCUMENTATION_API.edi.bayan.submit(jobId)),
   bayanAmend: (jobId: string) => mutateRecord('post', DOCUMENTATION_API.edi.bayan.amend(jobId)),
 
   ccnJobs: (params?: DocumentationListParams) =>
-    listResource(DOCUMENTATION_API.edi.ccn.jobs, params ?? {}, ['jobs']),
+    listEdiResource(DOCUMENTATION_API.edi.ccn.jobs, params ?? {}, ['jobs']),
   ccnGenerateFwb: (jobId: string) => mutateRecord('post', DOCUMENTATION_API.edi.ccn.generateFwb(jobId)),
   ccnGenerateFhl: (jobId: string) => mutateRecord('post', DOCUMENTATION_API.edi.ccn.generateFhl(jobId)),
   ccnSubmit: (jobId: string) => mutateRecord('post', DOCUMENTATION_API.edi.ccn.submit(jobId)),
@@ -274,21 +286,21 @@ export const documentationEdiService = {
     downloadBlob('post', DOCUMENTATION_API.edi.cgm.downloadEdi(id), undefined, filename),
 
   dubaiEqoJobs: (params?: DocumentationListParams) =>
-    listResource(DOCUMENTATION_API.edi.eqo.dubai.jobs, params ?? {}, ['jobs']),
+    listEdiResource(DOCUMENTATION_API.edi.eqo.dubai.jobs, params ?? {}, ['jobs']),
   dubaiEqoGenerateBol: (jobId: string) =>
     mutateRecord('post', DOCUMENTATION_API.edi.eqo.dubai.generateBol(jobId)),
   dubaiEqoSubmit: (jobId: string) =>
     mutateRecord('post', DOCUMENTATION_API.edi.eqo.dubai.submit(jobId)),
 
   omanEqoJobs: (params?: DocumentationListParams) =>
-    listResource(DOCUMENTATION_API.edi.eqo.oman.jobs, params ?? {}, ['jobs']),
+    listEdiResource(DOCUMENTATION_API.edi.eqo.oman.jobs, params ?? {}, ['jobs']),
   omanEqoGenerateBol: (jobId: string) =>
     mutateRecord('post', DOCUMENTATION_API.edi.eqo.oman.generateBol(jobId)),
   omanEqoSubmit: (jobId: string) =>
     mutateRecord('post', DOCUMENTATION_API.edi.eqo.oman.submit(jobId)),
 
   ialJobs: (params?: DocumentationListParams) =>
-    listResource(DOCUMENTATION_API.edi.ial.jobs, params ?? {}, ['jobs']),
+    listEdiResource(DOCUMENTATION_API.edi.ial.jobs, params ?? {}, ['jobs']),
   ialGenerate: (jobId: string) => mutateRecord('post', DOCUMENTATION_API.edi.ial.generate(jobId)),
   ialSubmit: (jobId: string) => mutateRecord('post', DOCUMENTATION_API.edi.ial.submit(jobId)),
 

@@ -32,4 +32,12 @@ export const QUOTATION_API = {
     lostReasons: '/quotations/reports/analytics/lost-reasons',
     responseTime: '/quotations/reports/analytics/response-time',
   },
+  serviceCatalog: {
+    list: '/quotations/service-catalog',
+    byId: (id: string) => `/quotations/service-catalog/${id}`,
+  },
+  reviseAndSend: (id: string) => `/quotations/${id}/revise-and-send`,
+  negotiation: (id: string) => `/quotations/${id}/negotiation`,
+  negotiationAccept: (id: string) => `/quotations/${id}/negotiation/accept`,
+  negotiationReject: (id: string) => `/quotations/${id}/negotiation/reject`,
 } as const;

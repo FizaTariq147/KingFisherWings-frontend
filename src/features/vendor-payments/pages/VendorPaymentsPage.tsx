@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import {
+  PortalAnimatedGrid,
+  PortalAnimatedGridItem,
   PortalAnimatedList,
   PortalAnimatedListItem,
   PortalEmptyState,
@@ -11,11 +13,16 @@ import {
   PortalLoadingState,
   PortalPageHeader,
   PortalPanel,
+  PortalStatCard,
 } from '@/features/portal-auth/components/portal-ui';
 import { formatVendorMoney } from '@/features/vendor-shared/formatMoney';
 import { VendorQueryError } from '@/features/vendor-shared/VendorQueryError';
 import { vendorErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
-import { useDownloadVendorRemittance, useVendorPayments } from '../hooks/useVendorPayments';
+import {
+  useDownloadVendorRemittance,
+  useVendorPayments,
+  useVendorPaymentsSummary,
+} from '../hooks/useVendorPayments';
 
 export default function VendorPaymentsPage() {
   const [page, setPage] = useState(1);
@@ -34,6 +41,7 @@ export default function VendorPaymentsPage() {
     [page, search, fromDate, toDate],
   );
   const { data, isLoading, isError, error, refetch, isFetching } = useVendorPayments(params);
+  const summary = useVendorPaymentsSummary();
   const remittance = useDownloadVendorRemittance();
   const items = data?.items ?? [];
   const meta = data?.meta;
@@ -45,6 +53,30 @@ export default function VendorPaymentsPage() {
         <p className="text-sm text-[var(--color-danger-600)]" role="alert">
           {pdfError}
         </p>
+      ) : null}
+      {summary.data ? (
+        <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2">
+          <PortalAnimatedGridItem>
+            <PortalStatCard
+              label="Pending"
+              value={
+                summary.data.totalOutstanding != null
+                  ? `${summary.data.currencyCode || ''} ${summary.data.totalOutstanding}`.trim()
+                  : '—'
+              }
+            />
+          </PortalAnimatedGridItem>
+          <PortalAnimatedGridItem>
+            <PortalStatCard
+              label="Received YTD"
+              value={
+                summary.data.totalPaidYtd != null
+                  ? `${summary.data.currencyCode || ''} ${summary.data.totalPaidYtd}`.trim()
+                  : '—'
+              }
+            />
+          </PortalAnimatedGridItem>
+        </PortalAnimatedGrid>
       ) : null}
       <PortalPanel padded>
         <div className="grid gap-3 sm:grid-cols-3">

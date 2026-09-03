@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
 import { QuotationEmailModal } from '../components/QuotationEmailModal';
 import { QuotationLinesEditor } from '../components/QuotationLinesEditor';
+import { QuotationNegotiationPanel } from '../components/QuotationNegotiationPanel';
 import { QuotationOverviewPanel } from '../components/QuotationOverviewPanel';
 import { QuotationPdfModal } from '../components/QuotationPdfModal';
 import { QuotationStatusBadge } from '../components/QuotationStatusBadge';
@@ -14,19 +15,38 @@ import {
   useQuotationPdf,
 } from '../hooks/useQuotationActions';
 import { useQuotationConfirmState } from '../hooks/useQuotationConfirmState';
+import { useQuotationNegotiation } from '../hooks/useQuotationNegotiation';
 import { useDeleteQuotation, useQuotation, useQuotationRevisions } from '../hooks/useQuotations';
 import { useQuotationResolvedLabels } from '../hooks/useQuotationResolvedLabels';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
+import {
+  isAwaitingCustomerDecision,
+  resolveCustomerFacingQuoteStatus,
+} from '../utils/customerQuoteDecision';
 import { quotationDisplayNumber } from '../utils/normalizeQuotation';
 import { recalculateQuotationTotals } from '../utils/recalculateQuotationTotals';
+import {
+  canArchiveQuotation,
+  canConvertQuotationToJob,
+  canStaffInternallyApprove,
+  canStaffMarkCustomerDecision,
+  canStaffSendToCustomer,
+  coerceQuotationStatus,
+  isQuotationDraftEditable,
+  isQuotationLinesEditable,
+} from '../utils/quotationStatus';
 
 function statusTone(
   status: string,
 ): 'emerald' | 'amber' | 'rose' | 'slate' {
-  if (status === 'WON' || status === 'CONVERTED' || status === 'APPROVED') return 'emerald';
-  if (status === 'LOST' || status === 'REJECTED') return 'rose';
-  if (status === 'EXPIRED' || status === 'SENT' || status === 'SUBMITTED') return 'amber';
+  const s = coerceQuotationStatus(status);
+  if (s === 'APPROVED' || s === 'CONVERTED') return 'emerald';
+  if (s === 'INTERNALLY_APPROVED') return 'emerald';
+  if (s === 'DISAPPROVED' || s === 'REJECTED') return 'rose';
+  if (s === 'EXPIRED' || s === 'SENT' || s === 'SUBMITTED' || s === 'CUSTOMER_REVIEW' || s === 'NEGOTIATING') {
+    return 'amber';
+  }
   return 'slate';
 }
 
@@ -44,6 +64,16 @@ export default function QuotationDetailPage() {
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [pdfOpen, setPdfOpen] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
+  const autoFulfillAttempted = useRef<string | null>(null);
+
+  const negotiationEnabled =
+    Boolean(id) &&
+    Boolean(quotation) &&
+    (isAwaitingCustomerDecision(quotation.status) ||
+      ['APPROVED', 'REJECTED', 'DISAPPROVED', 'WON', 'LOST', 'CUSTOMER_REVIEW', 'SENT', 'NEGOTIATING'].includes(
+        coerceQuotationStatus(quotation.status),
+      ));
+  const { data: negotiationTimeline } = useQuotationNegotiation(id, negotiationEnabled);
 
   const lines = quotation?.lines ?? [];
   const totals = useMemo(
@@ -54,6 +84,67 @@ export default function QuotationDetailPage() {
       }),
     [lines, quotation?.discount_percent, quotation?.discount_amount],
   );
+
+  const status = useMemo(() => {
+    if (!quotation) return 'DRAFT' as const;
+    return (
+      resolveCustomerFacingQuoteStatus(
+        quotation.id,
+        quotation.status,
+        quotation as unknown as Record<string, unknown>,
+        {
+          useMemory: true,
+          negotiationEvents: negotiationTimeline?.events,
+        },
+      ) ?? coerceQuotationStatus(quotation.status)
+    );
+  }, [quotation, negotiationTimeline?.events]);
+
+  // Customer Approved (portal or staff) → auto create job + draft invoice once.
+  useEffect(() => {
+    if (!quotation || !id) return;
+    if (status !== 'APPROVED') return;
+    if (quotation.job_id && quotation.invoice_id) return;
+    if (autoFulfillAttempted.current === id) return;
+    if (actions.fulfillApproved.isPending || pending) return;
+
+    autoFulfillAttempted.current = id;
+    setActionError(null);
+    void actions.fulfillApproved
+      .mutateAsync()
+      .then((result) => {
+        const jobId =
+          result && typeof result === 'object' && 'job_id' in result
+            ? String((result as { job_id?: string }).job_id ?? '')
+            : '';
+        const invoiceId =
+          result && typeof result === 'object' && 'invoice_id' in result
+            ? String((result as { invoice_id?: string }).invoice_id ?? '')
+            : '';
+        if (jobId || invoiceId) {
+          setActionMessage(
+            invoiceId
+              ? 'Quote approved — job and draft customer invoice created automatically.'
+              : 'Quote approved — job created. Draft invoice may still be pending.',
+          );
+        }
+        void refetch();
+      })
+      .catch((err) => {
+        autoFulfillAttempted.current = null;
+        setActionError(
+          getErrorMessage(err) ||
+            'Could not auto-create job/invoice from approved quote. Use Convert to job.',
+        );
+      });
+  }, [
+    actions.fulfillApproved,
+    id,
+    pending,
+    quotation,
+    refetch,
+    status,
+  ]);
 
   const { customerLabel } = useQuotationResolvedLabels(quotation ?? {
     id: '',
@@ -80,8 +171,10 @@ export default function QuotationDetailPage() {
     );
   }
 
-  const status = quotation.status;
-  const editable = status === 'DRAFT' || status === 'REJECTED';
+  /** Full quotation form edit / submit — drafts only */
+  const editable = isQuotationDraftEditable(status);
+  /** Charge lines can be updated while preparing / negotiating the offer */
+  const linesEditable = isQuotationLinesEditable(status);
   const title = quotationDisplayNumber(quotation);
 
   const run = async (fn: () => Promise<unknown>, successMsg?: string) => {
@@ -92,9 +185,25 @@ export default function QuotationDetailPage() {
       const result = await fn();
       closeConfirm();
       if (result && typeof result === 'object' && 'id' in result) {
-        const q = result as { id: string; status?: string };
-        if (q.id !== id && q.status === 'DRAFT') {
+        const q = result as { id: string; status?: string; job_id?: string; invoice_id?: string };
+        if (q.id !== id && coerceQuotationStatus(q.status || 'DRAFT') === 'DRAFT') {
           navigate(`/quotations/${q.id}`);
+          return;
+        }
+        // convert-to-job may return { job, invoice } or quotation with job_id
+        const jobId =
+          q.job_id ||
+          (result as { job?: { id?: string } }).job?.id;
+        const invoiceId =
+          q.invoice_id ||
+          (result as { invoice?: { id?: string } }).invoice?.id;
+        if (jobId) {
+          setActionMessage(
+            invoiceId
+              ? 'Converted to job and draft customer invoice created.'
+              : successMsg || 'Converted to job.',
+          );
+          navigate(jobDetailPath(String(jobId), quotation.job_type));
           return;
         }
       }
@@ -115,22 +224,34 @@ export default function QuotationDetailPage() {
     ...(editable
       ? [{ label: 'Submit', onClick: () => requestConfirm('submit', quotation), variant: 'primary' as const }]
       : []),
-    ...(status === 'SUBMITTED'
+    ...(canStaffInternallyApprove(status)
       ? [
-          { label: 'Approve', onClick: () => requestConfirm('approve', quotation), variant: 'primary' as const },
+          {
+            label: 'Internally approve',
+            onClick: () => requestConfirm('approve', quotation),
+            variant: 'primary' as const,
+          },
           { label: 'Reject', onClick: () => requestConfirm('reject', quotation), variant: 'danger' as const },
         ]
       : []),
-    ...(status === 'APPROVED'
+    ...(canStaffSendToCustomer(status)
       ? [{ label: 'Send', onClick: () => requestConfirm('send', quotation), variant: 'primary' as const }]
       : []),
-    ...(status === 'SENT'
+    ...(canStaffMarkCustomerDecision(status)
       ? [
-          { label: 'Mark won', onClick: () => requestConfirm('mark-won', quotation), variant: 'primary' as const },
-          { label: 'Mark lost', onClick: () => requestConfirm('mark-lost', quotation), variant: 'danger' as const },
+          {
+            label: 'Mark approved',
+            onClick: () => requestConfirm('mark-won', quotation),
+            variant: 'primary' as const,
+          },
+          {
+            label: 'Mark rejected',
+            onClick: () => requestConfirm('mark-lost', quotation),
+            variant: 'danger' as const,
+          },
         ]
       : []),
-    ...(status === 'WON'
+    ...(canConvertQuotationToJob(status)
       ? [
           {
             label: 'Convert to job',
@@ -141,13 +262,13 @@ export default function QuotationDetailPage() {
       : []),
     { label: 'PDF', onClick: () => setPdfOpen(true), variant: 'secondary' as const },
     { label: 'Email', onClick: () => setEmailOpen(true), variant: 'secondary' as const },
-    ...(['WON', 'LOST', 'EXPIRED', 'CONVERTED'].includes(status)
+    ...(canArchiveQuotation(status)
       ? [{ label: 'Archive', onClick: () => requestConfirm('archive', quotation), variant: 'danger' as const }]
       : []),
     ...(status === 'DRAFT'
       ? [{ label: 'Delete', onClick: () => requestConfirm('delete', quotation), variant: 'danger' as const }]
       : []),
-    ...(['SENT', 'APPROVED'].includes(status)
+    ...(canStaffSendToCustomer(status) || status === 'SENT'
       ? [{ label: 'Expire', onClick: () => requestConfirm('expire', quotation), variant: 'danger' as const }]
       : []),
   ];
@@ -201,6 +322,7 @@ export default function QuotationDetailPage() {
               currencyCode={quotation.currency_code}
               totals={totals}
               serverTotal={quotation.total_amount}
+              hasChargeLines={lines.length > 0}
             />
             {revisions.length > 1 && (
               <div className="text-xs text-[var(--color-neutral-500)] space-y-1">
@@ -233,7 +355,22 @@ export default function QuotationDetailPage() {
                 quotationId={id}
                 lines={lines}
                 currencyCode={quotation.currency_code}
-                editable={editable}
+                editable={linesEditable}
+              />
+            ),
+          },
+          {
+            key: 'negotiation',
+            label: 'Negotiation',
+            content: (
+              <QuotationNegotiationPanel
+                quotationId={id}
+                status={status}
+                currencyCode={quotation.currency_code}
+                lines={lines}
+                pricingFromQuote={quotation.negotiation_pricing}
+                revenueTotal={quotation.revenue_total ?? quotation.total_amount}
+                onUpdated={() => void refetch()}
               />
             ),
           },
@@ -313,7 +450,11 @@ export default function QuotationDetailPage() {
                 'Rejected.',
               );
             if (kind === 'send') return run(() => actions.send.mutateAsync(), 'Sent.');
-            if (kind === 'mark-won') return run(() => actions.markWon.mutateAsync(), 'Marked won.');
+            if (kind === 'mark-won')
+              return run(
+                () => actions.markWon.mutateAsync(),
+                'Approved — job and draft customer invoice created.',
+              );
             if (kind === 'mark-lost' && extra?.reason)
               return run(
                 () =>
@@ -332,6 +473,10 @@ export default function QuotationDetailPage() {
                   q && typeof q === 'object' && 'job_id' in q
                     ? String((q as { job_id?: string }).job_id ?? '')
                     : '';
+                const invoiceId =
+                  q && typeof q === 'object' && 'invoice_id' in q
+                    ? String((q as { invoice_id?: string }).invoice_id ?? '')
+                    : '';
                 if (jobId) {
                   navigate(
                     jobDetailPath({
@@ -342,7 +487,7 @@ export default function QuotationDetailPage() {
                   return q;
                 }
                 return q;
-              }, 'Converted to job.');
+              }, 'Converted to job and draft customer invoice created.');
             if (kind === 'archive') return run(() => actions.archive.mutateAsync(), 'Archived.');
             if (kind === 'expire') return run(() => actions.expire.mutateAsync(), 'Expired.');
             if (kind === 'delete')

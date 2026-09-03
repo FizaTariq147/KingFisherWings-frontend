@@ -1,4 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import { quotationService } from '../services/quotation.service';
@@ -8,6 +9,10 @@ import type {
   QuotationListParams,
   UpdateQuotationDto,
 } from '../types/quotation.types';
+import {
+  CUSTOMER_QUOTE_DECISION_STORAGE_KEY,
+  isAwaitingCustomerDecision,
+} from '../utils/customerQuoteDecision';
 
 export const quotationKeys = {
   all: ['tenant', 'quotations'] as const,
@@ -19,23 +24,47 @@ export const quotationKeys = {
   reports: ['tenant', 'quotations', 'reports'] as const,
 };
 
+/** When the portal tab records accept/reject, refresh admin quotes in other tabs. */
+function useSyncCustomerQuoteDecisionsAcrossTabs() {
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== CUSTOMER_QUOTE_DECISION_STORAGE_KEY) return;
+      void queryClient.invalidateQueries({ queryKey: quotationKeys.all });
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, [queryClient]);
+}
+
 export function useQuotations(params: QuotationListParams) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  useSyncCustomerQuoteDecisionsAcrossTabs();
   return useQuery({
     queryKey: quotationKeys.list(params),
     queryFn: () => quotationService.list(params),
     enabled: Boolean(accessToken),
     placeholderData: keepPreviousData,
-    staleTime: 30_000,
+    staleTime: 5_000,
+    // Pick up customer portal accept/reject without a manual refresh.
+    refetchInterval: 10_000,
+    refetchIntervalInBackground: false,
   });
 }
 
 export function useQuotation(id: string) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  useSyncCustomerQuoteDecisionsAcrossTabs();
   return useQuery({
     queryKey: quotationKeys.detail(id),
     queryFn: () => quotationService.getById(id),
     enabled: Boolean(accessToken) && isUuid(id),
+    staleTime: 3_000,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      return status && isAwaitingCustomerDecision(status) ? 5_000 : false;
+    },
+    refetchIntervalInBackground: false,
   });
 }
 

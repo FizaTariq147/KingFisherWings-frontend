@@ -5,11 +5,14 @@ import { withGatewayRetry } from '@/lib/wakeApi';
 import { AR_AP_AGING_API } from '../api/arApAging.api';
 import {
   normalizeAgingReport,
+  normalizeOpenItemsReport,
   normalizeStatementReport,
 } from '../utils/normalizeArApAging';
 import type {
   AgingReportParams,
   AgingReportResult,
+  OpenItemsParams,
+  OpenItemsResult,
   StatementReportParams,
   StatementReportResult,
 } from '../types/arApAging.types';
@@ -103,6 +106,42 @@ export const arApAgingService = {
         ),
       );
       return normalizeStatementReport(data, partyId);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async getArOpenItems(params: OpenItemsParams): Promise<OpenItemsResult> {
+    if (!isUuid(params.party_id)) throw new Error('party_id must be a valid UUID.');
+    if (!isUuid(params.company_id)) throw new Error('company_id must be a valid UUID.');
+    try {
+      const { data } = await withGatewayRetry(() =>
+        axiosInstance.get<ApiEnvelope<unknown> | unknown>(AR_AP_AGING_API.arOpenItems, {
+          params: {
+            party_id: params.party_id,
+            company_id: params.company_id,
+          },
+        }),
+      );
+      return normalizeOpenItemsReport(data, params.party_id);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async getApOpenItems(params: OpenItemsParams): Promise<OpenItemsResult> {
+    if (!isUuid(params.party_id)) throw new Error('party_id must be a valid UUID.');
+    if (!isUuid(params.company_id)) throw new Error('company_id must be a valid UUID.');
+    try {
+      const { data } = await withGatewayRetry(() =>
+        axiosInstance.get<ApiEnvelope<unknown> | unknown>(AR_AP_AGING_API.apOpenItems, {
+          params: {
+            party_id: params.party_id,
+            company_id: params.company_id,
+          },
+        }),
+      );
+      return normalizeOpenItemsReport(data, params.party_id);
     } catch (error) {
       throw formatAxiosError(error);
     }

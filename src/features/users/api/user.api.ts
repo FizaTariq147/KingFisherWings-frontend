@@ -8,6 +8,15 @@ export const USER_API = {
   forceLogout: (id: string) => `/users/${id}/force-logout`,
   /** UsersController_changeOwnPassword — same DTO as POST /auth/change-password */
   meChangePassword: '/users/me/change-password',
+  /** Tenant Admin permission catalog (may 404 until backend ships). */
+  permissionMatrix: '/users/permission-matrix',
+  permissions: (id: string) => `/users/${id}/permissions`,
+} as const;
+
+/** Optional role catalog — GET /roles, PUT /roles/:id/permissions. */
+export const ROLE_API = {
+  list: '/roles',
+  permissions: (id: string) => `/roles/${id}/permissions`,
 } as const;
 
 export const USER_API_TAGS = {

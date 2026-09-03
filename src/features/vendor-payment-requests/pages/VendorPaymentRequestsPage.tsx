@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ScrollText } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -44,14 +45,14 @@ export default function VendorPaymentRequestsPage() {
           <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((req) => (
               <PortalAnimatedListItem key={req.id} className="flex items-center justify-between gap-3 px-4 py-3.5">
-                <div className="min-w-0">
+                <Link to={`/vendor/payment-requests/${req.id}`} className="min-w-0 flex-1 hover:opacity-80">
                   <div className="text-sm font-semibold truncate">{req.number || req.id}</div>
                   <div className="text-xs text-[var(--color-neutral-500)]">
                     {[req.requestedAt, req.notes, formatVendorMoney(req.amount, req.currencyCode)]
                       .filter(Boolean)
                       .join(' · ')}
                   </div>
-                </div>
+                </Link>
                 {req.status ? <Badge variant="info">{req.status.replaceAll('_', ' ')}</Badge> : null}
               </PortalAnimatedListItem>
             ))}

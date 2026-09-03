@@ -14,6 +14,7 @@ import { PartyOverviewPanel } from '../components/PartyOverviewPanel';
 import { PartyStatusBadge } from '../components/PartyStatusBadge';
 import { PartyPortalPermissionsSection } from '../components/PartyPortalPermissionsSection';
 import { PartyPortalUsersSection } from '../components/PartyPortalUsersSection';
+import { PartyTransactionSummarySection } from '../components/PartyTransactionSummarySection';
 import { PartyVendorPermissionsSection } from '../components/PartyVendorPermissionsSection';
 import { PartyVendorUsersSection } from '../components/PartyVendorUsersSection';
 import { PARTY_TYPE_LABELS } from '../constants/party.constants';
@@ -101,6 +102,16 @@ export default function PartyDetailPage() {
         actions={[
           { label: 'Edit', onClick: () => navigate(`/parties/${id}/edit`), variant: 'secondary' },
           {
+            label: 'Transaction summary',
+            onClick: () => navigate(`/parties/${id}/transaction-summary`),
+            variant: 'secondary',
+          },
+          {
+            label: 'AR statement',
+            onClick: () => navigate(`/gl/ar/statement/${id}`),
+            variant: 'secondary',
+          },
+          {
             label: active ? 'Deactivate' : 'Activate',
             onClick: () => requestConfirm(active ? 'deactivate' : 'activate', party),
             variant: 'secondary',
@@ -133,6 +144,11 @@ export default function PartyDetailPage() {
             key: 'overview',
             label: 'Overview',
             content: <PartyOverviewPanel party={party} />,
+          },
+          {
+            key: 'transactions',
+            label: 'Transactions',
+            content: <PartyTransactionSummarySection party={party} />,
           },
           {
             key: 'contacts',

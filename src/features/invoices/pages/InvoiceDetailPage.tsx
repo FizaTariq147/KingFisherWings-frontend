@@ -7,6 +7,7 @@ import { StoredFileLink } from '@/features/files/components/StoredFileLink';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { invoicePdfBranding } from '@/features/files/utils/pdfBranding';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
+import { StaffPaymentProofReviewPanel } from '@/features/payment-proofs/components/StaffPaymentProofReviewPanel';
 import { InvoiceEmailModal } from '../components/InvoiceEmailModal';
 import { InvoiceLinesEditor } from '../components/InvoiceLinesEditor';
 import { InvoiceStatusBadge } from '../components/InvoiceStatusBadge';
@@ -271,7 +272,22 @@ export default function InvoiceDetailPage() {
                           : undefined
                       }
                     />
-                    <Field label="Outstanding" value={invoice.outstanding_balance} />
+                    <Field
+                      label="Paid"
+                      value={
+                        invoice.paid_amount != null
+                          ? `${invoice.currency_code} ${invoice.paid_amount}`
+                          : undefined
+                      }
+                    />
+                    <Field
+                      label="Balance due"
+                      value={
+                        invoice.outstanding_balance != null
+                          ? `${invoice.currency_code} ${invoice.outstanding_balance}`
+                          : undefined
+                      }
+                    />
                     <Field label="Remarks" value={invoice.remarks} />
                     <Field label="Internal notes" value={invoice.internal_notes} />
                   </dl>
@@ -293,6 +309,14 @@ export default function InvoiceDetailPage() {
                         No PDF yet. Use Generate PDF.
                       </p>
                     )}
+                  </div>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Payment proofs</CardTitle>
+                  </CardHeader>
+                  <div className="p-4 pt-0">
+                    <StaffPaymentProofReviewPanel invoiceId={id} />
                   </div>
                 </Card>
                 <InvoiceLinesEditor

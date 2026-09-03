@@ -14,6 +14,9 @@ export interface VendorPaymentRequest {
   amount?: number;
   currencyCode?: string;
   notes?: string;
+  paymentId?: string;
+  approvedAt?: string;
+  paidAt?: string;
 }
 
 export interface VendorPaymentRequestListResult {

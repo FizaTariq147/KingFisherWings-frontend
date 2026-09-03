@@ -1,5 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import {
+  Briefcase,
   CalendarClock,
   FileText,
   HandCoins,
@@ -59,6 +60,14 @@ export const VENDOR_NAV_SECTIONS: VendorNavSection[] = [
       { label: 'Schedule', to: '/vendor/schedule', Icon: CalendarClock, iconStyle: navStyle('#60A5FA') },
       { label: 'Statement', to: '/vendor/credit', Icon: Wallet, iconStyle: navStyle('#DB2777') },
       { label: '% TDS', to: '/vendor/tds', Icon: Percent, iconStyle: navStyle('#14B8A6') },
+    ],
+  },
+  {
+    id: 'operations',
+    title: 'Operations',
+    color: '#38BDF8',
+    items: [
+      { label: 'Jobs', to: '/vendor/jobs', Icon: Briefcase, iconStyle: navStyle('#0EA5E9') },
     ],
   },
   {

@@ -10,7 +10,11 @@ import { JOB_DOCUMENT_TYPES } from '../../constants/job.constants';
 import { useJobActions } from '../../hooks/useJobActions';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import { useJobDocumentGenerationStatus, useJobDocuments } from '../../hooks/useJobs';
+import { JobDocumentGenerationStatusCard } from '../JobDocumentGenerationStatusCard';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import { resolveJobDocumentFileUrl } from '../../utils/resolveJobDocumentFileUrl';
+import { resolveSessionTenantIdFromAuth } from '@/lib/tenantFromAuth';
+import { useAuthStore } from '@/store/authStore';
 
 interface JobDocumentsPanelProps {
   jobId: string;
@@ -69,6 +73,9 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
 
   const isAirImport = jobType === 'AIR_IMPORT';
   const { data: documents = [], refetch } = useJobDocuments(jobId);
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const user = useAuthStore((s) => s.user);
+  const tenantId = resolveSessionTenantIdFromAuth({ accessToken, user });
   const [poll, setPoll] = useState(false);
   const { data: genStatus } = useJobDocumentGenerationStatus(jobId, poll);
   const actions = useJobActions(jobId);
@@ -126,9 +133,11 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                 document_type?: string;
                 file_name?: string;
                 file_url?: string;
+                s3_key?: string;
                 status?: string;
                 is_finalized?: boolean;
               };
+              const fileUrl = resolveJobDocumentFileUrl(d, tenantId);
               return (
                 <div
                   key={d.id}
@@ -142,10 +151,10 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {d.file_url && (
+                    {fileUrl && (
                       <>
                         <StoredFileLink
-                          url={d.file_url}
+                          url={fileUrl}
                           label="View"
                           displayName={d.file_name}
                           className="text-sm text-[var(--color-primary-600)] underline"
@@ -156,7 +165,7 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                           variant="secondary"
                           disabled={fileDownload.isPending}
                           onClick={() =>
-                            void fileDownload.downloadStoredFile(d.file_url!, d.file_name)
+                            void fileDownload.downloadStoredFile(fileUrl, d.file_name)
                           }
                         >
                           Download
@@ -448,14 +457,7 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
       </Card>
 
       {poll && genStatus != null && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Generation status</CardTitle>
-          </CardHeader>
-          <pre className="px-4 pb-4 text-xs overflow-auto max-h-40">
-            {JSON.stringify(genStatus, null, 2)}
-          </pre>
-        </Card>
+        <JobDocumentGenerationStatusCard status={genStatus} polling />
       )}
     </div>
   );

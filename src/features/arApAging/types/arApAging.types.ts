@@ -55,3 +55,34 @@ export interface StatementReportResult {
   lines: StatementLine[];
   raw: unknown;
 }
+
+/** Per-invoice open item with paid vs pending (balance due). */
+export interface OpenItemLine {
+  id: string;
+  number?: string;
+  partyId?: string;
+  partyName?: string;
+  invoiceDate?: string;
+  dueDate?: string;
+  currencyCode?: string;
+  status?: string;
+  totalAmount?: number;
+  paidAmount?: number;
+  balanceDue?: number;
+  raw?: Record<string, unknown>;
+}
+
+export interface OpenItemsParams {
+  party_id: string;
+  company_id: string;
+}
+
+export interface OpenItemsResult {
+  items: OpenItemLine[];
+  partyId?: string;
+  partyName?: string;
+  currencyCode?: string;
+  totalOutstanding?: number;
+  totalPaid?: number;
+  raw: unknown;
+}

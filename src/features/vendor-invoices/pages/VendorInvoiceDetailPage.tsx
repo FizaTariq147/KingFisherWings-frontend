@@ -16,13 +16,16 @@ import {
 import { formatVendorMoney } from '@/features/vendor-shared/formatMoney';
 import { VendorQueryError } from '@/features/vendor-shared/VendorQueryError';
 import { vendorInvoicePdfErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
-import { useDownloadVendorInvoicePdf, useVendorInvoice } from '../hooks/useVendorInvoices';
+import { useDownloadVendorInvoicePdf, useVendorInvoice, useVendorInvoicePaymentProofs, useUploadVendorInvoicePaymentProof } from '../hooks/useVendorInvoices';
+import { PaymentProofList, PaymentProofUploadForm } from '@/features/payment-proofs/components/PaymentProofPanels';
 
 export default function VendorInvoiceDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError, error, refetch } = useVendorInvoice(id);
   const download = useDownloadVendorInvoicePdf();
+  const { data: proofs = [] } = useVendorInvoicePaymentProofs(id);
+  const uploadProof = useUploadVendorInvoicePaymentProof(id);
   const [pdfError, setPdfError] = useState<string | null>(null);
 
   if (isLoading) return <PortalLoadingState label="Loading invoice…" />;
@@ -94,10 +97,10 @@ export default function VendorInvoiceDetailPage() {
           <PortalStatCard label="Total" value={formatVendorMoney(data.totalAmount, data.currencyCode)} />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Outstanding" value={formatVendorMoney(data.outstandingBalance, data.currencyCode)} />
+          <PortalStatCard label="Paid" value={formatVendorMoney(data.paidAmount, data.currencyCode)} />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Paid" value={formatVendorMoney(data.paidAmount, data.currencyCode)} />
+          <PortalStatCard label="Balance due" value={formatVendorMoney(data.outstandingBalance, data.currencyCode)} />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
           <PortalStatCard label="Tax" value={formatVendorMoney(data.taxTotal, data.currencyCode)} />
@@ -128,6 +131,16 @@ export default function VendorInvoiceDetailPage() {
             ))}
           </PortalAnimatedList>
         )}
+      </PortalPanel>
+      <PortalPanel padded className="space-y-4">
+        <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Payment proofs</h2>
+        <PaymentProofList proofs={proofs} />
+        <PaymentProofUploadForm
+          disabled={uploadProof.isPending}
+          onUpload={async (file, dto) => {
+            await uploadProof.mutateAsync({ file, dto });
+          }}
+        />
       </PortalPanel>
     </div>
   );
