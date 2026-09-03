@@ -27,21 +27,23 @@ export function useQuotationNegotiationActions(quotationId: string) {
     invalidate(quotationId);
     void qc.invalidateQueries({ queryKey: negotiationKeys.timeline(quotationId) });
   };
-  return {
-    reviseAndSend: useMutation({
-      mutationFn: (dto: ReviseAndSendDto) =>
-        quotationNegotiationService.reviseAndSend(quotationId, dto),
-      onSuccess,
-    }),
-    acceptCounterOffer: useMutation({
-      mutationFn: (dto: ApprovalDecisionDto = {}) =>
-        quotationNegotiationService.acceptCounterOffer(quotationId, dto),
-      onSuccess,
-    }),
-    rejectCounterOffer: useMutation({
-      mutationFn: (dto: NegotiationRejectDto) =>
-        quotationNegotiationService.rejectCounterOffer(quotationId, dto),
-      onSuccess,
-    }),
-  };
+
+  // Call each mutation hook at top level (stable order) — do not construct inside object literals only.
+  const reviseAndSend = useMutation({
+    mutationFn: (dto: ReviseAndSendDto) =>
+      quotationNegotiationService.reviseAndSend(quotationId, dto),
+    onSuccess,
+  });
+  const acceptCounterOffer = useMutation({
+    mutationFn: (dto: ApprovalDecisionDto = {}) =>
+      quotationNegotiationService.acceptCounterOffer(quotationId, dto),
+    onSuccess,
+  });
+  const rejectCounterOffer = useMutation({
+    mutationFn: (dto: NegotiationRejectDto) =>
+      quotationNegotiationService.rejectCounterOffer(quotationId, dto),
+    onSuccess,
+  });
+
+  return { reviseAndSend, acceptCounterOffer, rejectCounterOffer };
 }

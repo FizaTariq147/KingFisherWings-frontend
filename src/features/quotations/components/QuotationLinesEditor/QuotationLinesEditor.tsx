@@ -29,7 +29,7 @@ export function QuotationLinesEditor({
   currencyCode,
   editable,
 }: QuotationLinesEditorProps) {
-  const { add, update, remove, applyTariff } = useQuotationLines(quotationId);
+  const { add, update, remove, removeAll, applyTariff } = useQuotationLines(quotationId);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editingLineId, setEditingLineId] = useState<string | null>(null);
@@ -113,14 +113,52 @@ export function QuotationLinesEditor({
     }
   });
 
-  const busy = add.isPending || update.isPending || remove.isPending || applyTariff.isPending;
+  const busy =
+    add.isPending ||
+    update.isPending ||
+    remove.isPending ||
+    removeAll.isPending ||
+    applyTariff.isPending;
 
   return (
     <div className="space-y-3">
+      {lines.length > 0 ? (
+        <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-950">
+          Portal quote requests are meant to be <strong>unpriced enquiries</strong>. If you see a line
+          like <strong>OCEAN-FRT / Ocean Freight</strong> (or other tariff charge codes) on an Air
+          Import RFQ, that came from <strong>auto tariff / default charges on the server</strong> —
+          not from Service catalog (Export clearance, pickup, fumigation). Use{' '}
+          <strong>Clear all lines</strong>, then price manually or Apply tariff only if the tariff
+          matches this job type.
+        </p>
+      ) : null}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Charge lines</h3>
         {editable && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            {lines.length > 0 ? (
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={busy}
+                onClick={() => {
+                  if (
+                    !window.confirm(
+                      `Remove all ${lines.length} charge line(s)? Totals will go to zero until you add pricing.`,
+                    )
+                  ) {
+                    return;
+                  }
+                  setError(null);
+                  void removeAll
+                    .mutateAsync(lines.map((line) => line.id).filter(Boolean))
+                    .catch((err) => setError(getErrorMessage(err)));
+                }}
+              >
+                <Trash2 className="h-4 w-4" />
+                {removeAll.isPending ? 'Clearing…' : 'Clear all lines'}
+              </Button>
+            ) : null}
             <Button
               type="button"
               variant="secondary"

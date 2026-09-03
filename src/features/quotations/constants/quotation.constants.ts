@@ -1,18 +1,38 @@
 export const QUOTATION_STATUSES = [
   'DRAFT',
   'SUBMITTED',
-  'APPROVED',
+  'INTERNALLY_APPROVED',
+  /** Rejected — customer reject or internal reject (both UIs show Rejected). */
   'REJECTED',
   'SENT',
   'CUSTOMER_REVIEW',
   'NEGOTIATING',
-  'WON',
-  'LOST',
+  /** Customer accepted (replaces WON). */
+  'APPROVED',
+  /** @deprecated Prefer REJECTED; coerced to REJECTED. */
+  'DISAPPROVED',
   'EXPIRED',
   'CONVERTED',
+  /** @deprecated Legacy API aliases — normalized in coerceQuotationStatus. */
+  'WON',
+  'LOST',
 ] as const;
 
 export type QuotationStatus = (typeof QUOTATION_STATUSES)[number];
+
+/** Statuses shown in list filters (hide deprecated aliases). */
+export const QUOTATION_STATUS_FILTERS = [
+  'DRAFT',
+  'SUBMITTED',
+  'INTERNALLY_APPROVED',
+  'REJECTED',
+  'SENT',
+  'CUSTOMER_REVIEW',
+  'NEGOTIATING',
+  'APPROVED',
+  'EXPIRED',
+  'CONVERTED',
+] as const satisfies readonly QuotationStatus[];
 
 export const JOB_TYPES = [
   'AIR_EXPORT',
@@ -60,6 +80,10 @@ export const LOST_REASONS = [
 
 export type LostReason = (typeof LOST_REASONS)[number];
 
+/** Alias for customer reject reasons (same catalog). */
+export const DISAPPROVE_REASONS = LOST_REASONS;
+export type DisapproveReason = LostReason;
+
 export const PDF_MODES = ['CUSTOMER', 'INTERNAL'] as const;
 export type PdfMode = (typeof PDF_MODES)[number];
 
@@ -86,21 +110,25 @@ export const JOB_TYPE_LABELS: Record<JobType, string> = {
 export const STATUS_LABELS: Record<QuotationStatus, string> = {
   DRAFT: 'Draft',
   SUBMITTED: 'Submitted',
-  APPROVED: 'Approved',
+  INTERNALLY_APPROVED: 'Internally approved',
   REJECTED: 'Rejected',
   SENT: 'Sent',
   CUSTOMER_REVIEW: 'Customer review',
   NEGOTIATING: 'Negotiating',
-  WON: 'Won',
-  LOST: 'Lost',
+  APPROVED: 'Approved',
+  DISAPPROVED: 'Rejected',
   EXPIRED: 'Expired',
   CONVERTED: 'Converted',
+  WON: 'Approved',
+  LOST: 'Rejected',
 };
 
 /** Statuses treated as “pending” for dashboard widgets. */
 export const PENDING_QUOTATION_STATUSES: QuotationStatus[] = [
   'DRAFT',
   'SUBMITTED',
-  'APPROVED',
+  'INTERNALLY_APPROVED',
   'SENT',
+  'CUSTOMER_REVIEW',
+  'NEGOTIATING',
 ];

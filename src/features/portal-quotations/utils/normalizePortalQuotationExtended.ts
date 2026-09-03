@@ -34,6 +34,27 @@ export function normalizePortalServiceCatalog(raw: unknown): PortalServiceCatalo
     .filter((item): item is PortalServiceCatalogItem => Boolean(item));
 }
 
+function normalizeJobTypeKey(value?: string): string {
+  return (value || '').trim().toUpperCase().replace(/\s+/g, '_');
+}
+
+/**
+ * Portal APIs sometimes ignore ?job_type= and return every portal-visible row.
+ * Keep only items that match the quote job type so Air Import cannot pick Air Export prices.
+ */
+export function filterPortalServiceCatalogByJobType(
+  items: PortalServiceCatalogItem[],
+  jobType?: string,
+): PortalServiceCatalogItem[] {
+  const wanted = normalizeJobTypeKey(jobType);
+  if (!wanted) return items;
+  return items.filter((item) => {
+    const itemType = normalizeJobTypeKey(item.jobType);
+    // Strict: missing job type must not apply to a specific mode.
+    return itemType === wanted;
+  });
+}
+
 export function normalizePortalEstimate(raw: unknown): PortalQuotationEstimateResult {
   const data = asRecord(unwrapData(raw)) ?? asRecord(raw) ?? {};
   const linesRaw = data.lines ?? data.charge_lines ?? data.items ?? data.priced_lines;

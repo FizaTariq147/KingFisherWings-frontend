@@ -23,6 +23,7 @@ import {
 import {
   normalizePortalEstimate,
   normalizePortalServiceCatalog,
+  filterPortalServiceCatalogByJobType,
 } from '../utils/normalizePortalQuotationExtended';
 import { normalizeNegotiationTimeline } from '@/features/quotations/utils/normalizeQuotationExtended';
 import type { NegotiationTimeline } from '@/features/quotations/types/quotationExtended.types';
@@ -59,8 +60,9 @@ export const portalQuotationsService = {
     };
   },
 
-  async accept(id: string): Promise<PortalQuotationDetail> {
-    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.accept(id));
+  async accept(id: string, dto: { message?: string } = {}): Promise<PortalQuotationDetail> {
+    // OpenAPI PortalQuotationAcceptDto — optional message; send {} so validators get a JSON body.
+    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.accept(id), dto);
     const detail = normalizeQuotationDetail(res.data);
     if (detail) return detail;
     return this.getById(id);
@@ -77,7 +79,8 @@ export const portalQuotationsService = {
     const res = await portalApiClient.get(PORTAL_QUOTATIONS_API.serviceCatalog, {
       params: jobType ? { job_type: jobType } : undefined,
     });
-    return normalizePortalServiceCatalog(res.data);
+    const items = normalizePortalServiceCatalog(res.data);
+    return filterPortalServiceCatalogByJobType(items, jobType);
   },
 
   async estimate(dto: PortalQuotationEstimateDto): Promise<PortalQuotationEstimateResult> {

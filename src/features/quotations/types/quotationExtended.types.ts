@@ -45,6 +45,31 @@ export interface CreateServiceCatalogItemDto {
 
 export type UpdateServiceCatalogItemDto = Partial<CreateServiceCatalogItemDto>;
 
+/** Line snapshot used in revise-and-send / counter-offer / negotiation_pricing. */
+export interface NegotiationProposedLine {
+  lineId?: string;
+  description?: string;
+  quantity?: number;
+  unitPrice?: number;
+  amount?: number;
+}
+
+/**
+ * Shared negotiation pricing block returned on quotation detail + negotiation timeline.
+ * Tenant offer updates revenue lines; customer counter is stored separately until accept.
+ */
+export interface NegotiationPricing {
+  revenueTotal?: number;
+  tenantProposedTotal?: number;
+  customerProposedTotal?: number;
+  customerProposedAt?: string;
+  customerProposedLines?: NegotiationProposedLine[];
+  /** Current official / tenant revenue line snapshot when API includes it */
+  lines?: NegotiationProposedLine[];
+  currencyCode?: string;
+  raw?: Record<string, unknown>;
+}
+
 export interface NegotiationEvent {
   id: string;
   eventType?: string;
@@ -59,11 +84,25 @@ export interface NegotiationEvent {
 export interface NegotiationTimeline {
   events: NegotiationEvent[];
   round?: number;
+  /** Current pricing snapshot from GET .../negotiation */
+  pricing?: NegotiationPricing;
   raw?: Record<string, unknown>;
+}
+
+export interface ReviseAndSendLineDto {
+  line_id?: string;
+  description?: string;
+  quantity?: number;
+  unit_price?: number;
+  amount?: number;
 }
 
 export interface ReviseAndSendDto {
   message: string;
+  /** Revised total offered to the customer — updates revenue lines + revenue_total */
+  proposed_total?: number;
+  /** Optional line-level updates applied with the revise */
+  lines?: ReviseAndSendLineDto[];
 }
 
 export interface NegotiationRejectDto {

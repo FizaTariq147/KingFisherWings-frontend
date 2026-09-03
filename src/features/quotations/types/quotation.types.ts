@@ -119,6 +119,8 @@ export interface Quotation {
   total_amount?: number;
   cost_total?: number;
   revenue_total?: number;
+  /** Live negotiation offer/counter snapshot from GET /quotations/:id */
+  negotiation_pricing?: import('./quotationExtended.types').NegotiationPricing;
   gp_amount?: number;
   gp_percent?: number;
   contact_name?: string;

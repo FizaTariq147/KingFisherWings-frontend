@@ -1,16 +1,14 @@
 import type { PortalQuotationDetail, PortalQuotationListItem } from '../types/portalQuotations.types';
+import {
+  canPortalCustomerRespond as canRespondCanonical,
+  coerceQuotationStatus,
+  isCustomerApprovedStatus,
+  isCustomerDisapprovedStatus,
+} from '@/features/quotations/utils/quotationStatus';
 
 export function normalizePortalQuoteStatus(status?: string): string {
-  return (status || '').trim().toUpperCase().replace(/\s+/g, '_');
+  return coerceQuotationStatus(status || 'DRAFT');
 }
-
-/** Customer may approve/reject once staff has priced the quote or sent it for review. */
-export const PORTAL_QUOTE_RESPOND_STATUSES = new Set([
-  'APPROVED',
-  'SENT',
-  'CUSTOMER_REVIEW',
-  'NEGOTIATING',
-]);
 
 export function portalQuoteHasPricing(
   quote?: PortalQuotationListItem | PortalQuotationDetail,
@@ -26,8 +24,8 @@ export function canPortalCustomerRespondToQuote(
   quote?: PortalQuotationListItem | PortalQuotationDetail,
 ): boolean {
   const s = normalizePortalQuoteStatus(status);
-  if (!PORTAL_QUOTE_RESPOND_STATUSES.has(s)) return false;
-  if (s === 'APPROVED') return portalQuoteHasPricing(quote);
+  // Customer must not act on DRAFT / SUBMITTED / INTERNALLY_APPROVED enquiries.
+  if (!canRespondCanonical(s)) return false;
   return true;
 }
 
@@ -39,10 +37,19 @@ export function portalQuoteTotalAmount(
     const sum = detail.lines.reduce((acc, line) => acc + (line.amount ?? 0), 0);
     if (sum > 0) return sum;
   }
+  // Prefer header revenue_total when backend keeps negotiated total current (item 2).
   const raw = item.raw ?? {};
-  const total =
-    raw.total_amount ?? raw.totalAmount ?? raw.grand_total ?? raw.grandTotal ?? raw.amount;
-  return typeof total === 'number' && Number.isFinite(total) ? total : undefined;
+  const header =
+    raw.revenue_total ??
+    raw.revenueTotal ??
+    raw.total_amount ??
+    raw.totalAmount ??
+    raw.grand_total ??
+    raw.grandTotal ??
+    raw.amount ??
+    (item as PortalQuotationDetail).negotiationPricing?.revenueTotal ??
+    (item as PortalQuotationDetail).negotiationPricing?.tenantProposedTotal;
+  return typeof header === 'number' && Number.isFinite(header) ? header : undefined;
 }
 
 export function portalQuoteStatusMessage(
@@ -53,22 +60,28 @@ export function portalQuoteStatusMessage(
   if (canPortalCustomerRespondToQuote(status, quote)) {
     return 'Review the charges below and approve or reject this quotation.';
   }
-  if (s === 'APPROVED') {
-    return 'Pricing is approved but charge lines are not visible yet. Refresh shortly or contact your forwarder.';
+  if (s === 'INTERNALLY_APPROVED') {
+    return 'Pricing is approved internally but not sent yet. Refresh shortly or contact your forwarder.';
   }
   if (s === 'SUBMITTED' || s === 'DRAFT' || s === 'PENDING' || s === 'OPEN') {
-    return 'Your forwarder is preparing this quotation. Approve and reject will be available once pricing is ready.';
+    return 'Your forwarder is preparing this quotation. Approve and reject will be available once they send it.';
   }
   if (s === 'CUSTOMER_REVIEW') {
     return 'Your forwarder sent a revised quotation. Review the charges and approve, reject, or submit a counter-offer.';
   }
   if (s === 'NEGOTIATING') {
-    return 'Counter-offer submitted. Your forwarder will respond shortly. You can still approve the current quote.';
+    const counter = quote
+      ? (quote as PortalQuotationDetail).negotiationPricing?.customerProposedTotal
+      : undefined;
+    if (counter != null) {
+      return `Your counter-offer (${counter}) is waiting for the forwarder. Approving now accepts their current offer, not your counter.`;
+    }
+    return 'Counter-offer submitted. Your forwarder will respond shortly. Approving now accepts their current offer, not your counter.';
   }
-  if (s === 'WON' || s === 'CONVERTED' || s === 'ACCEPTED') {
+  if (isCustomerApprovedStatus(s) || s === 'CONVERTED' || s === 'ACCEPTED') {
     return 'You approved this quotation.';
   }
-  if (s === 'LOST' || s === 'REJECTED') {
+  if (isCustomerDisapprovedStatus(s) || s === 'REJECTED') {
     return 'This quotation was rejected.';
   }
   if (s === 'EXPIRED') {
@@ -84,11 +97,17 @@ export function canPortalCustomerCounterOffer(status?: string): boolean {
 
 export function formatPortalQuotationActionError(raw: string): string {
   const trimmed = raw.trim();
-  if (/only a sent quotation can be marked won/i.test(trimmed)) {
+  if (/only a sent quotation can be marked won/i.test(trimmed) || /only a sent quotation can be marked approved/i.test(trimmed)) {
     return 'This quotation is not ready for customer approval yet. Ask your forwarder to use Send to customer in ERP (status must be Sent), then try Approve again.';
   }
   if (/only a sent quotation/i.test(trimmed)) {
     return 'Approval is only allowed after your forwarder sends the quotation (status Sent). Contact them to click Send to customer.';
+  }
+  if (/missing required permission.*quotations\.negotiate/i.test(trimmed)) {
+    return 'Staff account is missing quotations.negotiate. Super Admin must sync tenant permissions, then staff must sign out and back in.';
+  }
+  if (/counter.?offer|negotiat/i.test(trimmed) && /not (allowed|permitted)|invalid status|cannot/i.test(trimmed)) {
+    return `${trimmed} Counter-offers are allowed when status is Sent, Customer Review, or Negotiating.`;
   }
   return trimmed;
 }

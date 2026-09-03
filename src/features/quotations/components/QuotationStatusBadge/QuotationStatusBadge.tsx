@@ -3,20 +3,24 @@ import {
   STATUS_LABELS,
   type QuotationStatus,
 } from '../../constants/quotation.constants';
+import { coerceQuotationStatus } from '../../utils/quotationStatus';
 
-const VARIANT: Record<
-  QuotationStatus,
-  'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'primary'
+const VARIANT: Partial<
+  Record<QuotationStatus, 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'primary'>
 > = {
   DRAFT: 'neutral',
   SUBMITTED: 'info',
-  APPROVED: 'primary',
+  INTERNALLY_APPROVED: 'primary',
   REJECTED: 'danger',
   SENT: 'info',
-  WON: 'success',
-  LOST: 'danger',
+  CUSTOMER_REVIEW: 'warning',
+  NEGOTIATING: 'warning',
+  APPROVED: 'success',
+  DISAPPROVED: 'danger',
   EXPIRED: 'warning',
   CONVERTED: 'success',
+  WON: 'success',
+  LOST: 'danger',
 };
 
 interface QuotationStatusBadgeProps {
@@ -24,7 +28,7 @@ interface QuotationStatusBadgeProps {
 }
 
 export function QuotationStatusBadge({ status }: QuotationStatusBadgeProps) {
-  const key = String(status || 'DRAFT').toUpperCase() as QuotationStatus;
+  const key = coerceQuotationStatus(status);
   const label = STATUS_LABELS[key] ?? status;
   return <Badge variant={VARIANT[key] ?? 'neutral'}>{label}</Badge>;
 }

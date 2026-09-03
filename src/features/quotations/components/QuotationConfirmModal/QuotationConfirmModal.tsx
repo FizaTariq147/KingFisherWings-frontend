@@ -29,14 +29,16 @@ const CONFIG: Record<
     variant: 'primary',
   },
   'mark-won': {
-    title: 'Mark as won?',
-    description: (label) => `${label} will be marked Won.`,
-    confirmLabel: 'Mark won',
+    title: 'Mark as approved?',
+    description: (label) =>
+      `${label} will be marked customer-approved (ops override after send).`,
+    confirmLabel: 'Mark approved',
     variant: 'primary',
   },
   convert: {
     title: 'Convert to job?',
-    description: (label) => `${label} will create a minimal job and mark Converted.`,
+    description: (label) =>
+      `${label} will create a job, copy revenue charges, and create a draft customer invoice when the API supports it.`,
     confirmLabel: 'Convert',
     variant: 'primary',
   },
@@ -96,10 +98,11 @@ export function QuotationConfirmModal({
 
   if (kind === 'mark-lost') {
     return (
-      <Modal open={open} onClose={onClose} title="Mark quotation lost">
+      <Modal open={open} onClose={onClose} title="Mark quotation rejected">
         <div className="space-y-4">
           <p className="text-sm text-[var(--color-neutral-600)]">
-            Record why {label} was lost.
+            Record why {label} was rejected. Status becomes <strong>Rejected</strong> on staff and
+            portal.
           </p>
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[var(--color-neutral-500)]">Reason *</span>
@@ -135,7 +138,7 @@ export function QuotationConfirmModal({
               onClick={() => onConfirm({ reason, notes: notes || undefined })}
             >
               {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              Mark lost
+              Mark rejected
             </Button>
           </div>
         </div>
@@ -146,12 +149,12 @@ export function QuotationConfirmModal({
   if (kind === 'approve' || kind === 'reject') {
     const isReject = kind === 'reject';
     return (
-      <Modal open={open} onClose={onClose} title={isReject ? 'Reject quotation?' : 'Approve quotation?'}>
+      <Modal open={open} onClose={onClose} title={isReject ? 'Reject quotation?' : 'Internally approve?'}>
         <div className="space-y-4">
           <p className="text-sm text-[var(--color-neutral-600)]">
             {isReject
               ? `${label} will return to Rejected.`
-              : `${label} will be Approved.`}
+              : `${label} will be internally approved so you can send it to the customer.`}
           </p>
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[var(--color-neutral-500)]">Comments</span>
@@ -173,7 +176,7 @@ export function QuotationConfirmModal({
               onClick={() => onConfirm({ comments: comments || undefined })}
             >
               {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              {isReject ? 'Reject' : 'Approve'}
+              {isReject ? 'Reject' : 'Internally approve'}
             </Button>
           </div>
         </div>

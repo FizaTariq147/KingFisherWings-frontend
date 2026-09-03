@@ -1,11 +1,12 @@
 import { isUuid } from '@/lib/isUuid';
 import {
   JOB_TYPES,
-  QUOTATION_STATUSES,
   type JobType,
   type QuotationStatus,
 } from '../constants/quotation.constants';
 import type { Quotation, QuotationLine } from '../types/quotation.types';
+import { normalizeNegotiationPricing } from './normalizeQuotationExtended';
+import { coerceQuotationStatus } from './quotationStatus';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -48,10 +49,7 @@ function bool(value: unknown): boolean | undefined {
 }
 
 function normalizeStatus(value: unknown): QuotationStatus {
-  const raw = String(value ?? 'DRAFT').trim().toUpperCase();
-  return (QUOTATION_STATUSES as readonly string[]).includes(raw)
-    ? (raw as QuotationStatus)
-    : 'DRAFT';
+  return coerceQuotationStatus(value);
 }
 
 function normalizeJobType(value: unknown): JobType {
@@ -182,6 +180,7 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
       num(r.revenue_total ?? r.revenueTotal),
     cost_total: num(r.cost_total ?? r.costTotal),
     revenue_total: num(r.revenue_total ?? r.revenueTotal),
+    negotiation_pricing: normalizeNegotiationPricing(r),
     gp_amount: num(r.gp_amount),
     gp_percent: num(r.gp_percent),
     contact_name:

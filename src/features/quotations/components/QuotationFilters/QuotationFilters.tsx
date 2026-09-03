@@ -1,7 +1,7 @@
 import {
   JOB_TYPE_LABELS,
   JOB_TYPES,
-  QUOTATION_STATUSES,
+  QUOTATION_STATUS_FILTERS,
   STATUS_LABELS,
   type JobType,
   type QuotationStatus,
@@ -56,7 +56,7 @@ export function QuotationFilters({
         className={selectClass}
       >
         <option value="all">All statuses</option>
-        {QUOTATION_STATUSES.map((s) => (
+        {QUOTATION_STATUS_FILTERS.map((s) => (
           <option key={s} value={s}>
             {STATUS_LABELS[s]}
           </option>

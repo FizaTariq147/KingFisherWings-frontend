@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { PortalApiError } from '@/lib/portalApiClient';
+import { getServerErrorMessage } from '@/lib/validation/mapApiErrors';
 import { PortalPanel, portalSelectClassName } from '@/features/portal-auth/components/portal-ui';
 import { PORTAL_QUOTATION_REJECT_REASONS } from '../api/portalQuotations.api';
 import {
@@ -43,6 +43,9 @@ export function PortalQuotationDecisionPanel({
   const total = portalQuoteTotalAmount(quote);
   const currency = quote.currencyCode || 'AED';
   const statusMessage = portalQuoteStatusMessage(quote.status, quote);
+  const customerCounter = quote.negotiationPricing?.customerProposedTotal;
+  const isNegotiating =
+    (quote.status || '').toUpperCase().replace(/\s+/g, '_') === 'NEGOTIATING';
 
   const runAccept = () => {
     setActionError(null);
@@ -55,16 +58,14 @@ export function PortalQuotationDecisionPanel({
       .mutateAsync(quote.id)
       .then(() => {
         setConfirmAccept(false);
-        onSuccess?.('Quotation approved. Your forwarder will proceed with booking.');
+        onSuccess?.(
+          isNegotiating && customerCounter != null
+            ? 'Quotation approved at the forwarder’s offer (your counter was not applied).'
+            : 'Quotation approved. Your forwarder will proceed with booking.',
+        );
       })
       .catch((err) => {
-        setActionError(
-          formatPortalQuotationActionError(
-            err instanceof PortalApiError || err instanceof Error
-              ? err.message
-              : 'Could not approve quotation.',
-          ),
-        );
+        setActionError(formatPortalQuotationActionError(getServerErrorMessage(err)));
       });
   };
 
@@ -83,13 +84,7 @@ export function PortalQuotationDecisionPanel({
         onSuccess?.('Quotation rejected.');
       })
       .catch((err) => {
-        setActionError(
-          formatPortalQuotationActionError(
-            err instanceof PortalApiError || err instanceof Error
-              ? err.message
-              : 'Could not reject quotation.',
-          ),
-        );
+        setActionError(formatPortalQuotationActionError(getServerErrorMessage(err)));
       });
   };
 
@@ -107,7 +102,9 @@ export function PortalQuotationDecisionPanel({
         {acceptQuote.isPending
           ? 'Approving…'
           : confirmAccept
-            ? 'Confirm approve'
+            ? isNegotiating && customerCounter != null
+              ? 'Confirm: accept their offer'
+              : 'Confirm approve'
             : 'Approve quote'}
       </Button>
       <Button

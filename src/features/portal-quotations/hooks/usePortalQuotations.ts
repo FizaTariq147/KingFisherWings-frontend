@@ -98,11 +98,12 @@ export function useAcceptPortalQuotation() {
   const qc = useQueryClient();
   const scope = usePortalQueryScope();
   return useMutation({
-    mutationFn: (id: string) => portalQuotationsService.accept(id),
+    mutationFn: (id: string) => portalQuotationsService.accept(id, {}),
     onSuccess: (q) => {
       void qc.invalidateQueries({ queryKey: portalQuotationKeys.all(scope) });
       if (scope !== 'anon' && q.id) {
         qc.setQueryData(portalQuotationKeys.detail(scope, q.id), q);
+        void qc.invalidateQueries({ queryKey: portalQuotationKeys.negotiation(scope, q.id) });
       }
     },
   });
@@ -118,6 +119,7 @@ export function useRejectPortalQuotation() {
       void qc.invalidateQueries({ queryKey: portalQuotationKeys.all(scope) });
       if (scope !== 'anon' && q.id) {
         qc.setQueryData(portalQuotationKeys.detail(scope, q.id), q);
+        void qc.invalidateQueries({ queryKey: portalQuotationKeys.negotiation(scope, q.id) });
       }
     },
   });

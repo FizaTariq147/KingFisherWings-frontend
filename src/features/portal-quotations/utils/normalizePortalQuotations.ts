@@ -7,6 +7,8 @@ import {
   unwrapData,
   unwrapList,
 } from '@/features/portal-shared/normalize';
+import { normalizeNegotiationPricing } from '@/features/quotations/utils/normalizeQuotationExtended';
+import { coerceQuotationStatus } from '@/features/quotations/utils/quotationStatus';
 import type {
   PortalQuotationDetail,
   PortalQuotationListItem,
@@ -33,8 +35,10 @@ function portLabel(record: Record<string, unknown>, side: 'origin' | 'dest'): st
 const OPEN_QUOTE_STATUSES = new Set([
   'DRAFT',
   'SUBMITTED',
-  'APPROVED',
+  'INTERNALLY_APPROVED',
   'SENT',
+  'CUSTOMER_REVIEW',
+  'NEGOTIATING',
   'PENDING',
   'OPEN',
 ]);
@@ -59,8 +63,12 @@ export function normalizeQuotationSummary(raw: unknown): PortalQuotationSummary 
   return {
     total: pickNumber(data.total, data.count) ?? byStatusTotal,
     open: pickNumber(data.open, data.pending, data.active) ?? sumByStatus(byStatus, OPEN_QUOTE_STATUSES),
-    won: pickNumber(data.won, data.approved) ?? sumByStatus(byStatus, new Set(['WON', 'CONVERTED'])),
-    lost: pickNumber(data.lost, data.rejected) ?? sumByStatus(byStatus, new Set(['LOST', 'REJECTED', 'EXPIRED'])),
+    won:
+      pickNumber(data.won, data.approved) ??
+      sumByStatus(byStatus, new Set(['APPROVED', 'WON', 'CONVERTED'])),
+    lost:
+      pickNumber(data.lost, data.rejected, data.disapproved) ??
+      sumByStatus(byStatus, new Set(['REJECTED', 'DISAPPROVED', 'LOST', 'EXPIRED'])),
     byStatus,
     raw: data,
   };
@@ -75,7 +83,10 @@ export function normalizeQuotationListItem(raw: unknown): PortalQuotationListIte
     id,
     number:
       pickString(record.number, record.quotation_number, record.quotationNumber, record.ref) || id,
-    status: pickString(record.status) || undefined,
+    status: (() => {
+      const rawStatus = pickString(record.status);
+      return rawStatus ? coerceQuotationStatus(rawStatus) : undefined;
+    })(),
     jobType: pickString(record.job_type, record.jobType) || undefined,
     currencyCode: pickString(record.currency_code, record.currencyCode, record.currency) || undefined,
     origin: portLabel(record, 'origin') || undefined,
@@ -137,6 +148,7 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
     convertedJobNumber:
       pickString(data.converted_job_number, data.convertedJobNumber, data.job_number) || undefined,
     packages: normalizePortalPackages(data.packages),
+    negotiationPricing: normalizeNegotiationPricing(data),
     pdfUrl: (() => {
       const raw = pickString(
         data.customer_pdf_url,

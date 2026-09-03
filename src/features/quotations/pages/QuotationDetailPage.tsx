@@ -21,13 +21,27 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import { quotationDisplayNumber } from '../utils/normalizeQuotation';
 import { recalculateQuotationTotals } from '../utils/recalculateQuotationTotals';
+import {
+  canArchiveQuotation,
+  canConvertQuotationToJob,
+  canStaffInternallyApprove,
+  canStaffMarkCustomerDecision,
+  canStaffSendToCustomer,
+  coerceQuotationStatus,
+  isQuotationDraftEditable,
+  isQuotationLinesEditable,
+} from '../utils/quotationStatus';
 
 function statusTone(
   status: string,
 ): 'emerald' | 'amber' | 'rose' | 'slate' {
-  if (status === 'WON' || status === 'CONVERTED' || status === 'APPROVED') return 'emerald';
-  if (status === 'LOST' || status === 'REJECTED') return 'rose';
-  if (status === 'EXPIRED' || status === 'SENT' || status === 'SUBMITTED') return 'amber';
+  const s = coerceQuotationStatus(status);
+  if (s === 'APPROVED' || s === 'CONVERTED') return 'emerald';
+  if (s === 'INTERNALLY_APPROVED') return 'emerald';
+  if (s === 'DISAPPROVED' || s === 'REJECTED') return 'rose';
+  if (s === 'EXPIRED' || s === 'SENT' || s === 'SUBMITTED' || s === 'CUSTOMER_REVIEW' || s === 'NEGOTIATING') {
+    return 'amber';
+  }
   return 'slate';
 }
 
@@ -81,8 +95,11 @@ export default function QuotationDetailPage() {
     );
   }
 
-  const status = quotation.status;
-  const editable = status === 'DRAFT' || status === 'REJECTED';
+  const status = coerceQuotationStatus(quotation.status);
+  /** Full quotation form edit / submit — drafts only */
+  const editable = isQuotationDraftEditable(status);
+  /** Charge lines can be updated while preparing / negotiating the offer */
+  const linesEditable = isQuotationLinesEditable(status);
   const title = quotationDisplayNumber(quotation);
 
   const run = async (fn: () => Promise<unknown>, successMsg?: string) => {
@@ -93,9 +110,25 @@ export default function QuotationDetailPage() {
       const result = await fn();
       closeConfirm();
       if (result && typeof result === 'object' && 'id' in result) {
-        const q = result as { id: string; status?: string };
-        if (q.id !== id && q.status === 'DRAFT') {
+        const q = result as { id: string; status?: string; job_id?: string; invoice_id?: string };
+        if (q.id !== id && coerceQuotationStatus(q.status || 'DRAFT') === 'DRAFT') {
           navigate(`/quotations/${q.id}`);
+          return;
+        }
+        // convert-to-job may return { job, invoice } or quotation with job_id
+        const jobId =
+          q.job_id ||
+          (result as { job?: { id?: string } }).job?.id;
+        const invoiceId =
+          q.invoice_id ||
+          (result as { invoice?: { id?: string } }).invoice?.id;
+        if (jobId) {
+          setActionMessage(
+            invoiceId
+              ? 'Converted to job and draft customer invoice created.'
+              : successMsg || 'Converted to job.',
+          );
+          navigate(jobDetailPath(String(jobId), quotation.job_type));
           return;
         }
       }
@@ -116,22 +149,34 @@ export default function QuotationDetailPage() {
     ...(editable
       ? [{ label: 'Submit', onClick: () => requestConfirm('submit', quotation), variant: 'primary' as const }]
       : []),
-    ...(status === 'SUBMITTED'
+    ...(canStaffInternallyApprove(status)
       ? [
-          { label: 'Approve', onClick: () => requestConfirm('approve', quotation), variant: 'primary' as const },
+          {
+            label: 'Internally approve',
+            onClick: () => requestConfirm('approve', quotation),
+            variant: 'primary' as const,
+          },
           { label: 'Reject', onClick: () => requestConfirm('reject', quotation), variant: 'danger' as const },
         ]
       : []),
-    ...(status === 'APPROVED'
+    ...(canStaffSendToCustomer(status)
       ? [{ label: 'Send', onClick: () => requestConfirm('send', quotation), variant: 'primary' as const }]
       : []),
-    ...(status === 'SENT'
+    ...(canStaffMarkCustomerDecision(status)
       ? [
-          { label: 'Mark won', onClick: () => requestConfirm('mark-won', quotation), variant: 'primary' as const },
-          { label: 'Mark lost', onClick: () => requestConfirm('mark-lost', quotation), variant: 'danger' as const },
+          {
+            label: 'Mark approved',
+            onClick: () => requestConfirm('mark-won', quotation),
+            variant: 'primary' as const,
+          },
+          {
+            label: 'Mark rejected',
+            onClick: () => requestConfirm('mark-lost', quotation),
+            variant: 'danger' as const,
+          },
         ]
       : []),
-    ...(status === 'WON'
+    ...(canConvertQuotationToJob(status)
       ? [
           {
             label: 'Convert to job',
@@ -142,13 +187,13 @@ export default function QuotationDetailPage() {
       : []),
     { label: 'PDF', onClick: () => setPdfOpen(true), variant: 'secondary' as const },
     { label: 'Email', onClick: () => setEmailOpen(true), variant: 'secondary' as const },
-    ...(['WON', 'LOST', 'EXPIRED', 'CONVERTED'].includes(status)
+    ...(canArchiveQuotation(status)
       ? [{ label: 'Archive', onClick: () => requestConfirm('archive', quotation), variant: 'danger' as const }]
       : []),
     ...(status === 'DRAFT'
       ? [{ label: 'Delete', onClick: () => requestConfirm('delete', quotation), variant: 'danger' as const }]
       : []),
-    ...(['SENT', 'APPROVED'].includes(status)
+    ...(canStaffSendToCustomer(status) || status === 'SENT'
       ? [{ label: 'Expire', onClick: () => requestConfirm('expire', quotation), variant: 'danger' as const }]
       : []),
   ];
@@ -202,6 +247,7 @@ export default function QuotationDetailPage() {
               currencyCode={quotation.currency_code}
               totals={totals}
               serverTotal={quotation.total_amount}
+              hasChargeLines={lines.length > 0}
             />
             {revisions.length > 1 && (
               <div className="text-xs text-[var(--color-neutral-500)] space-y-1">
@@ -234,7 +280,7 @@ export default function QuotationDetailPage() {
                 quotationId={id}
                 lines={lines}
                 currencyCode={quotation.currency_code}
-                editable={editable}
+                editable={linesEditable}
               />
             ),
           },
@@ -245,6 +291,10 @@ export default function QuotationDetailPage() {
               <QuotationNegotiationPanel
                 quotationId={id}
                 status={status}
+                currencyCode={quotation.currency_code}
+                lines={lines}
+                pricingFromQuote={quotation.negotiation_pricing}
+                revenueTotal={quotation.revenue_total ?? quotation.total_amount}
                 onUpdated={() => void refetch()}
               />
             ),

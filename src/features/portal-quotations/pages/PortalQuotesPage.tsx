@@ -88,16 +88,17 @@ export default function PortalQuotesPage() {
               {[
                 'DRAFT',
                 'SUBMITTED',
-                'APPROVED',
+                'INTERNALLY_APPROVED',
                 'REJECTED',
                 'SENT',
-                'WON',
-                'LOST',
+                'CUSTOMER_REVIEW',
+                'NEGOTIATING',
+                'APPROVED',
                 'EXPIRED',
                 'CONVERTED',
               ].map((s) => (
                 <option key={s} value={s}>
-                  {s}
+                  {s.replaceAll('_', ' ')}
                 </option>
               ))}
             </select>

@@ -44,7 +44,14 @@ export interface PortalQuotationEstimateDto {
 
 export interface PortalQuotationCounterOfferDto {
   message: string;
-  proposed_total?: number;
+  /** Required — stored as customer_proposed_total until tenant accepts */
+  proposed_total: number;
+  proposed_lines?: Array<{
+    description?: string;
+    quantity?: number;
+    unit_price?: number;
+    amount?: number;
+  }>;
 }
 
 export interface PortalQuotationRequestDto {
@@ -62,7 +69,7 @@ export interface PortalQuotationRequestDto {
   valid_until?: string;
   container_count?: number;
   packages?: PortalCargoPackageDto[];
-  service_codes?: string[];
+  /** Not accepted by POST /portal/quotations — use estimate endpoint only. */
 }
 
 export interface PortalServiceCatalogItem {
@@ -141,6 +148,7 @@ export interface PortalQuotationDetail extends PortalQuotationListItem {
   pdfUrl?: string;
   /** Explicit readiness flag when API includes one */
   pdfReady?: boolean;
+  negotiationPricing?: import('@/features/quotations/types/quotationExtended.types').NegotiationPricing;
   lines?: Array<{
     id: string;
     description: string;

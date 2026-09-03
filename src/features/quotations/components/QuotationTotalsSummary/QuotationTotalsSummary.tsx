@@ -4,13 +4,18 @@ interface QuotationTotalsSummaryProps {
   currencyCode: string;
   totals: QuotationTotals;
   serverTotal?: number;
+  /** When false, show awaiting-pricing instead of a misleading 0/seeded total. */
+  hasChargeLines?: boolean;
 }
 
 export function QuotationTotalsSummary({
   currencyCode,
   totals,
   serverTotal,
+  hasChargeLines = true,
 }: QuotationTotalsSummaryProps) {
+  const unpriced = !hasChargeLines && (totals.totalAmount === 0 || totals.revenueSubtotal === 0);
+
   const rows = [
     { label: 'Revenue subtotal', value: totals.revenueSubtotal },
     { label: 'Cost subtotal', value: totals.costSubtotal },
@@ -23,6 +28,12 @@ export function QuotationTotalsSummary({
   return (
     <div className="rounded-lg border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-4 space-y-2">
       <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Totals</h3>
+      {unpriced ? (
+        <p className="text-sm text-[var(--color-neutral-600)]">
+          Not priced yet — add charge lines for this job type (or wait for catalog services the
+          customer selected).
+        </p>
+      ) : null}
       {rows.map((row) => (
         <div
           key={row.label}

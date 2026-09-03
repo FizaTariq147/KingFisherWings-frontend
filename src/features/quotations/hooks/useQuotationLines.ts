@@ -25,10 +25,19 @@ export function useQuotationLines(quotationId: string) {
     onSuccess: () => invalidate(quotationId),
   });
 
+  const removeAll = useMutation({
+    mutationFn: async (lineIds: string[]) => {
+      for (const lineId of lineIds) {
+        await quotationService.removeLine(quotationId, lineId);
+      }
+    },
+    onSuccess: () => invalidate(quotationId),
+  });
+
   const applyTariff = useMutation({
     mutationFn: () => quotationService.applyTariff(quotationId),
     onSuccess: () => invalidate(quotationId),
   });
 
-  return { add, update, remove, applyTariff };
+  return { add, update, remove, removeAll, applyTariff };
 }
