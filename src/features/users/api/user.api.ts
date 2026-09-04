@@ -8,8 +8,10 @@ export const USER_API = {
   forceLogout: (id: string) => `/users/${id}/force-logout`,
   /** UsersController_changeOwnPassword — same DTO as POST /auth/change-password */
   meChangePassword: '/users/me/change-password',
-  /** Tenant Admin permission catalog (may 404 until backend ships). */
+  /** Tenant Admin permission catalog (modules → submodules → see/read/write). */
   permissionMatrix: '/users/permission-matrix',
+  userPermissionMatrix: (id: string) => `/users/${id}/permission-matrix`,
+  /** Legacy flat permissions (fallback). */
   permissions: (id: string) => `/users/${id}/permissions`,
 } as const;
 

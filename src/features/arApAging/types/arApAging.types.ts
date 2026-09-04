@@ -74,7 +74,8 @@ export interface OpenItemLine {
 
 export interface OpenItemsParams {
   party_id: string;
-  company_id: string;
+  /** Optional — omit when session has no company; wrong company returns empty. */
+  company_id?: string;
 }
 
 export interface OpenItemsResult {

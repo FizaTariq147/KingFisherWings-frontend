@@ -1,18 +1,16 @@
-import { asRecord, pickString, unwrapData } from '@/features/portal-shared/normalize';
+import { asRecord, pickBoolean, pickString, unwrapData } from '@/features/portal-shared/normalize';
 import type {
-  PermissionCatalogItem,
   PermissionMatrix,
-  PermissionModuleGroup,
+  PermissionMatrixGrant,
+  PermissionModuleNode,
+  PermissionSubmoduleNode,
   RoleListResult,
   RoleSummary,
   UserPermissionAssignment,
 } from '../types/userPermissionMatrix.types';
 
-const CRUD_ACTIONS = new Set(['view', 'create', 'update']);
-
 function titleCase(value: string): string {
   return value
-    .replace(/^menu_/, '')
     .replace(/[_-]+/g, ' ')
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     .split(' ')
@@ -21,233 +19,175 @@ function titleCase(value: string): string {
     .join(' ');
 }
 
-function inferAction(key: string, rawAction?: string): string {
-  const explicit = (rawAction ?? '').trim().toLowerCase();
-  if (explicit) {
-    if (explicit === 'read' || explicit === 'list' || explicit === 'get') return 'view';
-    if (explicit === 'write' || explicit === 'edit' || explicit === 'patch' || explicit === 'put') {
-      return 'update';
-    }
-    if (explicit === 'post' || explicit === 'add') return 'create';
-    return explicit;
-  }
-
-  const token = key.split(/[.:/]/).pop()?.toLowerCase() ?? '';
-  if (token === 'read' || token === 'list' || token === 'get') return 'view';
-  if (token === 'write' || token === 'edit' || token === 'patch') return 'update';
-  if (CRUD_ACTIONS.has(token)) return token;
-  if (key.startsWith('menu_')) return 'view';
-  return token || 'view';
+function boolish(value: unknown, fallback = false): boolean {
+  return pickBoolean(value) ?? fallback;
 }
 
-function inferModule(key: string, rawModule?: string): string {
-  const explicit = (rawModule ?? '').trim();
-  if (explicit) return explicit;
-  if (key.startsWith('menu_')) return key.slice('menu_'.length) || 'general';
-  const parts = key.split(/[.:/]/).filter(Boolean);
-  if (parts.length >= 2) return parts.slice(0, -1).join('.');
-  return parts[0] || 'general';
-}
-
-function collectItems(raw: unknown): unknown[] {
-  const data = unwrapData(raw);
-  if (Array.isArray(data)) return data;
-
-  const record = asRecord(data) ?? asRecord(raw);
-  if (!record) return [];
-
-  for (const key of ['permissions', 'items', 'catalog', 'entries', 'matrix']) {
-    const value = record[key];
-    if (Array.isArray(value)) return value;
-  }
-
-  const modules = record.modules ?? record.groups;
-  if (Array.isArray(modules)) {
-    const nested: unknown[] = [];
-    for (const moduleRaw of modules) {
-      const moduleRecord = asRecord(moduleRaw);
-      if (!moduleRecord) continue;
-      const moduleKey = pickString(
-        moduleRecord.module,
-        moduleRecord.key,
-        moduleRecord.slug,
-        moduleRecord.name,
-        moduleRecord.code,
-      );
-      const moduleLabel = pickString(moduleRecord.label, moduleRecord.name, moduleRecord.title) || moduleKey;
-      const perms =
-        (Array.isArray(moduleRecord.permissions) && moduleRecord.permissions) ||
-        (Array.isArray(moduleRecord.items) && moduleRecord.items) ||
-        (Array.isArray(moduleRecord.actions) && moduleRecord.actions) ||
-        [];
-      const crudFlags = ['view', 'create', 'update'] as const;
-      const hasCrudFlags = crudFlags.some(
-        (action) => moduleRecord[action] != null || moduleRecord[`can_${action}`] != null,
-      );
-      if (perms.length === 0 && hasCrudFlags) {
-        for (const action of crudFlags) {
-          const value = moduleRecord[action] ?? moduleRecord[`can_${action}`];
-          const valueRecord = asRecord(value);
-          nested.push({
-            key: valueRecord
-              ? pickString(valueRecord.key, valueRecord.permission_key) || `${moduleKey}.${action}`
-              : `${moduleKey}.${action}`,
-            id: valueRecord ? pickString(valueRecord.id) : undefined,
-            action,
-            module: moduleKey,
-            module_label: moduleLabel,
-          });
-        }
-        continue;
-      }
-      if (perms.length === 0) {
-        nested.push({ ...moduleRecord, module: moduleKey, module_label: moduleLabel });
-        continue;
-      }
-      for (const perm of perms) {
-        const permRecord = asRecord(perm);
-        nested.push({
-          ...(permRecord ?? { key: String(perm) }),
-          module: moduleKey,
-          module_label: moduleLabel,
-        });
-      }
-    }
-    return nested;
-  }
-
-  return [];
-}
-
-function normalizeCatalogItem(raw: unknown): PermissionCatalogItem | null {
-  if (typeof raw === 'string' && raw.trim()) {
-    const key = raw.trim();
-    const module = inferModule(key);
-    const action = inferAction(key);
-    return {
-      key,
-      module,
-      moduleLabel: titleCase(module),
-      action,
-      label: titleCase(action),
-    };
-  }
-
+function normalizeSubmodule(
+  raw: unknown,
+  moduleKey: string,
+): PermissionSubmoduleNode | null {
   const record = asRecord(raw);
   if (!record) return null;
-
-  const key = pickString(record.key, record.permission_key, record.permissionKey, record.code, record.slug);
-  const id = pickString(record.id, record.permission_id, record.permissionId);
-  if (!key && !id) return null;
-
-  const resolvedKey = key || id;
-  const module = inferModule(
-    resolvedKey,
-    pickString(record.module, record.module_key, record.group, record.resource, record.category),
-  );
-  const action = inferAction(
-    resolvedKey,
-    pickString(record.action, record.operation, record.verb, record.capability),
-  );
-
+  const submodule =
+    pickString(record.submodule, record.key, record.slug, record.code, record.id, record.name) ||
+    '';
+  if (!submodule) return null;
   return {
-    id: id || undefined,
-    key: resolvedKey,
-    module,
-    moduleLabel:
-      pickString(record.module_label, record.moduleLabel, record.module_name, record.group_label) ||
-      titleCase(module),
-    action,
-    label: pickString(record.label, record.name, record.title) || titleCase(action),
+    submodule,
+    label:
+      pickString(record.label, record.name, record.title, record.display_name) ||
+      titleCase(submodule),
+    see: boolish(record.see ?? record.can_see ?? record.view),
+    read: boolish(record.read ?? record.can_read),
+    write: boolish(record.write ?? record.can_write ?? record.edit),
   };
 }
 
-function groupModules(items: PermissionCatalogItem[]): PermissionModuleGroup[] {
-  const byModule = new Map<string, PermissionModuleGroup>();
-  for (const item of items) {
-    const existing = byModule.get(item.module);
-    if (existing) {
-      existing.items.push(item);
-      continue;
+function normalizeModule(raw: unknown): PermissionModuleNode | null {
+  const record = asRecord(raw);
+  if (!record) return null;
+  const module =
+    pickString(record.module, record.key, record.slug, record.code, record.name) || '';
+  if (!module) return null;
+  const label =
+    pickString(record.label, record.name, record.title, record.module_label) || titleCase(module);
+
+  const nested =
+    (Array.isArray(record.submodules) && record.submodules) ||
+    (Array.isArray(record.children) && record.children) ||
+    (Array.isArray(record.items) && record.items) ||
+    (Array.isArray(record.permissions) && record.permissions) ||
+    [];
+
+  const submodules = nested
+    .map((row) => normalizeSubmodule(row, module))
+    .filter((row): row is PermissionSubmoduleNode => Boolean(row));
+
+  // Flat grant row shaped as { module, submodule, see, read, write }
+  if (!submodules.length) {
+    const submodule = pickString(record.submodule);
+    if (submodule) {
+      submodules.push({
+        submodule,
+        label: titleCase(submodule),
+        see: boolish(record.see ?? record.can_see),
+        read: boolish(record.read ?? record.can_read),
+        write: boolish(record.write ?? record.can_write),
+      });
     }
-    byModule.set(item.module, {
-      module: item.module,
-      label: item.moduleLabel || titleCase(item.module),
-      items: [item],
-    });
   }
-  return [...byModule.values()].sort((a, b) => a.label.localeCompare(b.label));
+
+  return { module, label, submodules };
 }
 
 export function normalizePermissionMatrix(raw: unknown, available = true): PermissionMatrix {
-  const items = collectItems(raw)
-    .map(normalizeCatalogItem)
-    .filter((item): item is PermissionCatalogItem => Boolean(item));
+  const data = unwrapData(raw);
+  const record = asRecord(data) ?? asRecord(raw);
+  const list =
+    (Array.isArray(data) && data) ||
+    (Array.isArray(record?.modules) && record!.modules) ||
+    (Array.isArray(record?.tree) && record!.tree) ||
+    (Array.isArray(record?.items) && record!.items) ||
+    (Array.isArray(record?.grants) && record!.grants) ||
+    [];
 
-  return {
-    available,
-    modules: groupModules(items),
-  };
-}
-
-function collectStringList(raw: unknown, keys: string[]): string[] {
-  const record = asRecord(unwrapData(raw)) ?? asRecord(raw);
-  const values = new Set<string>();
-
-  const push = (value: unknown) => {
-    if (typeof value === 'string' && value.trim()) values.add(value.trim());
-    else if (typeof value === 'number') values.add(String(value));
-  };
-
-  if (Array.isArray(raw)) {
-    raw.forEach(push);
-  }
-
-  if (record) {
-    for (const key of keys) {
-      const list = record[key];
-      if (Array.isArray(list)) list.forEach(push);
+  const byModule = new Map<string, PermissionModuleNode>();
+  for (const row of list) {
+    const mod = normalizeModule(row);
+    if (!mod) continue;
+    const existing = byModule.get(mod.module);
+    if (!existing) {
+      byModule.set(mod.module, mod);
+      continue;
     }
-    const nested = record.permissions;
-    if (Array.isArray(nested)) {
-      for (const item of nested) {
-        if (typeof item === 'string') push(item);
-        const itemRecord = asRecord(item);
-        if (itemRecord) {
-          push(itemRecord.id);
-          push(itemRecord.permission_id);
-          push(itemRecord.key);
-          push(itemRecord.permission_key);
-        }
+    for (const sub of mod.submodules) {
+      if (!existing.submodules.some((s) => s.submodule === sub.submodule)) {
+        existing.submodules.push(sub);
       }
     }
   }
 
-  return [...values];
+  const modules = [...byModule.values()]
+    .map((m) => ({
+      ...m,
+      submodules: [...m.submodules].sort((a, b) => a.label.localeCompare(b.label)),
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+
+  return { available, modules };
 }
 
 export function normalizeUserPermissionAssignment(
   raw: unknown,
   available = true,
 ): UserPermissionAssignment {
-  const ids = collectStringList(raw, [
-    'permission_ids',
-    'permissionIds',
-    'assigned_ids',
-    'ids',
-  ]);
-  const keys = collectStringList(raw, [
-    'permission_keys',
-    'permissionKeys',
-    'keys',
-    'assigned_keys',
-  ]);
+  const data = unwrapData(raw);
+  const record = asRecord(data) ?? asRecord(raw);
+  const list =
+    (Array.isArray(data) && data) ||
+    (Array.isArray(record?.grants) && record!.grants) ||
+    (Array.isArray(record?.permissions) && record!.permissions) ||
+    (Array.isArray(record?.items) && record!.items) ||
+    [];
 
-  return {
-    available,
-    permission_ids: ids,
-    permission_keys: keys,
-  };
+  const grants: PermissionMatrixGrant[] = [];
+  for (const row of list) {
+    const r = asRecord(row);
+    if (!r) continue;
+    const module = pickString(r.module, r.module_key);
+    const submodule = pickString(r.submodule, r.submodule_key, r.key);
+    if (!module || !submodule) continue;
+    grants.push({
+      module,
+      submodule,
+      see: boolish(r.see ?? r.can_see, false),
+      read: boolish(r.read ?? r.can_read, false),
+      write: boolish(r.write ?? r.can_write, false),
+    });
+  }
+
+  return { available, grants };
+}
+
+export function grantsFromMatrixSelection(
+  modules: PermissionModuleNode[],
+): PermissionMatrixGrant[] {
+  const grants: PermissionMatrixGrant[] = [];
+  for (const mod of modules) {
+    for (const sub of mod.submodules) {
+      grants.push({
+        module: mod.module,
+        submodule: sub.submodule,
+        see: sub.see,
+        read: sub.read,
+        write: sub.write,
+      });
+    }
+  }
+  return grants;
+}
+
+export function applyGrantsToMatrix(
+  modules: PermissionModuleNode[],
+  grants: PermissionMatrixGrant[],
+): PermissionModuleNode[] {
+  const map = new Map(grants.map((g) => [`${g.module}::${g.submodule}`, g]));
+  return modules.map((mod) => ({
+    ...mod,
+    submodules: mod.submodules.map((sub) => {
+      const grant = map.get(`${mod.module}::${sub.submodule}`);
+      if (!grant) {
+        return { ...sub, see: false, read: false, write: false };
+      }
+      return {
+        ...sub,
+        see: grant.see,
+        read: grant.read,
+        write: grant.write,
+      };
+    }),
+  }));
 }
 
 export function normalizeRoleList(raw: unknown, available = true): RoleListResult {

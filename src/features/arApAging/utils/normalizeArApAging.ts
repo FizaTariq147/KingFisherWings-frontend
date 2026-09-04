@@ -320,17 +320,111 @@ export function normalizeStatementLine(raw: unknown): StatementLine | null {
   if (!r) return null;
   return {
     id: str(r.id),
-    date: str(r.date) ?? str(r.transaction_date) ?? str(r.doc_date),
-    type: str(r.type) ?? str(r.document_type),
-    reference: str(r.reference) ?? str(r.reference_number) ?? str(r.number),
-    description: str(r.description) ?? str(r.narration) ?? str(r.remarks),
+    date:
+      str(r.date) ??
+      str(r.transaction_date) ??
+      str(r.doc_date) ??
+      str(r.invoice_date) ??
+      str(r.payment_date),
+    type:
+      str(r.type) ??
+      str(r.document_type) ??
+      str(r.invoice_type) ??
+      str(r.payment_type),
+    reference:
+      str(r.reference) ??
+      str(r.reference_number) ??
+      str(r.number) ??
+      str(r.invoice_number) ??
+      str(r.payment_number),
+    description: str(r.description) ?? str(r.narration) ?? str(r.remarks) ?? str(r.status),
     debit: num(r.debit) || num(r.debit_amount),
     credit: num(r.credit) || num(r.credit_amount),
     balance: num(r.balance) || num(r.running_balance),
-    document_id: str(r.document_id) ?? str(r.invoice_id) ?? str(r.payment_id),
+    document_id: str(r.document_id) ?? str(r.invoice_id) ?? str(r.payment_id) ?? str(r.id),
     document_number: str(r.document_number) ?? str(r.invoice_number) ?? str(r.payment_number),
     ...r,
   };
+}
+
+function isCreditNoteType(type?: string): boolean {
+  if (!type) return false;
+  return /credit.?note|cn\b/i.test(type);
+}
+
+/**
+ * Live API shape: { party, as_of, side, invoices[], payments[], summary }.
+ * Build debit/credit statement lines with a running balance.
+ * AR: invoice → debit, credit note / receipt → credit.
+ * AP: purchase invoice → credit (we owe), payment / debit note → debit.
+ */
+function linesFromInvoicesAndPayments(
+  root: Record<string, unknown>,
+  side: 'AR' | 'AP',
+): StatementLine[] {
+  const invoices = Array.isArray(root.invoices) ? root.invoices : [];
+  const payments = Array.isArray(root.payments) ? root.payments : [];
+  const events: StatementLine[] = [];
+
+  for (const inv of invoices) {
+    const r = asRecord(inv);
+    if (!r) continue;
+    const type = str(r.invoice_type) ?? str(r.type) ?? 'INVOICE';
+    const amount = num(r.total_amount) || num(r.balance_due) || num(r.amount);
+    const creditNote = isCreditNoteType(type);
+    let debit = 0;
+    let credit = 0;
+    if (side === 'AR') {
+      if (creditNote) credit = amount;
+      else debit = amount;
+    } else {
+      if (creditNote || /debit.?note/i.test(type)) debit = amount;
+      else credit = amount;
+    }
+    events.push({
+      id: str(r.id) ?? str(r.invoice_id),
+      date: str(r.invoice_date) ?? str(r.date),
+      type,
+      reference: str(r.invoice_number) ?? str(r.number),
+      description: str(r.status),
+      debit,
+      credit,
+      document_id: str(r.id) ?? str(r.invoice_id),
+      document_number: str(r.invoice_number),
+      currency_code: str(r.currency_code),
+    });
+  }
+
+  for (const pay of payments) {
+    const r = asRecord(pay);
+    if (!r) continue;
+    const amount =
+      num(r.amount) ||
+      num(r.total_amount) ||
+      num(r.allocated_amount) ||
+      num(r.payment_amount);
+    const type = str(r.payment_type) ?? str(r.type) ?? 'PAYMENT';
+    events.push({
+      id: str(r.id) ?? str(r.payment_id),
+      date: str(r.payment_date) ?? str(r.date) ?? str(r.paid_at),
+      type,
+      reference: str(r.payment_number) ?? str(r.number) ?? str(r.reference),
+      description: str(r.status) ?? str(r.narration),
+      debit: side === 'AP' ? amount : 0,
+      credit: side === 'AR' ? amount : 0,
+      document_id: str(r.id) ?? str(r.payment_id),
+      document_number: str(r.payment_number) ?? str(r.number),
+      currency_code: str(r.currency_code),
+    });
+  }
+
+  events.sort((a, b) => String(a.date ?? '').localeCompare(String(b.date ?? '')));
+
+  let running = 0;
+  return events.map((line) => {
+    running += (line.debit ?? 0) - (line.credit ?? 0);
+    return { ...line, balance: running };
+  });
 }
 
 function unwrapStatementLines(raw: unknown): unknown[] {
@@ -360,17 +454,39 @@ export function normalizeStatementReport(raw: unknown, partyId?: string) {
   const envelope = asRecord(raw);
   const nested = asRecord(envelope?.data);
   const root = nested ?? envelope ?? {};
+  const party = asRecord(root.party) ?? asRecord(root.customer) ?? asRecord(root.vendor);
+  const summary = asRecord(root.summary);
+  const sideRaw = (str(root.side) ?? 'AR').toUpperCase();
+  const side: 'AR' | 'AP' = sideRaw === 'AP' ? 'AP' : 'AR';
+
+  let lines = unwrapStatementLines(raw)
+    .map(normalizeStatementLine)
+    .filter((l): l is StatementLine => Boolean(l));
+
+  if (!lines.length && (Array.isArray(root.invoices) || Array.isArray(root.payments))) {
+    lines = linesFromInvoicesAndPayments(root, side);
+  }
+
+  const currencyFromLines = lines
+    .map((l) => str(l.currency_code) ?? str(l.currencyCode))
+    .find(Boolean);
 
   return {
-    party_id: str(root.party_id) ?? partyId,
-    party_name: str(root.party_name) ?? str(root.name),
+    party_id: str(root.party_id) ?? str(party?.id) ?? partyId,
+    party_name: str(root.party_name) ?? str(party?.name) ?? str(root.name),
     as_of: str(root.as_of) ?? str(root.as_of_date),
     opening_balance: num(root.opening_balance),
-    closing_balance: num(root.closing_balance) || num(root.balance),
-    currency_code: str(root.currency_code)?.toUpperCase(),
-    lines: unwrapStatementLines(raw)
-      .map(normalizeStatementLine)
-      .filter((l): l is StatementLine => Boolean(l)),
+    closing_balance:
+      num(root.closing_balance) ||
+      num(summary?.open_balance) ||
+      num(root.balance) ||
+      (lines.length ? num(lines[lines.length - 1]?.balance) : 0),
+    currency_code: (
+      str(root.currency_code) ??
+      str(party?.currency_code) ??
+      currencyFromLines
+    )?.toUpperCase(),
+    lines,
     raw,
   };
 }
@@ -429,6 +545,7 @@ export function normalizeOpenItemsReport(
 ): import('../types/arApAging.types').OpenItemsResult {
   const envelope = asRecord(raw);
   const nested = asRecord(envelope?.data);
+  const meta = asRecord(envelope?.meta) ?? asRecord(nested?.meta);
   const root = nested ?? envelope ?? {};
   const list =
     (Array.isArray(root.items) && root.items) ||
@@ -444,21 +561,28 @@ export function normalizeOpenItemsReport(
     .filter((x): x is import('../types/arApAging.types').OpenItemLine => Boolean(x));
 
   const totalOutstanding =
+    num(meta?.total_outstanding) ||
     num(root.total_outstanding) ||
     num(root.outstanding) ||
     items.reduce((s, i) => s + (i.balanceDue ?? 0), 0) ||
     undefined;
   const totalPaid =
+    num(meta?.total_paid) ||
     num(root.total_paid) ||
     num(root.paid) ||
     items.reduce((s, i) => s + (i.paidAmount ?? 0), 0) ||
     undefined;
 
+  const first = items[0];
   return {
     items,
-    partyId: str(root.party_id) ?? partyId,
-    partyName: str(root.party_name) ?? str(root.name),
-    currencyCode: (str(root.currency_code) ?? str(root.currencyCode))?.toUpperCase(),
+    partyId: str(root.party_id) ?? first?.partyId ?? partyId,
+    partyName: str(root.party_name) ?? str(root.name) ?? first?.partyName,
+    currencyCode: (
+      str(root.currency_code) ??
+      str(root.currencyCode) ??
+      first?.currencyCode
+    )?.toUpperCase(),
     totalOutstanding: totalOutstanding || undefined,
     totalPaid: totalPaid || undefined,
     raw,

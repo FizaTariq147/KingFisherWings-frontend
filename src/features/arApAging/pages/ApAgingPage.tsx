@@ -1,16 +1,13 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { isUuid } from '@/lib/isUuid';
-import { AR_AP_AGING_API } from '../api/arApAging.api';
 import { AgingFilters } from '../components/AgingFilters';
 import { AgingTable } from '../components/AgingTable';
 import { useApAging } from '../hooks/useArApAging';
 import { getErrorMessage } from '../utils/getErrorMessage';
-
-const AP_AGING_PATH = AR_AP_AGING_API.apAging;
 
 function todayIsoDate() {
   return new Date().toISOString().slice(0, 10);
@@ -18,9 +15,10 @@ function todayIsoDate() {
 
 export default function ApAgingPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [asOf, setAsOf] = useState(todayIsoDate);
-  const [partyId, setPartyId] = useState('');
-  const [companyId, setCompanyId] = useState('');
+  const [partyId, setPartyId] = useState(() => searchParams.get('party_id') ?? '');
+  const [companyId, setCompanyId] = useState(() => searchParams.get('company_id') ?? '');
 
   const filtersValid =
     (!partyId.trim() || isUuid(partyId.trim())) &&
@@ -53,7 +51,7 @@ export default function ApAgingPage() {
           </button>
           <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">AP Aging</h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-            Vendor payables by aging bucket (GET {AP_AGING_PATH}).
+            Vendor payables by aging bucket (GET /gl/ap/aging).
           </p>
         </div>
         <Button

@@ -4,7 +4,6 @@ import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { isUuid } from '@/lib/isUuid';
-import { AR_AP_AGING_ROUTE_PREFIX } from '../api/arApAging.api';
 import { AgingFilters } from '../components/AgingFilters';
 import { AgingTable } from '../components/AgingTable';
 import { useArAging } from '../hooks/useArApAging';
@@ -104,7 +103,7 @@ export default function ArAgingPage() {
                 onOpenStatement={(line) => {
                   if (!line.party_id) return;
                   const qs = asOf.trim() ? `?as_of=${encodeURIComponent(asOf.trim())}` : '';
-                  navigate(`${AR_AP_AGING_ROUTE_PREFIX}/statement/${line.party_id}${qs}`);
+                  navigate(`/gl/ar/statement/${line.party_id}${qs}`);
                 }}
               />
             </div>

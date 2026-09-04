@@ -1,7 +1,9 @@
+import type { ReactNode } from 'react';
+import { Eye, Pencil, Ban, CircleCheck, Trash2 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
-import { Table, TableHeader, TableRow, TableHead, TableCell } from '../ui/Table';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../ui/Table';
 import { AppAnimatedTableBody, AppFetchBar, AppLoadingState } from '@/components/motion';
 
 interface Column {
@@ -40,6 +42,46 @@ interface MasterListPageProps {
   onToggleActive?: (index: number, nextActive: boolean) => void;
   pendingActionIndex?: number | null;
   supportsDelete?: boolean;
+  /** Disable row enter animation (needed for large world catalogs). */
+  animateRows?: boolean;
+}
+
+function ActionIconButton({
+  label,
+  onClick,
+  disabled,
+  tone = 'neutral',
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  tone?: 'neutral' | 'primary' | 'danger';
+  children: ReactNode;
+}) {
+  const toneClass =
+    tone === 'danger'
+      ? 'text-[var(--color-danger-500)] hover:bg-[var(--color-danger-100)]'
+      : tone === 'primary'
+        ? 'text-[var(--color-primary-500)] hover:bg-[var(--color-primary-50)]'
+        : 'text-[var(--color-neutral-600)] hover:bg-[var(--color-neutral-100)]';
+
+  return (
+    <button
+      type="button"
+      title={label}
+      aria-label={label}
+      onClick={onClick}
+      disabled={disabled}
+      className={[
+        'inline-flex size-8 items-center justify-center rounded-md transition-colors',
+        'disabled:cursor-not-allowed disabled:opacity-40',
+        toneClass,
+      ].join(' ')}
+    >
+      {children}
+    </button>
+  );
 }
 
 export function MasterListPage({
@@ -70,11 +112,13 @@ export function MasterListPage({
   onToggleActive,
   pendingActionIndex,
   supportsDelete = true,
+  animateRows = true,
 }: MasterListPageProps) {
   const totalCount = total ?? rows.length;
   const limit = pageSize ?? Math.max(rows.length, 1);
   const from = totalCount === 0 ? 0 : (page - 1) * limit + 1;
   const to = Math.min(page * limit, totalCount);
+  const Body = animateRows ? AppAnimatedTableBody : TableBody;
 
   return (
     <div className="space-y-4">
@@ -152,7 +196,7 @@ export function MasterListPage({
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <AppAnimatedTableBody>
+          <Body>
             {!isLoading && rows.length === 0 && (
               <TableRow>
                 <td
@@ -167,7 +211,7 @@ export function MasterListPage({
               const active = (statuses?.[i] ?? 'ACTIVE') === 'ACTIVE';
               const pending = pendingActionIndex === i;
               return (
-                <TableRow key={row.id ?? i} className="app-list-row">
+                <TableRow key={row.id ?? i} className={animateRows ? 'app-list-row' : undefined}>
                   {columns.map((col) => (
                     <TableCell key={col.key} mono={col.mono}>
                       {row[col.key]}
@@ -179,53 +223,55 @@ export function MasterListPage({
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-0.5">
                       {onView && (
-                        <button
-                          type="button"
-                          className="text-xs text-[var(--color-neutral-600)] hover:underline"
-                          onClick={() => onView(i)}
+                        <ActionIconButton
+                          label="View"
                           disabled={pending}
+                          onClick={() => onView(i)}
                         >
-                          View
-                        </button>
+                          <Eye className="h-4 w-4" aria-hidden="true" />
+                        </ActionIconButton>
                       )}
                       {onEdit && (
-                        <button
-                          type="button"
-                          className="text-xs text-[var(--color-primary-500)] hover:underline"
-                          onClick={() => onEdit(i)}
+                        <ActionIconButton
+                          label="Edit"
+                          tone="primary"
                           disabled={pending}
+                          onClick={() => onEdit(i)}
                         >
-                          Edit
-                        </button>
+                          <Pencil className="h-4 w-4" aria-hidden="true" />
+                        </ActionIconButton>
                       )}
                       {onToggleActive && (
-                        <button
-                          type="button"
-                          className="text-xs text-[var(--color-neutral-600)] hover:underline"
-                          onClick={() => onToggleActive(i, !active)}
+                        <ActionIconButton
+                          label={active ? 'Deactivate' : 'Activate'}
                           disabled={pending}
+                          onClick={() => onToggleActive(i, !active)}
                         >
-                          {active ? 'Deactivate' : 'Activate'}
-                        </button>
+                          {active ? (
+                            <Ban className="h-4 w-4" aria-hidden="true" />
+                          ) : (
+                            <CircleCheck className="h-4 w-4" aria-hidden="true" />
+                          )}
+                        </ActionIconButton>
                       )}
                       {supportsDelete && onDelete && (
-                        <button
-                          type="button"
-                          className="text-xs text-[var(--color-danger-500)] hover:underline"
-                          onClick={() => onDelete(i)}
+                        <ActionIconButton
+                          label="Delete"
+                          tone="danger"
                           disabled={pending}
+                          onClick={() => onDelete(i)}
                         >
-                          Delete
-                        </button>
+                          <Trash2 className="h-4 w-4" aria-hidden="true" />
+                        </ActionIconButton>
                       )}
                     </div>
                   </TableCell>
                 </TableRow>
               );
             })}
-          </AppAnimatedTableBody>
+          </Body>
         </Table>
         )}
       </Card>

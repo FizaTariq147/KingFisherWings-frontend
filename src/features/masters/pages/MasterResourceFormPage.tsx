@@ -27,7 +27,7 @@ import { normalizeUomCategory, UOM_CATEGORY_OPTIONS } from '../constants/uomCate
 import { validateMasterValues } from '../schemas/master.schema';
 import { currenciesAreSame, EXCHANGE_RATE_SAME_CURRENCY } from '../utils/exchangeRateRules';
 import { fetchMarketExchangeRate } from '../utils/fetchMarketExchangeRate';
-import { masterDisplayValue, pickCountryIsoCode } from '../utils/normalizeMasterRecord';
+import { masterDisplayValue, pickCountryIsoCode, pickMasterField } from '../utils/normalizeMasterRecord';
 import type { MasterFieldConfig } from '../types/master.types';
 import { MASTER_PATHS, type MasterResourceKey } from '../api/masterPaths';
 import { SearchableSelect } from '../components/SearchableSelect';
@@ -773,7 +773,7 @@ export default function MasterResourceFormPage(props: MasterPageRouteProps = {})
     if (isEdit && existing) {
       const next: Record<string, unknown> = {};
       for (const field of resource.fields) {
-        const raw = existing[field.name];
+        const raw = pickMasterField(existing, field.name);
         if (field.type === 'boolean') {
           next[field.name] = raw ?? false;
         } else if (field.type === 'multiselect') {
@@ -787,6 +787,13 @@ export default function MasterResourceFormPage(props: MasterPageRouteProps = {})
           (raw == null || raw === '' || (typeof raw === 'string' && !isUuid(raw)))
         ) {
           next[field.name] = '';
+        } else if (field.type === 'number') {
+          next[field.name] =
+            typeof raw === 'number'
+              ? raw
+              : typeof raw === 'string' && raw.trim() !== '' && Number.isFinite(Number(raw))
+                ? Number(raw)
+                : '';
         } else {
           next[field.name] = raw ?? '';
         }

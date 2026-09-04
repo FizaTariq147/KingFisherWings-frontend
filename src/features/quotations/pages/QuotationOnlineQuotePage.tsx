@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { type Resolver } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
-import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
-import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { JOB_TYPE_LABELS, JOB_TYPES } from '../constants/quotation.constants';
+import { isAirJobType } from '@/features/jobs/constants/job.constants';
 import { useCreateOnlineQuote } from '../hooks/useQuotations';
 import { createOnlineQuoteSchema } from '../schemas/quotation.schema';
 import type { CreateOnlineQuoteFormValues } from '../types/quotation.types';
@@ -24,10 +24,11 @@ export default function QuotationOnlineQuotePage() {
   const create = useCreateOnlineQuote();
   const [error, setError] = useState<string | null>(null);
   const [resultMsg, setResultMsg] = useState<string | null>(null);
-  const { data: ports = [] } = useMasterOptions('ports', MASTER_PATHS.ports, true);
 
   const {
     register,
+    control,
+    watch,
     handleValidatedSubmit,
     applyApiErrors,
     formState: { errors },
@@ -41,6 +42,11 @@ export default function QuotationOnlineQuotePage() {
       contact_email: '',
     },
   });
+
+  const jobType = watch('job_type');
+  const useAirports = isAirJobType(jobType);
+  const originPortId = watch('origin_port_id');
+  const destPortId = watch('dest_port_id');
 
   return (
     <div className="space-y-4 max-w-3xl">
@@ -133,44 +139,34 @@ export default function QuotationOnlineQuotePage() {
           <Input label="Currency *" {...register('currency_code')} />
           <Input label="Contact name" {...register('contact_name')} />
           <Input label="Contact email" type="email" {...register('contact_email')} />
-          <div className="space-y-1">
-            <label htmlFor="origin_port_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Origin port</label>
-            <select id="origin_port_id" className={selectClass} {...register('origin_port_id')}>
-              <option value="">Select…</option>
-              {(() => {
-                const opts = [];
-                for (const p of ports) {
-                  if (!isUuid(String(p.id))) continue;
-                  opts.push(
-                    <option key={String(p.id)} value={String(p.id)}>
-                      {[p.code, p.name].filter(Boolean).join(' — ') || String(p.id)}
-                    </option>,
-                  );
-                }
-                return opts;
-              })()}
-            </select>
-          </div>
-          <div className="space-y-1">
-            <label htmlFor="dest_port_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
-              Destination port
-            </label>
-            <select id="dest_port_id" className={selectClass} {...register('dest_port_id')}>
-              <option value="">Select…</option>
-              {(() => {
-                const opts = [];
-                for (const p of ports) {
-                  if (!isUuid(String(p.id))) continue;
-                  opts.push(
-                    <option key={String(p.id)} value={String(p.id)}>
-                      {[p.code, p.name].filter(Boolean).join(' — ') || String(p.id)}
-                    </option>,
-                  );
-                }
-                return opts;
-              })()}
-            </select>
-          </div>
+          <Controller
+            name="origin_port_id"
+            control={control}
+            render={({ field }) => (
+              <MasterPlaceSelect
+                name="origin_port_id"
+                label={useAirports ? 'Origin airport' : 'Origin port'}
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                jobType={jobType}
+                excludeId={destPortId}
+              />
+            )}
+          />
+          <Controller
+            name="dest_port_id"
+            control={control}
+            render={({ field }) => (
+              <MasterPlaceSelect
+                name="dest_port_id"
+                label={useAirports ? 'Destination airport' : 'Destination port'}
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                jobType={jobType}
+                excludeId={originPortId}
+              />
+            )}
+          />
           <Input label="Commodity" {...register('commodity')} />
           <Input
             label="Gross weight"

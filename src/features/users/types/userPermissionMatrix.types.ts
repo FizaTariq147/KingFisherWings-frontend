@@ -1,34 +1,45 @@
-export type PermissionCrudAction = 'view' | 'create' | 'update';
-
-export interface PermissionCatalogItem {
-  id?: string;
-  key: string;
+/** Module → submodule → see / read / write (OpenAPI UpdatePermissionMatrixDto). */
+export interface PermissionMatrixGrant {
   module: string;
-  moduleLabel: string;
-  action: string;
-  label: string;
+  submodule: string;
+  see: boolean;
+  read: boolean;
+  write: boolean;
 }
 
-export interface PermissionModuleGroup {
+export interface PermissionSubmoduleNode {
+  submodule: string;
+  label: string;
+  see: boolean;
+  read: boolean;
+  write: boolean;
+}
+
+export interface PermissionModuleNode {
   module: string;
   label: string;
-  items: PermissionCatalogItem[];
+  submodules: PermissionSubmoduleNode[];
 }
 
 export interface PermissionMatrix {
   available: boolean;
-  modules: PermissionModuleGroup[];
+  modules: PermissionModuleNode[];
 }
 
 export interface UserPermissionAssignment {
   available: boolean;
-  permission_ids: string[];
-  permission_keys: string[];
+  grants: PermissionMatrixGrant[];
 }
 
+export interface UpdatePermissionMatrixDto {
+  grants: PermissionMatrixGrant[];
+}
+
+/** @deprecated Legacy flat permission ids/keys — kept for optional role PUT. */
 export interface UpdateUserPermissionsDto {
   permission_ids?: string[];
   permission_keys?: string[];
+  grants?: PermissionMatrixGrant[];
 }
 
 export interface RoleSummary {

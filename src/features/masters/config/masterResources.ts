@@ -44,11 +44,14 @@ export const MASTER_RESOURCES: Record<MasterResourceKey, MasterResourceConfig> =
     basePath: MASTER_PATHS.airports,
     labelField: 'name',
     supportsDelete: true,
+    /** World catalog — show exact seeded fields. */
     columns: [
       { key: 'iata_code', label: 'IATA', mono: true },
+      { key: 'icao_code', label: 'ICAO', mono: true },
       { key: 'name', label: 'Name' },
       { key: 'city', label: 'City' },
       { key: 'country_code', label: 'Country', mono: true },
+      { key: 'timezone', label: 'Timezone' },
     ],
     fields: [
       { name: 'iata_code', label: 'IATA code', type: 'text', required: true, mono: true },
@@ -533,9 +536,11 @@ export const MASTER_RESOURCES: Record<MasterResourceKey, MasterResourceConfig> =
     basePath: MASTER_PATHS.ports,
     labelField: 'name',
     supportsDelete: true,
+    /** World catalog — show exact seeded fields. */
     columns: [
       { key: 'un_locode', label: 'UNLOCODE', mono: true },
       { key: 'name', label: 'Name' },
+      { key: 'city', label: 'City' },
       { key: 'mode', label: 'Mode' },
       { key: 'country_code', label: 'Country', mono: true },
     ],

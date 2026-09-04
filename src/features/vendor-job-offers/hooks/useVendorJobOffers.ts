@@ -6,6 +6,10 @@ import {
   staffVendorJobOffersService,
   vendorPortalJobsService,
 } from '../services/vendorJobOffers.service';
+import {
+  fetchVendorAirportOptions,
+  fetchVendorPortOptions,
+} from '../utils/loadVendorLookupOptions';
 import type {
   DisapproveVendorOfferDto,
   PassJobToVendorDto,
@@ -204,4 +208,30 @@ export function useVendorPortalOfferActions(offerId: string) {
 
 export function useSubmitVendorJobPricing(jobId: string) {
   return useVendorPortalOfferActions(jobId).submitPricing;
+}
+
+/** GET /vendor/lookups/ports — searchable world catalog. */
+export function useVendorPortOptions(search = '', enabled = true) {
+  const accessToken = useVendorAuthStore((s) => s.accessToken);
+  const scope = useVendorQueryScope();
+  const q = search.trim();
+  return useQuery({
+    queryKey: [...vendorPortalJobKeys.all(scope), 'lookups', 'ports', q] as const,
+    queryFn: () => fetchVendorPortOptions(q || undefined),
+    enabled: Boolean(accessToken) && enabled && scope !== 'anon',
+    staleTime: 10 * 60_000,
+  });
+}
+
+/** GET /vendor/lookups/airports — searchable world catalog. */
+export function useVendorAirportOptions(search = '', enabled = true) {
+  const accessToken = useVendorAuthStore((s) => s.accessToken);
+  const scope = useVendorQueryScope();
+  const q = search.trim();
+  return useQuery({
+    queryKey: [...vendorPortalJobKeys.all(scope), 'lookups', 'airports', q] as const,
+    queryFn: () => fetchVendorAirportOptions(q || undefined),
+    enabled: Boolean(accessToken) && enabled && scope !== 'anon',
+    staleTime: 10 * 60_000,
+  });
 }

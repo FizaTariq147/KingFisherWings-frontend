@@ -22,6 +22,17 @@ function unwrapListPayload(raw: unknown): { items: unknown[]; meta?: PaginationM
   const envelope = asRecord(raw);
   if (!envelope) return { items: [] };
 
+  const listKeys = ['items', 'results', 'records', 'ports', 'airports', 'data'] as const;
+
+  // Top-level list (no `data` wrapper), e.g. { items, meta } or { ports, meta }
+  for (const key of listKeys) {
+    if (key === 'data') continue;
+    const list = envelope[key];
+    if (Array.isArray(list)) {
+      return { items: list, meta: normalizeMeta(envelope.meta, list.length) };
+    }
+  }
+
   const data = envelope.data;
   if (Array.isArray(data)) {
     return { items: data, meta: normalizeMeta(envelope.meta, data.length) };
@@ -29,15 +40,15 @@ function unwrapListPayload(raw: unknown): { items: unknown[]; meta?: PaginationM
 
   const nested = asRecord(data);
   if (nested) {
-    const list =
-      (Array.isArray(nested.items) && nested.items) ||
-      (Array.isArray(nested.results) && nested.results) ||
-      (Array.isArray(nested.records) && nested.records) ||
-      [];
-    return {
-      items: list,
-      meta: normalizeMeta(nested.meta ?? envelope.meta, list.length),
-    };
+    for (const key of listKeys) {
+      const list = nested[key];
+      if (Array.isArray(list)) {
+        return {
+          items: list,
+          meta: normalizeMeta(nested.meta ?? envelope.meta, list.length),
+        };
+      }
+    }
   }
 
   return { items: [] };
@@ -106,9 +117,13 @@ function formatAxiosError(error: unknown, context?: { basePath?: string }): Erro
         : typeof data === 'string'
           ? data.slice(0, 280)
           : JSON.stringify(data).slice(0, 280);
-    const isHoliday = context?.basePath?.includes('/masters/holidays');
-    const isTaxRate = context?.basePath?.includes('/masters/tax-rates');
-    const isTariff = context?.basePath?.includes('/quotations/tariffs');
+    const base = context?.basePath ?? '';
+    const isHoliday = base.includes('/masters/holidays');
+    const isTaxRate = base.includes('/masters/tax-rates');
+    const isTariff = base.includes('/quotations/tariffs');
+    const isPorts = /\/masters\/ports\/?$/.test(base) || base.includes('/masters/ports/');
+    const isAirports =
+      /\/masters\/airports\/?$/.test(base) || base.includes('/masters/airports/');
     if (isHoliday) {
       return new Error(
         'Holidays create failed with HTTP 500 from the API (no useful error body). ' +
@@ -127,6 +142,16 @@ function formatAxiosError(error: unknown, context?: { basePath?: string }): Erro
     if (isTariff) {
       return new Error(
         'Online Tariff API rejected the request (often empty/invalid UUID on port, charge code, or customer). Leave optional fields empty, pick Charge code from the list, then retry. If it still fails with HTTP 500, check Render logs.',
+      );
+    }
+    if (isPorts) {
+      return new Error(
+        `Ports API returned HTTP 500. ${bodyPreview || 'Try Refresh / Sync again; if it persists, check Render logs for PortsController.'}`,
+      );
+    }
+    if (isAirports) {
+      return new Error(
+        `Airports API returned HTTP 500. ${bodyPreview || 'Try Refresh / Sync again; if it persists, check Render logs for AirportsController.'}`,
       );
     }
     return new Error(
@@ -457,6 +482,69 @@ export const masterService = {
     }
   },
 
+  /**
+   * Page through GET list until all rows are loaded (or a hard page cap).
+   * Uses the server’s actual page size (often 50 even when 500 is requested).
+   * On HTTP errors mid-walk, returns what was collected so Sync/Refresh can still show progress.
+   */
+  async listAll(
+    basePath: string,
+    params: Omit<MasterListParams, 'page' | 'limit'> = {},
+    pageLimit = 50,
+  ): Promise<MasterListResult> {
+    let requestedLimit = Math.min(Math.max(1, pageLimit), 100);
+    const all: MasterRecord[] = [];
+    let page = 1;
+    let reportedTotal: number | null = null;
+    let guard = 0;
+
+    while (guard < 250) {
+      guard += 1;
+      let chunk: MasterListResult;
+      try {
+        chunk = await this.list(basePath, {
+          ...params,
+          page,
+          limit: requestedLimit,
+        });
+      } catch (error) {
+        // Large limit sometimes 500s — fall back once to a small page size.
+        if (requestedLimit > 50 && all.length === 0) {
+          requestedLimit = 50;
+          continue;
+        }
+        if (all.length === 0) throw error;
+        break;
+      }
+
+      if (!chunk.items.length) break;
+
+      all.push(...chunk.items);
+      reportedTotal = chunk.meta.total ?? reportedTotal;
+
+      if (reportedTotal != null && all.length >= reportedTotal) break;
+
+      const serverPageSize = Math.max(
+        1,
+        Number(chunk.meta.limit) || chunk.items.length || requestedLimit,
+      );
+      if (reportedTotal == null && chunk.items.length < serverPageSize) break;
+
+      page += 1;
+    }
+
+    const total = reportedTotal ?? all.length;
+    return {
+      items: all,
+      meta: {
+        page: 1,
+        limit: all.length || requestedLimit,
+        total,
+        totalPages: 1,
+      },
+    };
+  },
+
   async getById(basePath: string, id: string): Promise<MasterRecord> {
     try {
       const res = await withGatewayRetry(() =>
@@ -548,6 +636,56 @@ export const masterService = {
 
   async setActive(basePath: string, id: string, is_active: boolean): Promise<MasterRecord> {
     return this.update(basePath, id, { is_active });
+  },
+
+  /**
+   * POST /masters/ports|airports/seed-defaults — insert world catalog for this tenant.
+   * Response shape (observed): { success, type, catalog_size, inserted } (no nested data).
+   * catalog_size = size of the seed file; inserted = rows actually written this run.
+   * Note: live API currently no-ops (inserted=0) if the tenant has any rows, including
+   * soft-deleted — force/replace body/query are accepted but ignored unless backend adds support.
+   */
+  async seedDefaults(
+    basePath: string,
+    body: Record<string, unknown> = {},
+    query: Record<string, string | boolean | number> = {},
+  ): Promise<{
+    inserted: number;
+    skipped: number;
+    catalogSize: number;
+    total: number;
+    message?: string;
+    raw: Record<string, unknown>;
+  }> {
+    try {
+      const path = `${basePath.replace(/\/$/, '')}/seed-defaults`;
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post<unknown>(path, body, { params: query }),
+      );
+      const envelope = asRecord(res.data) ?? {};
+      const nested = asRecord(envelope.data);
+      const src = nested ?? envelope;
+      const inserted = Number(src.inserted ?? src.created ?? src.added ?? 0) || 0;
+      const skipped = Number(src.skipped ?? src.existing ?? 0) || 0;
+      const catalogSize =
+        Number(src.catalog_size ?? src.catalogSize ?? src.total ?? inserted + skipped) || 0;
+      const message =
+        typeof src.message === 'string'
+          ? src.message
+          : typeof envelope.message === 'string'
+            ? envelope.message
+            : undefined;
+      return {
+        inserted,
+        skipped,
+        catalogSize,
+        total: catalogSize || inserted + skipped,
+        message,
+        raw: src,
+      };
+    } catch (error) {
+      throw formatAxiosError(error, { basePath });
+    }
   },
 
   async getLatestExchangeRate(currencyId: string): Promise<MasterRecord | null> {

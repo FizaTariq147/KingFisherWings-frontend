@@ -1,4 +1,4 @@
-import { BookOpen, Network, Scale, FileStack, Banknote, Landmark, BarChart3, LineChart, Bookmark, ClipboardList } from 'lucide-react';
+import { BookOpen, Network, Scale, FileStack, Banknote, Landmark, BarChart3, LineChart, Bookmark, ClipboardList, CalendarClock } from 'lucide-react';
 import type { MenuTile } from '../../customers/types/menu.types';
 
 /** Accounts hub tiles — modules only; create actions live on each list page. */
@@ -10,6 +10,22 @@ export const accountsMenu: MenuTile[] = [
     icon: Banknote,
     iconColor: 'bg-emerald-600',
     path: '/gl/payments',
+  },
+  {
+    id: 'ar-aging',
+    title: 'AR Aging',
+    description: 'Customer receivables by aging bucket (current → 90+).',
+    icon: CalendarClock,
+    iconColor: 'bg-sky-500',
+    path: '/gl/ar/aging',
+  },
+  {
+    id: 'ap-aging',
+    title: 'AP Aging',
+    description: 'Vendor payables by aging bucket (current → 90+).',
+    icon: CalendarClock,
+    iconColor: 'bg-indigo-500',
+    path: '/gl/ap/aging',
   },
   {
     id: 'ar-open-items',

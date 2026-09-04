@@ -1,4 +1,5 @@
 import { type Resolver } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
@@ -7,6 +8,7 @@ import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { loadPartyCurrencyOptions } from '@/features/parties/utils/partyCurrencyOptions';
@@ -42,8 +44,6 @@ export function TariffForm({
   isSubmitting,
 }: TariffFormProps) {
   const schema = mode === 'create' ? createTariffSchema : updateTariffSchema;
-  const { data: ports = [] } = useMasterOptions('ports', MASTER_PATHS.ports, true);
-  const { data: airports = [] } = useMasterOptions('airports', MASTER_PATHS.airports, true);
   const { data: containers = [] } = useMasterOptions(
     'container-types',
     MASTER_PATHS['container-types'],
@@ -75,6 +75,7 @@ export function TariffForm({
 
   const {
     register,
+    control,
     handleValidatedSubmit,
     watch,
     formState: { errors, isSubmitted, isValid },
@@ -85,19 +86,13 @@ export function TariffForm({
 
   const serviceType = watch('service_type');
   const isAir = String(serviceType ?? '').startsWith('AIR_');
+  const originPortId = watch('origin_port_id');
+  const destPortId = watch('dest_port_id');
 
   const fieldError = (name: keyof CreateTariffFormValues) =>
     errors[name]?.message as string | undefined;
 
   const showFormErrors = isSubmitted && !isValid;
-
-  const locationRows = (isAir && airports.length > 0 ? airports : ports).filter((p) =>
-    isUuid(String(p.id)),
-  );
-  const locationOptions = locationRows.map((p) => ({
-    value: String(p.id),
-    label: [p.code, p.name].filter(Boolean).join(' — ') || String(p.id),
-  }));
 
   const uuidSelect = {
     setValueAs: (v: unknown) => {
@@ -192,33 +187,35 @@ export function TariffForm({
           <CardTitle>Transportation & location</CardTitle>
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
-          <div className="space-y-1">
-            <label htmlFor="origin_port_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
-              {isAir ? 'Origin airport' : 'Origin port'}
-            </label>
-            <select id="origin_port_id" className={selectClass} {...register('origin_port_id', uuidSelect)}>
-              <option value="">Select…</option>
-              {locationOptions.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="space-y-1">
-            <label htmlFor="dest_port_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
-              {isAir ? 'Destination airport' : 'Destination port'}
-            </label>
-            <select id="dest_port_id" className={selectClass} {...register('dest_port_id', uuidSelect)}>
-              <option value="">Select…</option>
-              {locationOptions.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-            <FieldError message={fieldError('dest_port_id')} />
-          </div>
+          <Controller
+            name="origin_port_id"
+            control={control}
+            render={({ field }) => (
+              <MasterPlaceSelect
+                name="origin_port_id"
+                label={isAir ? 'Origin airport' : 'Origin port'}
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                kind={isAir ? 'airports' : 'ports'}
+                excludeId={destPortId}
+              />
+            )}
+          />
+          <Controller
+            name="dest_port_id"
+            control={control}
+            render={({ field }) => (
+              <MasterPlaceSelect
+                name="dest_port_id"
+                label={isAir ? 'Destination airport' : 'Destination port'}
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                kind={isAir ? 'airports' : 'ports'}
+                excludeId={originPortId}
+                error={fieldError('dest_port_id')}
+              />
+            )}
+          />
           <div className="space-y-1">
             <label htmlFor="container_type_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Container type
