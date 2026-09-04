@@ -15,6 +15,7 @@ import {
   portalSelectClassName,
 } from '@/features/portal-auth/components/portal-ui';
 import {
+  usePortalAirportOptions,
   usePortalLocaleCurrency,
   usePortalPortOptions,
   usePortalQuotationEstimate,
@@ -36,7 +37,10 @@ import {
   sumPackageDraftWeightKg,
   type PortalPackageDraft,
 } from '../utils/buildPortalEstimatePackages';
-import { portalPortsToSelectOptions } from '../utils/loadPortalPortOptions';
+import {
+  isAirJobType,
+  portalPortsToSelectOptions,
+} from '../utils/loadPortalPortOptions';
 import {
   buildCustomerPriceNote,
   calcCustomerServiceLineAmount,
@@ -71,6 +75,15 @@ function mergeSpecialRequirements(base: string | undefined, note: string | undef
   return merged.length > 2000 ? merged.slice(0, 2000) : merged;
 }
 
+function useDebouncedValue(value: string, delayMs: number): string {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const t = window.setTimeout(() => setDebounced(value), delayMs);
+    return () => window.clearTimeout(t);
+  }, [value, delayMs]);
+  return debounced;
+}
+
 export default function PortalBookPage() {
   const navigate = useNavigate();
   const requestQuote = useRequestPortalQuotation();
@@ -82,6 +95,8 @@ export default function PortalBookPage() {
   const [servicePrices, setServicePrices] = useState<Record<string, string>>({});
   const [estimatePreview, setEstimatePreview] = useState<string | null>(null);
   const [packages, setPackages] = useState<PortalPackageDraft[]>([emptyPortalPackageDraft()]);
+  const [placeSearch, setPlaceSearch] = useState('');
+  const debouncedPlaceSearch = useDebouncedValue(placeSearch, 300);
 
   const {
     data: localeCurrency,
@@ -89,12 +104,6 @@ export default function PortalBookPage() {
     isError: currencyError,
     error: currencyQueryError,
   } = usePortalLocaleCurrency(countryCode);
-
-  const portsQuery = usePortalPortOptions();
-  const portOptions = useMemo(
-    () => portalPortsToSelectOptions(portsQuery.data ?? []),
-    [portsQuery.data],
-  );
 
   const form = useForm<PortalBookQuoteFormValues>({
     resolver: zodResolver(portalBookQuoteSchema),
@@ -120,6 +129,14 @@ export default function PortalBookPage() {
   const resolvedCurrencyCode =
     typeof currencyCode === 'string' && currencyCode.trim() ? currencyCode.trim() : '';
   const jobType = watch('job_type');
+  const useAirports = isAirJobType(jobType);
+  const portsQuery = usePortalPortOptions(debouncedPlaceSearch, !useAirports);
+  const airportsQuery = usePortalAirportOptions(debouncedPlaceSearch, useAirports);
+  const placeQuery = useAirports ? airportsQuery : portsQuery;
+  const portOptions = useMemo(
+    () => portalPortsToSelectOptions(placeQuery.data ?? []),
+    [placeQuery.data],
+  );
   const formGrossWeight = watch('gross_weight');
   const formChargeableWeight = watch('chargeable_weight');
   const formVolumeCbm = watch('volume_cbm');
@@ -230,13 +247,13 @@ export default function PortalBookPage() {
   }, [customerPriceRows]);
 
   const portHint =
-    portsQuery.isLoading
-      ? 'Loading port list…'
-      : portsQuery.isError
-        ? 'Port list unavailable — type the exact port or airport name (e.g. Dubai, Jebel Ali).'
+    placeQuery.isLoading
+      ? `Loading ${useAirports ? 'airports' : 'ports'}…`
+      : placeQuery.isError
+        ? `${useAirports ? 'Airport' : 'Port'} list unavailable — type the exact name (e.g. Dubai, Jebel Ali).`
         : portOptions.length > 0
-          ? 'Search by port code or name, or type your own.'
-          : 'Type origin port name or code (e.g. DXB — Dubai).';
+          ? `Search by ${useAirports ? 'IATA' : 'port'} code or name, or type your own.`
+          : `Type ${useAirports ? 'airport' : 'port'} name or code.`;
 
   const submitDisabled =
     requestQuote.isPending || currencyLoading || currencyError || !resolvedCurrencyCode;
@@ -280,7 +297,8 @@ export default function PortalBookPage() {
       return;
     }
 
-    const { packages: packageDtos, error: packageError } = buildPortalEstimatePackages(packages);
+    const { packages: packageDtos, error: packageError, hasDimensions } =
+      buildPortalEstimatePackages(packages);
     if (packageError || !packageDtos.length) {
       setError(packageError || 'Add at least one package with gross weight for estimate.');
       return;
@@ -293,7 +311,8 @@ export default function PortalBookPage() {
         commodity: values.commodity?.trim() || undefined,
         gross_weight: values.gross_weight,
         chargeable_weight: values.chargeable_weight,
-        volume_cbm: values.volume_cbm ?? packagesCbm,
+        // Backend ignores client volume_cbm when package dims are present.
+        volume_cbm: hasDimensions ? undefined : values.volume_cbm ?? packagesCbm,
         pieces: values.pieces,
         special_requirements: values.special_requirements?.trim() || undefined,
         valid_until: values.valid_until || undefined,
@@ -304,7 +323,7 @@ export default function PortalBookPage() {
         origin_port: values.origin_port,
         dest_port: values.dest_port,
       },
-      portsQuery.data ?? [],
+      placeQuery.data ?? [],
     );
 
     void estimateQuote
@@ -360,6 +379,12 @@ export default function PortalBookPage() {
                 qtyInputs,
               );
 
+              const hasPackageDims = packages.some(
+                (pkg) =>
+                  pkg.length_cm.trim() && pkg.width_cm.trim() && pkg.height_cm.trim(),
+              );
+              const volumeCbm = hasPackageDims ? undefined : values.volume_cbm ?? packagesCbm;
+
               // Enquiry only — OpenAPI PortalQuotationRequestDto forbids packages / service_codes.
               const payload = applyPortalRouteFields(
                 {
@@ -368,7 +393,7 @@ export default function PortalBookPage() {
                   commodity: values.commodity?.trim() || undefined,
                   gross_weight: values.gross_weight ?? packagesWeight,
                   chargeable_weight: values.chargeable_weight,
-                  volume_cbm: values.volume_cbm ?? packagesCbm,
+                  volume_cbm: volumeCbm,
                   pieces: values.pieces ?? packagesPieces,
                   special_requirements: mergeSpecialRequirements(
                     values.special_requirements,
@@ -380,7 +405,7 @@ export default function PortalBookPage() {
                   origin_port: values.origin_port,
                   dest_port: values.dest_port,
                 },
-                portsQuery.data ?? [],
+                placeQuery.data ?? [],
               );
 
               const created = await requestQuote.mutateAsync(payload);
@@ -449,11 +474,12 @@ export default function PortalBookPage() {
             render={({ field }) => (
               <SearchableSelect
                 name="origin_port"
-                label="Origin port"
+                label={useAirports ? 'Origin airport' : 'Origin port'}
                 required
                 value={typeof field.value === 'string' ? field.value : ''}
                 options={portOptions}
                 onChange={field.onChange}
+                onQueryChange={setPlaceSearch}
                 allowManualValue
                 allowManualUuid={false}
                 placeholder="e.g. DXB — Dubai"
@@ -469,11 +495,12 @@ export default function PortalBookPage() {
             render={({ field }) => (
               <SearchableSelect
                 name="dest_port"
-                label="Destination port"
+                label={useAirports ? 'Destination airport' : 'Destination port'}
                 required
                 value={typeof field.value === 'string' ? field.value : ''}
                 options={portOptions}
                 onChange={field.onChange}
+                onQueryChange={setPlaceSearch}
                 allowManualValue
                 allowManualUuid={false}
                 placeholder="e.g. LHR — London Heathrow"
@@ -494,8 +521,9 @@ export default function PortalBookPage() {
             <div>
               <p className="text-sm font-medium">Packages</p>
               <p className="text-xs text-[var(--color-neutral-500)]">
-                Enter L × W × H in cm — CBM is calculated automatically
-                ((L × W × H × pieces) ÷ 1,000,000). Gross weight is required for estimate preview.
+                Enter L × W × H in cm — CBM is calculated as metres × pieces
+                ((L÷100) × (W÷100) × (H÷100) × pieces). Gross weight is required for estimate
+                preview. When dimensions are sent, the server ignores manual volume_cbm.
               </p>
             </div>
             {packages.map((pkg, index) => {

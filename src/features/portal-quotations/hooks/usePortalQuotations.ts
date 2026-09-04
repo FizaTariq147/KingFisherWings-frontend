@@ -5,7 +5,10 @@ import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore
 import { PortalApiError } from '@/lib/portalApiClient';
 import { portalQuotationsService } from '../services/portalQuotations.service';
 import { fetchLocaleCurrencyForCountry } from '../utils/loadPortalCurrencyOptions';
-import { fetchPortalPortOptions } from '../utils/loadPortalPortOptions';
+import {
+  fetchPortalAirportOptions,
+  fetchPortalPortOptions,
+} from '../utils/loadPortalPortOptions';
 import type {
   PortalQuotationDetail,
   PortalQuotationListParams,
@@ -27,7 +30,10 @@ export const portalQuotationKeys = {
   detail: (scope: string, id: string) => [...portalQuotationKeys.all(scope), 'detail', id] as const,
   localeCurrency: (countryCode: string) =>
     ['portal', 'locale-currency', countryCode] as const,
-  ports: (scope: string) => [...portalQuotationKeys.all(scope), 'reference', 'ports'] as const,
+  ports: (scope: string, search = '') =>
+    [...portalQuotationKeys.all(scope), 'lookups', 'ports', search] as const,
+  airports: (scope: string, search = '') =>
+    [...portalQuotationKeys.all(scope), 'lookups', 'airports', search] as const,
   serviceCatalog: (scope: string, jobType?: string) =>
     [...portalQuotationKeys.all(scope), 'service-catalog', jobType ?? 'all'] as const,
   negotiation: (scope: string, id: string) =>
@@ -76,15 +82,38 @@ async function syncPortalQuotationAfterDecision(
   void qc.invalidateQueries({ queryKey: portalQuotationKeys.negotiation(scope, closed.id) });
 }
 
-/** Port list for quote booking (portal reference API, not staff `/masters/*`). */
-export function usePortalPortOptions(enabled = true) {
+/** World ports for quote booking — GET /portal/lookups/ports (fallback reference). */
+export function usePortalPortOptions(search = '', enabled = true) {
   const accessToken = usePortalAuthStore((s) => s.accessToken);
   const scope = usePortalQueryScope();
+  const q = search.trim();
   return useQuery({
-    queryKey: portalQuotationKeys.ports(scope),
+    queryKey: portalQuotationKeys.ports(scope, q),
     queryFn: async () => {
       try {
-        return await fetchPortalPortOptions();
+        return await fetchPortalPortOptions(q || undefined);
+      } catch (err) {
+        if (err instanceof PortalApiError && (err.status === 404 || err.status === 403)) {
+          return [];
+        }
+        throw err;
+      }
+    },
+    enabled: Boolean(accessToken) && enabled && scope !== 'anon',
+    staleTime: 10 * 60_000,
+  });
+}
+
+/** World airports — GET /portal/lookups/airports. */
+export function usePortalAirportOptions(search = '', enabled = true) {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  const q = search.trim();
+  return useQuery({
+    queryKey: portalQuotationKeys.airports(scope, q),
+    queryFn: async () => {
+      try {
+        return await fetchPortalAirportOptions(q || undefined);
       } catch (err) {
         if (err instanceof PortalApiError && (err.status === 404 || err.status === 403)) {
           return [];

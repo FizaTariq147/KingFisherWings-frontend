@@ -4,7 +4,7 @@ import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { isUuid } from '@/lib/isUuid';
-import { AR_AP_AGING_ROUTE_PREFIX } from '../api/arApAging.api';
+import { AR_AGING_ROUTE } from '../api/arApAging.api';
 import { AgingFilters } from '../components/AgingFilters';
 import { StatementTable } from '../components/StatementTable';
 import { useArStatement } from '../hooks/useArApAging';
@@ -15,7 +15,7 @@ export default function ArStatementPage() {
   const { partyId = '' } = useParams<{ partyId: string }>();
   const [searchParams] = useSearchParams();
   const [asOf, setAsOf] = useState(searchParams.get('as_of') ?? '');
-  const [companyId, setCompanyId] = useState('');
+  const [companyId, setCompanyId] = useState(searchParams.get('company_id') ?? '');
 
   const partyValid = isUuid(partyId);
   const filtersValid = !companyId.trim() || isUuid(companyId.trim());
@@ -38,7 +38,7 @@ export default function ArStatementPage() {
     return (
       <div className="space-y-4">
         <p className="text-sm text-[var(--color-danger-600)]">Invalid party id in URL.</p>
-        <Button type="button" variant="secondary" onClick={() => navigate(AR_AP_AGING_ROUTE_PREFIX)}>
+        <Button type="button" variant="secondary" onClick={() => navigate(AR_AGING_ROUTE)}>
           Back to AR Aging
         </Button>
       </div>
@@ -52,7 +52,7 @@ export default function ArStatementPage() {
           <button
             type="button"
             className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] mb-1"
-            onClick={() => navigate(AR_AP_AGING_ROUTE_PREFIX)}
+            onClick={() => navigate(AR_AGING_ROUTE)}
           >
             ← AR Aging
           </button>
@@ -60,31 +60,57 @@ export default function ArStatementPage() {
             Customer statement
           </h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-            {data?.party_name || partyId}
+            {data?.party_name || partyId} — invoices, receipts, and running balance
+            (GET /gl/ar/statement/:partyId).
           </p>
         </div>
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={() => refetch()}
-          disabled={isFetching || !filtersValid}
-        >
-          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() =>
+              navigate(
+                `/gl/ar/open-items?party_id=${encodeURIComponent(partyId)}${
+                  companyId.trim() && isUuid(companyId.trim())
+                    ? `&company_id=${encodeURIComponent(companyId.trim())}`
+                    : ''
+                }`,
+              )
+            }
+          >
+            Open items
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => navigate(`/gl/ar/aging?party_id=${encodeURIComponent(partyId)}`)}
+          >
+            Aging
+          </Button>
+          <Button type="button" variant="secondary" onClick={() => window.print()}>
+            Print
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => refetch()}
+            disabled={isFetching || !filtersValid}
+          >
+            <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       <Card className="p-4 space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <AgingFilters
-            asOf={asOf}
-            onAsOfChange={setAsOf}
-            partyId={partyId}
-            onPartyIdChange={() => {}}
-            companyId={companyId}
-            onCompanyIdChange={setCompanyId}
-          />
-        </div>
+        <AgingFilters
+          asOf={asOf}
+          onAsOfChange={setAsOf}
+          partyId={partyId}
+          onPartyIdChange={() => {}}
+          companyId={companyId}
+          onCompanyIdChange={setCompanyId}
+        />
 
         {!filtersValid ? (
           <p className="text-sm text-[var(--color-danger-600)] py-6">Invalid company UUID.</p>
@@ -104,7 +130,7 @@ export default function ArStatementPage() {
           <>
             <div className="flex flex-wrap gap-4 text-sm text-[var(--color-neutral-600)]">
               {data?.as_of ? <span>As of {data.as_of}</span> : null}
-              {data?.opening_balance != null ? (
+              {data?.opening_balance != null && data.opening_balance !== 0 ? (
                 <span>
                   Opening: {data.currency_code || ''}{' '}
                   {data.opening_balance.toLocaleString(undefined, {

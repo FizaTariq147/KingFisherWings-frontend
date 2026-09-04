@@ -30,6 +30,10 @@ const managementDashboardReports = managementMenu.find(
 );
 
 const glReportTileIds = new Set([
+  'ar-aging',
+  'ap-aging',
+  'ar-open-items',
+  'ap-open-items',
   'pdc-due-report',
   'financial-reports',
   'mis-dashboard',

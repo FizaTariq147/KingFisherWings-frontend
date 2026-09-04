@@ -140,6 +140,14 @@ export function normalizeVendorJobOffer(raw: unknown): VendorJobOffer | null {
     totalAmount: costTotal,
     costTotal,
     negotiationPricing,
+    purchaseInvoiceId:
+      pickString(
+        data.purchase_invoice_id,
+        data.purchaseInvoiceId,
+        data.vendor_invoice_id,
+        data.vendorInvoiceId,
+      ) || undefined,
+    invoiceId: pickString(data.invoice_id, data.invoiceId) || undefined,
     createdAt: pickString(data.created_at, data.createdAt) || undefined,
     updatedAt: pickString(data.updated_at, data.updatedAt) || undefined,
     pricedAt: pickString(data.priced_at, data.pricedAt) || undefined,

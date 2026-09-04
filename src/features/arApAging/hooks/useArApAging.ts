@@ -44,7 +44,7 @@ export function useApAging(params: AgingReportParams = {}, enabled = true) {
 
 export function useArOpenItems(params: OpenItemsParams, enabled = true) {
   const accessToken = useAuthStore((s) => s.accessToken);
-  const ready = isUuid(params.party_id) && isUuid(params.company_id);
+  const ready = isUuid(params.party_id);
   return useQuery({
     queryKey: arApAgingKeys.arOpenItems(params),
     queryFn: () => arApAgingService.getArOpenItems(params),
@@ -55,7 +55,7 @@ export function useArOpenItems(params: OpenItemsParams, enabled = true) {
 
 export function useApOpenItems(params: OpenItemsParams, enabled = true) {
   const accessToken = useAuthStore((s) => s.accessToken);
-  const ready = isUuid(params.party_id) && isUuid(params.company_id);
+  const ready = isUuid(params.party_id);
   return useQuery({
     queryKey: arApAgingKeys.apOpenItems(params),
     queryFn: () => arApAgingService.getApOpenItems(params),

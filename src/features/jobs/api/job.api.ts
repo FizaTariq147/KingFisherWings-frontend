@@ -96,6 +96,7 @@ export const JOB_API = {
   paymentRequests: (id: string) => `/jobs/${id}/payment-requests`,
 
   passToVendor: (id: string) => `/jobs/${id}/pass-to-vendor`,
+  sendToVendor: (id: string) => `/jobs/${id}/send-to-vendor`,
   /** Live OpenAPI prefers job-offers; vendor-quotes kept as alternate in vendor-job-offers service. */
   vendorOffers: (id: string) => `/jobs/${id}/job-offers`,
   approveVendorOffer: (_id: string, offerId: string) => `/job-offers/${offerId}/approve`,

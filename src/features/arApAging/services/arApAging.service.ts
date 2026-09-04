@@ -113,14 +113,14 @@ export const arApAgingService = {
 
   async getArOpenItems(params: OpenItemsParams): Promise<OpenItemsResult> {
     if (!isUuid(params.party_id)) throw new Error('party_id must be a valid UUID.');
-    if (!isUuid(params.company_id)) throw new Error('company_id must be a valid UUID.');
     try {
+      const query: Record<string, string> = { party_id: params.party_id };
+      if (params.company_id && isUuid(params.company_id)) {
+        query.company_id = params.company_id;
+      }
       const { data } = await withGatewayRetry(() =>
         axiosInstance.get<ApiEnvelope<unknown> | unknown>(AR_AP_AGING_API.arOpenItems, {
-          params: {
-            party_id: params.party_id,
-            company_id: params.company_id,
-          },
+          params: query,
         }),
       );
       return normalizeOpenItemsReport(data, params.party_id);
@@ -131,14 +131,14 @@ export const arApAgingService = {
 
   async getApOpenItems(params: OpenItemsParams): Promise<OpenItemsResult> {
     if (!isUuid(params.party_id)) throw new Error('party_id must be a valid UUID.');
-    if (!isUuid(params.company_id)) throw new Error('company_id must be a valid UUID.');
     try {
+      const query: Record<string, string> = { party_id: params.party_id };
+      if (params.company_id && isUuid(params.company_id)) {
+        query.company_id = params.company_id;
+      }
       const { data } = await withGatewayRetry(() =>
         axiosInstance.get<ApiEnvelope<unknown> | unknown>(AR_AP_AGING_API.apOpenItems, {
-          params: {
-            party_id: params.party_id,
-            company_id: params.company_id,
-          },
+          params: query,
         }),
       );
       return normalizeOpenItemsReport(data, params.party_id);

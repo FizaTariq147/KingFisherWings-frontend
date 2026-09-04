@@ -4,6 +4,7 @@ import { ROLE_API, USER_API } from '../api/user.api';
 import type {
   PermissionMatrix,
   RoleListResult,
+  UpdatePermissionMatrixDto,
   UpdateUserPermissionsDto,
   UserPermissionAssignment,
 } from '../types/userPermissionMatrix.types';
@@ -37,21 +38,6 @@ function assertUserId(id?: string): asserts id is string {
   if (!id || !isUuid(id)) throw new Error('Invalid user id.');
 }
 
-function buildUpdateBody(dto: UpdateUserPermissionsDto): UpdateUserPermissionsDto {
-  const body: UpdateUserPermissionsDto = {};
-  if (dto.permission_ids && dto.permission_ids.length > 0) {
-    body.permission_ids = dto.permission_ids;
-  }
-  if (dto.permission_keys && dto.permission_keys.length > 0) {
-    body.permission_keys = dto.permission_keys;
-  }
-  if (!body.permission_ids && !body.permission_keys) {
-    body.permission_ids = dto.permission_ids ?? [];
-    body.permission_keys = dto.permission_keys ?? [];
-  }
-  return body;
-}
-
 export const userPermissionMatrixService = {
   async getPermissionMatrix(): Promise<PermissionMatrix> {
     try {
@@ -67,26 +53,46 @@ export const userPermissionMatrixService = {
 
   async getUserPermissions(userId: string): Promise<UserPermissionAssignment> {
     assertUserId(userId);
-    try {
-      const res = await axiosInstance.get(USER_API.permissions(userId));
-      return normalizeUserPermissionAssignment(res.data, true);
-    } catch (error) {
-      if (isApiUnavailable(error)) {
-        return normalizeUserPermissionAssignment(null, false);
+    const paths = [USER_API.userPermissionMatrix(userId), USER_API.permissions(userId)];
+    let lastErr: unknown;
+    for (const path of paths) {
+      try {
+        const res = await axiosInstance.get(path);
+        return normalizeUserPermissionAssignment(res.data, true);
+      } catch (error) {
+        lastErr = error;
+        if (!isApiUnavailable(error)) throw formatAxiosError(error);
       }
-      throw formatAxiosError(error);
     }
+    if (isApiUnavailable(lastErr)) {
+      return normalizeUserPermissionAssignment(null, false);
+    }
+    throw formatAxiosError(lastErr);
   },
 
   async updateUserPermissions(
     userId: string,
-    dto: UpdateUserPermissionsDto,
+    dto: UpdatePermissionMatrixDto | UpdateUserPermissionsDto,
   ): Promise<UserPermissionAssignment> {
     assertUserId(userId);
+    const grants =
+      'grants' in dto && Array.isArray(dto.grants)
+        ? dto.grants
+        : [];
+    const body: UpdatePermissionMatrixDto = { grants };
+
     try {
-      const res = await axiosInstance.put(USER_API.permissions(userId), buildUpdateBody(dto));
-      return normalizeUserPermissionAssignment(res.data ?? dto, true);
+      const res = await axiosInstance.put(USER_API.userPermissionMatrix(userId), body);
+      return normalizeUserPermissionAssignment(res.data ?? body, true);
     } catch (error) {
+      // Legacy flat permissions fallback (older backends).
+      if (isApiUnavailable(error) && 'permission_keys' in dto) {
+        const res = await axiosInstance.put(USER_API.permissions(userId), {
+          permission_ids: dto.permission_ids ?? [],
+          permission_keys: dto.permission_keys ?? [],
+        });
+        return normalizeUserPermissionAssignment(res.data ?? dto, true);
+      }
       throw formatAxiosError(error);
     }
   },
@@ -109,7 +115,11 @@ export const userPermissionMatrixService = {
   ): Promise<UserPermissionAssignment> {
     if (!roleId || !isUuid(roleId)) throw new Error('Invalid role id.');
     try {
-      const res = await axiosInstance.put(ROLE_API.permissions(roleId), buildUpdateBody(dto));
+      const res = await axiosInstance.put(ROLE_API.permissions(roleId), {
+        ...(dto.grants ? { grants: dto.grants } : {}),
+        ...(dto.permission_ids ? { permission_ids: dto.permission_ids } : {}),
+        ...(dto.permission_keys ? { permission_keys: dto.permission_keys } : {}),
+      });
       return normalizeUserPermissionAssignment(res.data ?? dto, true);
     } catch (error) {
       throw formatAxiosError(error);

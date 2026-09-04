@@ -3,7 +3,10 @@ import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import { userKeys } from './useUsers';
 import { userPermissionMatrixService } from '../services/userPermissionMatrix.service';
-import type { UpdateUserPermissionsDto } from '../types/userPermissionMatrix.types';
+import type {
+  UpdatePermissionMatrixDto,
+  UpdateUserPermissionsDto,
+} from '../types/userPermissionMatrix.types';
 
 export const userPermissionKeys = {
   matrix: [...userKeys.all, 'permission-matrix'] as const,
@@ -33,7 +36,7 @@ export function useUserPermissions(userId: string) {
 export function useUpdateUserPermissions(userId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (dto: UpdateUserPermissionsDto) =>
+    mutationFn: (dto: UpdatePermissionMatrixDto | UpdateUserPermissionsDto) =>
       userPermissionMatrixService.updateUserPermissions(userId, dto),
     onSuccess: (data) => {
       queryClient.setQueryData(userPermissionKeys.user(userId), data);

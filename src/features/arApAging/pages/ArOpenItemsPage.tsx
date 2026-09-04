@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -22,19 +22,24 @@ function formatMoney(value: number | undefined, currency?: string) {
 
 export function GlOpenItemsPage({ kind }: GlOpenItemsPageProps) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
-  const [partyId, setPartyId] = useState('');
-  const companyId = user?.companyId?.trim() || '';
+  const [partyId, setPartyId] = useState(() => searchParams.get('party_id') ?? '');
+  const [companyId, setCompanyId] = useState(() => {
+    const fromQuery = searchParams.get('company_id')?.trim() || '';
+    if (fromQuery && isUuid(fromQuery)) return fromQuery;
+    return user?.companyId?.trim() || '';
+  });
 
   const params = useMemo(
     () => ({
       party_id: partyId.trim(),
-      company_id: companyId,
+      company_id: companyId.trim() && isUuid(companyId.trim()) ? companyId.trim() : undefined,
     }),
     [partyId, companyId],
   );
 
-  const ready = isUuid(params.party_id) && isUuid(params.company_id);
+  const ready = isUuid(params.party_id);
   const ar = useArOpenItems(params, kind === 'ar' && ready);
   const ap = useApOpenItems(params, kind === 'ap' && ready);
   const query = kind === 'ar' ? ar : ap;
@@ -46,6 +51,9 @@ export function GlOpenItemsPage({ kind }: GlOpenItemsPageProps) {
       : 'Vendor purchase invoices with paid vs pending (GET /gl/ap/open-items).';
   const invoicePath = (id: string) =>
     kind === 'ar' ? `/invoices/${id}` : `/purchase-invoices/${id}`;
+  const agingPath = kind === 'ar' ? '/gl/ar/aging' : '/gl/ap/aging';
+  const statementPath = (id: string) =>
+    kind === 'ar' ? `/gl/ar/statement/${id}` : `/gl/ap/statement/${id}`;
 
   return (
     <div className="space-y-4">
@@ -61,15 +69,20 @@ export function GlOpenItemsPage({ kind }: GlOpenItemsPageProps) {
           <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">{title}</h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">{description}</p>
         </div>
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={() => void query.refetch()}
-          disabled={query.isFetching || !ready}
-        >
-          <RefreshCw className={`h-4 w-4 ${query.isFetching ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button type="button" variant="secondary" onClick={() => navigate(agingPath)}>
+            Aging
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => void query.refetch()}
+            disabled={query.isFetching || !ready}
+          >
+            <RefreshCw className={`h-4 w-4 ${query.isFetching ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       <Card className="p-4 space-y-4">
@@ -84,32 +97,28 @@ export function GlOpenItemsPage({ kind }: GlOpenItemsPageProps) {
             }
           />
           <Input
-            label="Company ID"
-            value={companyId || '—'}
-            disabled
-            hint={
-              companyId
-                ? 'From your signed-in company (required by API).'
-                : 'Missing company on your session — re-login or set company on the tenant.'
+            label="Company ID (optional)"
+            placeholder="UUID — omit to use tenant default"
+            value={companyId}
+            onChange={(e) => setCompanyId(e.target.value)}
+            error={
+              companyId.trim() && !isUuid(companyId.trim())
+                ? 'Enter a valid UUID or leave blank'
+                : undefined
             }
+            hint="Wrong company_id returns an empty list; leave blank if unsure."
           />
         </div>
 
-        {!companyId ? (
-          <p className="text-sm text-[var(--color-danger-600)] flex items-start gap-2">
-            <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-            company_id is required. Your login session has no company id.
-          </p>
-        ) : null}
-
-        {!ready && companyId ? (
+        {!ready ? (
           <p className="text-sm text-[var(--color-neutral-500)] py-4">
             Enter a party UUID to load open items with paid vs pending balances.
           </p>
         ) : query.isLoading ? (
           <p className="text-sm text-[var(--color-neutral-400)] py-6">Loading open items…</p>
         ) : query.isError ? (
-          <p className="text-sm text-[var(--color-danger-600)] py-4">
+          <p className="text-sm text-[var(--color-danger-600)] py-4 flex items-start gap-2">
+            <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
             {getErrorMessage(query.error)}
           </p>
         ) : !query.data?.items.length ? (
@@ -118,7 +127,16 @@ export function GlOpenItemsPage({ kind }: GlOpenItemsPageProps) {
           </p>
         ) : (
           <div className="space-y-3">
-            <div className="flex flex-wrap gap-4 text-sm">
+            <div className="flex flex-wrap items-center gap-4 text-sm">
+              {query.data.partyName ? (
+                <button
+                  type="button"
+                  className="font-medium text-[var(--color-primary-700)] hover:underline"
+                  onClick={() => navigate(statementPath(params.party_id))}
+                >
+                  {query.data.partyName} — statement
+                </button>
+              ) : null}
               <span>
                 Paid:{' '}
                 <strong className="tabular-nums">
@@ -156,7 +174,7 @@ export function GlOpenItemsPage({ kind }: GlOpenItemsPageProps) {
                         </Link>
                       </td>
                       <td className="py-2 pr-3 text-[var(--color-neutral-600)]">
-                        {item.dueDate || '—'}
+                        {item.dueDate ? item.dueDate.slice(0, 10) : '—'}
                       </td>
                       <td className="py-2 pr-3 text-right tabular-nums">
                         {formatMoney(item.totalAmount, item.currencyCode)}

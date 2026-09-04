@@ -1,4 +1,5 @@
 import { type Resolver } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -9,6 +10,7 @@ import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
@@ -19,6 +21,7 @@ import {
   JOB_TYPE_LABELS,
   JOB_TYPES,
 } from '../../constants/quotation.constants';
+import { isAirJobType } from '@/features/jobs/constants/job.constants';
 import { createQuotationSchema, updateQuotationSchema } from '../../schemas/quotation.schema';
 import type { CreateQuotationFormValues, UpdateQuotationFormValues } from '../../types/quotation.types';
 import { QUOTATION_FORM_DEFAULTS } from '../../utils/quotationToFormValues';
@@ -66,7 +69,21 @@ export function QuotationForm({
     limit: 100,
     order: 'asc',
   });
-  const { data: ports = [] } = useMasterOptions('ports', MASTER_PATHS.ports, true);
+  const {
+    register,
+    control,
+    handleValidatedSubmit,
+    applyApiErrors,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useAppForm<CreateQuotationFormValues>({
+    resolver: zodResolver(schema) as Resolver<CreateQuotationFormValues>,
+    defaultValues: { ...QUOTATION_FORM_DEFAULTS, ...defaultValues },
+  });
+
+  const watched = watch();
+  const useAirports = isAirJobType(watched.job_type);
   const { data: containers = [] } = useMasterOptions(
     'container-types',
     MASTER_PATHS['container-types'],
@@ -94,19 +111,6 @@ export function QuotationForm({
       ? carriersFiltered
       : (carriersResult?.parties ?? []).filter((p) => isUuid(p.id));
 
-  const {
-    register,
-    handleValidatedSubmit,
-    applyApiErrors,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useAppForm<CreateQuotationFormValues>({
-    resolver: zodResolver(schema) as Resolver<CreateQuotationFormValues>,
-    defaultValues: { ...QUOTATION_FORM_DEFAULTS, ...defaultValues },
-  });
-
-  const watched = watch();
   const onValuesChangeRef = useRef(onValuesChange);
   onValuesChangeRef.current = onValuesChange;
   useEffect(() => {
@@ -121,15 +125,6 @@ export function QuotationForm({
 
   const fieldError = (name: keyof CreateQuotationFormValues) =>
     errors[name]?.message as string | undefined;
-
-  const portOptions: Array<{ value: string; label: string }> = [];
-  for (const p of ports) {
-    if (!isUuid(String(p.id))) continue;
-    portOptions.push({
-      value: String(p.id),
-      label: [p.code, p.name].filter(Boolean).join(' — ') || String(p.id),
-    });
-  }
 
   return (
     <form
@@ -284,30 +279,36 @@ export function QuotationForm({
           <CardTitle>Shipment information</CardTitle>
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
-          <div className="space-y-1">
-            <label htmlFor="origin_port_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Origin port</label>
-            <select id="origin_port_id" className={selectClass} {...register('origin_port_id')}>
-              <option value="">Select…</option>
-              {portOptions.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="space-y-1">
-            <label htmlFor="dest_port_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
-              Destination port
-            </label>
-            <select id="dest_port_id" className={selectClass} {...register('dest_port_id')}>
-              <option value="">Select…</option>
-              {portOptions.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Controller
+            name="origin_port_id"
+            control={control}
+            render={({ field }) => (
+              <MasterPlaceSelect
+                name="origin_port_id"
+                label={useAirports ? 'Origin airport' : 'Origin port'}
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                jobType={watched.job_type}
+                excludeId={watched.dest_port_id}
+                error={fieldError('origin_port_id')}
+              />
+            )}
+          />
+          <Controller
+            name="dest_port_id"
+            control={control}
+            render={({ field }) => (
+              <MasterPlaceSelect
+                name="dest_port_id"
+                label={useAirports ? 'Destination airport' : 'Destination port'}
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                jobType={watched.job_type}
+                excludeId={watched.origin_port_id}
+                error={fieldError('dest_port_id')}
+              />
+            )}
+          />
           <div className="space-y-1">
             <label htmlFor="incoterm" className="text-xs font-medium text-[var(--color-neutral-500)]">Incoterm</label>
             <select id="incoterm" className={selectClass} {...register('incoterm')}>

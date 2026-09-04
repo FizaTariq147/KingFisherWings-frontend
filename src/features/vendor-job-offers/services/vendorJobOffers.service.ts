@@ -26,6 +26,8 @@ import {
   normalizeVendorPortalJobDetail,
   normalizeVendorPortalJobList,
 } from '../utils/normalizeVendorJobOffers';
+import { fulfillApprovedVendorOffer } from '../utils/fulfillApprovedVendorOffer';
+import { coerceVendorOfferStatus } from '../utils/vendorOfferStatus';
 
 function isNotFound(err: unknown): boolean {
   if (axios.isAxiosError(err)) {
@@ -60,9 +62,22 @@ export const staffVendorJobOffersService = {
   async passToVendor(jobId: string, dto: PassJobToVendorDto): Promise<VendorJobOffer | null> {
     try {
       const vendorId = dto.vendor_party_id.trim();
+      // Docs: POST /jobs/:id/send-to-vendor { vendor_party_id } — no customer revenue/cost.
+      const preferredBody = { vendor_party_id: vendorId };
+      try {
+        const res = await axiosInstance.post(
+          VENDOR_JOB_OFFERS_API.sendToVendor(jobId),
+          preferredBody,
+        );
+        return normalizeVendorJobOffer(res.data);
+      } catch (err) {
+        if (!isNotFound(err)) throw err;
+      }
+
+      // Legacy pass-to-vendor may accept optional seed cost / notes.
       const notes = dto.notes?.trim() || dto.message?.trim();
       const currency = dto.currency_code?.trim().toUpperCase();
-      const body = {
+      const legacyBody = {
         vendor_party_id: vendorId,
         vendor_id: vendorId,
         party_id: vendorId,
@@ -72,8 +87,16 @@ export const staffVendorJobOffersService = {
         ...(notes ? { notes, staff_notes: notes, message: notes } : {}),
         ...(currency ? { currency_code: currency } : {}),
       };
-      const res = await axiosInstance.post(VENDOR_JOB_OFFERS_API.passToVendor(jobId), body);
-      return normalizeVendorJobOffer(res.data);
+      try {
+        const res = await axiosInstance.post(
+          VENDOR_JOB_OFFERS_API.passToVendor(jobId),
+          legacyBody,
+        );
+        return normalizeVendorJobOffer(res.data);
+      } catch (err) {
+        if (isNotFound(err)) throw friendlyUnavailable('Pass to vendor');
+        throw err;
+      }
     } catch (err) {
       if (isNotFound(err)) throw friendlyUnavailable('Pass to vendor');
       throw err;
@@ -90,7 +113,29 @@ export const staffVendorJobOffersService = {
     for (const path of paths) {
       try {
         const res = await axiosInstance.get(path);
-        return normalizeVendorJobOfferList(res.data);
+        const offers = normalizeVendorJobOfferList(res.data);
+        // If vendor already accepted (APPROVED) and no bill exists yet, best-effort create PI.
+        return Promise.all(
+          offers.map(async (offer) => {
+            if (
+              coerceVendorOfferStatus(offer.status) !== 'APPROVED' ||
+              offer.purchaseInvoiceId ||
+              offer.invoiceId
+            ) {
+              return offer;
+            }
+            const attemptKey = `kfw.vendorOfferPi.${offer.id}`;
+            try {
+              if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(attemptKey)) {
+                return offer;
+              }
+              if (typeof sessionStorage !== 'undefined') sessionStorage.setItem(attemptKey, '1');
+            } catch {
+              /* ignore storage errors */
+            }
+            return (await fulfillApprovedVendorOffer(offer)) ?? offer;
+          }),
+        );
       } catch (err) {
         lastErr = err;
         if (!isNotFound(err)) throw err;
@@ -133,7 +178,11 @@ export const staffVendorJobOffersService = {
         ...(dto.message?.trim() ? { message: dto.message.trim() } : {}),
         ...(dto.comments?.trim() ? { comments: dto.comments.trim() } : {}),
       });
-      return normalizeVendorJobOffer(res.data);
+      const offer = normalizeVendorJobOffer(res.data);
+      if (offer && coerceVendorOfferStatus(offer.status) === 'APPROVED') {
+        return fulfillApprovedVendorOffer(offer);
+      }
+      return offer;
     } catch (err) {
       if (isNotFound(err)) throw friendlyUnavailable('Accept vendor counter');
       throw err;
@@ -166,12 +215,14 @@ export const staffVendorJobOffersService = {
     };
     try {
       const res = await axiosInstance.post(VENDOR_JOB_OFFERS_API.approveOffer(offerId), body);
-      return normalizeVendorJobOffer(res.data);
+      const offer = normalizeVendorJobOffer(res.data);
+      return fulfillApprovedVendorOffer(offer);
     } catch (err) {
       if (isNotFound(err)) {
         try {
           const res = await axiosInstance.post(VENDOR_JOB_OFFERS_API.approveOfferAlt(offerId), body);
-          return normalizeVendorJobOffer(res.data);
+          const offer = normalizeVendorJobOffer(res.data);
+          return fulfillApprovedVendorOffer(offer);
         } catch (legacyErr) {
           if (isNotFound(legacyErr)) throw friendlyUnavailable('Approve vendor offer');
           throw legacyErr;
@@ -208,53 +259,71 @@ export const staffVendorJobOffersService = {
   },
 };
 
-/** Vendor portal — job offers + cost negotiation (no customer revenue). */
+/** Vendor portal — quotes + cost pricing (no customer revenue). */
 export const vendorPortalJobsService = {
   async list(params: VendorPortalJobListParams = {}): Promise<VendorPortalJobListResult> {
-    try {
-      const res = await vendorApiClient.get(VENDOR_JOB_OFFERS_API.vendorJobs, { params });
-      return normalizeVendorPortalJobList(res.data, params);
-    } catch (err) {
-      if (isNotFound(err)) {
-        return {
-          items: [],
-          meta: {
-            page: params.page ?? 1,
-            limit: params.limit ?? 20,
-            total: 0,
-            totalPages: 1,
-          },
-        };
+    const paths = [VENDOR_JOB_OFFERS_API.vendorJobs, VENDOR_JOB_OFFERS_API.vendorJobsLegacy];
+    let lastErr: unknown;
+    for (const path of paths) {
+      try {
+        const res = await vendorApiClient.get(path, { params });
+        return normalizeVendorPortalJobList(res.data, params);
+      } catch (err) {
+        lastErr = err;
+        if (!isNotFound(err)) throw err;
       }
-      throw err;
     }
+    if (isNotFound(lastErr)) {
+      return {
+        items: [],
+        meta: {
+          page: params.page ?? 1,
+          limit: params.limit ?? 20,
+          total: 0,
+          totalPages: 1,
+        },
+      };
+    }
+    throw lastErr;
   },
 
   async getById(id: string): Promise<VendorPortalJobDetail> {
-    try {
-      const res = await vendorApiClient.get(VENDOR_JOB_OFFERS_API.vendorJob(id));
-      const detail = normalizeVendorPortalJobDetail(res.data);
-      if (!detail) throw new VendorApiError('Job offer not found.', 404);
-      return detail;
-    } catch (err) {
-      if (isNotFound(err)) {
-        throw new VendorApiError(
-          'Vendor job offer APIs are not available yet.',
-          err instanceof VendorApiError ? err.status : 404,
-        );
+    const paths = [
+      VENDOR_JOB_OFFERS_API.vendorJob(id),
+      VENDOR_JOB_OFFERS_API.vendorJobLegacy(id),
+    ];
+    let lastErr: unknown;
+    for (const path of paths) {
+      try {
+        const res = await vendorApiClient.get(path);
+        const detail = normalizeVendorPortalJobDetail(res.data);
+        if (!detail) throw new VendorApiError('Vendor quote not found.', 404);
+        return detail;
+      } catch (err) {
+        lastErr = err;
+        if (!isNotFound(err)) throw err;
       }
-      throw err;
     }
+    throw new VendorApiError(
+      'Vendor quote APIs are not available yet.',
+      lastErr instanceof VendorApiError ? lastErr.status : 404,
+    );
   },
 
   async getNegotiation(id: string): Promise<VendorOfferNegotiationTimeline> {
-    try {
-      const res = await vendorApiClient.get(VENDOR_JOB_OFFERS_API.vendorNegotiation(id));
-      return normalizeNegotiationTimeline(res.data);
-    } catch (err) {
-      if (isNotFound(err)) return { events: [] };
-      throw err;
+    const paths = [
+      VENDOR_JOB_OFFERS_API.vendorNegotiation(id),
+      VENDOR_JOB_OFFERS_API.vendorNegotiationLegacy(id),
+    ];
+    for (const path of paths) {
+      try {
+        const res = await vendorApiClient.get(path);
+        return normalizeNegotiationTimeline(res.data);
+      } catch (err) {
+        if (!isNotFound(err)) throw err;
+      }
     }
+    return { events: [] };
   },
 
   async getPricing(id: string): Promise<VendorJobPricingResult> {
@@ -281,102 +350,126 @@ export const vendorPortalJobsService = {
   },
 
   async accept(id: string, dto: VendorNegotiationAcceptDto = {}): Promise<VendorPortalJobDetail> {
-    try {
-      const res = await vendorApiClient.post(VENDOR_JOB_OFFERS_API.vendorAccept(id), {
-        ...(dto.message?.trim() ? { message: dto.message.trim() } : {}),
-        ...(dto.comments?.trim() ? { comments: dto.comments.trim() } : {}),
-      });
-      return normalizeVendorPortalJobDetail(res.data) ?? (await this.getById(id));
-    } catch (err) {
-      if (isNotFound(err)) throw friendlyUnavailable('Accept cost offer');
-      throw err;
+    const body = {
+      ...(dto.message?.trim() ? { message: dto.message.trim() } : {}),
+      ...(dto.comments?.trim() ? { comments: dto.comments.trim() } : {}),
+    };
+    const paths = [
+      VENDOR_JOB_OFFERS_API.vendorAccept(id),
+      VENDOR_JOB_OFFERS_API.vendorAcceptLegacy(id),
+    ];
+    for (const path of paths) {
+      try {
+        const res = await vendorApiClient.post(path, body);
+        return normalizeVendorPortalJobDetail(res.data) ?? (await this.getById(id));
+      } catch (err) {
+        if (!isNotFound(err)) throw err;
+      }
     }
+    throw friendlyUnavailable('Accept cost offer');
   },
 
   async reject(id: string, dto: VendorNegotiationRejectDto): Promise<VendorPortalJobDetail> {
-    try {
-      const res = await vendorApiClient.post(VENDOR_JOB_OFFERS_API.vendorReject(id), {
-        message: dto.message.trim(),
-        ...(dto.terminal != null ? { terminal: dto.terminal } : {}),
-      });
-      return normalizeVendorPortalJobDetail(res.data) ?? (await this.getById(id));
-    } catch (err) {
-      if (isNotFound(err)) throw friendlyUnavailable('Reject cost offer');
-      throw err;
+    const body = {
+      message: dto.message.trim(),
+      ...(dto.terminal != null ? { terminal: dto.terminal } : {}),
+    };
+    const paths = [
+      VENDOR_JOB_OFFERS_API.vendorReject(id),
+      VENDOR_JOB_OFFERS_API.vendorRejectLegacy(id),
+    ];
+    for (const path of paths) {
+      try {
+        const res = await vendorApiClient.post(path, body);
+        return normalizeVendorPortalJobDetail(res.data) ?? (await this.getById(id));
+      } catch (err) {
+        if (!isNotFound(err)) throw err;
+      }
     }
+    throw friendlyUnavailable('Reject cost offer');
   },
 
   async counterOffer(id: string, dto: VendorCounterOfferDto): Promise<VendorPortalJobDetail> {
-    try {
-      const res = await vendorApiClient.post(VENDOR_JOB_OFFERS_API.vendorCounterOffer(id), {
-        message: dto.message.trim(),
-        proposed_total: dto.proposed_total,
-        ...(dto.proposed_lines?.length
-          ? {
-              proposed_lines: dto.proposed_lines.map((line) => ({
-                description: line.description,
-                quantity: line.quantity ?? 1,
-                unit_price: line.unit_price,
-                ...(line.amount != null ? { amount: line.amount } : {}),
-              })),
-            }
-          : {}),
-      });
-      return normalizeVendorPortalJobDetail(res.data) ?? (await this.getById(id));
-    } catch (err) {
-      if (isNotFound(err)) throw friendlyUnavailable('Counter cost offer');
-      throw err;
+    const body = {
+      message: dto.message.trim(),
+      proposed_total: dto.proposed_total,
+      ...(dto.proposed_lines?.length
+        ? {
+            proposed_lines: dto.proposed_lines.map((line) => ({
+              description: line.description,
+              quantity: line.quantity ?? 1,
+              unit_price: line.unit_price,
+              ...(line.amount != null ? { amount: line.amount } : {}),
+            })),
+          }
+        : {}),
+    };
+    const paths = [
+      VENDOR_JOB_OFFERS_API.vendorCounterOffer(id),
+      VENDOR_JOB_OFFERS_API.vendorCounterOfferLegacy(id),
+    ];
+    for (const path of paths) {
+      try {
+        const res = await vendorApiClient.post(path, body);
+        return normalizeVendorPortalJobDetail(res.data) ?? (await this.getById(id));
+      } catch (err) {
+        if (!isNotFound(err)) throw err;
+      }
     }
+    throw friendlyUnavailable('Counter cost offer');
   },
 
-  /** Alias of counter-offer (legacy /price). */
+  /** POST /vendor/quotes/:id/price (preferred) with job-offers fallback. */
   async submitPricing(id: string, dto: SubmitVendorJobPricingDto): Promise<VendorJobPricingResult> {
-    try {
-      const message = dto.message?.trim() || dto.notes?.trim() || 'Vendor pricing submitted';
-      const proposedTotal =
-        dto.proposed_total ??
-        dto.lines.reduce((sum, line) => sum + (line.amount ?? line.quantity * line.unit_price), 0);
-      const res = await vendorApiClient.post(VENDOR_JOB_OFFERS_API.vendorJobPrice(id), {
-        lines: dto.lines.map((line) => ({
-          description: line.description,
-          quantity: line.quantity,
-          unit_price: line.unit_price,
-          ...(line.amount != null ? { amount: line.amount } : {}),
-        })),
-        proposed_total: proposedTotal,
-        ...(dto.notes?.trim() ? { vendor_notes: dto.notes.trim() } : {}),
-        message,
-      });
-      return normalizeVendorJobPricing(res.data, id);
-    } catch (err) {
-      if (isNotFound(err)) {
-        // Prefer explicit counter-offer path.
-        const detail = await this.counterOffer(id, {
-          message: dto.message?.trim() || dto.notes?.trim() || 'Vendor counter',
-          proposed_total:
-            dto.proposed_total ??
-            dto.lines.reduce((sum, line) => sum + (line.amount ?? line.quantity * line.unit_price), 0),
-          proposed_lines: dto.lines.map((line) => ({
-            description: line.description,
-            quantity: line.quantity,
-            unit_price: line.unit_price,
-            amount: line.amount,
-          })),
-        });
-        return {
-          jobId: detail.id,
-          offerId: detail.offerId || detail.id,
-          status: detail.offerStatus,
-          notes: detail.pricingNotes,
-          lines: detail.lines,
-          currencyCode: detail.currencyCode,
-          totalAmount: detail.totalAmount ?? detail.costTotal,
-          costTotal: detail.costTotal ?? detail.totalAmount,
-          negotiationPricing: detail.negotiationPricing,
-          updatedAt: detail.updatedAt,
-        };
+    const message = dto.message?.trim() || dto.notes?.trim() || 'Vendor pricing submitted';
+    const proposedTotal =
+      dto.proposed_total ??
+      dto.lines.reduce((sum, line) => sum + (line.amount ?? line.quantity * line.unit_price), 0);
+    const body = {
+      lines: dto.lines.map((line) => ({
+        description: line.description,
+        quantity: line.quantity,
+        unit_price: line.unit_price,
+        ...(line.amount != null ? { amount: line.amount } : {}),
+      })),
+      proposed_total: proposedTotal,
+      ...(dto.notes?.trim() ? { vendor_notes: dto.notes.trim() } : {}),
+      message,
+    };
+    const paths = [
+      VENDOR_JOB_OFFERS_API.vendorJobPrice(id),
+      VENDOR_JOB_OFFERS_API.vendorJobPriceLegacy(id),
+    ];
+    for (const path of paths) {
+      try {
+        const res = await vendorApiClient.post(path, body);
+        return normalizeVendorJobPricing(res.data, id);
+      } catch (err) {
+        if (!isNotFound(err)) throw err;
       }
-      throw err;
     }
+    // Last resort: explicit counter-offer path.
+    const detail = await this.counterOffer(id, {
+      message: dto.message?.trim() || dto.notes?.trim() || 'Vendor counter',
+      proposed_total: proposedTotal,
+      proposed_lines: dto.lines.map((line) => ({
+        description: line.description,
+        quantity: line.quantity,
+        unit_price: line.unit_price,
+        amount: line.amount,
+      })),
+    });
+    return {
+      jobId: detail.id,
+      offerId: detail.offerId || detail.id,
+      status: detail.offerStatus,
+      notes: detail.pricingNotes,
+      lines: detail.lines,
+      currencyCode: detail.currencyCode,
+      totalAmount: detail.totalAmount ?? detail.costTotal,
+      costTotal: detail.costTotal ?? detail.totalAmount,
+      negotiationPricing: detail.negotiationPricing,
+      updatedAt: detail.updatedAt,
+    };
   },
 };

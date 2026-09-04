@@ -84,6 +84,7 @@ import ApAgingPage from '../features/arApAging/pages/ApAgingPage'
 import ArOpenItemsPage from '../features/arApAging/pages/ArOpenItemsPage'
 import ApOpenItemsPage from '../features/arApAging/pages/ApOpenItemsPage'
 import ArStatementPage from '../features/arApAging/pages/ArStatementPage'
+import ApStatementPage from '../features/arApAging/pages/ApStatementPage'
 import {
   OnlineTariffCreatePage,
   OnlineTariffDetailPage,
@@ -729,6 +730,7 @@ export const router = createBrowserRouter([
               { path: '/gl/ar/open-items', element: <ArOpenItemsPage /> },
               { path: '/gl/ap/open-items', element: <ApOpenItemsPage /> },
               { path: '/gl/ar/statement/:partyId', element: <ArStatementPage /> },
+              { path: '/gl/ap/statement/:partyId', element: <ApStatementPage /> },
             ],
           },
         ],

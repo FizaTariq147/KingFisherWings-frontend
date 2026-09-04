@@ -47,18 +47,38 @@ export function resolvePortalPortId(
   return undefined;
 }
 
-function appendUnresolvedRouteNotes(
+function stripPreviousRouteNotes(specialRequirements: string | undefined): string {
+  if (!specialRequirements?.trim()) return '';
+  return specialRequirements
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter((line) => {
+      if (!line) return false;
+      if (/^Customer route:/i.test(line)) return false;
+      if (/^Origin port:/i.test(line)) return false;
+      if (/^Destination port:/i.test(line)) return false;
+      // Drop the old combined "Origin port: X; Destination port: Y" single line.
+      if (/Origin port:.*Destination port:/i.test(line)) return false;
+      return true;
+    })
+    .join('\n')
+    .trim();
+}
+
+/**
+ * Always persist the customer-typed route so admin list/detail can show every
+ * enquiry route, even when port IDs resolve (or fail to).
+ */
+function appendCustomerRouteNote(
   specialRequirements: string | undefined,
-  unresolvedOrigin?: string,
-  unresolvedDest?: string,
+  originRaw?: string,
+  destRaw?: string,
 ): string | undefined {
-  const parts: string[] = [];
-  if (unresolvedOrigin) parts.push(`Origin port: ${unresolvedOrigin}`);
-  if (unresolvedDest) parts.push(`Destination port: ${unresolvedDest}`);
-  if (parts.length === 0) return specialRequirements?.trim() || undefined;
-  const routeLine = parts.join('; ');
-  const base = specialRequirements?.trim();
-  return base ? `${routeLine}\n\n${base}` : routeLine;
+  const cleaned = stripPreviousRouteNotes(specialRequirements);
+  if (!originRaw && !destRaw) return cleaned || undefined;
+
+  const routeLine = `Customer route: ${originRaw || '—'} → ${destRaw || '—'}`;
+  return cleaned ? `${routeLine}\n\n${cleaned}` : routeLine;
 }
 
 type PortalRoutableDto = {
@@ -69,7 +89,8 @@ type PortalRoutableDto = {
 
 /**
  * Portal quote API accepts `origin_port_id` / `dest_port_id` only.
- * Resolve names against the reference port list; otherwise note route in special_requirements.
+ * Resolve names against the reference port list; always note the typed route
+ * in special_requirements for dynamic display on staff quotations.
  */
 export function applyPortalRouteFields<T extends PortalRoutableDto>(
   dto: T,
@@ -80,25 +101,20 @@ export function applyPortalRouteFields<T extends PortalRoutableDto>(
   const originRaw = route.origin_port?.trim();
   const destRaw = route.dest_port?.trim();
 
-  let unresolvedOrigin: string | undefined;
-  let unresolvedDest: string | undefined;
-
   if (originRaw) {
     const id = resolvePortalPortId(originRaw, ports);
     if (id) next.origin_port_id = id;
-    else unresolvedOrigin = originRaw;
   }
   if (destRaw) {
     const id = resolvePortalPortId(destRaw, ports);
     if (id) next.dest_port_id = id;
-    else unresolvedDest = destRaw;
   }
 
-  if (unresolvedOrigin || unresolvedDest) {
-    next.special_requirements = appendUnresolvedRouteNotes(
+  if (originRaw || destRaw) {
+    next.special_requirements = appendCustomerRouteNote(
       dto.special_requirements,
-      unresolvedOrigin,
-      unresolvedDest,
+      originRaw,
+      destRaw,
     );
   }
 

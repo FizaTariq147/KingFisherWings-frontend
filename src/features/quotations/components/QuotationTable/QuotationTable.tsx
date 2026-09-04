@@ -112,7 +112,9 @@ export function QuotationTable({
                 <TableCell>{quotationDisplayNumber(q)}</TableCell>
                 <TableCell>{quotationCustomerLabel(q, partyMap)}</TableCell>
                 <TableCell>{JOB_TYPE_LABELS[q.job_type] ?? q.job_type}</TableCell>
-                <TableCell>{quotationRouteLabel(q, portMap)}</TableCell>
+                <TableCell className="max-w-[280px] whitespace-normal break-words">
+                  {quotationRouteLabel(q, portMap)}
+                </TableCell>
                 <TableCell>{formatQuotationDate(q.valid_until)}</TableCell>
                 <TableCell>{quotationTotalLabel(q)}</TableCell>
                 <TableCell onClick={(e) => e.stopPropagation()}>

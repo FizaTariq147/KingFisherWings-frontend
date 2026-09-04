@@ -16,6 +16,12 @@ export const JOB_TYPES = [
 
 export type JobType = (typeof JOB_TYPES)[number];
 
+/** Air / courier jobs use airports; sea and others use sea ports. */
+export function isAirJobType(jobType?: string | null): boolean {
+  const t = (jobType || '').toUpperCase();
+  return t.startsWith('AIR_') || t === 'COURIER';
+}
+
 /**
  * Primary create-job types shown in the UI (matches legacy Create Job wizard).
  * API still accepts LAND / COURIER; those are not in the wizard radio grid.

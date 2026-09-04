@@ -1,6 +1,6 @@
 import type { PortalCargoPackageDto } from '../types/portalQuotations.types';
 
-/** Local draft row for the Request a quote package editor (cm + kg). */
+/** Local draft row — UI collects cm; API prefers metres. */
 export interface PortalPackageDraft {
   length_cm: string;
   width_cm: string;
@@ -27,8 +27,8 @@ function parsePositive(value: string, min: number): number | undefined {
 }
 
 /**
- * CBM from cm dims: (L × W × H × pieces) / 1_000_000.
- * Returns undefined until L, W, and H are all valid.
+ * Backend CBM: Length(m) × Width(m) × Height(m) × pieces.
+ * Centimetres are converted (÷ 100). Client volume_cbm is ignored when dims are sent.
  */
 export function calcPackageCbmFromCm(
   lengthCm: number | undefined,
@@ -38,7 +38,7 @@ export function calcPackageCbmFromCm(
 ): number | undefined {
   if (lengthCm == null || widthCm == null || heightCm == null) return undefined;
   const pcs = Number.isFinite(pieces) && pieces >= 1 ? pieces : 1;
-  const cbm = (lengthCm * widthCm * heightCm * pcs) / 1_000_000;
+  const cbm = (lengthCm / 100) * (widthCm / 100) * (heightCm / 100) * pcs;
   return Number.isFinite(cbm) ? cbm : undefined;
 }
 
@@ -69,7 +69,6 @@ export function sumPackageDraftWeightKg(drafts: PortalPackageDraft[]): number | 
   for (const draft of drafts) {
     const weight = parsePositive(draft.gross_weight_kg, 0);
     if (weight == null) continue;
-    // Weight is the total for the package line as entered.
     total += weight;
     any = true;
   }
@@ -102,13 +101,14 @@ export function formatCbmDisplay(value: number | undefined): string {
 }
 
 /**
- * Map UI drafts → CargoPackageDto.
- * `gross_weight_kg` is required; dims optional but must be a complete L×W×H set when present.
+ * Map UI drafts → CargoPackageDto with metres preferred.
+ * When dims are present, volume_cbm must not be relied on by the client (backend ignores it).
  */
 export function buildPortalEstimatePackages(
   drafts: PortalPackageDraft[],
-): { packages: PortalCargoPackageDto[]; error?: string } {
+): { packages: PortalCargoPackageDto[]; error?: string; hasDimensions: boolean } {
   const packages: PortalCargoPackageDto[] = [];
+  let hasDimensions = false;
 
   for (let i = 0; i < drafts.length; i += 1) {
     const draft = drafts[i];
@@ -116,6 +116,7 @@ export function buildPortalEstimatePackages(
     if (weight == null) {
       return {
         packages: [],
+        hasDimensions: false,
         error: `Package ${i + 1}: enter gross weight (kg).`,
       };
     }
@@ -131,26 +132,33 @@ export function buildPortalEstimatePackages(
     if (hasAnyDim && (lengthCm == null || widthCm == null || heightCm == null)) {
       return {
         packages: [],
+        hasDimensions: false,
         error: `Package ${i + 1}: enter complete L × W × H in cm, or leave all blank.`,
       };
     }
 
-    const pieces = parsePositive(draft.pieces, 1);
+    const pieces = parsePositive(draft.pieces, 1) ?? 1;
     const pkg: PortalCargoPackageDto = {
       gross_weight_kg: weight,
-      ...(pieces != null ? { pieces } : { pieces: 1 }),
+      pieces,
     };
     if (lengthCm != null && widthCm != null && heightCm != null) {
-      pkg.length_cm = lengthCm;
-      pkg.width_cm = widthCm;
-      pkg.height_cm = heightCm;
+      // Prefer metres (backend: CBM = L×W×H(m)×pieces; cm still accepted server-side).
+      pkg.length_m = lengthCm / 100;
+      pkg.width_m = widthCm / 100;
+      pkg.height_m = heightCm / 100;
+      hasDimensions = true;
     }
     packages.push(pkg);
   }
 
   if (!packages.length) {
-    return { packages: [], error: 'Add at least one package with gross weight for estimate.' };
+    return {
+      packages: [],
+      hasDimensions: false,
+      error: 'Add at least one package with gross weight for estimate.',
+    };
   }
 
-  return { packages };
+  return { packages, hasDimensions };
 }

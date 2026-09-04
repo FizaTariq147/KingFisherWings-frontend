@@ -80,6 +80,9 @@ export interface VendorJobOffer {
   /** Job / offer cost total (jumps on vendor counter). */
   costTotal?: number;
   negotiationPricing?: NegotiationPricing;
+  /** Set when backend (or frontend fulfill) created a vendor bill. */
+  purchaseInvoiceId?: string;
+  invoiceId?: string;
   createdAt?: string;
   updatedAt?: string;
   pricedAt?: string;

@@ -362,8 +362,6 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
 
   const [vendorPartyId, setVendorPartyId] = useState('');
   const [passNotes, setPassNotes] = useState('');
-  const [seededTotal, setSeededTotal] = useState('');
-  const [seedDescription, setSeedDescription] = useState('Vendor cost');
   const [msg, setMsg] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -374,30 +372,17 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
       setActionError('Select a vendor party.');
       return;
     }
-    const total = Number(seededTotal);
-    if (!Number.isFinite(total) || total < 0) {
-      setActionError('Enter a seeded cost total (proposed_total) to send SENT.');
-      return;
-    }
     setActionError(null);
     setMsg(null);
     void passToVendor
       .mutateAsync({
         vendor_party_id: vendorPartyId,
+        // Notes only used on legacy pass-to-vendor fallback.
         notes: passNotes.trim() || undefined,
         currency_code: currencyCode?.trim() || undefined,
-        proposed_total: total,
-        lines: [
-          {
-            description: seedDescription.trim() || 'Vendor cost',
-            quantity: 1,
-            unit_price: total,
-            amount: total,
-          },
-        ],
       })
       .then(() => {
-        setMsg('Job passed to vendor with seeded cost (SENT).');
+        setMsg('Job sent to vendor (customer revenue/cost not shared). Vendor submits cost prices next.');
         setPassNotes('');
         void refetch();
       })
@@ -415,12 +400,13 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
 
       <Card>
         <CardHeader>
-          <CardTitle>Pass to vendor</CardTitle>
+          <CardTitle>Send to vendor</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 space-y-3">
           <p className="text-xs text-[var(--color-neutral-500)]">
-            Seed a cost offer and pass this job. Status becomes <strong>SENT</strong>. Customer
-            revenue is never shared with the vendor.
+            Sends via <code className="text-[10px]">POST /jobs/:id/send-to-vendor</code> with{' '}
+            <code className="text-[10px]">vendor_party_id</code> only. Customer revenue and cost are
+            never shared. Vendor prices the job; you approve or disapprove their offer.
           </p>
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[var(--color-neutral-600)]">Vendor party</span>
@@ -438,35 +424,9 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
               ))}
             </select>
           </label>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className="block space-y-1">
-              <span className="text-xs font-medium text-[var(--color-neutral-600)]">
-                Seeded cost total
-              </span>
-              <Input
-                type="number"
-                min={0}
-                step="any"
-                value={seededTotal}
-                onChange={(e) => setSeededTotal(e.target.value)}
-                disabled={busy}
-                placeholder={currencyCode ? `Total ${currencyCode}` : 'Proposed total'}
-              />
-            </label>
-            <label className="block space-y-1">
-              <span className="text-xs font-medium text-[var(--color-neutral-600)]">
-                Seed line description
-              </span>
-              <Input
-                value={seedDescription}
-                onChange={(e) => setSeedDescription(e.target.value)}
-                disabled={busy}
-              />
-            </label>
-          </div>
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[var(--color-neutral-600)]">
-              Notes / instructions (optional)
+              Notes / instructions (optional, legacy backends only)
             </span>
             <textarea
               className="w-full min-h-[72px] rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--color-primary-500)]"
@@ -480,10 +440,10 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
           <Button
             type="button"
             size="sm"
-            disabled={busy || !vendorPartyId || !seededTotal}
+            disabled={busy || !vendorPartyId}
             onClick={handlePass}
           >
-            {passToVendor.isPending ? 'Passing…' : 'Pass to vendor'}
+            {passToVendor.isPending ? 'Sending…' : 'Send to vendor'}
           </Button>
         </div>
       </Card>

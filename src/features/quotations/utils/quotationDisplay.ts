@@ -1,4 +1,5 @@
 import { buildPortLookup, resolvePortLabel } from '@/features/customers/utils/customerMasterLookup';
+import { isUuid } from '@/lib/isUuid';
 import type { MasterRecord } from '@/features/masters/types/master.types';
 import type { Quotation } from '../types/quotation.types';
 import { recalculateQuotationTotals } from './recalculateQuotationTotals';
@@ -25,12 +26,84 @@ export function formatQuotationDate(value?: string): string {
   }
 }
 
+/** Format one side of a route as `CODE — Name` when possible. */
+export function formatQuotationPortSide(
+  code?: string,
+  name?: string,
+  id?: string,
+  portMap?: PortLabelMap,
+): string {
+  const trimmedCode = code?.trim();
+  const trimmedName = name?.trim();
+  const codeOk = Boolean(trimmedCode && !isUuid(trimmedCode));
+  const nameOk = Boolean(trimmedName && !isUuid(trimmedName));
+
+  if (codeOk && nameOk && trimmedCode !== trimmedName) {
+    return `${trimmedCode} — ${trimmedName}`;
+  }
+  if (codeOk) return trimmedCode!;
+  if (nameOk) return trimmedName!;
+
+  const fromMap = resolvePortLabel(undefined, id, portMap ?? new Map());
+  return fromMap === '—' ? '' : fromMap;
+}
+
+/**
+ * Parse customer-typed route lines stored on portal enquiries when port IDs
+ * were missing or when the typed labels were persisted for display.
+ */
+export function parseCustomerRouteFromNotes(text?: string): {
+  origin?: string;
+  dest?: string;
+} {
+  if (!text?.trim()) return {};
+
+  const customerRoute = text.match(
+    /Customer route:\s*([^\n→\-]+?)\s*(?:→|->|–|-)\s*([^\n]+)/i,
+  );
+  if (customerRoute) {
+    const origin = customerRoute[1]?.trim();
+    const dest = customerRoute[2]?.trim();
+    return {
+      origin: origin && origin !== '—' ? origin : undefined,
+      dest: dest && dest !== '—' ? dest : undefined,
+    };
+  }
+
+  const origin =
+    text.match(/Origin port:\s*([^\n;]+)/i)?.[1]?.trim() || undefined;
+  const dest =
+    text.match(/Destination port:\s*([^\n;]+)/i)?.[1]?.trim() || undefined;
+  return { origin, dest };
+}
+
+/**
+ * Dynamic origin → destination for list/detail.
+ * Uses API port fields first, then master lookup, then customer notes.
+ */
 export function quotationRouteLabel(q: Quotation, portMap?: PortLabelMap): string {
   const map = portMap ?? new Map();
-  const origin = resolvePortLabel(q.origin_port_code, q.origin_port_id, map);
-  const dest = resolvePortLabel(q.dest_port_code, q.dest_port_id, map);
-  if (origin === '—' && dest === '—') return '—';
-  return `${origin} → ${dest}`;
+  let origin = formatQuotationPortSide(
+    q.origin_port_code,
+    q.origin_port_name,
+    q.origin_port_id,
+    map,
+  );
+  let dest = formatQuotationPortSide(
+    q.dest_port_code,
+    q.dest_port_name,
+    q.dest_port_id,
+    map,
+  );
+
+  if (!origin || !dest) {
+    const fromNotes = parseCustomerRouteFromNotes(q.special_requirements);
+    if (!origin && fromNotes.origin) origin = fromNotes.origin;
+    if (!dest && fromNotes.dest) dest = fromNotes.dest;
+  }
+
+  if (!origin && !dest) return '—';
+  return `${origin || '—'} → ${dest || '—'}`;
 }
 
 export function quotationTotalAmount(q: Quotation): number | undefined {

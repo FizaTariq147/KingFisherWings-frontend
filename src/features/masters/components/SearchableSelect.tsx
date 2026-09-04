@@ -23,6 +23,8 @@ interface SearchableSelectProps {
   allowManualValue?: boolean;
   emptyMessage?: string;
   hint?: string;
+  /** Fired when the typed query changes (for server-side typeahead). */
+  onQueryChange?: (query: string) => void;
 }
 
 /**
@@ -42,6 +44,7 @@ export function SearchableSelect({
   allowManualValue = false,
   emptyMessage = 'No matching options',
   hint,
+  onQueryChange,
 }: SearchableSelectProps) {
   const listId = useId();
   const inputId = useId();
@@ -152,9 +155,11 @@ export function SearchableSelect({
           value={query}
           onFocus={() => setOpen(true)}
           onChange={(e) => {
-            setQuery(e.target.value);
+            const next = e.target.value;
+            setQuery(next);
             setOpen(true);
-            if (!e.target.value.trim()) onChange('');
+            onQueryChange?.(next);
+            if (!next.trim()) onChange('');
           }}
           onBlur={() => {
             // Defer so option click can run first.

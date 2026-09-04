@@ -92,13 +92,17 @@ export function Topbar({ onLogout }: TopbarProps) {
         {isAuthenticated && !isSuperAdminArea ? (
           <Link
             to="/notifications"
-            aria-label="Notifications"
+            aria-label={
+              notificationCount > 0
+                ? `Notifications, ${notificationCount} unread`
+                : 'Notifications'
+            }
             className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-[var(--color-neutral-600)] hover:bg-[var(--color-neutral-50)]"
           >
             <Bell size={18} />
             {notificationCount > 0 ? (
-              <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--color-secondary)] px-1 text-[10px] font-bold text-white">
-                {notificationCount > 9 ? '9+' : notificationCount}
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--color-secondary)] px-1 text-[10px] font-bold leading-none text-white">
+                {notificationCount > 99 ? '99+' : notificationCount}
               </span>
             ) : null}
           </Link>

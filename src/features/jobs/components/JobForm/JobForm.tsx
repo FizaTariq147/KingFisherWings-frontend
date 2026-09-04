@@ -9,11 +9,13 @@ import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
 import { SearchableSelect } from '@/features/masters/components/SearchableSelect';
+import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
 import {
   JOB_TYPE_LABELS,
+  isAirJobType,
   type JobType,
 } from '../../constants/job.constants';
 import { createJobSchema, updateJobSchema } from '../../schemas/job.schema';
@@ -65,7 +67,24 @@ export function JobForm({
   isSubmitting,
 }: JobFormProps) {
   const schema = mode === 'create' ? createJobSchema : updateJobSchema;
-  const { data: ports = [] } = useMasterOptions('ports', MASTER_PATHS.ports, true);
+  const {
+    register,
+    control,
+    watch,
+    handleValidatedSubmit,
+    applyApiErrors,
+    formState: { errors },
+  } = useAppForm<CreateJobFormValues>({
+    resolver: zodResolver(schema) as Resolver<CreateJobFormValues>,
+    defaultValues: {
+      ...JOB_FORM_DEFAULTS,
+      job_type: defaultJobType ?? jobTypeOptions[0] ?? 'AIR_EXPORT',
+      ...defaultValues,
+    },
+  });
+
+  const selectedJobType = watch('job_type');
+  const useAirports = isAirJobType(selectedJobType);
   const { data: containers = [] } = useMasterOptions(
     'container-types',
     MASTER_PATHS['container-types'],
@@ -91,23 +110,6 @@ export function JobForm({
     ...allParties.filter((p) => p.party_type === 'OVERSEAS_AGENT'),
   ]);
 
-  const {
-    register,
-    control,
-    watch,
-    handleValidatedSubmit,
-    applyApiErrors,
-    formState: { errors },
-  } = useAppForm<CreateJobFormValues>({
-    resolver: zodResolver(schema) as Resolver<CreateJobFormValues>,
-    defaultValues: {
-      ...JOB_FORM_DEFAULTS,
-      job_type: defaultJobType ?? jobTypeOptions[0] ?? 'AIR_EXPORT',
-      ...defaultValues,
-    },
-  });
-
-  const selectedJobType = watch('job_type');
   const originPortId = watch('origin_port_id');
   const destPortId = watch('dest_port_id');
 
@@ -115,18 +117,6 @@ export function JobForm({
     errors[name]?.message as string | undefined;
 
   const [apiError, setApiError] = useState<string | null>(null);
-
-  const portOpts: Array<{ value: string; label: string }> = [];
-  for (const p of ports) {
-    if (!isUuid(String(p.id))) continue;
-    portOpts.push({
-      value: String(p.id),
-      label: [p.code, p.name].filter(Boolean).join(' — ') || String(p.id),
-    });
-  }
-
-  const destPortOpts = portOpts.filter((p) => p.value !== originPortId);
-  const originPortOpts = portOpts.filter((p) => p.value !== destPortId);
 
   return (
     <form
@@ -291,12 +281,13 @@ export function JobForm({
             name="origin_port_id"
             control={control}
             render={({ field }) => (
-              <SearchableSelect
+              <MasterPlaceSelect
                 name="origin_port_id"
-                label="Origin port"
+                label={useAirports ? 'Origin airport' : 'Origin port'}
                 value={field.value ?? ''}
-                options={originPortOpts}
                 onChange={field.onChange}
+                jobType={selectedJobType}
+                excludeId={destPortId}
                 error={fieldError('origin_port_id')}
               />
             )}
@@ -305,12 +296,13 @@ export function JobForm({
             name="dest_port_id"
             control={control}
             render={({ field }) => (
-              <SearchableSelect
+              <MasterPlaceSelect
                 name="dest_port_id"
-                label="Destination port"
+                label={useAirports ? 'Destination airport' : 'Destination port'}
                 value={field.value ?? ''}
-                options={destPortOpts}
                 onChange={field.onChange}
+                jobType={selectedJobType}
+                excludeId={originPortId}
                 error={fieldError('dest_port_id')}
               />
             )}
