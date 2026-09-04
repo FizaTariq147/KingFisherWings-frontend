@@ -22,14 +22,40 @@ function portLabel(record: Record<string, unknown>, side: 'origin' | 'dest'): st
     asRecord(record[`${side}_port`]) ||
     asRecord(record[side]) ||
     asRecord(record[side === 'dest' ? 'destination' : 'origin']);
-  return (
-    pickString(
-      record[`${side}_name`],
-      record[side === 'dest' ? 'destination' : 'origin'],
-      nested?.name,
-      nested?.code,
-    ) || ''
+  const code = pickString(
+    record[`${side}_port_code`],
+    record[side === 'dest' ? 'destPortCode' : 'originPortCode'],
+    nested?.un_locode,
+    nested?.code,
+    nested?.port_code,
   );
+  const name = pickString(
+    record[`${side}_port_name`],
+    record[side === 'dest' ? 'destPortName' : 'originPortName'],
+    record[`${side}_name`],
+    record[side === 'dest' ? 'destination' : 'origin'],
+    nested?.name,
+    nested?.city,
+  );
+  if (code && name && code !== name) return `${code} — ${name}`;
+  if (code || name) return code || name;
+
+  // Portal enquiries may only keep the typed route in special_requirements.
+  const notes = pickString(record.special_requirements, record.specialRequirements);
+  if (notes) {
+    const customerRoute = notes.match(
+      /Customer route:\s*([^\n→\-]+?)\s*(?:→|->|–|-)\s*([^\n]+)/i,
+    );
+    if (customerRoute) {
+      const value = (side === 'origin' ? customerRoute[1] : customerRoute[2])?.trim();
+      if (value && value !== '—') return value;
+    }
+    const key = side === 'origin' ? 'Origin port' : 'Destination port';
+    const match = notes.match(new RegExp(`${key}:\\s*([^\\n;]+)`, 'i'));
+    if (match?.[1]?.trim()) return match[1].trim();
+  }
+
+  return '';
 }
 
 const OPEN_QUOTE_STATUSES = new Set([

@@ -60,18 +60,50 @@ export default function ArStatementPage() {
             Customer statement
           </h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-            {data?.party_name || partyId}
+            {data?.party_name || partyId} — invoices, receipts, and running balance
+            (GET /gl/ar/statement/:partyId).
           </p>
         </div>
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={() => refetch()}
-          disabled={isFetching || !filtersValid}
-        >
-          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() =>
+              navigate(
+                `/gl/ar/open-items?party_id=${encodeURIComponent(partyId)}${
+                  companyId.trim() && isUuid(companyId.trim())
+                    ? `&company_id=${encodeURIComponent(companyId.trim())}`
+                    : ''
+                }`,
+              )
+            }
+          >
+            Open items
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => navigate(`/gl/ar/aging?party_id=${encodeURIComponent(partyId)}`)}
+          >
+            Aging
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => window.print()}
+          >
+            Print
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => refetch()}
+            disabled={isFetching || !filtersValid}
+          >
+            <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       <Card className="p-4 space-y-4">

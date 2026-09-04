@@ -155,11 +155,20 @@ export function PartyTransactionSummarySection({
           </Button>
         </div>
       ) : data && !data.available ? (
-        <Card className="p-4">
+        <Card className="p-4 space-y-2">
           <p className="text-sm text-[var(--color-neutral-500)]">
-            Transaction summary is not available yet (GET /parties/:id/transaction-summary). The
-            existing customer statement at /gl/ar/statement/{party.id} still works.
+            Transaction summary APIs are not on the live OpenAPI yet
+            (<code className="text-xs">GET/POST /parties/:id/transaction-summary</code>). Use the
+            customer AR statement instead for invoices, receipts, and balance history.
           </p>
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() => navigate(`/gl/ar/statement/${party.id}`)}
+          >
+            Open AR statement
+          </Button>
         </Card>
       ) : data ? (
         <>
@@ -188,8 +197,9 @@ export function PartyTransactionSummarySection({
         </CardHeader>
         <div className="p-4 pt-0 space-y-3">
           <p className="text-xs text-[var(--color-neutral-400)]">
-            POST /parties/:id/transaction-summary/send — emails optional (defaults can come from the
-            party record).
+            Send uses <code>POST /parties/:id/transaction-summary/send</code> when the backend
+            ships it. Until then, open AR statement (view/print) or ask the customer to download
+            from portal <code>/portal/credit/statement.pdf</code>.
           </p>
           <label className="flex flex-col gap-1">
             <span className="text-xs font-medium text-[var(--color-neutral-600)]">Emails</span>

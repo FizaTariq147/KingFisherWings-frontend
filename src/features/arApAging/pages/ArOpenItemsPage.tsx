@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -22,9 +22,14 @@ function formatMoney(value: number | undefined, currency?: string) {
 
 export function GlOpenItemsPage({ kind }: GlOpenItemsPageProps) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
-  const [partyId, setPartyId] = useState('');
-  const companyId = user?.companyId?.trim() || '';
+  const [partyId, setPartyId] = useState(() => searchParams.get('party_id') ?? '');
+  const companyFromQuery = searchParams.get('company_id')?.trim() || '';
+  const companyId =
+    (companyFromQuery && isUuid(companyFromQuery) ? companyFromQuery : '') ||
+    user?.companyId?.trim() ||
+    '';
 
   const params = useMemo(
     () => ({

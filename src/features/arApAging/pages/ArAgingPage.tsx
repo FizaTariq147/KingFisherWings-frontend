@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -16,9 +16,10 @@ function todayIsoDate() {
 
 export default function ArAgingPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [asOf, setAsOf] = useState(todayIsoDate);
-  const [partyId, setPartyId] = useState('');
-  const [companyId, setCompanyId] = useState('');
+  const [partyId, setPartyId] = useState(() => searchParams.get('party_id') ?? '');
+  const [companyId, setCompanyId] = useState(() => searchParams.get('company_id') ?? '');
 
   const filtersValid =
     (!partyId.trim() || isUuid(partyId.trim())) &&

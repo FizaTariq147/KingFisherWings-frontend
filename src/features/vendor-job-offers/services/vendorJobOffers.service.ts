@@ -26,6 +26,8 @@ import {
   normalizeVendorPortalJobDetail,
   normalizeVendorPortalJobList,
 } from '../utils/normalizeVendorJobOffers';
+import { fulfillApprovedVendorOffer } from '../utils/fulfillApprovedVendorOffer';
+import { coerceVendorOfferStatus } from '../utils/vendorOfferStatus';
 
 function isNotFound(err: unknown): boolean {
   if (axios.isAxiosError(err)) {
@@ -90,7 +92,29 @@ export const staffVendorJobOffersService = {
     for (const path of paths) {
       try {
         const res = await axiosInstance.get(path);
-        return normalizeVendorJobOfferList(res.data);
+        const offers = normalizeVendorJobOfferList(res.data);
+        // If vendor already accepted (APPROVED) and no bill exists yet, best-effort create PI.
+        return Promise.all(
+          offers.map(async (offer) => {
+            if (
+              coerceVendorOfferStatus(offer.status) !== 'APPROVED' ||
+              offer.purchaseInvoiceId ||
+              offer.invoiceId
+            ) {
+              return offer;
+            }
+            const attemptKey = `kfw.vendorOfferPi.${offer.id}`;
+            try {
+              if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(attemptKey)) {
+                return offer;
+              }
+              if (typeof sessionStorage !== 'undefined') sessionStorage.setItem(attemptKey, '1');
+            } catch {
+              /* ignore storage errors */
+            }
+            return (await fulfillApprovedVendorOffer(offer)) ?? offer;
+          }),
+        );
       } catch (err) {
         lastErr = err;
         if (!isNotFound(err)) throw err;
@@ -133,7 +157,11 @@ export const staffVendorJobOffersService = {
         ...(dto.message?.trim() ? { message: dto.message.trim() } : {}),
         ...(dto.comments?.trim() ? { comments: dto.comments.trim() } : {}),
       });
-      return normalizeVendorJobOffer(res.data);
+      const offer = normalizeVendorJobOffer(res.data);
+      if (offer && coerceVendorOfferStatus(offer.status) === 'APPROVED') {
+        return fulfillApprovedVendorOffer(offer);
+      }
+      return offer;
     } catch (err) {
       if (isNotFound(err)) throw friendlyUnavailable('Accept vendor counter');
       throw err;
@@ -166,12 +194,14 @@ export const staffVendorJobOffersService = {
     };
     try {
       const res = await axiosInstance.post(VENDOR_JOB_OFFERS_API.approveOffer(offerId), body);
-      return normalizeVendorJobOffer(res.data);
+      const offer = normalizeVendorJobOffer(res.data);
+      return fulfillApprovedVendorOffer(offer);
     } catch (err) {
       if (isNotFound(err)) {
         try {
           const res = await axiosInstance.post(VENDOR_JOB_OFFERS_API.approveOfferAlt(offerId), body);
-          return normalizeVendorJobOffer(res.data);
+          const offer = normalizeVendorJobOffer(res.data);
+          return fulfillApprovedVendorOffer(offer);
         } catch (legacyErr) {
           if (isNotFound(legacyErr)) throw friendlyUnavailable('Approve vendor offer');
           throw legacyErr;

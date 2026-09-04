@@ -1,11 +1,16 @@
 import { useMemo } from 'react';
-import { portLabelFromRecord, resolvePortLabel } from '@/features/customers/utils/customerMasterLookup';
+import { portLabelFromRecord } from '@/features/customers/utils/customerMasterLookup';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterDetail, useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties, useParty } from '@/features/parties/hooks/useParties';
 import { isUuid } from '@/lib/isUuid';
 import type { Quotation } from '../types/quotation.types';
-import { buildPortLabelMap, quotationCustomerLabel } from '../utils/quotationDisplay';
+import {
+  buildPortLabelMap,
+  formatQuotationPortSide,
+  parseCustomerRouteFromNotes,
+  quotationCustomerLabel,
+} from '../utils/quotationDisplay';
 
 function partyDisplayLabel(party?: { code?: string; name?: string; id?: string } | null): string {
   if (!party) return '—';
@@ -22,16 +27,17 @@ function portDisplayLabel(
   const name = which === 'origin' ? q.origin_port_name : q.dest_port_name;
   const id = which === 'origin' ? q.origin_port_id : q.dest_port_id;
 
-  const inline = [code, name].filter(Boolean).join(' — ');
-  if (inline && !isUuid(inline.split(' — ')[0] ?? '')) return inline;
-
-  const fromMap = resolvePortLabel(code, id, portMap);
-  if (fromMap !== '—') return fromMap;
+  const fromFields = formatQuotationPortSide(code, name, id, portMap);
+  if (fromFields) return fromFields;
 
   if (fetched) {
     const label = portLabelFromRecord(fetched);
     if (label) return label;
   }
+
+  const fromNotes = parseCustomerRouteFromNotes(q.special_requirements);
+  const noteSide = which === 'origin' ? fromNotes.origin : fromNotes.dest;
+  if (noteSide) return noteSide;
 
   return '—';
 }
