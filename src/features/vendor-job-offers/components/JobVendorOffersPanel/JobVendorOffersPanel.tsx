@@ -362,6 +362,7 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
 
   const [vendorPartyId, setVendorPartyId] = useState('');
   const [passNotes, setPassNotes] = useState('');
+  const [proposedTotal, setProposedTotal] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -372,18 +373,32 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
       setActionError('Select a vendor party.');
       return;
     }
+    const trimmedPrice = proposedTotal.trim();
+    let price: number | undefined;
+    if (trimmedPrice) {
+      price = Number(trimmedPrice);
+      if (!Number.isFinite(price) || price < 0) {
+        setActionError('Enter a valid vendor price (0 or greater), or leave it blank.');
+        return;
+      }
+    }
     setActionError(null);
     setMsg(null);
     void passToVendor
       .mutateAsync({
         vendor_party_id: vendorPartyId,
-        // Notes only used on legacy pass-to-vendor fallback.
         notes: passNotes.trim() || undefined,
         currency_code: currencyCode?.trim() || undefined,
+        proposed_total: price,
       })
       .then(() => {
-        setMsg('Job sent to vendor (customer revenue/cost not shared). Vendor submits cost prices next.');
+        setMsg(
+          price != null
+            ? `Job sent to vendor with cost offer ${price.toLocaleString()}${currencyCode ? ` ${currencyCode}` : ''}. Vendor sees this price on the job.`
+            : 'Job sent to vendor. Vendor can submit their cost price next.',
+        );
         setPassNotes('');
+        setProposedTotal('');
         void refetch();
       })
       .catch((err) => setActionError(getServerErrorMessage(err)));
@@ -404,9 +419,10 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
         </CardHeader>
         <div className="px-4 pb-4 space-y-3">
           <p className="text-xs text-[var(--color-neutral-500)]">
-            Sends via <code className="text-[10px]">POST /jobs/:id/send-to-vendor</code> with{' '}
-            <code className="text-[10px]">vendor_party_id</code> only. Customer revenue and cost are
-            never shared. Vendor prices the job; you approve or disapprove their offer.
+            Sends via <code className="text-[10px]">POST /jobs/:id/send-to-vendor</code>. Optional{' '}
+            <code className="text-[10px]">proposed_total</code> sets the tenant cost offer (
+            <code className="text-[10px]">cost_total</code>) shown on the vendor job. Customer
+            sell/revenue prices are never shared.
           </p>
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[var(--color-neutral-600)]">Vendor party</span>
@@ -426,7 +442,25 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
           </label>
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[var(--color-neutral-600)]">
-              Notes / instructions (optional, legacy backends only)
+              Vendor price / cost offer{currencyCode ? ` (${currencyCode})` : ''}
+            </span>
+            <input
+              type="number"
+              min={0}
+              step="any"
+              className="w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--color-primary-500)]"
+              value={proposedTotal}
+              onChange={(e) => setProposedTotal(e.target.value)}
+              disabled={busy}
+              placeholder="e.g. 1250"
+            />
+            <span className="text-[11px] text-[var(--color-neutral-500)]">
+              Shown to the vendor as the tenant cost offer on their job description.
+            </span>
+          </label>
+          <label className="block space-y-1">
+            <span className="text-xs font-medium text-[var(--color-neutral-600)]">
+              Notes / instructions (optional)
             </span>
             <textarea
               className="w-full min-h-[72px] rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--color-primary-500)]"

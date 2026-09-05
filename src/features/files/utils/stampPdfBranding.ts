@@ -80,7 +80,9 @@ function drawHeader(
       ? 'Letter No:'
       : docType === 'INVOICE'
         ? 'Invoice No:'
-        : 'Quote No:';
+        : docType === 'ACCOUNT STATEMENT' || docType === 'STATEMENT'
+          ? 'Statement:'
+          : 'Quote No:';
   const documentLabel = `${referenceLabel} ${branding.documentNumber || branding.title}`;
 
   page.drawRectangle({ x: 0, y: baseY, width, height: headerPt, color: rgb(1, 1, 1) });
@@ -276,7 +278,7 @@ export async function stampPdfWithBranding(
     }
 
     const stamped = await outPdf.save();
-    return new Blob([Uint8Array.from(stamped)], { type: 'application/pdf' });
+    return new Blob([stamped], { type: 'application/pdf' });
   } catch {
     return input;
   }

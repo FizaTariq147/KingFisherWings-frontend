@@ -2,7 +2,8 @@ import { JOB_API } from '@/features/jobs/api/job.api';
 
 /**
  * Backend vendor pricing flow (docs):
- * Staff POST /jobs/:id/send-to-vendor → vendor GET /vendor/quotes → POST …/price
+ * Staff POST /jobs/:id/send-to-vendor { vendor_party_id, proposed_total? } →
+ * vendor GET /vendor/quotes (sees cost_total) → POST …/price / accept / counter
  * Staff POST /jobs/vendor-quotes/:quoteId/approve|disapprove
  *
  * Keep job-offers / pass-to-vendor as fallbacks for older builds.

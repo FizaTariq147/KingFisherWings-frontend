@@ -1,4 +1,5 @@
 import { isPdfBlob, openPdfBlobInNewTab, resolvePdfBranding, type PdfBrandingOptions } from './pdfBranding';
+import { blobLooksLikePdf } from './blobLooksLikePdf';
 import { ensureBrandedPdfBlob } from './stampPdfBranding';
 import { resolvePdfDownloadFilename } from './pdfFilename';
 
@@ -31,11 +32,13 @@ export async function triggerBrandedPdfDownload(
     documentNumber: options?.branding?.documentNumber,
     title: options?.branding?.title || options?.filename,
   });
+  if (!(await blobLooksLikePdf(blob))) {
+    throw new Error('Download is not a valid PDF file.');
+  }
   const branding = resolvePdfBranding(options?.branding);
-  const output = isPdfBlob(blob, filename)
-    ? await ensureBrandedPdfBlob(blob, branding)
-    : blob;
-  triggerBlobDownload(output, downloadName);
+  const output = await ensureBrandedPdfBlob(blob, branding);
+  const safe = (await blobLooksLikePdf(output)) ? output : blob;
+  triggerBlobDownload(safe, downloadName);
 }
 
 export function openBlankPreviewTab(_options?: BlobOpenOptions): Window {
@@ -63,11 +66,15 @@ export async function openBlobInNewTab(
   options?: BlobOpenOptions,
 ): Promise<void> {
   const filename = options?.filename;
-  if (isPdfBlob(blob, filename)) {
+  if (await blobLooksLikePdf(blob)) {
     const branding = resolvePdfBranding(options?.branding);
     const blobToOpen = await ensureBrandedPdfBlob(blob, branding);
     openPdfBlobInNewTab(blobToOpen, targetWindow, filename);
     return;
+  }
+
+  if (isPdfBlob(blob, filename)) {
+    throw new Error('Download is not a valid PDF file.');
   }
 
   const objectUrl = URL.createObjectURL(blob);

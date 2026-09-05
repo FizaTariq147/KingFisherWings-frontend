@@ -173,3 +173,17 @@ export function letterPdfBranding(
     documentDate,
   };
 }
+
+export function statementPdfBranding(
+  reference: string,
+  documentDate?: string,
+  options?: Pick<PdfBrandingOptions, 'companyName'>,
+): PdfBrandingOptions {
+  return {
+    documentType: 'ACCOUNT STATEMENT',
+    documentNumber: reference,
+    title: reference,
+    documentDate,
+    companyName: options?.companyName,
+  };
+}
