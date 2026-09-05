@@ -10,7 +10,7 @@ import {
   usePortalAutoAnimate,
 } from '@/features/portal-auth/components/portal-ui';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
-import { useVendorDisputes } from '@/features/vendor-disputes/hooks/useVendorDisputes';
+import { useVendorNotificationUnreadCount } from '@/features/vendor-notifications/hooks/useVendorNotifications';
 import { VendorSidebar } from '../components/VendorSidebar';
 import { VendorTopbar } from '../components/VendorTopbar';
 import { useVendorBrand } from '../hooks/useVendorBrand';
@@ -27,8 +27,8 @@ export function VendorShell() {
   const { companyName, portalLabel } = useVendorBrand();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const disputes = useVendorDisputes({ page: 1, limit: 1 });
-  const notificationCount = disputes.data?.meta.total ?? disputes.data?.items.length ?? 0;
+  const unread = useVendorNotificationUnreadCount();
+  const notificationCount = unread.data ?? 0;
 
   const handleMenuClick = () => {
     if (window.matchMedia('(max-width: 1023px)').matches) {

@@ -139,6 +139,18 @@ export default function VendorJobDetailPage() {
           [
             job.jobType?.replaceAll('_', ' '),
             [job.origin, job.destination].filter(Boolean).join(' → ') || null,
+            (
+              negotiationPricing?.tenantProposedTotal ??
+              pricing?.costTotal ??
+              job.costTotal
+            ) != null
+              ? `Offer ${formatVendorMoney(
+                  negotiationPricing?.tenantProposedTotal ??
+                    pricing?.costTotal ??
+                    job.costTotal,
+                  displayCurrency,
+                )}`
+              : null,
           ]
             .filter(Boolean)
             .join(' · ') || 'Job pricing'
@@ -151,7 +163,34 @@ export default function VendorJobDetailPage() {
       />
 
       <PortalPanel padded className="space-y-3 text-sm">
-        <p className="text-sm text-[var(--color-neutral-700)]">
+        {(
+          negotiationPricing?.tenantProposedTotal ??
+          pricing?.costTotal ??
+          job.costTotal
+        ) != null ? (
+          <div className="rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2.5">
+            <p className="text-xs font-medium text-[var(--color-neutral-600)]">
+              Forwarder cost offer
+            </p>
+            <p className="mt-0.5 text-base font-semibold tabular-nums text-[var(--color-neutral-900)]">
+              {formatVendorMoney(
+                negotiationPricing?.tenantProposedTotal ??
+                  pricing?.costTotal ??
+                  job.costTotal,
+                displayCurrency,
+              )}
+            </p>
+            <p className="mt-1 text-[11px] text-[var(--color-neutral-500)]">
+              Price set by the forwarder when this job was sent to you. Accept, reject, or counter
+              below.
+            </p>
+          </div>
+        ) : (
+          <p className="text-sm text-[var(--color-neutral-700)]">
+            No forwarder cost offer yet — you can still submit your price when ready.
+          </p>
+        )}
+        <p className="text-xs text-[var(--color-neutral-500)]">
           Cost pricing only — customer revenue / sell prices are not available on this portal.
         </p>
         {job.notes ? (

@@ -62,35 +62,37 @@ export const staffVendorJobOffersService = {
   async passToVendor(jobId: string, dto: PassJobToVendorDto): Promise<VendorJobOffer | null> {
     try {
       const vendorId = dto.vendor_party_id.trim();
-      // Docs: POST /jobs/:id/send-to-vendor { vendor_party_id } — no customer revenue/cost.
-      const preferredBody = { vendor_party_id: vendorId };
+      const notes = dto.notes?.trim() || dto.message?.trim();
+      const currency = dto.currency_code?.trim().toUpperCase();
+      // Swagger SendJobToVendorDto: vendor_party_id + optional proposed_total / lines / notes.
+      // proposed_total seeds cost_total (tenant cost offer shown to the vendor).
+      const body: Record<string, unknown> = {
+        vendor_party_id: vendorId,
+        vendor_id: vendorId,
+        party_id: vendorId,
+        job_id: jobId,
+        ...(dto.proposed_total != null && Number.isFinite(dto.proposed_total)
+          ? { proposed_total: dto.proposed_total }
+          : {}),
+        ...(mapLines(dto.lines) ? { lines: mapLines(dto.lines) } : {}),
+        ...(notes ? { notes, staff_notes: notes, message: notes } : {}),
+        ...(currency ? { currency_code: currency } : {}),
+      };
+
       try {
         const res = await axiosInstance.post(
           VENDOR_JOB_OFFERS_API.sendToVendor(jobId),
-          preferredBody,
+          body,
         );
         return normalizeVendorJobOffer(res.data);
       } catch (err) {
         if (!isNotFound(err)) throw err;
       }
 
-      // Legacy pass-to-vendor may accept optional seed cost / notes.
-      const notes = dto.notes?.trim() || dto.message?.trim();
-      const currency = dto.currency_code?.trim().toUpperCase();
-      const legacyBody = {
-        vendor_party_id: vendorId,
-        vendor_id: vendorId,
-        party_id: vendorId,
-        job_id: jobId,
-        ...(dto.proposed_total != null ? { proposed_total: dto.proposed_total } : {}),
-        ...(mapLines(dto.lines) ? { lines: mapLines(dto.lines) } : {}),
-        ...(notes ? { notes, staff_notes: notes, message: notes } : {}),
-        ...(currency ? { currency_code: currency } : {}),
-      };
       try {
         const res = await axiosInstance.post(
           VENDOR_JOB_OFFERS_API.passToVendor(jobId),
-          legacyBody,
+          body,
         );
         return normalizeVendorJobOffer(res.data);
       } catch (err) {

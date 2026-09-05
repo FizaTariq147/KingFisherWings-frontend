@@ -24,5 +24,11 @@ export interface VendorStatementResult {
   asOf?: string;
   openingBalance?: number;
   closingBalance?: number;
+  /** Present when API returns summary-only payload (no ledger lines). */
+  invoiceCount?: number;
+  advancesUnallocated?: number;
+  truncated?: boolean;
+  /** True when lines were built from invoices/payments/credit notes. */
+  composedFromLedgers?: boolean;
   lines: VendorStatementLine[];
 }

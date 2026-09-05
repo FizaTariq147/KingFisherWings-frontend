@@ -12,6 +12,7 @@ import {
   PortalPageHeader,
   PortalPanel,
 } from '@/features/portal-auth/components/portal-ui';
+import { formatVendorMoney } from '@/features/vendor-shared/formatMoney';
 import { VendorQueryError } from '@/features/vendor-shared/VendorQueryError';
 import { useVendorPortalJobs } from '../hooks/useVendorJobOffers';
 import {
@@ -69,6 +70,9 @@ export default function VendorJobsPage() {
                       job.jobType?.replaceAll('_', ' '),
                       [job.origin, job.destination].filter(Boolean).join(' → ') || null,
                       job.etd ? `ETD ${job.etd}` : null,
+                      job.costTotal != null
+                        ? `Offer ${formatVendorMoney(job.costTotal, job.currencyCode)}`
+                        : null,
                     ]
                       .filter(Boolean)
                       .join(' · ')}

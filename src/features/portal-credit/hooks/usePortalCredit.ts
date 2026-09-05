@@ -1,13 +1,16 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { usePortalQueryScope } from '@/features/portal-shared/usePortalQueryScope';
+import { usePortalBrand } from '@/features/portal-auth/hooks/usePortalBrand';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
+import { usePortalQueryScope } from '@/features/portal-shared/usePortalQueryScope';
 import { portalCreditService } from '../services/portalCredit.service';
 
 export const portalCreditKeys = {
   all: (scope: string) => ['portal', scope, 'credit'] as const,
   summary: (scope: string) => [...portalCreditKeys.all(scope), 'summary'] as const,
-  aging: (scope: string, asOf?: string) => [...portalCreditKeys.all(scope), 'aging', asOf ?? ''] as const,
-  statement: (scope: string, asOf?: string) => [...portalCreditKeys.all(scope), 'statement', asOf ?? ''] as const,
+  aging: (scope: string, asOf?: string) =>
+    [...portalCreditKeys.all(scope), 'aging', asOf ?? ''] as const,
+  statement: (scope: string, asOf?: string) =>
+    [...portalCreditKeys.all(scope), 'statement', asOf ?? ''] as const,
 };
 
 export function usePortalCreditSummary() {
@@ -44,7 +47,11 @@ export function usePortalCreditStatement(asOf?: string) {
 }
 
 export function useDownloadPortalStatementPdf() {
+  const { companyName } = usePortalBrand();
+  const user = usePortalAuthStore((s) => s.user);
+  const partyName = user?.party?.name?.trim() || user?.fullName?.trim() || undefined;
   return useMutation({
-    mutationFn: (asOf?: string) => portalCreditService.downloadStatementPdf(asOf),
+    mutationFn: (asOf?: string) =>
+      portalCreditService.downloadStatementPdf(asOf, { companyName, partyName }),
   });
 }

@@ -61,7 +61,7 @@ export default function PortalCreditPage() {
                 });
               }}
             >
-              <Download size={14} /> {downloadPdf.isPending ? 'Downloading…' : 'Statement PDF'}
+              <Download size={14} /> {downloadPdf.isPending ? 'Preparing PDF…' : 'Statement PDF'}
             </Button>
             <Button type="button" size="sm" onClick={() => navigate('/portal/credit-requests')}>
               Limit requests

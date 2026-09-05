@@ -33,11 +33,29 @@ export function normalizeAging(raw: unknown): VendorAgingResult {
       if (n !== undefined) buckets.push({ label, amount: n });
     }
   }
+  const total =
+    pickNumber(d.total, d.total_outstanding, d.outstanding, d.open_balance, d.openBalance) ??
+    undefined;
   return {
     asOf: pickString(d.as_of, d.asOf) || undefined,
-    total: pickNumber(d.total, d.total_outstanding, d.outstanding),
+    total,
     buckets,
   };
+}
+
+/** True when the API returned a balance summary without ledger lines. */
+export function isVendorStatementSummaryOnly(raw: unknown): boolean {
+  const d = asRecord(unwrapData(raw)) ?? asRecord(raw);
+  if (!d) return false;
+  const hasLines =
+    (Array.isArray(d.lines) && d.lines.length > 0) ||
+    (Array.isArray(d.transactions) && d.transactions.length > 0) ||
+    (Array.isArray(d.items) && d.items.length > 0);
+  if (hasLines) return false;
+  return (
+    pickNumber(d.open_balance, d.openBalance, d.invoice_count, d.invoiceCount) != null ||
+    typeof d.truncated === 'boolean'
+  );
 }
 
 export function normalizeStatement(raw: unknown): VendorStatementResult {
@@ -65,7 +83,16 @@ export function normalizeStatement(raw: unknown): VendorStatementResult {
   return {
     asOf: pickString(d.as_of, d.asOf) || undefined,
     openingBalance: pickNumber(d.opening_balance, d.openingBalance),
-    closingBalance: pickNumber(d.closing_balance, d.closingBalance),
+    closingBalance: pickNumber(
+      d.closing_balance,
+      d.closingBalance,
+      d.open_balance,
+      d.openBalance,
+      d.balance,
+    ),
+    invoiceCount: pickNumber(d.invoice_count, d.invoiceCount),
+    advancesUnallocated: pickNumber(d.advances_unallocated, d.advancesUnallocated),
+    truncated: typeof d.truncated === 'boolean' ? d.truncated : undefined,
     lines,
   };
 }

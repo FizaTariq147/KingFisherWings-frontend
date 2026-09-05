@@ -25,7 +25,14 @@ export function resolvePdfDownloadFilename(filename: string, hint?: FilenameHint
     stripPdfExtension(hint?.documentNumber || '') ||
     stripPdfExtension(hint?.title || '') ||
     stripPdfExtension(filename);
-  const generic = ['quotation', 'invoice', 'document', 'download'].includes(ref.toLowerCase());
+  const generic = [
+    'quotation',
+    'invoice',
+    'document',
+    'download',
+    'statement',
+    'vendor-statement',
+  ].includes(ref.toLowerCase());
   if (ref && !generic) return formatPdfFilename(ref, stripPdfExtension(filename) || 'document');
   return formatPdfFilename(filename, 'document');
 }

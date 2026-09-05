@@ -1,5 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import {
+  Bell,
   Briefcase,
   CalendarClock,
   FileText,
@@ -75,6 +76,7 @@ export const VENDOR_NAV_SECTIONS: VendorNavSection[] = [
     title: 'Support',
     color: '#C4B5FD',
     items: [
+      { label: 'Alerts', to: '/vendor/alerts', Icon: Bell, iconStyle: navStyle('#FF751F') },
       {
         label: 'Payment requests',
         to: '/vendor/payment-requests',

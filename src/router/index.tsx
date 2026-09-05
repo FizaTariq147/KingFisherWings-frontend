@@ -250,6 +250,7 @@ import VendorSchedulePage from '../features/vendor-schedule/pages/VendorSchedule
 import VendorPaymentRequestsPage from '../features/vendor-payment-requests/pages/VendorPaymentRequestsPage'
 import VendorPaymentRequestDetailPage from '../features/vendor-payment-requests/pages/VendorPaymentRequestDetailPage'
 import VendorDisputesPage from '../features/vendor-disputes/pages/VendorDisputesPage'
+import VendorAlertsPage from '../features/vendor-notifications/pages/VendorAlertsPage'
 import VendorTdsPage from '../features/vendor-tds/pages/VendorTdsPage'
 import PublicTrackPage from '../features/public-track/pages/PublicTrackPage'
 import PublicTrackWidgetPage from '../features/public-track/pages/PublicTrackWidgetPage'
@@ -377,6 +378,7 @@ export const router = createBrowserRouter([
           { path: 'payment-requests', element: <VendorPaymentRequestsPage /> },
           { path: 'payment-requests/:id', element: <VendorPaymentRequestDetailPage /> },
           { path: 'disputes', element: <VendorDisputesPage /> },
+          { path: 'alerts', element: <VendorAlertsPage /> },
           { path: 'tds', element: <VendorTdsPage /> },
           { path: 'account', element: <VendorAccountPage /> },
         ],

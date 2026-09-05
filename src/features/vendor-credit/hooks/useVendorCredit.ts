@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useVendorBrand } from '@/features/vendor-auth/hooks/useVendorBrand';
 import { useVendorAuthStore } from '@/features/vendor-auth/store/vendorAuthStore';
 import { useVendorQueryScope } from '@/features/vendor-shared/useVendorQueryScope';
 import { vendorCreditService } from '../services/vendorCredit.service';
@@ -26,7 +27,11 @@ export function useVendorCreditStatement(asOf?: string) {
 }
 
 export function useDownloadVendorStatementPdf() {
+  const { companyName } = useVendorBrand();
+  const user = useVendorAuthStore((s) => s.user);
+  const partyName = user?.party?.name?.trim() || user?.fullName?.trim() || undefined;
   return useMutation({
-    mutationFn: (asOf?: string) => vendorCreditService.downloadStatementPdf(asOf),
+    mutationFn: (asOf?: string) =>
+      vendorCreditService.downloadStatementPdf(asOf, { companyName, partyName }),
   });
 }

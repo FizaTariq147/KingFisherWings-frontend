@@ -21,6 +21,10 @@ export function VendorTopbar({
     event.preventDefault();
     const q = query.trim().toLowerCase();
     if (!q) return;
+    if (q.includes('alert') || q.includes('notif')) {
+      navigate('/vendor/alerts');
+      return;
+    }
     if (q.includes('dispute')) {
       navigate('/vendor/disputes');
       return;
@@ -68,7 +72,7 @@ export function VendorTopbar({
         </Link>
 
         <Link
-          to="/vendor/disputes"
+          to="/vendor/alerts"
           className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center text-[#5B6B7A] hover:text-[#0A2942]"
           aria-label="Notifications"
         >
