@@ -149,11 +149,21 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
           const r = asRecord(line);
           if (!r) return null;
           const id = pickString(r.id) || pickString(r.description) || Math.random().toString(36);
+          const amount = pickNumber(r.amount, r.total, r.line_total, r.lineTotal);
+          const unitPrice = pickNumber(r.unit_price, r.unitPrice);
+          const quantity = pickNumber(r.quantity, r.qty) ?? 1;
           return {
             id,
-            description: pickString(r.description, r.name, r.charge_name) || 'Line',
-            amount: pickNumber(r.amount, r.total, r.line_total),
+            description: pickString(r.description, r.name, r.charge_name, r.charge_code) || 'Line',
+            amount: amount ?? (unitPrice != null ? unitPrice * quantity : undefined),
             currencyCode: pickString(r.currency_code, r.currencyCode) || undefined,
+            chargeCode: pickString(r.charge_code, r.chargeCode, r.code) || undefined,
+            unit: pickString(r.unit) || undefined,
+            quantity,
+            unitPrice: unitPrice ?? undefined,
+            taxPercent: pickNumber(r.tax_percent, r.taxPercent, r.tax_rate, r.taxRate),
+            taxAmount: pickNumber(r.tax_amount, r.taxAmount),
+            exchangeRate: pickNumber(r.exchange_rate, r.exchangeRate),
           };
         })
         .filter((l): l is NonNullable<typeof l> => Boolean(l))

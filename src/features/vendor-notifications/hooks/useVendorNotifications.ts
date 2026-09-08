@@ -11,6 +11,19 @@ export const vendorNotificationKeys = {
   unread: (scope: string) => [...vendorNotificationKeys.all(scope), 'unread'] as const,
 };
 
+export function useVendorNotificationUnreadCount() {
+  const accessToken = useVendorAuthStore((s) => s.accessToken);
+  const scope = useVendorQueryScope();
+  return useQuery({
+    queryKey: vendorNotificationKeys.unread(scope),
+    queryFn: () => vendorNotificationsService.unreadCount(),
+    enabled: Boolean(accessToken) && scope !== 'anon',
+    staleTime: 15_000,
+    refetchInterval: 45_000,
+    refetchOnWindowFocus: true,
+  });
+}
+
 export function useVendorNotifications(params: VendorNotificationListParams) {
   const accessToken = useVendorAuthStore((s) => s.accessToken);
   const scope = useVendorQueryScope();
@@ -20,18 +33,7 @@ export function useVendorNotifications(params: VendorNotificationListParams) {
     enabled: Boolean(accessToken) && scope !== 'anon',
     staleTime: 0,
     placeholderData: keepPreviousData,
-  });
-}
-
-export function useVendorNotificationUnreadCount() {
-  const accessToken = useVendorAuthStore((s) => s.accessToken);
-  const scope = useVendorQueryScope();
-  return useQuery({
-    queryKey: vendorNotificationKeys.unread(scope),
-    queryFn: () => vendorNotificationsService.unreadCount(),
-    enabled: Boolean(accessToken) && scope !== 'anon',
-    staleTime: 0,
-    refetchInterval: 60_000,
+    refetchOnWindowFocus: true,
   });
 }
 

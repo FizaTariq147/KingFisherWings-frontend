@@ -54,8 +54,19 @@ function drawRightText(
   font: PDFFont,
   color: RGB,
 ): void {
+  if (!text) return;
   const w = font.widthOfTextAtSize(text, size);
   page.drawText(text, { x: xRight - w, y, size, font, color });
+}
+
+function fitText(font: PDFFont, text: string, size: number, maxWidth: number): string {
+  if (!text || maxWidth <= 0) return '';
+  if (font.widthOfTextAtSize(text, size) <= maxWidth) return text;
+  let out = text;
+  while (out.length > 1 && font.widthOfTextAtSize(`${out}…`, size) > maxWidth) {
+    out = out.slice(0, -1);
+  }
+  return out ? `${out}…` : '';
 }
 
 function drawHeader(
@@ -96,8 +107,10 @@ function drawHeader(
     page.drawImage(logo.image, { x: logoX, y: logoY, width: logoW, height: logoH });
 
     const companyY = logoY - 14;
-    const companyW = titleFont.widthOfTextAtSize(branding.companyName, 10);
-    page.drawText(branding.companyName, {
+    const maxCenterW = width - MARGIN_X * 2;
+    const companyText = fitText(titleFont, branding.companyName, 10, maxCenterW);
+    const companyW = titleFont.widthOfTextAtSize(companyText, 10);
+    page.drawText(companyText, {
       x: (width - companyW) / 2,
       y: companyY,
       size: 10,
@@ -105,8 +118,9 @@ function drawHeader(
       color: accent,
     });
 
-    const subW = bodyFont.widthOfTextAtSize(branding.subtitle, 7.5);
-    page.drawText(branding.subtitle, {
+    const subtitleText = fitText(bodyFont, branding.subtitle, 7.5, maxCenterW);
+    const subW = bodyFont.widthOfTextAtSize(subtitleText, 7.5);
+    page.drawText(subtitleText, {
       x: (width - subW) / 2,
       y: companyY - 11,
       size: 7.5,
@@ -122,10 +136,28 @@ function drawHeader(
     });
 
     const docTypeLine = docType;
+    const docTypeW = titleFont.widthOfTextAtSize(docTypeLine, 8.5);
     page.drawText(docTypeLine, { x: MARGIN_X, y: baseY + 14, size: 8.5, font: titleFont, color: accent });
-    drawRightText(page, documentLabel, width - MARGIN_X, baseY + 14, 8.5, bodyFont, BODY);
+    const rightMax = Math.max(40, width - MARGIN_X - (MARGIN_X + docTypeW + 12));
+    drawRightText(
+      page,
+      fitText(bodyFont, documentLabel, 8.5, rightMax),
+      width - MARGIN_X,
+      baseY + 14,
+      8.5,
+      bodyFont,
+      BODY,
+    );
     if (branding.documentDate) {
-      drawRightText(page, branding.documentDate, width - MARGIN_X, baseY + 4, 7.5, bodyFont, MUTED);
+      drawRightText(
+        page,
+        fitText(bodyFont, branding.documentDate, 7.5, rightMax),
+        width - MARGIN_X,
+        baseY + 4,
+        7.5,
+        bodyFont,
+        MUTED,
+      );
     }
     return;
   }
@@ -135,15 +167,20 @@ function drawHeader(
   const logoY = baseY + (headerPt - smallH) / 2;
   page.drawImage(logo.image, { x: MARGIN_X, y: logoY, width: smallW, height: smallH });
 
-  page.drawText(branding.companyName, {
-    x: MARGIN_X + smallW + 8,
-    y: baseY + headerPt / 2 - 4,
+  const leftX = MARGIN_X + smallW + 8;
+  const midY = baseY + headerPt / 2 - 4;
+  const rightLabel = fitText(bodyFont, documentLabel, 8, Math.max(40, (width - MARGIN_X * 2) * 0.42));
+  const rightW = bodyFont.widthOfTextAtSize(rightLabel, 8);
+  const companyMax = Math.max(40, width - MARGIN_X - rightW - 16 - leftX);
+  page.drawText(fitText(titleFont, branding.companyName, 8.5, companyMax), {
+    x: leftX,
+    y: midY,
     size: 8.5,
     font: titleFont,
     color: accent,
   });
 
-  drawRightText(page, documentLabel, width - MARGIN_X, baseY + headerPt / 2 - 4, 8, bodyFont, MUTED);
+  drawRightText(page, rightLabel, width - MARGIN_X, midY, 8, bodyFont, MUTED);
 }
 
 function drawFooter(
@@ -170,7 +207,11 @@ function drawFooter(
     color: RULE,
   });
 
-  page.drawText(branding.companyName, {
+  const pageLabel = `Page ${pageIndex + 1} of ${pageCount}`;
+  const pageLabelW = bodyFont.widthOfTextAtSize(pageLabel, 7.5);
+  const sideMax = Math.max(48, (width - MARGIN_X * 2 - pageLabelW) / 2 - 8);
+  const companyText = fitText(titleFont, branding.companyName, 7.5, sideMax);
+  page.drawText(companyText, {
     x: MARGIN_X,
     y: FOOTER_BAND_PT - 22,
     size: 7.5,
@@ -178,10 +219,10 @@ function drawFooter(
     color: accent,
   });
 
-  const pageLabel = `Page ${pageIndex + 1} of ${pageCount}`;
   drawRightText(page, pageLabel, width - MARGIN_X, FOOTER_BAND_PT - 22, 7.5, bodyFont, MUTED);
 
-  const quoteLabel = branding.documentNumber || branding.title;
+  const quoteRaw = branding.documentNumber || branding.title;
+  const quoteLabel = fitText(bodyFont, quoteRaw, 7.5, Math.max(48, width * 0.34));
   const quoteW = bodyFont.widthOfTextAtSize(quoteLabel, 7.5);
   page.drawText(quoteLabel, {
     x: (width - quoteW) / 2,
@@ -191,8 +232,9 @@ function drawFooter(
     color: BODY,
   });
 
-  const lineW = bodyFont.widthOfTextAtSize(branding.footerLine, 6.5);
-  page.drawText(branding.footerLine, {
+  const footerLine = fitText(bodyFont, branding.footerLine, 6.5, width - MARGIN_X * 2);
+  const lineW = bodyFont.widthOfTextAtSize(footerLine, 6.5);
+  page.drawText(footerLine, {
     x: Math.max(MARGIN_X, (width - lineW) / 2),
     y: 10,
     size: 6.5,

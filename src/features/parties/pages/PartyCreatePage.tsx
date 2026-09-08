@@ -11,7 +11,7 @@ export default function PartyCreatePage() {
   const [error, setError] = useState<string | null>(null);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-4">
+    <div className="space-y-4">
       <button
         type="button"
         onClick={() => navigate('/parties')}
@@ -19,12 +19,8 @@ export default function PartyCreatePage() {
       >
         ← Back to parties
       </button>
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create party</h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Add any party type (customer, agent, supplier, carrier, etc.). After saving, open the party detail
-          page to create Users Portal or Vendor Portal logins — party type is never changed automatically.
-        </p>
+      <div className="text-center">
+        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create Party</h2>
       </div>
       {error && (
         <div
@@ -41,6 +37,7 @@ export default function PartyCreatePage() {
       )}
       <PartyForm
         mode="create"
+        layout="wizard"
         isSubmitting={createParty.isPending}
         onCancel={() => navigate('/parties')}
         onSubmit={async (values) => {

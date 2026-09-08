@@ -52,11 +52,8 @@ export default function QuotationCreatePage() {
       >
         ← Back to quotations
       </button>
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create quotation</h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Creates a DRAFT quotation. Add charge lines on the detail page after save.
-        </p>
+      <div className="text-center">
+        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create Quotation</h2>
       </div>
       {error && (
         <div
@@ -73,6 +70,7 @@ export default function QuotationCreatePage() {
       )}
       <QuotationForm
         mode="create"
+        layout="wizard"
         defaultValues={{ ...QUOTATION_FORM_DEFAULTS, ...draft }}
         isSubmitting={create.isPending}
         onValuesChange={onValuesChange}

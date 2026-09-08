@@ -2,17 +2,21 @@ import {
   asRecord,
   pickNumber,
   pickString,
-  unwrapData
+  unwrapData,
 } from '@/features/portal-shared/normalize';
 import type {
-  PortalAgingBucket, PortalAgingResult, PortalCreditSummary, PortalStatementLine, PortalStatementResult,
+  PortalAgingBucket,
+  PortalAgingResult,
+  PortalCreditSummary,
+  PortalStatementLine,
+  PortalStatementResult,
 } from '../types/portalCredit.types';
 
 export function normalizeCreditSummary(raw: unknown): PortalCreditSummary {
   const d = asRecord(unwrapData(raw)) ?? asRecord(raw) ?? {};
   return {
     creditLimit: pickNumber(d.credit_limit, d.creditLimit, d.limit),
-    used: pickNumber(d.used, d.used_credit, d.usedCredit, d.outstanding),
+    used: pickNumber(d.used, d.used_credit, d.usedCredit, d.outstanding, d.open_balance),
     available: pickNumber(d.available, d.available_credit, d.availableCredit),
     currencyCode: pickString(d.currency_code, d.currencyCode) || undefined,
     creditStatus: pickString(d.credit_status, d.creditStatus, d.status) || undefined,
@@ -23,9 +27,7 @@ export function normalizeCreditSummary(raw: unknown): PortalCreditSummary {
 export function normalizeAging(raw: unknown): PortalAgingResult {
   const d = asRecord(unwrapData(raw)) ?? asRecord(raw) ?? {};
   const bucketsRaw =
-    (Array.isArray(d.buckets) && d.buckets) ||
-    (Array.isArray(d.aging) && d.aging) ||
-    [];
+    (Array.isArray(d.buckets) && d.buckets) || (Array.isArray(d.aging) && d.aging) || [];
   let buckets: PortalAgingBucket[] = [];
   if (bucketsRaw.length) {
     buckets = bucketsRaw.map((b, i) => {
@@ -51,23 +53,35 @@ export function normalizeAging(raw: unknown): PortalAgingResult {
   }
   return {
     asOf: pickString(d.as_of, d.asOf) || undefined,
-    total: pickNumber(d.total, d.total_outstanding),
+    total: pickNumber(
+      d.total,
+      d.total_outstanding,
+      d.outstanding,
+      d.open_balance,
+      d.openBalance,
+    ),
     buckets,
   };
 }
 
 export function normalizeStatement(raw: unknown): PortalStatementResult {
   const d = asRecord(unwrapData(raw)) ?? asRecord(raw) ?? {};
-  const linesRaw = Array.isArray(d.lines) ? d.lines : Array.isArray(d.transactions) ? d.transactions : Array.isArray(d.items) ? d.items : [];
+  const linesRaw = Array.isArray(d.lines)
+    ? d.lines
+    : Array.isArray(d.transactions)
+      ? d.transactions
+      : Array.isArray(d.items)
+        ? d.items
+        : [];
   const lines: PortalStatementLine[] = linesRaw.map((line, i) => {
     const r = asRecord(line) ?? {};
     return {
       id: pickString(r.id) || String(i),
       date: pickString(r.date, r.txn_date, r.transaction_date) || undefined,
-      type: pickString(r.type, r.doc_type, d.document_type) || undefined,
-      reference: pickString(r.reference, r.ref, r.document_number) || undefined,
-      debit: pickNumber(r.debit, r.debit_amount),
-      credit: pickNumber(r.credit, r.credit_amount),
+      type: pickString(r.type, r.doc_type) || undefined,
+      reference: pickString(r.reference, r.ref, r.document_number, r.invoice_number) || undefined,
+      debit: pickNumber(r.debit, r.debit_amount, r.invoice_amount),
+      credit: pickNumber(r.credit, r.credit_amount, r.payment_amount),
       balance: pickNumber(r.balance, r.running_balance),
       description: pickString(r.description, r.narration) || undefined,
     };
@@ -75,7 +89,17 @@ export function normalizeStatement(raw: unknown): PortalStatementResult {
   return {
     asOf: pickString(d.as_of, d.asOf) || undefined,
     openingBalance: pickNumber(d.opening_balance, d.openingBalance),
-    closingBalance: pickNumber(d.closing_balance, d.closingBalance),
+    closingBalance: pickNumber(
+      d.closing_balance,
+      d.closingBalance,
+      d.open_balance,
+      d.openBalance,
+      d.balance,
+      d.outstanding,
+    ),
+    invoiceCount: pickNumber(d.invoice_count, d.invoiceCount),
+    currencyCode: pickString(d.currency_code, d.currencyCode) || undefined,
+    truncated: typeof d.truncated === 'boolean' ? d.truncated : undefined,
     lines,
   };
 }

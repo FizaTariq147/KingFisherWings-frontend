@@ -45,7 +45,7 @@ export default function VendorAlertsPage() {
         title="Alerts"
         description={
           fromAggregate
-            ? 'Action items from job offers, disputes, and payment requests.'
+            ? 'Action items from your quotes, disputes, payment requests, and open invoices.'
             : 'Notifications for your vendor account.'
         }
         actions={
@@ -92,7 +92,7 @@ export default function VendorAlertsPage() {
         ) : items.length === 0 ? (
           <PortalEmptyState
             title={unreadOnly ? 'No unread alerts' : 'No alerts yet'}
-            description="New job offers, open disputes, and payment-request updates appear here."
+            description="Job offers needing a response, open disputes, payment requests, and outstanding invoices appear here."
             Icon={Bell}
           />
         ) : (

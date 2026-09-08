@@ -3,7 +3,10 @@ import type { VendorJobOfferStatus } from '../api/vendorJobOffers.api';
 
 /**
  * Map API / legacy statuses into the negotiation model:
- * SENT → NEGOTIATING → VENDOR_REVIEW → APPROVED | DISAPPROVED
+ * SENT → NEGOTIATING ↔ VENDOR_REVIEW → APPROVED | DISAPPROVED
+ *
+ * Both admin (revise / accept-counter) and vendor (accept / reject / counter)
+ * stay active until APPROVED or DISAPPROVED.
  */
 export function coerceVendorOfferStatus(value: unknown): VendorJobOfferStatus | string {
   const raw = String(value ?? '')
@@ -12,11 +15,16 @@ export function coerceVendorOfferStatus(value: unknown): VendorJobOfferStatus | 
     .replace(/\s+/g, '_');
   if (!raw) return 'SENT';
 
-  if (raw === 'PENDING_VENDOR' || raw === 'OPEN') return 'SENT';
-  if (raw === 'VENDOR_PRICED' || raw === 'COUNTERED' || raw === 'CUSTOMER_REVIEW') {
+  if (raw === 'PENDING_VENDOR' || raw === 'OPEN' || raw === 'PASSED') return 'SENT';
+  if (
+    raw === 'VENDOR_PRICED' ||
+    raw === 'COUNTERED' ||
+    raw === 'CUSTOMER_REVIEW' ||
+    raw === 'COUNTER_OFFER'
+  ) {
     return 'NEGOTIATING';
   }
-  if (raw === 'TENANT_REVIEW' || raw === 'REVIEW') return 'VENDOR_REVIEW';
+  if (raw === 'TENANT_REVIEW' || raw === 'REVIEW' || raw === 'REVISED') return 'VENDOR_REVIEW';
   if (raw === 'TENANT_APPROVED' || raw === 'WON' || raw === 'ACCEPTED') return 'APPROVED';
   if (raw === 'TENANT_DISAPPROVED' || raw === 'REJECTED' || raw === 'LOST') return 'DISAPPROVED';
 
@@ -33,13 +41,13 @@ export function isVendorOfferTerminal(status?: string): boolean {
   return s === 'APPROVED' || s === 'DISAPPROVED';
 }
 
-/** Vendor may accept / reject / counter the tenant cost offer. */
+/** Vendor may accept / reject / counter the tenant cost offer while negotiation is open. */
 export function canVendorRespondToOffer(status?: string): boolean {
   const s = coerceVendorOfferStatus(status);
   return s === 'SENT' || s === 'VENDOR_REVIEW' || s === 'NEGOTIATING';
 }
 
-/** Staff may revise-and-send after vendor counter or while offer is open. */
+/** Staff may revise-and-send whenever the offer is still open. */
 export function canStaffReviseVendorOffer(status?: string): boolean {
   const s = coerceVendorOfferStatus(status);
   return s === 'SENT' || s === 'NEGOTIATING' || s === 'VENDOR_REVIEW';
@@ -47,7 +55,8 @@ export function canStaffReviseVendorOffer(status?: string): boolean {
 
 /** Staff may accept / reject a pending vendor counter. */
 export function canStaffRespondToVendorCounter(status?: string): boolean {
-  return coerceVendorOfferStatus(status) === 'NEGOTIATING';
+  const s = coerceVendorOfferStatus(status);
+  return s === 'NEGOTIATING' || s === 'VENDOR_PRICED';
 }
 
 export function canStaffApproveVendorOffer(status?: string): boolean {

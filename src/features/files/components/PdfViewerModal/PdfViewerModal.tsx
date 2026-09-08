@@ -2,7 +2,10 @@ import { Download, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { openPdfBlobInNewTab, type PdfBrandingOptions } from '@/features/files/utils/pdfBranding';
-import { triggerBrandedPdfDownload } from '@/features/files/utils/triggerBlobDownload';
+import {
+  triggerBlobDownload,
+  triggerBrandedPdfDownload,
+} from '@/features/files/utils/triggerBlobDownload';
 
 export interface PdfViewerModalProps {
   open: boolean;
@@ -16,6 +19,7 @@ export interface PdfViewerModalProps {
   /** Original blob — used for download / new-tab when preview src is a blob URL. */
   blob?: Blob | null;
   branding?: PdfBrandingOptions;
+  skipBranding?: boolean;
 }
 
 export function PdfViewerModal({
@@ -28,11 +32,17 @@ export function PdfViewerModal({
   error = null,
   blob,
   branding,
+  skipBranding = false,
 }: PdfViewerModalProps) {
+  const noStamp = skipBranding || !branding;
   const blobOptions = { filename: fileName, branding };
 
   const handleDownload = () => {
     if (!blob) return;
+    if (noStamp) {
+      triggerBlobDownload(blob, fileName);
+      return;
+    }
     void triggerBrandedPdfDownload(blob, fileName, blobOptions).catch(() => undefined);
   };
 

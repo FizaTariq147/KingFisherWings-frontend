@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import { AlertCircle, Download, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { isUuid } from '@/lib/isUuid';
@@ -8,6 +8,7 @@ import { AR_AGING_ROUTE } from '../api/arApAging.api';
 import { AgingFilters } from '../components/AgingFilters';
 import { StatementTable } from '../components/StatementTable';
 import { useArStatement } from '../hooks/useArApAging';
+import { downloadGlStatementPdf } from '../utils/downloadGlStatementPdf';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function ArStatementPage() {
@@ -16,6 +17,8 @@ export default function ArStatementPage() {
   const [searchParams] = useSearchParams();
   const [asOf, setAsOf] = useState(searchParams.get('as_of') ?? '');
   const [companyId, setCompanyId] = useState(searchParams.get('company_id') ?? '');
+  const [pdfPending, setPdfPending] = useState(false);
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   const partyValid = isUuid(partyId);
   const filtersValid = !companyId.trim() || isUuid(companyId.trim());
@@ -33,6 +36,19 @@ export default function ArStatementPage() {
     params,
     partyValid && filtersValid,
   );
+
+  const handleDownloadPdf = async () => {
+    if (!data) return;
+    setPdfError(null);
+    setPdfPending(true);
+    try {
+      await downloadGlStatementPdf(data, 'ar');
+    } catch (err) {
+      setPdfError(getErrorMessage(err) || 'Could not download statement PDF.');
+    } finally {
+      setPdfPending(false);
+    }
+  };
 
   if (!partyValid) {
     return (
@@ -93,6 +109,15 @@ export default function ArStatementPage() {
           <Button
             type="button"
             variant="secondary"
+            disabled={!data || pdfPending || isLoading || isError}
+            onClick={() => void handleDownloadPdf()}
+          >
+            <Download className="h-4 w-4" />
+            {pdfPending ? 'Preparing PDF…' : 'Download PDF'}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
             onClick={() => refetch()}
             disabled={isFetching || !filtersValid}
           >
@@ -101,6 +126,12 @@ export default function ArStatementPage() {
           </Button>
         </div>
       </div>
+
+      {pdfError ? (
+        <p className="text-sm text-[var(--color-danger-600)]" role="alert">
+          {pdfError}
+        </p>
+      ) : null}
 
       <Card className="p-4 space-y-4">
         <AgingFilters

@@ -421,8 +421,9 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
           <p className="text-xs text-[var(--color-neutral-500)]">
             Sends via <code className="text-[10px]">POST /jobs/:id/send-to-vendor</code>. Optional{' '}
             <code className="text-[10px]">proposed_total</code> sets the tenant cost offer (
-            <code className="text-[10px]">cost_total</code>) shown on the vendor job. Customer
-            sell/revenue prices are never shared.
+            <code className="text-[10px]">cost_total</code>) shown on the vendor job. After send,
+            both sides can negotiate: vendor accepts / rejects / counters; staff revises or accepts
+            the vendor counter. Customer sell/revenue prices are never shared.
           </p>
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[var(--color-neutral-600)]">Vendor party</span>

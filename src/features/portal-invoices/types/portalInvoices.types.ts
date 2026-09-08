@@ -22,6 +22,13 @@ export interface PortalInvoiceListItem {
 }
 export interface PortalInvoiceDetail extends PortalInvoiceListItem {
   subtotal?: number; taxTotal?: number; paidAmount?: number; remarks?: string;
+  /** Authenticated download URL or `/files/...` path when the API already has a PDF. */
+  pdfUrl?: string;
+  /** Optional party / VAT enrichment when API includes them on detail. */
+  partyName?: string;
+  partyEmail?: string;
+  partyPhone?: string;
+  vatRate?: number;
   lines: PortalInvoiceLine[];
 }
 export interface PortalInvoiceListResult { items: PortalInvoiceListItem[]; meta: PortalPaginationMeta; }

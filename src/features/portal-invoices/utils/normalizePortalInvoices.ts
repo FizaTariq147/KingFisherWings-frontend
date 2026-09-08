@@ -68,6 +68,38 @@ export function normalizeInvoiceList(raw: unknown, params: { page?: number; limi
   return { items: normalized, meta: normalizeMeta(meta, normalized.length, params) };
 }
 
+/** Extract a downloadable PDF URL from portal invoice payloads (absolute or `/files/...`). */
+export function pickPortalInvoicePdfUrl(data: Record<string, unknown>): string | undefined {
+  const direct = pickString(
+    data.pdf_url,
+    data.pdfUrl,
+    data.customer_pdf_url,
+    data.customerPdfUrl,
+    data.download_url,
+    data.downloadUrl,
+    data.file_url,
+    data.fileUrl,
+    data.file_path,
+    data.filePath,
+  );
+  if (direct) return direct;
+
+  for (const key of ['file', 'document', 'attachment', 'pdf']) {
+    const nested = asRecord(data[key]);
+    if (!nested) continue;
+    const url = pickString(
+      nested.pdf_url,
+      nested.url,
+      nested.file_url,
+      nested.fileUrl,
+      nested.download_url,
+      nested.path,
+    );
+    if (url) return url;
+  }
+  return undefined;
+}
+
 export function normalizeInvoiceDetail(raw: unknown): PortalInvoiceDetail | null {
   const data = asRecord(unwrapData(raw)) ?? asRecord(raw); if (!data) return null;
   const base = normalizeInvoiceListItem(data); if (!base) return null;
@@ -78,6 +110,11 @@ export function normalizeInvoiceDetail(raw: unknown): PortalInvoiceDetail | null
     taxTotal: pickNumber(data.tax_total, data.taxTotal),
     paidAmount: pickNumber(data.amount_paid, data.paid_amount, data.paidAmount, data.paid),
     remarks: pickString(data.remarks) || undefined,
+    pdfUrl: pickPortalInvoicePdfUrl(data),
+    partyName: pickString(data.party_name, data.partyName, data.customer_name, data.customerName) || undefined,
+    partyEmail: pickString(data.party_email, data.partyEmail, data.email) || undefined,
+    partyPhone: pickString(data.party_phone, data.partyPhone, data.phone) || undefined,
+    vatRate: pickNumber(data.vat_rate, data.vatRate),
     lines: linesRaw.map(normalizeInvoiceLine).filter((l): l is PortalInvoiceLine => Boolean(l)),
   };
 }

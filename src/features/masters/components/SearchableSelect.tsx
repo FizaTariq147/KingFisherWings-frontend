@@ -52,8 +52,13 @@ export function SearchableSelect({
   const selected = options.find((o) => o.value === value);
   const [query, setQuery] = useState(selected?.label ?? value ?? '');
   const [open, setOpen] = useState(false);
+  const queryRef = useRef(query);
+  queryRef.current = query;
 
+  // Sync the input from the selected value only when the dropdown is closed.
+  // While open (typeahead), options refresh must not wipe the characters being typed.
   useEffect(() => {
+    if (open) return;
     const match = options.find((o) => o.value === value);
     if (match) {
       setQuery(match.label);
@@ -62,7 +67,7 @@ export function SearchableSelect({
     } else {
       setQuery(value);
     }
-  }, [value, options]);
+  }, [value, options, open]);
 
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
@@ -124,14 +129,6 @@ export function SearchableSelect({
     ? 'border-[var(--color-danger-500)] focus:border-[var(--color-danger-500)]'
     : 'border-[var(--color-neutral-200)] focus:border-[var(--color-primary-500)]';
 
-  const helperHint =
-    hint ??
-    (allowManualValue
-      ? 'Pick from the dropdown or type your own value.'
-      : allowManualUuid
-        ? 'Choose from the list or type to search. You can also paste a department ID if needed.'
-        : 'Choose from the list or type to search.');
-
   return (
     <div className="space-y-1" ref={rootRef}>
       <label htmlFor={inputId} className="text-xs font-medium text-[var(--color-neutral-500)]">
@@ -159,11 +156,23 @@ export function SearchableSelect({
             setQuery(next);
             setOpen(true);
             onQueryChange?.(next);
-            if (!next.trim()) onChange('');
+            if (!next.trim()) {
+              onChange('');
+              return;
+            }
+            // Clear a prior selection once the user edits away from its label,
+            // so a later options refresh does not snap the input back.
+            const match = options.find((o) => o.value === value);
+            if (match && next !== match.label) {
+              onChange('');
+            }
           }}
           onBlur={() => {
             // Defer so option click can run first.
-            window.setTimeout(() => commitQuery(query), 120);
+            window.setTimeout(() => {
+              commitQuery(queryRef.current);
+              setOpen(false);
+            }, 120);
           }}
           onKeyDown={(e) => {
             if (e.key === 'Escape') {
@@ -210,6 +219,7 @@ export function SearchableSelect({
             onClick={() => {
               onChange('');
               setQuery('');
+              onQueryChange?.('');
               setOpen(true);
             }}
           >
@@ -254,9 +264,9 @@ export function SearchableSelect({
         )}
       </div>
       {error && <p className="text-xs text-[var(--color-danger-500)]">{error}</p>}
-      {!error && (
-        <p className="text-[11px] text-[var(--color-neutral-400)]">{helperHint}</p>
-      )}
+      {!error && hint ? (
+        <p className="text-[11px] text-[var(--color-neutral-400)]">{hint}</p>
+      ) : null}
     </div>
   );
 }

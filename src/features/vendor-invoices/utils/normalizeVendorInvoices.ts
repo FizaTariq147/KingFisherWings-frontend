@@ -143,6 +143,11 @@ export function normalizeInvoiceDetail(raw: unknown): VendorInvoiceDetail | null
     taxTotal: pickNumber(data.tax_total, data.taxTotal),
     remarks: pickString(data.remarks, data.notes) || undefined,
     pdfUrl: pickInvoicePdfUrl(data),
+    partyName:
+      pickString(data.party_name, data.partyName, data.vendor_name, data.vendorName) || undefined,
+    partyEmail: pickString(data.party_email, data.partyEmail, data.email) || undefined,
+    partyPhone: pickString(data.party_phone, data.partyPhone, data.phone) || undefined,
+    vatRate: pickNumber(data.vat_rate, data.vatRate),
     lines: linesRaw.map(normalizeLine).filter((l): l is VendorInvoiceLine => Boolean(l)),
   };
 }

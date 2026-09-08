@@ -1,9 +1,15 @@
 import { vendorCreditNotesService } from '@/features/vendor-credit-notes/services/vendorCreditNotes.service';
+import type { VendorCreditNoteListItem } from '@/features/vendor-credit-notes/types/vendorCreditNotes.types';
 import { vendorInvoicesService } from '@/features/vendor-invoices/services/vendorInvoices.service';
+import type { VendorInvoiceListItem } from '@/features/vendor-invoices/types/vendorInvoices.types';
 import { vendorPaymentsService } from '@/features/vendor-payments/services/vendorPayments.service';
+import type { VendorPaymentListItem } from '@/features/vendor-payments/types/vendorPayments.types';
 import type { VendorStatementLine, VendorStatementResult } from '../types/vendorCredit.types';
 
 type RawLine = VendorStatementLine & { sortKey: string };
+
+const PAGE_SIZE = 100;
+const MAX_PAGES = 50;
 
 function dateKey(value?: string): string {
   if (!value) return '9999-99-99';
@@ -12,45 +18,61 @@ function dateKey(value?: string): string {
   return new Date(t).toISOString().slice(0, 10);
 }
 
+async function listAllPages<T>(
+  fetchPage: (page: number, limit: number) => Promise<{ items: T[]; meta: { totalPages: number } }>,
+): Promise<T[]> {
+  const all: T[] = [];
+  let page = 1;
+  let totalPages = 1;
+  while (page <= totalPages && page <= MAX_PAGES) {
+    const result = await fetchPage(page, PAGE_SIZE);
+    all.push(...result.items);
+    totalPages = Math.max(1, result.meta.totalPages || 1);
+    if (!result.items.length) break;
+    page += 1;
+  }
+  return all;
+}
+
 /**
- * Build a full AP ledger when `/vendor/credit/statement` only returns a summary
- * (`invoice_count`, `open_balance`, …) with no transaction lines.
+ * Build a full AP ledger from every invoice / payment / advance / credit-note page.
  */
 export async function composeVendorStatementFromLedgers(
   summary: VendorStatementResult,
   asOf?: string,
 ): Promise<VendorStatementResult> {
-  if (summary.lines.length > 0) return summary;
+  const dateFilter = asOf ? { to_date: asOf } : {};
 
-  const listParams = {
-    page: 1,
-    limit: 200,
-    ...(asOf ? { to_date: asOf } : {}),
-  };
-
-  const [invoiceList, payments, advances, creditNotes] = await Promise.all([
-    vendorInvoicesService.list(listParams).catch(() => ({ items: [] as const })),
-    vendorPaymentsService.list(listParams).catch(() => ({ items: [] as const })),
-    vendorPaymentsService.listAdvances(listParams).catch(() => ({ items: [] as const })),
-    vendorCreditNotesService.list({ page: 1, limit: 200 }).catch(() => ({ items: [] as const })),
+  const [invoiceItems, paymentItems, advanceItems, creditNoteItems] = await Promise.all([
+    listAllPages<VendorInvoiceListItem>((page, limit) =>
+      vendorInvoicesService.list({ page, limit, ...dateFilter }),
+    ).catch(async () => {
+      const open = await vendorInvoicesService.openItems().catch(() => ({ items: [] as VendorInvoiceListItem[] }));
+      return open.items;
+    }),
+    listAllPages<VendorPaymentListItem>((page, limit) =>
+      vendorPaymentsService.list({ page, limit, ...dateFilter }),
+    ).catch(() => [] as VendorPaymentListItem[]),
+    listAllPages<VendorPaymentListItem>((page, limit) =>
+      vendorPaymentsService.listAdvances({ page, limit, ...dateFilter }),
+    ).catch(() => [] as VendorPaymentListItem[]),
+    listAllPages<VendorCreditNoteListItem>((page, limit) =>
+      vendorCreditNotesService.list({ page, limit }),
+    ).catch(() => [] as VendorCreditNoteListItem[]),
   ]);
 
-  let invoiceItems = invoiceList.items;
-  if (
-    invoiceItems.length === 0 &&
-    (summary.invoiceCount == null || summary.invoiceCount > 0)
-  ) {
-    const open = await vendorInvoicesService.openItems().catch(() => ({ items: [] as const }));
-    invoiceItems = open.items;
-  }
-
   const raw: RawLine[] = [];
+  const seen = new Set<string>();
 
   for (const inv of invoiceItems) {
     const amount = inv.totalAmount ?? inv.outstandingBalance;
     if (amount == null) continue;
+    if (asOf && inv.invoiceDate && inv.invoiceDate > asOf) continue;
+    const id = `invoice:${inv.id}`;
+    if (seen.has(id)) continue;
+    seen.add(id);
     raw.push({
-      id: `invoice:${inv.id}`,
+      id,
       date: inv.invoiceDate || inv.dueDate,
       type: 'INVOICE',
       reference: inv.number || inv.reference,
@@ -67,10 +89,14 @@ export async function composeVendorStatementFromLedgers(
     });
   }
 
-  for (const pay of payments.items) {
+  for (const pay of paymentItems) {
     if (pay.amount == null) continue;
+    if (asOf && pay.paymentDate && pay.paymentDate > asOf) continue;
+    const id = `payment:${pay.id}`;
+    if (seen.has(id)) continue;
+    seen.add(id);
     raw.push({
-      id: `payment:${pay.id}`,
+      id,
       date: pay.paymentDate,
       type: 'PAYMENT',
       reference: pay.reference || pay.id,
@@ -81,10 +107,14 @@ export async function composeVendorStatementFromLedgers(
     });
   }
 
-  for (const adv of advances.items) {
+  for (const adv of advanceItems) {
     if (adv.amount == null) continue;
+    if (asOf && adv.paymentDate && adv.paymentDate > asOf) continue;
+    const id = `advance:${adv.id}`;
+    if (seen.has(id)) continue;
+    seen.add(id);
     raw.push({
-      id: `advance:${adv.id}`,
+      id,
       date: adv.paymentDate,
       type: 'ADVANCE',
       reference: adv.reference || adv.id,
@@ -98,11 +128,14 @@ export async function composeVendorStatementFromLedgers(
     });
   }
 
-  for (const cn of creditNotes.items) {
+  for (const cn of creditNoteItems) {
     if (cn.amount == null) continue;
     if (asOf && cn.creditDate && cn.creditDate > asOf) continue;
+    const id = `credit-note:${cn.id}`;
+    if (seen.has(id)) continue;
+    seen.add(id);
     raw.push({
-      id: `credit-note:${cn.id}`,
+      id,
       date: cn.creditDate,
       type: 'CREDIT_NOTE',
       reference: cn.number || cn.reference,
@@ -110,6 +143,23 @@ export async function composeVendorStatementFromLedgers(
       debit: undefined,
       credit: cn.amount,
       sortKey: `${dateKey(cn.creditDate)}|4|${cn.number || cn.id}`,
+    });
+  }
+
+  for (const line of summary.lines) {
+    const id =
+      line.id?.startsWith('invoice:') ||
+      line.id?.startsWith('payment:') ||
+      line.id?.startsWith('advance:') ||
+      line.id?.startsWith('credit-note:')
+        ? line.id
+        : `api:${line.id}`;
+    if (seen.has(id) || seen.has(line.id)) continue;
+    seen.add(id);
+    raw.push({
+      ...line,
+      id,
+      sortKey: `${dateKey(line.date)}|9|${line.reference || line.id}`,
     });
   }
 
@@ -121,20 +171,17 @@ export async function composeVendorStatementFromLedgers(
     return { ...line, balance: running };
   });
 
-  const closingFromSummary = summary.closingBalance;
   const closingBalance =
-    closingFromSummary != null
-      ? closingFromSummary
+    summary.closingBalance != null
+      ? summary.closingBalance
       : lines.length
         ? lines[lines.length - 1]?.balance
         : summary.openingBalance;
 
-  // If API gave open_balance but our reconstructed running total differs, prefer API closing
-  // and still show reconstructed activity lines.
-  if (closingFromSummary != null && lines.length) {
+  if (summary.closingBalance != null && lines.length) {
     lines[lines.length - 1] = {
       ...lines[lines.length - 1],
-      balance: closingFromSummary,
+      balance: summary.closingBalance,
     };
   }
 
@@ -142,6 +189,7 @@ export async function composeVendorStatementFromLedgers(
     ...summary,
     asOf: asOf || summary.asOf,
     closingBalance,
+    invoiceCount: summary.invoiceCount ?? invoiceItems.length,
     lines,
     composedFromLedgers: true,
   };

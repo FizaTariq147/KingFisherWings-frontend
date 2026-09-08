@@ -1,7 +1,9 @@
 import { portalApiClient, PortalApiError } from '@/lib/portalApiClient';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
-import { quotationPdfBranding } from '@/features/files/utils/pdfBranding';
+import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
+import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
+import { generateQuotationPdf } from '@/features/quotations/utils/generateQuotationPdf';
 import { PORTAL_QUOTATIONS_API } from '../api/portalQuotations.api';
 import type {
   PortalQuotationDetail,
@@ -26,6 +28,7 @@ import {
   filterPortalServiceCatalogByJobType,
 } from '../utils/normalizePortalQuotationExtended';
 import { applyPortalCustomerDecisionStatus } from '../utils/portalQuotationStatus';
+import { portalDetailToQuotationPdfModel } from '../utils/portalDetailToQuotationPdfModel';
 import { rememberCustomerQuoteDecision } from '@/features/quotations/utils/customerQuoteDecision';
 import { normalizeNegotiationTimeline } from '@/features/quotations/utils/normalizeQuotationExtended';
 import type { NegotiationTimeline } from '@/features/quotations/types/quotationExtended.types';
@@ -128,12 +131,8 @@ export const portalQuotationsService = {
     quotationNumber = 'quotation',
   ): Promise<void> {
     const filename = formatPdfFilename(quotationNumber, 'quotation');
-    try {
-      await downloadPortalBlob(PORTAL_QUOTATIONS_API.pdf(id), filename, {
-        accept: 'application/pdf, application/octet-stream, */*',
-        branding: quotationPdfBranding(quotationNumber),
-      });
-    } catch (err) {
+
+    const throwFriendly = (err: unknown): never => {
       if (err instanceof PortalApiError) {
         if (err.status === 404 || err.status >= 500) {
           const raw = err.message.trim().toLowerCase();
@@ -153,6 +152,45 @@ export const portalQuotationsService = {
         throw err;
       }
       throw err;
+    };
+
+    // Same readiness gate as before: GET /portal/quotations/:id/pdf must succeed.
+    try {
+      await portalApiClient.get(PORTAL_QUOTATIONS_API.pdf(id), {
+        responseType: 'blob',
+        headers: { Accept: 'application/pdf, application/octet-stream, */*' },
+      });
+    } catch (err) {
+      throwFriendly(err);
+    }
+
+    try {
+      const detail = await this.getById(id);
+      const user = usePortalAuthStore.getState().user;
+      const quotation = portalDetailToQuotationPdfModel(detail, {
+        customerName: user?.party?.name || user?.fullName,
+        contactName: user?.fullName,
+        contactEmail: user?.email,
+        contactPhone: user?.phone,
+      });
+      const blob = await generateQuotationPdf({
+        quotation,
+        company: {
+          name: user?.tenantName || 'KingFisher Wings',
+        },
+        generatedBy: user?.email || user?.fullName,
+        confirmNote: 'Please confirm the quote.',
+      });
+      triggerBlobDownload(blob, filename);
+    } catch {
+      // Layout build failed — fall back to authenticated server PDF download.
+      try {
+        await downloadPortalBlob(PORTAL_QUOTATIONS_API.pdf(id), filename, {
+          accept: 'application/pdf, application/octet-stream, */*',
+        });
+      } catch (fallbackErr) {
+        throwFriendly(fallbackErr);
+      }
     }
   },
 };

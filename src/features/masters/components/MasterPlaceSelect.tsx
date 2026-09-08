@@ -65,12 +65,7 @@ export function MasterPlaceSelect({
       error={error}
       allowManualUuid
       placeholder={placeholder ?? `Search ${placeWord} by name or code…`}
-      hint={
-        hint ??
-        (isFetching
-          ? `Searching ${placeWord}s…`
-          : `Type to search world ${placeWord}s (up to 500).`)
-      }
+      hint={hint}
     />
   );
 }

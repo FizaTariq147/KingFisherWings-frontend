@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
@@ -15,14 +15,17 @@ import {
 } from '@/lib/locale';
 import { axiosInstance } from '@/lib/axios';
 import { useAppForm } from '@/lib/validation';
+import { QuotationWizardNav } from '@/features/quotations/components/quotation-wizard';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import {
   PARTY_TYPES,
   PARTY_TYPE_LABELS,
 } from '../../constants/party.constants';
+import type { PartyType } from '../../constants/party.constants';
 import { createPartySchema, updatePartySchema } from '../../schemas/party.schema';
 import type { CreatePartyFormValues, UpdatePartyFormValues } from '../../types/party.types';
 import { loadPartyCurrencyOptions } from '../../utils/partyCurrencyOptions';
+import { PartyTypeSelectGrid, PartyWizardStepper } from '../party-wizard';
 
 const selectClass =
   'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm text-[var(--color-neutral-800)] focus:outline-none focus:border-[var(--color-primary-500)]';
@@ -49,8 +52,24 @@ const FORM_DEFAULTS: Partial<CreatePartyFormValues> = {
   scac_code: '',
 };
 
+const DETAILS_STEP_FIELDS: (keyof CreatePartyFormValues)[] = [
+  'code',
+  'name',
+  'short_name',
+  'company_id',
+  'vat_number',
+  'cr_number',
+  'country_code',
+  'city',
+  'address',
+  'phone',
+  'email',
+];
+
 interface PartyFormProps {
   mode: 'create' | 'edit';
+  /** `wizard` = FRESA-like 3-step create UI; `flat` = existing single-page (edit default). */
+  layout?: 'flat' | 'wizard';
   defaultValues?: Partial<CreatePartyFormValues>;
   onSubmit: (values: CreatePartyFormValues | UpdatePartyFormValues) => void | Promise<void>;
   onCancel: () => void;
@@ -59,11 +78,14 @@ interface PartyFormProps {
 
 export function PartyForm({
   mode,
+  layout = 'flat',
   defaultValues,
   onSubmit,
   onCancel,
   isSubmitting,
 }: PartyFormProps) {
+  const isWizard = layout === 'wizard' && mode === 'create';
+  const [step, setStep] = useState(0);
   const schema = mode === 'create' ? createPartySchema : updatePartySchema;
   const { data: companies = [] } = useTenantCompanies(true);
 
@@ -115,6 +137,7 @@ export function PartyForm({
     watch,
     setValue,
     getValues,
+    trigger,
     formState: { errors },
   } = form;
 
@@ -155,6 +178,260 @@ export function PartyForm({
     return err?.message ? String(err.message) : undefined;
   };
 
+  const submitForm = handleValidatedSubmit(async (values) => {
+    await onSubmit(values);
+  });
+
+  const goNext = async () => {
+    if (step === 0) {
+      const ok = await trigger('party_type');
+      if (!ok || !partyType) return;
+      setStep(1);
+      return;
+    }
+    if (step === 1) {
+      const ok = await trigger(DETAILS_STEP_FIELDS);
+      if (!ok) return;
+      setStep(2);
+      return;
+    }
+    await submitForm();
+  };
+
+  const identityFields = (
+    <>
+      <Input label="Code *" error={fieldError('code')} {...register('code')} />
+      <Input label="Name *" error={fieldError('name')} {...register('name')} className="sm:col-span-2" />
+      <Input label="Short name" error={fieldError('short_name')} {...register('short_name')} />
+      <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1">
+        Company
+        <select className={selectClass} {...register('company_id')}>
+          <option value="">Select…</option>
+          {companies.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.code ? `${c.name} (${c.code})` : c.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <Input
+        label={locale?.taxIdLabel ?? 'VAT number'}
+        error={fieldError('vat_number')}
+        {...register('vat_number')}
+      />
+      <Input label="CR number" {...register('cr_number')} />
+    </>
+  );
+
+  const locationFields = (
+    <>
+      <CountrySelect
+        label="Country"
+        name="country_code"
+        value={countryCode}
+        error={fieldError('country_code')}
+        onChange={(iso) =>
+          setValue('country_code', iso, { shouldValidate: true, shouldDirty: true })
+        }
+      />
+      <Input label="City" {...register('city')} />
+      <div className="sm:col-span-2">
+        <label htmlFor="party-address" className="text-xs font-medium text-[var(--color-neutral-500)]">
+          Address
+        </label>
+        <textarea
+          id="party-address"
+          className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm min-h-[72px]"
+          {...register('address')}
+        />
+      </div>
+      <PhoneInput
+        label="Phone"
+        name="phone"
+        value={phone}
+        countryIso={countryCode || undefined}
+        error={fieldError('phone')}
+        onChange={(v) => setValue('phone', v, { shouldValidate: true, shouldDirty: true })}
+        onCountryChange={(iso) => {
+          if (!countryCode) {
+            setValue('country_code', iso, { shouldValidate: true, shouldDirty: true });
+          }
+        }}
+      />
+      <Input label="Email" error={fieldError('email')} {...register('email')} />
+    </>
+  );
+
+  const creditFields = (
+    <>
+      <Input
+        label="Credit limit"
+        type="number"
+        error={fieldError('credit_limit')}
+        {...register('credit_limit')}
+      />
+      <Input
+        label="Credit days"
+        type="number"
+        error={fieldError('credit_days')}
+        {...register('credit_days')}
+      />
+      <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1">
+        Currency
+        <select className={selectClass} {...register('currency_code')}>
+          <option value="">Select…</option>
+          {!locale?.defaultCurrency ||
+          currencies.some((c) => c.value === locale.defaultCurrency) ? null : (
+            <option value={locale.defaultCurrency}>{locale.defaultCurrency}</option>
+          )}
+          {currencies.map((c) => (
+            <option key={c.value} value={c.value}>
+              {c.label}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1">
+        Salesperson
+        <select className={selectClass} {...register('salesperson_id')}>
+          <option value="">Select…</option>
+          {salespeople.map((s) => (
+            <option key={s.value} value={s.value}>
+              {s.label}
+            </option>
+          ))}
+        </select>
+      </label>
+    </>
+  );
+
+  const carrierFields =
+    partyType === 'AIRLINE' || partyType === 'SHIPPING_LINE' ? (
+      <>
+        {partyType === 'AIRLINE' ? <Input label="IATA code" {...register('iata_code')} /> : null}
+        {partyType === 'SHIPPING_LINE' ? (
+          <Input label="SCAC code" {...register('scac_code')} />
+        ) : null}
+      </>
+    ) : null;
+
+  const flagsFields = (
+    <>
+      <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
+        <input type="checkbox" {...register('is_active')} /> Active
+      </label>
+      <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
+        <input type="checkbox" {...register('portal_access')} /> Portal access
+      </label>
+      <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
+        <input type="checkbox" {...register('marketing_subscription')} /> Marketing subscription
+      </label>
+      <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1 sm:col-span-2">
+        Tags (comma-separated)
+        <input
+          className={selectClass}
+          value={tagsText}
+          onChange={(e) =>
+            setValue(
+              'tags',
+              e.target.value
+                .split(/[,|]/)
+                .map((t) => t.trim())
+                .filter(Boolean),
+              { shouldDirty: true },
+            )
+          }
+        />
+      </label>
+      <div className="sm:col-span-2">
+        <label htmlFor="party-notes" className="text-xs font-medium text-[var(--color-neutral-500)]">
+          Notes
+        </label>
+        <textarea
+          id="party-notes"
+          className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm min-h-[72px]"
+          {...register('notes')}
+        />
+      </div>
+    </>
+  );
+
+  if (isWizard) {
+    return (
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          void goNext();
+        }}
+        className="mx-auto max-w-5xl space-y-6"
+      >
+        <PartyWizardStepper currentStep={step} />
+
+        {step === 0 ? (
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+            <PartyTypeSelectGrid
+              value={partyType}
+              onChange={(type: PartyType) =>
+                setValue('party_type', type, { shouldValidate: true, shouldDirty: true })
+              }
+              error={fieldError('party_type')}
+            />
+          </div>
+        ) : null}
+
+        {step === 1 ? (
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-6">
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">Identity</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{identityFields}</div>
+            </div>
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
+                Location & contact
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{locationFields}</div>
+            </div>
+          </div>
+        ) : null}
+
+        {step === 2 ? (
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-6">
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
+                Credit & assignment
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{creditFields}</div>
+            </div>
+            {carrierFields ? (
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
+                  Carrier codes
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{carrierFields}</div>
+              </div>
+            ) : null}
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
+                Flags & notes
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{flagsFields}</div>
+            </div>
+          </div>
+        ) : null}
+
+        <QuotationWizardNav
+          currentStep={step}
+          onPrevious={() => setStep((s) => Math.max(0, s - 1))}
+          onCancel={onCancel}
+          onNext={() => void goNext()}
+          isSubmitting={isSubmitting}
+          nextLabel={step === 2 ? 'Create party' : 'Next'}
+          disableNext={step === 0 && !partyType}
+        />
+      </form>
+    );
+  }
+
   return (
     <form
       className="space-y-4"
@@ -176,34 +453,11 @@ export function PartyForm({
                 </option>
               ))}
             </select>
-            <span className="block pt-1 text-[var(--color-neutral-400)]">
-              Use Users Portal and Vendor Portal tabs on the party detail page to add portal logins.
-            </span>
             {fieldError('party_type') && (
               <span className="text-[var(--color-danger-600)]">{fieldError('party_type')}</span>
             )}
           </label>
-          <Input label="Code *" error={fieldError('code')} {...register('code')} />
-          <Input label="Name *" error={fieldError('name')} {...register('name')} className="sm:col-span-2" />
-          <Input label="Short name" error={fieldError('short_name')} {...register('short_name')} />
-          <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1">
-            Company
-            <select className={selectClass} {...register('company_id')}>
-              <option value="">Select…</option>
-              {companies.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.code ? `${c.name} (${c.code})` : c.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <Input
-            label={locale?.taxIdLabel ?? 'VAT number'}
-            hint={locale?.taxIdExample ? `e.g. ${locale.taxIdExample}` : undefined}
-            error={fieldError('vat_number')}
-            {...register('vat_number')}
-          />
-          <Input label="CR number" {...register('cr_number')} />
+          {identityFields}
         </div>
       </Card>
 
@@ -211,140 +465,30 @@ export function PartyForm({
         <CardHeader>
           <CardTitle>Location & contact</CardTitle>
         </CardHeader>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
-          <CountrySelect
-            label="Country"
-            name="country_code"
-            value={countryCode}
-            error={fieldError('country_code')}
-            onChange={(iso) =>
-              setValue('country_code', iso, { shouldValidate: true, shouldDirty: true })
-            }
-          />
-          <Input label="City" {...register('city')} />
-          <div className="sm:col-span-2">
-            <label htmlFor="party-address" className="text-xs font-medium text-[var(--color-neutral-500)]">Address</label>
-            <textarea
-              id="party-address"
-              className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm min-h-[72px]"
-              {...register('address')}
-            />
-          </div>
-          <PhoneInput
-            label="Phone"
-            name="phone"
-            value={phone}
-            countryIso={countryCode || undefined}
-            error={fieldError('phone')}
-            onChange={(v) => setValue('phone', v, { shouldValidate: true, shouldDirty: true })}
-            onCountryChange={(iso) => {
-              if (!countryCode) {
-                setValue('country_code', iso, { shouldValidate: true, shouldDirty: true });
-              }
-            }}
-          />
-          <Input label="Email" error={fieldError('email')} {...register('email')} />
-        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">{locationFields}</div>
       </Card>
 
       <Card>
         <CardHeader>
           <CardTitle>Credit & assignment</CardTitle>
         </CardHeader>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
-          <Input
-            label="Credit limit"
-            type="number"
-            error={fieldError('credit_limit')}
-            {...register('credit_limit')}
-          />
-          <Input
-            label="Credit days"
-            type="number"
-            error={fieldError('credit_days')}
-            {...register('credit_days')}
-          />
-          <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1">
-            Currency
-            <select className={selectClass} {...register('currency_code')}>
-              <option value="">Select…</option>
-              {!locale?.defaultCurrency ||
-              currencies.some((c) => c.value === locale.defaultCurrency) ? null : (
-                <option value={locale.defaultCurrency}>{locale.defaultCurrency}</option>
-              )}
-              {currencies.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1">
-            Salesperson
-            <select className={selectClass} {...register('salesperson_id')}>
-              <option value="">Select…</option>
-              {salespeople.map((s) => (
-                <option key={s.value} value={s.value}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">{creditFields}</div>
       </Card>
 
-      {(partyType === 'AIRLINE' || partyType === 'SHIPPING_LINE') && (
+      {carrierFields ? (
         <Card>
           <CardHeader>
             <CardTitle>Carrier codes</CardTitle>
           </CardHeader>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
-            {partyType === 'AIRLINE' && <Input label="IATA code" {...register('iata_code')} />}
-            {partyType === 'SHIPPING_LINE' && <Input label="SCAC code" {...register('scac_code')} />}
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">{carrierFields}</div>
         </Card>
-      )}
+      ) : null}
 
       <Card>
         <CardHeader>
           <CardTitle>Flags & notes</CardTitle>
         </CardHeader>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
-          <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
-            <input type="checkbox" {...register('is_active')} /> Active
-          </label>
-          <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
-            <input type="checkbox" {...register('portal_access')} /> Portal access
-          </label>
-          <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
-            <input type="checkbox" {...register('marketing_subscription')} /> Marketing subscription
-          </label>
-          <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1 sm:col-span-2">
-            Tags (comma-separated)
-            <input
-              className={selectClass}
-              value={tagsText}
-              onChange={(e) =>
-                setValue(
-                  'tags',
-                  e.target.value
-                    .split(/[,|]/)
-                    .map((t) => t.trim())
-                    .filter(Boolean),
-                  { shouldDirty: true },
-                )
-              }
-            />
-          </label>
-          <div className="sm:col-span-2">
-            <label htmlFor="party-notes" className="text-xs font-medium text-[var(--color-neutral-500)]">Notes</label>
-            <textarea
-              id="party-notes"
-              className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm min-h-[72px]"
-              {...register('notes')}
-            />
-          </div>
-        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">{flagsFields}</div>
       </Card>
 
       <div className="flex justify-end gap-2">
