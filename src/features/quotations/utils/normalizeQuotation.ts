@@ -124,6 +124,7 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     id,
     quotation_number: str(r.quotation_number) ?? str(r.quote_no) ?? str(r.quote_number),
     quote_no: str(r.quote_no) ?? str(r.quotation_number),
+    api_status: coerceQuotationStatus(r.status),
     status: normalizeStatus(r.status, id, r),
     company_id:
       pickStr(r, 'company_id', 'companyId') ?? pickStr(nestedCompany ?? {}, 'id'),

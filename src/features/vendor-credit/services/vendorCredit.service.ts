@@ -42,7 +42,8 @@ async function buildClientStatementPdf(
   const blob = await generateAccountStatementPdf({
     title: 'Account Statement',
     subtitle: [
-      'Vendor AP ledger',
+      'Vendor AP ledger — full history',
+      `${statement.lines.length} transaction(s)`,
       statement.invoiceCount != null ? `${statement.invoiceCount} invoice(s)` : null,
       statement.advancesUnallocated != null && statement.advancesUnallocated > 0
         ? `Advances unallocated ${statement.advancesUnallocated}`

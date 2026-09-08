@@ -28,12 +28,20 @@ export const quotationKeys = {
 function useSyncCustomerQuoteDecisionsAcrossTabs() {
   const queryClient = useQueryClient();
   useEffect(() => {
-    const onStorage = (event: StorageEvent) => {
-      if (event.key !== CUSTOMER_QUOTE_DECISION_STORAGE_KEY) return;
+    const invalidate = () => {
       void queryClient.invalidateQueries({ queryKey: quotationKeys.all });
     };
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== CUSTOMER_QUOTE_DECISION_STORAGE_KEY) return;
+      invalidate();
+    };
+    const onLocal = () => invalidate();
     window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
+    window.addEventListener('kfw-customer-quote-decision', onLocal);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('kfw-customer-quote-decision', onLocal);
+    };
   }, [queryClient]);
 }
 
@@ -61,8 +69,9 @@ export function useQuotation(id: string) {
     enabled: Boolean(accessToken) && isUuid(id),
     staleTime: 3_000,
     refetchInterval: (query) => {
-      const status = query.state.data?.status;
-      return status && isAwaitingCustomerDecision(status) ? 5_000 : false;
+      // Poll while the server still has an open status (even if UI shows Rejected via memory).
+      const apiStatus = query.state.data?.api_status ?? query.state.data?.status;
+      return apiStatus && isAwaitingCustomerDecision(apiStatus) ? 5_000 : false;
     },
     refetchIntervalInBackground: false,
   });

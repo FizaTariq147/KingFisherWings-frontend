@@ -35,7 +35,30 @@ function isAcceptEvent(type: string): boolean {
 }
 
 function isCounterEvent(type: string): boolean {
-  return type === 'COUNTER_OFFER' || type === 'COUNTER' || type === 'CUSTOMER_COUNTER';
+  return (
+    type === 'COUNTER_OFFER' ||
+    type === 'COUNTER' ||
+    type === 'CUSTOMER_COUNTER' ||
+    type === 'VENDOR_COUNTER' ||
+    type === 'PRICE' ||
+    type === 'VENDOR_PRICE'
+  );
+}
+
+function isClearPendingCounterEvent(type: string): boolean {
+  return (
+    isAcceptEvent(type) ||
+    type === 'WON' ||
+    type === 'MARK_WON' ||
+    type === 'LOST' ||
+    type === 'DISAPPROVED' ||
+    type === 'REVISE' ||
+    type === 'REVISE_AND_SEND' ||
+    type === 'SEND' ||
+    type === 'PASS' ||
+    type === 'PASS_TO_VENDOR' ||
+    type === 'SEND_TO_VENDOR'
+  );
 }
 
 function isCustomerActor(actor?: string): boolean {
@@ -52,6 +75,28 @@ function isTenantActor(actor?: string): boolean {
   return a.includes('TENANT') || a.includes('STAFF') || a.includes('USER') || a.includes('ADMIN');
 }
 
+function isVendorActor(actor?: string): boolean {
+  return normalizeNegotiationActor(actor).includes('VENDOR');
+}
+
+function isTerminalRejectEvent(type: string): boolean {
+  return (
+    type === 'LOST' ||
+    type === 'DISAPPROVED' ||
+    type === 'REJECTED' ||
+    type === 'TERMINAL_REJECT' ||
+    type === 'CUSTOMER_REJECT' ||
+    type === 'PORTAL_REJECT' ||
+    type === 'QUOTE_REJECTED' ||
+    type === 'MARK_LOST' ||
+    type === 'MARK_REJECTED'
+  );
+}
+
+/**
+ * True when negotiation is finished (approved / disapproved / expired).
+ * Non-terminal vendor/staff REJECT must NOT close — both sides can keep negotiating.
+ */
 export function isNegotiationClosed(
   status: string,
   events: NegotiationEvent[] = [],
@@ -61,39 +106,43 @@ export function isNegotiationClosed(
   const sorted = sortNegotiationEvents(events);
   const last = sorted[sorted.length - 1];
   if (!last) return false;
+
   const type = normalizeNegotiationEventType(last.eventType);
-  return (
-    isAcceptEvent(type) ||
-    type === 'WON' ||
-    type === 'LOST' ||
-    type === 'DISAPPROVED' ||
-    type === 'REJECTED' ||
-    type === 'TERMINAL_REJECT'
-  );
+  const actor = normalizeNegotiationActor(last.actor);
+  const eventStatus = last.status ? coerceQuotationStatus(last.status) : undefined;
+  if (eventStatus && isQuotationTerminalClosed(eventStatus)) return true;
+
+  if (isAcceptEvent(type) || type === 'WON' || type === 'MARK_WON') return true;
+  if (isTerminalRejectEvent(type)) return true;
+
+  // Plain REJECT:
+  // - Customer/portal quote reject → closed
+  // - Vendor non-terminal reject / staff counter-reject → stay open for revise/negotiate
+  if (type === 'REJECT' || type === 'COUNTER_REJECT' || type === 'REJECT_COUNTER') {
+    if (isVendorActor(actor) || isTenantActor(actor)) return false;
+    if (actor.includes('CUSTOMER') || actor.includes('PORTAL')) return true;
+    return false;
+  }
+
+  return false;
 }
 
+/**
+ * Pending counter from customer (quote) or vendor (job cost offer).
+ * Prefer timeline events over pricing so a staff revise does not leave a stale counter.
+ */
 export function getPendingCustomerCounterTotal(
   pricing?: NegotiationPricing | null,
   events: NegotiationEvent[] = [],
   closed = false,
 ): number | undefined {
   if (closed) return undefined;
-  if (pricing?.customerProposedTotal != null && Number.isFinite(pricing.customerProposedTotal)) {
-    return pricing.customerProposedTotal;
-  }
 
   const sorted = sortNegotiationEvents(events);
   for (let i = sorted.length - 1; i >= 0; i -= 1) {
     const event = sorted[i];
     const type = normalizeNegotiationEventType(event.eventType);
-    if (
-      isAcceptEvent(type) ||
-      type === 'WON' ||
-      type === 'LOST' ||
-      type === 'DISAPPROVED' ||
-      type === 'REVISE' ||
-      type === 'SEND'
-    ) {
+    if (isClearPendingCounterEvent(type)) {
       return undefined;
     }
     if (isCounterEvent(type)) {
@@ -101,6 +150,10 @@ export function getPendingCustomerCounterTotal(
         return event.proposedTotal;
       }
     }
+  }
+
+  if (pricing?.customerProposedTotal != null && Number.isFinite(pricing.customerProposedTotal)) {
+    return pricing.customerProposedTotal;
   }
   return undefined;
 }

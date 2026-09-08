@@ -89,6 +89,14 @@ export function rememberCustomerQuoteDecision(id: string, decision: CustomerQuot
   const map = readMap();
   map[id] = { decision, at: Date.now() };
   writeMap(map);
+  // Same-tab listeners (admin SPA) — StorageEvent only fires in other tabs.
+  try {
+    window.dispatchEvent(
+      new CustomEvent('kfw-customer-quote-decision', { detail: { id, decision } }),
+    );
+  } catch {
+    /* ignore */
+  }
 }
 
 export function clearCustomerQuoteDecision(id: string) {
@@ -118,12 +126,19 @@ export function statusFromRejectMarkers(
     String(record.lost_reason ?? record.lostReason ?? '').trim() ||
     String(record.rejection_reason ?? record.rejectionReason ?? '').trim() ||
     String(record.disapprove_reason ?? record.disapproveReason ?? '').trim() ||
-    String(record.customer_reject_reason ?? record.customerRejectReason ?? '').trim();
+    String(record.customer_reject_reason ?? record.customerRejectReason ?? '').trim() ||
+    String(record.reject_reason ?? record.rejectReason ?? '').trim();
   const notes =
     String(record.lost_notes ?? record.lostNotes ?? '').trim() ||
-    String(record.rejection_notes ?? record.rejectionNotes ?? '').trim();
+    String(record.rejection_notes ?? record.rejectionNotes ?? '').trim() ||
+    String(record.disapprove_notes ?? record.disapproveNotes ?? '').trim();
   const decision = String(
-    record.customer_decision ?? record.customerDecision ?? record.decision ?? '',
+    record.customer_decision ??
+      record.customerDecision ??
+      record.decision ??
+      record.portal_decision ??
+      record.portalDecision ??
+      '',
   )
     .trim()
     .toUpperCase()
@@ -180,13 +195,32 @@ function isQuoteRejectEvent(type: string): boolean {
     type === 'REJECTED' ||
     type === 'TERMINAL_REJECT' ||
     type === 'CUSTOMER_REJECT' ||
-    type === 'QUOTE_REJECTED'
+    type === 'CUSTOMER_DISAPPROVE' ||
+    type === 'PORTAL_REJECT' ||
+    type === 'QUOTE_REJECTED' ||
+    type === 'MARK_LOST' ||
+    type === 'MARK_REJECTED'
   );
+}
+
+function isStaffCounterRejectEvent(type: string): boolean {
+  return type === 'COUNTER_REJECT' || type === 'REJECT_COUNTER' || type === 'REJECT_COUNTER_OFFER';
 }
 
 function isCustomerActor(actor?: string): boolean {
   const a = normalizeNegotiationActor(actor);
   return a.includes('CUSTOMER') || a.includes('PORTAL');
+}
+
+function isStaffActor(actor?: string): boolean {
+  const a = normalizeNegotiationActor(actor);
+  return (
+    a.includes('TENANT') ||
+    a.includes('STAFF') ||
+    a.includes('USER') ||
+    a.includes('ADMIN') ||
+    a.includes('FORWARDER')
+  );
 }
 
 /**
@@ -209,13 +243,24 @@ export function statusFromNegotiationEvents(
       return eventStatus === 'DISAPPROVED' ? 'REJECTED' : eventStatus;
     }
 
-    // Staff rejecting a counter-offer uses REJECT without closing the quote.
-    if (type === 'REJECT' || type === 'COUNTER_REJECT' || type === 'REJECT_COUNTER') {
+    // Staff rejecting a counter-offer (non-terminal) keeps negotiation open.
+    if (isStaffCounterRejectEvent(type)) {
       continue;
     }
 
+    // Portal/customer REJECT closes the quote. Staff REJECT on a counter does not.
+    if (type === 'REJECT') {
+      if (isCustomerActor(event.actor)) return 'REJECTED';
+      if (isStaffActor(event.actor)) continue;
+      // No actor: prefer explicit terminal status on the event; otherwise treat as portal close.
+      if (eventStatus && isQuotationTerminalClosed(eventStatus)) {
+        return eventStatus === 'DISAPPROVED' ? 'REJECTED' : eventStatus;
+      }
+      return 'REJECTED';
+    }
+
     if (isQuoteRejectEvent(type)) {
-      if (type === 'REJECTED' && event.actor && !isCustomerActor(event.actor)) {
+      if (type === 'REJECTED' && event.actor && isStaffActor(event.actor) && !isCustomerActor(event.actor)) {
         continue;
       }
       return 'REJECTED';
@@ -262,14 +307,31 @@ export function resolveCustomerFacingQuoteStatus(
     if (fromHistory) status = fromHistory;
   }
 
-  if (negotiationEvents?.length) {
-    status = statusFromNegotiationEvents(status, negotiationEvents);
+  const embeddedEvents = negotiationEvents?.length
+    ? negotiationEvents
+    : extractNegotiationEventsFromRecord(record);
+  if (embeddedEvents?.length) {
+    status = statusFromNegotiationEvents(status, embeddedEvents);
   }
 
-  if (!id) return status;
+  if (!id) return status === 'DISAPPROVED' ? 'REJECTED' : status;
 
-  if (isQuotationTerminalClosed(status)) {
+  const apiStillOpen = isAwaitingCustomerDecision(raw);
+  const resolvedClosed = isQuotationTerminalClosed(status);
+
+  // Only drop portal memory when the SERVER itself reports a closed status.
+  // Clearing earlier made list/detail flicker back to Negotiating on the next refetch.
+  if (resolvedClosed && !apiStillOpen) {
     clearCustomerQuoteDecision(id);
+    return status === 'DISAPPROVED' ? 'REJECTED' : status;
+  }
+
+  if (resolvedClosed && apiStillOpen) {
+    if (useMemory) {
+      const decision: CustomerQuoteDecision =
+        status === 'APPROVED' || status === 'CONVERTED' ? 'APPROVED' : 'REJECTED';
+      rememberCustomerQuoteDecision(id, decision);
+    }
     return status === 'DISAPPROVED' ? 'REJECTED' : status;
   }
 
@@ -281,4 +343,36 @@ export function resolveCustomerFacingQuoteStatus(
   }
 
   return status;
+}
+
+/** Some list/detail payloads embed negotiation events or a timeline object. */
+function extractNegotiationEventsFromRecord(
+  record?: Record<string, unknown> | null,
+): NegotiationEvent[] | undefined {
+  if (!record) return undefined;
+  const nested =
+    record.negotiation_events ??
+    record.negotiationEvents ??
+    record.events ??
+    (record.negotiation && typeof record.negotiation === 'object'
+      ? (record.negotiation as Record<string, unknown>).events
+      : undefined);
+  if (!Array.isArray(nested) || nested.length === 0) return undefined;
+  return nested.map((item) => {
+    const r = item && typeof item === 'object' && !Array.isArray(item)
+      ? (item as Record<string, unknown>)
+      : {};
+    return {
+      id: String(r.id ?? ''),
+      eventType: String(r.event_type ?? r.eventType ?? r.type ?? r.action ?? ''),
+      actor: r.actor != null ? String(r.actor) : undefined,
+      status: r.status != null ? String(r.status) : undefined,
+      message: r.message != null ? String(r.message) : undefined,
+      createdAt: r.created_at != null
+        ? String(r.created_at)
+        : r.createdAt != null
+          ? String(r.createdAt)
+          : undefined,
+    } as NegotiationEvent;
+  });
 }

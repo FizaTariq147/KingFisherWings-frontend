@@ -1,7 +1,7 @@
+import { useEffect, useRef, useState } from 'react';
 import { type Resolver } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
@@ -20,17 +20,48 @@ import {
   INCOTERMS,
   JOB_TYPE_LABELS,
   JOB_TYPES,
+  type JobType,
 } from '../../constants/quotation.constants';
 import { isAirJobType } from '@/features/jobs/constants/job.constants';
 import { createQuotationSchema, updateQuotationSchema } from '../../schemas/quotation.schema';
 import type { CreateQuotationFormValues, UpdateQuotationFormValues } from '../../types/quotation.types';
 import { QUOTATION_FORM_DEFAULTS } from '../../utils/quotationToFormValues';
+import {
+  JobTypeSelectGrid,
+  QuotationWizardNav,
+  QuotationWizardStepper,
+} from '../quotation-wizard';
 
 const selectClass =
   'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm text-[var(--color-neutral-800)] focus:outline-none focus:border-[var(--color-primary-500)]';
 
+const labelClass = 'text-xs font-medium text-[var(--color-neutral-500)]';
+
+const PORT_STEP_FIELDS: (keyof CreateQuotationFormValues)[] = [
+  'company_id',
+  'branch_id',
+  'department_id',
+  'customer_id',
+  'salesperson_id',
+  'carrier_id',
+  'origin_port_id',
+  'dest_port_id',
+  'incoterm',
+  'valid_until',
+  'currency_code',
+  'exchange_rate',
+  'transit_time_days',
+  'remarks',
+  'routing_notes',
+  'carrier_preference',
+  'discount_percent',
+  'discount_amount',
+];
+
 interface QuotationFormProps {
   mode: 'create' | 'edit';
+  /** `wizard` = FRESA-like 3-step create UI; `flat` = existing single-page (edit default). */
+  layout?: 'flat' | 'wizard';
   defaultValues?: Partial<CreateQuotationFormValues>;
   onSubmit: (values: CreateQuotationFormValues | UpdateQuotationFormValues) => void | Promise<void>;
   onCancel: () => void;
@@ -45,12 +76,15 @@ function FieldError({ message }: { message?: string }) {
 
 export function QuotationForm({
   mode,
+  layout = 'flat',
   defaultValues,
   onSubmit,
   onCancel,
   isSubmitting,
   onValuesChange,
 }: QuotationFormProps) {
+  const isWizard = layout === 'wizard' && mode === 'create';
+  const [step, setStep] = useState(0);
   const schema = mode === 'create' ? createQuotationSchema : updateQuotationSchema;
   const { data: companies = [] } = useTenantCompanies(true);
   const {
@@ -76,6 +110,7 @@ export function QuotationForm({
     applyApiErrors,
     watch,
     setValue,
+    trigger,
     formState: { errors },
   } = useAppForm<CreateQuotationFormValues>({
     resolver: zodResolver(schema) as Resolver<CreateQuotationFormValues>,
@@ -96,7 +131,7 @@ export function QuotationForm({
   );
   const { data: branches = [] } = useMasterOptions('branches', MASTER_PATHS.branches, true);
   const { data: currencies = [] } = useQuery({
-    queryKey: ['tenant', 'quotations', 'currency-options'],
+    queryKey: ['tenant', 'parties', 'currency-options'],
     queryFn: loadPartyCurrencyOptions,
     staleTime: 60_000,
   });
@@ -126,25 +161,416 @@ export function QuotationForm({
   const fieldError = (name: keyof CreateQuotationFormValues) =>
     errors[name]?.message as string | undefined;
 
+  const companyOptions = companies
+    .filter((c) => isUuid(c.id))
+    .map((c) => (
+      <option key={c.id} value={c.id}>
+        {c.name}
+      </option>
+    ));
+
+  const branchOptions = branches
+    .filter((b) => isUuid(String(b.id)))
+    .map((b) => (
+      <option key={String(b.id)} value={String(b.id)}>
+        {String(b.name ?? b.code ?? b.id)}
+      </option>
+    ));
+
+  const departmentOptions = departments
+    .filter((d) => isUuid(String(d.id)))
+    .map((d) => (
+      <option key={String(d.id)} value={String(d.id)}>
+        {String(d.name ?? d.code ?? d.id)}
+      </option>
+    ));
+
+  const containerOptions = containers
+    .filter((c) => isUuid(String(c.id)))
+    .map((c) => (
+      <option key={String(c.id)} value={String(c.id)}>
+        {String(c.code ?? c.name ?? c.id)}
+      </option>
+    ));
+
+  const submitForm = handleValidatedSubmit(async (values) => {
+    try {
+      await onSubmit(values);
+    } catch (err) {
+      applyApiErrors(err);
+      throw err;
+    }
+  });
+
+  const goNext = async () => {
+    if (step === 0) {
+      const ok = await trigger('job_type');
+      if (!ok || !watched.job_type) return;
+      setStep(1);
+      return;
+    }
+    if (step === 1) {
+      const ok = await trigger(PORT_STEP_FIELDS);
+      if (!ok) return;
+      setStep(2);
+      return;
+    }
+    await submitForm();
+  };
+
+  const customerBlock = (
+    <>
+      <div className="space-y-1">
+        <label htmlFor="customer_id" className={labelClass}>
+          Customer <span className="text-[var(--color-danger-500)]">*</span>
+        </label>
+        <select id="customer_id" className={selectClass} {...register('customer_id')}>
+          <option value="">{customersLoading ? 'Loading customers…' : 'Select customer…'}</option>
+          {customers.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.code ? `${c.name} (${c.code})` : c.name}
+            </option>
+          ))}
+        </select>
+        <FieldError message={fieldError('customer_id')} />
+        {customersError ? (
+          <p className="text-xs text-[var(--color-danger-600)]">
+            Could not load customers: {getErrorMessage(customersErr)}
+          </p>
+        ) : null}
+        {!customersLoading && !customersError && customers.length === 0 ? (
+          <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+            No customers found. Create one under{' '}
+            <Link className="font-medium underline" to="/parties/new">
+              Parties → New party
+            </Link>
+            , set <strong>Party type = Customer</strong>, then return here.
+          </p>
+        ) : null}
+      </div>
+    </>
+  );
+
+  const placeFields = (
+    <>
+      <Controller
+        name="origin_port_id"
+        control={control}
+        render={({ field }) => (
+          <MasterPlaceSelect
+            name="origin_port_id"
+            label={useAirports ? 'Origin airport' : 'Origin'}
+            value={field.value ?? ''}
+            onChange={field.onChange}
+            jobType={watched.job_type}
+            excludeId={watched.dest_port_id}
+            error={fieldError('origin_port_id')}
+          />
+        )}
+      />
+      <Controller
+        name="dest_port_id"
+        control={control}
+        render={({ field }) => (
+          <MasterPlaceSelect
+            name="dest_port_id"
+            label={useAirports ? 'Destination airport' : 'Destination'}
+            value={field.value ?? ''}
+            onChange={field.onChange}
+            jobType={watched.job_type}
+            excludeId={watched.origin_port_id}
+            error={fieldError('dest_port_id')}
+          />
+        )}
+      />
+    </>
+  );
+
+  if (isWizard) {
+    return (
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          void goNext();
+        }}
+        className="mx-auto max-w-5xl space-y-6"
+      >
+        <QuotationWizardStepper currentStep={step} />
+
+        {step === 0 ? (
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+            <JobTypeSelectGrid
+              value={watched.job_type}
+              onChange={(jobType: JobType) =>
+                setValue('job_type', jobType, { shouldValidate: true, shouldDirty: true })
+              }
+              error={fieldError('job_type')}
+            />
+          </div>
+        ) : null}
+
+        {step === 1 ? (
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <label htmlFor="branch_id" className={labelClass}>
+                    Branch
+                  </label>
+                  <select id="branch_id" className={selectClass} {...register('branch_id')}>
+                    <option value="">Select…</option>
+                    {branchOptions}
+                  </select>
+                </div>
+                {customerBlock}
+                <div className="space-y-1">
+                  <label htmlFor="company_id" className={labelClass}>
+                    Company <span className="text-[var(--color-danger-500)]">*</span>
+                  </label>
+                  <select id="company_id" className={selectClass} {...register('company_id')}>
+                    <option value="">Select…</option>
+                    {companyOptions}
+                  </select>
+                  <FieldError message={fieldError('company_id')} />
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor="incoterm" className={labelClass}>
+                    INCO Terms
+                  </label>
+                  <select id="incoterm" className={selectClass} {...register('incoterm')}>
+                    <option value="">Select…</option>
+                    {INCOTERMS.map((i) => (
+                      <option key={i} value={i}>
+                        {i}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <Input
+                  label="Transit time (days)"
+                  type="number"
+                  error={fieldError('transit_time_days')}
+                  {...register('transit_time_days', { valueAsNumber: true })}
+                />
+              </div>
+
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <label htmlFor="department_id" className={labelClass}>
+                    Department
+                  </label>
+                  <select id="department_id" className={selectClass} {...register('department_id')}>
+                    <option value="">Select…</option>
+                    {departmentOptions}
+                  </select>
+                </div>
+                {placeFields}
+                <div className="space-y-1">
+                  <label htmlFor="valid_until" className={labelClass}>
+                    Valid To
+                  </label>
+                  <input
+                    id="valid_until"
+                    type="date"
+                    className={selectClass}
+                    {...register('valid_until')}
+                  />
+                  <FieldError message={fieldError('valid_until')} />
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor="currency_code" className={labelClass}>
+                    Currency <span className="text-[var(--color-danger-500)]">*</span>
+                  </label>
+                  <select id="currency_code" className={selectClass} {...register('currency_code')}>
+                    <option value="">Select…</option>
+                    {currencies.map((c) => (
+                      <option key={c.value} value={c.value}>
+                        {c.label}
+                      </option>
+                    ))}
+                  </select>
+                  <FieldError message={fieldError('currency_code')} />
+                </div>
+                <Input
+                  label="Exchange rate"
+                  type="number"
+                  step="any"
+                  error={fieldError('exchange_rate')}
+                  {...register('exchange_rate', { valueAsNumber: true })}
+                />
+              </div>
+
+              <div className="space-y-4">
+                <Input
+                  label="Salesperson ID"
+                  error={fieldError('salesperson_id')}
+                  placeholder="Optional user UUID"
+                  {...register('salesperson_id')}
+                />
+                <div className="space-y-1">
+                  <label htmlFor="carrier_id" className={labelClass}>
+                    Carrier
+                  </label>
+                  <select id="carrier_id" className={selectClass} {...register('carrier_id')}>
+                    <option value="">Select…</option>
+                    {carriers.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <Input
+                  label="Carrier preference"
+                  error={fieldError('carrier_preference')}
+                  {...register('carrier_preference')}
+                />
+                <Input
+                  label="Discount %"
+                  type="number"
+                  step="any"
+                  error={fieldError('discount_percent')}
+                  {...register('discount_percent', { valueAsNumber: true })}
+                />
+                <Input
+                  label="Discount amount"
+                  type="number"
+                  step="any"
+                  error={fieldError('discount_amount')}
+                  {...register('discount_amount', { valueAsNumber: true })}
+                />
+                <div className="space-y-1">
+                  <label htmlFor="remarks" className={labelClass}>
+                    Remarks
+                  </label>
+                  <textarea
+                    id="remarks"
+                    className="min-h-[72px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
+                    {...register('remarks')}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor="routing_notes" className={labelClass}>
+                    Routing notes
+                  </label>
+                  <textarea
+                    id="routing_notes"
+                    className="min-h-[72px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
+                    {...register('routing_notes')}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {step === 2 ? (
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+            <h3 className="mb-4 text-sm font-semibold text-[var(--color-neutral-800)]">
+              Planned Container / Consignment
+            </h3>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="space-y-1">
+                <label htmlFor="container_type_id" className={labelClass}>
+                  Container type
+                </label>
+                <select
+                  id="container_type_id"
+                  className={selectClass}
+                  {...register('container_type_id')}
+                >
+                  <option value="">Select…</option>
+                  {containerOptions}
+                </select>
+              </div>
+              <Input
+                label="No of Container"
+                type="number"
+                error={fieldError('container_count')}
+                {...register('container_count', { valueAsNumber: true })}
+              />
+              <Input
+                label="No of Packages / Pieces"
+                type="number"
+                error={fieldError('pieces')}
+                {...register('pieces', { valueAsNumber: true })}
+              />
+              <Input label="Commodity" error={fieldError('commodity')} {...register('commodity')} />
+              <Input label="HS code" error={fieldError('hs_code')} {...register('hs_code')} />
+              <Input
+                label="Gross weight"
+                type="number"
+                step="any"
+                error={fieldError('gross_weight')}
+                {...register('gross_weight', { valueAsNumber: true })}
+              />
+              <Input
+                label="Chargeable weight"
+                type="number"
+                step="any"
+                error={fieldError('chargeable_weight')}
+                {...register('chargeable_weight', { valueAsNumber: true })}
+              />
+              <Input
+                label="Volume (CBM)"
+                type="number"
+                step="any"
+                error={fieldError('volume_cbm')}
+                {...register('volume_cbm', { valueAsNumber: true })}
+              />
+              <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)] sm:mt-6">
+                <input type="checkbox" {...register('is_dg')} />
+                Dangerous goods
+              </label>
+              <Input label="DG class" error={fieldError('dg_class')} {...register('dg_class')} />
+              <div className="space-y-1 sm:col-span-2 lg:col-span-3">
+                <label htmlFor="special_requirements" className={labelClass}>
+                  Description / Special requirements
+                </label>
+                <textarea
+                  id="special_requirements"
+                  className="min-h-[88px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
+                  {...register('special_requirements')}
+                />
+              </div>
+              <div className="space-y-1 sm:col-span-2 lg:col-span-3">
+                <label htmlFor="internal_notes" className={labelClass}>
+                  Internal notes
+                </label>
+                <textarea
+                  id="internal_notes"
+                  className="min-h-[72px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
+                  {...register('internal_notes')}
+                />
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        <QuotationWizardNav
+          currentStep={step}
+          onPrevious={() => setStep((s) => Math.max(0, s - 1))}
+          onCancel={onCancel}
+          onNext={() => void goNext()}
+          isSubmitting={isSubmitting}
+          nextLabel={step === 2 ? 'Create quotation' : 'Next'}
+          disableNext={step === 0 && !watched.job_type}
+        />
+      </form>
+    );
+  }
+
   return (
-    <form
-      onSubmit={handleValidatedSubmit(async (values) => {
-        try {
-          await onSubmit(values);
-        } catch (err) {
-          applyApiErrors(err);
-          throw err;
-        }
-      })}
-      className="space-y-4 max-w-4xl"
-    >
+    <form onSubmit={submitForm} className="space-y-4 max-w-4xl">
       <Card>
         <CardHeader>
           <CardTitle>Basic information</CardTitle>
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label htmlFor="job_type" className="text-xs font-medium text-[var(--color-neutral-500)]">Job type *</label>
+            <label htmlFor="job_type" className={labelClass}>
+              Job type *
+            </label>
             <select id="job_type" className={selectClass} {...register('job_type')}>
               {JOB_TYPES.map((t) => (
                 <option key={t} value={t}>
@@ -155,64 +581,37 @@ export function QuotationForm({
             <FieldError message={fieldError('job_type')} />
           </div>
           <div className="space-y-1">
-            <label htmlFor="valid_until" className="text-xs font-medium text-[var(--color-neutral-500)]">Valid until</label>
+            <label htmlFor="valid_until" className={labelClass}>
+              Valid until
+            </label>
             <input id="valid_until" type="date" className={selectClass} {...register('valid_until')} />
             <FieldError message={fieldError('valid_until')} />
           </div>
           <div className="space-y-1">
-            <label htmlFor="company_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="company_id" className={labelClass}>
               Company <span className="text-[var(--color-danger-500)]">*</span>
             </label>
             <select id="company_id" className={selectClass} {...register('company_id')}>
               <option value="">Select…</option>
-              {(() => {
-                const opts = [];
-                for (const c of companies) {
-                  if (!isUuid(c.id)) continue;
-                  opts.push(
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>,
-                  );
-                }
-                return opts;
-              })()}
+              {companyOptions}
             </select>
           </div>
           <div className="space-y-1">
-            <label htmlFor="branch_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Branch</label>
+            <label htmlFor="branch_id" className={labelClass}>
+              Branch
+            </label>
             <select id="branch_id" className={selectClass} {...register('branch_id')}>
               <option value="">Select…</option>
-              {(() => {
-                const opts = [];
-                for (const b of branches) {
-                  if (!isUuid(String(b.id))) continue;
-                  opts.push(
-                    <option key={String(b.id)} value={String(b.id)}>
-                      {String(b.name ?? b.code ?? b.id)}
-                    </option>,
-                  );
-                }
-                return opts;
-              })()}
+              {branchOptions}
             </select>
           </div>
           <div className="space-y-1">
-            <label htmlFor="department_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Department</label>
+            <label htmlFor="department_id" className={labelClass}>
+              Department
+            </label>
             <select id="department_id" className={selectClass} {...register('department_id')}>
               <option value="">Select…</option>
-              {(() => {
-                const opts = [];
-                for (const d of departments) {
-                  if (!isUuid(String(d.id))) continue;
-                  opts.push(
-                    <option key={String(d.id)} value={String(d.id)}>
-                      {String(d.name ?? d.code ?? d.id)}
-                    </option>,
-                  );
-                }
-                return opts;
-              })()}
+              {departmentOptions}
             </select>
           </div>
         </div>
@@ -223,37 +622,7 @@ export function QuotationForm({
           <CardTitle>Customer information</CardTitle>
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
-          <div className="space-y-1 sm:col-span-2">
-            <label htmlFor="customer_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
-              Customer *
-            </label>
-            <select id="customer_id" className={selectClass} {...register('customer_id')}>
-              <option value="">
-                {customersLoading ? 'Loading customers…' : 'Select customer…'}
-              </option>
-              {customers.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.code ? `${c.name} (${c.code})` : c.name}
-                </option>
-              ))}
-            </select>
-            <FieldError message={fieldError('customer_id')} />
-            {customersError ? (
-              <p className="text-xs text-[var(--color-danger-600)]">
-                Could not load customers: {getErrorMessage(customersErr)}
-              </p>
-            ) : null}
-            {!customersLoading && !customersError && customers.length === 0 ? (
-              <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
-                No customers found. The quotation customer list only shows parties with type{' '}
-                <strong>Customer</strong>. Create one under{' '}
-                <Link className="font-medium underline" to="/parties/new">
-                  Parties → New party
-                </Link>
-                , set <strong>Party type = Customer</strong>, save, then return here.
-              </p>
-            ) : null}
-          </div>
+          <div className="sm:col-span-2">{customerBlock}</div>
           <Input
             label="Salesperson ID"
             error={fieldError('salesperson_id')}
@@ -261,7 +630,9 @@ export function QuotationForm({
             {...register('salesperson_id')}
           />
           <div className="space-y-1">
-            <label htmlFor="carrier_id" className="text-xs font-medium text-[var(--color-neutral-500)]">Carrier</label>
+            <label htmlFor="carrier_id" className={labelClass}>
+              Carrier
+            </label>
             <select id="carrier_id" className={selectClass} {...register('carrier_id')}>
               <option value="">Select…</option>
               {carriers.map((c) => (
@@ -279,38 +650,11 @@ export function QuotationForm({
           <CardTitle>Shipment information</CardTitle>
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
-          <Controller
-            name="origin_port_id"
-            control={control}
-            render={({ field }) => (
-              <MasterPlaceSelect
-                name="origin_port_id"
-                label={useAirports ? 'Origin airport' : 'Origin port'}
-                value={field.value ?? ''}
-                onChange={field.onChange}
-                jobType={watched.job_type}
-                excludeId={watched.dest_port_id}
-                error={fieldError('origin_port_id')}
-              />
-            )}
-          />
-          <Controller
-            name="dest_port_id"
-            control={control}
-            render={({ field }) => (
-              <MasterPlaceSelect
-                name="dest_port_id"
-                label={useAirports ? 'Destination airport' : 'Destination port'}
-                value={field.value ?? ''}
-                onChange={field.onChange}
-                jobType={watched.job_type}
-                excludeId={watched.origin_port_id}
-                error={fieldError('dest_port_id')}
-              />
-            )}
-          />
+          {placeFields}
           <div className="space-y-1">
-            <label htmlFor="incoterm" className="text-xs font-medium text-[var(--color-neutral-500)]">Incoterm</label>
+            <label htmlFor="incoterm" className={labelClass}>
+              Incoterm
+            </label>
             <select id="incoterm" className={selectClass} {...register('incoterm')}>
               <option value="">Select…</option>
               {INCOTERMS.map((i) => (
@@ -356,23 +700,12 @@ export function QuotationForm({
             {...register('container_count', { valueAsNumber: true })}
           />
           <div className="space-y-1">
-            <label htmlFor="container_type_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="container_type_id" className={labelClass}>
               Container type
             </label>
             <select id="container_type_id" className={selectClass} {...register('container_type_id')}>
               <option value="">Select…</option>
-              {(() => {
-                const opts = [];
-                for (const c of containers) {
-                  if (!isUuid(String(c.id))) continue;
-                  opts.push(
-                    <option key={String(c.id)} value={String(c.id)}>
-                      {String(c.code ?? c.name ?? c.id)}
-                    </option>,
-                  );
-                }
-                return opts;
-              })()}
+              {containerOptions}
             </select>
           </div>
           <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)] mt-6">
@@ -387,7 +720,7 @@ export function QuotationForm({
             {...register('transit_time_days', { valueAsNumber: true })}
           />
           <div className="sm:col-span-2 space-y-1">
-            <label htmlFor="special_requirements" className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="special_requirements" className={labelClass}>
               Special requirements
             </label>
             <textarea
@@ -405,7 +738,9 @@ export function QuotationForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label htmlFor="currency_code" className="text-xs font-medium text-[var(--color-neutral-500)]">Currency *</label>
+            <label htmlFor="currency_code" className={labelClass}>
+              Currency *
+            </label>
             <select id="currency_code" className={selectClass} {...register('currency_code')}>
               <option value="">Select…</option>
               {currencies.map((c) => (
@@ -446,7 +781,9 @@ export function QuotationForm({
         </CardHeader>
         <div className="grid grid-cols-1 gap-4 p-4 pt-0">
           <div className="space-y-1">
-            <label htmlFor="remarks" className="text-xs font-medium text-[var(--color-neutral-500)]">Remarks</label>
+            <label htmlFor="remarks" className={labelClass}>
+              Remarks
+            </label>
             <textarea
               id="remarks"
               className="min-h-[72px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
@@ -454,7 +791,7 @@ export function QuotationForm({
             />
           </div>
           <div className="space-y-1">
-            <label htmlFor="internal_notes" className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="internal_notes" className={labelClass}>
               Internal notes
             </label>
             <textarea
@@ -464,7 +801,7 @@ export function QuotationForm({
             />
           </div>
           <div className="space-y-1">
-            <label htmlFor="routing_notes" className="text-xs font-medium text-[var(--color-neutral-500)]">
+            <label htmlFor="routing_notes" className={labelClass}>
               Routing notes
             </label>
             <textarea

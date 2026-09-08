@@ -87,10 +87,19 @@ function normalizeVendorNegotiationPricing(raw: unknown) {
   if (!pricing) return undefined;
   const record = asRecord(unwrapData(raw)) ?? asRecord(raw) ?? {};
   const costTotal = pickNumber(record.cost_total, record.costTotal);
+  const vendorCounter = pickNumber(
+    record.vendor_proposed_total,
+    record.vendorProposedTotal,
+    record.customer_proposed_total,
+    record.customerProposedTotal,
+    record.counter_offer_total,
+    record.counterOfferTotal,
+  );
   return {
     ...pricing,
     revenueTotal: pricing.revenueTotal ?? pricing.tenantProposedTotal ?? costTotal,
     tenantProposedTotal: pricing.tenantProposedTotal ?? pricing.revenueTotal ?? costTotal,
+    customerProposedTotal: pricing.customerProposedTotal ?? vendorCounter,
   };
 }
 

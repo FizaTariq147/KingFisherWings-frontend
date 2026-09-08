@@ -4,18 +4,19 @@ import { JOB_API } from '@/features/jobs/api/job.api';
  * Backend vendor pricing flow (docs):
  * Staff POST /jobs/:id/send-to-vendor { vendor_party_id, proposed_total? } →
  * vendor GET /vendor/quotes (sees cost_total) → POST …/price / accept / counter
- * Staff POST /jobs/vendor-quotes/:quoteId/approve|disapprove
- *
- * Keep job-offers / pass-to-vendor as fallbacks for older builds.
+ * Staff negotiate via /job-offers/:id/revise-and-send + negotiation/accept|reject
+ * Staff POST /jobs/job-offers/:quoteId/approve|disapprove (and vendor-quotes aliases)
  */
 export const VENDOR_JOB_OFFERS_API = {
   /** Preferred */
   sendToVendor: (jobId: string) => `/jobs/${encodeURIComponent(jobId)}/send-to-vendor`,
   passToVendor: JOB_API.passToVendor,
 
-  /** Staff list — prefer vendor-quotes, then job-offers */
-  vendorOffers: (jobId: string) => `/jobs/${encodeURIComponent(jobId)}/vendor-quotes`,
-  vendorOffersAlt: (jobId: string) => `/jobs/${encodeURIComponent(jobId)}/job-offers`,
+  /**
+   * Staff list — prefer Swagger primary `/jobs/:id/job-offers`, then vendor-quotes aliases.
+   */
+  vendorOffers: (jobId: string) => `/jobs/${encodeURIComponent(jobId)}/job-offers`,
+  vendorOffersAlt: (jobId: string) => `/jobs/${encodeURIComponent(jobId)}/vendor-quotes`,
   vendorOffersLegacy: (jobId: string) => `/jobs/${encodeURIComponent(jobId)}/vendor-offers`,
 
   staffOffer: (offerId: string) => `/job-offers/${encodeURIComponent(offerId)}`,
@@ -27,12 +28,16 @@ export const VENDOR_JOB_OFFERS_API = {
   staffRejectCounter: (offerId: string) =>
     `/job-offers/${encodeURIComponent(offerId)}/negotiation/reject`,
 
-  /** Preferred staff final decision */
+  /** Staff final decision — try all live Swagger aliases */
   approveOffer: (offerId: string) =>
+    `/jobs/job-offers/${encodeURIComponent(offerId)}/approve`,
+  approveOfferVendorQuotes: (offerId: string) =>
     `/jobs/vendor-quotes/${encodeURIComponent(offerId)}/approve`,
-  disapproveOffer: (offerId: string) =>
-    `/jobs/vendor-quotes/${encodeURIComponent(offerId)}/disapprove`,
   approveOfferAlt: (offerId: string) => `/job-offers/${encodeURIComponent(offerId)}/approve`,
+  disapproveOffer: (offerId: string) =>
+    `/jobs/job-offers/${encodeURIComponent(offerId)}/disapprove`,
+  disapproveOfferVendorQuotes: (offerId: string) =>
+    `/jobs/vendor-quotes/${encodeURIComponent(offerId)}/disapprove`,
   disapproveOfferAlt: (offerId: string) =>
     `/job-offers/${encodeURIComponent(offerId)}/disapprove`,
 

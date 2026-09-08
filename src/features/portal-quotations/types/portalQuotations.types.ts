@@ -163,5 +163,12 @@ export interface PortalQuotationDetail extends PortalQuotationListItem {
     description: string;
     amount?: number;
     currencyCode?: string;
+    chargeCode?: string;
+    unit?: string;
+    quantity?: number;
+    unitPrice?: number;
+    taxPercent?: number;
+    taxAmount?: number;
+    exchangeRate?: number;
   }>;
 }

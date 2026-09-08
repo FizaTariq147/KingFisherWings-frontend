@@ -62,7 +62,7 @@ export default function UserCreatePage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-4">
+    <div className="space-y-4">
       <button
         type="button"
         onClick={() => navigate(userPath())}
@@ -71,18 +71,12 @@ export default function UserCreatePage() {
         ← Back to users
       </button>
 
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Add user</h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Create a staff user for your tenant. They sign in on ERP Login →{' '}
-          <span className="font-medium text-[var(--color-neutral-600)]">Staff / User</span> with
-          slug + email + the temporary password below. On first login they must set their own
-          password; later logins use that password.
-        </p>
+      <div className="text-center">
+        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Add User</h2>
       </div>
 
       {createdLogin && (
-        <Card className="p-4 space-y-3 border-[var(--color-primary-200)] bg-[var(--color-primary-50)]">
+        <Card className="mx-auto max-w-5xl p-4 space-y-3 border-[var(--color-primary-200)] bg-[var(--color-primary-50)]">
           <div>
             <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">
               Staff / User login credentials
@@ -180,7 +174,7 @@ export default function UserCreatePage() {
       {apiError && (
         <div
           role="alert"
-          className="flex items-start gap-2 rounded-lg border px-4 py-3 text-sm"
+          className="mx-auto flex max-w-5xl items-start gap-2 rounded-lg border px-4 py-3 text-sm"
           style={{
             background: 'var(--color-danger-100)',
             borderColor: '#FECACA',
@@ -196,8 +190,10 @@ export default function UserCreatePage() {
         <UserForm
           key={tenantId || 'session'}
           mode="create"
+          layout="wizard"
           tenantId={tenantId}
           isSubmitting={createUser.isPending}
+          onCancel={() => navigate(userPath())}
           onSubmit={async (values) => {
             setApiError(null);
             try {
@@ -228,7 +224,7 @@ export default function UserCreatePage() {
       )}
 
       {createdLogin && (
-        <p className="text-xs text-[var(--color-neutral-400)]">
+        <p className="text-center text-xs text-[var(--color-neutral-400)]">
           Need another user?{' '}
           <button
             type="button"

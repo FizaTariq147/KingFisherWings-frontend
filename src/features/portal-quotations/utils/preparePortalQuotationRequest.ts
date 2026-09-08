@@ -113,10 +113,19 @@ export function applyPortalRouteFields<T extends PortalRoutableDto>(
   if (originRaw || destRaw) {
     next.special_requirements = appendCustomerRouteNote(
       dto.special_requirements,
-      originRaw,
-      destRaw,
+      displayRouteLabel(originRaw, ports),
+      displayRouteLabel(destRaw, ports),
     );
   }
 
   return next;
+}
+
+function displayRouteLabel(value: string | undefined, ports: PortalPortOption[]): string | undefined {
+  const trimmed = value?.trim();
+  if (!trimmed) return undefined;
+  if (isUuid(trimmed)) {
+    return ports.find((p) => p.id === trimmed)?.label ?? trimmed;
+  }
+  return trimmed;
 }

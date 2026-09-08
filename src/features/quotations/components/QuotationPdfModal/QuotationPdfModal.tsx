@@ -5,16 +5,21 @@ import { StoredFileLink } from '@/features/files/components/StoredFileLink';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { quotationPdfBranding } from '@/features/files/utils/pdfBranding';
+import { useAuthStore } from '@/store/authStore';
+import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { PDF_MODES, type PdfMode } from '../../constants/quotation.constants';
 import { useQuotationPdfStatus } from '../../hooks/useQuotationActions';
-import type { QuotationPdfInfo } from '../../types/quotation.types';
+import type { Quotation, QuotationPdfInfo } from '../../types/quotation.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import { generateQuotationPdf } from '../../utils/generateQuotationPdf';
 import { normalizeQuotationPdfInfo } from '../../utils/normalizeQuotationPdf';
 
 interface QuotationPdfModalProps {
   quotationId: string;
   quotationNumber: string;
   quotationDate?: string;
+  /** Full quotation for FRESA-style client PDF layout. */
+  quotation?: Quotation | null;
   open: boolean;
   isPending?: boolean;
   onClose: () => void;
@@ -42,6 +47,7 @@ export function QuotationPdfModal({
   quotationId,
   quotationNumber,
   quotationDate,
+  quotation,
   open,
   isPending,
   onClose,
@@ -49,13 +55,17 @@ export function QuotationPdfModal({
   pdfInfo,
   error,
 }: QuotationPdfModalProps) {
+  const user = useAuthStore((s) => s.user);
+  const { data: companies = [] } = useTenantCompanies(true);
   const [mode, setMode] = useState<PdfMode>('CUSTOMER');
   const [layout, setLayout] = useState('');
   const [poll, setPoll] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const [latestInfo, setLatestInfo] = useState<QuotationPdfInfo | undefined>(pdfInfo);
   const [readyUrl, setReadyUrl] = useState<string | null>(null);
+  const [readyBlob, setReadyBlob] = useState<Blob | null>(null);
   const [readyOpen, setReadyOpen] = useState(false);
+  const [clientPending, setClientPending] = useState(false);
   const wasOpen = useRef(false);
   const { data: statusData, refetch } = useQuotationPdfStatus(quotationId, open && poll);
 
@@ -64,6 +74,7 @@ export function QuotationPdfModal({
       setLatestInfo(pdfInfo);
       setReadyOpen(false);
       setReadyUrl(null);
+      setReadyBlob(null);
       setLocalError(null);
       setPoll(false);
     }
@@ -92,8 +103,9 @@ export function QuotationPdfModal({
     return () => window.clearInterval(t);
   }, [poll, open, refetch]);
 
+  // Only open ready modal from server URL if we did not already open a client-formatted blob.
   useEffect(() => {
-    if (!open || !poll || readyOpen || !statusData) return;
+    if (!open || !poll || readyOpen || readyBlob || !statusData) return;
     const fromStatus = normalizeQuotationPdfInfo(statusData);
     const url = pickReadyPdfUrl(fromStatus, mode);
     if (!url) return;
@@ -101,7 +113,7 @@ export function QuotationPdfModal({
     setReadyUrl(url);
     setReadyOpen(true);
     setPoll(false);
-  }, [open, poll, readyOpen, statusData, mode]);
+  }, [open, poll, readyOpen, readyBlob, statusData, mode]);
 
   const customerUrl = latestInfo?.customer_pdf_url;
   const internalUrl = latestInfo?.internal_pdf_url;
@@ -109,11 +121,33 @@ export function QuotationPdfModal({
   const statusText = useMemo(() => statusLabel(statusData), [statusData]);
   const pdfFileName = formatPdfFilename(quotationNumber, 'quotation');
   const pdfBranding = quotationPdfBranding(quotationNumber, quotationDate);
+  const busy = Boolean(isPending || clientPending);
+
+  const companyForPdf = useMemo(() => {
+    const match =
+      companies.find((c) => c.id && quotation?.company_id && c.id === quotation.company_id) ||
+      companies[0];
+    return {
+      name: match?.name || 'KingFisher Wings',
+      addressLines: [] as string[],
+    };
+  }, [companies, quotation?.company_id]);
 
   const closeReady = () => {
     setReadyOpen(false);
     setReadyUrl(null);
+    setReadyBlob(null);
     onClose();
+  };
+
+  const buildClientPdf = async (): Promise<Blob | null> => {
+    if (!quotation) return null;
+    return generateQuotationPdf({
+      quotation,
+      company: companyForPdf,
+      generatedBy: user?.email || user?.name || undefined,
+      confirmNote: mode === 'CUSTOMER' ? 'Please confirm the quote.' : undefined,
+    });
   };
 
   return (
@@ -163,11 +197,11 @@ export function QuotationPdfModal({
 
           {(customerUrl || internalUrl) && (
             <div className="space-y-1 text-sm">
-              <p className="text-xs font-medium text-[var(--color-neutral-500)]">Available PDFs</p>
+              <p className="text-xs font-medium text-[var(--color-neutral-500)]">Stored PDFs</p>
               {customerUrl ? (
                 <StoredFileLink
                   url={customerUrl}
-                  label="Open customer PDF"
+                  label="Open stored customer PDF"
                   displayName={pdfFileName}
                   branding={pdfBranding}
                 />
@@ -175,7 +209,7 @@ export function QuotationPdfModal({
               {internalUrl ? (
                 <StoredFileLink
                   url={internalUrl}
-                  label="Open internal PDF"
+                  label="Open stored internal PDF"
                   displayName={pdfFileName}
                   branding={pdfBranding}
                 />
@@ -183,9 +217,9 @@ export function QuotationPdfModal({
             </div>
           )}
 
-          {poll && !displayError ? (
+          {poll && !displayError && !readyBlob ? (
             <p className="text-xs text-[var(--color-neutral-500)]">
-              Generation queued. Preview opens when the PDF is ready.
+              Server PDF queued in background.
               {statusData ? ` Status: ${statusText}.` : ''}
             </p>
           ) : null}
@@ -196,30 +230,54 @@ export function QuotationPdfModal({
             </Button>
             <Button
               type="button"
-              disabled={isPending}
+              disabled={busy}
               onClick={async () => {
                 setLocalError(null);
-                setPoll(true);
                 setReadyOpen(false);
                 setReadyUrl(null);
+                setReadyBlob(null);
+                setClientPending(true);
                 try {
-                  const result = await onGenerate(mode, layout.trim() || undefined);
-                  if (result) {
-                    setLatestInfo((prev) => ({ ...prev, ...result }));
-                    const url = pickReadyPdfUrl(result, mode);
-                    if (url) {
-                      setReadyUrl(url);
-                      setReadyOpen(true);
+                  // Prefer FRESA-style client layout for preview/download.
+                  const blob = await buildClientPdf();
+                  if (blob) {
+                    setReadyBlob(blob);
+                    setReadyOpen(true);
+                  }
+
+                  // Keep server generate for stored/email PDFs (unchanged API).
+                  setPoll(true);
+                  try {
+                    const result = await onGenerate(mode, layout.trim() || undefined);
+                    if (result) {
+                      setLatestInfo((prev) => ({ ...prev, ...result }));
+                      if (!blob) {
+                        const url = pickReadyPdfUrl(result, mode);
+                        if (url) {
+                          setReadyUrl(url);
+                          setReadyOpen(true);
+                          setPoll(false);
+                        }
+                      }
+                    }
+                  } catch (err) {
+                    // Client PDF already shown — don't block UI on server failure.
+                    if (!blob) {
+                      setPoll(false);
+                      setLocalError(getErrorMessage(err));
+                    } else {
                       setPoll(false);
                     }
                   }
                 } catch (err) {
                   setPoll(false);
                   setLocalError(getErrorMessage(err));
+                } finally {
+                  setClientPending(false);
                 }
               }}
             >
-              {isPending ? 'Generating…' : 'Generate PDF'}
+              {busy ? 'Generating…' : 'Generate PDF'}
             </Button>
           </div>
         </div>
@@ -228,10 +286,12 @@ export function QuotationPdfModal({
       <PdfReadyModal
         open={readyOpen}
         onClose={closeReady}
-        url={readyUrl}
+        url={readyBlob ? null : readyUrl}
+        blob={readyBlob}
         title="Quotation PDF ready"
         fileName={pdfFileName}
-        branding={pdfBranding}
+        branding={readyBlob ? undefined : pdfBranding}
+        skipBranding={Boolean(readyBlob)}
         description="Your quotation PDF was created successfully."
       />
     </>

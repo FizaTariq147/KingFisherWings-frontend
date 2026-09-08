@@ -10,6 +10,7 @@ const TYPE_ALIASES: Record<string, string> = {
   PAYMENT_REQUEST: 'PAYMENT_REQUEST',
   PAYMENT: 'PAYMENT_REQUEST',
   INVOICE: 'INVOICE',
+  OPEN_INVOICE: 'OPEN_INVOICE',
   SYSTEM: 'SYSTEM',
 };
 
@@ -27,6 +28,7 @@ export function vendorNotificationTypeLabel(type?: string): string {
     case 'PAYMENT_REQUEST':
       return 'Payment request';
     case 'INVOICE':
+    case 'OPEN_INVOICE':
       return 'Invoice';
     case 'SYSTEM':
       return 'System';
@@ -78,7 +80,7 @@ export function vendorNotificationHref(n: VendorNotification): string | null {
       ? `/vendor/payment-requests/${paymentRequestId}`
       : '/vendor/payment-requests';
   }
-  if (type === 'INVOICE') {
+  if (type === 'INVOICE' || type === 'OPEN_INVOICE') {
     return invoiceId ? `/vendor/invoices/${invoiceId}` : '/vendor/invoices';
   }
   if (jobId) return `/vendor/jobs/${jobId}`;

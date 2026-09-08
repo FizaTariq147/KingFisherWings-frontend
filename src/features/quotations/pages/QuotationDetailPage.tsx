@@ -69,10 +69,17 @@ export default function QuotationDetailPage() {
   const negotiationEnabled =
     Boolean(id) &&
     Boolean(quotation) &&
-    (isAwaitingCustomerDecision(quotation.status) ||
-      ['APPROVED', 'REJECTED', 'DISAPPROVED', 'WON', 'LOST', 'CUSTOMER_REVIEW', 'SENT', 'NEGOTIATING'].includes(
-        coerceQuotationStatus(quotation.status),
-      ));
+    (isAwaitingCustomerDecision(quotation.api_status ?? quotation.status) ||
+      [
+        'APPROVED',
+        'REJECTED',
+        'DISAPPROVED',
+        'WON',
+        'LOST',
+        'CUSTOMER_REVIEW',
+        'SENT',
+        'NEGOTIATING',
+      ].includes(coerceQuotationStatus(quotation.api_status ?? quotation.status)));
   const { data: negotiationTimeline } = useQuotationNegotiation(id, negotiationEnabled);
 
   const lines = quotation?.lines ?? [];
@@ -90,7 +97,7 @@ export default function QuotationDetailPage() {
     return (
       resolveCustomerFacingQuoteStatus(
         quotation.id,
-        quotation.status,
+        quotation.api_status ?? quotation.status,
         quotation as unknown as Record<string, unknown>,
         {
           useMemory: true,
@@ -504,6 +511,7 @@ export default function QuotationDetailPage() {
         quotationId={id}
         quotationNumber={title}
         quotationDate={quotation.quotation_date}
+        quotation={quotation}
         open={pdfOpen}
         isPending={actions.generatePdf.isPending}
         pdfInfo={pdfInfo}

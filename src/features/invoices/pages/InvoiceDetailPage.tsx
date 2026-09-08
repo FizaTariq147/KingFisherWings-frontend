@@ -3,9 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
-import { StoredFileLink } from '@/features/files/components/StoredFileLink';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
-import { invoicePdfBranding } from '@/features/files/utils/pdfBranding';
+import { useJob } from '@/features/jobs/hooks/useJobs';
+import { useParty } from '@/features/parties/hooks/useParties';
+import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
 import { StaffPaymentProofReviewPanel } from '@/features/payment-proofs/components/StaffPaymentProofReviewPanel';
 import { InvoiceEmailModal } from '../components/InvoiceEmailModal';
@@ -18,7 +19,9 @@ import {
 } from '../constants/invoice.constants';
 import { useInvoiceActions, useInvoicePdf } from '../hooks/useInvoiceActions';
 import { useDeleteInvoice, useInvoice } from '../hooks/useInvoices';
+import { generateInvoicePdf } from '../utils/generateInvoicePdf';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { invoiceToPdfModel } from '../utils/invoiceToPdfModel';
 import { invoiceDisplayNumber } from '../utils/normalizeInvoice';
 
 function Field({ label, value }: { label: string; value?: string | number | null }) {
@@ -37,12 +40,16 @@ export default function InvoiceDetailPage() {
   const actions = useInvoiceActions(id);
   const remove = useDeleteInvoice();
   const { data: pdfInfo, refetch: refetchPdf } = useInvoicePdf(id, Boolean(id));
+  const { data: party } = useParty(invoice?.party_id || '');
+  const { data: job } = useJob(invoice?.job_id || '');
+  const { data: companies = [] } = useTenantCompanies(true);
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [emailOpen, setEmailOpen] = useState(false);
   const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
   const [pdfReadyUrl, setPdfReadyUrl] = useState<string | null>(null);
+  const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -63,10 +70,59 @@ export default function InvoiceDetailPage() {
   const editable = invoice.status === 'DRAFT';
   const canPost = invoice.status === 'DRAFT';
   const canCancel = !['CANCELLED', 'VOID', 'PAID'].includes(invoice.status);
-  const pdfUrl = pdfInfo?.pdf_url || pdfInfo?.customer_pdf_url || invoice.pdf_url;
   const invoiceNumber = invoiceDisplayNumber(invoice);
   const pdfFileName = formatPdfFilename(invoiceNumber, 'invoice');
-  const pdfBranding = invoicePdfBranding(invoiceNumber, invoice.invoice_date);
+  const companyMatch =
+    companies.find((c) => c.id && invoice.company_id && c.id === invoice.company_id) || companies[0];
+
+  const buildClientPdf = async () =>
+    generateInvoicePdf(
+      invoiceToPdfModel(invoice, {
+        party,
+        job,
+        company: { name: companyMatch?.name || 'KINGFISHER WINGS GROUP' },
+      }),
+    );
+
+  const openClientPdf = async (alsoGenerateServer: boolean) => {
+    setActionError(null);
+    setActionMessage(null);
+    setPending(true);
+    setPdfReadyUrl(null);
+    setPdfReadyBlob(null);
+    setPdfReadyOpen(true);
+    try {
+      const blob = await buildClientPdf();
+      setPdfReadyBlob(blob);
+      setActionMessage('PDF ready.');
+      if (alsoGenerateServer) {
+        try {
+          const info = await actions.generatePdf.mutateAsync();
+          let url = info?.pdf_url || info?.customer_pdf_url;
+          for (let attempt = 0; attempt < 8 && !url; attempt += 1) {
+            await new Promise((resolve) => {
+              window.setTimeout(resolve, 1500);
+            });
+            try {
+              const refreshed = await refetchPdf();
+              url = refreshed.data?.pdf_url || refreshed.data?.customer_pdf_url || url;
+            } catch {
+              /* PDF info may lag while generation runs */
+            }
+          }
+          if (url) setPdfReadyUrl(url);
+        } catch {
+          // Client layout already shown — server generate is best-effort for stored/email PDFs.
+        }
+      }
+      refetch();
+    } catch (err) {
+      setPdfReadyOpen(false);
+      setActionError(getErrorMessage(err));
+    } finally {
+      setPending(false);
+    }
+  };
 
   const run = async (fn: () => Promise<unknown>, successMsg?: string) => {
     setActionError(null);
@@ -130,34 +186,7 @@ export default function InvoiceDetailPage() {
           );
           if (!ok) return;
         }
-        setPdfReadyUrl(null);
-        setPdfReadyOpen(true);
-        void run(async () => {
-          try {
-            const info = await actions.generatePdf.mutateAsync();
-            let url = info?.pdf_url || info?.customer_pdf_url;
-            for (let attempt = 0; attempt < 8 && !url; attempt += 1) {
-              await new Promise((resolve) => {
-                window.setTimeout(resolve, 1500);
-              });
-              try {
-                const refreshed = await refetchPdf();
-                url = refreshed.data?.pdf_url || refreshed.data?.customer_pdf_url || url;
-              } catch {
-                /* PDF info may lag while generation runs */
-              }
-            }
-            if (!url) {
-              throw new Error(
-                'PDF is still generating. Use Open PDF on this page when it appears.',
-              );
-            }
-            setPdfReadyUrl(url);
-          } catch (err) {
-            setPdfReadyOpen(false);
-            throw err;
-          }
-        }, 'PDF ready.');
+        void openClientPdf(true);
       },
       variant: 'secondary' as const,
     },
@@ -297,18 +326,14 @@ export default function InvoiceDetailPage() {
                     <CardTitle>PDF</CardTitle>
                   </CardHeader>
                   <div className="p-4 pt-0 text-sm">
-                    {pdfUrl ? (
-                      <StoredFileLink
-                        url={pdfUrl}
-                        label="Open PDF"
-                        displayName={pdfFileName}
-                        branding={pdfBranding}
-                      />
-                    ) : (
-                      <p className="text-[var(--color-neutral-400)]">
-                        No PDF yet. Use Generate PDF.
-                      </p>
-                    )}
+                    <button
+                      type="button"
+                      className="font-medium text-[var(--color-primary-600)] hover:underline disabled:opacity-50"
+                      disabled={pending}
+                      onClick={() => void openClientPdf(false)}
+                    >
+                      Open PDF
+                    </button>
                   </div>
                 </Card>
                 <Card>
@@ -344,11 +369,16 @@ export default function InvoiceDetailPage() {
 
       <PdfReadyModal
         open={pdfReadyOpen}
-        onClose={() => setPdfReadyOpen(false)}
-        url={pdfReadyUrl}
+        onClose={() => {
+          setPdfReadyOpen(false);
+          setPdfReadyBlob(null);
+          setPdfReadyUrl(null);
+        }}
+        blob={pdfReadyBlob}
+        url={pdfReadyBlob ? null : pdfReadyUrl}
         title="Invoice PDF ready"
         fileName={pdfFileName}
-        branding={pdfBranding}
+        skipBranding
         description="Your invoice PDF was created successfully."
       />
     </>

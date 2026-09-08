@@ -35,6 +35,10 @@ export interface VendorInvoiceDetail extends VendorInvoiceListItem {
   taxTotal?: number;
   remarks?: string;
   pdfUrl?: string;
+  partyName?: string;
+  partyEmail?: string;
+  partyPhone?: string;
+  vatRate?: number;
   lines: VendorInvoiceLine[];
 }
 

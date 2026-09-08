@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
@@ -7,17 +7,20 @@ import { CountrySelect } from '@/components/ui/CountrySelect';
 import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
 import { getServerErrorMessage } from '@/lib/validation';
-import { SearchableSelect } from '@/features/masters/components/SearchableSelect';
-import { JOB_TYPES, JOB_TYPE_LABELS } from '@/features/quotations/constants/quotation.constants';
+import type { JobType } from '@/features/quotations/constants/quotation.constants';
+import { JOB_TYPE_LABELS } from '@/features/quotations/constants/quotation.constants';
+import {
+  JobTypeSelectGrid,
+  QuotationWizardNav,
+  QuotationWizardStepper,
+} from '@/features/quotations/components/quotation-wizard';
 import {
   PortalPageHeader,
   PortalPanel,
-  portalSelectClassName,
 } from '@/features/portal-auth/components/portal-ui';
+import { PortalPlaceSelect } from '../components/PortalPlaceSelect';
 import {
-  usePortalAirportOptions,
   usePortalLocaleCurrency,
-  usePortalPortOptions,
   usePortalQuotationEstimate,
   usePortalServiceCatalog,
   useRequestPortalQuotation,
@@ -37,10 +40,7 @@ import {
   sumPackageDraftWeightKg,
   type PortalPackageDraft,
 } from '../utils/buildPortalEstimatePackages';
-import {
-  isAirJobType,
-  portalPortsToSelectOptions,
-} from '../utils/loadPortalPortOptions';
+import { isAirJobType, type PortalPortOption } from '../utils/loadPortalPortOptions';
 import {
   buildCustomerPriceNote,
   calcCustomerServiceLineAmount,
@@ -75,28 +75,44 @@ function mergeSpecialRequirements(base: string | undefined, note: string | undef
   return merged.length > 2000 ? merged.slice(0, 2000) : merged;
 }
 
-function useDebouncedValue(value: string, delayMs: number): string {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const t = window.setTimeout(() => setDebounced(value), delayMs);
-    return () => window.clearTimeout(t);
-  }, [value, delayMs]);
-  return debounced;
-}
+const STEP0_FIELDS: (keyof PortalBookQuoteFormValues)[] = ['job_type'];
+
+const PORT_DETAILS_FIELDS: (keyof PortalBookQuoteFormValues)[] = [
+  'origin_port',
+  'dest_port',
+  'currency_code',
+  'commodity',
+  'valid_until',
+  'special_requirements',
+];
 
 export default function PortalBookPage() {
   const navigate = useNavigate();
   const requestQuote = useRequestPortalQuotation();
   const estimateQuote = usePortalQuotationEstimate();
+  const [step, setStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [countryCode, setCountryCode] = useState('AE');
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  /** Customer-entered unit prices keyed by service code. */
   const [servicePrices, setServicePrices] = useState<Record<string, string>>({});
   const [estimatePreview, setEstimatePreview] = useState<string | null>(null);
   const [packages, setPackages] = useState<PortalPackageDraft[]>([emptyPortalPackageDraft()]);
-  const [placeSearch, setPlaceSearch] = useState('');
-  const debouncedPlaceSearch = useDebouncedValue(placeSearch, 300);
+  const [placeCache, setPlaceCache] = useState<PortalPortOption[]>([]);
+
+  const rememberPlaces = useCallback((places: PortalPortOption[]) => {
+    setPlaceCache((prev) => {
+      const map = new Map(prev.map((p) => [p.id, p]));
+      let changed = false;
+      for (const place of places) {
+        const existing = map.get(place.id);
+        if (!existing || existing.label !== place.label) {
+          map.set(place.id, place);
+          changed = true;
+        }
+      }
+      return changed ? [...map.values()] : prev;
+    });
+  }, []);
 
   const {
     data: localeCurrency,
@@ -124,19 +140,14 @@ export default function PortalBookPage() {
     },
   });
 
-  const { setValue, watch, control, register, formState } = form;
+  const { setValue, watch, control, register, formState, trigger, handleSubmit, getValues } = form;
   const currencyCode = watch('currency_code');
   const resolvedCurrencyCode =
     typeof currencyCode === 'string' && currencyCode.trim() ? currencyCode.trim() : '';
   const jobType = watch('job_type');
   const useAirports = isAirJobType(jobType);
-  const portsQuery = usePortalPortOptions(debouncedPlaceSearch, !useAirports);
-  const airportsQuery = usePortalAirportOptions(debouncedPlaceSearch, useAirports);
-  const placeQuery = useAirports ? airportsQuery : portsQuery;
-  const portOptions = useMemo(
-    () => portalPortsToSelectOptions(placeQuery.data ?? []),
-    [placeQuery.data],
-  );
+  const originPort = watch('origin_port');
+  const destPort = watch('dest_port');
   const formGrossWeight = watch('gross_weight');
   const formChargeableWeight = watch('chargeable_weight');
   const formVolumeCbm = watch('volume_cbm');
@@ -159,14 +170,15 @@ export default function PortalBookPage() {
   const packagesWeight = useMemo(() => sumPackageDraftWeightKg(packages), [packages]);
   const packagesPieces = useMemo(() => sumPackageDraftPieces(packages), [packages]);
 
-  // Catalog services are per job type — drop selections when job type changes.
   useEffect(() => {
     setSelectedServices([]);
     setServicePrices({});
     setEstimatePreview(null);
-  }, [jobType]);
+    setValue('origin_port', '');
+    setValue('dest_port', '');
+    setPlaceCache([]);
+  }, [jobType, setValue]);
 
-  // Drop invalid codes when catalog refreshes.
   useEffect(() => {
     setSelectedServices((prev) => {
       if (!prev.length) return prev;
@@ -184,7 +196,6 @@ export default function PortalBookPage() {
     setValue('currency_code', localeCurrency, { shouldValidate: true });
   }, [localeCurrency, setValue]);
 
-  // Auto-fill cargo totals from packages (CBM whenever L×W×H are present).
   useEffect(() => {
     if (packagesCbm != null) {
       setValue('volume_cbm', packagesCbm, { shouldValidate: true, shouldDirty: true });
@@ -202,11 +213,8 @@ export default function PortalBookPage() {
       chargeableWeightKg:
         typeof formChargeableWeight === 'number' ? formChargeableWeight : undefined,
       grossWeightKg:
-        typeof formGrossWeight === 'number'
-          ? formGrossWeight
-          : packagesWeight,
-      volumeCbm:
-        typeof formVolumeCbm === 'number' ? formVolumeCbm : packagesCbm,
+        typeof formGrossWeight === 'number' ? formGrossWeight : packagesWeight,
+      volumeCbm: typeof formVolumeCbm === 'number' ? formVolumeCbm : packagesCbm,
       pieces: typeof formPieces === 'number' ? formPieces : packagesPieces,
     }),
     [
@@ -246,15 +254,6 @@ export default function PortalBookPage() {
     return any ? Math.round(total * 100) / 100 : undefined;
   }, [customerPriceRows]);
 
-  const portHint =
-    placeQuery.isLoading
-      ? `Loading ${useAirports ? 'airports' : 'ports'}…`
-      : placeQuery.isError
-        ? `${useAirports ? 'Airport' : 'Port'} list unavailable — type the exact name (e.g. Dubai, Jebel Ali).`
-        : portOptions.length > 0
-          ? `Search by ${useAirports ? 'IATA' : 'port'} code or name, or type your own.`
-          : `Type ${useAirports ? 'airport' : 'port'} name or code.`;
-
   const submitDisabled =
     requestQuote.isPending || currencyLoading || currencyError || !resolvedCurrencyCode;
 
@@ -284,7 +283,7 @@ export default function PortalBookPage() {
     setError(null);
     setEstimatePreview(null);
 
-    const values = form.getValues() as PortalBookQuotePayload;
+    const values = getValues() as PortalBookQuotePayload;
     const currency = values.currency_code || resolvedCurrencyCode;
     if (!currency) {
       setError('Select a country so quote currency is set before estimating.');
@@ -311,7 +310,6 @@ export default function PortalBookPage() {
         commodity: values.commodity?.trim() || undefined,
         gross_weight: values.gross_weight,
         chargeable_weight: values.chargeable_weight,
-        // Backend ignores client volume_cbm when package dims are present.
         volume_cbm: hasDimensions ? undefined : values.volume_cbm ?? packagesCbm,
         pieces: values.pieces,
         special_requirements: values.special_requirements?.trim() || undefined,
@@ -323,7 +321,7 @@ export default function PortalBookPage() {
         origin_port: values.origin_port,
         dest_port: values.dest_port,
       },
-      placeQuery.data ?? [],
+      placeCache,
     );
 
     void estimateQuote
@@ -332,9 +330,7 @@ export default function PortalBookPage() {
         const total =
           result.total ?? result.lines.reduce((sum, line) => sum + (line.amount ?? 0), 0);
         const yourTotal =
-          customerTotal != null
-            ? ` · Your prices ${currency} ${customerTotal}`
-            : '';
+          customerTotal != null ? ` · Your prices ${currency} ${customerTotal}` : '';
         setEstimatePreview(
           `Catalog estimate ${result.currencyCode || currency} ${total} · CBM ${result.volumeCbm ?? packagesCbm ?? '—'}${yourTotal}`,
         );
@@ -342,12 +338,87 @@ export default function PortalBookPage() {
       .catch((err) => setError(getServerErrorMessage(err) || 'Estimate failed.'));
   };
 
+  const onFinalSubmit = handleSubmit(async (rawValues) => {
+    setError(null);
+    const values = rawValues as PortalBookQuotePayload;
+    try {
+      const currency = values.currency_code || resolvedCurrencyCode || 'AED';
+      const priceNote = buildCustomerPriceNote(
+        selectedServices
+          .filter((code) => catalogCodes.has(code))
+          .map((code) => ({
+            code,
+            unit_price: servicePrices[code] ?? '',
+          })),
+        catalogByCode,
+        currency,
+        qtyInputs,
+      );
+
+      const hasPackageDims = packages.some(
+        (pkg) => pkg.length_cm.trim() && pkg.width_cm.trim() && pkg.height_cm.trim(),
+      );
+      const volumeCbm = hasPackageDims ? undefined : values.volume_cbm ?? packagesCbm;
+
+      const payload = applyPortalRouteFields(
+        {
+          job_type: values.job_type,
+          currency_code: currency,
+          commodity: values.commodity?.trim() || undefined,
+          gross_weight: values.gross_weight ?? packagesWeight,
+          chargeable_weight: values.chargeable_weight,
+          volume_cbm: volumeCbm,
+          pieces: values.pieces ?? packagesPieces,
+          special_requirements: mergeSpecialRequirements(values.special_requirements, priceNote),
+          valid_until: values.valid_until || undefined,
+        },
+        {
+          origin_port: values.origin_port,
+          dest_port: values.dest_port,
+        },
+        placeCache,
+      );
+
+      const created = await requestQuote.mutateAsync(payload);
+      if (created.id && created.id !== 'new') {
+        navigate(`/portal/quotes/${created.id}`);
+      } else {
+        navigate('/portal/quotes');
+      }
+    } catch (err) {
+      setError(
+        err instanceof PortalApiError || err instanceof Error
+          ? err.message
+          : getServerErrorMessage(err) || 'Could not submit quote request.',
+      );
+    }
+  });
+
+  const goNext = async () => {
+    setError(null);
+    if (step === 0) {
+      const ok = await trigger(STEP0_FIELDS);
+      if (!ok || !jobType) return;
+      setStep(1);
+      return;
+    }
+    if (step === 1) {
+      const ok = await trigger(PORT_DETAILS_FIELDS);
+      if (!ok || !resolvedCurrencyCode) {
+        if (!resolvedCurrencyCode) {
+          setError('Select a country so quote currency is set before continuing.');
+        }
+        return;
+      }
+      setStep(2);
+      return;
+    }
+    await onFinalSubmit();
+  };
+
   return (
-    <div className="mx-auto max-w-2xl space-y-5">
-      <PortalPageHeader
-        title="Request a quote"
-        description="Enter package dimensions for automatic CBM, add your own service prices, then submit the enquiry."
-      />
+    <div className="mx-auto max-w-5xl space-y-5">
+      <PortalPageHeader title="Request a quote" />
 
       <PortalPanel padded>
         {error && (
@@ -360,449 +431,391 @@ export default function PortalBookPage() {
         )}
 
         <form
-          className="space-y-4"
+          className="space-y-6"
           noValidate
-          onSubmit={form.handleSubmit(async (rawValues) => {
-            setError(null);
-            const values = rawValues as PortalBookQuotePayload;
-            try {
-              const currency = values.currency_code || resolvedCurrencyCode || 'AED';
-              const priceNote = buildCustomerPriceNote(
-                selectedServices
-                  .filter((code) => catalogCodes.has(code))
-                  .map((code) => ({
-                    code,
-                    unit_price: servicePrices[code] ?? '',
-                  })),
-                catalogByCode,
-                currency,
-                qtyInputs,
-              );
-
-              const hasPackageDims = packages.some(
-                (pkg) =>
-                  pkg.length_cm.trim() && pkg.width_cm.trim() && pkg.height_cm.trim(),
-              );
-              const volumeCbm = hasPackageDims ? undefined : values.volume_cbm ?? packagesCbm;
-
-              // Enquiry only — OpenAPI PortalQuotationRequestDto forbids packages / service_codes.
-              const payload = applyPortalRouteFields(
-                {
-                  job_type: values.job_type,
-                  currency_code: currency,
-                  commodity: values.commodity?.trim() || undefined,
-                  gross_weight: values.gross_weight ?? packagesWeight,
-                  chargeable_weight: values.chargeable_weight,
-                  volume_cbm: volumeCbm,
-                  pieces: values.pieces ?? packagesPieces,
-                  special_requirements: mergeSpecialRequirements(
-                    values.special_requirements,
-                    priceNote,
-                  ),
-                  valid_until: values.valid_until || undefined,
-                },
-                {
-                  origin_port: values.origin_port,
-                  dest_port: values.dest_port,
-                },
-                placeQuery.data ?? [],
-              );
-
-              const created = await requestQuote.mutateAsync(payload);
-              if (created.id && created.id !== 'new') {
-                navigate(`/portal/quotes/${created.id}`);
-              } else {
-                navigate('/portal/quotes');
-              }
-            } catch (err) {
-              setError(
-                err instanceof PortalApiError || err instanceof Error
-                  ? err.message
-                  : getServerErrorMessage(err) || 'Could not submit quote request.',
-              );
-            }
-          })}
+          onSubmit={(e) => {
+            e.preventDefault();
+            void goNext();
+          }}
         >
-          <label className="block text-sm">
-            <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
-              Job type <span className="text-[var(--color-danger-500)]">*</span>
-            </span>
-            <select className={portalSelectClassName} {...register('job_type')}>
-              {JOB_TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {JOB_TYPE_LABELS[t] ?? t}
-                </option>
-              ))}
-            </select>
-            {errors.job_type && (
-              <p className="mt-1 text-xs text-[var(--color-danger-500)]">{errors.job_type.message}</p>
-            )}
-          </label>
+          <QuotationWizardStepper currentStep={step} />
 
-          <div className="space-y-1">
-            <CountrySelect
-              label="Currency"
-              required
-              allowEmpty={false}
-              value={countryCode}
-              onChange={(iso) => {
-                setCountryCode(iso);
-                setValue('currency_code', '', { shouldValidate: false });
-              }}
-              error={errors.currency_code?.message}
-              hint={
-                currencyLoading
-                  ? 'Resolving currency…'
-                  : currencyCode
-                    ? `Quote currency: ${currencyCode}`
-                    : 'Select a country to set the quote currency'
-              }
-            />
-            <input type="hidden" {...register('currency_code')} />
-            {currencyError && (
-              <p className="text-xs text-[var(--color-danger-500)]">
-                {currencyQueryError instanceof Error
-                  ? currencyQueryError.message
-                  : 'Could not resolve currency for this country.'}
-              </p>
-            )}
-          </div>
-
-          <Controller
-            name="origin_port"
-            control={control}
-            render={({ field }) => (
-              <SearchableSelect
-                name="origin_port"
-                label={useAirports ? 'Origin airport' : 'Origin port'}
-                required
-                value={typeof field.value === 'string' ? field.value : ''}
-                options={portOptions}
-                onChange={field.onChange}
-                onQueryChange={setPlaceSearch}
-                allowManualValue
-                allowManualUuid={false}
-                placeholder="e.g. DXB — Dubai"
-                hint={portHint}
-                error={errors.origin_port?.message}
+          {step === 0 ? (
+            <div className="space-y-5">
+              <JobTypeSelectGrid
+                value={jobType}
+                onChange={(jt: JobType) =>
+                  setValue('job_type', jt, { shouldValidate: true, shouldDirty: true })
+                }
+                error={errors.job_type?.message}
+                heading="What type of Quotation would you like to request?"
               />
-            )}
-          />
 
-          <Controller
-            name="dest_port"
-            control={control}
-            render={({ field }) => (
-              <SearchableSelect
-                name="dest_port"
-                label={useAirports ? 'Destination airport' : 'Destination port'}
-                required
-                value={typeof field.value === 'string' ? field.value : ''}
-                options={portOptions}
-                onChange={field.onChange}
-                onQueryChange={setPlaceSearch}
-                allowManualValue
-                allowManualUuid={false}
-                placeholder="e.g. LHR — London Heathrow"
-                hint={portHint}
-                error={errors.dest_port?.message}
-              />
-            )}
-          />
-
-          <Input
-            label="Commodity"
-            hint="Required if weight, volume, and pieces are all empty"
-            error={errors.commodity?.message}
-            {...register('commodity')}
-          />
-
-          <div className="space-y-3 rounded-md border border-[var(--color-neutral-200)] p-3">
-            <div>
-              <p className="text-sm font-medium">Packages</p>
-              <p className="text-xs text-[var(--color-neutral-500)]">
-                Enter L × W × H in cm — CBM is calculated as metres × pieces
-                ((L÷100) × (W÷100) × (H÷100) × pieces). Gross weight is required for estimate
-                preview. When dimensions are sent, the server ignores manual volume_cbm.
-              </p>
-            </div>
-            {packages.map((pkg, index) => {
-              const pkgCbm = calcPackageDraftCbm(pkg);
-              return (
-                <div
-                  key={index}
-                  className="space-y-2 rounded-md border border-[var(--color-neutral-100)] bg-[var(--color-neutral-50)] p-3"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-xs font-medium text-[var(--color-neutral-600)]">
-                      Package {index + 1}
+              {serviceCatalog.data?.length ? (
+                <div className="space-y-3 rounded-md border border-[var(--color-neutral-200)] p-3">
+                  <div>
+                    <p className="text-sm font-medium">Services &amp; your prices</p>
+                    <p className="text-xs text-[var(--color-neutral-500)]">
+                      Select services for{' '}
+                      <strong>
+                        {JOB_TYPE_LABELS[jobType as keyof typeof JOB_TYPE_LABELS] ?? jobType}
+                      </strong>
+                      . You can refine packages on the last step before estimating.
                     </p>
-                    {packages.length > 1 ? (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => {
-                          setPackages((prev) => prev.filter((_, i) => i !== index));
-                          setEstimatePreview(null);
-                        }}
-                      >
-                        Remove
-                      </Button>
-                    ) : null}
                   </div>
-                  <div className="grid gap-2 sm:grid-cols-3">
-                    <Input
-                      id={`pkg-${index}-length`}
-                      label="Length (cm)"
-                      type="number"
-                      step="any"
-                      min={0}
-                      value={pkg.length_cm}
-                      onChange={(e) => updatePackage(index, { length_cm: e.target.value })}
-                    />
-                    <Input
-                      id={`pkg-${index}-width`}
-                      label="Width (cm)"
-                      type="number"
-                      step="any"
-                      min={0}
-                      value={pkg.width_cm}
-                      onChange={(e) => updatePackage(index, { width_cm: e.target.value })}
-                    />
-                    <Input
-                      id={`pkg-${index}-height`}
-                      label="Height (cm)"
-                      type="number"
-                      step="any"
-                      min={0}
-                      value={pkg.height_cm}
-                      onChange={(e) => updatePackage(index, { height_cm: e.target.value })}
-                    />
+                  <div className="space-y-3">
+                    {serviceCatalog.data.map((service) => {
+                      const checked = selectedServices.includes(service.code);
+                      const row = customerPriceRows.find((r) => r.code === service.code);
+                      return (
+                        <div
+                          key={service.code}
+                          className="space-y-2 rounded-md border border-[var(--color-neutral-100)] p-3"
+                        >
+                          <label className="flex items-start gap-2 text-sm">
+                            <input
+                              type="checkbox"
+                              className="mt-1"
+                              checked={checked}
+                              onChange={(e) => toggleService(service.code, e.target.checked)}
+                            />
+                            <span>
+                              <span className="font-medium">{service.name}</span>
+                              <span className="block text-xs text-[var(--color-neutral-500)]">
+                                {service.code}
+                                {service.pricingBasis ? ` · ${service.pricingBasis}` : ''}
+                                {service.unitPrice != null
+                                  ? ` · catalog ${service.currencyCode || ''} ${service.unitPrice}`
+                                  : ''}
+                              </span>
+                            </span>
+                          </label>
+                          {checked ? (
+                            <div className="grid gap-2 pl-6 sm:grid-cols-3">
+                              <Input
+                                id={`svc-price-${service.code}`}
+                                label="Your unit price"
+                                required
+                                type="number"
+                                step="any"
+                                min={0}
+                                value={servicePrices[service.code] ?? ''}
+                                onChange={(e) => {
+                                  setServicePrices((prev) => ({
+                                    ...prev,
+                                    [service.code]: e.target.value,
+                                  }));
+                                  setEstimatePreview(null);
+                                }}
+                              />
+                              <div className="flex flex-col justify-end">
+                                <p className="text-xs font-medium text-[var(--color-neutral-600)]">
+                                  Qty ({service.pricingBasis || 'FLAT'})
+                                </p>
+                                <p className="flex h-9 items-center text-sm">{row?.qty ?? '—'}</p>
+                              </div>
+                              <div className="flex flex-col justify-end">
+                                <p className="text-xs font-medium text-[var(--color-neutral-600)]">
+                                  Line total
+                                </p>
+                                <p className="flex h-9 items-center text-sm font-medium">
+                                  {row?.amount != null
+                                    ? `${resolvedCurrencyCode || ''} ${row.amount}`
+                                    : '—'}
+                                </p>
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      );
+                    })}
                   </div>
-                  <div className="grid gap-2 sm:grid-cols-3">
-                    <Input
-                      id={`pkg-${index}-weight`}
-                      label="Gross weight (kg)"
-                      required
-                      type="number"
-                      step="any"
-                      min={0}
-                      value={pkg.gross_weight_kg}
-                      onChange={(e) => updatePackage(index, { gross_weight_kg: e.target.value })}
-                    />
-                    <Input
-                      id={`pkg-${index}-pieces`}
-                      label="Pieces"
-                      type="number"
-                      step={1}
-                      min={1}
-                      value={pkg.pieces}
-                      onChange={(e) => updatePackage(index, { pieces: e.target.value })}
-                    />
-                    <div className="flex flex-col justify-end">
-                      <p className="text-xs font-medium text-[var(--color-neutral-600)]">CBM</p>
-                      <p className="h-9 flex items-center text-sm text-[var(--color-neutral-800)]">
-                        {formatCbmDisplay(pkgCbm)}
-                      </p>
-                    </div>
-                  </div>
+                  {customerTotal != null ? (
+                    <p className="text-sm font-medium text-[var(--color-neutral-800)]">
+                      Your total: {resolvedCurrencyCode} {customerTotal}
+                    </p>
+                  ) : null}
                 </div>
-              );
-            })}
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                onClick={() => {
-                  setPackages((prev) => [...prev, emptyPortalPackageDraft()]);
-                  setEstimatePreview(null);
-                }}
-              >
-                Add package
-              </Button>
-              <p className="text-xs text-[var(--color-neutral-600)]">
-                Total CBM: <strong>{formatCbmDisplay(packagesCbm)}</strong>
-              </p>
-            </div>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Input
-              label="Gross weight (kg)"
-              hint={packagesWeight != null ? 'Filled from packages' : undefined}
-              {...numberInputProps(errors.gross_weight?.message)}
-              {...register('gross_weight', { setValueAs: optionalNumberValue })}
-            />
-            <Input
-              label="Chargeable weight (kg)"
-              {...numberInputProps(errors.chargeable_weight?.message)}
-              {...register('chargeable_weight', { setValueAs: optionalNumberValue })}
-            />
-            <Input
-              label="Volume (CBM)"
-              hint={
-                packagesCbm != null
-                  ? 'Calculated from package L × W × H'
-                  : 'Enter package dimensions to auto-calculate'
-              }
-              readOnly={packagesCbm != null}
-              {...numberInputProps(errors.volume_cbm?.message)}
-              {...register('volume_cbm', { setValueAs: optionalNumberValue })}
-            />
-            <Input
-              label="Pieces"
-              type="number"
-              step={1}
-              min={0}
-              hint={packagesPieces != null ? 'Filled from packages' : undefined}
-              error={errors.pieces?.message}
-              {...register('pieces', { setValueAs: optionalNumberValue })}
-            />
-          </div>
-
-          <Input
-            label="Valid until"
-            type="date"
-            error={errors.valid_until?.message}
-            {...register('valid_until')}
-          />
-
-          <label className="block text-sm">
-            <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
-              Special requirements
-            </span>
-            <textarea
-              className="min-h-[96px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:border-[var(--color-primary-500)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-500)]"
-              maxLength={2000}
-              {...register('special_requirements')}
-            />
-            {errors.special_requirements && (
-              <p className="mt-1 text-xs text-[var(--color-danger-500)]">
-                {errors.special_requirements.message}
-              </p>
-            )}
-          </label>
-
-          {serviceCatalog.data?.length ? (
-            <div className="space-y-3 rounded-md border border-[var(--color-neutral-200)] p-3">
-              <div>
-                <p className="text-sm font-medium">Services &amp; your prices</p>
+              ) : (
                 <p className="text-xs text-[var(--color-neutral-500)]">
-                  Select services for{' '}
-                  <strong>
-                    {JOB_TYPE_LABELS[jobType as keyof typeof JOB_TYPE_LABELS] ?? jobType}
-                  </strong>
-                  , then enter <em>your</em> unit price. Line totals use the catalog pricing basis
-                  (flat / per kg / per CBM / per piece). Your prices are included on the enquiry for
-                  the forwarder.
+                  {serviceCatalog.isLoading
+                    ? 'Loading services for this job type…'
+                    : 'No portal-visible services for this job type yet. You can still submit an enquiry.'}
                 </p>
+              )}
+            </div>
+          ) : null}
+
+          {step === 1 ? (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <Controller
+                name="origin_port"
+                control={control}
+                render={({ field }) => (
+                  <PortalPlaceSelect
+                    name="origin_port"
+                    label={useAirports ? 'Origin airport' : 'Origin port'}
+                    required
+                    jobType={jobType}
+                    value={typeof field.value === 'string' ? field.value : ''}
+                    onChange={field.onChange}
+                    onPlacesLoaded={rememberPlaces}
+                    excludeId={typeof destPort === 'string' && destPort ? destPort : undefined}
+                    placeholder={
+                      useAirports ? 'Search airport e.g. DXB — Dubai' : 'Search port e.g. Jebel Ali'
+                    }
+                    error={errors.origin_port?.message}
+                  />
+                )}
+              />
+              <Controller
+                name="dest_port"
+                control={control}
+                render={({ field }) => (
+                  <PortalPlaceSelect
+                    name="dest_port"
+                    label={useAirports ? 'Destination airport' : 'Destination port'}
+                    required
+                    jobType={jobType}
+                    value={typeof field.value === 'string' ? field.value : ''}
+                    onChange={field.onChange}
+                    onPlacesLoaded={rememberPlaces}
+                    excludeId={
+                      typeof originPort === 'string' && originPort ? originPort : undefined
+                    }
+                    placeholder={
+                      useAirports
+                        ? 'Search airport e.g. LHR — London Heathrow'
+                        : 'Search port e.g. Rotterdam'
+                    }
+                    error={errors.dest_port?.message}
+                  />
+                )}
+              />
+              <div className="space-y-1">
+                <CountrySelect
+                  label="Currency"
+                  required
+                  allowEmpty={false}
+                  value={countryCode}
+                  onChange={(iso) => {
+                    setCountryCode(iso);
+                    setValue('currency_code', '', { shouldValidate: false });
+                  }}
+                  error={errors.currency_code?.message}
+                />
+                <input type="hidden" {...register('currency_code')} />
+                {currencyError && (
+                  <p className="text-xs text-[var(--color-danger-500)]">
+                    {currencyQueryError instanceof Error
+                      ? currencyQueryError.message
+                      : 'Could not resolve currency for this country.'}
+                  </p>
+                )}
               </div>
-              <div className="space-y-3">
-                {serviceCatalog.data.map((service) => {
-                  const checked = selectedServices.includes(service.code);
-                  const row = customerPriceRows.find((r) => r.code === service.code);
+              <Input
+                label="Valid until"
+                type="date"
+                error={errors.valid_until?.message}
+                {...register('valid_until')}
+              />
+              <Input
+                label="Commodity"
+                error={errors.commodity?.message}
+                {...register('commodity')}
+              />
+              <label className="block text-sm md:col-span-2">
+                <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
+                  Special requirements
+                </span>
+                <textarea
+                  className="min-h-[96px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:border-[var(--color-primary-500)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-500)]"
+                  maxLength={2000}
+                  {...register('special_requirements')}
+                />
+                {errors.special_requirements && (
+                  <p className="mt-1 text-xs text-[var(--color-danger-500)]">
+                    {errors.special_requirements.message}
+                  </p>
+                )}
+              </label>
+            </div>
+          ) : null}
+
+          {step === 2 ? (
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">
+                Planned Container / Consignment
+              </h3>
+              <div className="space-y-3 rounded-md border border-[var(--color-neutral-200)] p-3">
+                <div>
+                  <p className="text-sm font-medium">Packages</p>
+                  <p className="text-xs text-[var(--color-neutral-500)]">
+                    Enter L × W × H in cm — CBM is calculated as metres × pieces. Gross weight is
+                    required for estimate preview.
+                  </p>
+                </div>
+                {packages.map((pkg, index) => {
+                  const pkgCbm = calcPackageDraftCbm(pkg);
                   return (
                     <div
-                      key={service.code}
-                      className="rounded-md border border-[var(--color-neutral-100)] p-3 space-y-2"
+                      key={index}
+                      className="space-y-2 rounded-md border border-[var(--color-neutral-100)] bg-[var(--color-neutral-50)] p-3"
                     >
-                      <label className="flex items-start gap-2 text-sm">
-                        <input
-                          type="checkbox"
-                          className="mt-1"
-                          checked={checked}
-                          onChange={(e) => toggleService(service.code, e.target.checked)}
-                        />
-                        <span>
-                          <span className="font-medium">{service.name}</span>
-                          <span className="block text-xs text-[var(--color-neutral-500)]">
-                            {service.code}
-                            {service.pricingBasis ? ` · ${service.pricingBasis}` : ''}
-                            {service.unitPrice != null
-                              ? ` · catalog ${service.currencyCode || ''} ${service.unitPrice}`
-                              : ''}
-                          </span>
-                        </span>
-                      </label>
-                      {checked ? (
-                        <div className="grid gap-2 sm:grid-cols-3 pl-6">
-                          <Input
-                            id={`svc-price-${service.code}`}
-                            label="Your unit price"
-                            required
-                            type="number"
-                            step="any"
-                            min={0}
-                            value={servicePrices[service.code] ?? ''}
-                            onChange={(e) => {
-                              setServicePrices((prev) => ({
-                                ...prev,
-                                [service.code]: e.target.value,
-                              }));
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-xs font-medium text-[var(--color-neutral-600)]">
+                          Package {index + 1}
+                        </p>
+                        {packages.length > 1 ? (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                              setPackages((prev) => prev.filter((_, i) => i !== index));
                               setEstimatePreview(null);
                             }}
-                          />
-                          <div className="flex flex-col justify-end">
-                            <p className="text-xs font-medium text-[var(--color-neutral-600)]">
-                              Qty ({service.pricingBasis || 'FLAT'})
-                            </p>
-                            <p className="h-9 flex items-center text-sm">
-                              {row?.qty ?? '—'}
-                            </p>
-                          </div>
-                          <div className="flex flex-col justify-end">
-                            <p className="text-xs font-medium text-[var(--color-neutral-600)]">
-                              Line total
-                            </p>
-                            <p className="h-9 flex items-center text-sm font-medium">
-                              {row?.amount != null
-                                ? `${resolvedCurrencyCode || ''} ${row.amount}`
-                                : '—'}
-                            </p>
-                          </div>
+                          >
+                            Remove
+                          </Button>
+                        ) : null}
+                      </div>
+                      <div className="grid gap-2 sm:grid-cols-3">
+                        <Input
+                          id={`pkg-${index}-length`}
+                          label="Length (cm)"
+                          type="number"
+                          step="any"
+                          min={0}
+                          value={pkg.length_cm}
+                          onChange={(e) => updatePackage(index, { length_cm: e.target.value })}
+                        />
+                        <Input
+                          id={`pkg-${index}-width`}
+                          label="Width (cm)"
+                          type="number"
+                          step="any"
+                          min={0}
+                          value={pkg.width_cm}
+                          onChange={(e) => updatePackage(index, { width_cm: e.target.value })}
+                        />
+                        <Input
+                          id={`pkg-${index}-height`}
+                          label="Height (cm)"
+                          type="number"
+                          step="any"
+                          min={0}
+                          value={pkg.height_cm}
+                          onChange={(e) => updatePackage(index, { height_cm: e.target.value })}
+                        />
+                      </div>
+                      <div className="grid gap-2 sm:grid-cols-3">
+                        <Input
+                          id={`pkg-${index}-weight`}
+                          label="Gross weight (kg)"
+                          required
+                          type="number"
+                          step="any"
+                          min={0}
+                          value={pkg.gross_weight_kg}
+                          onChange={(e) => updatePackage(index, { gross_weight_kg: e.target.value })}
+                        />
+                        <Input
+                          id={`pkg-${index}-pieces`}
+                          label="Pieces"
+                          type="number"
+                          step={1}
+                          min={1}
+                          value={pkg.pieces}
+                          onChange={(e) => updatePackage(index, { pieces: e.target.value })}
+                        />
+                        <div className="flex flex-col justify-end">
+                          <p className="text-xs font-medium text-[var(--color-neutral-600)]">CBM</p>
+                          <p className="flex h-9 items-center text-sm text-[var(--color-neutral-800)]">
+                            {formatCbmDisplay(pkgCbm)}
+                          </p>
                         </div>
-                      ) : null}
+                      </div>
                     </div>
                   );
                 })}
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setPackages((prev) => [...prev, emptyPortalPackageDraft()]);
+                      setEstimatePreview(null);
+                    }}
+                  >
+                    Add package
+                  </Button>
+                  <p className="text-xs text-[var(--color-neutral-600)]">
+                    Total CBM: <strong>{formatCbmDisplay(packagesCbm)}</strong>
+                  </p>
+                </div>
               </div>
 
-              {customerTotal != null ? (
-                <p className="text-sm font-medium text-[var(--color-neutral-800)]">
-                  Your total: {resolvedCurrencyCode} {customerTotal}
-                </p>
-              ) : (
-                <p className="text-xs text-[var(--color-neutral-500)]">
-                  Select services and enter your unit prices to see a running total.
-                </p>
-              )}
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Input
+                  label="Gross weight (kg)"
+                  {...numberInputProps(errors.gross_weight?.message)}
+                  {...register('gross_weight', { setValueAs: optionalNumberValue })}
+                />
+                <Input
+                  label="Chargeable weight (kg)"
+                  {...numberInputProps(errors.chargeable_weight?.message)}
+                  {...register('chargeable_weight', { setValueAs: optionalNumberValue })}
+                />
+                <Input
+                  label="Volume (CBM)"
+                  readOnly={packagesCbm != null}
+                  {...numberInputProps(errors.volume_cbm?.message)}
+                  {...register('volume_cbm', { setValueAs: optionalNumberValue })}
+                />
+                <Input
+                  label="Pieces"
+                  type="number"
+                  step={1}
+                  min={0}
+                  error={errors.pieces?.message}
+                  {...register('pieces', { setValueAs: optionalNumberValue })}
+                />
+              </div>
 
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                disabled={estimateQuote.isPending}
-                onClick={runEstimatePreview}
-              >
-                {estimateQuote.isPending ? 'Estimating…' : 'Compare with catalog estimate'}
-              </Button>
-              {estimatePreview ? (
-                <p className="text-xs text-[var(--color-neutral-600)]">{estimatePreview}</p>
+              {selectedServices.length ? (
+                <div className="space-y-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    disabled={estimateQuote.isPending}
+                    onClick={runEstimatePreview}
+                  >
+                    {estimateQuote.isPending ? 'Estimating…' : 'Compare with catalog estimate'}
+                  </Button>
+                  {estimatePreview ? (
+                    <p className="text-xs text-[var(--color-neutral-600)]">{estimatePreview}</p>
+                  ) : null}
+                </div>
               ) : null}
             </div>
-          ) : (
-            <p className="text-xs text-[var(--color-neutral-500)]">
-              {serviceCatalog.isLoading
-                ? 'Loading services for this job type…'
-                : 'No portal-visible services for this job type yet. You can still submit an enquiry; your forwarder will price it manually.'}
-            </p>
-          )}
+          ) : null}
 
-          <Button type="submit" className="w-full sm:w-auto" disabled={submitDisabled}>
-            {requestQuote.isPending ? 'Submitting…' : 'Submit quote request'}
-          </Button>
+          <QuotationWizardNav
+            currentStep={step}
+            onPrevious={() => setStep((s) => Math.max(0, s - 1))}
+            onCancel={() => navigate('/portal/quotes')}
+            onNext={() => void goNext()}
+            isSubmitting={requestQuote.isPending}
+            nextLabel={step === 2 ? 'Submit quote request' : 'Next'}
+            disableNext={
+              (step === 0 && !jobType) ||
+              (step === 1 && submitDisabled) ||
+              (step === 2 && submitDisabled)
+            }
+          />
         </form>
       </PortalPanel>
     </div>

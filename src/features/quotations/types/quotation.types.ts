@@ -74,7 +74,10 @@ export interface Quotation {
   id: string;
   quotation_number?: string;
   quote_no?: string;
+  /** Customer-facing / UI status (may overlay portal accept/reject when API lags). */
   status: QuotationStatus;
+  /** Raw status from the API before portal-decision overlay — used for polling/gates. */
+  api_status?: QuotationStatus;
   company_id?: string;
   job_type: JobType;
   customer_id: string;

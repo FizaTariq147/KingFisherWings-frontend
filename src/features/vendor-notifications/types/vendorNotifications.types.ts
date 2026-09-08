@@ -6,7 +6,12 @@ export interface VendorNotificationListParams {
   unread_only?: string | boolean;
 }
 
-export type VendorAlertKind = 'JOB_OFFER' | 'DISPUTE' | 'PAYMENT_REQUEST' | 'SYSTEM';
+export type VendorAlertKind =
+  | 'JOB_OFFER'
+  | 'DISPUTE'
+  | 'PAYMENT_REQUEST'
+  | 'OPEN_INVOICE'
+  | 'SYSTEM';
 
 export interface VendorNotification {
   id: string;
@@ -27,6 +32,9 @@ export interface VendorNotification {
 export interface VendorNotificationListResult {
   items: VendorNotification[];
   meta: VendorPaginationMeta;
-  /** True when alerts were built from jobs/disputes because /vendor/notifications is unavailable. */
+  /**
+   * Always true on current backend — alerts are composed from quotes / disputes /
+   * payment-requests / open invoices (no dedicated notifications API in Swagger).
+   */
   sourcedFromAggregate?: boolean;
 }

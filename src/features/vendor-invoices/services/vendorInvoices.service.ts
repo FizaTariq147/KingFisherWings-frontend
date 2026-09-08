@@ -2,6 +2,11 @@ import { vendorApiClient, VendorApiError } from '@/lib/vendorApiClient';
 import type { PaymentProof, UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
 import { normalizePaymentProof, normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
 import { buildPaymentProofFormData } from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
+import { formatPdfFilename, stripPdfExtension } from '@/features/files/utils/pdfFilename';
+import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import { generateInvoicePdf } from '@/features/invoices/utils/generateInvoicePdf';
+import { portalInvoiceToPdfModel } from '@/features/invoices/utils/invoiceToPdfModel';
+import { useVendorAuthStore } from '@/features/vendor-auth/store/vendorAuthStore';
 import { downloadVendorBlob, resolveVendorDownloadUrl } from '@/features/vendor-shared/downloadVendorBlob';
 import { safeDownloadFilename } from '@/features/vendor-shared/normalize';
 import { postVendorWithOptionalFile } from '@/features/vendor-shared/vendorMultipart';
@@ -96,21 +101,57 @@ export const vendorInvoicesService = {
     pdfUrl?: string,
   ): Promise<void> {
     const safeName = safeDownloadFilename(fallbackName, 'invoice.pdf');
-    const name = safeName.toLowerCase().endsWith('.pdf') ? safeName : `${safeName}.pdf`;
+    const ref = stripPdfExtension(safeName) || 'invoice';
+    const filename = formatPdfFilename(ref, 'invoice');
 
-    let resolvedPdfUrl = pdfUrl?.trim();
-    if (!resolvedPdfUrl) {
+    let detail: VendorInvoiceDetail | undefined;
+    try {
+      detail = await this.getById(id);
+    } catch {
+      /* continue */
+    }
+
+    // Same KingFisher tax-invoice layout as customer portal / staff ERP (dynamic from detail).
+    if (detail) {
       try {
-        const detail = await this.getById(id);
-        resolvedPdfUrl = detail.pdfUrl;
+        const user = useVendorAuthStore.getState().user;
+        const blob = await generateInvoicePdf(
+          portalInvoiceToPdfModel(
+            {
+              number: detail.number,
+              invoiceDate: detail.invoiceDate,
+              dueDate: detail.dueDate,
+              currencyCode: detail.currencyCode,
+              reference: detail.reference,
+              subtotal: detail.subtotal,
+              taxTotal: detail.taxTotal,
+              totalAmount: detail.totalAmount,
+              paidAmount: detail.paidAmount,
+              outstandingBalance: detail.outstandingBalance,
+              remarks: detail.remarks,
+              vatRate: detail.vatRate,
+              lines: detail.lines,
+            },
+            {
+              clientName: detail.partyName || user?.party?.name || user?.fullName,
+              attn: user?.fullName,
+              email: detail.partyEmail || user?.email,
+              phone: detail.partyPhone,
+              company: { name: user?.tenantName || 'KINGFISHER WINGS GROUP' },
+            },
+          ),
+        );
+        triggerBlobDownload(blob, formatPdfFilename(detail.number || ref, 'invoice'));
+        return;
       } catch {
-        /* continue to API PDF route */
+        /* fall through to server PDF */
       }
     }
 
+    const resolvedPdfUrl = pdfUrl?.trim() || detail?.pdfUrl;
     if (resolvedPdfUrl) {
       try {
-        await downloadPdfFromUrl(resolvedPdfUrl, name);
+        await downloadPdfFromUrl(resolvedPdfUrl, filename);
         return;
       } catch {
         /* fall through to generated PDF route */
@@ -118,7 +159,7 @@ export const vendorInvoicesService = {
     }
 
     try {
-      await downloadVendorBlob(VENDOR_INVOICES_API.pdf(id), name, { accept: PDF_ACCEPT });
+      await downloadVendorBlob(VENDOR_INVOICES_API.pdf(id), filename, { accept: PDF_ACCEPT });
     } catch (primaryErr) {
       throw friendlyVendorInvoicePdfError(primaryErr);
     }

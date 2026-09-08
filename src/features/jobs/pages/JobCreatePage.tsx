@@ -43,14 +43,12 @@ export default function JobCreatePage() {
   return (
     <div className="space-y-4">
       <PageBackLink to={backPath} label={backLabel} />
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create job</h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Pick a shipper and create. Company and branch are filled from your session when available.
-        </p>
+      <div className="text-center">
+        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create Job</h2>
       </div>
       <JobForm
         mode="create"
+        layout="wizard"
         jobTypeOptions={JOB_TYPE_WIZARD_OPTIONS}
         defaultJobType={defaultJobType}
         isSubmitting={create.isPending}

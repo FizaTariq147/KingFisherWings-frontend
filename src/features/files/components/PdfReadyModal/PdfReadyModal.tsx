@@ -9,7 +9,10 @@ import { filesService } from '@/features/files/services/files.service';
 import { isPdfUrl, type PdfBrandingOptions } from '@/features/files/utils/pdfBranding';
 import { stripPdfExtension } from '@/features/files/utils/pdfFilename';
 import { isStoredFileUrl } from '@/features/files/utils/parseFilesApiUrl';
-import { triggerBrandedPdfDownload } from '@/features/files/utils/triggerBlobDownload';
+import {
+  triggerBlobDownload,
+  triggerBrandedPdfDownload,
+} from '@/features/files/utils/triggerBlobDownload';
 
 export interface PdfReadyModalProps {
   open: boolean;
@@ -22,6 +25,8 @@ export interface PdfReadyModalProps {
   fileName?: string;
   description?: string;
   branding?: PdfBrandingOptions;
+  /** When true, skip header/footer stamp (self-contained PDFs). */
+  skipBranding?: boolean;
 }
 
 /**
@@ -36,15 +41,19 @@ export function PdfReadyModal({
   fileName = 'document.pdf',
   description = 'Your PDF was created successfully.',
   branding,
+  skipBranding = false,
 }: PdfReadyModalProps) {
   const { downloadStoredFile, isPending, error, clearError } = useFileDownload();
   const viewer = usePdfViewer();
   const ready = Boolean(blob || url);
-  const brandingOptions = {
-    ...branding,
-    title: branding?.title || fileName,
-    documentNumber: branding?.documentNumber || stripPdfExtension(fileName),
-  };
+  const noStamp = skipBranding || (Boolean(blob) && branding == null);
+  const brandingOptions = noStamp
+    ? undefined
+    : {
+        ...branding,
+        title: branding?.title || fileName,
+        documentNumber: branding?.documentNumber || stripPdfExtension(fileName),
+      };
   const blobOptions = { filename: fileName, branding: brandingOptions };
   const storedFileOptions = { displayName: fileName, branding: brandingOptions };
 
@@ -70,6 +79,10 @@ export function PdfReadyModal({
 
   const handleDownload = () => {
     if (blob) {
+      if (noStamp || !brandingOptions) {
+        triggerBlobDownload(blob, fileName);
+        return;
+      }
       void triggerBrandedPdfDownload(blob, fileName, blobOptions).catch(() => undefined);
       return;
     }
@@ -143,6 +156,7 @@ export function PdfReadyModal({
         loading={viewer.loading}
         error={viewer.error}
         branding={viewer.branding}
+        skipBranding={noStamp}
       />
     </>
   );

@@ -7,7 +7,9 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { PhoneInput } from '@/components/ui/PhoneInput';
 import { useAppForm } from '@/lib/validation';
+import { QuotationWizardNav } from '@/features/quotations/components/quotation-wizard';
 import { ASSIGNABLE_USER_ROLES } from '../../constants/user.constants';
+import type { UserRole } from '../../constants/user.constants';
 import {
   USER_FUNCTIONAL_FLAGS,
   USER_VISIBILITY_PERMISSIONS,
@@ -16,12 +18,16 @@ import { useTenantCompanies } from '../../hooks/useTenantCompanies';
 import { createUserSchema, updateUserSchema, USER_STATUSES } from '../../schemas/user.schema';
 import type { CreateUserFormValues, UpdateUserFormValues } from '../../types/user.types';
 import { formatUserRole } from '../../utils/formatUserRole';
+import { UserRoleSelectGrid, UserWizardStepper } from '../user-wizard';
 
 interface UserFormProps {
   mode: 'create' | 'edit';
+  /** `wizard` = FRESA-like 3-step create UI; `flat` = existing single-page (edit default). */
+  layout?: 'flat' | 'wizard';
   tenantId?: string;
   defaultValues?: Partial<CreateUserFormValues>;
   onSubmit: (values: CreateUserFormValues | UpdateUserFormValues) => void | Promise<void>;
+  onCancel?: () => void;
   isSubmitting?: boolean;
 }
 
@@ -60,6 +66,15 @@ const FORM_DEFAULTS: Partial<CreateUserFormValues> = {
   max_concurrent_sessions: 3,
 };
 
+const DETAILS_STEP_FIELDS: (keyof CreateUserFormValues)[] = [
+  'email',
+  'first_name',
+  'last_name',
+  'phone',
+  'company_id',
+  'status',
+];
+
 function splitLines(value: string): string[] {
   return value
     .split(/[\n,]/)
@@ -73,13 +88,17 @@ function joinLines(values?: string[]) {
 
 export function UserForm({
   mode,
+  layout = 'flat',
   tenantId,
   defaultValues,
   onSubmit,
+  onCancel,
   isSubmitting,
 }: UserFormProps) {
+  const isWizard = layout === 'wizard' && mode === 'create';
+  const [step, setStep] = useState(0);
   const schema = mode === 'create' ? createUserSchema : updateUserSchema;
-  const { data: companies = [] } = useTenantCompanies(!!tenantId);
+  const { data: companies = [] } = useTenantCompanies(!!tenantId || isWizard);
 
   const form = useAppForm<CreateUserFormValues>({
     resolver: zodResolver(schema) as unknown as Resolver<CreateUserFormValues>,
@@ -95,6 +114,7 @@ export function UserForm({
     handleValidatedSubmit,
     setValue,
     watch,
+    trigger,
     formState: { errors },
   } = form;
 
@@ -106,124 +126,268 @@ export function UserForm({
 
   const fieldError = (name: keyof CreateUserFormValues) => errors[name]?.message;
   const phone = watch('phone') ?? '';
+  const role = watch('role');
 
-  const handleFormSubmit = handleValidatedSubmit((values) => {
-    onSubmit({
-      ...values,
-      ...(mode === 'create'
-        ? {
-            ...(tenantId ? { tenant_id: tenantId } : { tenant_id: '' }),
-            branch_id: '',
-            department_id: '',
-            role_ids: [],
-            permission_ids: [],
-          }
-        : {
-            role_ids: values.role_ids ?? [],
-            permission_ids: values.permission_ids ?? [],
-          }),
-      allowed_ips: splitLines(allowedIpsText),
-      allowed_mac_addresses: splitLines(allowedMacText),
-    });
+  const buildSubmitValues = (values: CreateUserFormValues) => ({
+    ...values,
+    ...(mode === 'create'
+      ? {
+          ...(tenantId ? { tenant_id: tenantId } : { tenant_id: '' }),
+          branch_id: '',
+          department_id: '',
+          role_ids: [],
+          permission_ids: [],
+        }
+      : {
+          role_ids: values.role_ids ?? [],
+          permission_ids: values.permission_ids ?? [],
+        }),
+    allowed_ips: splitLines(allowedIpsText),
+    allowed_mac_addresses: splitLines(allowedMacText),
   });
 
+  const submitForm = handleValidatedSubmit((values) => {
+    onSubmit(buildSubmitValues(values));
+  });
+
+  const goNext = async () => {
+    if (step === 0) {
+      const ok = await trigger('role');
+      if (!ok || !role) return;
+      setStep(1);
+      return;
+    }
+    if (step === 1) {
+      const ok = await trigger(DETAILS_STEP_FIELDS);
+      if (!ok) return;
+      setStep(2);
+      return;
+    }
+    await submitForm();
+  };
+
+  const basicFields = (
+    <Grid>
+      <Input label="Email" type="email" error={fieldError('email')} {...register('email')} />
+      <Input label="First name" error={fieldError('first_name')} {...register('first_name')} />
+      <Input label="Last name" error={fieldError('last_name')} {...register('last_name')} />
+      <PhoneInput
+        label="Phone"
+        name="phone"
+        value={phone}
+        countryIso="AE"
+        error={fieldError('phone')}
+        onChange={(v) => setValue('phone', v, { shouldValidate: true, shouldDirty: true })}
+      />
+    </Grid>
+  );
+
+  const assignFields = (
+    <Grid>
+      <FormSelect label="Company" error={fieldError('company_id')} {...register('company_id')}>
+        <option value="">No company assigned</option>
+        {companies.map((company) => (
+          <option key={company.id} value={company.id}>
+            {company.name}
+            {company.code ? ` (${company.code})` : ''}
+          </option>
+        ))}
+      </FormSelect>
+      {!isWizard ? (
+        <FormSelect label="Role" error={fieldError('role')} {...register('role')}>
+          {ASSIGNABLE_USER_ROLES.map((r) => (
+            <option key={r} value={r}>
+              {formatUserRole(r)}
+            </option>
+          ))}
+        </FormSelect>
+      ) : null}
+      <FormSelect label="Status" error={fieldError('status')} {...register('status')}>
+        {USER_STATUSES.map((status) => (
+          <option key={status} value={status}>
+            {formatUserRole(status)}
+          </option>
+        ))}
+      </FormSelect>
+      <input type="hidden" {...register('branch_id')} />
+      <input type="hidden" {...register('department_id')} />
+    </Grid>
+  );
+
+  const permissionsFields = (
+    <div className="space-y-4">
+      <div>
+        <p className="mb-2 text-xs font-medium text-[var(--color-neutral-600)]">Functional flags</p>
+        <CheckboxGrid>
+          {USER_FUNCTIONAL_FLAGS.map((key) => (
+            <CheckboxField key={key} label={formatFieldLabel(key)} {...register(key)} />
+          ))}
+        </CheckboxGrid>
+      </div>
+      <div>
+        <p className="mb-2 text-xs font-medium text-[var(--color-neutral-600)]">
+          Visibility permissions
+        </p>
+        <CheckboxGrid cols={3}>
+          {USER_VISIBILITY_PERMISSIONS.map((key) => (
+            <CheckboxField key={key} label={formatFieldLabel(key)} {...register(key)} />
+          ))}
+        </CheckboxGrid>
+      </div>
+    </div>
+  );
+
+  const securityFields = (
+    <Grid>
+      <FormTextarea
+        label="Allowed IPs"
+        value={allowedIpsText}
+        onChange={(e) => setAllowedIpsText(e.target.value)}
+      />
+      <FormTextarea
+        label="Allowed MAC addresses"
+        value={allowedMacText}
+        onChange={(e) => setAllowedMacText(e.target.value)}
+      />
+      <Input
+        label="Office hours start"
+        placeholder="09:00"
+        error={fieldError('office_hours_start')}
+        {...register('office_hours_start')}
+      />
+      <Input
+        label="Office hours end"
+        placeholder="18:00"
+        error={fieldError('office_hours_end')}
+        {...register('office_hours_end')}
+      />
+      <Input
+        label="Office hours timezone"
+        error={fieldError('office_hours_timezone')}
+        {...register('office_hours_timezone')}
+      />
+      <Input
+        label="Max concurrent sessions"
+        type="number"
+        min={1}
+        max={20}
+        error={fieldError('max_concurrent_sessions')}
+        {...register('max_concurrent_sessions', { valueAsNumber: true })}
+      />
+      <Input
+        label="Avatar URL"
+        type="url"
+        error={fieldError('avatar_url')}
+        {...register('avatar_url')}
+      />
+    </Grid>
+  );
+
+  if (isWizard) {
+    return (
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          void goNext();
+        }}
+        className="mx-auto max-w-5xl space-y-6"
+      >
+        {mode === 'create' && <input type="hidden" {...register('tenant_id')} />}
+        <input type="hidden" {...register('role')} />
+
+        <UserWizardStepper currentStep={step} />
+
+        {step === 0 ? (
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+            <UserRoleSelectGrid
+              value={role}
+              onChange={(next: UserRole) =>
+                setValue('role', next, { shouldValidate: true, shouldDirty: true })
+              }
+              error={fieldError('role')}
+            />
+          </div>
+        ) : null}
+
+        {step === 1 ? (
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-6">
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
+                Basic Information
+              </h3>
+              {basicFields}
+            </div>
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
+                Company & status
+              </h3>
+              {assignFields}
+            </div>
+          </div>
+        ) : null}
+
+        {step === 2 ? (
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-6">
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
+                Assign permissions
+              </h3>
+              {permissionsFields}
+            </div>
+            <div>
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">
+                  Security settings
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setShowAdvanced((v) => !v)}
+                  className="text-xs font-medium text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)]"
+                >
+                  {showAdvanced ? 'Hide' : 'Show'}
+                </button>
+              </div>
+              {showAdvanced ? securityFields : null}
+            </div>
+          </div>
+        ) : null}
+
+        <QuotationWizardNav
+          currentStep={step}
+          onPrevious={() => setStep((s) => Math.max(0, s - 1))}
+          onCancel={onCancel ?? (() => undefined)}
+          onNext={() => void goNext()}
+          isSubmitting={isSubmitting}
+          nextLabel={step === 2 ? 'Create user' : 'Next'}
+          disableNext={step === 0 && !role}
+        />
+      </form>
+    );
+  }
+
   return (
-    <form onSubmit={handleFormSubmit} className="space-y-4">
+    <form onSubmit={submitForm} className="space-y-4">
       {mode === 'create' && <input type="hidden" {...register('tenant_id')} />}
 
       <Card>
         <CardHeader className="mb-0 pb-3">
           <CardTitle>Basic Information</CardTitle>
         </CardHeader>
-        <Grid>
-          <Input label="Email" type="email" error={fieldError('email')} {...register('email')} />
-          <Input label="First name" error={fieldError('first_name')} {...register('first_name')} />
-          <Input label="Last name" error={fieldError('last_name')} {...register('last_name')} />
-          <PhoneInput
-            label="Phone"
-            name="phone"
-            value={phone}
-            countryIso="AE"
-            error={fieldError('phone')}
-            onChange={(v) => setValue('phone', v, { shouldValidate: true, shouldDirty: true })}
-          />
-        </Grid>
-        {mode === 'create' && (
-          <p className="mt-3 text-xs text-[var(--color-neutral-500)]">
-            Password is generated by the API after create. Use that temporary password on ERP Login →
-            Staff / User (slug + email + password).
-          </p>
-        )}
+        {basicFields}
       </Card>
 
       <Card>
         <CardHeader className="mb-0 pb-3">
           <CardTitle>Assign role</CardTitle>
         </CardHeader>
-        <p className="mb-3 text-xs text-[var(--color-neutral-400)]">
-          This user will be created in your tenant only. Tenant cannot be changed.
-        </p>
-        <p className="mb-3 rounded-md bg-[var(--color-neutral-50)] px-3 py-2 font-mono text-xs text-[var(--color-neutral-600)]">
-          {tenantId ? `Tenant ID: ${tenantId}` : 'Tenant: scoped by your signed-in session'}
-        </p>
-        <Grid>
-          <FormSelect label="Company" error={fieldError('company_id')} {...register('company_id')}>
-            <option value="">No company assigned</option>
-            {companies.map((company) => (
-              <option key={company.id} value={company.id}>
-                {company.name}
-                {company.code ? ` (${company.code})` : ''}
-              </option>
-            ))}
-          </FormSelect>
-          <FormSelect label="Role" error={fieldError('role')} {...register('role')}>
-            {ASSIGNABLE_USER_ROLES.map((role) => (
-              <option key={role} value={role}>
-                {formatUserRole(role)}
-              </option>
-            ))}
-          </FormSelect>
-          <FormSelect label="Status" error={fieldError('status')} {...register('status')}>
-            {USER_STATUSES.map((status) => (
-              <option key={status} value={status}>
-                {formatUserRole(status)}
-              </option>
-            ))}
-          </FormSelect>
-          <input type="hidden" {...register('branch_id')} />
-          <input type="hidden" {...register('department_id')} />
-        </Grid>
+        {assignFields}
       </Card>
 
       <Card>
         <CardHeader className="mb-0 pb-3">
           <CardTitle>Assign permissions</CardTitle>
         </CardHeader>
-        <p className="mb-3 text-xs text-[var(--color-neutral-400)]">
-          Functional flags and data visibility for this user within your tenant.
-        </p>
-        <div className="space-y-4">
-          <div>
-            <p className="mb-2 text-xs font-medium text-[var(--color-neutral-600)]">
-              Functional flags
-            </p>
-            <CheckboxGrid>
-              {USER_FUNCTIONAL_FLAGS.map((key) => (
-                <CheckboxField key={key} label={formatFieldLabel(key)} {...register(key)} />
-              ))}
-            </CheckboxGrid>
-          </div>
-          <div>
-            <p className="mb-2 text-xs font-medium text-[var(--color-neutral-600)]">
-              Visibility permissions
-            </p>
-            <CheckboxGrid cols={3}>
-              {USER_VISIBILITY_PERMISSIONS.map((key) => (
-                <CheckboxField key={key} label={formatFieldLabel(key)} {...register(key)} />
-              ))}
-            </CheckboxGrid>
-          </div>
-        </div>
+        {permissionsFields}
       </Card>
 
       <div className="flex items-center justify-between">
@@ -236,62 +400,14 @@ export function UserForm({
         </button>
       </div>
 
-      {showAdvanced && (
-        <>
-          <Card>
-            <CardHeader className="mb-0 pb-3">
-              <CardTitle>Security Settings</CardTitle>
-            </CardHeader>
-            <div className="space-y-4">
-              <Grid>
-                <FormTextarea
-                  label="Allowed IPs"
-                  hint="One per line. Empty = unrestricted."
-                  value={allowedIpsText}
-                  onChange={(e) => setAllowedIpsText(e.target.value)}
-                />
-                <FormTextarea
-                  label="Allowed MAC addresses"
-                  hint="One per line. Empty = unrestricted."
-                  value={allowedMacText}
-                  onChange={(e) => setAllowedMacText(e.target.value)}
-                />
-                <Input
-                  label="Office hours start"
-                  placeholder="09:00"
-                  error={fieldError('office_hours_start')}
-                  {...register('office_hours_start')}
-                />
-                <Input
-                  label="Office hours end"
-                  placeholder="18:00"
-                  error={fieldError('office_hours_end')}
-                  {...register('office_hours_end')}
-                />
-                <Input
-                  label="Office hours timezone"
-                  error={fieldError('office_hours_timezone')}
-                  {...register('office_hours_timezone')}
-                />
-                <Input
-                  label="Max concurrent sessions"
-                  type="number"
-                  min={1}
-                  max={20}
-                  error={fieldError('max_concurrent_sessions')}
-                  {...register('max_concurrent_sessions', { valueAsNumber: true })}
-                />
-                <Input
-                  label="Avatar URL"
-                  type="url"
-                  error={fieldError('avatar_url')}
-                  {...register('avatar_url')}
-                />
-              </Grid>
-            </div>
-          </Card>
-        </>
-      )}
+      {showAdvanced ? (
+        <Card>
+          <CardHeader className="mb-0 pb-3">
+            <CardTitle>Security Settings</CardTitle>
+          </CardHeader>
+          {securityFields}
+        </Card>
+      ) : null}
 
       <div className="flex justify-end gap-3 pt-2">
         <Button type="submit" disabled={isSubmitting}>
@@ -326,7 +442,10 @@ function CheckboxField({
 }: InputHTMLAttributes<HTMLInputElement> & { label: string }) {
   const id = label.toLowerCase().replace(/\s+/g, '-');
   return (
-    <label htmlFor={id} className="inline-flex items-center gap-2 text-sm text-[var(--color-neutral-700)] cursor-pointer">
+    <label
+      htmlFor={id}
+      className="inline-flex items-center gap-2 text-sm text-[var(--color-neutral-700)] cursor-pointer"
+    >
       <input
         id={id}
         type="checkbox"

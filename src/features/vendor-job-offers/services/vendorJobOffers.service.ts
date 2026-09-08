@@ -64,24 +64,30 @@ export const staffVendorJobOffersService = {
       const vendorId = dto.vendor_party_id.trim();
       const notes = dto.notes?.trim() || dto.message?.trim();
       const currency = dto.currency_code?.trim().toUpperCase();
-      // Swagger SendJobToVendorDto: vendor_party_id + optional proposed_total / lines / notes.
-      // proposed_total seeds cost_total (tenant cost offer shown to the vendor).
+      // Swagger SendJobToVendorDto only — avoid extra fields that fail whitelist validation.
       const body: Record<string, unknown> = {
         vendor_party_id: vendorId,
-        vendor_id: vendorId,
-        party_id: vendorId,
-        job_id: jobId,
         ...(dto.proposed_total != null && Number.isFinite(dto.proposed_total)
           ? { proposed_total: dto.proposed_total }
           : {}),
         ...(mapLines(dto.lines) ? { lines: mapLines(dto.lines) } : {}),
-        ...(notes ? { notes, staff_notes: notes, message: notes } : {}),
+        ...(notes ? { notes, staff_notes: notes } : {}),
         ...(currency ? { currency_code: currency } : {}),
       };
 
       try {
         const res = await axiosInstance.post(
           VENDOR_JOB_OFFERS_API.sendToVendor(jobId),
+          body,
+        );
+        return normalizeVendorJobOffer(res.data);
+      } catch (err) {
+        if (!isNotFound(err)) throw err;
+      }
+
+      try {
+        const res = await axiosInstance.post(
+          VENDOR_JOB_OFFERS_API.vendorOffers(jobId),
           body,
         );
         return normalizeVendorJobOffer(res.data);
@@ -215,23 +221,24 @@ export const staffVendorJobOffersService = {
     const body = {
       ...(dto.review_notes?.trim() ? { review_notes: dto.review_notes.trim() } : {}),
     };
-    try {
-      const res = await axiosInstance.post(VENDOR_JOB_OFFERS_API.approveOffer(offerId), body);
-      const offer = normalizeVendorJobOffer(res.data);
-      return fulfillApprovedVendorOffer(offer);
-    } catch (err) {
-      if (isNotFound(err)) {
-        try {
-          const res = await axiosInstance.post(VENDOR_JOB_OFFERS_API.approveOfferAlt(offerId), body);
-          const offer = normalizeVendorJobOffer(res.data);
-          return fulfillApprovedVendorOffer(offer);
-        } catch (legacyErr) {
-          if (isNotFound(legacyErr)) throw friendlyUnavailable('Approve vendor offer');
-          throw legacyErr;
-        }
+    const paths = [
+      VENDOR_JOB_OFFERS_API.approveOffer(offerId),
+      VENDOR_JOB_OFFERS_API.approveOfferVendorQuotes(offerId),
+      VENDOR_JOB_OFFERS_API.approveOfferAlt(offerId),
+    ];
+    let lastErr: unknown;
+    for (const path of paths) {
+      try {
+        const res = await axiosInstance.post(path, body);
+        const offer = normalizeVendorJobOffer(res.data);
+        return fulfillApprovedVendorOffer(offer);
+      } catch (err) {
+        lastErr = err;
+        if (!isNotFound(err)) throw err;
       }
-      throw err;
     }
+    if (isNotFound(lastErr)) throw friendlyUnavailable('Approve vendor offer');
+    throw lastErr;
   },
 
   async disapproveOffer(
@@ -240,24 +247,23 @@ export const staffVendorJobOffersService = {
     dto: DisapproveVendorOfferDto,
   ): Promise<VendorJobOffer | null> {
     const body = { review_notes: dto.review_notes.trim() };
-    try {
-      const res = await axiosInstance.post(VENDOR_JOB_OFFERS_API.disapproveOffer(offerId), body);
-      return normalizeVendorJobOffer(res.data);
-    } catch (err) {
-      if (isNotFound(err)) {
-        try {
-          const res = await axiosInstance.post(
-            VENDOR_JOB_OFFERS_API.disapproveOfferAlt(offerId),
-            body,
-          );
-          return normalizeVendorJobOffer(res.data);
-        } catch (legacyErr) {
-          if (isNotFound(legacyErr)) throw friendlyUnavailable('Disapprove vendor offer');
-          throw legacyErr;
-        }
+    const paths = [
+      VENDOR_JOB_OFFERS_API.disapproveOffer(offerId),
+      VENDOR_JOB_OFFERS_API.disapproveOfferVendorQuotes(offerId),
+      VENDOR_JOB_OFFERS_API.disapproveOfferAlt(offerId),
+    ];
+    let lastErr: unknown;
+    for (const path of paths) {
+      try {
+        const res = await axiosInstance.post(path, body);
+        return normalizeVendorJobOffer(res.data);
+      } catch (err) {
+        lastErr = err;
+        if (!isNotFound(err)) throw err;
       }
-      throw err;
     }
+    if (isNotFound(lastErr)) throw friendlyUnavailable('Disapprove vendor offer');
+    throw lastErr;
   },
 };
 

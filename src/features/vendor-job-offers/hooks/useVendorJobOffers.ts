@@ -47,6 +47,8 @@ export function useJobVendorOffers(jobId: string) {
     queryFn: () => staffVendorJobOffersService.listOffers(jobId),
     enabled: Boolean(accessToken) && Boolean(jobId),
     staleTime: 0,
+    refetchInterval: 8_000,
+    refetchIntervalInBackground: false,
   });
 }
 
@@ -57,6 +59,8 @@ export function useStaffVendorOfferNegotiation(offerId: string, enabled = true) 
     queryFn: () => staffVendorJobOffersService.getNegotiation(offerId),
     enabled: Boolean(accessToken) && Boolean(offerId) && enabled,
     staleTime: 0,
+    refetchInterval: enabled ? 5_000 : false,
+    refetchIntervalInBackground: false,
   });
 }
 
@@ -145,6 +149,8 @@ export function useVendorPortalJob(id: string) {
     queryFn: () => vendorPortalJobsService.getById(id),
     enabled: Boolean(accessToken) && Boolean(id) && scope !== 'anon',
     staleTime: 0,
+    refetchInterval: 8_000,
+    refetchIntervalInBackground: false,
   });
 }
 
@@ -156,6 +162,8 @@ export function useVendorPortalJobPricing(id: string) {
     queryFn: () => vendorPortalJobsService.getPricing(id),
     enabled: Boolean(accessToken) && Boolean(id) && scope !== 'anon',
     staleTime: 0,
+    refetchInterval: 8_000,
+    refetchIntervalInBackground: false,
   });
 }
 
@@ -167,6 +175,8 @@ export function useVendorPortalOfferNegotiation(id: string, enabled = true) {
     queryFn: () => vendorPortalJobsService.getNegotiation(id),
     enabled: Boolean(accessToken) && Boolean(id) && enabled && scope !== 'anon',
     staleTime: 0,
+    refetchInterval: enabled ? 5_000 : false,
+    refetchIntervalInBackground: false,
   });
 }
 

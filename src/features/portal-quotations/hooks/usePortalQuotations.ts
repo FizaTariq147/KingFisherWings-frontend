@@ -100,7 +100,8 @@ export function usePortalPortOptions(search = '', enabled = true) {
       }
     },
     enabled: Boolean(accessToken) && enabled && scope !== 'anon',
-    staleTime: 10 * 60_000,
+    staleTime: 60_000,
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -122,7 +123,8 @@ export function usePortalAirportOptions(search = '', enabled = true) {
       }
     },
     enabled: Boolean(accessToken) && enabled && scope !== 'anon',
-    staleTime: 10 * 60_000,
+    staleTime: 60_000,
+    placeholderData: keepPreviousData,
   });
 }
 

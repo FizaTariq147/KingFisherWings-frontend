@@ -241,8 +241,9 @@ export default function VendorJobDetailPage() {
         <PortalPanel padded className="space-y-4">
           <h3 className="text-sm font-semibold">Your decision</h3>
           <p className="text-xs text-[var(--color-neutral-500)]">
-            Accept the tenant cost, reject it, or counter — a counter updates cost_total
-            immediately and moves status to Negotiating.
+            Accept the tenant cost, reject it, or counter. A counter updates cost_total immediately
+            and moves status to Negotiating so the forwarder can revise or accept your counter.
+            You can keep negotiating until the offer is Approved or Disapproved.
           </p>
 
           <div className="flex flex-wrap gap-2">

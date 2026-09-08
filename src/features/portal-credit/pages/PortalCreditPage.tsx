@@ -7,8 +7,6 @@ import { PortalApiError } from '@/lib/portalApiClient';
 import {
   PortalAnimatedGrid,
   PortalAnimatedGridItem,
-  PortalAnimatedList,
-  PortalAnimatedListItem,
   PortalEmptyState,
   PortalLoadingState,
   PortalPageHeader,
@@ -22,6 +20,15 @@ import {
   usePortalCreditSummary,
 } from '../hooks/usePortalCredit';
 
+function formatMoney(amount?: number, currency?: string): string {
+  if (amount == null || Number.isNaN(amount)) return '—';
+  const formatted = amount.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  return currency ? `${currency} ${formatted}` : formatted;
+}
+
 export default function PortalCreditPage() {
   const navigate = useNavigate();
   const [asOf, setAsOf] = useState('');
@@ -31,6 +38,8 @@ export default function PortalCreditPage() {
   const statement = usePortalCreditStatement(asOfParam);
   const downloadPdf = useDownloadPortalStatementPdf();
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const currency = statement.data?.currencyCode || summary.data?.currencyCode;
+  const lines = statement.data?.lines ?? [];
 
   return (
     <div className="space-y-5">
@@ -79,7 +88,11 @@ export default function PortalCreditPage() {
         <PortalAnimatedGridItem>
           <PortalStatCard
             label="Credit limit"
-            value={summary.data?.creditLimit ?? (summary.isLoading ? '…' : '—')}
+            value={
+              summary.isLoading
+                ? '…'
+                : formatMoney(summary.data?.creditLimit, summary.data?.currencyCode)
+            }
             Icon={Wallet}
             theme="navy"
           />
@@ -87,7 +100,11 @@ export default function PortalCreditPage() {
         <PortalAnimatedGridItem>
           <PortalStatCard
             label="Used"
-            value={summary.data?.used ?? (summary.isLoading ? '…' : '—')}
+            value={
+              summary.isLoading
+                ? '…'
+                : formatMoney(summary.data?.used, summary.data?.currencyCode)
+            }
             Icon={TrendingUp}
             theme="orange"
           />
@@ -95,7 +112,11 @@ export default function PortalCreditPage() {
         <PortalAnimatedGridItem>
           <PortalStatCard
             label="Available"
-            value={summary.data?.available ?? (summary.isLoading ? '…' : '—')}
+            value={
+              summary.isLoading
+                ? '…'
+                : formatMoney(summary.data?.available, summary.data?.currencyCode)
+            }
             Icon={BadgeCheck}
             theme="green"
           />
@@ -130,7 +151,9 @@ export default function PortalCreditPage() {
                   <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
                     {b.label}
                   </div>
-                  <div className="mt-1 text-lg font-semibold tabular-nums">{b.amount}</div>
+                  <div className="mt-1 text-lg font-semibold tabular-nums">
+                    {formatMoney(b.amount, currency)}
+                  </div>
                 </div>
               </PortalAnimatedGridItem>
             ))}
@@ -150,33 +173,71 @@ export default function PortalCreditPage() {
               ? statement.error.message
               : 'Failed to load statement.'}
           </p>
-        ) : !statement.data?.lines.length ? (
-          <PortalEmptyState title="No statement lines" description="No AR movements for this period." />
+        ) : !lines.length ? (
+          <PortalEmptyState
+            title="No statement lines"
+            description="Invoices and payments appear here once posted for your account."
+          />
         ) : (
-          <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
-            {statement.data.lines.map((line) => (
-              <PortalAnimatedListItem
-                key={line.id}
-                className="flex items-center justify-between gap-3 px-4 py-3 text-sm"
-              >
-                <div className="min-w-0">
-                  <div className="font-medium truncate">
-                    {line.reference || line.description || 'Entry'}
-                  </div>
-                  <div className="text-xs text-[var(--color-neutral-500)]">
-                    {[line.date, line.type].filter(Boolean).join(' · ') || '—'}
-                  </div>
-                </div>
-                <div className="text-right tabular-nums shrink-0">
-                  {line.debit != null ? <div>Dr {line.debit}</div> : null}
-                  {line.credit != null ? <div>Cr {line.credit}</div> : null}
-                  {line.balance != null ? (
-                    <div className="text-xs text-[var(--color-neutral-500)]">Bal {line.balance}</div>
-                  ) : null}
-                </div>
-              </PortalAnimatedListItem>
-            ))}
-          </PortalAnimatedList>
+          <div className="overflow-x-auto">
+            <div className="flex flex-wrap gap-4 border-b border-[var(--color-neutral-100)] px-4 py-3 text-sm text-[var(--color-neutral-600)]">
+              {statement.data?.asOf || asOf ? (
+                <span>As of {statement.data?.asOf || asOf}</span>
+              ) : null}
+              {statement.data?.invoiceCount != null ? (
+                <span>{statement.data.invoiceCount} invoice(s)</span>
+              ) : null}
+              {statement.data?.openingBalance != null ? (
+                <span>Opening {formatMoney(statement.data.openingBalance, currency)}</span>
+              ) : null}
+              {statement.data?.closingBalance != null ? (
+                <span className="font-semibold text-[var(--color-neutral-800)]">
+                  Open balance {formatMoney(statement.data.closingBalance, currency)}
+                </span>
+              ) : null}
+              {statement.data?.composedFromLedgers ? (
+                <span className="text-[var(--color-neutral-400)]">
+                  Built from invoices & payments
+                </span>
+              ) : null}
+            </div>
+            <table className="min-w-full text-left text-sm">
+              <thead className="bg-[var(--color-neutral-50)] text-xs uppercase tracking-wide text-[var(--color-neutral-500)]">
+                <tr>
+                  <th className="px-4 py-2.5 font-semibold">Date</th>
+                  <th className="px-4 py-2.5 font-semibold">Type</th>
+                  <th className="px-4 py-2.5 font-semibold">Reference</th>
+                  <th className="px-4 py-2.5 font-semibold">Description</th>
+                  <th className="px-4 py-2.5 font-semibold text-right">Debit</th>
+                  <th className="px-4 py-2.5 font-semibold text-right">Credit</th>
+                  <th className="px-4 py-2.5 font-semibold text-right">Balance</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--color-neutral-100)]">
+                {lines.map((line) => (
+                  <tr key={line.id} className="text-[var(--color-neutral-800)]">
+                    <td className="whitespace-nowrap px-4 py-2.5">{line.date || '—'}</td>
+                    <td className="whitespace-nowrap px-4 py-2.5">
+                      {line.type?.replaceAll('_', ' ') || '—'}
+                    </td>
+                    <td className="px-4 py-2.5 font-medium">{line.reference || '—'}</td>
+                    <td className="max-w-[240px] truncate px-4 py-2.5 text-[var(--color-neutral-600)]">
+                      {line.description || '—'}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2.5 text-right tabular-nums">
+                      {line.debit != null ? formatMoney(line.debit) : '—'}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2.5 text-right tabular-nums">
+                      {line.credit != null ? formatMoney(line.credit) : '—'}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2.5 text-right font-semibold tabular-nums">
+                      {line.balance != null ? formatMoney(line.balance) : '—'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </PortalPanel>
     </div>
