@@ -44,6 +44,7 @@ export default function GlMisDashboardPage() {
 
   const params = useMemo(
     () => ({
+      period: (fromDate.trim() || toDate.trim() ? 'custom' : 'mtd') as const,
       from_date: fromDate.trim() || undefined,
       to_date: toDate.trim() || undefined,
       company_id: companyId.trim() || undefined,

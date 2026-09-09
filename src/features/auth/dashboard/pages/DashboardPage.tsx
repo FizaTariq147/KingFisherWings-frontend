@@ -16,8 +16,12 @@ import { RevenueVsTargetPanel, TradeLanePanel } from '../components/RevenuePanel
 import { LiveActivityPanel, ReportsHubPanel, TeamWorkloadPanel } from '../components/LowerPanels';
 import { useDashboardPeriod } from '../hooks/useDashboardPeriod';
 import { useCrmReportQuery } from '../hooks/useCrmReportQuery';
-import { useDashboardJobCounts, useDashboardPendingQuoteStats } from '../hooks/useDashboardJobCounts';
+import {
+  useDashboardJobCounts,
+  useDashboardPendingQuoteStats,
+} from '../hooks/useDashboardJobCounts';
 import { isoDate, pickNumber } from '../utils/dashboardFormat';
+import { uiPeriodToApi } from '@/lib/apiPeriod';
 
 function extractOnTime(rows: Record<string, unknown>[]) {
   const percents: number[] = [];
@@ -86,12 +90,17 @@ export function DashboardPage() {
   }, []);
 
   const jobsQuery = useJobs({ page: 1, limit: 50, order: 'desc' });
-  const jobCounts = useDashboardJobCounts();
-  const quoteStats = useDashboardPendingQuoteStats();
+  const jobCounts = useDashboardJobCounts(period);
+  const quoteStats = useDashboardPendingQuoteStats(period);
   const invoicesQuery = useInvoices({ page: 1, limit: 8 });
   const overdueQuery = useOverdueInvoices();
   const agingQuery = useArAging({ as_of: range.to });
-  const operational = useMisOperational({ from_date: range.from, to_date: range.to });
+  const apiPeriod = uiPeriodToApi(period);
+  const operational = useMisOperational({
+    period: apiPeriod.period,
+    from_date: range.from,
+    to_date: range.to,
+  });
   const monthlySales = useCrmReportQuery('monthly_sales', revenueRange);
   const topCustomers = useCrmReportQuery('top_customers', revenueRange);
   const tradeLane = useCrmReportQuery('trade_lane', tradeLaneRange);
@@ -242,7 +251,7 @@ export function DashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <TeamWorkloadPanel />
+          <TeamWorkloadPanel period={period} />
           <LiveActivityPanel
             items={notifications.data?.items ?? []}
             isLoading={notifications.isLoading}

@@ -21,6 +21,7 @@ import {
   prepareQuotationPayload,
 } from '../utils/prepareQuotationPayload';
 import { normalizeQuotationPdfInfo } from '../utils/normalizeQuotationPdf';
+import { normalizeQuotationDashboardStats } from '../utils/normalizeQuotationDashboard';
 import { quotationTotalAmount } from '../utils/quotationDisplay';
 import type {
   ApprovalDecisionDto,
@@ -427,6 +428,35 @@ export const quotationService = {
       const { items, meta } = unwrapList(res.data);
       const quotations = await enrichQuotationsForList(normalizeQuotations(items));
       return { quotations, meta: normalizeMeta(meta, quotations.length, params) };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async dashboardStats(
+    params: {
+      period?: string;
+      from_date?: string;
+      to_date?: string;
+      branch_id?: string;
+      salesperson_id?: string;
+      customer_id?: string;
+      job_type?: string;
+    } = {},
+  ) {
+    try {
+      const q: Record<string, string> = {};
+      if (params.period) q.period = params.period;
+      if (params.from_date) q.from_date = params.from_date;
+      if (params.to_date) q.to_date = params.to_date;
+      if (params.branch_id) q.branch_id = params.branch_id;
+      if (params.salesperson_id) q.salesperson_id = params.salesperson_id;
+      if (params.customer_id) q.customer_id = params.customer_id;
+      if (params.job_type) q.job_type = params.job_type;
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<unknown>(QUOTATION_API.dashboardStats, { params: q }),
+      );
+      return normalizeQuotationDashboardStats(res.data);
     } catch (error) {
       throw formatAxiosError(error);
     }

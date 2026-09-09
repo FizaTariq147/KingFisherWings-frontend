@@ -4,6 +4,10 @@ import { useVendorCreditAging } from '@/features/vendor-credit/hooks/useVendorCr
 import { useVendorDisputes } from '@/features/vendor-disputes/hooks/useVendorDisputes';
 import { useVendorInvoiceSummary } from '@/features/vendor-invoices/hooks/useVendorInvoices';
 import { useVendorSchedule } from '@/features/vendor-schedule/hooks/useVendorSchedule';
+import {
+  useVendorDashboard,
+  useVendorTasks,
+} from '@/features/vendor-dashboard/hooks/useVendorDashboard';
 import { vendorErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import { VendorDashboardHeader } from '../components/vendor-dashboard/VendorDashboardHeader';
 import { VendorDashboardKpiRow } from '../components/vendor-dashboard/VendorDashboardKpiRow';
@@ -28,7 +32,9 @@ export default function VendorHomePage() {
   const [loading, setLoading] = useState(!user);
   const [period, setPeriod] = useState<VendorDashboardPeriod>('today');
 
-  const summary = useVendorInvoiceSummary();
+  const dashboard = useVendorDashboard(period);
+  const vendorTasks = useVendorTasks(period);
+  const summary = useVendorInvoiceSummary(period);
   const schedule = useVendorSchedule();
   const aging = useVendorCreditAging();
   const disputes = useVendorDisputes({ page: 1, limit: 5 });
@@ -55,6 +61,8 @@ export default function VendorHomePage() {
   }, [setUser]);
 
   const refresh = () => {
+    void dashboard.refetch();
+    void vendorTasks.refetch();
     void summary.refetch();
     void schedule.refetch();
     void aging.refetch();
@@ -65,6 +73,17 @@ export default function VendorHomePage() {
   const openInvoice = upcoming.find((item) => item.overdue) ?? upcoming[0];
 
   const tasks = useMemo((): VendorTaskItem[] => {
+    const fromApi = vendorTasks.data?.length
+      ? vendorTasks.data
+      : dashboard.data?.tasksPreview;
+    if (fromApi?.length) {
+      return fromApi.map((t) => ({
+        id: t.id,
+        label: t.label,
+        done: t.done,
+        href: t.href,
+      }));
+    }
     const list: VendorTaskItem[] = [];
     const packing = upcoming.find((item) => item.overdue) ?? upcoming[0];
     if (packing) {
@@ -91,15 +110,33 @@ export default function VendorHomePage() {
       });
     }
     return list.slice(0, 5);
-  }, [upcoming, disputes.data?.items]);
+  }, [vendorTasks.data, dashboard.data?.tasksPreview, upcoming, disputes.data?.items]);
 
   if (loading && !user) {
     return <PortalLoadingState label="Loading profile…" />;
   }
 
-  const isRefreshing = summary.isFetching || schedule.isFetching || aging.isFetching;
-  const dataLoading = summary.isLoading || schedule.isLoading || aging.isLoading;
+  const isRefreshing =
+    dashboard.isFetching ||
+    vendorTasks.isFetching ||
+    summary.isFetching ||
+    schedule.isFetching ||
+    aging.isFetching;
+  const dataLoading =
+    dashboard.isLoading ||
+    vendorTasks.isLoading ||
+    summary.isLoading ||
+    schedule.isLoading ||
+    aging.isLoading;
   const partyName = user?.party?.name?.trim();
+
+  const kpis = dashboard.data?.kpis;
+  const invoiceTotal = kpis?.invoiceTotal ?? summary.data?.total ?? 0;
+  const dueOpen = kpis?.dueOpen ?? schedule.data?.dueCount ?? 0;
+  const overdue = kpis?.overdue ?? schedule.data?.overdueCount ?? 0;
+  const agingOutstanding =
+    kpis?.agingOutstanding ?? kpis?.outstanding ?? aging.data?.total ?? summary.data?.outstanding ?? 0;
+  const paid = kpis?.paid ?? summary.data?.paid ?? 0;
 
   const invoiceBars = useMemo(
     () => dashboardBarsFromStatusMap(summary.data?.byStatus),
@@ -157,11 +194,11 @@ export default function VendorHomePage() {
       ) : null}
 
       <VendorDashboardKpiRow
-        invoiceTotal={summary.data?.total ?? 0}
-        dueOpen={schedule.data?.dueCount ?? 0}
-        overdue={schedule.data?.overdueCount ?? 0}
-        agingOutstanding={aging.data?.total ?? summary.data?.outstanding ?? 0}
-        paid={summary.data?.paid ?? 0}
+        invoiceTotal={invoiceTotal}
+        dueOpen={dueOpen}
+        overdue={overdue}
+        agingOutstanding={agingOutstanding}
+        paid={paid}
         invoiceBars={invoiceBars}
         scheduleBars={scheduleBars}
         agingBars={agingBars}
@@ -178,7 +215,7 @@ export default function VendorHomePage() {
         <div className="flex flex-col gap-4">
           <VendorOpenInvoicePanel
             item={openInvoice}
-            overdueCount={schedule.data?.overdueCount ?? 0}
+            overdueCount={overdue}
             loading={schedule.isLoading}
           />
           <VendorTodoPanel tasks={tasks} loading={dataLoading} />

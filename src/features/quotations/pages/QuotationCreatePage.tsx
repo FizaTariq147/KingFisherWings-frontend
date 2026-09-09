@@ -1,10 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { QuotationForm } from '../components/QuotationForm';
 import { QUOTATION_CREATE_DRAFT_KEY } from '../constants/quotation.constants';
-import { useCreateQuotation } from '../hooks/useQuotations';
+import { quotationKeys, useCreateQuotation } from '../hooks/useQuotations';
 import type { CreateQuotationFormValues } from '../types/quotation.types';
+import type { QuotationWizardCostingPayload } from '../types/quotationWizardCosting.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { persistQuotationWizardCosting } from '../utils/persistQuotationWizardCosting';
 import { QUOTATION_FORM_DEFAULTS } from '../utils/quotationToFormValues';
 
 function loadDraft(): Partial<CreateQuotationFormValues> | null {
@@ -35,8 +38,10 @@ function clearDraft() {
 
 export default function QuotationCreatePage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const create = useCreateQuotation();
   const [error, setError] = useState<string | null>(null);
+  const [persistingCosting, setPersistingCosting] = useState(false);
   const draft = useMemo(() => loadDraft(), []);
 
   const onValuesChange = useCallback((values: CreateQuotationFormValues) => {
@@ -72,15 +77,37 @@ export default function QuotationCreatePage() {
         mode="create"
         layout="wizard"
         defaultValues={{ ...QUOTATION_FORM_DEFAULTS, ...draft }}
-        isSubmitting={create.isPending}
+        isSubmitting={create.isPending || persistingCosting}
         onValuesChange={onValuesChange}
         onCancel={() => navigate('/quotations/all')}
-        onSubmit={async (values) => {
+        onSubmit={async (values, options) => {
           setError(null);
           try {
             const created = await create.mutateAsync(values as CreateQuotationFormValues);
+            const costing = options?.costing as QuotationWizardCostingPayload | undefined;
+            let targetId = created.id;
+            let costingWarnings: string[] | undefined;
+
+            if (costing && (costing.apply_tariff || costing.lines.length > 0)) {
+              setPersistingCosting(true);
+              try {
+                const { quotation, warnings } = await persistQuotationWizardCosting(
+                  created.id,
+                  costing,
+                );
+                targetId = quotation.id;
+                queryClient.setQueryData(quotationKeys.detail(quotation.id), quotation);
+                void queryClient.invalidateQueries({ queryKey: quotationKeys.detail(quotation.id) });
+                if (warnings.length) costingWarnings = warnings;
+              } finally {
+                setPersistingCosting(false);
+              }
+            }
+
             clearDraft();
-            navigate(`/quotations/${created.id}`);
+            navigate(`/quotations/${targetId}`, {
+              state: costingWarnings?.length ? { costingWarnings } : undefined,
+            });
           } catch (err) {
             setError(getErrorMessage(err));
             throw err;

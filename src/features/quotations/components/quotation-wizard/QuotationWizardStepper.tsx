@@ -1,29 +1,57 @@
 import { Check } from 'lucide-react';
-import { QUOTATION_WIZARD_STEPS } from '../../constants/jobTypeCardStyles';
+import {
+  QUOTATION_WIZARD_STEPS,
+  type QuotationWizardStepKey,
+} from '../../constants/jobTypeCardStyles';
+
+export type QuotationWizardStepDef = {
+  key: string;
+  label: string;
+};
 
 type QuotationWizardStepperProps = {
   /** 0-based active step index */
   currentStep: number;
+  /** Override steps (e.g. portal book). Defaults to staff create wizard. */
+  steps?: readonly QuotationWizardStepDef[];
   className?: string;
 };
 
-export function QuotationWizardStepper({ currentStep, className = '' }: QuotationWizardStepperProps) {
+export function QuotationWizardStepper({
+  currentStep,
+  steps = QUOTATION_WIZARD_STEPS,
+  className = '',
+}: QuotationWizardStepperProps) {
+  const wide = steps.length >= 5;
   return (
     <nav
       aria-label="Quotation steps"
       className={`w-full overflow-x-auto pb-1 ${className}`.trim()}
     >
-      <ol className="relative mx-auto flex min-w-[520px] max-w-3xl items-start justify-between px-2">
-        {/* Connector line behind dots */}
+      <ol
+        className={[
+          'relative mx-auto flex items-start justify-between px-2',
+          wide ? 'min-w-[720px] max-w-4xl' : 'min-w-[520px] max-w-3xl',
+        ].join(' ')}
+      >
         <li
           aria-hidden="true"
-          className="pointer-events-none absolute left-[10%] right-[10%] top-3.5 h-px bg-[var(--color-neutral-200)]"
+          className={[
+            'pointer-events-none absolute top-3.5 h-px bg-[var(--color-neutral-200)]',
+            wide ? 'left-[6%] right-[6%]' : 'left-[10%] right-[10%]',
+          ].join(' ')}
         />
-        {QUOTATION_WIZARD_STEPS.map((step, index) => {
+        {steps.map((step, index) => {
           const done = index < currentStep;
           const active = index === currentStep;
           return (
-            <li key={step.key} className="relative z-[1] flex w-28 flex-col items-center text-center sm:w-36">
+            <li
+              key={step.key}
+              className={[
+                'relative z-[1] flex flex-col items-center text-center',
+                wide ? 'w-24 sm:w-32' : 'w-28 sm:w-36',
+              ].join(' ')}
+            >
               <span
                 className={[
                   'flex h-7 w-7 items-center justify-center rounded-full border-2 text-xs font-semibold',
@@ -37,7 +65,9 @@ export function QuotationWizardStepper({ currentStep, className = '' }: Quotatio
               >
                 {done ? <Check className="h-3.5 w-3.5" strokeWidth={3} aria-hidden /> : null}
                 {!done && active ? <span className="h-2 w-2 rounded-full bg-white" /> : null}
-                {!done && !active ? <span className="h-2 w-2 rounded-full bg-[var(--color-neutral-300)]" /> : null}
+                {!done && !active ? (
+                  <span className="h-2 w-2 rounded-full bg-[var(--color-neutral-300)]" />
+                ) : null}
               </span>
               <span
                 className={[
@@ -56,3 +86,5 @@ export function QuotationWizardStepper({ currentStep, className = '' }: Quotatio
     </nav>
   );
 }
+
+export type { QuotationWizardStepKey };

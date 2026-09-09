@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { useAppForm } from '@/lib/validation';
 import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import type { JobType } from '../constants/quotation.constants';
+import { JOB_TYPE_LABELS } from '../constants/quotation.constants';
 import { isAirJobType } from '@/features/jobs/constants/job.constants';
 import { useCreateOnlineQuote } from '../hooks/useQuotations';
 import { createOnlineQuoteSchema } from '../schemas/quotation.schema';
@@ -18,6 +19,11 @@ import {
   QuotationWizardNav,
   QuotationWizardStepper,
 } from '../components/quotation-wizard';
+import {
+  QUOTATION_WIZARD_STEPS,
+  isQuotationWizardLastStep,
+  quotationWizardStepKey,
+} from '../constants/jobTypeCardStyles';
 
 const selectClass =
   'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]';
@@ -30,9 +36,27 @@ const PORT_FIELDS: (keyof CreateOnlineQuoteFormValues)[] = [
   'contact_email',
   'origin_port_id',
   'dest_port_id',
-  'currency_code',
   'valid_until',
 ];
+
+const CONSIGNMENT_FIELDS: (keyof CreateOnlineQuoteFormValues)[] = [
+  'commodity',
+  'gross_weight',
+  'volume_cbm',
+  'pieces',
+  'special_requirements',
+];
+
+const COSTING_FIELDS: (keyof CreateOnlineQuoteFormValues)[] = ['currency_code'];
+
+const ONLINE_WIZARD_STEP_VALIDATE: Partial<
+  Record<(typeof QUOTATION_WIZARD_STEPS)[number]['key'], (keyof CreateOnlineQuoteFormValues)[]>
+> = {
+  create: ['job_type'],
+  ports: PORT_FIELDS,
+  consignment: CONSIGNMENT_FIELDS,
+  costing: COSTING_FIELDS,
+};
 
 export default function QuotationOnlineQuotePage() {
   const navigate = useNavigate();
@@ -65,6 +89,7 @@ export default function QuotationOnlineQuotePage() {
   const useAirports = isAirJobType(jobType);
   const originPortId = watch('origin_port_id');
   const destPortId = watch('dest_port_id');
+  const watched = watch();
 
   const submitQuote = handleValidatedSubmit(async (values) => {
     setError(null);
@@ -90,21 +115,23 @@ export default function QuotationOnlineQuotePage() {
   });
 
   const goNext = async () => {
-    if (step === 0) {
-      const ok = await trigger('job_type');
-      if (!ok || !jobType) return;
-      setStep(1);
+    if (isQuotationWizardLastStep(step)) {
+      await submitQuote();
       return;
     }
-    if (step === 1) {
-      const ok = await trigger(PORT_FIELDS);
+
+    const key = quotationWizardStepKey(step);
+    const fields = key ? ONLINE_WIZARD_STEP_VALIDATE[key] : undefined;
+    if (fields?.length) {
+      const ok = await trigger(fields);
       if (!ok) return;
-      setStep(2);
-      return;
+      if (key === 'create' && !jobType) return;
     }
-    await submitQuote();
+
+    setStep((current) => Math.min(current + 1, QUOTATION_WIZARD_STEPS.length - 1));
   };
 
+  const wizardStepKey = quotationWizardStepKey(step);
   return (
     <div className="mx-auto max-w-5xl space-y-4">
       <button
@@ -154,7 +181,7 @@ export default function QuotationOnlineQuotePage() {
       >
         <QuotationWizardStepper currentStep={step} />
 
-        {step === 0 ? (
+        {wizardStepKey === 'create' ? (
           <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
             <JobTypeSelectGrid
               value={jobType}
@@ -166,7 +193,7 @@ export default function QuotationOnlineQuotePage() {
           </div>
         ) : null}
 
-        {step === 1 ? (
+        {wizardStepKey === 'ports' ? (
           <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div className="space-y-4">
@@ -209,7 +236,6 @@ export default function QuotationOnlineQuotePage() {
                 />
               </div>
               <div className="space-y-4">
-                <Input label="Currency *" {...register('currency_code')} />
                 <div className="space-y-1">
                   <label htmlFor="valid_until" className={labelClass}>
                     Valid until
@@ -226,7 +252,7 @@ export default function QuotationOnlineQuotePage() {
           </div>
         ) : null}
 
-        {step === 2 ? (
+        {wizardStepKey === 'consignment' ? (
           <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
             <h3 className="mb-4 text-sm font-semibold text-[var(--color-neutral-800)]">
               Planned Container / Consignment
@@ -265,14 +291,94 @@ export default function QuotationOnlineQuotePage() {
           </div>
         ) : null}
 
+        {wizardStepKey === 'costing' ? (
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-4">
+            <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Costing</h3>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Input
+                label="Currency *"
+                error={errors.currency_code?.message as string | undefined}
+                {...register('currency_code')}
+              />
+            </div>
+            <p className="text-sm text-[var(--color-neutral-500)]">
+              Detailed charge lines are priced after the quote is created and reviewed by sales.
+            </p>
+          </div>
+        ) : null}
+
+        {wizardStepKey === 'summary' ? (
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-4">
+            <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Summary</h3>
+            <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Job type</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {JOB_TYPE_LABELS[jobType as JobType] ?? jobType ?? '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Tenant</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {watched.tenant_slug || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Contact</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {[watched.contact_name, watched.contact_email].filter(Boolean).join(' · ') || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Valid until</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {watched.valid_until || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Route</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {[watched.origin_port_id, watched.dest_port_id].filter(Boolean).join(' → ') ||
+                    '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Currency</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {watched.currency_code || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Commodity</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {watched.commodity || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Weight / volume / pieces</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {[
+                    watched.gross_weight != null ? `${watched.gross_weight} kg` : null,
+                    watched.volume_cbm != null ? `${watched.volume_cbm} CBM` : null,
+                    watched.pieces != null ? `${watched.pieces} pcs` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ') || '—'}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        ) : null}
+
         <QuotationWizardNav
           currentStep={step}
+          totalSteps={QUOTATION_WIZARD_STEPS.length}
           onPrevious={() => setStep((s) => Math.max(0, s - 1))}
           onCancel={() => navigate('/quotations')}
           onNext={() => void goNext()}
           isSubmitting={create.isPending}
-          nextLabel={step === 2 ? 'Request online quote' : 'Next'}
-          disableNext={step === 0 && !jobType}
+          submitLabel="Request online quote"
+          disableNext={wizardStepKey === 'create' && !jobType}
         />
       </form>
     </div>

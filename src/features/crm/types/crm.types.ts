@@ -62,7 +62,12 @@ export interface Budget extends BaseEntity {
 }
 export interface CreateBudgetDto { salesperson_id: string; period_type: PeriodType; period_start: string; target_amount: number; job_type?: ServiceType; target_volume?: number }
 export interface DashboardOverview { metrics: Array<{ label: string; value: number | string }>; raw: Record<string, unknown> }
-export interface DashboardParams { from?: string; to?: string; salesperson_id?: string }
+export interface DashboardParams {
+  from?: string;
+  to?: string;
+  period?: '7d' | '30d' | 'mtd' | 'custom';
+  salesperson_id?: string;
+}
 export interface ReportParams extends DashboardParams { type: CrmReportType }
 
 export interface Subscriber extends BaseEntity { email: string; full_name?: string; party_id?: string; country_code?: string; tags: string[]; unsubscribed_at?: string; is_subscribed?: boolean }

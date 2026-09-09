@@ -28,9 +28,18 @@ import type { CreateQuotationFormValues, UpdateQuotationFormValues } from '../..
 import { QUOTATION_FORM_DEFAULTS } from '../../utils/quotationToFormValues';
 import {
   JobTypeSelectGrid,
+  QuotationWizardCostingPanel,
   QuotationWizardNav,
   QuotationWizardStepper,
+  toCostingPayload,
+  type QuotationDraftChargeLine,
 } from '../quotation-wizard';
+import {
+  QUOTATION_WIZARD_STEPS,
+  isQuotationWizardLastStep,
+  quotationWizardStepKey,
+} from '../../constants/jobTypeCardStyles';
+import type { QuotationWizardCostingPayload } from '../../types/quotationWizardCosting.types';
 
 const selectClass =
   'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm text-[var(--color-neutral-800)] focus:outline-none focus:border-[var(--color-primary-500)]';
@@ -48,22 +57,52 @@ const PORT_STEP_FIELDS: (keyof CreateQuotationFormValues)[] = [
   'dest_port_id',
   'incoterm',
   'valid_until',
-  'currency_code',
-  'exchange_rate',
   'transit_time_days',
   'remarks',
   'routing_notes',
   'carrier_preference',
+];
+
+const COSTING_STEP_FIELDS: (keyof CreateQuotationFormValues)[] = [
+  'currency_code',
+  'exchange_rate',
   'discount_percent',
   'discount_amount',
 ];
 
+const CONSIGNMENT_STEP_FIELDS: (keyof CreateQuotationFormValues)[] = [
+  'container_type_id',
+  'container_count',
+  'pieces',
+  'commodity',
+  'hs_code',
+  'gross_weight',
+  'chargeable_weight',
+  'volume_cbm',
+  'is_dg',
+  'dg_class',
+  'special_requirements',
+  'internal_notes',
+];
+
+/** Fields to validate before leaving a step. Summary only triggers full submit. */
+const WIZARD_STEP_VALIDATE: Partial<
+  Record<(typeof QUOTATION_WIZARD_STEPS)[number]['key'], (keyof CreateQuotationFormValues)[]>
+> = {
+  create: ['job_type'],
+  ports: PORT_STEP_FIELDS,
+  consignment: CONSIGNMENT_STEP_FIELDS,
+  costing: COSTING_STEP_FIELDS,
+};
 interface QuotationFormProps {
   mode: 'create' | 'edit';
-  /** `wizard` = FRESA-like 3-step create UI; `flat` = existing single-page (edit default). */
+  /** `wizard` = FRESA-like 5-step create UI; `flat` = existing single-page (edit default). */
   layout?: 'flat' | 'wizard';
   defaultValues?: Partial<CreateQuotationFormValues>;
-  onSubmit: (values: CreateQuotationFormValues | UpdateQuotationFormValues) => void | Promise<void>;
+  onSubmit: (
+    values: CreateQuotationFormValues | UpdateQuotationFormValues,
+    options?: { costing?: QuotationWizardCostingPayload },
+  ) => void | Promise<void>;
   onCancel: () => void;
   isSubmitting?: boolean;
   onValuesChange?: (values: CreateQuotationFormValues) => void;
@@ -85,6 +124,8 @@ export function QuotationForm({
 }: QuotationFormProps) {
   const isWizard = layout === 'wizard' && mode === 'create';
   const [step, setStep] = useState(0);
+  const [draftLines, setDraftLines] = useState<QuotationDraftChargeLine[]>([]);
+  const [applyTariffAfterCreate, setApplyTariffAfterCreate] = useState(false);
   const schema = mode === 'create' ? createQuotationSchema : updateQuotationSchema;
   const { data: companies = [] } = useTenantCompanies(true);
   const {
@@ -195,28 +236,63 @@ export function QuotationForm({
 
   const submitForm = handleValidatedSubmit(async (values) => {
     try {
-      await onSubmit(values);
+      const costing =
+        isWizard
+          ? toCostingPayload(draftLines, applyTariffAfterCreate)
+          : undefined;
+      await onSubmit(values, costing ? { costing } : undefined);
     } catch (err) {
       applyApiErrors(err);
       throw err;
     }
   });
 
+  const wizardStepKey = quotationWizardStepKey(step);
+
+  /** Advance UI steps only; POST create runs solely on the final wizard step. */
   const goNext = async () => {
-    if (step === 0) {
-      const ok = await trigger('job_type');
-      if (!ok || !watched.job_type) return;
-      setStep(1);
+    if (isQuotationWizardLastStep(step)) {
+      await submitForm();
       return;
     }
-    if (step === 1) {
-      const ok = await trigger(PORT_STEP_FIELDS);
+
+    const key = quotationWizardStepKey(step);
+    const fields = key ? WIZARD_STEP_VALIDATE[key] : undefined;
+    if (fields?.length) {
+      const ok = await trigger(fields);
       if (!ok) return;
-      setStep(2);
-      return;
+      if (key === 'create' && !watched.job_type) return;
     }
-    await submitForm();
+
+    setStep((current) => Math.min(current + 1, QUOTATION_WIZARD_STEPS.length - 1));
   };
+  const labelForCustomer = (id?: string) => {
+    if (!id) return '—';
+    const party = customers.find((c) => c.id === id);
+    if (!party) return id;
+    return party.code ? `${party.name} (${party.code})` : party.name;
+  };
+
+  const labelForCarrier = (id?: string) => {
+    if (!id) return '—';
+    return carriers.find((c) => c.id === id)?.name || id;
+  };
+
+  const labelForCompany = (id?: string) => {
+    if (!id) return '—';
+    return companies.find((c) => c.id === id)?.name || id;
+  };
+
+  const labelForContainer = (id?: string) => {
+    if (!id) return '—';
+    const row = containers.find((c) => String(c.id) === id);
+    return row ? String(row.code ?? row.name ?? row.id) : id;
+  };
+
+  const currencyLabel =
+    currencies.find((c) => c.value === watched.currency_code)?.label ||
+    watched.currency_code ||
+    '—';
 
   const customerBlock = (
     <>
@@ -297,7 +373,7 @@ export function QuotationForm({
       >
         <QuotationWizardStepper currentStep={step} />
 
-        {step === 0 ? (
+        {wizardStepKey === 'create' ? (
           <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
             <JobTypeSelectGrid
               value={watched.job_type}
@@ -309,7 +385,7 @@ export function QuotationForm({
           </div>
         ) : null}
 
-        {step === 1 ? (
+        {wizardStepKey === 'ports' ? (
           <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div className="space-y-4">
@@ -377,27 +453,6 @@ export function QuotationForm({
                   />
                   <FieldError message={fieldError('valid_until')} />
                 </div>
-                <div className="space-y-1">
-                  <label htmlFor="currency_code" className={labelClass}>
-                    Currency <span className="text-[var(--color-danger-500)]">*</span>
-                  </label>
-                  <select id="currency_code" className={selectClass} {...register('currency_code')}>
-                    <option value="">Select…</option>
-                    {currencies.map((c) => (
-                      <option key={c.value} value={c.value}>
-                        {c.label}
-                      </option>
-                    ))}
-                  </select>
-                  <FieldError message={fieldError('currency_code')} />
-                </div>
-                <Input
-                  label="Exchange rate"
-                  type="number"
-                  step="any"
-                  error={fieldError('exchange_rate')}
-                  {...register('exchange_rate', { valueAsNumber: true })}
-                />
               </div>
 
               <div className="space-y-4">
@@ -425,20 +480,6 @@ export function QuotationForm({
                   error={fieldError('carrier_preference')}
                   {...register('carrier_preference')}
                 />
-                <Input
-                  label="Discount %"
-                  type="number"
-                  step="any"
-                  error={fieldError('discount_percent')}
-                  {...register('discount_percent', { valueAsNumber: true })}
-                />
-                <Input
-                  label="Discount amount"
-                  type="number"
-                  step="any"
-                  error={fieldError('discount_amount')}
-                  {...register('discount_amount', { valueAsNumber: true })}
-                />
                 <div className="space-y-1">
                   <label htmlFor="remarks" className={labelClass}>
                     Remarks
@@ -464,7 +505,7 @@ export function QuotationForm({
           </div>
         ) : null}
 
-        {step === 2 ? (
+        {wizardStepKey === 'consignment' ? (
           <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
             <h3 className="mb-4 text-sm font-semibold text-[var(--color-neutral-800)]">
               Planned Container / Consignment
@@ -547,14 +588,169 @@ export function QuotationForm({
           </div>
         ) : null}
 
+        {wizardStepKey === 'costing' ? (
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-5">
+            <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Costing</h3>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-1">
+                <label htmlFor="currency_code" className={labelClass}>
+                  Currency <span className="text-[var(--color-danger-500)]">*</span>
+                </label>
+                <select id="currency_code" className={selectClass} {...register('currency_code')}>
+                  <option value="">Select…</option>
+                  {currencies.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
+                <FieldError message={fieldError('currency_code')} />
+              </div>
+              <Input
+                label="Exchange rate"
+                type="number"
+                step="any"
+                error={fieldError('exchange_rate')}
+                {...register('exchange_rate', { valueAsNumber: true })}
+              />
+              <Input
+                label="Discount %"
+                type="number"
+                step="any"
+                error={fieldError('discount_percent')}
+                {...register('discount_percent', { valueAsNumber: true })}
+              />
+              <Input
+                label="Discount amount"
+                type="number"
+                step="any"
+                error={fieldError('discount_amount')}
+                {...register('discount_amount', { valueAsNumber: true })}
+              />
+            </div>
+            <QuotationWizardCostingPanel
+              currencyCode={watched.currency_code || 'AED'}
+              lines={draftLines}
+              applyTariff={applyTariffAfterCreate}
+              onLinesChange={setDraftLines}
+              onApplyTariffChange={setApplyTariffAfterCreate}
+            />
+          </div>
+        ) : null}
+
+        {wizardStepKey === 'summary' ? (
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-4">
+            <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Summary</h3>
+            <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Job type</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {JOB_TYPE_LABELS[watched.job_type as JobType] ?? watched.job_type}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Customer</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {labelForCustomer(watched.customer_id)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Company</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {labelForCompany(watched.company_id)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Carrier</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {labelForCarrier(watched.carrier_id)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Incoterm</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {watched.incoterm || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Valid until</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {watched.valid_until || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Commodity</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {watched.commodity || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Container</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {[
+                    labelForContainer(watched.container_type_id) !== '—'
+                      ? labelForContainer(watched.container_type_id)
+                      : null,
+                    watched.container_count != null ? `× ${watched.container_count}` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' ') || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Pieces / weight / volume</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {[
+                    watched.pieces != null ? `${watched.pieces} pcs` : null,
+                    watched.gross_weight != null ? `${watched.gross_weight} kg` : null,
+                    watched.volume_cbm != null ? `${watched.volume_cbm} CBM` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ') || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Currency / discount</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {[
+                    currencyLabel,
+                    watched.discount_percent != null && !Number.isNaN(watched.discount_percent)
+                      ? `${watched.discount_percent}%`
+                      : null,
+                    watched.discount_amount != null && !Number.isNaN(watched.discount_amount)
+                      ? `amt ${watched.discount_amount}`
+                      : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ') || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Costing</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {[
+                    applyTariffAfterCreate ? 'Apply tariff' : null,
+                    draftLines.length
+                      ? `${draftLines.length} draft line${draftLines.length === 1 ? '' : 's'}`
+                      : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ') || 'Header currency only'}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        ) : null}
+
         <QuotationWizardNav
           currentStep={step}
+          totalSteps={QUOTATION_WIZARD_STEPS.length}
           onPrevious={() => setStep((s) => Math.max(0, s - 1))}
           onCancel={onCancel}
           onNext={() => void goNext()}
           isSubmitting={isSubmitting}
-          nextLabel={step === 2 ? 'Create quotation' : 'Next'}
-          disableNext={step === 0 && !watched.job_type}
+          submitLabel="Create quotation"
+          disableNext={wizardStepKey === 'create' && !watched.job_type}
         />
       </form>
     );

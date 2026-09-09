@@ -29,6 +29,24 @@ export interface PortalCargoPackageDto {
   pieces?: number;
 }
 
+export type PortalCustomerLineSource = 'CATALOG' | 'TARIFF' | 'CUSTOMER_PROPOSED';
+
+export interface PortalCustomerLineDto {
+  charge_code_id?: string;
+  code?: string;
+  description?: string;
+  quantity?: number;
+  unit_price: number;
+  unit?: string;
+  source?: PortalCustomerLineSource;
+}
+
+export interface PortalEstimateSnapshotDto {
+  currency_code?: string;
+  estimated_total?: number;
+  captured_at?: string;
+}
+
 export interface PortalQuotationEstimateDto {
   job_type: string;
   currency_code: string;
@@ -43,10 +61,25 @@ export interface PortalQuotationEstimateDto {
   special_requirements?: string;
   valid_until?: string;
   container_count?: number;
-  /** Required by POST /portal/quotations/estimate */
-  packages: PortalCargoPackageDto[];
-  /** Required by POST /portal/quotations/estimate */
-  service_codes: string[];
+  packages?: PortalCargoPackageDto[];
+  service_codes?: string[];
+  customer_lines?: PortalCustomerLineDto[];
+  estimate_snapshot?: PortalEstimateSnapshotDto;
+}
+
+export interface PortalCostingOptionsDto {
+  job_type: string;
+  currency_code: string;
+  origin_port_id?: string;
+  dest_port_id?: string;
+  gross_weight?: number;
+  chargeable_weight?: number;
+  volume_cbm?: number;
+  pieces?: number;
+  container_type_id?: string;
+  container_count?: number;
+  packages?: PortalCargoPackageDto[];
+  service_codes?: string[];
 }
 
 export interface PortalQuotationCounterOfferDto {
@@ -61,10 +94,7 @@ export interface PortalQuotationCounterOfferDto {
   }>;
 }
 
-/**
- * POST /portal/quotations/request — enquiry only.
- * Do not send packages or service_codes (forbidden / estimate-only).
- */
+/** POST /portal/quotations/request — lean enquiry or costing-enriched draft. */
 export interface PortalQuotationRequestDto {
   job_type: string;
   currency_code: string;
@@ -79,6 +109,10 @@ export interface PortalQuotationRequestDto {
   special_requirements?: string;
   valid_until?: string;
   container_count?: number;
+  packages?: PortalCargoPackageDto[];
+  service_codes?: string[];
+  customer_lines?: PortalCustomerLineDto[];
+  estimate_snapshot?: PortalEstimateSnapshotDto;
 }
 
 export interface PortalServiceCatalogItem {
@@ -88,6 +122,8 @@ export interface PortalServiceCatalogItem {
   pricingBasis?: string;
   unitPrice?: number;
   currencyCode?: string;
+  chargeCodeId?: string;
+  source?: PortalCustomerLineSource | string;
   raw?: Record<string, unknown>;
 }
 
@@ -109,10 +145,19 @@ export interface PortalQuotationEstimateResult {
     description: string;
     amount?: number;
     currencyCode?: string;
+    pricingSource?: string;
+    unitPrice?: number;
+    quantity?: number;
   }>;
   total?: number;
   currencyCode?: string;
   raw?: Record<string, unknown>;
+}
+
+export interface PortalEstimateSnapshot {
+  currencyCode?: string;
+  estimatedTotal?: number;
+  capturedAt?: string;
 }
 
 export interface PortalQuotationSummary {
@@ -157,6 +202,7 @@ export interface PortalQuotationDetail extends PortalQuotationListItem {
   pdfUrl?: string;
   /** Explicit readiness flag when API includes one */
   pdfReady?: boolean;
+  portalEstimateSnapshot?: PortalEstimateSnapshot;
   negotiationPricing?: import('@/features/quotations/types/quotationExtended.types').NegotiationPricing;
   lines?: Array<{
     id: string;
@@ -170,5 +216,6 @@ export interface PortalQuotationDetail extends PortalQuotationListItem {
     taxPercent?: number;
     taxAmount?: number;
     exchangeRate?: number;
+    pricingSource?: string;
   }>;
 }

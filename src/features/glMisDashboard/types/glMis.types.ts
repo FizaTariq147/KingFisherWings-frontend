@@ -5,6 +5,7 @@ export interface MisParams {
   to_date?: string;
   company_id?: string;
   branch_id?: string;
+  period?: '7d' | '30d' | 'mtd' | 'custom';
 }
 
 export interface MisProfitabilityParams extends MisParams {

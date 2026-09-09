@@ -31,7 +31,7 @@ export default function TenantCreatePage() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto space-y-4">
+    <div className="space-y-4">
       <button
         type="button"
         onClick={() => navigate('/superadmin/tenants')}
@@ -40,15 +40,12 @@ export default function TenantCreatePage() {
         ← Back to tenants
       </button>
 
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Step 2 — Create tenant</h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Provision a workspace that belongs to an existing company
-        </p>
+      <div className="text-center">
+        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create Tenant</h2>
       </div>
 
       {!companiesLoading && !hasCompanyProfile ? (
-        <Card className="p-6 space-y-4">
+        <Card className="mx-auto max-w-4xl space-y-4 p-6">
           <p className="text-sm text-[var(--color-neutral-700)]">{NO_COMPANY_BEFORE_TENANT_MESSAGE}</p>
           <Button onClick={() => navigate('/superadmin/companies/new')}>Create company</Button>
         </Card>
@@ -57,22 +54,24 @@ export default function TenantCreatePage() {
           {apiError && (
             <div
               role="alert"
-              className="flex items-start gap-2 rounded-lg border px-4 py-3 text-sm"
+              className="mx-auto flex max-w-5xl items-start gap-2 rounded-lg border px-4 py-3 text-sm"
               style={{
                 background: 'var(--color-danger-100)',
                 borderColor: '#FECACA',
                 color: 'var(--color-danger-700)',
               }}
             >
-              <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
               <span>{apiError}</span>
             </div>
           )}
 
           <TenantForm
             mode="create"
+            layout="wizard"
             defaultValues={defaultValues}
             isSubmitting={createTenant.isPending}
+            onCancel={() => navigate('/superadmin/tenants')}
             onSubmit={async (values) => {
               setApiError(null);
               try {
@@ -134,7 +133,7 @@ export default function TenantCreatePage() {
             }}
           />
 
-          <p className="text-xs text-[var(--color-neutral-400)]">
+          <p className="text-center text-xs text-[var(--color-neutral-400)]">
             Need another company first?{' '}
             <Link
               to="/superadmin/companies/new"

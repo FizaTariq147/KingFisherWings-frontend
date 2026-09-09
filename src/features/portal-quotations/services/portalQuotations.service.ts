@@ -12,6 +12,7 @@ import type {
   PortalQuotationRejectDto,
   PortalQuotationRequestDto,
   PortalQuotationEstimateDto,
+  PortalCostingOptionsDto,
   PortalQuotationCounterOfferDto,
   PortalQuotationEstimateResult,
   PortalServiceCatalogItem,
@@ -25,6 +26,7 @@ import {
 import {
   normalizePortalEstimate,
   normalizePortalServiceCatalog,
+  normalizePortalCostingOptions,
   filterPortalServiceCatalogByJobType,
 } from '../utils/normalizePortalQuotationExtended';
 import { applyPortalCustomerDecisionStatus } from '../utils/portalQuotationStatus';
@@ -32,10 +34,14 @@ import { portalDetailToQuotationPdfModel } from '../utils/portalDetailToQuotatio
 import { rememberCustomerQuoteDecision } from '@/features/quotations/utils/customerQuoteDecision';
 import { normalizeNegotiationTimeline } from '@/features/quotations/utils/normalizeQuotationExtended';
 import type { NegotiationTimeline } from '@/features/quotations/types/quotationExtended.types';
+import type { ApiPeriodQuery } from '@/lib/apiPeriod';
+import { periodQueryParams } from '@/lib/apiPeriod';
 
 export const portalQuotationsService = {
-  async summary(): Promise<PortalQuotationSummary> {
-    const res = await portalApiClient.get(PORTAL_QUOTATIONS_API.summary);
+  async summary(period?: ApiPeriodQuery): Promise<PortalQuotationSummary> {
+    const res = await portalApiClient.get(PORTAL_QUOTATIONS_API.summary, {
+      params: periodQueryParams(period),
+    });
     return normalizeQuotationSummary(res.data);
   },
 
@@ -107,6 +113,19 @@ export const portalQuotationsService = {
     });
     const items = normalizePortalServiceCatalog(res.data);
     return filterPortalServiceCatalogByJobType(items, trimmed);
+  },
+
+  async costingOptions(dto: PortalCostingOptionsDto): Promise<PortalServiceCatalogItem[]> {
+    try {
+      const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.costingOptions, dto);
+      const items = normalizePortalCostingOptions(res.data);
+      return filterPortalServiceCatalogByJobType(items, dto.job_type);
+    } catch (err) {
+      if (err instanceof PortalApiError && (err.status === 404 || err.status === 501)) {
+        return [];
+      }
+      throw err;
+    }
   },
 
   async estimate(dto: PortalQuotationEstimateDto): Promise<PortalQuotationEstimateResult> {

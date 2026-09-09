@@ -115,11 +115,23 @@ export function RevenueVsTargetPanel({
     const value =
       pickNumber(row ?? {}, ['revenue', 'amount', 'actual', 'total', 'sales', 'value', 'gross_revenue']) ?? 0;
     const target =
-      pickNumber(row ?? {}, ['target', 'plan', 'budget', 'monthly_target', 'revenue_target']) ?? undefined;
+      pickNumber(row ?? {}, [
+        'target',
+        'plan',
+        'budget',
+        'monthly_target',
+        'revenue_target',
+        'target_amount',
+        'targetAmount',
+      ]) ?? undefined;
+    const achievement =
+      pickNumber(row ?? {}, ['achievement_pct', 'achievementPct', 'achievement', 'pct_of_target']) ??
+      undefined;
     return {
       label,
       value,
       target,
+      achievement,
       isCurrent: mi === currentMonthIndex && idx === months.length - 1,
     };
   });
@@ -130,10 +142,15 @@ export function RevenueVsTargetPanel({
   const monthlyTarget =
     bars.find((b) => b.target != null && b.target > 0)?.target ??
     (totalTarget > 0 ? Math.round(totalTarget / Math.max(bars.filter((b) => b.target).length, 1)) : undefined);
+  const currentAchievement = bars.find((b) => b.isCurrent)?.achievement;
   const planPct =
-    totalTarget > 0 ? Math.round((totalRevenue / totalTarget) * 100) : monthlyTarget && totalRevenue > 0
-      ? Math.round((totalRevenue / (monthlyTarget! * bars.length)) * 100)
-      : null;
+    currentAchievement != null
+      ? Math.round(currentAchievement <= 1 ? currentAchievement * 100 : currentAchievement)
+      : totalTarget > 0
+        ? Math.round((totalRevenue / totalTarget) * 100)
+        : monthlyTarget && totalRevenue > 0
+          ? Math.round((totalRevenue / (monthlyTarget! * bars.length)) * 100)
+          : null;
 
   const chartMax = Math.max(...bars.map((b) => b.value), monthlyTarget ?? 0, 1);
   const currentBar = bars[bars.length - 1];

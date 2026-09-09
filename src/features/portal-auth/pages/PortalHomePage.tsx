@@ -9,7 +9,7 @@ import {
   usePortalQuotationSummary,
   usePortalQuotations,
 } from '@/features/portal-quotations/hooks/usePortalQuotations';
-import { usePortalDashboard } from '@/features/portal-dashboard/hooks/usePortalDashboard';
+import { usePortalDashboard, usePortalTasks } from '@/features/portal-dashboard/hooks/usePortalDashboard';
 import { PortalAnimatedPage, PortalLoadingState } from '../components/portal-ui';
 import {
   PortalDashboardAlertPills,
@@ -27,6 +27,7 @@ import {
   isDocsPending,
   isOpenQuote,
   type PortalDashboardPeriod,
+  type PortalTaskItem,
 } from '../utils/portalDashboardFormat';
 import { dashboardBarsFromStatusMap } from '@/lib/dashboardKpiBars';
 import { usePortalInvoiceSummary } from '@/features/portal-invoices/hooks/usePortalInvoices';
@@ -48,12 +49,13 @@ export default function PortalHomePage() {
   const [loading, setLoading] = useState(!user);
   const [period, setPeriod] = useState<PortalDashboardPeriod>('today');
 
-  const dashboard = usePortalDashboard();
-  const shipmentSummary = usePortalShipmentSummary();
-  const quoteSummary = usePortalQuotationSummary();
+  const dashboard = usePortalDashboard(period);
+  const portalTasks = usePortalTasks(period);
+  const shipmentSummary = usePortalShipmentSummary(period);
+  const quoteSummary = usePortalQuotationSummary(period);
   const recentShipments = usePortalShipments({ page: 1, limit: 20, order: 'desc' });
   const recentQuotes = usePortalQuotations({ page: 1, limit: 50, order: 'desc' });
-  const invoiceSummary = usePortalInvoiceSummary();
+  const invoiceSummary = usePortalInvoiceSummary(period);
 
   useEffect(() => {
     let cancelled = false;
@@ -99,9 +101,18 @@ export default function PortalHomePage() {
     invoiceSummary.data?.outstanding ?? dashboard.data?.invoicesOutstanding ?? 0;
   const overdue = invoiceSummary.data?.overdue ?? dashboard.data?.invoicesOverdue ?? 0;
   const invoiceCount = invoiceSummary.data?.total ?? 0;
-  const delivered = dashboard.data?.shipmentsDelivered ?? shipmentSummary.data?.delivered ?? 0;
+  const delivered =
+    dashboard.data?.shipmentsDelivered ??
+    shipmentSummary.data?.delivered ??
+    0;
   const onTimePct =
-    shipmentTotal > 0 && delivered > 0 ? Math.min(100, Math.round((delivered / shipmentTotal) * 100)) : null;
+    dashboard.data?.onTime?.pct != null
+      ? dashboard.data.onTime.pct <= 1 && dashboard.data.onTime.pct >= 0
+        ? Math.round(dashboard.data.onTime.pct * 100)
+        : Math.round(dashboard.data.onTime.pct)
+      : shipmentTotal > 0 && delivered > 0
+        ? Math.min(100, Math.round((delivered / shipmentTotal) * 100))
+        : null;
 
   const shipmentBars = useMemo(
     () => dashboardBarsFromStatusMap(shipmentSummary.data?.byStatus),
@@ -151,10 +162,24 @@ export default function PortalHomePage() {
     () => shipmentItems.filter((item) => isDocsPending(item.status)).length,
     [shipmentItems],
   );
-  const tasks = useMemo(() => buildPortalTasks(shipmentItems, quoteItems), [shipmentItems, quoteItems]);
+  const tasks = useMemo((): PortalTaskItem[] => {
+    const fromApi = portalTasks.data?.length
+      ? portalTasks.data
+      : dashboard.data?.tasksPreview;
+    if (fromApi?.length) {
+      return fromApi.map((t) => ({
+        id: t.id,
+        label: t.label,
+        done: t.done,
+        href: t.href,
+      }));
+    }
+    return buildPortalTasks(shipmentItems, quoteItems);
+  }, [portalTasks.data, dashboard.data?.tasksPreview, shipmentItems, quoteItems]);
 
   const dataLoading =
     dashboard.isLoading ||
+    portalTasks.isLoading ||
     shipmentSummary.isLoading ||
     quoteSummary.isLoading ||
     invoiceSummary.isLoading ||

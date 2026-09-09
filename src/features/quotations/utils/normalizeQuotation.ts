@@ -92,6 +92,7 @@ export function normalizeQuotationLine(raw: unknown): QuotationLine | null {
     is_cost: bool(r.is_cost) ?? false,
     supplier_id: str(r.supplier_id),
     sort_order: num(r.sort_order) ?? 0,
+    pricing_source: str(r.pricing_source) ?? str(r.pricingSource) ?? str(r.source),
   };
 }
 
@@ -190,6 +191,21 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     cost_total: num(r.cost_total ?? r.costTotal),
     revenue_total: num(r.revenue_total ?? r.revenueTotal),
     negotiation_pricing: normalizeNegotiationPricing(r),
+    portal_estimate_snapshot: (() => {
+      const snap =
+        asRecord(r.portal_estimate_snapshot) ??
+        asRecord(r.portalEstimateSnapshot) ??
+        asRecord(r.estimate_snapshot) ??
+        asRecord(r.estimateSnapshot);
+      if (!snap) return undefined;
+      return {
+        currency_code: str(snap.currency_code) ?? str(snap.currencyCode),
+        estimated_total: num(snap.estimated_total ?? snap.estimatedTotal ?? snap.total),
+        captured_at: str(snap.captured_at) ?? str(snap.capturedAt),
+      };
+    })(),
+    portal_costing:
+      asRecord(r.portal_costing) ?? asRecord(r.portalCosting) ?? undefined,
     gp_amount: num(r.gp_amount),
     gp_percent: num(r.gp_percent),
     contact_name:

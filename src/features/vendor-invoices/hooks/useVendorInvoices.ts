@@ -1,6 +1,8 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useVendorAuthStore } from '@/features/vendor-auth/store/vendorAuthStore';
 import { useVendorQueryScope } from '@/features/vendor-shared/useVendorQueryScope';
+import type { ApiPeriodQuery, UiDashboardPeriod } from '@/lib/apiPeriod';
+import { uiPeriodToApi } from '@/lib/apiPeriod';
 import { vendorInvoicesService } from '../services/vendorInvoices.service';
 import type { VendorInvoiceListParams, VendorInvoiceSubmitDto } from '../types/vendorInvoices.types';
 
@@ -15,13 +17,23 @@ export const vendorInvoiceKeys = {
     [...vendorInvoiceKeys.all(scope), 'payment-proofs', invoiceId] as const,
 };
 
-export function useVendorInvoiceSummary(enabled = true) {
+export function useVendorInvoiceSummary(
+  enabledOrPeriod: boolean | UiDashboardPeriod | ApiPeriodQuery = true,
+  enabled = true,
+) {
   const accessToken = useVendorAuthStore((s) => s.accessToken);
   const scope = useVendorQueryScope();
+  const periodQuery: ApiPeriodQuery | undefined =
+    typeof enabledOrPeriod === 'boolean'
+      ? undefined
+      : typeof enabledOrPeriod === 'string'
+        ? uiPeriodToApi(enabledOrPeriod)
+        : enabledOrPeriod;
+  const isEnabled = typeof enabledOrPeriod === 'boolean' ? enabledOrPeriod : enabled;
   return useQuery({
-    queryKey: vendorInvoiceKeys.summary(scope),
-    queryFn: () => vendorInvoicesService.summary(),
-    enabled: Boolean(accessToken) && enabled && scope !== 'anon',
+    queryKey: [...vendorInvoiceKeys.summary(scope), periodQuery ?? null],
+    queryFn: () => vendorInvoicesService.summary(periodQuery),
+    enabled: Boolean(accessToken) && isEnabled && scope !== 'anon',
     staleTime: 0,
   });
 }

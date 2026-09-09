@@ -12,6 +12,16 @@ import {
   unwrapEntity,
   unwrapList,
 } from '../utils/normalizeJob';
+import {
+  normalizeJobDashboardCounts,
+  normalizeTeamWorkload,
+} from '../utils/normalizeJobDashboard';
+import type {
+  JobDashboardCounts,
+  JobDashboardPeriodParams,
+  TeamWorkloadRow,
+} from '../types/jobDashboard.types';
+import { jobDashboardQueryParams } from '../types/jobDashboard.types';
 import { JOB_POST_AXIOS_CONFIG } from '../utils/buildJobCreateCandidates';
 import { ensureJobBranchReady } from '../utils/ensureJobBranchReady';
 import { prepareJobPayload } from '../utils/prepareJobPayload';
@@ -207,6 +217,34 @@ export const jobService = {
         meta: normalizePaginationMeta(meta, jobs.length, params),
       };
     } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async dashboardCounts(params: JobDashboardPeriodParams = {}): Promise<JobDashboardCounts> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<unknown>(JOB_API.dashboardCounts, {
+          params: jobDashboardQueryParams(params),
+        }),
+      );
+      return normalizeJobDashboardCounts(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async teamWorkload(params: JobDashboardPeriodParams = {}): Promise<TeamWorkloadRow[]> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<unknown>(JOB_API.teamWorkload, {
+          params: jobDashboardQueryParams(params),
+        }),
+      );
+      return normalizeTeamWorkload(res.data);
+    } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 404 || status === 501) return [];
       throw formatAxiosError(error);
     }
   },

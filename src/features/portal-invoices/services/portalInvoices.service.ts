@@ -1,4 +1,6 @@
 import { portalApiClient, PortalApiError } from '@/lib/portalApiClient';
+import type { ApiPeriodQuery } from '@/lib/apiPeriod';
+import { periodQueryParams } from '@/lib/apiPeriod';
 import { buildPaymentProofFormData } from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
 import type { PaymentProof, UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
 import { normalizePaymentProof, normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
@@ -123,8 +125,10 @@ async function tryDownloadFromPdfMetadata(
 }
 
 export const portalInvoicesService = {
-  async summary(): Promise<PortalInvoiceSummary> {
-    const res = await portalApiClient.get(PORTAL_INVOICES_API.summary);
+  async summary(period?: ApiPeriodQuery): Promise<PortalInvoiceSummary> {
+    const res = await portalApiClient.get(PORTAL_INVOICES_API.summary, {
+      params: periodQueryParams(period),
+    });
     return normalizeInvoiceSummary(res.data);
   },
   async list(params: PortalInvoiceListParams = {}): Promise<PortalInvoiceListResult> {

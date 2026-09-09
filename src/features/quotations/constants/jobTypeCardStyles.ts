@@ -98,6 +98,18 @@ export const QUOTATION_WIZARD_STEPS = [
   { key: 'create', label: 'Create Quotation' },
   { key: 'ports', label: 'Port Details' },
   { key: 'consignment', label: 'Container / Consignment' },
+  { key: 'costing', label: 'Costing' },
+  { key: 'summary', label: 'Summary' },
 ] as const;
 
 export type QuotationWizardStepKey = (typeof QUOTATION_WIZARD_STEPS)[number]['key'];
+
+export const QUOTATION_WIZARD_STEP_COUNT = QUOTATION_WIZARD_STEPS.length;
+
+export function quotationWizardStepKey(index: number): QuotationWizardStepKey | undefined {
+  return QUOTATION_WIZARD_STEPS[index]?.key;
+}
+
+export function isQuotationWizardLastStep(index: number): boolean {
+  return index >= QUOTATION_WIZARD_STEP_COUNT - 1;
+}
