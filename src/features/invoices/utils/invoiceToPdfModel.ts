@@ -1,5 +1,6 @@
 import type { Job } from '@/features/jobs/types/job.types';
 import type { Party } from '@/features/parties/types/party.types';
+import type { PortalShipmentDetail } from '@/features/portal-shipments/types/portalShipments.types';
 import type { Invoice, InvoiceLine } from '../types/invoice.types';
 import { invoiceDisplayNumber } from './normalizeInvoice';
 import type {
@@ -15,6 +16,7 @@ export type InvoicePdfEnrichment = {
   company?: InvoicePdfCompany;
   /** Override Bill To contact from primary party contact when present. */
   attn?: string;
+  shipment?: InvoicePdfShipment | null;
 };
 
 function primaryContact(party?: Party | null) {
@@ -37,20 +39,41 @@ function inferUnit(line: InvoiceLine): string {
   return 'Unit';
 }
 
-function portLabel(job: Job | null | undefined, side: 'origin' | 'dest'): string {
-  if (!job) return '';
-  if (side === 'origin') {
-    return [job.origin_port_code].filter(Boolean).join(' ') || '';
-  }
-  return [job.dest_port_code].filter(Boolean).join(' ') || '';
+function fmtShipDate(raw?: string): string {
+  if (!raw) return '';
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) return String(raw).slice(0, 10);
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
-function shipmentFromJob(job?: Job | null): InvoicePdfShipment | undefined {
+function portLabel(job: Job, side: 'origin' | 'dest'): string {
+  if (side === 'origin') {
+    return (
+      [job.origin_port_code].filter(Boolean).join(' ') ||
+      job.land_details?.origin_city_country ||
+      ''
+    );
+  }
+  return (
+    [job.dest_port_code].filter(Boolean).join(' ') ||
+    job.land_details?.destination_city_country ||
+    ''
+  );
+}
+
+function hasShipmentValues(ship?: InvoicePdfShipment | null): boolean {
+  if (!ship) return false;
+  return Object.values(ship).some((v) => Boolean(String(v || '').trim()));
+}
+
+/** Build shipment block dynamically from a linked job (+ containers / enrichments). */
+export function shipmentFromJob(job?: Job | null): InvoicePdfShipment | undefined {
   if (!job) return undefined;
   const air = job.air_details;
   const fcl = job.sea_fcl_details;
   const lcl = job.sea_lcl_details;
   const land = job.land_details;
+  const courier = job.courier_details;
 
   const blAwb =
     air?.mawb_number ||
@@ -59,28 +82,30 @@ function shipmentFromJob(job?: Job | null): InvoicePdfShipment | undefined {
     fcl?.hbl_number ||
     lcl?.mbl_number ||
     lcl?.hbl_number ||
+    courier?.tracking_number ||
     '';
 
   const vesselFlight =
     air?.flight_number ||
     fcl?.vessel_name ||
+    lcl?.vessel_name ||
     (fcl?.voyage_number ? `Voy ${fcl.voyage_number}` : '') ||
     (lcl?.voyage_number ? `Voy ${lcl.voyage_number}` : '') ||
     land?.vehicle_number ||
     '';
 
   const containerNo =
-    job.containers?.map((c) => c.container_number).filter(Boolean).join(', ') || '';
+    job.containers
+      ?.map((c) => c.container_number)
+      .filter(Boolean)
+      .join(', ') || '';
 
   const etd = job.etd || fcl?.etd || lcl?.etd || land?.etd || air?.flight_date;
   const eta = job.eta || fcl?.eta || lcl?.eta || land?.eta;
   const etdEta = [etd, eta]
     .filter(Boolean)
-    .map((d) => {
-      const dt = new Date(String(d));
-      if (Number.isNaN(dt.getTime())) return String(d);
-      return dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    })
+    .map((d) => fmtShipDate(String(d)))
+    .filter(Boolean)
     .join(' / ');
 
   const wt =
@@ -93,7 +118,7 @@ function shipmentFromJob(job?: Job | null): InvoicePdfShipment | undefined {
       : '';
   const grossWtCbm = [wt, cbm].filter(Boolean).join(' / ');
 
-  return {
+  const shipment: InvoicePdfShipment = {
     blAwb: blAwb || undefined,
     vesselFlight: vesselFlight || undefined,
     pol: portLabel(job, 'origin') || undefined,
@@ -103,6 +128,87 @@ function shipmentFromJob(job?: Job | null): InvoicePdfShipment | undefined {
     commodity: job.commodity || land?.border_commodity || undefined,
     grossWtCbm: grossWtCbm || undefined,
   };
+
+  return hasShipmentValues(shipment) ? shipment : undefined;
+}
+
+/** Map portal shipment detail (and raw payload extras) into invoice PDF shipment fields. */
+export function shipmentFromPortalShipment(
+  detail?: PortalShipmentDetail | null,
+): InvoicePdfShipment | undefined {
+  if (!detail) return undefined;
+  const raw = (detail.raw ?? {}) as Record<string, unknown>;
+  const pick = (...keys: string[]) => {
+    for (const key of keys) {
+      const v = raw[key];
+      if (v != null && String(v).trim()) return String(v).trim();
+    }
+    return '';
+  };
+
+  const blAwb =
+    pick(
+      'mawb_number',
+      'mawbNumber',
+      'hawb_number',
+      'hawbNumber',
+      'mbl_number',
+      'mblNumber',
+      'hbl_number',
+      'hblNumber',
+      'bl_number',
+      'blNumber',
+      'awb_number',
+      'awbNumber',
+      'tracking_number',
+      'trackingNumber',
+    ) || detail.reference || '';
+
+  const vesselFlight = pick(
+    'flight_number',
+    'flightNumber',
+    'vessel_name',
+    'vesselName',
+    'voyage_number',
+    'voyageNumber',
+    'vehicle_number',
+    'vehicleNumber',
+  );
+
+  const containerNo = pick(
+    'container_number',
+    'containerNumber',
+    'container_no',
+    'containerNo',
+    'containers',
+  );
+
+  const etdEta = [detail.etd, detail.eta]
+    .filter(Boolean)
+    .map((d) => fmtShipDate(String(d)))
+    .join(' / ');
+
+  const wt =
+    detail.grossWeight != null
+      ? `${detail.grossWeight.toLocaleString('en-US', { maximumFractionDigits: 3 })} kg`
+      : '';
+  const cbm =
+    detail.volumeCbm != null
+      ? `${detail.volumeCbm.toLocaleString('en-US', { maximumFractionDigits: 3 })} CBM`
+      : '';
+
+  const shipment: InvoicePdfShipment = {
+    blAwb: blAwb || undefined,
+    vesselFlight: vesselFlight || undefined,
+    pol: detail.origin || undefined,
+    pod: detail.destination || undefined,
+    containerNo: containerNo || undefined,
+    etdEta: etdEta || undefined,
+    commodity: detail.cargoSummary || pick('commodity') || undefined,
+    grossWtCbm: [wt, cbm].filter(Boolean).join(' / ') || undefined,
+  };
+
+  return hasShipmentValues(shipment) ? shipment : undefined;
 }
 
 function chargeLines(invoice: Invoice, job?: Job | null): InvoicePdfChargeLine[] {
@@ -126,7 +232,7 @@ export function invoiceToPdfModel(
   invoice: Invoice,
   enrichment: InvoicePdfEnrichment = {},
 ): InvoicePdfModel {
-  const { party, job, company, attn } = enrichment;
+  const { party, job, company, attn, shipment: shipmentOverride } = enrichment;
   const contact = primaryContact(party);
   const vatRate = invoice.vat_rate != null ? Number(invoice.vat_rate) : 5;
   const subtotal = invoice.subtotal ?? 0;
@@ -153,14 +259,14 @@ export function invoiceToPdfModel(
       addressLines: party?.address
         ? [party.address]
         : party?.addresses?.[0]
-          ? [
+          ? ([
               party.addresses[0].address_line1,
               party.addresses[0].address_line2,
               [party.addresses[0].city, party.addresses[0].country_code].filter(Boolean).join(', '),
-            ].filter(Boolean) as string[]
+            ].filter(Boolean) as string[])
           : undefined,
     },
-    shipment: shipmentFromJob(job),
+    shipment: shipmentOverride ?? shipmentFromJob(job),
     lines: chargeLines(invoice, job),
     subtotal,
     discount: 0,
@@ -206,6 +312,12 @@ export function portalInvoiceToPdfModel(
     email?: string;
     company?: InvoicePdfCompany;
     copyLabel?: string;
+    documentTitle?: string;
+    documentSubtitle?: string;
+    detailsSectionTitle?: string;
+    numberLabel?: string;
+    dateLabel?: string;
+    shipment?: InvoicePdfShipment | null;
   } = {},
 ): InvoicePdfModel {
   const subtotal = detail.subtotal ?? 0;
@@ -231,12 +343,18 @@ export function portalInvoiceToPdfModel(
     currencyCode: detail.currencyCode || 'AED',
     vatRate,
     copyLabel: enrichment.copyLabel || 'ORIGINAL',
+    documentTitle: enrichment.documentTitle,
+    documentSubtitle: enrichment.documentSubtitle,
+    detailsSectionTitle: enrichment.detailsSectionTitle,
+    numberLabel: enrichment.numberLabel,
+    dateLabel: enrichment.dateLabel,
     billTo: {
       client: enrichment.clientName || '—',
       attn: enrichment.attn,
       phone: enrichment.phone,
       email: enrichment.email,
     },
+    shipment: enrichment.shipment ?? undefined,
     lines: (detail.lines ?? []).map((line) => ({
       description: line.description || 'Charge',
       qty: line.quantity,

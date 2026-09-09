@@ -1,0 +1,1 @@
+export { DebitNoteTable } from './DebitNoteTable';

@@ -20,19 +20,16 @@ export default function PurchaseInvoiceCreatePage() {
       >
         ← Back to purchase invoices
       </button>
-      <div>
+      <div className="text-center">
         <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
-          New purchase invoice
+          Create Purchase Invoice
         </h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Creates a DRAFT purchase invoice. Required: vendor/supplier party and currency.
-        </p>
       </div>
 
       {error && (
         <div
           role="alert"
-          className="rounded-lg border px-4 py-3 text-sm"
+          className="mx-auto max-w-5xl rounded-lg border px-4 py-3 text-sm"
           style={{
             background: 'var(--color-danger-100)',
             borderColor: '#FECACA',
@@ -45,6 +42,7 @@ export default function PurchaseInvoiceCreatePage() {
 
       <PurchaseInvoiceForm
         mode="create"
+        layout="wizard"
         isSubmitting={create.isPending}
         onCancel={() => navigate(PURCHASE_INVOICE_ROUTE_PREFIX)}
         onSubmit={async (values) => {

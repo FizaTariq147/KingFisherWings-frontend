@@ -95,6 +95,20 @@ export function normalizeCreditNoteDetail(
     ...base,
     remarks: pickString(data.remarks) || undefined,
     lines: linesRaw.map(normalizeCreditNoteLine).filter((l): l is PortalCreditNoteLine => Boolean(l)),
+    subtotal: pickNumber(data.subtotal, data.sub_total, data.net_amount, data.netAmount),
+    taxTotal: pickNumber(data.tax_total, data.taxTotal, data.vat_amount, data.vatAmount),
+    vatRate: pickNumber(data.vat_rate, data.vatRate, data.tax_rate, data.taxRate),
+    pdfUrl:
+      pickString(
+        data.pdf_url,
+        data.pdfUrl,
+        data.customer_pdf_url,
+        data.customerPdfUrl,
+        data.download_url,
+        data.downloadUrl,
+        data.file_url,
+        data.fileUrl,
+      ) || undefined,
   };
 }
 

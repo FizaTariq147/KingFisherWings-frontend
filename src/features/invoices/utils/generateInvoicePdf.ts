@@ -65,6 +65,16 @@ export type InvoicePdfModel = {
   currencyCode?: string;
   vatRate?: number;
   copyLabel?: string;
+  /** Large header title — default `INVOICE`. Use `CREDIT NOTE` / `DEBIT NOTE` for notes. */
+  documentTitle?: string;
+  /** Muted line under title — default tax-invoice subtitle. */
+  documentSubtitle?: string;
+  /** Right meta panel heading — default `INVOICE DETAILS`. */
+  detailsSectionTitle?: string;
+  /** Meta row label for document number — default `Invoice No.`. */
+  numberLabel?: string;
+  /** Meta row label for document date — default `Invoice Date`. */
+  dateLabel?: string;
   billTo: InvoicePdfBillTo;
   shipment?: InvoicePdfShipment;
   lines: InvoicePdfChargeLine[];
@@ -428,7 +438,15 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   y = Math.min(y - (logo.height || 40), rightY) - 16;
 
   // ——— Title + ORIGINAL badge ———
-  drawText(page, 'INVOICE', MARGIN, y, 24, fontBold, NAVY);
+  const documentTitle = safePdfText(model.documentTitle || 'INVOICE');
+  const documentSubtitle = safePdfText(
+    model.documentSubtitle || 'TAX INVOICE / STATEMENT OF CHARGES',
+  );
+  const detailsSectionTitle = safePdfText(model.detailsSectionTitle || 'INVOICE DETAILS');
+  const numberLabel = safePdfText(model.numberLabel || 'Invoice No.');
+  const dateLabel = safePdfText(model.dateLabel || 'Invoice Date');
+
+  drawText(page, documentTitle, MARGIN, y, 24, fontBold, NAVY);
 
   const badgeH = 15;
   const badgePad = 14;
@@ -447,7 +465,7 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   );
 
   y -= 13;
-  drawText(page, 'TAX INVOICE / STATEMENT OF CHARGES', MARGIN, y, 7.5, font, MUTED);
+  drawText(page, documentSubtitle, MARGIN, y, 7.5, font, MUTED);
   y -= 10;
   page.drawLine({
     start: { x: MARGIN, y },
@@ -480,11 +498,11 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
 
   let detY = y - 13;
   const detX = MARGIN + colW + gap;
-  sectionTitle(page, 'INVOICE DETAILS', detX + 10, detY, fontBold);
+  sectionTitle(page, detailsSectionTitle, detX + 10, detY, fontBold);
   detY -= 14;
   const detailRows: Array<[string, string, number]> = [
-    ['Invoice No.', model.invoiceNumber || '—', 68],
-    ['Invoice Date', fmtDate(model.invoiceDate), 68],
+    [numberLabel, model.invoiceNumber || '—', 68],
+    [dateLabel, fmtDate(model.invoiceDate), 68],
     ['Due Date', fmtDate(model.dueDate), 68],
     ['Job / Ref No.', model.jobRef || '—', 68],
     ['Currency', currency, 68],
