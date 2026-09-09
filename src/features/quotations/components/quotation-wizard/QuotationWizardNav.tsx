@@ -1,29 +1,33 @@
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { QUOTATION_WIZARD_STEP_COUNT } from '../../constants/jobTypeCardStyles';
 
 type QuotationWizardNavProps = {
   currentStep: number;
+  /** Defaults to staff create wizard length from QUOTATION_WIZARD_STEPS. */
   totalSteps?: number;
   onPrevious: () => void;
   onNext: () => void;
   onCancel: () => void;
   nextLabel?: string;
+  submitLabel?: string;
   isSubmitting?: boolean;
   disableNext?: boolean;
 };
 
 export function QuotationWizardNav({
   currentStep,
-  totalSteps = 3,
+  totalSteps = QUOTATION_WIZARD_STEP_COUNT,
   onPrevious,
   onNext,
   onCancel,
   nextLabel,
+  submitLabel = 'Submit',
   isSubmitting,
   disableNext,
 }: QuotationWizardNavProps) {
   const isLast = currentStep >= totalSteps - 1;
-  const label = nextLabel ?? (isLast ? 'Submit' : 'Next');
+  const label = nextLabel ?? (isLast ? submitLabel : 'Next');
 
   return (
     <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--color-neutral-100)] pt-4">

@@ -22,6 +22,7 @@ import { useDeleteInvoice, useInvoice } from '../hooks/useInvoices';
 import { generateInvoicePdf } from '../utils/generateInvoicePdf';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { invoiceToPdfModel } from '../utils/invoiceToPdfModel';
+import { loadInvoiceJobForPdf } from '../utils/loadInvoiceJobForPdf';
 import { invoiceDisplayNumber } from '../utils/normalizeInvoice';
 
 function Field({ label, value }: { label: string; value?: string | number | null }) {
@@ -75,14 +76,17 @@ export default function InvoiceDetailPage() {
   const companyMatch =
     companies.find((c) => c.id && invoice.company_id && c.id === invoice.company_id) || companies[0];
 
-  const buildClientPdf = async () =>
-    generateInvoicePdf(
+  const buildClientPdf = async () => {
+    // Always reload job + containers + port/vessel labels so SHIPMENT DETAILS is dynamic.
+    const pdfJob = (await loadInvoiceJobForPdf(invoice.job_id)) || job || null;
+    return generateInvoicePdf(
       invoiceToPdfModel(invoice, {
         party,
-        job,
+        job: pdfJob,
         company: { name: companyMatch?.name || 'KINGFISHER WINGS GROUP' },
       }),
     );
+  };
 
   const openClientPdf = async (alsoGenerateServer: boolean) => {
     setActionError(null);
@@ -163,6 +167,11 @@ export default function InvoiceDetailPage() {
           {
             label: 'Credit note',
             onClick: () => navigate(`/credit-notes/new?invoice=${id}`),
+            variant: 'secondary' as const,
+          },
+          {
+            label: 'Debit note',
+            onClick: () => navigate(`/debit-notes/new?invoice=${id}`),
             variant: 'secondary' as const,
           },
           {

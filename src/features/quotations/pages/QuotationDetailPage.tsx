@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
 import { QuotationEmailModal } from '../components/QuotationEmailModal';
@@ -53,6 +53,7 @@ function statusTone(
 export default function QuotationDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { data: quotation, isLoading, isError, error, refetch } = useQuotation(id);
   const { data: revisions = [] } = useQuotationRevisions(id, Boolean(id));
   const actions = useQuotationActions(id);
@@ -65,6 +66,15 @@ export default function QuotationDetailPage() {
   const [pdfOpen, setPdfOpen] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
   const autoFulfillAttempted = useRef<string | null>(null);
+
+  // Surface partial costing failures from create wizard (apply-tariff / lines).
+  useEffect(() => {
+    const state = location.state as { costingWarnings?: string[] } | null;
+    const warnings = state?.costingWarnings;
+    if (!warnings?.length) return;
+    setActionError(`Quotation created, but some costing steps failed: ${warnings.join(' · ')}`);
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
 
   const negotiationEnabled =
     Boolean(id) &&

@@ -10,6 +10,11 @@ import { getServerErrorMessage } from '@/lib/validation';
 import type { JobType } from '@/features/quotations/constants/quotation.constants';
 import { JOB_TYPE_LABELS } from '@/features/quotations/constants/quotation.constants';
 import {
+  QUOTATION_WIZARD_STEPS,
+  isQuotationWizardLastStep,
+  quotationWizardStepKey,
+} from '@/features/quotations/constants/jobTypeCardStyles';
+import {
   JobTypeSelectGrid,
   QuotationWizardNav,
   QuotationWizardStepper,
@@ -21,6 +26,7 @@ import {
 import { PortalPlaceSelect } from '../components/PortalPlaceSelect';
 import {
   usePortalLocaleCurrency,
+  usePortalCostingOptions,
   usePortalQuotationEstimate,
   usePortalServiceCatalog,
   useRequestPortalQuotation,
@@ -42,12 +48,13 @@ import {
 } from '../utils/buildPortalEstimatePackages';
 import { isAirJobType, type PortalPortOption } from '../utils/loadPortalPortOptions';
 import {
-  buildCustomerPriceNote,
+  buildPortalCustomerLines,
+  buildPortalEstimateSnapshot,
   calcCustomerServiceLineAmount,
   parseCustomerUnitPrice,
   portalServiceQuantity,
 } from '../utils/portalCustomerServicePrices';
-import { applyPortalRouteFields } from '../utils/preparePortalQuotationRequest';
+import { applyPortalRouteFields, resolvePortalPortId } from '../utils/preparePortalQuotationRequest';
 import type { PortalServiceCatalogItem } from '../types/portalQuotations.types';
 
 function numberInputProps(fieldError?: string) {
@@ -65,17 +72,7 @@ function optionalNumberValue(value: unknown): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
-function mergeSpecialRequirements(base: string | undefined, note: string | undefined): string | undefined {
-  const a = base?.trim();
-  const b = note?.trim();
-  if (!a && !b) return undefined;
-  if (!a) return b;
-  if (!b) return a;
-  const merged = `${a}\n\n${b}`;
-  return merged.length > 2000 ? merged.slice(0, 2000) : merged;
-}
-
-const STEP0_FIELDS: (keyof PortalBookQuoteFormValues)[] = ['job_type'];
+const CREATE_FIELDS: (keyof PortalBookQuoteFormValues)[] = ['job_type'];
 
 const PORT_DETAILS_FIELDS: (keyof PortalBookQuoteFormValues)[] = [
   'origin_port',
@@ -84,6 +81,13 @@ const PORT_DETAILS_FIELDS: (keyof PortalBookQuoteFormValues)[] = [
   'commodity',
   'valid_until',
   'special_requirements',
+];
+
+const CONSIGNMENT_FIELDS: (keyof PortalBookQuoteFormValues)[] = [
+  'gross_weight',
+  'chargeable_weight',
+  'volume_cbm',
+  'pieces',
 ];
 
 export default function PortalBookPage() {
@@ -152,23 +156,74 @@ export default function PortalBookPage() {
   const formChargeableWeight = watch('chargeable_weight');
   const formVolumeCbm = watch('volume_cbm');
   const formPieces = watch('pieces');
-  const serviceCatalog = usePortalServiceCatalog(jobType);
-  const { errors } = formState;
-  const catalogCodes = useMemo(
-    () => new Set((serviceCatalog.data ?? []).map((s) => s.code).filter(Boolean)),
-    [serviceCatalog.data],
-  );
-  const catalogByCode = useMemo(() => {
-    const map = new Map<string, PortalServiceCatalogItem>();
-    for (const item of serviceCatalog.data ?? []) {
-      if (item.code) map.set(item.code, item);
-    }
-    return map;
-  }, [serviceCatalog.data]);
-
+  const commodity = watch('commodity');
+  const validUntil = watch('valid_until');
   const packagesCbm = useMemo(() => sumPackageDraftCbm(packages), [packages]);
   const packagesWeight = useMemo(() => sumPackageDraftWeightKg(packages), [packages]);
   const packagesPieces = useMemo(() => sumPackageDraftPieces(packages), [packages]);
+  const serviceCatalog = usePortalServiceCatalog(jobType);
+  const costingDto = useMemo(() => {
+    if (!jobType || !resolvedCurrencyCode) return null;
+    return {
+      job_type: jobType,
+      currency_code: resolvedCurrencyCode,
+      origin_port_id: resolvePortalPortId(originPort, placeCache),
+      dest_port_id: resolvePortalPortId(destPort, placeCache),
+      gross_weight: optionalNumberValue(formGrossWeight) ?? packagesWeight,
+      chargeable_weight: optionalNumberValue(formChargeableWeight),
+      volume_cbm: optionalNumberValue(formVolumeCbm) ?? packagesCbm,
+      pieces: optionalNumberValue(formPieces) ?? packagesPieces,
+    };
+  }, [
+    jobType,
+    resolvedCurrencyCode,
+    originPort,
+    destPort,
+    placeCache,
+    formGrossWeight,
+    formChargeableWeight,
+    formVolumeCbm,
+    formPieces,
+    packagesWeight,
+    packagesCbm,
+    packagesPieces,
+  ]);
+  const wizardStepKey = quotationWizardStepKey(step);
+  const costingOptions = usePortalCostingOptions(costingDto, step >= 3);
+  const { errors } = formState;
+  const catalogItems = useMemo(() => {
+    const base = serviceCatalog.data ?? [];
+    const opts = costingOptions.data ?? [];
+    if (!opts.length) return base;
+    const map = new Map<string, PortalServiceCatalogItem>();
+    for (const item of base) {
+      if (item.code) map.set(item.code, item);
+    }
+    for (const opt of opts) {
+      if (!opt.code) continue;
+      const prev = map.get(opt.code);
+      map.set(opt.code, {
+        ...(prev ?? opt),
+        ...opt,
+        unitPrice: opt.unitPrice ?? prev?.unitPrice,
+        chargeCodeId: opt.chargeCodeId ?? prev?.chargeCodeId,
+        pricingBasis: opt.pricingBasis ?? prev?.pricingBasis,
+        name: opt.name || prev?.name || opt.code,
+      });
+    }
+    return [...map.values()];
+  }, [serviceCatalog.data, costingOptions.data]);
+  const catalogCodes = useMemo(
+    () => new Set(catalogItems.map((s) => s.code).filter(Boolean)),
+    [catalogItems],
+  );
+  const catalogByCode = useMemo(() => {
+    const map = new Map<string, PortalServiceCatalogItem>();
+    for (const item of catalogItems) {
+      if (item.code) map.set(item.code, item);
+    }
+    return map;
+  }, [catalogItems]);
 
   useEffect(() => {
     setSelectedServices([]);
@@ -303,6 +358,12 @@ export default function PortalBookPage() {
       return;
     }
 
+    const priceDrafts = serviceCodesForJob.map((code) => ({
+      code,
+      unit_price: servicePrices[code] ?? '',
+    }));
+    const customerLines = buildPortalCustomerLines(priceDrafts, catalogByCode, qtyInputs);
+
     const base = applyPortalRouteFields(
       {
         job_type: values.job_type,
@@ -316,6 +377,7 @@ export default function PortalBookPage() {
         valid_until: values.valid_until || undefined,
         packages: packageDtos,
         service_codes: serviceCodesForJob,
+        ...(customerLines.length ? { customer_lines: customerLines } : {}),
       },
       {
         origin_port: values.origin_port,
@@ -343,22 +405,16 @@ export default function PortalBookPage() {
     const values = rawValues as PortalBookQuotePayload;
     try {
       const currency = values.currency_code || resolvedCurrencyCode || 'AED';
-      const priceNote = buildCustomerPriceNote(
-        selectedServices
-          .filter((code) => catalogCodes.has(code))
-          .map((code) => ({
-            code,
-            unit_price: servicePrices[code] ?? '',
-          })),
-        catalogByCode,
-        currency,
-        qtyInputs,
-      );
+      const serviceCodesForJob = selectedServices.filter((code) => catalogCodes.has(code));
+      const priceDrafts = serviceCodesForJob.map((code) => ({
+        code,
+        unit_price: servicePrices[code] ?? '',
+      }));
+      const customerLines = buildPortalCustomerLines(priceDrafts, catalogByCode, qtyInputs);
+      const estimateSnapshot = buildPortalEstimateSnapshot(currency, customerTotal);
 
-      const hasPackageDims = packages.some(
-        (pkg) => pkg.length_cm.trim() && pkg.width_cm.trim() && pkg.height_cm.trim(),
-      );
-      const volumeCbm = hasPackageDims ? undefined : values.volume_cbm ?? packagesCbm;
+      const { packages: packageDtos, hasDimensions } = buildPortalEstimatePackages(packages);
+      const volumeCbm = hasDimensions ? undefined : values.volume_cbm ?? packagesCbm;
 
       const payload = applyPortalRouteFields(
         {
@@ -369,8 +425,12 @@ export default function PortalBookPage() {
           chargeable_weight: values.chargeable_weight,
           volume_cbm: volumeCbm,
           pieces: values.pieces ?? packagesPieces,
-          special_requirements: mergeSpecialRequirements(values.special_requirements, priceNote),
+          special_requirements: values.special_requirements?.trim() || undefined,
           valid_until: values.valid_until || undefined,
+          ...(packageDtos.length ? { packages: packageDtos } : {}),
+          ...(serviceCodesForJob.length ? { service_codes: serviceCodesForJob } : {}),
+          ...(customerLines.length ? { customer_lines: customerLines } : {}),
+          ...(estimateSnapshot ? { estimate_snapshot: estimateSnapshot } : {}),
         },
         {
           origin_port: values.origin_port,
@@ -396,13 +456,16 @@ export default function PortalBookPage() {
 
   const goNext = async () => {
     setError(null);
-    if (step === 0) {
-      const ok = await trigger(STEP0_FIELDS);
-      if (!ok || !jobType) return;
-      setStep(1);
+    if (isQuotationWizardLastStep(step)) {
+      await onFinalSubmit();
       return;
     }
-    if (step === 1) {
+
+    const key = quotationWizardStepKey(step);
+    if (key === 'create') {
+      const ok = await trigger(CREATE_FIELDS);
+      if (!ok || !jobType) return;
+    } else if (key === 'ports') {
       const ok = await trigger(PORT_DETAILS_FIELDS);
       if (!ok || !resolvedCurrencyCode) {
         if (!resolvedCurrencyCode) {
@@ -410,10 +473,18 @@ export default function PortalBookPage() {
         }
         return;
       }
-      setStep(2);
-      return;
+    } else if (key === 'consignment') {
+      const ok = await trigger(CONSIGNMENT_FIELDS);
+      if (!ok) return;
     }
-    await onFinalSubmit();
+
+    setStep((current) => Math.min(current + 1, QUOTATION_WIZARD_STEPS.length - 1));
+  };
+
+  const placeLabel = (value: unknown) => {
+    if (typeof value !== 'string' || !value) return '—';
+    const fromCache = placeCache.find((p) => p.id === value);
+    return fromCache?.label || value;
   };
 
   return (
@@ -440,7 +511,7 @@ export default function PortalBookPage() {
         >
           <QuotationWizardStepper currentStep={step} />
 
-          {step === 0 ? (
+          {wizardStepKey === 'create' ? (
             <div className="space-y-5">
               <JobTypeSelectGrid
                 value={jobType}
@@ -450,103 +521,13 @@ export default function PortalBookPage() {
                 error={errors.job_type?.message}
                 heading="What type of Quotation would you like to request?"
               />
-
-              {serviceCatalog.data?.length ? (
-                <div className="space-y-3 rounded-md border border-[var(--color-neutral-200)] p-3">
-                  <div>
-                    <p className="text-sm font-medium">Services &amp; your prices</p>
-                    <p className="text-xs text-[var(--color-neutral-500)]">
-                      Select services for{' '}
-                      <strong>
-                        {JOB_TYPE_LABELS[jobType as keyof typeof JOB_TYPE_LABELS] ?? jobType}
-                      </strong>
-                      . You can refine packages on the last step before estimating.
-                    </p>
-                  </div>
-                  <div className="space-y-3">
-                    {serviceCatalog.data.map((service) => {
-                      const checked = selectedServices.includes(service.code);
-                      const row = customerPriceRows.find((r) => r.code === service.code);
-                      return (
-                        <div
-                          key={service.code}
-                          className="space-y-2 rounded-md border border-[var(--color-neutral-100)] p-3"
-                        >
-                          <label className="flex items-start gap-2 text-sm">
-                            <input
-                              type="checkbox"
-                              className="mt-1"
-                              checked={checked}
-                              onChange={(e) => toggleService(service.code, e.target.checked)}
-                            />
-                            <span>
-                              <span className="font-medium">{service.name}</span>
-                              <span className="block text-xs text-[var(--color-neutral-500)]">
-                                {service.code}
-                                {service.pricingBasis ? ` · ${service.pricingBasis}` : ''}
-                                {service.unitPrice != null
-                                  ? ` · catalog ${service.currencyCode || ''} ${service.unitPrice}`
-                                  : ''}
-                              </span>
-                            </span>
-                          </label>
-                          {checked ? (
-                            <div className="grid gap-2 pl-6 sm:grid-cols-3">
-                              <Input
-                                id={`svc-price-${service.code}`}
-                                label="Your unit price"
-                                required
-                                type="number"
-                                step="any"
-                                min={0}
-                                value={servicePrices[service.code] ?? ''}
-                                onChange={(e) => {
-                                  setServicePrices((prev) => ({
-                                    ...prev,
-                                    [service.code]: e.target.value,
-                                  }));
-                                  setEstimatePreview(null);
-                                }}
-                              />
-                              <div className="flex flex-col justify-end">
-                                <p className="text-xs font-medium text-[var(--color-neutral-600)]">
-                                  Qty ({service.pricingBasis || 'FLAT'})
-                                </p>
-                                <p className="flex h-9 items-center text-sm">{row?.qty ?? '—'}</p>
-                              </div>
-                              <div className="flex flex-col justify-end">
-                                <p className="text-xs font-medium text-[var(--color-neutral-600)]">
-                                  Line total
-                                </p>
-                                <p className="flex h-9 items-center text-sm font-medium">
-                                  {row?.amount != null
-                                    ? `${resolvedCurrencyCode || ''} ${row.amount}`
-                                    : '—'}
-                                </p>
-                              </div>
-                            </div>
-                          ) : null}
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {customerTotal != null ? (
-                    <p className="text-sm font-medium text-[var(--color-neutral-800)]">
-                      Your total: {resolvedCurrencyCode} {customerTotal}
-                    </p>
-                  ) : null}
-                </div>
-              ) : (
-                <p className="text-xs text-[var(--color-neutral-500)]">
-                  {serviceCatalog.isLoading
-                    ? 'Loading services for this job type…'
-                    : 'No portal-visible services for this job type yet. You can still submit an enquiry.'}
-                </p>
-              )}
+              <p className="text-xs text-[var(--color-neutral-500)]">
+                Choose a job type first. Services and pricing are configured on the Costing step.
+              </p>
             </div>
           ) : null}
 
-          {step === 1 ? (
+          {wizardStepKey === 'ports' ? (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <Controller
                 name="origin_port"
@@ -642,7 +623,7 @@ export default function PortalBookPage() {
             </div>
           ) : null}
 
-          {step === 2 ? (
+          {wizardStepKey === 'consignment' ? (
             <div className="space-y-4">
               <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">
                 Planned Container / Consignment
@@ -783,6 +764,104 @@ export default function PortalBookPage() {
                   {...register('pieces', { setValueAs: optionalNumberValue })}
                 />
               </div>
+            </div>
+          ) : null}
+
+          {wizardStepKey === 'costing' ? (
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Costing</h3>
+              {catalogItems.length ? (
+                <div className="space-y-3 rounded-md border border-[var(--color-neutral-200)] p-3">
+                  <div>
+                    <p className="text-sm font-medium">Services &amp; your prices</p>
+                    <p className="text-xs text-[var(--color-neutral-500)]">
+                      Select services for{' '}
+                      <strong>
+                        {JOB_TYPE_LABELS[jobType as keyof typeof JOB_TYPE_LABELS] ?? jobType}
+                      </strong>
+                      . Compare with catalog estimate before reviewing the summary.
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    {catalogItems.map((service) => {
+                      const checked = selectedServices.includes(service.code);
+                      const row = customerPriceRows.find((r) => r.code === service.code);
+                      return (
+                        <div
+                          key={service.code}
+                          className="space-y-2 rounded-md border border-[var(--color-neutral-100)] p-3"
+                        >
+                          <label className="flex items-start gap-2 text-sm">
+                            <input
+                              type="checkbox"
+                              className="mt-1"
+                              checked={checked}
+                              onChange={(e) => toggleService(service.code, e.target.checked)}
+                            />
+                            <span>
+                              <span className="font-medium">{service.name}</span>
+                              <span className="block text-xs text-[var(--color-neutral-500)]">
+                                {service.code}
+                                {service.pricingBasis ? ` · ${service.pricingBasis}` : ''}
+                                {service.unitPrice != null
+                                  ? ` · catalog ${service.currencyCode || ''} ${service.unitPrice}`
+                                  : ''}
+                              </span>
+                            </span>
+                          </label>
+                          {checked ? (
+                            <div className="grid gap-2 pl-6 sm:grid-cols-3">
+                              <Input
+                                id={`svc-price-${service.code}`}
+                                label="Your unit price"
+                                required
+                                type="number"
+                                step="any"
+                                min={0}
+                                value={servicePrices[service.code] ?? ''}
+                                onChange={(e) => {
+                                  setServicePrices((prev) => ({
+                                    ...prev,
+                                    [service.code]: e.target.value,
+                                  }));
+                                  setEstimatePreview(null);
+                                }}
+                              />
+                              <div className="flex flex-col justify-end">
+                                <p className="text-xs font-medium text-[var(--color-neutral-600)]">
+                                  Qty ({service.pricingBasis || 'FLAT'})
+                                </p>
+                                <p className="flex h-9 items-center text-sm">{row?.qty ?? '—'}</p>
+                              </div>
+                              <div className="flex flex-col justify-end">
+                                <p className="text-xs font-medium text-[var(--color-neutral-600)]">
+                                  Line total
+                                </p>
+                                <p className="flex h-9 items-center text-sm font-medium">
+                                  {row?.amount != null
+                                    ? `${resolvedCurrencyCode || ''} ${row.amount}`
+                                    : '—'}
+                                </p>
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {customerTotal != null ? (
+                    <p className="text-sm font-medium text-[var(--color-neutral-800)]">
+                      Your total: {resolvedCurrencyCode} {customerTotal}
+                    </p>
+                  ) : null}
+                </div>
+              ) : (
+                <p className="text-xs text-[var(--color-neutral-500)]">
+                  {serviceCatalog.isLoading || costingOptions.isLoading
+                    ? 'Loading services for this job type…'
+                    : 'No portal-visible services for this job type yet. You can still submit an enquiry.'}
+                </p>
+              )}
 
               {selectedServices.length ? (
                 <div className="space-y-2">
@@ -803,17 +882,94 @@ export default function PortalBookPage() {
             </div>
           ) : null}
 
+          {wizardStepKey === 'summary' ? (
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Summary</h3>
+              <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+                <div>
+                  <dt className="text-xs text-[var(--color-neutral-500)]">Job type</dt>
+                  <dd className="font-medium text-[var(--color-neutral-800)]">
+                    {JOB_TYPE_LABELS[jobType as keyof typeof JOB_TYPE_LABELS] ?? jobType}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-[var(--color-neutral-500)]">Currency</dt>
+                  <dd className="font-medium text-[var(--color-neutral-800)]">
+                    {resolvedCurrencyCode || '—'}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-[var(--color-neutral-500)]">Origin</dt>
+                  <dd className="font-medium text-[var(--color-neutral-800)]">
+                    {placeLabel(originPort)}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-[var(--color-neutral-500)]">Destination</dt>
+                  <dd className="font-medium text-[var(--color-neutral-800)]">
+                    {placeLabel(destPort)}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-[var(--color-neutral-500)]">Commodity</dt>
+                  <dd className="font-medium text-[var(--color-neutral-800)]">
+                    {commodity || '—'}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-[var(--color-neutral-500)]">Valid until</dt>
+                  <dd className="font-medium text-[var(--color-neutral-800)]">
+                    {validUntil || '—'}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-[var(--color-neutral-500)]">Packages / cargo</dt>
+                  <dd className="font-medium text-[var(--color-neutral-800)]">
+                    {[
+                      `${packages.length} package${packages.length === 1 ? '' : 's'}`,
+                      packagesWeight != null ? `${packagesWeight} kg` : null,
+                      packagesCbm != null ? `${formatCbmDisplay(packagesCbm)} CBM` : null,
+                      packagesPieces != null ? `${packagesPieces} pcs` : null,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-[var(--color-neutral-500)]">Costing</dt>
+                  <dd className="font-medium text-[var(--color-neutral-800)]">
+                    {[
+                      selectedServices.length
+                        ? `${selectedServices.length} service${selectedServices.length === 1 ? '' : 's'}`
+                        : null,
+                      customerTotal != null
+                        ? `your total ${resolvedCurrencyCode} ${customerTotal}`
+                        : null,
+                      estimatePreview ? 'catalog estimate ready' : null,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ') || 'No services selected'}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          ) : null}
+
           <QuotationWizardNav
             currentStep={step}
+            totalSteps={QUOTATION_WIZARD_STEPS.length}
             onPrevious={() => setStep((s) => Math.max(0, s - 1))}
             onCancel={() => navigate('/portal/quotes')}
             onNext={() => void goNext()}
             isSubmitting={requestQuote.isPending}
-            nextLabel={step === 2 ? 'Submit quote request' : 'Next'}
+            submitLabel="Submit quote request"
             disableNext={
-              (step === 0 && !jobType) ||
-              (step === 1 && submitDisabled) ||
-              (step === 2 && submitDisabled)
+              (wizardStepKey === 'create' && !jobType) ||
+              ((wizardStepKey === 'ports' ||
+                wizardStepKey === 'consignment' ||
+                wizardStepKey === 'costing' ||
+                wizardStepKey === 'summary') &&
+                submitDisabled)
             }
           />
         </form>

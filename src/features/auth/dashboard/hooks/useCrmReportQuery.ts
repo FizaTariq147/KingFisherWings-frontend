@@ -6,7 +6,7 @@ import { unwrapReportRows } from '../utils/dashboardFormat';
 
 export function useCrmReportQuery(
   type: CrmReportType,
-  params: { from?: string; to?: string },
+  params: { from?: string; to?: string; period?: '7d' | '30d' | 'mtd' | 'custom' },
   enabled = true,
 ) {
   const accessToken = useAuthStore((s) => s.accessToken);
@@ -17,6 +17,7 @@ export function useCrmReportQuery(
         type,
         from: params.from,
         to: params.to,
+        period: params.period,
       });
       return { rows: unwrapReportRows(raw), raw };
     },

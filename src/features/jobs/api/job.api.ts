@@ -1,6 +1,8 @@
 /** Jobs REST paths — Swagger tag Jobs (Bearer JWT). 121 ops under /jobs. */
 export const JOB_API = {
   list: '/jobs',
+  dashboardCounts: '/jobs/dashboard-counts',
+  teamWorkload: '/jobs/team-workload',
   byId: (id: string) => `/jobs/${id}`,
   cancel: (id: string) => `/jobs/${id}/cancel`,
   close: (id: string) => `/jobs/${id}/close`,

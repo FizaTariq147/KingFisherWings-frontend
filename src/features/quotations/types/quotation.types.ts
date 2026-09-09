@@ -47,6 +47,7 @@ export interface QuotationLine {
   is_cost?: boolean;
   supplier_id?: string;
   sort_order?: number;
+  pricing_source?: string;
 }
 
 export interface QuotationStatusHistoryEntry {
@@ -124,6 +125,14 @@ export interface Quotation {
   revenue_total?: number;
   /** Live negotiation offer/counter snapshot from GET /quotations/:id */
   negotiation_pricing?: import('./quotationExtended.types').NegotiationPricing;
+  /** Portal book estimate snapshot when quote originated from customer portal. */
+  portal_estimate_snapshot?: {
+    currency_code?: string;
+    estimated_total?: number;
+    captured_at?: string;
+  };
+  /** Staff view of portal costing metadata when present. */
+  portal_costing?: Record<string, unknown>;
   gp_amount?: number;
   gp_percent?: number;
   contact_name?: string;

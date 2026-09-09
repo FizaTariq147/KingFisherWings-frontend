@@ -115,6 +115,8 @@ export interface JobSeaLclDetail {
   shipping_line_id?: string;
   vessel_id?: string;
   voyage_number?: string;
+  /** Resolved display label when API/lookup provides it. */
+  vessel_name?: string;
   booking_number?: string;
   carrier_booking_ref?: string;
   hbl_number?: string;

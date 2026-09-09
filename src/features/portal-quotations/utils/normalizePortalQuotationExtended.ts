@@ -21,8 +21,10 @@ export function normalizePortalServiceCatalogItem(raw: unknown): PortalServiceCa
     name,
     jobType: pickString(record.job_type, record.jobType) || undefined,
     pricingBasis: pickString(record.pricing_basis, record.pricingBasis) || undefined,
-    unitPrice: pickNumber(record.unit_price, record.unitPrice),
+    unitPrice: pickNumber(record.unit_price, record.unitPrice, record.sale_rate, record.saleRate),
     currencyCode: pickString(record.currency_code, record.currencyCode) || undefined,
+    chargeCodeId: pickString(record.charge_code_id, record.chargeCodeId) || undefined,
+    source: pickString(record.source, record.pricing_source, record.pricingSource) || undefined,
     raw: record,
   };
 }
@@ -68,6 +70,9 @@ export function normalizePortalEstimate(raw: unknown): PortalQuotationEstimateRe
             description: pickString(r.description, r.name, r.service_name) || 'Line',
             amount: pickNumber(r.amount, r.total, r.line_total),
             currencyCode: pickString(r.currency_code, r.currencyCode) || undefined,
+            pricingSource: pickString(r.pricing_source, r.pricingSource, r.source) || undefined,
+            unitPrice: pickNumber(r.unit_price, r.unitPrice),
+            quantity: pickNumber(r.quantity, r.qty),
           };
         })
         .filter((l): l is NonNullable<typeof l> => Boolean(l))
@@ -80,4 +85,23 @@ export function normalizePortalEstimate(raw: unknown): PortalQuotationEstimateRe
     currencyCode: pickString(data.currency_code, data.currencyCode) || undefined,
     raw: data,
   };
+}
+
+/** POST /portal/quotations/costing-options — catalog + tariff sale options for a lane. */
+export function normalizePortalCostingOptions(raw: unknown): PortalServiceCatalogItem[] {
+  const data = asRecord(unwrapData(raw)) ?? asRecord(raw) ?? {};
+  const nested =
+    data.options ??
+    data.items ??
+    data.services ??
+    data.catalog ??
+    data.results ??
+    data.costing_options ??
+    data.costingOptions;
+  if (Array.isArray(nested)) {
+    return nested
+      .map(normalizePortalServiceCatalogItem)
+      .filter((item): item is PortalServiceCatalogItem => Boolean(item));
+  }
+  return normalizePortalServiceCatalog(raw);
 }

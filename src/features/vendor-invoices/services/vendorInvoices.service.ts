@@ -1,4 +1,6 @@
 import { vendorApiClient, VendorApiError } from '@/lib/vendorApiClient';
+import type { ApiPeriodQuery } from '@/lib/apiPeriod';
+import { periodQueryParams } from '@/lib/apiPeriod';
 import type { PaymentProof, UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
 import { normalizePaymentProof, normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
 import { buildPaymentProofFormData } from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
@@ -41,8 +43,10 @@ async function downloadPdfFromUrl(url: string, fallbackName: string): Promise<vo
 }
 
 export const vendorInvoicesService = {
-  async summary(): Promise<VendorInvoiceSummary> {
-    const res = await vendorApiClient.get(VENDOR_INVOICES_API.summary);
+  async summary(period?: ApiPeriodQuery): Promise<VendorInvoiceSummary> {
+    const res = await vendorApiClient.get(VENDOR_INVOICES_API.summary, {
+      params: periodQueryParams(period),
+    });
     return normalizeInvoiceSummary(res.data);
   },
 

@@ -16,11 +16,14 @@ import type {
   PortalQuotationRejectDto,
   PortalQuotationRequestDto,
   PortalQuotationEstimateDto,
+  PortalCostingOptionsDto,
   PortalQuotationCounterOfferDto,
 } from '../types/portalQuotations.types';
 import {
   applyPortalCustomerDecisionStatus,
 } from '../utils/portalQuotationStatus';
+import type { ApiPeriodQuery } from '@/lib/apiPeriod';
+import { uiPeriodToApi, type UiDashboardPeriod } from '@/lib/apiPeriod';
 
 export const portalQuotationKeys = {
   all: (scope: string) => ['portal', scope, 'quotations'] as const,
@@ -36,6 +39,8 @@ export const portalQuotationKeys = {
     [...portalQuotationKeys.all(scope), 'lookups', 'airports', search] as const,
   serviceCatalog: (scope: string, jobType?: string) =>
     [...portalQuotationKeys.all(scope), 'service-catalog', jobType ?? 'all'] as const,
+  costingOptions: (scope: string, dto: PortalCostingOptionsDto) =>
+    [...portalQuotationKeys.all(scope), 'costing-options', dto] as const,
   negotiation: (scope: string, id: string) =>
     [...portalQuotationKeys.all(scope), 'negotiation', id] as const,
 };
@@ -139,13 +144,23 @@ export function usePortalLocaleCurrency(countryCode: string) {
   });
 }
 
-export function usePortalQuotationSummary(enabled = true) {
+export function usePortalQuotationSummary(
+  enabledOrPeriod: boolean | UiDashboardPeriod | ApiPeriodQuery = true,
+  enabled = true,
+) {
   const accessToken = usePortalAuthStore((s) => s.accessToken);
   const scope = usePortalQueryScope();
+  const periodQuery: ApiPeriodQuery | undefined =
+    typeof enabledOrPeriod === 'boolean'
+      ? undefined
+      : typeof enabledOrPeriod === 'string'
+        ? uiPeriodToApi(enabledOrPeriod)
+        : enabledOrPeriod;
+  const isEnabled = typeof enabledOrPeriod === 'boolean' ? enabledOrPeriod : enabled;
   return useQuery({
-    queryKey: portalQuotationKeys.summary(scope),
-    queryFn: () => portalQuotationsService.summary(),
-    enabled: Boolean(accessToken) && enabled && scope !== 'anon',
+    queryKey: [...portalQuotationKeys.summary(scope), periodQuery ?? null],
+    queryFn: () => portalQuotationsService.summary(periodQuery),
+    enabled: Boolean(accessToken) && isEnabled && scope !== 'anon',
     staleTime: 0,
   });
 }
@@ -222,6 +237,21 @@ export function usePortalServiceCatalog(jobType?: string, enabled = true) {
     enabled:
       Boolean(accessToken) && enabled && scope !== 'anon' && Boolean(trimmedJobType),
     staleTime: 5 * 60_000,
+  });
+}
+
+export function usePortalCostingOptions(dto: PortalCostingOptionsDto | null, enabled = true) {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  const ready = Boolean(dto?.job_type?.trim() && dto?.currency_code?.trim());
+  return useQuery({
+    queryKey: portalQuotationKeys.costingOptions(
+      scope,
+      dto ?? { job_type: '', currency_code: '' },
+    ),
+    queryFn: () => portalQuotationsService.costingOptions(dto!),
+    enabled: Boolean(accessToken) && enabled && scope !== 'anon' && ready,
+    staleTime: 60_000,
   });
 }
 

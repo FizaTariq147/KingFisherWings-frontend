@@ -1,4 +1,8 @@
-import type { PortalServiceCatalogItem } from '../types/portalQuotations.types';
+import type {
+  PortalCustomerLineDto,
+  PortalEstimateSnapshotDto,
+  PortalServiceCatalogItem,
+} from '../types/portalQuotations.types';
 
 export type PortalCustomerServicePriceDraft = {
   code: string;
@@ -78,4 +82,45 @@ export function buildCustomerPriceNote(
     ...lines,
     `Customer proposed total: ${currency} ${Math.round(total * 100) / 100}`,
   ].join('\n');
+}
+
+/** Structured customer_lines for estimate/request (preferred over special_requirements notes). */
+export function buildPortalCustomerLines(
+  selected: PortalCustomerServicePriceDraft[],
+  catalogByCode: Map<string, PortalServiceCatalogItem>,
+  inputs: PortalServiceQtyInputs,
+): PortalCustomerLineDto[] {
+  const lines: PortalCustomerLineDto[] = [];
+  for (const row of selected) {
+    const unitPrice = parseCustomerUnitPrice(row.unit_price);
+    if (unitPrice == null) continue;
+    const item = catalogByCode.get(row.code);
+    const quantity = portalServiceQuantity(item?.pricingBasis, inputs);
+    const chargeCodeId =
+      item?.chargeCodeId ||
+      (typeof item?.raw?.charge_code_id === 'string' ? item.raw.charge_code_id : undefined) ||
+      (typeof item?.raw?.chargeCodeId === 'string' ? item.raw.chargeCodeId : undefined);
+    lines.push({
+      ...(chargeCodeId ? { charge_code_id: chargeCodeId } : {}),
+      code: row.code,
+      description: item?.name || row.code,
+      quantity,
+      unit_price: unitPrice,
+      unit: item?.pricingBasis || 'FLAT',
+      source: item?.source === 'TARIFF' || item?.source === 'CATALOG' ? item.source : 'CUSTOMER_PROPOSED',
+    });
+  }
+  return lines;
+}
+
+export function buildPortalEstimateSnapshot(
+  currency: string,
+  estimatedTotal?: number,
+): PortalEstimateSnapshotDto | undefined {
+  if (estimatedTotal == null || !Number.isFinite(estimatedTotal)) return undefined;
+  return {
+    currency_code: currency,
+    estimated_total: estimatedTotal,
+    captured_at: new Date().toISOString(),
+  };
 }

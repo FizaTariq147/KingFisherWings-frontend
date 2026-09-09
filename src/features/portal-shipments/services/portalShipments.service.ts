@@ -1,4 +1,6 @@
 import { portalApiClient } from '@/lib/portalApiClient';
+import type { ApiPeriodQuery } from '@/lib/apiPeriod';
+import { periodQueryParams } from '@/lib/apiPeriod';
 import { filenameFromContentDisposition } from '@/features/portal-shared/normalize';
 import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
@@ -23,8 +25,10 @@ import {
 import { unwrapData } from '@/features/portal-shared/normalize';
 
 export const portalShipmentsService = {
-  async summary(): Promise<PortalShipmentSummary> {
-    const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.summary);
+  async summary(period?: ApiPeriodQuery): Promise<PortalShipmentSummary> {
+    const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.summary, {
+      params: periodQueryParams(period),
+    });
     return normalizeShipmentSummary(res.data);
   },
 

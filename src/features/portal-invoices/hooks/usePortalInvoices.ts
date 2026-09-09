@@ -1,6 +1,8 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { usePortalQueryScope } from '@/features/portal-shared/usePortalQueryScope';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
+import type { ApiPeriodQuery, UiDashboardPeriod } from '@/lib/apiPeriod';
+import { uiPeriodToApi } from '@/lib/apiPeriod';
 import { portalInvoicesService } from '../services/portalInvoices.service';
 import type { PortalInvoiceListParams } from '../types/portalInvoices.types';
 
@@ -14,13 +16,23 @@ export const portalInvoiceKeys = {
     [...portalInvoiceKeys.all(scope), 'payment-proofs', invoiceId] as const,
 };
 
-export function usePortalInvoiceSummary(enabled = true) {
+export function usePortalInvoiceSummary(
+  enabledOrPeriod: boolean | UiDashboardPeriod | ApiPeriodQuery = true,
+  enabled = true,
+) {
   const accessToken = usePortalAuthStore((s) => s.accessToken);
   const scope = usePortalQueryScope();
+  const periodQuery: ApiPeriodQuery | undefined =
+    typeof enabledOrPeriod === 'boolean'
+      ? undefined
+      : typeof enabledOrPeriod === 'string'
+        ? uiPeriodToApi(enabledOrPeriod)
+        : enabledOrPeriod;
+  const isEnabled = typeof enabledOrPeriod === 'boolean' ? enabledOrPeriod : enabled;
   return useQuery({
-    queryKey: portalInvoiceKeys.summary(scope),
-    queryFn: () => portalInvoicesService.summary(),
-    enabled: Boolean(accessToken) && enabled && scope !== 'anon',
+    queryKey: [...portalInvoiceKeys.summary(scope), periodQuery ?? null],
+    queryFn: () => portalInvoicesService.summary(periodQuery),
+    enabled: Boolean(accessToken) && isEnabled && scope !== 'anon',
     staleTime: 0,
   });
 }

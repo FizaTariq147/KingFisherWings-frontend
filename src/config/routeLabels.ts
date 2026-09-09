@@ -57,6 +57,7 @@ export const ROUTE_LABELS: Record<string, string> = {
   invoices:      'Invoices',
   'purchase-invoices': 'Purchase Invoices',
   'credit-notes': 'Credit Notes',
+  'debit-notes': 'Debit Notes',
   'payment-requests': 'Payment Requests',
   wms:           'WMS',
 
@@ -89,6 +90,7 @@ export const ROUTE_LABEL_RESOLVERS: Record<string, SegmentResolver> = {
   invoices:   async (_id) => null,
   'purchase-invoices': async (_id) => null,
   'credit-notes': async (_id) => null,
+  'debit-notes': async (_id) => null,
   'payment-requests': async (_id) => null,
   employees:  async (_id) => null,
 }

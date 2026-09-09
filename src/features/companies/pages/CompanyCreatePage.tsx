@@ -18,7 +18,7 @@ export default function CompanyCreatePage() {
   const isOnboarding = !tenantId;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-4">
+    <div className="space-y-4">
       <button
         type="button"
         onClick={() => navigate(companiesBasePath)}
@@ -27,20 +27,17 @@ export default function CompanyCreatePage() {
         ← Back to companies
       </button>
 
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Step 1 — Register company</h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          {isOnboarding
-            ? 'Saves a local draft for tenant onboarding. Platform Super Admin cannot call ERP /companies — company profiles are stored via /tenants when you create the tenant.'
-            : 'Platform Super Admin cannot create ERP companies. Update this tenant’s company profile from Tenants, or sign in as Tenant Admin for ERP company CRUD.'}
-        </p>
+      <div className="text-center">
+        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create Company</h2>
       </div>
 
       {isOnboarding ? (
         <CompanyForm
           mode="create"
+          layout="wizard"
           defaultValues={draftCompanies[0] ?? undefined}
           submitLabel="Save company draft"
+          onCancel={() => navigate(companiesBasePath)}
           onSubmit={async (values) => {
             setApiError(null);
             addDraftCompany(values as Parameters<typeof addDraftCompany>[0]);
@@ -48,7 +45,7 @@ export default function CompanyCreatePage() {
           }}
         />
       ) : (
-        <>
+        <div className="mx-auto max-w-4xl space-y-4">
           <Card className="p-4">
             <CompanyTenantSelector />
           </Card>
@@ -68,7 +65,7 @@ export default function CompanyCreatePage() {
             </div>
           )}
 
-          <Card className="p-6 space-y-3">
+          <Card className="space-y-3 p-6">
             <p className="text-sm text-[var(--color-neutral-600)]">
               Company profiles for platform admin come from <code className="text-xs">/tenants</code>
               . Open the tenant to edit company fields.
@@ -82,7 +79,7 @@ export default function CompanyCreatePage() {
               </Button>
             </div>
           </Card>
-        </>
+        </div>
       )}
     </div>
   );

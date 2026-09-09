@@ -3,6 +3,7 @@ export const QUOTATION_API = {
   create: '/quotations',
   onlineQuote: '/quotations/online-quote',
   expireDue: '/quotations/expire-due',
+  dashboardStats: '/quotations/dashboard-stats',
   byId: (id: string) => `/quotations/${id}`,
   revisions: (id: string) => `/quotations/${id}/revisions`,
   lines: (id: string) => `/quotations/${id}/lines`,

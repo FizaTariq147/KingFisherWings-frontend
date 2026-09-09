@@ -31,6 +31,7 @@ function unwrapRows(raw: unknown): Record<string, unknown>[] {
 
 function queryParams(params: MisParams): Record<string, string> {
   const q: Record<string, string> = {};
+  if (params.period) q.period = params.period;
   if (params.from_date?.trim()) q.from_date = params.from_date.trim();
   if (params.to_date?.trim()) q.to_date = params.to_date.trim();
   if (params.company_id && isUuid(params.company_id)) q.company_id = params.company_id;

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { DashCard, DashCardHeader, DashEmpty, DashSkeleton } from './DashCard';
 import { useReportsHubData } from '../hooks/useReportsHubData';
+import { useDashboardTeamWorkload } from '../hooks/useDashboardJobCounts';
 import {
   buildReportGeneratePath,
   type ReportFormat,
@@ -24,22 +25,71 @@ import { relativeTime } from '../utils/dashboardFormat';
 import { cn } from '@/lib/utils';
 import { DASHBOARD_KPI_THEMES } from '@/lib/dashboardKpiThemes';
 import { dashType } from '@/lib/dashboardTypography';
-export function TeamWorkloadPanel() {
+export function TeamWorkloadPanel({ period }: { period?: import('../utils/dashboardFormat').DashboardPeriod }) {
+  const workload = useDashboardTeamWorkload(period ?? 'month');
+  const rows = workload.data ?? [];
+
   return (
     <DashCard>
       <DashCardHeader
         title="Team workload & SLA"
-        subtitle="Per-user capacity and SLA are not in the current API"
+        subtitle="Open jobs, capacity utilization, milestone SLA"
         action={
-          <span className="rounded-full bg-[var(--color-neutral-100)] px-2 py-0.5 text-[11px] font-medium text-[var(--color-neutral-500)]">
-            Unavailable
-          </span>
+          workload.isError ? (
+            <span className="rounded-full bg-[var(--color-neutral-100)] px-2 py-0.5 text-[11px] font-medium text-[var(--color-neutral-500)]">
+              Unavailable
+            </span>
+          ) : (
+            <span className="rounded-full bg-[#E7F6EC] px-2 py-0.5 text-[11px] font-medium text-[#3BA066]">
+              Live
+            </span>
+          )
         }
       />
-      <DashEmpty>
-        Team assignment counts, capacity, and SLA hit rate are not exposed by the backend yet.
-        Existing jobs still list on Active shipments.
-      </DashEmpty>
+      {workload.isLoading ? (
+        <div className="space-y-2">
+          <DashSkeleton className="h-10" />
+          <DashSkeleton className="h-10" />
+        </div>
+      ) : workload.isError ? (
+        <DashEmpty>Unable to load team workload.</DashEmpty>
+      ) : rows.length === 0 ? (
+        <DashEmpty>No team workload rows for this period.</DashEmpty>
+      ) : (
+        <ul className="space-y-3">
+          {rows.slice(0, 8).map((row) => {
+            const util =
+              row.utilizationPct != null
+                ? row.utilizationPct <= 1
+                  ? Math.round(row.utilizationPct * 100)
+                  : Math.round(row.utilizationPct)
+                : null;
+            const sla =
+              row.slaPct != null
+                ? row.slaPct <= 1
+                  ? Math.round(row.slaPct * 100)
+                  : Math.round(row.slaPct)
+                : null;
+            return (
+              <li key={row.userId || row.name} className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-[var(--color-neutral-800)]">
+                    {row.name}
+                  </p>
+                  <p className="text-[11px] text-[var(--color-neutral-400)]">
+                    {row.openJobs} open
+                    {row.capacity != null ? ` · cap ${row.capacity}` : ''}
+                  </p>
+                </div>
+                <div className="shrink-0 text-right text-[11px] text-[var(--color-neutral-500)]">
+                  {util != null ? <div>Util {util}%</div> : null}
+                  {sla != null ? <div>SLA {sla}%</div> : null}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </DashCard>
   );
 }

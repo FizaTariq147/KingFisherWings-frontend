@@ -1,6 +1,8 @@
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { usePortalQueryScope } from '@/features/portal-shared/usePortalQueryScope';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
+import type { ApiPeriodQuery, UiDashboardPeriod } from '@/lib/apiPeriod';
+import { uiPeriodToApi } from '@/lib/apiPeriod';
 import { portalShipmentsService } from '../services/portalShipments.service';
 import type { PortalShipmentListParams } from '../types/portalShipments.types';
 
@@ -16,13 +18,23 @@ export const portalShipmentKeys = {
     [...portalShipmentKeys.all(scope), 'documents', id] as const,
 };
 
-export function usePortalShipmentSummary(enabled = true) {
+export function usePortalShipmentSummary(
+  enabledOrPeriod: boolean | UiDashboardPeriod | ApiPeriodQuery = true,
+  enabled = true,
+) {
   const accessToken = usePortalAuthStore((s) => s.accessToken);
   const scope = usePortalQueryScope();
+  const periodQuery: ApiPeriodQuery | undefined =
+    typeof enabledOrPeriod === 'boolean'
+      ? undefined
+      : typeof enabledOrPeriod === 'string'
+        ? uiPeriodToApi(enabledOrPeriod)
+        : enabledOrPeriod;
+  const isEnabled = typeof enabledOrPeriod === 'boolean' ? enabledOrPeriod : enabled;
   return useQuery({
-    queryKey: portalShipmentKeys.summary(scope),
-    queryFn: () => portalShipmentsService.summary(),
-    enabled: Boolean(accessToken) && enabled && scope !== 'anon',
+    queryKey: [...portalShipmentKeys.summary(scope), periodQuery ?? null],
+    queryFn: () => portalShipmentsService.summary(periodQuery),
+    enabled: Boolean(accessToken) && isEnabled && scope !== 'anon',
     staleTime: 0,
   });
 }

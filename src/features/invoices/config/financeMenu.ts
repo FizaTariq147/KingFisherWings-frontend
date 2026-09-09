@@ -36,6 +36,14 @@ export const financeMenu: MenuTile[] = [
     path: '/credit-notes',
   },
   {
+    id: 'all-debit-notes',
+    title: 'All Debit Notes',
+    description: 'List and filter debit notes by status, type, and date.',
+    icon: Receipt,
+    iconColor: 'bg-violet-500',
+    path: '/debit-notes',
+  },
+  {
     id: 'all-payment-requests',
     title: 'Payment Requests',
     description: 'Create, approve, reject, and mark payment requests as paid.',

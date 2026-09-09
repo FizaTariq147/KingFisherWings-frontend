@@ -2,6 +2,7 @@ export const PORTAL_QUOTATIONS_API = {
   summary: '/portal/quotations/summary',
   list: '/portal/quotations',
   serviceCatalog: '/portal/quotations/service-catalog',
+  costingOptions: '/portal/quotations/costing-options',
   estimate: '/portal/quotations/estimate',
   request: '/portal/quotations/request',
   detail: (id: string) => `/portal/quotations/${encodeURIComponent(id)}`,

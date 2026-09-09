@@ -42,6 +42,9 @@ import InvoiceOverduePage from '../features/invoices/pages/InvoiceOverduePage'
 import CreditNoteListPage from '../features/creditNotes/pages/CreditNoteListPage'
 import CreditNoteCreatePage from '../features/creditNotes/pages/CreditNoteCreatePage'
 import CreditNoteDetailPage from '../features/creditNotes/pages/CreditNoteDetailPage'
+import DebitNoteListPage from '../features/debitNotes/pages/DebitNoteListPage'
+import DebitNoteCreatePage from '../features/debitNotes/pages/DebitNoteCreatePage'
+import DebitNoteDetailPage from '../features/debitNotes/pages/DebitNoteDetailPage'
 import PurchaseInvoiceListPage from '../features/purchaseInvoices/pages/PurchaseInvoiceListPage'
 import PurchaseInvoiceCreatePage from '../features/purchaseInvoices/pages/PurchaseInvoiceCreatePage'
 import PurchaseInvoiceEditPage from '../features/purchaseInvoices/pages/PurchaseInvoiceEditPage'
@@ -686,6 +689,9 @@ export const router = createBrowserRouter([
               { path: '/credit-notes', element: <CreditNoteListPage /> },
               { path: '/credit-notes/new', element: <CreditNoteCreatePage /> },
               { path: '/credit-notes/:id', element: <CreditNoteDetailPage /> },
+              { path: '/debit-notes', element: <DebitNoteListPage /> },
+              { path: '/debit-notes/new', element: <DebitNoteCreatePage /> },
+              { path: '/debit-notes/:id', element: <DebitNoteDetailPage /> },
               { path: '/payment-requests', element: <PaymentRequestListPage /> },
               { path: '/payment-requests/new', element: <PaymentRequestCreatePage /> },
               { path: '/payment-requests/:id/edit', element: <PaymentRequestEditPage /> },

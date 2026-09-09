@@ -19,7 +19,12 @@ export interface PortalCreditNoteListItem {
   kind?: 'credit' | 'debit';
 }
 export interface PortalCreditNoteDetail extends PortalCreditNoteListItem {
-  remarks?: string; lines: PortalCreditNoteLine[];
+  remarks?: string;
+  lines: PortalCreditNoteLine[];
+  subtotal?: number;
+  taxTotal?: number;
+  vatRate?: number;
+  pdfUrl?: string;
 }
 export interface PortalCreditNoteListResult { items: PortalCreditNoteListItem[]; meta: PortalPaginationMeta; }
 

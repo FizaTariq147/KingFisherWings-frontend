@@ -164,10 +164,17 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
             taxPercent: pickNumber(r.tax_percent, r.taxPercent, r.tax_rate, r.taxRate),
             taxAmount: pickNumber(r.tax_amount, r.taxAmount),
             exchangeRate: pickNumber(r.exchange_rate, r.exchangeRate),
+            pricingSource: pickString(r.pricing_source, r.pricingSource, r.source) || undefined,
           };
         })
         .filter((l): l is NonNullable<typeof l> => Boolean(l))
     : undefined;
+
+  const snapshotRaw =
+    asRecord(data.portal_estimate_snapshot) ??
+    asRecord(data.portalEstimateSnapshot) ??
+    asRecord(data.estimate_snapshot) ??
+    asRecord(data.estimateSnapshot);
 
   return {
     ...base,
@@ -184,6 +191,18 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
       pickString(data.converted_job_number, data.convertedJobNumber, data.job_number) || undefined,
     packages: normalizePortalPackages(data.packages),
     negotiationPricing: normalizeNegotiationPricing(data),
+    portalEstimateSnapshot: snapshotRaw
+      ? {
+          currencyCode:
+            pickString(snapshotRaw.currency_code, snapshotRaw.currencyCode) || undefined,
+          estimatedTotal: pickNumber(
+            snapshotRaw.estimated_total,
+            snapshotRaw.estimatedTotal,
+            snapshotRaw.total,
+          ),
+          capturedAt: pickString(snapshotRaw.captured_at, snapshotRaw.capturedAt) || undefined,
+        }
+      : undefined,
     pdfUrl: (() => {
       const raw = pickString(
         data.customer_pdf_url,

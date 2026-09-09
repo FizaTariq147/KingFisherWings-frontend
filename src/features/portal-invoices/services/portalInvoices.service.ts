@@ -1,4 +1,6 @@
 import { portalApiClient, PortalApiError } from '@/lib/portalApiClient';
+import type { ApiPeriodQuery } from '@/lib/apiPeriod';
+import { periodQueryParams } from '@/lib/apiPeriod';
 import { buildPaymentProofFormData } from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
 import type { PaymentProof, UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
 import { normalizePaymentProof, normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
@@ -13,7 +15,11 @@ import { asRecord, pickString, unwrapData } from '@/features/portal-shared/norma
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import { PORTAL_DOCUMENTS_API } from '@/features/portal-documents/api/portalDocuments.api';
 import { generateInvoicePdf } from '@/features/invoices/utils/generateInvoicePdf';
-import { portalInvoiceToPdfModel } from '@/features/invoices/utils/invoiceToPdfModel';
+import {
+  portalInvoiceToPdfModel,
+  shipmentFromPortalShipment,
+} from '@/features/invoices/utils/invoiceToPdfModel';
+import { portalShipmentsService } from '@/features/portal-shipments/services/portalShipments.service';
 import { PORTAL_INVOICES_API } from '../api/portalInvoices.api';
 import type {
   PortalInvoiceDetail,
@@ -119,8 +125,10 @@ async function tryDownloadFromPdfMetadata(
 }
 
 export const portalInvoicesService = {
-  async summary(): Promise<PortalInvoiceSummary> {
-    const res = await portalApiClient.get(PORTAL_INVOICES_API.summary);
+  async summary(period?: ApiPeriodQuery): Promise<PortalInvoiceSummary> {
+    const res = await portalApiClient.get(PORTAL_INVOICES_API.summary, {
+      params: periodQueryParams(period),
+    });
     return normalizeInvoiceSummary(res.data);
   },
   async list(params: PortalInvoiceListParams = {}): Promise<PortalInvoiceListResult> {
@@ -183,6 +191,15 @@ export const portalInvoicesService = {
     if (detail) {
       try {
         const user = usePortalAuthStore.getState().user;
+        let shipment = undefined;
+        if (detail.jobId) {
+          try {
+            const shipmentDetail = await portalShipmentsService.getById(detail.jobId);
+            shipment = shipmentFromPortalShipment(shipmentDetail) ?? undefined;
+          } catch {
+            /* shipment optional — invoice PDF still downloads */
+          }
+        }
         const blob = await generateInvoicePdf(
           portalInvoiceToPdfModel(
             {
@@ -206,6 +223,7 @@ export const portalInvoicesService = {
               phone: detail.partyPhone || user?.phone,
               email: detail.partyEmail || user?.email,
               company: { name: user?.tenantName || 'KINGFISHER WINGS GROUP' },
+              shipment,
             },
           ),
         );

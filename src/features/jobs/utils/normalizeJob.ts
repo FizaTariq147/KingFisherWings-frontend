@@ -38,6 +38,16 @@ function pickPortCode(value: unknown): string {
   return pickString(nested, 'code', 'port_code', 'portCode', 'iata_code', 'un_locode', 'unLocode', 'unlocode');
 }
 
+/** Prefer human-readable port/airport name when nested objects are present. */
+function pickPortDisplay(value: unknown): string {
+  const nested = asRecord(value);
+  if (!nested) return '';
+  const name = pickString(nested, 'name', 'port_name', 'portName', 'label', 'city');
+  const code = pickPortCode(value);
+  if (name && code && !name.toUpperCase().includes(code.toUpperCase())) return `${code} - ${name}`;
+  return name || code;
+}
+
 export function unwrapEntity(raw: unknown): unknown {
   const envelope = asRecord(raw);
   if (envelope && 'data' in envelope) return envelope.data;
@@ -220,16 +230,20 @@ export function normalizeJob(raw: unknown): Job | null {
     origin_port_id: pickString(r, 'origin_port_id', 'originPortId') || undefined,
     dest_port_id: pickString(r, 'dest_port_id', 'destPortId') || undefined,
     origin_port_code:
-      pickString(r, 'origin_port_code', 'originPortCode') ||
+      pickString(r, 'origin_port_code', 'originPortCode', 'origin_port_name', 'originPortName') ||
+      pickPortDisplay(r.origin_port ?? r.originPort) ||
+      pickPortDisplay(sea?.port_of_loading ?? sea?.portOfLoading) ||
+      pickPortDisplay(seaLcl?.port_of_loading ?? seaLcl?.portOfLoading) ||
+      pickPortDisplay(air?.origin_airport ?? air?.originAirport) ||
       pickPortCode(r.origin_port ?? r.originPort) ||
-      pickPortCode(sea?.port_of_loading ?? sea?.portOfLoading) ||
-      pickPortCode(seaLcl?.port_of_loading ?? seaLcl?.portOfLoading) ||
       undefined,
     dest_port_code:
-      pickString(r, 'dest_port_code', 'destPortCode') ||
+      pickString(r, 'dest_port_code', 'destPortCode', 'dest_port_name', 'destPortName') ||
+      pickPortDisplay(r.dest_port ?? r.destPort) ||
+      pickPortDisplay(sea?.port_of_discharge ?? sea?.portOfDischarge) ||
+      pickPortDisplay(seaLcl?.port_of_discharge ?? seaLcl?.portOfDischarge) ||
+      pickPortDisplay(air?.dest_airport ?? air?.destAirport) ||
       pickPortCode(r.dest_port ?? r.destPort) ||
-      pickPortCode(sea?.port_of_discharge ?? sea?.portOfDischarge) ||
-      pickPortCode(seaLcl?.port_of_discharge ?? seaLcl?.portOfDischarge) ||
       undefined,
     commodity: pickString(r, 'commodity') || undefined,
     hs_code: pickString(r, 'hs_code', 'hsCode') || undefined,
@@ -257,6 +271,7 @@ export function normalizeJob(raw: unknown): Job | null {
           hawb_number: pickString(air, 'hawb_number', 'hawbNumber') || undefined,
           mawb_number: pickString(air, 'mawb_number', 'mawbNumber') || undefined,
           flight_number: pickString(air, 'flight_number', 'flightNumber') || undefined,
+          flight_date: pickString(air, 'flight_date', 'flightDate') || undefined,
           awb_type: pickString(air, 'awb_type', 'awbType') || undefined,
           freight_type: pickString(air, 'freight_type', 'freightType') || undefined,
           conversion_factor: num(air.conversion_factor ?? air.conversionFactor),
@@ -267,7 +282,12 @@ export function normalizeJob(raw: unknown): Job | null {
           shipping_line_id: pickString(sea, 'shipping_line_id', 'shippingLineId') || undefined,
           vessel_id: pickString(sea, 'vessel_id', 'vesselId') || undefined,
           voyage_number: pickString(sea, 'voyage_number', 'voyageNumber') || undefined,
-          booking_reference: pickString(sea, 'booking_reference', 'bookingReference') || undefined,
+          shipping_line_name:
+            pickString(sea, 'shipping_line_name', 'shippingLineName') || undefined,
+          vessel_name: pickString(sea, 'vessel_name', 'vesselName') || undefined,
+          booking_number:
+            pickString(sea, 'booking_number', 'bookingNumber', 'booking_reference', 'bookingReference') ||
+            undefined,
           hbl_number: pickString(sea, 'hbl_number', 'hblNumber') || undefined,
           mbl_number: pickString(sea, 'mbl_number', 'mblNumber') || undefined,
           etd: pickString(sea, 'etd') || undefined,
@@ -282,6 +302,7 @@ export function normalizeJob(raw: unknown): Job | null {
           shipping_line_id: pickString(seaLcl, 'shipping_line_id', 'shippingLineId') || undefined,
           vessel_id: pickString(seaLcl, 'vessel_id', 'vesselId') || undefined,
           voyage_number: pickString(seaLcl, 'voyage_number', 'voyageNumber') || undefined,
+          vessel_name: pickString(seaLcl, 'vessel_name', 'vesselName') || undefined,
           booking_number: pickString(seaLcl, 'booking_number', 'bookingNumber') || undefined,
           hbl_number: pickString(seaLcl, 'hbl_number', 'hblNumber') || undefined,
           mbl_number: pickString(seaLcl, 'mbl_number', 'mblNumber') || undefined,
@@ -315,6 +336,10 @@ export function normalizeJob(raw: unknown): Job | null {
             pickString(land, 'origin_city_country', 'originCityCountry') || undefined,
           destination_city_country:
             pickString(land, 'destination_city_country', 'destinationCityCountry') || undefined,
+          etd: pickString(land, 'etd') || undefined,
+          eta: pickString(land, 'eta') || undefined,
+          border_commodity:
+            pickString(land, 'border_commodity', 'borderCommodity', 'commodity') || undefined,
         }
       : undefined,
     charges,
