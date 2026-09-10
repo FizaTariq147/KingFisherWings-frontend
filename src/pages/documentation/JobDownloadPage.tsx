@@ -3,6 +3,7 @@ import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
 import { useJobTransferActions } from '@/features/documentation/hooks/useDocumentation';
 import { extractAxiosErrorDetail } from '@/lib/extractAxiosErrorDetail';
+import { pickValidatedUploadFile, JOB_TRANSFER_UPLOAD_OPTIONS } from '@/lib/fileUploadValidation';
 
 export default function JobDownloadPage() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -29,7 +30,16 @@ export default function JobDownloadPage() {
             className="hidden"
             accept=".zip,.json"
             onChange={async (e) => {
-              const file = e.target.files?.[0];
+              const { file, error: fileError } = pickValidatedUploadFile(
+                e.target.files,
+                JOB_TRANSFER_UPLOAD_OPTIONS,
+              );
+              e.target.value = '';
+              if (fileError) {
+                setError(fileError);
+                setMessage(null);
+                return;
+              }
               if (!file) return;
               setError(null);
               setMessage(null);
@@ -39,7 +49,6 @@ export default function JobDownloadPage() {
               } catch (err) {
                 setError(extractAxiosErrorDetail(err));
               }
-              e.target.value = '';
             }}
           />
         </div>

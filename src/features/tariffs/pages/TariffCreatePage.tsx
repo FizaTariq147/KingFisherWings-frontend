@@ -20,13 +20,8 @@ export default function TariffCreatePage() {
       >
         ← Back to tariffs
       </button>
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create tariff</h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Create uses the Swagger-required fields (service, charge code, rates, currency, valid
-          from). Optional ports/customer are applied after save. Works for Tenant Admin or staff
-          (ERP JWT) — not SuperAdmin.
-        </p>
+      <div className="text-center">
+        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create Tariff</h2>
       </div>
       {error && (
         <div
@@ -41,15 +36,15 @@ export default function TariffCreatePage() {
           <p>{error}</p>
           {/internal server error/i.test(error) && (
             <p className="text-xs opacity-90">
-              The API returned HTTP 500 for a Swagger-valid create body (no company_id). If Network
-              still shows statusCode 500 / Internal server error, the Tariffs create handler needs a
-              backend fix (Render logs). Console logs each [tariff.create] attempt.
+              The API returned HTTP 500 for a Swagger-valid create body. If Network still shows
+              statusCode 500, the Tariffs create handler needs a backend fix.
             </p>
           )}
         </div>
       )}
       <TariffForm
         mode="create"
+        layout="wizard"
         isSubmitting={create.isPending}
         onCancel={() => navigate(TARIFF_ROUTE_PREFIX)}
         onSubmit={async (values) => {
@@ -59,6 +54,7 @@ export default function TariffCreatePage() {
             navigate(TARIFF_ROUTE_PREFIX, { state: { createdTariff: created } });
           } catch (err) {
             setError(getErrorMessage(err));
+            throw err;
           }
         }}
       />

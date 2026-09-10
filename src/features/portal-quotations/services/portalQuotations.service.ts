@@ -116,16 +116,12 @@ export const portalQuotationsService = {
   },
 
   async costingOptions(dto: PortalCostingOptionsDto): Promise<PortalServiceCatalogItem[]> {
-    try {
-      const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.costingOptions, dto);
-      const items = normalizePortalCostingOptions(res.data);
-      return filterPortalServiceCatalogByJobType(items, dto.job_type);
-    } catch (err) {
-      if (err instanceof PortalApiError && (err.status === 404 || err.status === 501)) {
-        return [];
-      }
-      throw err;
-    }
+    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.costingOptions, dto);
+    const items = normalizePortalCostingOptions(res.data);
+    // Options are already scoped by job_type/currency/lane in the request body.
+    return filterPortalServiceCatalogByJobType(items, dto.job_type, {
+      allowMissingJobType: true,
+    });
   },
 
   async estimate(dto: PortalQuotationEstimateDto): Promise<PortalQuotationEstimateResult> {

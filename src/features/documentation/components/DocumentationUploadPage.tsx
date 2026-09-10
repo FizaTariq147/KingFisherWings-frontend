@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import type { DocumentationUploadType } from '../api/documentation.api';
 import { useDocumentationUpload } from '../hooks/useDocumentation';
 import { extractAxiosErrorDetail } from '@/lib/extractAxiosErrorDetail';
+import { pickValidatedUploadFile, SPREADSHEET_UPLOAD_OPTIONS } from '@/lib/fileUploadValidation';
 
 interface DocumentationUploadPageProps {
   title: string;
@@ -58,8 +59,16 @@ export function DocumentationUploadPage({ title, uploadType, description }: Docu
             className="hidden"
             accept=".xlsx,.xls,.csv,.txt"
             onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) void upload(file);
+              const { file, error: fileError } = pickValidatedUploadFile(
+                e.target.files,
+                SPREADSHEET_UPLOAD_OPTIONS,
+              );
+              if (fileError) {
+                setError(fileError);
+                setMessage(null);
+              } else if (file) {
+                void upload(file);
+              }
               e.target.value = '';
             }}
           />

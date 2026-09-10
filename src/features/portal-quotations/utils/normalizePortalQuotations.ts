@@ -87,8 +87,22 @@ export function normalizeQuotationSummary(raw: unknown): PortalQuotationSummary 
   const byStatusTotal = Object.values(byStatus).reduce((sum, n) => sum + n, 0);
 
   return {
-    total: pickNumber(data.total, data.count) ?? byStatusTotal,
-    open: pickNumber(data.open, data.pending, data.active) ?? sumByStatus(byStatus, OPEN_QUOTE_STATUSES),
+    total: pickNumber(data.total, data.count, data.quotations_total, data.quotes_total) ?? byStatusTotal,
+    open:
+      pickNumber(
+        data.open,
+        data.pending,
+        data.active,
+        data.open_count,
+        data.openCount,
+        data.pending_count,
+        data.pendingCount,
+        data.pending_quotations,
+        data.pendingQuotations,
+        data.awaiting,
+        data.awaiting_approval,
+        data.awaitingApproval,
+      ) ?? sumByStatus(byStatus, OPEN_QUOTE_STATUSES),
     won:
       pickNumber(data.won, data.approved) ??
       sumByStatus(byStatus, new Set(['APPROVED', 'WON', 'CONVERTED'])),

@@ -590,7 +590,15 @@ export function QuotationForm({
 
         {wizardStepKey === 'costing' ? (
           <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-5">
-            <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Costing</h3>
+            <div>
+              <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">
+                Costing / Charges
+              </h3>
+              <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
+                Set currency and discounts, then add charge lines. After create, the same Charges tab
+                on the quotation detail page keeps working as today (add, edit, apply tariff).
+              </p>
+            </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1">
                 <label htmlFor="currency_code" className={labelClass}>

@@ -73,9 +73,9 @@ function KpiCard({
         {loading || value == null ? (
           <div className="mt-3 h-8 w-20 animate-pulse rounded bg-[var(--color-neutral-100)]" />
         ) : (
-          <div className="mt-2 flex items-baseline gap-1.5">
-            <p className={cn(dashType.kpi.value, theme.value)}>{value}</p>
-            {unit ? <p className={cn(dashType.kpi.unit, theme.unit)}>{unit}</p> : null}
+          <div className="mt-2 flex min-w-0 items-baseline gap-1.5">
+            <p className={cn(dashType.kpi.value, 'truncate', theme.value)}>{value}</p>
+            {unit ? <p className={cn(dashType.kpi.unit, 'shrink-0', theme.unit)}>{unit}</p> : null}
           </div>
         )}
         <DashboardKpiMiniBars values={bars} palette={theme.bars} loading={loading} />
@@ -101,6 +101,7 @@ export function PortalDashboardKpiRow({
   invoiceBars,
   onTimePct,
   onTimeBars,
+  onTimeCaption = 'selected period',
   loadingShipments,
   loadingQuotes,
   loadingInvoices,
@@ -118,6 +119,7 @@ export function PortalDashboardKpiRow({
   invoiceBars: number[];
   onTimePct: number | null;
   onTimeBars: number[];
+  onTimeCaption?: string;
   loadingShipments: boolean;
   loadingQuotes: boolean;
   loadingInvoices: boolean;
@@ -173,7 +175,7 @@ export function PortalDashboardKpiRow({
         label="On-time delivery"
         value={loadingShipments ? null : deliveryValue ?? '—'}
         unit={deliveryValue == null ? undefined : '%'}
-        caption="last 90 days"
+        caption={onTimeCaption}
         badge={null}
         bars={onTimeBars}
         theme={KPI_THEMES.onTime}

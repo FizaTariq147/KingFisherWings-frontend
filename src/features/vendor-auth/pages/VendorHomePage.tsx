@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { PortalAnimatedPage, PortalLoadingState } from '@/features/portal-auth/components/portal-ui';
 import { useVendorCreditAging } from '@/features/vendor-credit/hooks/useVendorCredit';
-import { useVendorDisputes } from '@/features/vendor-disputes/hooks/useVendorDisputes';
 import { useVendorInvoiceSummary } from '@/features/vendor-invoices/hooks/useVendorInvoices';
 import { useVendorSchedule } from '@/features/vendor-schedule/hooks/useVendorSchedule';
 import {
@@ -37,7 +36,6 @@ export default function VendorHomePage() {
   const summary = useVendorInvoiceSummary(period);
   const schedule = useVendorSchedule();
   const aging = useVendorCreditAging();
-  const disputes = useVendorDisputes({ page: 1, limit: 5 });
 
   useEffect(() => {
     let cancelled = false;
@@ -66,7 +64,6 @@ export default function VendorHomePage() {
     void summary.refetch();
     void schedule.refetch();
     void aging.refetch();
-    void disputes.refetch();
   };
 
   const upcoming = schedule.data?.items ?? [];
@@ -76,41 +73,14 @@ export default function VendorHomePage() {
     const fromApi = vendorTasks.data?.length
       ? vendorTasks.data
       : dashboard.data?.tasksPreview;
-    if (fromApi?.length) {
-      return fromApi.map((t) => ({
-        id: t.id,
-        label: t.label,
-        done: t.done,
-        href: t.href,
-      }));
-    }
-    const list: VendorTaskItem[] = [];
-    const packing = upcoming.find((item) => item.overdue) ?? upcoming[0];
-    if (packing) {
-      list.push({
-        id: `pack-${packing.id}`,
-        label: `Upload missing packing list for ${packing.number}`,
-        done: false,
-        href: `/vendor/invoices/${packing.id}`,
-      });
-    }
-    list.push({
-      id: 'bank-details',
-      label: 'Confirm bank details for upcoming payment',
-      done: true,
-      href: '/vendor/account',
-    });
-    const dispute = disputes.data?.items?.[0];
-    if (dispute) {
-      list.push({
-        id: `dispute-${dispute.id}`,
-        label: `Respond to dispute ${dispute.invoiceNumber || `DSP-${dispute.id.slice(0, 8)}`}`,
-        done: false,
-        href: '/vendor/disputes',
-      });
-    }
-    return list.slice(0, 5);
-  }, [vendorTasks.data, dashboard.data?.tasksPreview, upcoming, disputes.data?.items]);
+    if (!fromApi?.length) return [];
+    return fromApi.map((t) => ({
+      id: t.id,
+      label: t.label,
+      done: t.done,
+      href: t.href,
+    }));
+  }, [vendorTasks.data, dashboard.data?.tasksPreview]);
 
   if (loading && !user) {
     return <PortalLoadingState label="Loading profile…" />;
@@ -166,6 +136,13 @@ export default function VendorHomePage() {
     );
   }, [summary.data]);
 
+  const widgetError =
+    dashboard.isError || vendorTasks.isError || summary.isError || schedule.isError || aging.isError
+      ? vendorErrorMessage(
+          dashboard.error || vendorTasks.error || summary.error || schedule.error || aging.error,
+        )
+      : null;
+
   return (
     <PortalAnimatedPage className="space-y-4">
       {error ? (
@@ -184,9 +161,9 @@ export default function VendorHomePage() {
         refreshing={isRefreshing}
       />
 
-      {(summary.isError || schedule.isError || aging.isError) ? (
+      {widgetError ? (
         <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          {vendorErrorMessage(summary.error || schedule.error || aging.error)}
+          {widgetError}
           <button type="button" className="ml-3 text-xs font-semibold underline" onClick={refresh}>
             Retry
           </button>
@@ -218,7 +195,11 @@ export default function VendorHomePage() {
             overdueCount={overdue}
             loading={schedule.isLoading}
           />
-          <VendorTodoPanel tasks={tasks} loading={dataLoading} />
+          <VendorTodoPanel
+            tasks={tasks}
+            loading={vendorTasks.isLoading || (dashboard.isLoading && !vendorTasks.data)}
+            error={vendorTasks.isError && !dashboard.data?.tasksPreview}
+          />
         </div>
       </div>
     </PortalAnimatedPage>

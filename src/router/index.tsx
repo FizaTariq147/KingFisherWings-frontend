@@ -14,6 +14,7 @@ import Forbidden from '../pages/errors/Forbidden'
 import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
 import ReportsMenuPage from '../pages/reports/ReportsMenuPage'
+import ReportCatalogPage from '../features/reports/pages/ReportCatalogPage'
 
 import CustomerServiceMenuPage from '../pages/customers/CustomerServiceMenuPage'
 import VendorServiceMenuPage from '../pages/vendors/VendorServiceMenuPage'
@@ -614,7 +615,10 @@ export const router = createBrowserRouter([
           },
           {
             element: <ProtectedRoute requirePermissions={['menu_reports']} />,
-            children: [{ path: '/reports', element: <ReportsMenuPage /> }],
+            children: [
+              { path: '/reports', element: <ReportsMenuPage /> },
+              { path: '/reports/catalog', element: <ReportCatalogPage /> },
+            ],
           },
           { path: '/settings', element: <SettingsMenuPage /> },
           { path: '/settings/sessions', element: <SessionManagementPage /> },

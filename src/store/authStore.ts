@@ -46,7 +46,7 @@ function extractErrorMessage(err: unknown): string {
 
   // Prefer our own diagnostic Error messages (include slug/email tried).
   if (err instanceof Error && err.message.startsWith('Incorrect credentials for slug')) {
-    return err.message
+    return import.meta.env.DEV ? err.message : 'Incorrect credentials. Please try again.'
   }
 
   const axiosErr = err as { response?: { data?: BackendError | string; status?: number }; code?: string; message?: string }
@@ -275,12 +275,14 @@ export const useAuthStore = create<AuthStore>()(
           )
           await applyLoginSuccess(set, result)
         } catch (err) {
-          const slugHint = dto.tenant_slug?.trim()
-            ? ` (Tenant Admin — tried slug "${dto.tenant_slug.trim().toLowerCase()}")`
-            : ''
+          if (import.meta.env.DEV && dto.tenant_slug?.trim()) {
+            console.warn('[auth] Tenant Admin login failed', {
+              slug: dto.tenant_slug.trim().toLowerCase(),
+            })
+          }
           set({
             isLoading: false,
-            error: `${extractErrorMessage(err)}${slugHint}`,
+            error: extractErrorMessage(err),
             isAuthenticated: false,
           })
         }
@@ -318,17 +320,14 @@ export const useAuthStore = create<AuthStore>()(
           )
           await applyLoginSuccess(set, result)
         } catch (err) {
-          const slug = dto.tenant_slug?.trim().toLowerCase() || ''
-          const email = dto.email?.trim().toLowerCase() || ''
-          const hint =
-            slug || email
-              ? ` (Staff / User — tried slug "${slug}"` +
-                (email ? `, email "${email}"` : '') +
-                ')'
-              : ' (Staff / User)'
+          if (import.meta.env.DEV) {
+            const slug = dto.tenant_slug?.trim().toLowerCase() || ''
+            const email = dto.email?.trim().toLowerCase() || ''
+            console.warn('[auth] Staff login failed', { slug, email })
+          }
           set({
             isLoading: false,
-            error: `${extractErrorMessage(err)}${hint}`,
+            error: extractErrorMessage(err),
             isAuthenticated: false,
           })
         }

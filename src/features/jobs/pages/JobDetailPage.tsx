@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { JobBillsOfLadingPanel } from '../components/JobBillsOfLadingPanel';
@@ -42,7 +42,8 @@ function isSeaFcl(jobType: string): boolean {
 export default function JobDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const { pathname } = location;
   const segment = (segmentFromPath(pathname) ?? 'air-export') as JobSegmentKey;
   const prefix = jobRoutePrefix(segment);
   const segmentLabel = JOB_SEGMENTS[segment].label;
@@ -54,6 +55,15 @@ export default function JobDetailPage() {
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
+
+  // Surface partial costing failures from create wizard (POST /jobs/:id/charges).
+  useEffect(() => {
+    const state = location.state as { costingWarnings?: string[] } | null;
+    const warnings = state?.costingWarnings;
+    if (!warnings?.length) return;
+    setActionError(`Job created, but some charge lines failed: ${warnings.join(' · ')}`);
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
 
   const { shipperLabel } = useJobResolvedLabels(
     job ?? {
@@ -163,6 +173,11 @@ export default function JobDetailPage() {
   };
 
   const headerActions = [
+    {
+      label: 'Reports',
+      onClick: () => navigate(`/reports/catalog?context=job&job_id=${encodeURIComponent(id)}`),
+      variant: 'secondary' as const,
+    },
     ...(editable
       ? [
           {

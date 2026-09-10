@@ -1,5 +1,4 @@
 import type { PortalQuotationListItem } from '@/features/portal-quotations/types/portalQuotations.types';
-import type { PortalShipmentListItem } from '@/features/portal-shipments/types/portalShipments.types';
 
 export type PortalDashboardPeriod = 'today' | 'week' | 'month';
 
@@ -91,12 +90,13 @@ export function inPeriod(value: string | undefined, period: PortalDashboardPerio
   }
   if (period === 'week') {
     const weekAgo = new Date(now);
-    weekAgo.setDate(now.getDate() - 7);
+    weekAgo.setDate(now.getDate() - 6);
+    weekAgo.setHours(0, 0, 0, 0);
     return d >= weekAgo;
   }
-  const monthAgo = new Date(now);
-  monthAgo.setMonth(now.getMonth() - 1);
-  return d >= monthAgo;
+  // Align with API `mtd` (month-to-date), not a rolling 30 days.
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  return d >= monthStart;
 }
 
 export function statusTone(status?: string): 'info' | 'warning' | 'success' | 'cyan' | 'neutral' {
@@ -120,38 +120,17 @@ export interface PortalTaskItem {
   href?: string;
 }
 
-export function buildPortalTasks(
-  shipments: PortalShipmentListItem[],
-  quotes: PortalQuotationListItem[],
-): PortalTaskItem[] {
-  const tasks: PortalTaskItem[] = [];
-
-  for (const s of shipments.filter((item) => isCustomsHold(item.status)).slice(0, 1)) {
-    tasks.push({
-      id: `customs-${s.id}`,
-      label: `Confirm delivery address for ${s.reference}`,
-      done: false,
-      href: `/portal/shipments/${s.id}`,
-    });
-  }
-
-  for (const s of shipments.filter((item) => isDocsPending(item.status)).slice(0, 1)) {
-    tasks.push({
-      id: `docs-${s.id}`,
-      label: `Upload commercial invoice for ${s.reference}`,
-      done: true,
-      href: `/portal/shipments/${s.id}`,
-    });
-  }
-
-  for (const q of quotes.filter((item) => isOpenQuote(item.status)).slice(0, 2)) {
-    tasks.push({
-      id: `quote-${q.id}`,
-      label: `Approve quotation ${q.number}`,
-      done: false,
-      href: `/portal/quotes/${q.id}`,
-    });
-  }
-
-  return tasks.slice(0, 5);
+/** Prefer dashboard.alerts counts; fall back to list-derived counters. */
+export function alertCountFromDashboard(
+  alerts: { type?: string; label: string; count?: number }[] | undefined,
+  matchers: string[],
+): number | undefined {
+  if (!alerts?.length) return undefined;
+  const lower = matchers.map((m) => m.toLowerCase());
+  const hit = alerts.find((alert) => {
+    const hay = `${alert.type ?? ''} ${alert.label}`.toLowerCase();
+    return lower.some((m) => hay.includes(m));
+  });
+  if (!hit) return undefined;
+  return hit.count ?? 1;
 }

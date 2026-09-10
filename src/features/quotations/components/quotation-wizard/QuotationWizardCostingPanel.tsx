@@ -116,16 +116,16 @@ export function QuotationWizardCostingPanel({
     <div className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Charge lines</h3>
+          <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Charges</h3>
           <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
-            Lines are saved with the quotation via the lines API after header create. Apply tariff uses
-            lane/job matching on the server.
+            Add charge lines now; they are saved via the lines API after the quotation header is
+            created. Apply tariff uses lane/job matching on the server.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button type="button" variant="secondary" onClick={openAddForm}>
             <Plus className="h-4 w-4" />
-            Add line
+            Add charge line
           </Button>
         </div>
       </div>
@@ -165,8 +165,10 @@ export function QuotationWizardCostingPanel({
             {lines.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-3 py-8 text-center text-[var(--color-neutral-400)]">
-                  No draft charge lines yet.
+                  No charge lines yet.
                   {applyTariff ? ' Tariff lines will be generated after create.' : ''}
+                  {' '}
+                  Use Add charge line to draft pricing.
                 </td>
               </tr>
             ) : (
@@ -306,7 +308,7 @@ export function QuotationWizardCostingPanel({
               Cancel
             </Button>
             <Button type="button" onClick={() => void onAddLine()}>
-              Add to draft
+              Add charge line
             </Button>
           </div>
         </div>

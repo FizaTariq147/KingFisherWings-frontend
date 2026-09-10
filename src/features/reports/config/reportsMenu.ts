@@ -1,4 +1,5 @@
 import type { MenuTile } from '@/features/customers/types/menu.types';
+import { FileStack } from 'lucide-react';
 import { accountsMenu } from '@/features/chartOfAccounts/config/accountsMenu';
 import { reportsDocsTile } from '@/features/documents/config/documentationMenu';
 import { reportsHrTile } from '@/features/hr/config/hrMenu';
@@ -6,6 +7,7 @@ import { managementMenu, reportsMisTile } from '@/features/management/config/man
 import { reportsNvoccTile } from '@/features/nvocc/config/nvoccMenu';
 import { reportsQuotationTile } from '@/features/quotations/config/quotationsMenu';
 import { reportsSalesTile } from '@/features/sales/config/salesMenu';
+import { REPORT_CATALOG_ROUTE } from '../api/reportCatalog.api';
 
 function withSection(tile: MenuTile, section: string): MenuTile {
   return { ...tile, section };
@@ -43,11 +45,23 @@ const glReportTileIds = new Set([
 
 const glReportTiles = accountsMenu.filter((tile) => glReportTileIds.has(tile.id));
 
+/** Additive FRESA sample-format catalog (does not replace module analytics tiles). */
+export const reportsCatalogTile: MenuTile = {
+  id: 'fresa-report-catalog',
+  title: 'Sample report formats',
+  description:
+    'FRESA-aligned report catalog (HBL, arrival notices, invoices, ops lists, GL, WMS). Generate via backend templates.',
+  icon: FileStack,
+  iconColor: 'bg-orange-500',
+  path: REPORT_CATALOG_ROUTE,
+};
+
 /**
  * Global Reports menu — one hub tile per module, plus unique Management / Finance entries.
  * Sales report screens live under Reports - Sales (`/sales/reports`), not repeated here.
  */
 export const reportsMenu: MenuTile[] = dedupeByPath([
+  withSection(reportsCatalogTile, 'Catalog'),
   withSection(reportsQuotationTile, 'Module reports'),
   withSection(reportsSalesTile, 'Module reports'),
   withSection(reportsHrTile, 'Module reports'),

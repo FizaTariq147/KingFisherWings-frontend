@@ -9,6 +9,7 @@ import {
 import { triggerBlobDownload, triggerBrandedPdfDownload } from '@/features/files/utils/triggerBlobDownload';
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
 import { isPdfBlob } from '@/features/files/utils/pdfBranding';
+import { isApiOriginUrl } from '@/lib/safeHttpUrl';
 
 function compactParams(params?: Record<string, unknown>): Record<string, unknown> | undefined {
   if (!params) return undefined;
@@ -29,8 +30,11 @@ function apiOrigin(): string {
 export function resolveVendorDownloadUrl(url: string): string {
   const trimmed = url.trim();
   if (!trimmed) return trimmed;
-  if (/^https?:\/\//i.test(trimmed) || trimmed.startsWith('blob:') || trimmed.startsWith('data:')) {
-    return trimmed;
+  if (/^https?:\/\//i.test(trimmed)) {
+    return isApiOriginUrl(trimmed) ? trimmed : '';
+  }
+  if (trimmed.startsWith('blob:') || trimmed.startsWith('data:')) {
+    return '';
   }
   if (trimmed.startsWith('/backend/')) return trimmed;
   const base = apiOrigin();
@@ -90,7 +94,12 @@ export async function downloadVendorBlob(
     throw new VendorApiError('Download failed.', 400);
   }
 
-  const res = await vendorApiClient.get(url, {
+  const requestUrl = url.trim();
+  if (!requestUrl || !isApiOriginUrl(requestUrl)) {
+    throw new VendorApiError('Download URL is not allowed.', 400);
+  }
+
+  const res = await vendorApiClient.get(requestUrl, {
     params: compactParams(options.params),
     responseType: 'blob',
     headers: options.accept ? { Accept: options.accept } : undefined,
@@ -122,7 +131,11 @@ export async function downloadVendorBlob(
     if (parsed) {
       const fileUrl = fileUrlFromJson(parsed);
       if (fileUrl) {
-        await downloadVendorBlob(resolveVendorDownloadUrl(fileUrl), fallbackName, {
+        const nextUrl = resolveVendorDownloadUrl(fileUrl);
+        if (!nextUrl || !isApiOriginUrl(nextUrl)) {
+          throw new VendorApiError('Download URL is not allowed.', 400);
+        }
+        await downloadVendorBlob(nextUrl, fallbackName, {
           accept: options.accept,
           hops: hops + 1,
         });

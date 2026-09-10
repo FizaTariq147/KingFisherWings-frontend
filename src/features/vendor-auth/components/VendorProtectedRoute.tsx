@@ -34,7 +34,12 @@ export function VendorProtectedRoute() {
         }
       } catch (err) {
         if (!cancelled) {
-          if (isVendorApiUnavailable(err) && useVendorAuthStore.getState().user) {
+          // Soft-allow only in local DEV when vendor /me is stubbed (404/501).
+          if (
+            import.meta.env.DEV &&
+            isVendorApiUnavailable(err) &&
+            useVendorAuthStore.getState().user
+          ) {
             setSessionOk(true);
             return;
           }

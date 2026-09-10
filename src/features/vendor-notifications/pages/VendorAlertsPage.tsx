@@ -98,7 +98,7 @@ export default function VendorAlertsPage() {
         ) : (
           <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((n) => {
-              const href = n.href || vendorNotificationHref(n);
+              const href = vendorNotificationHref(n);
               return (
                 <PortalAnimatedListItem
                   key={n.id}

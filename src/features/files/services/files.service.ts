@@ -6,7 +6,7 @@ import { withGatewayRetry } from '@/lib/wakeApi';
 import { FILES_API } from '../api/files.api';
 import type { FileDisplayOptions, FileDownloadParams, StoredFileAction } from '../types/files.types';
 import type { PdfBrandingOptions } from '../utils/pdfBranding';
-import { isSafeHttpUrl, openSafeHttpUrl } from '@/lib/safeHttpUrl';
+import { isApiOriginUrl, isSafeHttpUrl, openSafeHttpUrl } from '@/lib/safeHttpUrl';
 import { parseFilesApiUrl } from '../utils/parseFilesApiUrl';
 import {
   openBlankPreviewTab,
@@ -197,7 +197,7 @@ export const filesService = {
     };
 
     if (!parsed) {
-      if (!isSafeHttpUrl(url)) {
+      if (!isSafeHttpUrl(url) || !isApiOriginUrl(url)) {
         throw new Error('Blocked an unsafe file URL.');
       }
       if (isPdfUrl(url, displayName)) {
@@ -255,7 +255,7 @@ export const filesService = {
       documentNumber: options?.branding?.documentNumber || stripPdfExtension(downloadName),
     };
     if (!parsed) {
-      if (!isSafeHttpUrl(url)) {
+      if (!isSafeHttpUrl(url) || !isApiOriginUrl(url)) {
         throw new Error('Blocked an unsafe file URL.');
       }
       if (isPdfUrl(url, displayName)) {
@@ -282,7 +282,7 @@ export const filesService = {
       documentNumber: options?.branding?.documentNumber || stripPdfExtension(downloadName),
     };
     if (!parsed) {
-      if (!isSafeHttpUrl(url)) {
+      if (!isSafeHttpUrl(url) || !isApiOriginUrl(url)) {
         throw new Error('Blocked an unsafe file URL.');
       }
       if (isPdfUrl(url, displayName)) {

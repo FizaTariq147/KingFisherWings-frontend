@@ -4,6 +4,7 @@ import { AlertCircle, Download, RefreshCw, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
+import { pickValidatedUploadFile, CSV_UPLOAD_OPTIONS } from '@/lib/fileUploadValidation';
 import { PartyConfirmModal } from '../components/PartyConfirmModal';
 import { PartyFilters } from '../components/PartyFilters';
 import { PartyTable } from '../components/PartyTable';
@@ -121,8 +122,15 @@ export default function PartyListPage() {
             accept=".csv,text/csv"
             className="hidden"
             onChange={async (e) => {
-              const file = e.target.files?.[0];
+              const { file, error: fileError } = pickValidatedUploadFile(
+                e.target.files,
+                CSV_UPLOAD_OPTIONS,
+              );
               e.target.value = '';
+              if (fileError) {
+                setActionError(fileError);
+                return;
+              }
               if (!file) return;
               setImportMessage(null);
               setImportErrors([]);
