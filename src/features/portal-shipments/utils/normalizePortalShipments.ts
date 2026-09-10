@@ -60,10 +60,30 @@ export function normalizeShipmentSummary(raw: unknown): PortalShipmentSummary {
   const activeFromStatus = sumByStatus(byStatus, (s) => !TERMINAL_SHIPMENT_STATUSES.has(s));
 
   return {
-    total: pickNumber(data.total, data.total_shipments, data.count) ?? byStatusTotal,
-    active: pickNumber(data.active, data.in_progress, data.inProgress) ?? activeFromStatus,
-    delivered: pickNumber(data.delivered, data.completed) ?? deliveredFromStatus,
-    onHold: pickNumber(data.on_hold, data.onHold) ?? onHoldFromStatus,
+    total:
+      pickNumber(
+        data.total,
+        data.total_shipments,
+        data.totalShipments,
+        data.shipments_total,
+        data.shipmentsTotal,
+        data.count,
+      ) ?? byStatusTotal,
+    active:
+      pickNumber(
+        data.active,
+        data.active_count,
+        data.activeCount,
+        data.active_shipments,
+        data.activeShipments,
+        data.in_progress,
+        data.inProgress,
+        data.open,
+        data.open_count,
+        data.openCount,
+      ) ?? activeFromStatus,
+    delivered: pickNumber(data.delivered, data.completed, data.delivered_count) ?? deliveredFromStatus,
+    onHold: pickNumber(data.on_hold, data.onHold, data.hold) ?? onHoldFromStatus,
     byStatus,
     raw: data,
   };

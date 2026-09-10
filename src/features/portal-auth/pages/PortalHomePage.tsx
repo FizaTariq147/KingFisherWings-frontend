@@ -20,7 +20,7 @@ import { PortalActiveShipmentsPanel } from '../components/portal-dashboard/Porta
 import { PortalPendingQuotesPanel } from '../components/portal-dashboard/PortalPendingQuotesPanel';
 import { PortalTodaysTasksPanel } from '../components/portal-dashboard/PortalTodaysTasksPanel';
 import {
-  buildPortalTasks,
+  alertCountFromDashboard,
   inPeriod,
   isActiveShipment,
   isCustomsHold,
@@ -31,23 +31,31 @@ import {
 } from '../utils/portalDashboardFormat';
 import { dashboardBarsFromStatusMap } from '@/lib/dashboardKpiBars';
 import { usePortalInvoiceSummary } from '@/features/portal-invoices/hooks/usePortalInvoices';
+import { getServerErrorMessage } from '@/lib/validation';
 
-function displayValue(
-  primary: number | undefined,
-  fallback: number | undefined,
-  isLoading: boolean,
-): number {
-  if (primary != null) return primary;
-  if (fallback != null) return fallback;
-  return isLoading ? 0 : 0;
+/** Prefer the first positive KPI; otherwise the first defined value (including 0). */
+function coalesceCount(...candidates: Array<number | undefined>): number {
+  for (const value of candidates) {
+    if (value != null && value > 0) return value;
+  }
+  for (const value of candidates) {
+    if (value != null) return value;
+  }
+  return 0;
 }
+
+const PERIOD_CAPTION: Record<PortalDashboardPeriod, string> = {
+  today: 'today',
+  week: 'last 7 days',
+  month: 'month to date',
+};
 
 export default function PortalHomePage() {
   const user = usePortalAuthStore((s) => s.user);
   const setUser = usePortalAuthStore((s) => s.setUser);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(!user);
-  const [period, setPeriod] = useState<PortalDashboardPeriod>('today');
+  const [period, setPeriod] = useState<PortalDashboardPeriod>('month');
 
   const dashboard = usePortalDashboard(period);
   const portalTasks = usePortalTasks(period);
@@ -78,41 +86,79 @@ export default function PortalHomePage() {
     };
   }, [setUser]);
 
-  const shipmentItems = useMemo(() => recentShipments.data?.items ?? [], [recentShipments.data?.items]);
+  const refresh = () => {
+    void dashboard.refetch();
+    void portalTasks.refetch();
+    void shipmentSummary.refetch();
+    void quoteSummary.refetch();
+    void invoiceSummary.refetch();
+    void recentShipments.refetch();
+    void recentQuotes.refetch();
+  };
 
+  const shipmentItems = useMemo(() => recentShipments.data?.items ?? [], [recentShipments.data?.items]);
   const quoteItems = useMemo(() => recentQuotes.data?.items ?? [], [recentQuotes.data?.items]);
 
-  const shipmentTotal = displayValue(
-    dashboard.data?.shipmentsTotal ?? shipmentSummary.data?.total,
+  const listActiveShipments = useMemo(
+    () => shipmentItems.filter((item) => isActiveShipment(item.status)).length,
+    [shipmentItems],
+  );
+  const listOpenQuotes = useMemo(
+    () => quoteItems.filter((item) => isOpenQuote(item.status)).length,
+    [quoteItems],
+  );
+
+  // Prefer dedicated summary endpoints; dashboard aggregate is fallback; list counts last.
+  // coalesceCount avoids a mapped `0` from one source blocking a real value from another.
+  const shipmentTotal = coalesceCount(
+    shipmentSummary.data?.total,
+    dashboard.data?.shipmentsTotal,
     recentShipments.data?.meta.total,
-    dashboard.isLoading || shipmentSummary.isLoading || recentShipments.isLoading,
   );
-  const shipmentActive = displayValue(
-    dashboard.data?.shipmentsActive ?? shipmentSummary.data?.active,
-    undefined,
-    dashboard.isLoading || shipmentSummary.isLoading,
+  const shipmentActive = coalesceCount(
+    shipmentSummary.data?.active,
+    dashboard.data?.shipmentsActive,
+    listActiveShipments,
   );
-  const quoteOpen = displayValue(
-    dashboard.data?.quotationsOpen ?? quoteSummary.data?.open,
-    undefined,
-    dashboard.isLoading || quoteSummary.isLoading,
+  const quoteOpen = coalesceCount(
+    quoteSummary.data?.open,
+    dashboard.data?.quotationsOpen,
+    listOpenQuotes,
   );
-  const outstanding =
-    invoiceSummary.data?.outstanding ?? dashboard.data?.invoicesOutstanding ?? 0;
-  const overdue = invoiceSummary.data?.overdue ?? dashboard.data?.invoicesOverdue ?? 0;
-  const invoiceCount = invoiceSummary.data?.total ?? 0;
-  const delivered =
-    dashboard.data?.shipmentsDelivered ??
-    shipmentSummary.data?.delivered ??
-    0;
-  const onTimePct =
-    dashboard.data?.onTime?.pct != null
-      ? dashboard.data.onTime.pct <= 1 && dashboard.data.onTime.pct >= 0
-        ? Math.round(dashboard.data.onTime.pct * 100)
-        : Math.round(dashboard.data.onTime.pct)
-      : shipmentTotal > 0 && delivered > 0
-        ? Math.min(100, Math.round((delivered / shipmentTotal) * 100))
-        : null;
+  const outstanding = coalesceCount(
+    invoiceSummary.data?.outstanding,
+    dashboard.data?.invoicesOutstanding,
+  );
+  const overdue = coalesceCount(
+    invoiceSummary.data?.overdue,
+    dashboard.data?.invoicesOverdue,
+  );
+  const invoiceCount = coalesceCount(
+    invoiceSummary.data?.total,
+    dashboard.data?.invoicesTotal,
+  );
+
+  const shipmentsKpiLoading =
+    shipmentSummary.isLoading &&
+    dashboard.isLoading &&
+    shipmentSummary.data == null &&
+    dashboard.data == null;
+  const quotesKpiLoading =
+    quoteSummary.isLoading &&
+    dashboard.isLoading &&
+    quoteSummary.data == null &&
+    dashboard.data == null;
+  const invoicesKpiLoading =
+    invoiceSummary.isLoading &&
+    dashboard.isLoading &&
+    invoiceSummary.data == null &&
+    dashboard.data == null;
+
+  const onTimePct = useMemo(() => {
+    const pct = dashboard.data?.onTime?.pct;
+    if (pct == null || !Number.isFinite(pct)) return null;
+    return pct <= 1 && pct >= 0 ? Math.round(pct * 100) : Math.round(pct);
+  }, [dashboard.data?.onTime?.pct]);
 
   const shipmentBars = useMemo(
     () => dashboardBarsFromStatusMap(shipmentSummary.data?.byStatus),
@@ -127,14 +173,21 @@ export default function PortalHomePage() {
     [invoiceSummary.data?.byStatus],
   );
   const onTimeBars = useMemo(() => {
+    const ot = dashboard.data?.onTime;
+    if (ot?.delivered != null || ot?.total != null) {
+      const delivered = ot.delivered ?? 0;
+      const late = Math.max(0, (ot.total ?? delivered) - delivered);
+      return [delivered, late].filter((v) => v > 0);
+    }
     const byStatus = shipmentSummary.data?.byStatus;
     const statusBars = dashboardBarsFromStatusMap(byStatus);
     if (statusBars.length >= 2) return statusBars;
-    const delivered = shipmentSummary.data?.delivered ?? 0;
-    const active = shipmentSummary.data?.active ?? 0;
-    const onHold = shipmentSummary.data?.onHold ?? 0;
-    return [delivered, active, onHold].filter((value) => value > 0);
-  }, [shipmentSummary.data]);
+    return [
+      shipmentSummary.data?.delivered ?? 0,
+      shipmentSummary.data?.active ?? 0,
+      shipmentSummary.data?.onHold ?? 0,
+    ].filter((value) => value > 0);
+  }, [dashboard.data?.onTime, shipmentSummary.data]);
 
   const recentActive = useMemo(
     () =>
@@ -154,28 +207,32 @@ export default function PortalHomePage() {
     [quoteItems],
   );
 
-  const customsHolds = useMemo(
+  const listCustomsHolds = useMemo(
     () => shipmentItems.filter((item) => isCustomsHold(item.status)).length,
     [shipmentItems],
   );
-  const docsPending = useMemo(
+  const listDocsPending = useMemo(
     () => shipmentItems.filter((item) => isDocsPending(item.status)).length,
     [shipmentItems],
   );
+
+  const customsHolds =
+    alertCountFromDashboard(dashboard.data?.alerts, ['customs', 'hold']) ?? listCustomsHolds;
+  const docsPending =
+    alertCountFromDashboard(dashboard.data?.alerts, ['doc', 'document']) ?? listDocsPending;
+
   const tasks = useMemo((): PortalTaskItem[] => {
     const fromApi = portalTasks.data?.length
       ? portalTasks.data
       : dashboard.data?.tasksPreview;
-    if (fromApi?.length) {
-      return fromApi.map((t) => ({
-        id: t.id,
-        label: t.label,
-        done: t.done,
-        href: t.href,
-      }));
-    }
-    return buildPortalTasks(shipmentItems, quoteItems);
-  }, [portalTasks.data, dashboard.data?.tasksPreview, shipmentItems, quoteItems]);
+    if (!fromApi?.length) return [];
+    return fromApi.map((t) => ({
+      id: t.id,
+      label: t.label,
+      done: t.done,
+      href: t.href,
+    }));
+  }, [portalTasks.data, dashboard.data?.tasksPreview]);
 
   const dataLoading =
     dashboard.isLoading ||
@@ -186,6 +243,21 @@ export default function PortalHomePage() {
     recentShipments.isLoading ||
     recentQuotes.isLoading;
 
+  const widgetError =
+    dashboard.isError ||
+    portalTasks.isError ||
+    shipmentSummary.isError ||
+    quoteSummary.isError ||
+    invoiceSummary.isError
+      ? getServerErrorMessage(
+          dashboard.error ||
+            portalTasks.error ||
+            shipmentSummary.error ||
+            quoteSummary.error ||
+            invoiceSummary.error,
+        ) || 'Could not load dashboard widgets.'
+      : null;
+
   if (loading && !user) {
     return <PortalLoadingState label="Loading profile…" />;
   }
@@ -195,6 +267,18 @@ export default function PortalHomePage() {
       {error ? (
         <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
+        </div>
+      ) : null}
+
+      {widgetError ? (
+        <div
+          role="alert"
+          className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+        >
+          {widgetError}
+          <button type="button" className="ml-3 text-xs font-semibold underline" onClick={refresh}>
+            Retry
+          </button>
         </div>
       ) : null}
 
@@ -227,9 +311,10 @@ export default function PortalHomePage() {
         invoiceBars={invoiceBars}
         onTimePct={onTimePct}
         onTimeBars={onTimeBars}
-        loadingShipments={dashboard.isLoading || shipmentSummary.isLoading}
-        loadingQuotes={dashboard.isLoading || quoteSummary.isLoading}
-        loadingInvoices={dashboard.isLoading || invoiceSummary.isLoading}
+        onTimeCaption={PERIOD_CAPTION[period]}
+        loadingShipments={shipmentsKpiLoading}
+        loadingQuotes={quotesKpiLoading}
+        loadingInvoices={invoicesKpiLoading}
       />
 
       <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(300px,0.9fr)]">
@@ -245,7 +330,11 @@ export default function PortalHomePage() {
             loading={recentQuotes.isLoading}
             error={recentQuotes.isError}
           />
-          <PortalTodaysTasksPanel tasks={tasks} loading={dataLoading} />
+          <PortalTodaysTasksPanel
+            tasks={tasks}
+            loading={portalTasks.isLoading || (dashboard.isLoading && !portalTasks.data)}
+            error={portalTasks.isError && !dashboard.data?.tasksPreview}
+          />
         </div>
       </div>
     </PortalAnimatedPage>

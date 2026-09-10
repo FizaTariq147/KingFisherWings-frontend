@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { usePublicTrackEmbed, usePublicTrackLookup } from '../hooks/usePublicTrack';
 import type { PublicTrackResult } from '../types/publicTrack.types';
 import { resolveRefFromLocation, resolveTenantSlugFromLocation } from '../utils/publicTrackContext';
+import { isSafeHttpUrl } from '@/lib/safeHttpUrl';
 
 export default function PublicTrackPage() {
   const [searchParams] = useSearchParams();
@@ -64,7 +65,7 @@ export default function PublicTrackPage() {
       style={branding?.primaryColor ? { ['--color-primary' as string]: branding.primaryColor } : undefined}
     >
       <div className="mx-auto max-w-xl px-4 py-12 sm:px-6">
-        {branding?.logoUrl ? (
+        {branding?.logoUrl && isSafeHttpUrl(branding.logoUrl) ? (
           <img
             src={branding.logoUrl}
             alt={branding.companyName ?? 'Company logo'}

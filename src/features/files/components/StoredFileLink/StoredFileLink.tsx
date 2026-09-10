@@ -5,7 +5,7 @@ import { filesService } from '../../services/files.service';
 import { isPdfUrl, type PdfBrandingOptions } from '../../utils/pdfBranding';
 import { isStoredFileUrl } from '../../utils/parseFilesApiUrl';
 import { stripPdfExtension } from '../../utils/pdfFilename';
-import { isSafeHttpUrl, openSafeHttpUrl } from '@/lib/safeHttpUrl';
+import { isApiOriginUrl, isSafeHttpUrl } from '@/lib/safeHttpUrl';
 
 interface StoredFileLinkProps {
   url: string;
@@ -56,7 +56,7 @@ export function StoredFileLink({
   };
 
   if (!isStoredFileUrl(url)) {
-    if (!isSafeHttpUrl(url)) return null;
+    if (!isSafeHttpUrl(url) || !isApiOriginUrl(url)) return null;
     if (isPdfUrl(url, displayName)) {
       return (
         <>

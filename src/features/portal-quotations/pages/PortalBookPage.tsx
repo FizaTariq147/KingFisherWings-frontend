@@ -164,6 +164,7 @@ export default function PortalBookPage() {
   const serviceCatalog = usePortalServiceCatalog(jobType);
   const costingDto = useMemo(() => {
     if (!jobType || !resolvedCurrencyCode) return null;
+    const { packages: packageDtos } = buildPortalEstimatePackages(packages);
     return {
       job_type: jobType,
       currency_code: resolvedCurrencyCode,
@@ -173,6 +174,7 @@ export default function PortalBookPage() {
       chargeable_weight: optionalNumberValue(formChargeableWeight),
       volume_cbm: optionalNumberValue(formVolumeCbm) ?? packagesCbm,
       pieces: optionalNumberValue(formPieces) ?? packagesPieces,
+      ...(packageDtos.length ? { packages: packageDtos } : {}),
     };
   }, [
     jobType,
@@ -187,29 +189,23 @@ export default function PortalBookPage() {
     packagesWeight,
     packagesCbm,
     packagesPieces,
+    packages,
   ]);
   const wizardStepKey = quotationWizardStepKey(step);
-  const costingOptions = usePortalCostingOptions(costingDto, step >= 3);
+  const costingOptions = usePortalCostingOptions(costingDto, wizardStepKey === 'costing' || wizardStepKey === 'summary');
   const { errors } = formState;
   const catalogItems = useMemo(() => {
-    const base = serviceCatalog.data ?? [];
     const opts = costingOptions.data ?? [];
+    const base = serviceCatalog.data ?? [];
+    // Prefer lane/tariff costing-options; merge catalog for any missing codes.
     if (!opts.length) return base;
     const map = new Map<string, PortalServiceCatalogItem>();
-    for (const item of base) {
-      if (item.code) map.set(item.code, item);
-    }
     for (const opt of opts) {
-      if (!opt.code) continue;
-      const prev = map.get(opt.code);
-      map.set(opt.code, {
-        ...(prev ?? opt),
-        ...opt,
-        unitPrice: opt.unitPrice ?? prev?.unitPrice,
-        chargeCodeId: opt.chargeCodeId ?? prev?.chargeCodeId,
-        pricingBasis: opt.pricingBasis ?? prev?.pricingBasis,
-        name: opt.name || prev?.name || opt.code,
-      });
+      if (opt.code) map.set(opt.code, opt);
+    }
+    for (const item of base) {
+      if (!item.code || map.has(item.code)) continue;
+      map.set(item.code, item);
     }
     return [...map.values()];
   }, [serviceCatalog.data, costingOptions.data]);
@@ -309,6 +305,15 @@ export default function PortalBookPage() {
     return any ? Math.round(total * 100) / 100 : undefined;
   }, [customerPriceRows]);
 
+  const mergeCustomerLines = () => {
+    const serviceCodesForJob = selectedServices.filter((code) => catalogCodes.has(code));
+    const priceDrafts = serviceCodesForJob.map((code) => ({
+      code,
+      unit_price: servicePrices[code] ?? '',
+    }));
+    return buildPortalCustomerLines(priceDrafts, catalogByCode, qtyInputs);
+  };
+
   const submitDisabled =
     requestQuote.isPending || currencyLoading || currencyError || !resolvedCurrencyCode;
 
@@ -346,6 +351,7 @@ export default function PortalBookPage() {
     }
 
     const serviceCodesForJob = selectedServices.filter((code) => catalogCodes.has(code));
+    const customerLines = mergeCustomerLines();
     if (!serviceCodesForJob.length) {
       setError('Select at least one service to preview an estimate.');
       return;
@@ -357,12 +363,6 @@ export default function PortalBookPage() {
       setError(packageError || 'Add at least one package with gross weight for estimate.');
       return;
     }
-
-    const priceDrafts = serviceCodesForJob.map((code) => ({
-      code,
-      unit_price: servicePrices[code] ?? '',
-    }));
-    const customerLines = buildPortalCustomerLines(priceDrafts, catalogByCode, qtyInputs);
 
     const base = applyPortalRouteFields(
       {
@@ -376,7 +376,7 @@ export default function PortalBookPage() {
         special_requirements: values.special_requirements?.trim() || undefined,
         valid_until: values.valid_until || undefined,
         packages: packageDtos,
-        service_codes: serviceCodesForJob,
+        ...(serviceCodesForJob.length ? { service_codes: serviceCodesForJob } : {}),
         ...(customerLines.length ? { customer_lines: customerLines } : {}),
       },
       {
@@ -406,11 +406,7 @@ export default function PortalBookPage() {
     try {
       const currency = values.currency_code || resolvedCurrencyCode || 'AED';
       const serviceCodesForJob = selectedServices.filter((code) => catalogCodes.has(code));
-      const priceDrafts = serviceCodesForJob.map((code) => ({
-        code,
-        unit_price: servicePrices[code] ?? '',
-      }));
-      const customerLines = buildPortalCustomerLines(priceDrafts, catalogByCode, qtyInputs);
+      const customerLines = mergeCustomerLines();
       const estimateSnapshot = buildPortalEstimateSnapshot(currency, customerTotal);
 
       const { packages: packageDtos, hasDimensions } = buildPortalEstimatePackages(packages);
@@ -770,22 +766,42 @@ export default function PortalBookPage() {
           {wizardStepKey === 'costing' ? (
             <div className="space-y-4">
               <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Costing</h3>
+              <p className="text-xs text-[var(--color-neutral-500)]">
+                Choose services for this shipment and optionally enter the unit prices you want to
+                propose. You can also continue without selecting services (lean enquiry).
+              </p>
+              {costingOptions.isError ? (
+                <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                  Could not load lane pricing options
+                  {costingOptions.error instanceof Error
+                    ? `: ${costingOptions.error.message}`
+                    : '.'}{' '}
+                  Showing the service catalog when available.
+                </p>
+              ) : null}
               {catalogItems.length ? (
                 <div className="space-y-3 rounded-md border border-[var(--color-neutral-200)] p-3">
                   <div>
                     <p className="text-sm font-medium">Services &amp; your prices</p>
                     <p className="text-xs text-[var(--color-neutral-500)]">
-                      Select services for{' '}
+                      For{' '}
                       <strong>
                         {JOB_TYPE_LABELS[jobType as keyof typeof JOB_TYPE_LABELS] ?? jobType}
                       </strong>
-                      . Compare with catalog estimate before reviewing the summary.
+                      , select a service then enter your proposed unit price.
                     </p>
                   </div>
                   <div className="space-y-3">
                     {catalogItems.map((service) => {
                       const checked = selectedServices.includes(service.code);
                       const row = customerPriceRows.find((r) => r.code === service.code);
+                      const entered = parseCustomerUnitPrice(servicePrices[service.code] ?? '');
+                      const catalogPrice = service.unitPrice;
+                      const isOwnPrice =
+                        entered != null &&
+                        (catalogPrice == null ||
+                          !Number.isFinite(catalogPrice) ||
+                          entered !== catalogPrice);
                       return (
                         <div
                           key={service.code}
@@ -803,8 +819,8 @@ export default function PortalBookPage() {
                               <span className="block text-xs text-[var(--color-neutral-500)]">
                                 {service.code}
                                 {service.pricingBasis ? ` · ${service.pricingBasis}` : ''}
-                                {service.unitPrice != null
-                                  ? ` · catalog ${service.currencyCode || ''} ${service.unitPrice}`
+                                {catalogPrice != null
+                                  ? ` · suggested ${service.currencyCode || resolvedCurrencyCode || ''} ${catalogPrice}`
                                   : ''}
                               </span>
                             </span>
@@ -814,7 +830,6 @@ export default function PortalBookPage() {
                               <Input
                                 id={`svc-price-${service.code}`}
                                 label="Your unit price"
-                                required
                                 type="number"
                                 step="any"
                                 min={0}
@@ -836,6 +851,7 @@ export default function PortalBookPage() {
                               <div className="flex flex-col justify-end">
                                 <p className="text-xs font-medium text-[var(--color-neutral-600)]">
                                   Line total
+                                  {isOwnPrice ? ' · your price' : ''}
                                 </p>
                                 <p className="flex h-9 items-center text-sm font-medium">
                                   {row?.amount != null
@@ -851,7 +867,7 @@ export default function PortalBookPage() {
                   </div>
                   {customerTotal != null ? (
                     <p className="text-sm font-medium text-[var(--color-neutral-800)]">
-                      Your total: {resolvedCurrencyCode} {customerTotal}
+                      Your proposed total: {resolvedCurrencyCode} {customerTotal}
                     </p>
                   ) : null}
                 </div>
@@ -859,7 +875,7 @@ export default function PortalBookPage() {
                 <p className="text-xs text-[var(--color-neutral-500)]">
                   {serviceCatalog.isLoading || costingOptions.isLoading
                     ? 'Loading services for this job type…'
-                    : 'No portal-visible services for this job type yet. You can still submit an enquiry.'}
+                    : 'No portal services are available for this job type yet. You can still submit a lean enquiry without pricing.'}
                 </p>
               )}
 
@@ -948,7 +964,7 @@ export default function PortalBookPage() {
                       estimatePreview ? 'catalog estimate ready' : null,
                     ]
                       .filter(Boolean)
-                      .join(' · ') || 'No services selected'}
+                      .join(' · ') || 'Lean enquiry (no services selected)'}
                   </dd>
                 </div>
               </dl>

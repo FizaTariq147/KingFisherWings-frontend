@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { pickValidatedUploadFile, PAYMENT_PROOF_UPLOAD_OPTIONS } from '@/lib/fileUploadValidation';
 import type { PaymentProof, UploadPaymentProofDto } from '../types/paymentProof.types';
 import { Badge } from '@/components/ui/Badge';
 
@@ -54,7 +55,15 @@ export function PaymentProofUploadForm({ onUpload, disabled }: PaymentProofUploa
       <Input
         type="file"
         accept=".pdf,.png,.jpg,.jpeg,.webp"
-        onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+        onChange={(e) => {
+          const { file, error: fileError } = pickValidatedUploadFile(
+            e.target.files,
+            PAYMENT_PROOF_UPLOAD_OPTIONS,
+          );
+          setFile(file);
+          setError(fileError ?? null);
+          e.target.value = '';
+        }}
       />
       <div className="grid gap-2 sm:grid-cols-2">
         <Input placeholder="Amount paid" value={amount} onChange={(e) => setAmount(e.target.value)} />

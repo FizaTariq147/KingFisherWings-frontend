@@ -28,6 +28,7 @@ import {
   type CreateCampaignTemplateFormValues,
   type CreateSubscriberFormValues,
 } from '../schemas/crm.schema';
+import { pickValidatedUploadFile, CSV_UPLOAD_OPTIONS } from '@/lib/fileUploadValidation';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { prepareCrmPayload } from '../utils/prepareCrmPayload';
 
@@ -157,8 +158,16 @@ export default function CrmEmailMarketingPage() {
                 type="file"
                 accept=".csv,text/csv"
                 onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) importSubscribers.mutate(f);
+                  const { file, error: fileError } = pickValidatedUploadFile(
+                    e.target.files,
+                    CSV_UPLOAD_OPTIONS,
+                  );
+                  e.target.value = '';
+                  if (fileError) {
+                    window.alert(fileError);
+                    return;
+                  }
+                  if (file) importSubscribers.mutate(file);
                 }}
               />
             </label>

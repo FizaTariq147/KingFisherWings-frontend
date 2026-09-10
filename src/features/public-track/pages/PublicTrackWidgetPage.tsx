@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { usePublicTrackEmbed, usePublicTrackWidget } from '../hooks/usePublicTrack';
 import { resolveTenantSlugFromLocation } from '../utils/publicTrackContext';
+import { isSafeHttpUrl } from '@/lib/safeHttpUrl';
 
 const WIDGET_ROOT_ID = 'kf-track-widget-root';
 
@@ -20,7 +21,7 @@ export default function PublicTrackWidgetPage() {
   return (
     <div className="min-h-screen bg-[var(--color-surface)] px-4 py-10">
       <div className="mx-auto max-w-xl">
-        {embed.data?.logoUrl ? (
+        {embed.data?.logoUrl && isSafeHttpUrl(embed.data.logoUrl) ? (
           <img
             src={embed.data.logoUrl}
             alt={embed.data.companyName ?? 'Company logo'}

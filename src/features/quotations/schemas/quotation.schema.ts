@@ -168,7 +168,7 @@ export const createOnlineQuoteSchema = z
     currency_code: currencyCode(true),
     customer_id: optionalUuid(),
     contact_email: optionalEmail(),
-    contact_name: optionalTextUndef({ min: 2, max: 100 }),
+    contact_name: optionalTextUndef({ min: 2, max: 200 }),
     origin_port_id: optionalUuid(),
     dest_port_id: optionalUuid(),
     commodity: optionalTextUndef({ max: 200 }),
@@ -176,6 +176,7 @@ export const createOnlineQuoteSchema = z
     chargeable_weight: optionalNonNegNumber,
     volume_cbm: optionalNonNegNumber,
     pieces: optionalNonNegNumber,
+    container_type_id: optionalUuid(),
     special_requirements: optionalTextUndef({ max: 2000 }),
     valid_until: optionalDate,
   })

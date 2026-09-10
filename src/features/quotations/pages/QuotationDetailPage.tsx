@@ -278,6 +278,11 @@ export default function QuotationDetailPage() {
         ]
       : []),
     { label: 'PDF', onClick: () => setPdfOpen(true), variant: 'secondary' as const },
+    {
+      label: 'Reports',
+      onClick: () => navigate(`/reports/catalog?context=quotation&quotation_id=${encodeURIComponent(id)}`),
+      variant: 'secondary' as const,
+    },
     { label: 'Email', onClick: () => setEmailOpen(true), variant: 'secondary' as const },
     ...(canArchiveQuotation(status)
       ? [{ label: 'Archive', onClick: () => requestConfirm('archive', quotation), variant: 'danger' as const }]

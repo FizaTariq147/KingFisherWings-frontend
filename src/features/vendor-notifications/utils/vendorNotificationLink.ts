@@ -1,4 +1,5 @@
 import { asRecord, pickString } from '@/features/vendor-shared/normalize';
+import { safeInternalPath } from '@/lib/safeInternalPath';
 import type { VendorNotification } from '../types/vendorNotifications.types';
 
 const TYPE_ALIASES: Record<string, string> = {
@@ -37,9 +38,18 @@ export function vendorNotificationTypeLabel(type?: string): string {
   }
 }
 
+/** Allow only in-app `/vendor/...` paths from API-supplied hrefs. */
+function safeVendorHref(candidate: unknown): string | null {
+  if (typeof candidate !== 'string' || !candidate.trim()) return null;
+  const safe = safeInternalPath(candidate, { prefix: '/vendor', fallback: '' });
+  return safe || null;
+}
+
 /** Deep-link a vendor notification / alert to the matching portal page. */
 export function vendorNotificationHref(n: VendorNotification): string | null {
-  if (n.href) return n.href;
+  const fromApi = safeVendorHref(n.href);
+  if (fromApi) return fromApi;
+
   const type = normalizeVendorAlertType(n.type || n.kind);
   const meta = asRecord(n.raw) ?? {};
   const nested = asRecord(meta.payload) ?? asRecord(meta.meta) ?? asRecord(meta.data) ?? {};

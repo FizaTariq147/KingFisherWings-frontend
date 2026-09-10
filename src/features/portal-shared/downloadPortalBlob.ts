@@ -10,6 +10,7 @@ import { triggerBlobDownload, triggerBrandedPdfDownload } from '@/features/files
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
 import { isPdfBlob, type PdfBrandingOptions } from '@/features/files/utils/pdfBranding';
 import { formatPdfFilename, stripPdfExtension } from '@/features/files/utils/pdfFilename';
+import { isApiOriginUrl } from '@/lib/safeHttpUrl';
 
 function compactParams(params?: Record<string, unknown>): Record<string, unknown> | undefined {
   if (!params) return undefined;
@@ -31,8 +32,12 @@ function apiOrigin(): string {
 export function resolvePortalDownloadUrl(url: string): string {
   const trimmed = url.trim();
   if (!trimmed) return trimmed;
-  if (/^https?:\/\//i.test(trimmed) || trimmed.startsWith('blob:') || trimmed.startsWith('data:')) {
-    return trimmed;
+  // Absolute third-party / data / blob URLs are not followed with Bearer — only API-origin.
+  if (/^https?:\/\//i.test(trimmed)) {
+    return isApiOriginUrl(trimmed) ? trimmed : '';
+  }
+  if (trimmed.startsWith('blob:') || trimmed.startsWith('data:')) {
+    return '';
   }
   if (trimmed.startsWith('/backend/')) return trimmed;
   const base = apiOrigin();
@@ -188,7 +193,12 @@ export async function downloadPortalBlob(
     throw new PortalApiError('Download failed.', 400);
   }
 
-  const res = await portalApiClient.get(url, {
+  const requestUrl = url.trim();
+  if (!requestUrl || !isApiOriginUrl(requestUrl)) {
+    throw new PortalApiError('Download URL is not allowed.', 400);
+  }
+
+  const res = await portalApiClient.get(requestUrl, {
     params: compactParams(options.params),
     responseType: 'blob',
     headers: options.accept ? { Accept: options.accept } : undefined,
@@ -224,7 +234,11 @@ export async function downloadPortalBlob(
       }
       const fileUrl = fileUrlFromJson(parsed);
       if (fileUrl) {
-        await downloadPortalBlob(resolvePortalDownloadUrl(fileUrl), fallbackName, {
+        const nextUrl = resolvePortalDownloadUrl(fileUrl);
+        if (!nextUrl || !isApiOriginUrl(nextUrl)) {
+          throw new PortalApiError('Download URL is not allowed.', 400);
+        }
+        await downloadPortalBlob(nextUrl, fallbackName, {
           accept: options.accept,
           hops: hops + 1,
           branding: options.branding,

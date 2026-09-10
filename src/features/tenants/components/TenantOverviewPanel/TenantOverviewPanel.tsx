@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { isSafeHttpUrl } from '@/lib/safeHttpUrl';
 import { TenantStatusBadge } from '../TenantStatusBadge';
 import type { Tenant } from '../../types/tenant.types';
 import { formatTenantSlug } from '../../utils/formatTenantSlug';
@@ -77,7 +78,7 @@ export function TenantOverviewPanel({ tenant }: TenantOverviewPanelProps) {
             </span>
           </DetailRow>
           <DetailRow label="Logo">
-            {tenant.logo_url ? (
+            {tenant.logo_url && isSafeHttpUrl(tenant.logo_url) ? (
               <a
                 href={tenant.logo_url}
                 target="_blank"
@@ -86,6 +87,10 @@ export function TenantOverviewPanel({ tenant }: TenantOverviewPanelProps) {
               >
                 {tenant.logo_url}
               </a>
+            ) : tenant.logo_url ? (
+              <span className="text-sm text-[var(--color-neutral-500)] truncate max-w-[200px] inline-block">
+                {tenant.logo_url}
+              </span>
             ) : (
               '—'
             )}

@@ -20,9 +20,31 @@ export function normalizeInvoiceSummary(raw: unknown): PortalInvoiceSummary {
   }
   const sum = Object.values(byStatus).reduce((s, n) => s + n, 0);
   return {
-    total: pickNumber(data.total, data.count) ?? sum,
-    outstanding: pickNumber(data.outstanding, data.outstanding_total, data.outstandingTotal) ?? 0,
-    overdue: pickNumber(data.overdue, data.overdue_count, data.overdueCount) ?? 0,
+    total: pickNumber(data.total, data.count, data.invoices_total, data.invoicesTotal) ?? sum,
+    outstanding:
+      pickNumber(
+        data.outstanding,
+        data.outstanding_total,
+        data.outstandingTotal,
+        data.outstanding_amount,
+        data.outstandingAmount,
+        data.outstanding_balance,
+        data.outstandingBalance,
+        data.amount_outstanding,
+        data.amountOutstanding,
+        data.balance_due,
+        data.balanceDue,
+        data.total_outstanding,
+        data.totalOutstanding,
+      ) ?? 0,
+    overdue:
+      pickNumber(
+        data.overdue,
+        data.overdue_count,
+        data.overdueCount,
+        data.overdue_amount,
+        data.overdueAmount,
+      ) ?? 0,
     paid: pickNumber(data.paid, data.paid_count, data.paidCount) ?? 0,
     byStatus,
   };

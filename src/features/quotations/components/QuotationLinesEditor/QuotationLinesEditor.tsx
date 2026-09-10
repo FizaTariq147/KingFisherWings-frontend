@@ -44,6 +44,7 @@ export function QuotationLinesEditor({
     register,
     handleValidatedSubmit,
     reset,
+    setValue,
     applyApiErrors,
     formState: { errors },
   } = useAppForm<CreateQuotationLineFormValues>({
@@ -59,6 +60,22 @@ export function QuotationLinesEditor({
       sort_order: lines.length,
     },
   });
+
+  const openAddForm = () => {
+    setEditingLineId(null);
+    setShowForm(true);
+    setError(null);
+    reset({
+      charge_code_id: '',
+      description: '',
+      quantity: 1,
+      unit_price: 0,
+      currency_code: currencyCode,
+      exchange_rate: 1,
+      is_cost: false,
+      sort_order: lines.length,
+    });
+  };
 
   const startEdit = (line: QuotationLine) => {
     setEditingLineId(line.id);
@@ -124,16 +141,14 @@ export function QuotationLinesEditor({
     <div className="space-y-3">
       {lines.length > 0 ? (
         <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-950">
-          Portal quote requests are meant to be <strong>unpriced enquiries</strong>. If you see a line
-          like <strong>OCEAN-FRT / Ocean Freight</strong> (or other tariff charge codes) on an Air
-          Import RFQ, that came from <strong>auto tariff / default charges on the server</strong> —
-          not from Service catalog (Export clearance, pickup, fumigation). Use{' '}
-          <strong>Clear all lines</strong>, then price manually or Apply tariff only if the tariff
-          matches this job type.
+          If unexpected charge lines appear on an enquiry that should be unpriced, they were added by
+          the server (auto tariff / defaults). Use <strong>Clear all lines</strong>, then price
+          manually or <strong>Apply tariff</strong> only when the Online Tariff Master match is
+          correct for this job type.
         </p>
       ) : null}
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Charge lines</h3>
+        <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Charges</h3>
         {editable && (
           <div className="flex flex-wrap gap-2">
             {lines.length > 0 ? (
@@ -178,12 +193,15 @@ export function QuotationLinesEditor({
             <Button
               type="button"
               onClick={() => {
-                setEditingLineId(null);
-                setShowForm((v) => !v);
+                if (showForm && !editingLineId) {
+                  clearForm();
+                  return;
+                }
+                openAddForm();
               }}
             >
               <Plus className="h-4 w-4" />
-              Add line
+              Add charge line
             </Button>
           </div>
         )}
@@ -284,7 +302,20 @@ export function QuotationLinesEditor({
             <label htmlFor="charge_code_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Charge code *
             </label>
-            <select id="charge_code_id" className={selectClass} {...register('charge_code_id')}>
+            <select
+              id="charge_code_id"
+              className={selectClass}
+              {...register('charge_code_id')}
+              onChange={(e) => {
+                const id = e.target.value;
+                setValue('charge_code_id', id, { shouldValidate: true });
+                const code = chargeCodes.find((c) => String(c.id) === id);
+                if (code) {
+                  const desc = String(code.name ?? code.code ?? '').trim();
+                  if (desc) setValue('description', desc, { shouldValidate: true });
+                }
+              }}
+            >
               <option value="">Select…</option>
               {(() => {
                 const opts = [];
@@ -357,8 +388,8 @@ export function QuotationLinesEditor({
               {busy
                 ? 'Saving…'
                 : editingLineId
-                  ? 'Update line'
-                  : 'Add line'}
+                  ? 'Update charge line'
+                  : 'Add charge line'}
             </Button>
           </div>
         </form>

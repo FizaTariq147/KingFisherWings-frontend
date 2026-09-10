@@ -46,12 +46,15 @@ export function validateUploadFile(
     return { ok: false, message: `File type .${extension || '?'} is not allowed.` };
   }
 
-  if (
-    options.allowedMimeTypes?.length &&
-    file.type &&
-    !options.allowedMimeTypes.includes(file.type)
-  ) {
-    return { ok: false, message: 'File type is not allowed.' };
+  if (options.allowedMimeTypes?.length) {
+    if (!file.type) {
+      // Browsers often omit MIME for CSV/zip — require a matching extension allowlist.
+      if (!options.allowedExtensions?.length) {
+        return { ok: false, message: 'File type is not allowed.' };
+      }
+    } else if (!options.allowedMimeTypes.includes(file.type)) {
+      return { ok: false, message: 'File type is not allowed.' };
+    }
   }
 
   return { ok: true };
@@ -108,4 +111,39 @@ export const PDF_UPLOAD_OPTIONS: FileUploadValidationOptions = {
   maxBytes: DEFAULT_MAX_UPLOAD_BYTES,
   allowedExtensions: ['pdf'],
   allowedMimeTypes: ['application/pdf'],
+};
+
+export const PAYMENT_PROOF_UPLOAD_OPTIONS: FileUploadValidationOptions = {
+  maxBytes: DEFAULT_MAX_UPLOAD_BYTES,
+  allowedExtensions: ['pdf', 'png', 'jpg', 'jpeg', 'webp'],
+  allowedMimeTypes: ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'],
+};
+
+export const SPREADSHEET_UPLOAD_OPTIONS: FileUploadValidationOptions = {
+  maxBytes: DEFAULT_MAX_UPLOAD_BYTES,
+  allowedExtensions: ['xlsx', 'xls', 'csv', 'txt'],
+  allowedMimeTypes: [
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-excel',
+    'text/csv',
+    'text/plain',
+    'application/csv',
+  ],
+};
+
+export const CSV_UPLOAD_OPTIONS: FileUploadValidationOptions = {
+  maxBytes: DEFAULT_MAX_UPLOAD_BYTES,
+  allowedExtensions: ['csv'],
+  allowedMimeTypes: ['text/csv', 'application/csv', 'text/plain', 'application/vnd.ms-excel'],
+};
+
+export const JOB_TRANSFER_UPLOAD_OPTIONS: FileUploadValidationOptions = {
+  maxBytes: 50 * 1024 * 1024,
+  allowedExtensions: ['zip', 'json'],
+  allowedMimeTypes: [
+    'application/zip',
+    'application/x-zip-compressed',
+    'application/json',
+    'text/json',
+  ],
 };

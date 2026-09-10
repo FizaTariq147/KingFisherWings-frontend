@@ -25,7 +25,13 @@ import { JOB_CREATE_WIZARD_STEPS } from '../../constants/jobWizard.constants';
 import { createJobSchema, updateJobSchema } from '../../schemas/job.schema';
 import type { CreateJobFormValues, UpdateJobFormValues } from '../../types/job.types';
 import { JOB_FORM_DEFAULTS } from '../../utils/prepareJobPayload';
-import { JobWizardStepper } from '../job-wizard';
+import {
+  JobWizardCostingPanel,
+  JobWizardStepper,
+  toJobCostingPayload,
+  type JobDraftChargeLine,
+} from '../job-wizard';
+import type { JobWizardCostingPayload } from '../../types/jobWizardCosting.types';
 
 const selectClass =
   'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]';
@@ -52,7 +58,10 @@ interface JobFormProps {
   jobTypeOptions: JobType[];
   defaultJobType?: JobType;
   defaultValues?: Partial<CreateJobFormValues>;
-  onSubmit: (values: CreateJobFormValues | UpdateJobFormValues) => void | Promise<void>;
+  onSubmit: (
+    values: CreateJobFormValues | UpdateJobFormValues,
+    options?: { costing?: JobWizardCostingPayload },
+  ) => void | Promise<void>;
   onCancel: () => void;
   isSubmitting?: boolean;
 }
@@ -99,6 +108,7 @@ export function JobForm({
 }: JobFormProps) {
   const isWizard = layout === 'wizard' && mode === 'create';
   const [step, setStep] = useState(0);
+  const [draftCharges, setDraftCharges] = useState<JobDraftChargeLine[]>([]);
   const schema = mode === 'create' ? createJobSchema : updateJobSchema;
   const {
     register,
@@ -174,7 +184,9 @@ export function JobForm({
   const submitForm = handleValidatedSubmit(async (values) => {
     setApiError(null);
     try {
-      await onSubmit(values);
+      const costing =
+        isWizard && draftCharges.length > 0 ? toJobCostingPayload(draftCharges) : undefined;
+      await onSubmit(values, costing ? { costing } : undefined);
     } catch (err) {
       const banner = applyApiErrors(err, { onRoot: setApiError });
       if (banner) setApiError(banner);
@@ -528,7 +540,10 @@ export function JobForm({
 
         {step === 3 ? (
           <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
-            <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Costing</h3>
+            <JobWizardCostingPanel
+              lines={draftCharges}
+              onLinesChange={setDraftCharges}
+            />
           </div>
         ) : null}
 
@@ -592,6 +607,14 @@ export function JobForm({
                   ]
                     .filter(Boolean)
                     .join(' · ') || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Costing</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {draftCharges.length
+                    ? `${draftCharges.length} draft charge line${draftCharges.length === 1 ? '' : 's'}`
+                    : 'No draft charges'}
                 </dd>
               </div>
             </dl>

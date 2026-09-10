@@ -1,21 +1,31 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { type Resolver } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/Input';
+import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { useTariffs } from '@/features/tariffs/hooks/useTariffs';
 import type { JobType } from '../constants/quotation.constants';
 import { JOB_TYPE_LABELS } from '../constants/quotation.constants';
 import { isAirJobType } from '@/features/jobs/constants/job.constants';
 import { useCreateOnlineQuote } from '../hooks/useQuotations';
+import { quotationService } from '../services/quotation.service';
 import { createOnlineQuoteSchema } from '../schemas/quotation.schema';
 import type { CreateOnlineQuoteFormValues } from '../types/quotation.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import {
+  matchOnlineQuoteTariffs,
+  tariffChargeLabel,
+} from '../utils/matchOnlineQuoteTariffs';
 import { quotationDisplayNumber } from '../utils/normalizeQuotation';
 import {
   JobTypeSelectGrid,
+  OnlineQuoteCostingPanel,
   QuotationWizardNav,
   QuotationWizardStepper,
 } from '../components/quotation-wizard';
@@ -42,8 +52,10 @@ const PORT_FIELDS: (keyof CreateOnlineQuoteFormValues)[] = [
 const CONSIGNMENT_FIELDS: (keyof CreateOnlineQuoteFormValues)[] = [
   'commodity',
   'gross_weight',
+  'chargeable_weight',
   'volume_cbm',
   'pieces',
+  'container_type_id',
   'special_requirements',
 ];
 
@@ -64,6 +76,13 @@ export default function QuotationOnlineQuotePage() {
   const [error, setError] = useState<string | null>(null);
   const [resultMsg, setResultMsg] = useState<string | null>(null);
   const [step, setStep] = useState(0);
+  const [applyingTariff, setApplyingTariff] = useState(false);
+  const { data: containers = [] } = useMasterOptions(
+    'container-types',
+    MASTER_PATHS['container-types'],
+    true,
+  );
+  const tariffsQuery = useTariffs({ page: 1, limit: 200, is_active: true, order: 'desc' });
 
   const {
     register,
@@ -89,21 +108,61 @@ export default function QuotationOnlineQuotePage() {
   const useAirports = isAirJobType(jobType);
   const originPortId = watch('origin_port_id');
   const destPortId = watch('dest_port_id');
+  const currencyCode = watch('currency_code');
+  const containerTypeId = watch('container_type_id');
   const watched = watch();
+
+  const matchedTariffs = useMemo(
+    () =>
+      matchOnlineQuoteTariffs(tariffsQuery.data?.tariffs ?? [], {
+        jobType,
+        originPortId,
+        destPortId,
+        containerTypeId,
+        currencyCode,
+      }),
+    [
+      tariffsQuery.data?.tariffs,
+      jobType,
+      originPortId,
+      destPortId,
+      containerTypeId,
+      currencyCode,
+    ],
+  );
+
+  const laneReady = Boolean(jobType && originPortId && destPortId);
 
   const submitQuote = handleValidatedSubmit(async (values) => {
     setError(null);
     setResultMsg(null);
     try {
-      const q = await create.mutateAsync(values);
-      const label =
-        q && typeof q === 'object' && 'id' in q
-          ? quotationDisplayNumber(q as Parameters<typeof quotationDisplayNumber>[0])
-          : 'Quote created';
-      setResultMsg(`${label} created via online-quote.`);
-      if (q && typeof q === 'object' && 'id' in q) {
-        navigate(`/quotations/${(q as { id: string }).id}`);
+      let q = await create.mutateAsync(values);
+      const hasLines = Array.isArray(q.lines) && q.lines.length > 0;
+
+      // Online quote is tariff-driven: ensure charge line(s) via apply-tariff when header has none.
+      if (!hasLines && q.id) {
+        setApplyingTariff(true);
+        try {
+          q = await quotationService.applyTariff(q.id);
+        } catch (tariffErr) {
+          // Quote still created — surface warning but navigate.
+          setResultMsg(
+            `${quotationDisplayNumber(q)} created. Apply tariff: ${getErrorMessage(tariffErr)}`,
+          );
+        } finally {
+          setApplyingTariff(false);
+        }
       }
+
+      const label = quotationDisplayNumber(q);
+      const lineCount = q.lines?.length ?? 0;
+      setResultMsg(
+        lineCount > 0
+          ? `${label} created with ${lineCount} charge line${lineCount === 1 ? '' : 's'} from tariff.`
+          : `${label} created via online-quote.`,
+      );
+      navigate(`/quotations/${q.id}`);
     } catch (err) {
       applyApiErrors(err);
       const msg = getErrorMessage(err);
@@ -132,6 +191,13 @@ export default function QuotationOnlineQuotePage() {
   };
 
   const wizardStepKey = quotationWizardStepKey(step);
+  const containerLabel = (() => {
+    const id = watched.container_type_id;
+    if (!id) return null;
+    const match = containers.find((c) => String(c.id) === id);
+    return match ? String(match.code ?? match.name ?? id) : id;
+  })();
+
   return (
     <div className="mx-auto max-w-5xl space-y-4">
       <button
@@ -202,8 +268,17 @@ export default function QuotationOnlineQuotePage() {
                   error={errors.tenant_slug?.message as string | undefined}
                   {...register('tenant_slug')}
                 />
-                <Input label="Contact name" {...register('contact_name')} />
-                <Input label="Contact email" type="email" {...register('contact_email')} />
+                <Input
+                  label="Contact name *"
+                  error={errors.contact_name?.message as string | undefined}
+                  {...register('contact_name')}
+                />
+                <Input
+                  label="Contact email *"
+                  type="email"
+                  error={errors.contact_email?.message as string | undefined}
+                  {...register('contact_email')}
+                />
               </div>
               <div className="space-y-4">
                 <Controller
@@ -259,11 +334,36 @@ export default function QuotationOnlineQuotePage() {
             </h3>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Input label="Commodity" {...register('commodity')} />
+              <div className="space-y-1">
+                <label htmlFor="container_type_id" className={labelClass}>
+                  Container type
+                </label>
+                <select
+                  id="container_type_id"
+                  className={selectClass}
+                  {...register('container_type_id')}
+                >
+                  <option value="">Select…</option>
+                  {containers
+                    .filter((c) => isUuid(String(c.id)))
+                    .map((c) => (
+                      <option key={String(c.id)} value={String(c.id)}>
+                        {String(c.code ?? c.name ?? c.id)}
+                      </option>
+                    ))}
+                </select>
+              </div>
               <Input
                 label="Gross weight"
                 type="number"
                 step="any"
                 {...register('gross_weight', { valueAsNumber: true })}
+              />
+              <Input
+                label="Chargeable weight"
+                type="number"
+                step="any"
+                {...register('chargeable_weight', { valueAsNumber: true })}
               />
               <Input
                 label="Volume (CBM)"
@@ -292,18 +392,22 @@ export default function QuotationOnlineQuotePage() {
         ) : null}
 
         {wizardStepKey === 'costing' ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-4">
-            <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Costing</h3>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Input
-                label="Currency *"
-                error={errors.currency_code?.message as string | undefined}
-                {...register('currency_code')}
-              />
-            </div>
-            <p className="text-sm text-[var(--color-neutral-500)]">
-              Detailed charge lines are priced after the quote is created and reviewed by sales.
-            </p>
+          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+            <OnlineQuoteCostingPanel
+              currencyCode={currencyCode || 'AED'}
+              currencyError={errors.currency_code?.message as string | undefined}
+              onCurrencyChange={(value) =>
+                setValue('currency_code', value, { shouldValidate: true, shouldDirty: true })
+              }
+              matchedTariffs={matchedTariffs}
+              loading={tariffsQuery.isLoading}
+              error={
+                tariffsQuery.isError
+                  ? getErrorMessage(tariffsQuery.error) || 'Could not load Online Tariff Master.'
+                  : null
+              }
+              laneReady={laneReady}
+            />
           </div>
         ) : null}
 
@@ -349,6 +453,12 @@ export default function QuotationOnlineQuotePage() {
                 </dd>
               </div>
               <div>
+                <dt className="text-xs text-[var(--color-neutral-500)]">Container</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {containerLabel || '—'}
+                </dd>
+              </div>
+              <div>
                 <dt className="text-xs text-[var(--color-neutral-500)]">Commodity</dt>
                 <dd className="font-medium text-[var(--color-neutral-800)]">
                   {watched.commodity || '—'}
@@ -359,11 +469,27 @@ export default function QuotationOnlineQuotePage() {
                 <dd className="font-medium text-[var(--color-neutral-800)]">
                   {[
                     watched.gross_weight != null ? `${watched.gross_weight} kg` : null,
+                    watched.chargeable_weight != null
+                      ? `chg ${watched.chargeable_weight} kg`
+                      : null,
                     watched.volume_cbm != null ? `${watched.volume_cbm} CBM` : null,
                     watched.pieces != null ? `${watched.pieces} pcs` : null,
                   ]
                     .filter(Boolean)
                     .join(' · ') || '—'}
+                </dd>
+              </div>
+              <div className="sm:col-span-2">
+                <dt className="text-xs text-[var(--color-neutral-500)]">Tariff charge lines</dt>
+                <dd className="font-medium text-[var(--color-neutral-800)]">
+                  {matchedTariffs.length === 0
+                    ? 'No matched Online Tariff Master rates (apply-tariff will still run after create).'
+                    : matchedTariffs
+                        .map(
+                          (t) =>
+                            `${tariffChargeLabel(t)} @ ${t.currency_code} ${Number(t.sale_rate).toLocaleString()}`,
+                        )
+                        .join(' · ')}
                 </dd>
               </div>
             </dl>
@@ -376,7 +502,7 @@ export default function QuotationOnlineQuotePage() {
           onPrevious={() => setStep((s) => Math.max(0, s - 1))}
           onCancel={() => navigate('/quotations')}
           onNext={() => void goNext()}
-          isSubmitting={create.isPending}
+          isSubmitting={create.isPending || applyingTariff}
           submitLabel="Request online quote"
           disableNext={wizardStepKey === 'create' && !jobType}
         />

@@ -199,6 +199,12 @@ export default function InvoiceDetailPage() {
       },
       variant: 'secondary' as const,
     },
+    {
+      label: 'Reports',
+      onClick: () =>
+        navigate(`/reports/catalog?context=invoice&invoice_id=${encodeURIComponent(id)}`),
+      variant: 'secondary' as const,
+    },
     ...(canCancel
       ? [
           {

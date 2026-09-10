@@ -13,6 +13,7 @@ import {
   triggerBlobDownload,
   triggerBrandedPdfDownload,
 } from '@/features/files/utils/triggerBlobDownload';
+import { isApiOriginUrl, isSafeHttpUrl } from '@/lib/safeHttpUrl';
 
 export interface PdfReadyModalProps {
   open: boolean;
@@ -99,6 +100,9 @@ export function PdfReadyModal({
     }
     if (isStoredFileUrl(url) || isPdfUrl(url, fileName)) {
       void downloadStoredFile(url, storedFileOptions).catch(() => undefined);
+      return;
+    }
+    if (!isSafeHttpUrl(url) || !isApiOriginUrl(url)) {
       return;
     }
     const anchor = document.createElement('a');

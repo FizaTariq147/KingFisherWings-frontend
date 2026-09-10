@@ -274,7 +274,7 @@ function paginate(
   return {
     items: slice.map((n) => ({
       ...n,
-      href: n.href || vendorNotificationHref(n),
+      href: vendorNotificationHref(n),
     })),
     meta: { page, limit, total, totalPages },
     sourcedFromAggregate,

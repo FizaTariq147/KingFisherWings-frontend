@@ -6,3 +6,4 @@ export {
   toCostingPayload,
   type QuotationDraftChargeLine,
 } from './QuotationWizardCostingPanel';
+export { OnlineQuoteCostingPanel } from './OnlineQuoteCostingPanel';

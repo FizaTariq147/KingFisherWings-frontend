@@ -6,10 +6,10 @@
  * Usage:
  *   node scripts/seed-documentation-test-data.mjs
  *
- * Environment (optional):
+ * Environment:
+ *   E2E_TENANT_PASSWORD   required (no default — set explicitly)
  *   API_BASE_URL          default https://kingfisherwings-backend.onrender.com
  *   E2E_TENANT_SLUG       default kingfisher-wings
- *   E2E_TENANT_PASSWORD   default Kingfish@2026
  *   DOC_SEED_APPLY_TEMPLATE  set to "1" to apply charge template to first job
  */
 import fs from 'node:fs';
@@ -20,10 +20,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const BASE = process.env.API_BASE_URL || 'https://kingfisherwings-backend.onrender.com';
 const TENANT_SLUG = process.env.E2E_TENANT_SLUG || 'kingfisher-wings';
-const TENANT_PASSWORD = process.env.E2E_TENANT_PASSWORD || 'Kingfish@2026';
+const TENANT_PASSWORD = process.env.E2E_TENANT_PASSWORD;
 const APPLY_TEMPLATE = process.env.DOC_SEED_APPLY_TEMPLATE === '1';
 const OUT = path.join(ROOT, '.tmp-documentation-seed-results.json');
 const TIMEOUT_MS = 90_000;
+
+if (!TENANT_PASSWORD || !String(TENANT_PASSWORD).trim()) {
+  console.error(
+    'Missing E2E_TENANT_PASSWORD. Set it in the environment before running this seed script.',
+  );
+  process.exit(1);
+}
 
 function log(step, message) {
   console.log(`[${step}] ${message}`);
