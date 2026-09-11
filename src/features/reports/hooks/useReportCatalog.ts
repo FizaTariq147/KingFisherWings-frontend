@@ -1,12 +1,17 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/authStore';
 import { reportCatalogService } from '../services/reportCatalog.service';
-import type { ReportGenerateRequest } from '../types/reportCatalog.types';
+import type {
+  ReportBindRendererDto,
+  ReportGenerateRequest,
+  ReportTemplate,
+} from '../types/reportCatalog.types';
 
 export const reportCatalogKeys = {
   all: ['tenant', 'report-catalog'] as const,
   list: (params: Record<string, unknown>) => [...reportCatalogKeys.all, 'list', params] as const,
   detail: (id: string) => [...reportCatalogKeys.all, 'detail', id] as const,
+  renderers: () => [...reportCatalogKeys.all, 'renderers'] as const,
   job: (id: string) => [...reportCatalogKeys.all, 'job', id] as const,
 };
 
@@ -17,6 +22,7 @@ export function useReportTemplates(
     search?: string;
     family?: string;
     context?: string;
+    includeInactive?: boolean;
     rolloutPhase?: number;
   } = {},
   enabled = true,
@@ -27,6 +33,7 @@ export function useReportTemplates(
     queryFn: () => reportCatalogService.listTemplates(params),
     enabled: Boolean(accessToken) && enabled,
     staleTime: 30_000,
+    retry: 1,
   });
 }
 
@@ -39,9 +46,79 @@ export function useReportTemplate(idOrCode: string, enabled = true) {
   });
 }
 
+/** GET /reports/templates/renderers — Puppeteer pack keys for bind/activate. */
+export function useReportRenderers(enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: reportCatalogKeys.renderers(),
+    queryFn: () => reportCatalogService.listRenderers(),
+    enabled: Boolean(accessToken) && enabled,
+    staleTime: 60_000,
+  });
+}
+
 export function useGenerateReport() {
   return useMutation({
     mutationFn: (dto: ReportGenerateRequest) => reportCatalogService.generate(dto),
+  });
+}
+
+export function useImportReportTemplates() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (onProgress?: (done: number, total: number) => void) =>
+      reportCatalogService.importFresaRegistry(onProgress),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: reportCatalogKeys.all });
+    },
+  });
+}
+
+export function useBindReportRenderer() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ code, dto }: { code: string; dto: ReportBindRendererDto }) =>
+      reportCatalogService.bindRenderer(code, dto),
+    onSuccess: (template) => {
+      void qc.invalidateQueries({ queryKey: reportCatalogKeys.all });
+      if (template?.code) {
+        void qc.invalidateQueries({ queryKey: reportCatalogKeys.detail(template.code) });
+        void qc.invalidateQueries({ queryKey: reportCatalogKeys.detail(template.id) });
+      }
+    },
+  });
+}
+
+export function useActivateReportTemplate() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: {
+      template: string | ReportTemplate;
+      renderer_key?: string;
+    }) => reportCatalogService.activateTemplate(input.template, {
+      renderer_key: input.renderer_key,
+    }),
+    onSuccess: (template) => {
+      void qc.invalidateQueries({ queryKey: reportCatalogKeys.all });
+      if (template?.code) {
+        void qc.invalidateQueries({ queryKey: reportCatalogKeys.detail(template.code) });
+        void qc.invalidateQueries({ queryKey: reportCatalogKeys.detail(template.id) });
+      }
+    },
+  });
+}
+
+export function useDeactivateReportTemplate() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (code: string) => reportCatalogService.deactivateTemplate(code),
+    onSuccess: (template) => {
+      void qc.invalidateQueries({ queryKey: reportCatalogKeys.all });
+      if (template?.code) {
+        void qc.invalidateQueries({ queryKey: reportCatalogKeys.detail(template.code) });
+        void qc.invalidateQueries({ queryKey: reportCatalogKeys.detail(template.id) });
+      }
+    },
   });
 }
 

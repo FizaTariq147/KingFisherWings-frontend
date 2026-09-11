@@ -333,7 +333,11 @@ export default function QuotationOnlineQuotePage() {
               Planned Container / Consignment
             </h3>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Input label="Commodity" {...register('commodity')} />
+              <Input
+                label="Commodity"
+                error={errors.commodity?.message as string | undefined}
+                {...register('commodity')}
+              />
               <div className="space-y-1">
                 <label htmlFor="container_type_id" className={labelClass}>
                   Container type
@@ -352,29 +356,38 @@ export default function QuotationOnlineQuotePage() {
                       </option>
                     ))}
                 </select>
+                {errors.container_type_id?.message ? (
+                  <p className="text-xs text-[var(--color-danger-600)]">
+                    {String(errors.container_type_id.message)}
+                  </p>
+                ) : null}
               </div>
               <Input
                 label="Gross weight"
                 type="number"
                 step="any"
+                error={errors.gross_weight?.message as string | undefined}
                 {...register('gross_weight', { valueAsNumber: true })}
               />
               <Input
                 label="Chargeable weight"
                 type="number"
                 step="any"
+                error={errors.chargeable_weight?.message as string | undefined}
                 {...register('chargeable_weight', { valueAsNumber: true })}
               />
               <Input
                 label="Volume (CBM)"
                 type="number"
                 step="any"
+                error={errors.volume_cbm?.message as string | undefined}
                 {...register('volume_cbm', { valueAsNumber: true })}
               />
               <Input
                 label="Pieces"
                 type="number"
                 step="any"
+                error={errors.pieces?.message as string | undefined}
                 {...register('pieces', { valueAsNumber: true })}
               />
               <div className="space-y-1 sm:col-span-2">
@@ -386,6 +399,11 @@ export default function QuotationOnlineQuotePage() {
                   className="min-h-[88px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
                   {...register('special_requirements')}
                 />
+                {errors.special_requirements?.message ? (
+                  <p className="text-xs text-[var(--color-danger-600)]">
+                    {String(errors.special_requirements.message)}
+                  </p>
+                ) : null}
               </div>
             </div>
           </div>

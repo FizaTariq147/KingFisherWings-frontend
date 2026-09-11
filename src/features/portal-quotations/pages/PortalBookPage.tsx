@@ -54,7 +54,7 @@ import {
   parseCustomerUnitPrice,
   portalServiceQuantity,
 } from '../utils/portalCustomerServicePrices';
-import { applyPortalRouteFields, resolvePortalPortId } from '../utils/preparePortalQuotationRequest';
+import { applyPortalRouteFields, resolvePlaceIdForPortalQuoteApi } from '../utils/preparePortalQuotationRequest';
 import type { PortalServiceCatalogItem } from '../types/portalQuotations.types';
 
 function numberInputProps(fieldError?: string) {
@@ -102,6 +102,10 @@ export default function PortalBookPage() {
   const [estimatePreview, setEstimatePreview] = useState<string | null>(null);
   const [packages, setPackages] = useState<PortalPackageDraft[]>([emptyPortalPackageDraft()]);
   const [placeCache, setPlaceCache] = useState<PortalPortOption[]>([]);
+  const [resolvedRoutePorts, setResolvedRoutePorts] = useState<{
+    origin_port_id?: string;
+    dest_port_id?: string;
+  }>({});
 
   const rememberPlaces = useCallback((places: PortalPortOption[]) => {
     setPlaceCache((prev) => {
@@ -109,7 +113,13 @@ export default function PortalBookPage() {
       let changed = false;
       for (const place of places) {
         const existing = map.get(place.id);
-        if (!existing || existing.label !== place.label) {
+        if (
+          !existing ||
+          existing.label !== place.label ||
+          existing.linkedPortId !== place.linkedPortId ||
+          existing.code !== place.code ||
+          existing.countryCode !== place.countryCode
+        ) {
           map.set(place.id, place);
           changed = true;
         }
@@ -168,8 +178,8 @@ export default function PortalBookPage() {
     return {
       job_type: jobType,
       currency_code: resolvedCurrencyCode,
-      origin_port_id: resolvePortalPortId(originPort, placeCache),
-      dest_port_id: resolvePortalPortId(destPort, placeCache),
+      origin_port_id: resolvedRoutePorts.origin_port_id,
+      dest_port_id: resolvedRoutePorts.dest_port_id,
       gross_weight: optionalNumberValue(formGrossWeight) ?? packagesWeight,
       chargeable_weight: optionalNumberValue(formChargeableWeight),
       volume_cbm: optionalNumberValue(formVolumeCbm) ?? packagesCbm,
@@ -179,9 +189,8 @@ export default function PortalBookPage() {
   }, [
     jobType,
     resolvedCurrencyCode,
-    originPort,
-    destPort,
-    placeCache,
+    resolvedRoutePorts.origin_port_id,
+    resolvedRoutePorts.dest_port_id,
     formGrossWeight,
     formChargeableWeight,
     formVolumeCbm,
@@ -228,7 +237,34 @@ export default function PortalBookPage() {
     setValue('origin_port', '');
     setValue('dest_port', '');
     setPlaceCache([]);
+    setResolvedRoutePorts({});
   }, [jobType, setValue]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const [originId, destId] = await Promise.all([
+        resolvePlaceIdForPortalQuoteApi(
+          typeof originPort === 'string' ? originPort : undefined,
+          placeCache,
+          jobType,
+        ),
+        resolvePlaceIdForPortalQuoteApi(
+          typeof destPort === 'string' ? destPort : undefined,
+          placeCache,
+          jobType,
+        ),
+      ]);
+      if (cancelled) return;
+      setResolvedRoutePorts({
+        origin_port_id: originId,
+        dest_port_id: destId,
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [originPort, destPort, placeCache, jobType]);
 
   useEffect(() => {
     setSelectedServices((prev) => {
@@ -364,31 +400,32 @@ export default function PortalBookPage() {
       return;
     }
 
-    const base = applyPortalRouteFields(
-      {
-        job_type: values.job_type,
-        currency_code: currency,
-        commodity: values.commodity?.trim() || undefined,
-        gross_weight: values.gross_weight,
-        chargeable_weight: values.chargeable_weight,
-        volume_cbm: hasDimensions ? undefined : values.volume_cbm ?? packagesCbm,
-        pieces: values.pieces,
-        special_requirements: values.special_requirements?.trim() || undefined,
-        valid_until: values.valid_until || undefined,
-        packages: packageDtos,
-        ...(serviceCodesForJob.length ? { service_codes: serviceCodesForJob } : {}),
-        ...(customerLines.length ? { customer_lines: customerLines } : {}),
-      },
-      {
-        origin_port: values.origin_port,
-        dest_port: values.dest_port,
-      },
-      placeCache,
-    );
+    void (async () => {
+      const base = await applyPortalRouteFields(
+        {
+          job_type: values.job_type,
+          currency_code: currency,
+          commodity: values.commodity?.trim() || undefined,
+          gross_weight: values.gross_weight,
+          chargeable_weight: values.chargeable_weight,
+          volume_cbm: hasDimensions ? undefined : values.volume_cbm ?? packagesCbm,
+          pieces: values.pieces,
+          special_requirements: values.special_requirements?.trim() || undefined,
+          valid_until: values.valid_until || undefined,
+          packages: packageDtos,
+          ...(serviceCodesForJob.length ? { service_codes: serviceCodesForJob } : {}),
+          ...(customerLines.length ? { customer_lines: customerLines } : {}),
+        },
+        {
+          origin_port: values.origin_port,
+          dest_port: values.dest_port,
+        },
+        placeCache,
+        values.job_type,
+      );
 
-    void estimateQuote
-      .mutateAsync(base)
-      .then((result) => {
+      try {
+        const result = await estimateQuote.mutateAsync(base);
         const total =
           result.total ?? result.lines.reduce((sum, line) => sum + (line.amount ?? 0), 0);
         const yourTotal =
@@ -396,8 +433,10 @@ export default function PortalBookPage() {
         setEstimatePreview(
           `Catalog estimate ${result.currencyCode || currency} ${total} · CBM ${result.volumeCbm ?? packagesCbm ?? '—'}${yourTotal}`,
         );
-      })
-      .catch((err) => setError(getServerErrorMessage(err) || 'Estimate failed.'));
+      } catch (err) {
+        setError(getServerErrorMessage(err) || 'Estimate failed.');
+      }
+    })();
   };
 
   const onFinalSubmit = handleSubmit(async (rawValues) => {
@@ -412,7 +451,7 @@ export default function PortalBookPage() {
       const { packages: packageDtos, hasDimensions } = buildPortalEstimatePackages(packages);
       const volumeCbm = hasDimensions ? undefined : values.volume_cbm ?? packagesCbm;
 
-      const payload = applyPortalRouteFields(
+      const payload = await applyPortalRouteFields(
         {
           job_type: values.job_type,
           currency_code: currency,
@@ -433,6 +472,7 @@ export default function PortalBookPage() {
           dest_port: values.dest_port,
         },
         placeCache,
+        values.job_type,
       );
 
       const created = await requestQuote.mutateAsync(payload);

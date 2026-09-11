@@ -8,6 +8,7 @@ import { fetchLocaleCurrencyForCountry } from '../utils/loadPortalCurrencyOption
 import {
   fetchPortalAirportOptions,
   fetchPortalPortOptions,
+  fetchPortalRoutePlaceOptions,
 } from '../utils/loadPortalPortOptions';
 import type {
   PortalQuotationDetail,
@@ -37,6 +38,8 @@ export const portalQuotationKeys = {
     [...portalQuotationKeys.all(scope), 'lookups', 'ports', search] as const,
   airports: (scope: string, search = '') =>
     [...portalQuotationKeys.all(scope), 'lookups', 'airports', search] as const,
+  routePlaces: (scope: string, jobType: string, search = '') =>
+    [...portalQuotationKeys.all(scope), 'lookups', 'route-places', jobType, search] as const,
   serviceCatalog: (scope: string, jobType?: string) =>
     [...portalQuotationKeys.all(scope), 'service-catalog', jobType ?? 'all'] as const,
   costingOptions: (scope: string, dto: PortalCostingOptionsDto) =>
@@ -120,6 +123,37 @@ export function usePortalAirportOptions(search = '', enabled = true) {
     queryFn: async () => {
       try {
         return await fetchPortalAirportOptions(q || undefined);
+      } catch (err) {
+        if (err instanceof PortalApiError && (err.status === 404 || err.status === 403)) {
+          return [];
+        }
+        throw err;
+      }
+    },
+    enabled: Boolean(accessToken) && enabled && scope !== 'anon',
+    staleTime: 60_000,
+    placeholderData: keepPreviousData,
+  });
+}
+
+/**
+ * Job-type-aware origin/destination options for portal book quote.
+ * Air → GET /portal/lookups/airports (world catalog). Sea → ports.
+ */
+export function usePortalRoutePlaceOptions(
+  jobType: string | null | undefined,
+  search = '',
+  enabled = true,
+) {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  const q = search.trim();
+  const jt = (jobType || '').trim().toUpperCase() || 'NONE';
+  return useQuery({
+    queryKey: portalQuotationKeys.routePlaces(scope, jt, q),
+    queryFn: async () => {
+      try {
+        return await fetchPortalRoutePlaceOptions(jobType, q || undefined);
       } catch (err) {
         if (err instanceof PortalApiError && (err.status === 404 || err.status === 403)) {
           return [];

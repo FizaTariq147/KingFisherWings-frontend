@@ -1,10 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { SearchableSelect } from '@/features/masters/components/SearchableSelect';
 import { isAirJobType } from '@/features/jobs/constants/job.constants';
-import {
-  usePortalAirportOptions,
-  usePortalPortOptions,
-} from '../hooks/usePortalQuotations';
+import { usePortalRoutePlaceOptions } from '../hooks/usePortalQuotations';
 import {
   portalPortsToSelectOptions,
   type PortalPortOption,
@@ -40,8 +37,8 @@ function useDebounced(value: string, delayMs: number): string {
 }
 
 /**
- * Customer portal origin/destination picker —
- * GET /portal/lookups/ports|airports with per-field typeahead search.
+ * Customer portal origin/destination picker.
+ * Air jobs use the world airports catalog; sea uses ports.
  */
 export function PortalPlaceSelect({
   name,
@@ -57,13 +54,10 @@ export function PortalPlaceSelect({
   excludeId,
   onPlacesLoaded,
 }: PortalPlaceSelectProps) {
-  const resolved: PortalPlaceKind =
-    kind ?? (isAirJobType(jobType) ? 'airports' : 'ports');
+  const air = kind === 'airports' || (kind == null && isAirJobType(jobType));
   const [query, setQuery] = useState('');
   const debounced = useDebounced(query, 300);
-  const portsQuery = usePortalPortOptions(debounced, resolved === 'ports');
-  const airportsQuery = usePortalAirportOptions(debounced, resolved === 'airports');
-  const placeQuery = resolved === 'airports' ? airportsQuery : portsQuery;
+  const placeQuery = usePortalRoutePlaceOptions(jobType, debounced, true);
 
   useEffect(() => {
     if (placeQuery.data?.length) onPlacesLoaded?.(placeQuery.data);
@@ -81,7 +75,7 @@ export function PortalPlaceSelect({
     return [{ value, label: cached?.label || value }, ...options];
   }, [options, value, placeQuery.data]);
 
-  const placeWord = resolved === 'airports' ? 'airport' : 'port';
+  const placeWord = air ? 'airport' : 'port';
 
   return (
     <SearchableSelect
@@ -94,7 +88,7 @@ export function PortalPlaceSelect({
       required={required}
       error={error}
       allowManualUuid={false}
-      allowManualValue
+      allowManualValue={false}
       placeholder={placeholder ?? `Search ${placeWord} by name or code…`}
       hint={hint}
     />
