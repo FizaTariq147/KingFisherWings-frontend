@@ -65,10 +65,52 @@ export interface ReportTemplate {
   formats: ReportExportFormat[];
   description?: string;
   is_active: boolean;
+  /** Backend Jasper/renderer key; activate requires non-pending value. */
+  renderer_key?: string;
   rolloutPhase?: ReportRolloutPhase;
   gapStatus?: ReportGapStatus;
   existingPath?: string;
   parameters?: ReportTemplateParamField[];
+}
+
+export interface ReportTemplateImportResult {
+  inserted: number;
+  updated: number;
+  skipped: number;
+  total: number;
+  message?: string;
+}
+
+/** One implemented Puppeteer data-pack key from GET /reports/templates/renderers. */
+export interface ReportRendererOption {
+  key: string;
+  label: string;
+  description?: string;
+}
+
+export interface ReportBindRendererDto {
+  renderer_key: string;
+  activate?: boolean;
+  formats?: ReportExportFormat[];
+}
+
+/** True when FE thinks activate is likely to succeed (non-pending renderer_key). */
+export function canActivateReportTemplate(
+  template: Pick<ReportTemplate, 'renderer_key' | 'is_active'>,
+): boolean {
+  const key = template.renderer_key?.trim();
+  if (!key) return false;
+  if (/^pending($|[_.-])/i.test(key) || key.toLowerCase() === 'pending') return false;
+  return true;
+}
+
+export function reportRendererStatus(
+  template: Pick<ReportTemplate, 'renderer_key'>,
+): 'ready' | 'pending' | 'missing' {
+  const key = template.renderer_key?.trim();
+  if (!key) return 'missing';
+  if (/^pending($|[_.-])/i.test(key) || key.toLowerCase() === 'pending') return 'pending';
+  return 'ready';
 }
 
 export interface ReportGenerateRequest {
@@ -83,6 +125,10 @@ export interface ReportGenerateRequest {
     party_id?: string;
   };
 }
+
+/** Mirrors backend ReportGenerateDto (+ context nested DTO). */
+export type ReportGenerateDto = ReportGenerateRequest;
+
 
 export type ReportJobStatus = 'queued' | 'running' | 'ready' | 'failed';
 
@@ -124,3 +170,12 @@ export const REPORT_CONTEXT_LABELS: Record<ReportContext, string> = {
   list: 'List / filters',
   party: 'Party / customer',
 };
+
+/** Humanize API family/context codes when no static label exists. */
+export function reportFamilyLabel(family: string): string {
+  return REPORT_FAMILY_LABELS[family as ReportFamily] ?? family.replace(/_/g, ' ');
+}
+
+export function reportContextLabel(context: string): string {
+  return REPORT_CONTEXT_LABELS[context as ReportContext] ?? context.replace(/_/g, ' ');
+}

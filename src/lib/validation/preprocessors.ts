@@ -28,7 +28,10 @@ export function toUpperCaseCode(value: unknown): unknown {
 /** Coerce form select/input empties to number | undefined. */
 export function emptyToNumber(value: unknown): unknown {
   if (value === '' || value == null) return undefined;
-  if (typeof value === 'number') return value;
+  // react-hook-form `valueAsNumber` yields NaN for cleared number inputs.
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? value : undefined;
+  }
   const n = Number(value);
   return Number.isFinite(n) ? n : value;
 }
