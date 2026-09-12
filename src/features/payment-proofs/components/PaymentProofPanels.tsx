@@ -90,7 +90,15 @@ export function PaymentProofUploadForm({ onUpload, disabled }: PaymentProofUploa
   );
 }
 
-export function PaymentProofList({ proofs }: { proofs: PaymentProof[] }) {
+export function PaymentProofList({
+  proofs,
+  onSendEmail,
+  sendingProofId,
+}: {
+  proofs: PaymentProof[];
+  onSendEmail?: (proof: PaymentProof) => void;
+  sendingProofId?: string | null;
+}) {
   if (proofs.length === 0) {
     return <p className="text-sm text-[var(--color-neutral-400)]">No payment proofs yet.</p>;
   }
@@ -109,11 +117,24 @@ export function PaymentProofList({ proofs }: { proofs: PaymentProof[] }) {
                 .join(' · ')}
             </p>
           </div>
-          {proof.status ? (
-            <Badge variant="neutral" dot={false}>
-              {proof.status.replaceAll('_', ' ')}
-            </Badge>
-          ) : null}
+          <div className="flex items-center gap-2">
+            {proof.status ? (
+              <Badge variant="neutral" dot={false}>
+                {proof.status.replaceAll('_', ' ')}
+              </Badge>
+            ) : null}
+            {onSendEmail ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={sendingProofId === proof.id}
+                onClick={() => onSendEmail(proof)}
+              >
+                {sendingProofId === proof.id ? 'Sending…' : 'Email'}
+              </Button>
+            ) : null}
+          </div>
         </div>
       ))}
     </div>

@@ -123,3 +123,24 @@ export function useUploadVendorInvoicePaymentProof(invoiceId: string) {
     },
   });
 }
+
+export function useSendVendorInvoiceEmail() {
+  return useMutation({
+    mutationFn: ({ id, dto }: { id: string; dto?: import('@/features/shared/share-email').ShareEmailDto }) =>
+      vendorInvoicesService.sendEmail(id, dto),
+  });
+}
+
+export function useSendVendorPaymentProofEmail() {
+  return useMutation({
+    mutationFn: ({
+      invoiceId,
+      proofId,
+      dto,
+    }: {
+      invoiceId: string;
+      proofId: string;
+      dto?: import('@/features/shared/share-email').ShareEmailDto;
+    }) => vendorInvoicesService.sendPaymentProofEmail(invoiceId, proofId, dto),
+  });
+}

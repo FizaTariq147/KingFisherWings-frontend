@@ -38,8 +38,9 @@ export default defineConfig(({ mode }) => ({
         target: 'https://kingfisherwings-backend.onrender.com',
         changeOrigin: true,
         secure: true,
-        timeout: 120_000,
-        proxyTimeout: 120_000,
+        // Email send = PDF + SMTP; default 120s closes the socket → Axios "Network Error".
+        timeout: 300_000,
+        proxyTimeout: 300_000,
         rewrite: (requestPath) => requestPath.replace(/^\/backend/, ''),
         cookieDomainRewrite: 'localhost',
       },

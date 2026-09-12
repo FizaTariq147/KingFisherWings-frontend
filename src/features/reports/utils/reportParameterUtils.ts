@@ -9,6 +9,10 @@ export type ReportContextIds = {
 
 const CONTEXT_KEYS = ['job_id', 'quotation_id', 'invoice_id', 'party_id'] as const;
 
+/**
+ * Prefer schema defaults, then overlay launcher context IDs so invoice/job deep-links
+ * always pre-fill generate parameters (even when schema omits a context field).
+ */
 export function buildInitialReportParams(
   fields: ReportTemplateParamField[] | undefined,
   context?: ReportContextIds,

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
+import type { ShareEmailDto } from '@/features/shared/share-email';
 import { glPaymentService } from '../services/glPayment.service';
 import type {
   CreateGlPaymentDto,
@@ -101,5 +102,11 @@ export function useCancelGlPayment(id: string) {
   return useMutation({
     mutationFn: () => glPaymentService.cancel(id),
     onSuccess: () => invalidate(id),
+  });
+}
+
+export function useSendGlPaymentRemittanceEmail(id: string) {
+  return useMutation({
+    mutationFn: (dto: ShareEmailDto = {}) => glPaymentService.sendRemittanceEmail(id, dto),
   });
 }

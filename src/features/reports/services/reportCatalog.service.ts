@@ -213,6 +213,60 @@ export const reportCatalogService = {
     }
   },
 
+  /**
+   * Load templates across pages for FRESA-style sectioned browse.
+   * Caps at maxPages * limit to avoid runaway requests.
+   */
+  async listTemplatesBrowse(params: {
+    search?: string;
+    family?: string;
+    context?: string;
+    includeInactive?: boolean;
+    rolloutPhase?: number;
+    limit?: number;
+    maxPages?: number;
+  } = {}): Promise<ReportTemplateListResult> {
+    const limit = Math.min(Math.max(params.limit ?? REPORT_TEMPLATES_MAX_LIMIT, 1), REPORT_TEMPLATES_MAX_LIMIT);
+    const maxPages = Math.min(Math.max(params.maxPages ?? 10, 1), 20);
+    const first = await this.listTemplates({
+      ...params,
+      page: 1,
+      limit,
+    });
+    if (first.fromLocalRegistry || first.backendUnavailable) {
+      return first;
+    }
+    const totalPages = Math.min(first.meta.totalPages || 1, maxPages);
+    if (totalPages <= 1) return first;
+
+    const rest = await Promise.all(
+      Array.from({ length: totalPages - 1 }, (_, i) =>
+        this.listTemplates({
+          ...params,
+          page: i + 2,
+          limit,
+        }),
+      ),
+    );
+    const items = [...first.items];
+    for (const page of rest) {
+      for (const t of page.items) {
+        if (!items.some((x) => x.code === t.code || x.id === t.id)) items.push(t);
+      }
+    }
+    return {
+      items,
+      meta: {
+        page: 1,
+        limit: items.length,
+        total: first.meta.total,
+        totalPages: first.meta.totalPages,
+      },
+      fromLocalRegistry: false,
+      backendUnavailable: false,
+    };
+  },
+
   /** GET /reports/templates/:idOrCode */
   async getTemplate(idOrCode: string): Promise<ReportTemplate> {
     const key = idOrCode.trim();

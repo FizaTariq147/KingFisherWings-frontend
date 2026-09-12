@@ -1,7 +1,12 @@
 import { axiosInstance } from '@/lib/axios';
 import type { ApiEnvelope } from '@/lib/apiEnvelope';
 import { isUuid } from '@/lib/isUuid';
-import { withGatewayRetry } from '@/lib/wakeApi';
+import { wakeApi, withGatewayRetry } from '@/lib/wakeApi';
+import {
+  formatShareEmailError,
+  normalizeShareEmailResult,
+  SHARE_EMAIL_TIMEOUT_MS,
+} from '@/features/shared/share-email';
 import { INVOICE_API } from '../api/invoice.api';
 import {
   normalizeInvoice,
@@ -276,17 +281,25 @@ export const invoiceService = {
   async send(id: string, dto: SendInvoiceEmailDto): Promise<Invoice> {
     assertId(id);
     try {
-      const res = await withGatewayRetry(() =>
-        axiosInstance.post<unknown>(INVOICE_API.send(id), {
+      // Wake cold dyno first; PDF + SMTP often needs longer than the default 120s.
+      await wakeApi(45_000);
+      const res = await axiosInstance.post<unknown>(
+        INVOICE_API.send(id),
+        {
           to_email: dto.to_email.trim(),
           ...(dto.message?.trim() ? { message: dto.message.trim().slice(0, 500) } : {}),
-        }),
+        },
+        { timeout: SHARE_EMAIL_TIMEOUT_MS },
       );
+      const share = normalizeShareEmailResult(res.data);
+      if (share.success === false) {
+        throw new Error(share.message || 'Invoice email was not sent.');
+      }
       const invoice = normalizeInvoice(unwrapEntity(res.data));
       if (invoice) return invoice;
       return this.getById(id);
     } catch (error) {
-      throw formatAxiosError(error);
+      throw formatShareEmailError(error, 'Could not send invoice email.');
     }
   },
 

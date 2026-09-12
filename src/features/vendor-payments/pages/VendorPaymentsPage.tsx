@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Download, HandCoins } from 'lucide-react';
+import { Download, HandCoins, Mail } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -15,11 +15,16 @@ import {
   PortalPanel,
   PortalStatCard,
 } from '@/features/portal-auth/components/portal-ui';
+import {
+  formatShareEmailSuccess,
+  ShareEmailModal,
+} from '@/features/shared/share-email';
 import { formatVendorMoney } from '@/features/vendor-shared/formatMoney';
 import { VendorQueryError } from '@/features/vendor-shared/VendorQueryError';
 import { vendorErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import {
   useDownloadVendorRemittance,
+  useSendVendorRemittanceEmail,
   useVendorPayments,
   useVendorPaymentsSummary,
 } from '../hooks/useVendorPayments';
@@ -30,6 +35,8 @@ export default function VendorPaymentsPage() {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [emailMessage, setEmailMessage] = useState<string | null>(null);
+  const [emailPaymentId, setEmailPaymentId] = useState<string | null>(null);
   const params = useMemo(
     () => ({
       page,
@@ -43,6 +50,7 @@ export default function VendorPaymentsPage() {
   const { data, isLoading, isError, error, refetch, isFetching } = useVendorPayments(params);
   const summary = useVendorPaymentsSummary();
   const remittance = useDownloadVendorRemittance();
+  const sendRemittance = useSendVendorRemittanceEmail();
   const items = data?.items ?? [];
   const meta = data?.meta;
 
@@ -52,6 +60,11 @@ export default function VendorPaymentsPage() {
       {pdfError ? (
         <p className="text-sm text-[var(--color-danger-600)]" role="alert">
           {pdfError}
+        </p>
+      ) : null}
+      {emailMessage ? (
+        <p className="text-sm text-emerald-700" role="status">
+          {emailMessage}
         </p>
       ) : null}
       {summary.data ? (
@@ -134,6 +147,19 @@ export default function VendorPaymentsPage() {
                     type="button"
                     size="sm"
                     variant="secondary"
+                    disabled={sendRemittance.isPending}
+                    onClick={() => {
+                      setEmailMessage(null);
+                      setEmailPaymentId(pay.id);
+                    }}
+                  >
+                    <Mail size={14} />
+                    Email
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
                     disabled={remittance.isPending}
                     onClick={() => {
                       setPdfError(null);
@@ -169,6 +195,20 @@ export default function VendorPaymentsPage() {
           </Button>
         </div>
       ) : null}
+
+      <ShareEmailModal
+        open={Boolean(emailPaymentId)}
+        title="Email remittance copy to admin"
+        description="Default admin inbox is the tenant email / finance users when To is left empty."
+        isPending={sendRemittance.isPending}
+        onClose={() => setEmailPaymentId(null)}
+        onSend={async (dto) => {
+          if (!emailPaymentId) return;
+          const result = await sendRemittance.mutateAsync({ id: emailPaymentId, dto });
+          setEmailPaymentId(null);
+          setEmailMessage(formatShareEmailSuccess(result));
+        }}
+      />
     </div>
   );
 }

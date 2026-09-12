@@ -1,13 +1,17 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { AlertCircle, Download, RefreshCw } from 'lucide-react';
+import { AlertCircle, Download, Mail, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { isUuid } from '@/lib/isUuid';
+import {
+  formatShareEmailSuccess,
+  ShareEmailModal,
+} from '@/features/shared/share-email';
 import { AP_AGING_ROUTE } from '../api/arApAging.api';
 import { AgingFilters } from '../components/AgingFilters';
 import { StatementTable } from '../components/StatementTable';
-import { useApStatement } from '../hooks/useArApAging';
+import { useApStatement, useSendApStatementEmail } from '../hooks/useArApAging';
 import { downloadGlStatementPdf } from '../utils/downloadGlStatementPdf';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
@@ -19,6 +23,9 @@ export default function ApStatementPage() {
   const [companyId, setCompanyId] = useState(searchParams.get('company_id') ?? '');
   const [pdfPending, setPdfPending] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [emailMessage, setEmailMessage] = useState<string | null>(null);
+  const sendEmail = useSendApStatementEmail(partyId);
 
   const partyValid = isUuid(partyId);
   const filtersValid = !companyId.trim() || isUuid(companyId.trim());
@@ -118,6 +125,18 @@ export default function ApStatementPage() {
           <Button
             type="button"
             variant="secondary"
+            disabled={!data || isLoading || isError || sendEmail.isPending}
+            onClick={() => {
+              setEmailMessage(null);
+              setEmailOpen(true);
+            }}
+          >
+            <Mail className="h-4 w-4" />
+            Email
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
             onClick={() => refetch()}
             disabled={isFetching || !filtersValid}
           >
@@ -130,6 +149,11 @@ export default function ApStatementPage() {
       {pdfError ? (
         <p className="text-sm text-[var(--color-danger-600)]" role="alert">
           {pdfError}
+        </p>
+      ) : null}
+      {emailMessage ? (
+        <p className="text-sm text-emerald-700" role="status">
+          {emailMessage}
         </p>
       ) : null}
 
@@ -186,6 +210,18 @@ export default function ApStatementPage() {
           </>
         )}
       </Card>
+
+      <ShareEmailModal
+        open={emailOpen}
+        title="Email AP statement"
+        isPending={sendEmail.isPending}
+        onClose={() => setEmailOpen(false)}
+        onSend={async (dto) => {
+          const result = await sendEmail.mutateAsync(dto);
+          setEmailOpen(false);
+          setEmailMessage(formatShareEmailSuccess(result));
+        }}
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { axiosInstance } from '@/lib/axios';
 import type { ApiEnvelope } from '@/lib/apiEnvelope';
 import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
+import { postShareEmail, type ShareEmailDto, type ShareEmailResult } from '@/features/shared/share-email';
 import { GL_PAYMENT_API } from '../api/glPayment.api';
 import {
   normalizeGlPayment,
@@ -283,5 +284,10 @@ export const glPaymentService = {
     } catch (error) {
       throw formatAxiosError(error);
     }
+  },
+
+  async sendRemittanceEmail(id: string, dto: ShareEmailDto = {}): Promise<ShareEmailResult> {
+    assertId(id);
+    return postShareEmail(axiosInstance, GL_PAYMENT_API.remittanceSendEmail(id), dto);
   },
 };

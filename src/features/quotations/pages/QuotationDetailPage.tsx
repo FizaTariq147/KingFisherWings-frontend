@@ -562,7 +562,7 @@ export default function QuotationDetailPage() {
             setEmailOpen(false);
           } catch (err) {
             setActionError(getErrorMessage(err));
-            throw err;
+            // Modal shows the error; do not rethrow.
           }
         }}
       />

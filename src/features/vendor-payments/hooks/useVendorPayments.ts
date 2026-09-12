@@ -53,3 +53,15 @@ export function useDownloadVendorRemittance() {
       vendorPaymentsService.downloadRemittance(id, name || 'remittance.pdf'),
   });
 }
+
+export function useSendVendorRemittanceEmail() {
+  return useMutation({
+    mutationFn: ({
+      id,
+      dto,
+    }: {
+      id: string;
+      dto?: import('@/features/shared/share-email').ShareEmailDto;
+    }) => vendorPaymentsService.sendRemittanceEmail(id, dto),
+  });
+}

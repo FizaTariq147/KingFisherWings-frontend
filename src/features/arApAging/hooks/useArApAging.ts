@@ -1,6 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
+import type { ShareEmailDto } from '@/features/shared/share-email';
 import { arApAgingService } from '../services/arApAging.service';
 import type {
   AgingReportParams,
@@ -87,5 +88,17 @@ export function useApStatement(
     queryKey: arApAgingKeys.apStatement(partyId, params),
     queryFn: () => arApAgingService.getApStatement(partyId, params),
     enabled: Boolean(accessToken) && isUuid(partyId) && enabled,
+  });
+}
+
+export function useSendArStatementEmail(partyId: string) {
+  return useMutation({
+    mutationFn: (dto: ShareEmailDto = {}) => arApAgingService.sendArStatementEmail(partyId, dto),
+  });
+}
+
+export function useSendApStatementEmail(partyId: string) {
+  return useMutation({
+    mutationFn: (dto: ShareEmailDto = {}) => arApAgingService.sendApStatementEmail(partyId, dto),
   });
 }

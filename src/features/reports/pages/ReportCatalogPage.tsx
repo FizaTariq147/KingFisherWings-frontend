@@ -1,6 +1,6 @@
 import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Search, Star } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PageBackLink } from '@/components/ui/PageBackLink';
@@ -17,26 +17,27 @@ import { buildReportGapMatrix, filterRegistry } from '../data/fresaReportRegistr
 import {
   useImportReportTemplates,
   useReportTemplate,
-  useReportTemplates,
+  useReportTemplatesBrowse,
 } from '../hooks/useReportCatalog';
 import { useReportFavorites } from '../hooks/useReportFavorites';
 import type { ReportFamily, ReportTemplate } from '../types/reportCatalog.types';
 import { reportContextLabel, reportFamilyLabel } from '../types/reportCatalog.types';
 import { metaToTemplate } from '../utils/normalizeReportCatalog';
+import { ReportCatalogBrowseList } from '../components/ReportCatalog/ReportCatalogBrowseList';
 import { ReportGeneratePanel } from '../components/ReportCatalog/ReportGeneratePanel';
 
 const CATALOG_STATE_KEY = 'kfg-report-catalog-url';
 
 /**
- * Dynamic report catalog: layouts live on the backend.
- * Filters / selected template / pack are kept in the URL (+ session restore)
- * so Back / re-open does not force starting over.
+ * FRESA-aligned sample report formats catalog.
+ * Live list is API-driven (sectioned by family). Layouts/PDF rendering live on the
+ * backend via Puppeteer packs — FE never hardcodes per-report Jasper UIs.
  */
 export default function ReportCatalogPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const browseFresa = searchParams.get('browse') === 'fresa';
   const favoritesOnly = searchParams.get('favorites') === '1';
-  const includeInactive = searchParams.get('inactive') === '1';
+  const includeInactive = searchParams.get('inactive') !== '0';
   const contextFilter = searchParams.get('context') || 'all';
   const jobId = searchParams.get('job_id') || undefined;
   const quotationId = searchParams.get('quotation_id') || undefined;
@@ -45,7 +46,6 @@ export default function ReportCatalogPage() {
   const selectedCode = (searchParams.get('code') || '').trim();
   const selectedPack = (searchParams.get('pack') || '').trim();
   const family = ((searchParams.get('family') as ReportFamily) || 'all') as ReportFamily | 'all';
-  const page = Math.max(1, Number(searchParams.get('page') || 1) || 1);
 
   const [searchInput, setSearchInput] = useState(searchParams.get('q') || '');
   const deferredSearch = useDeferredValue(searchInput.trim());
@@ -71,7 +71,8 @@ export default function ReportCatalogPage() {
         value === '' ||
         (key === 'page' && value === '1') ||
         (key === 'family' && value === 'all') ||
-        (key === 'context' && value === 'all')
+        (key === 'context' && value === 'all') ||
+        (key === 'inactive' && value === '1')
       ) {
         next.delete(key);
       } else {
@@ -81,7 +82,6 @@ export default function ReportCatalogPage() {
     setSearchParams(next, { replace });
   };
 
-  // Restore last catalog URL when re-opening without state (e.g. Back to Reports → Catalog).
   useEffect(() => {
     if (restoredOnce) return;
     setRestoredOnce(true);
@@ -90,13 +90,14 @@ export default function ReportCatalogPage() {
       Boolean(searchParams.get('q')) ||
       Boolean(searchParams.get('page')) ||
       Boolean(searchParams.get('pack')) ||
-      Boolean(searchParams.get('inactive')) ||
+      searchParams.has('inactive') ||
       Boolean(searchParams.get('family')) ||
       Boolean(searchParams.get('favorites')) ||
       Boolean(searchParams.get('browse'));
     if (hasBrowseState) return;
     try {
-      const saved = sessionStorage.getItem(CATALOG_STATE_KEY);
+      const saved =
+        localStorage.getItem(CATALOG_STATE_KEY) || sessionStorage.getItem(CATALOG_STATE_KEY);
       if (!saved) return;
       const restored = new URLSearchParams(saved);
       for (const key of ['job_id', 'quotation_id', 'invoice_id', 'party_id', 'context'] as const) {
@@ -110,50 +111,43 @@ export default function ReportCatalogPage() {
     }
   }, [restoredOnce, searchParams, setSearchParams]);
 
-  // Persist catalog query for next visit.
   useEffect(() => {
     try {
-      sessionStorage.setItem(CATALOG_STATE_KEY, searchParams.toString());
+      const serialized = searchParams.toString();
+      localStorage.setItem(CATALOG_STATE_KEY, serialized);
+      sessionStorage.setItem(CATALOG_STATE_KEY, serialized);
     } catch {
       /* ignore */
     }
   }, [searchParams]);
 
-  // Keep search input in sync when URL changes (restore / back).
   useEffect(() => {
     setSearchInput(searchParams.get('q') || '');
   }, [searchParams]);
 
-  // Debounced search → URL
   useEffect(() => {
     const current = searchParams.get('q') || '';
     if (deferredSearch === current) return;
     patchParams({ q: deferredSearch || null, page: '1' });
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only when deferred search changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deferredSearch]);
 
-  const liveQuery = useReportTemplates(
-    {
-      page,
-      limit: 40,
+  const browseParams = useMemo(
+    () => ({
       search: deferredSearch || undefined,
       family,
       context: contextFilter,
       includeInactive,
       rolloutPhase,
-    },
-    !browseFresa,
+    }),
+    [deferredSearch, family, contextFilter, includeInactive, rolloutPhase],
   );
 
+  const liveBrowse = useReportTemplatesBrowse(browseParams, !browseFresa);
   const selectedDetail = useReportTemplate(selectedCode, Boolean(selectedCode) && !browseFresa);
 
   const discoveryItems = useMemo(() => {
-    if (!browseFresa) {
-      return {
-        items: [] as ReportTemplate[],
-        meta: { page: 1, limit: 40, total: 0, totalPages: 1 },
-      };
-    }
+    if (!browseFresa) return [] as ReportTemplate[];
     const filtered = filterRegistry({
       search: deferredSearch || undefined,
       family,
@@ -163,50 +157,52 @@ export default function ReportCatalogPage() {
     const favFiltered = favoritesOnly
       ? filtered.filter((t) => isFavorite(t.code))
       : filtered;
-    const limit = 40;
-    const start = (page - 1) * limit;
-    return {
-      items: favFiltered.slice(start, start + limit).map((meta, i) => metaToTemplate(meta, start + i)),
-      meta: {
-        page,
-        limit,
-        total: favFiltered.length,
-        totalPages: Math.max(1, Math.ceil(favFiltered.length / limit)),
-      },
-    };
+    return favFiltered.map((meta, i) => metaToTemplate(meta, i));
   }, [
     browseFresa,
     deferredSearch,
     family,
     contextFilter,
     rolloutPhase,
-    page,
     favoritesOnly,
     isFavorite,
   ]);
 
   const gapMatrix = useMemo(() => buildReportGapMatrix(), []);
 
-  const items = browseFresa ? discoveryItems.items : (liveQuery.data?.items ?? []);
-  const meta = browseFresa ? discoveryItems.meta : liveQuery.data?.meta;
-  const listLoading = browseFresa ? false : liveQuery.isLoading;
-  const backendUnavailable = liveQuery.data?.backendUnavailable;
-  const fromLocalRegistry = liveQuery.data?.fromLocalRegistry;
+  const liveItems = liveBrowse.data?.items ?? [];
+  const items = browseFresa ? discoveryItems : liveItems;
+  const metaTotal = browseFresa ? discoveryItems.length : liveBrowse.data?.meta.total;
+  const listLoading = browseFresa ? false : liveBrowse.isLoading;
+  const backendUnavailable = liveBrowse.data?.backendUnavailable;
+  const fromLocalRegistry = liveBrowse.data?.fromLocalRegistry;
   const liveConnected = Boolean(
-    !browseFresa && liveQuery.data && !backendUnavailable && !fromLocalRegistry,
+    !browseFresa && liveBrowse.data && !backendUnavailable && !fromLocalRegistry,
   );
 
   const familyOptions = useMemo(() => {
     const fromApi = new Set<string>();
-    for (const t of liveQuery.data?.items ?? []) fromApi.add(t.family);
+    for (const t of items) fromApi.add(t.family);
     const base = fromApi.size > 0 ? [...fromApi].sort() : [...REPORT_TEMPLATE_FAMILY_ENUM];
     return ['all', ...base];
-  }, [liveQuery.data?.items]);
+  }, [items]);
 
   const displayedItems = useMemo(() => {
     if (browseFresa || !favoritesOnly) return items;
     return items.filter((t) => isFavorite(t.code));
   }, [browseFresa, favoritesOnly, items, isFavorite]);
+
+  const packReadyCount = useMemo(
+    () =>
+      displayedItems.filter(
+        (t) =>
+          t.is_active &&
+          t.renderer_key &&
+          !/^pending($|[_.-])/i.test(t.renderer_key) &&
+          t.renderer_key.toLowerCase() !== 'pending',
+      ).length,
+    [displayedItems],
+  );
 
   const selected = useMemo(() => {
     if (!selectedCode) return null;
@@ -264,7 +260,7 @@ export default function ReportCatalogPage() {
       );
       patchParams({
         browse: null,
-        inactive: '1',
+        inactive: null,
         page: '1',
         code: null,
         pack: null,
@@ -280,11 +276,15 @@ export default function ReportCatalogPage() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
-            Report catalog
+            Sample report formats
           </h2>
-          <p className="mt-0.5 text-sm text-[var(--color-neutral-500)]">
-            Live backend templates ({meta?.total ?? '…'}). Selection and filters are kept when you
-            leave and come back.
+          <p className="mt-0.5 max-w-2xl text-sm text-[var(--color-neutral-500)]">
+            FRESA-aligned catalog of essential shipping and finance report formats. Names and
+            parameter schemas come from the live API; PDF layout is rendered by backend Puppeteer
+            packs (bind a pack, Activate, then Generate). Showing {metaTotal ?? '…'} template
+            {metaTotal === 1 ? '' : 's'}
+            {includeInactive ? ' (including inactive)' : ' (active only)'}
+            {!browseFresa && liveConnected ? ` · ${packReadyCount} pack-ready` : ''}.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -300,14 +300,14 @@ export default function ReportCatalogPage() {
             variant={browseFresa ? 'primary' : 'secondary'}
             onClick={() => setBrowse('fresa')}
           >
-            All FRESA samples
+            Local taxonomy
           </Button>
           <Button
             type="button"
             variant="secondary"
             disabled={
               importRegistry.isPending ||
-              Boolean(backendUnavailable && !browseFresa && liveQuery.isError)
+              Boolean(backendUnavailable && !browseFresa && liveBrowse.isError)
             }
             onClick={() => void onImportRegistry()}
           >
@@ -334,7 +334,7 @@ export default function ReportCatalogPage() {
               variant={includeInactive ? 'primary' : 'secondary'}
               onClick={() => {
                 patchParams({
-                  inactive: includeInactive ? null : '1',
+                  inactive: includeInactive ? '0' : null,
                   page: '1',
                 });
               }}
@@ -383,13 +383,13 @@ export default function ReportCatalogPage() {
         </Link>
       </div>
 
-      {!browseFresa && liveQuery.isError ? (
+      {!browseFresa && liveBrowse.isError ? (
         <div
           role="alert"
           className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
         >
-          {liveQuery.error instanceof Error
-            ? liveQuery.error.message
+          {liveBrowse.error instanceof Error
+            ? liveBrowse.error.message
             : 'Could not load report templates.'}
         </div>
       ) : null}
@@ -416,8 +416,17 @@ export default function ReportCatalogPage() {
           role="status"
           className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900"
         >
-          Connected to Reports — Catalog. Bind a Puppeteer pack from the dropdown, then Activate /
-          Generate. Your filters and selection are restored when you return.
+          Connected to Reports — Catalog. Select a format, bind a Puppeteer pack if needed, Activate,
+          then Generate (PDF opens in a ready popup — no page redirect).
+          {!includeInactive ? (
+            <>
+              {' '}
+              Viewing <strong>active only</strong>. Turn on <strong>Include inactive</strong> for
+              the full imported registry.
+            </>
+          ) : (
+            <> Imported templates stay inactive until a pack is bound and activated.</>
+          )}
         </div>
       ) : null}
 
@@ -426,8 +435,8 @@ export default function ReportCatalogPage() {
           role="status"
           className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-950"
         >
-          FRESA discovery — local taxonomy for browse. Prefer Import registry, then bind packs on
-          Live API.
+          Local FRESA taxonomy for discovery only. Prefer <strong>Import registry</strong>, then
+          browse Live API.
         </div>
       ) : null}
 
@@ -439,7 +448,7 @@ export default function ReportCatalogPage() {
           Report catalog API unreachable — local taxonomy only. Restore{' '}
           <span className="font-mono">GET /reports/templates</span> or browse{' '}
           <button type="button" className="underline" onClick={() => setBrowse('fresa')}>
-            All FRESA samples
+            Local taxonomy
           </button>
           .
         </div>
@@ -543,88 +552,29 @@ export default function ReportCatalogPage() {
         </p>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(320px,0.9fr)]">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.9fr)]">
         <div className="overflow-hidden rounded-xl border border-[var(--color-neutral-200)] bg-white">
-          {listLoading ? (
-            <p className="px-4 py-8 text-center text-sm text-[var(--color-neutral-400)]">
-              Loading catalog…
+          <ReportCatalogBrowseList
+            items={displayedItems}
+            selectedCode={selectedCode}
+            isFavorite={isFavorite}
+            onToggleFavorite={toggleFavorite}
+            onSelect={selectTemplate}
+            loading={listLoading}
+            emptyHint={
+              !browseFresa
+                ? 'No templates match. Try Include inactive or Import registry.'
+                : 'No local taxonomy rows match these filters.'
+            }
+          />
+          {!browseFresa &&
+          liveBrowse.data &&
+          liveBrowse.data.meta.totalPages > 10 &&
+          displayedItems.length < liveBrowse.data.meta.total ? (
+            <p className="border-t border-[var(--color-neutral-100)] px-4 py-2 text-[11px] text-[var(--color-neutral-500)]">
+              Showing {displayedItems.length} of {liveBrowse.data.meta.total} (browse capped for
+              performance). Narrow family/search to load the rest.
             </p>
-          ) : displayedItems.length === 0 ? (
-            <p className="px-4 py-8 text-center text-sm text-[var(--color-neutral-400)]">
-              No templates match these filters.
-              {!browseFresa ? ' Try Include inactive or Import registry.' : null}
-            </p>
-          ) : (
-            <ul className="divide-y divide-[var(--color-neutral-100)]">
-              {displayedItems.map((t) => {
-                const rowActive = selectedCode === t.code;
-                const fav = isFavorite(t.code);
-                return (
-                  <li key={`${t.id}-${t.code}`} className="flex items-stretch">
-                    <button
-                      type="button"
-                      className="shrink-0 px-3 text-[var(--color-neutral-400)] hover:text-amber-500"
-                      aria-label={fav ? 'Remove favorite' : 'Add favorite'}
-                      onClick={() => toggleFavorite(t.code)}
-                    >
-                      <Star
-                        className="h-4 w-4"
-                        fill={fav ? 'currentColor' : 'none'}
-                        strokeWidth={1.75}
-                      />
-                    </button>
-                    <button
-                      type="button"
-                      className={[
-                        'flex min-w-0 flex-1 flex-col gap-1 px-2 py-3 pr-4 text-left transition-colors',
-                        rowActive
-                          ? 'bg-[var(--color-primary-50,#eff6ff)]'
-                          : 'hover:bg-[var(--color-neutral-50)]',
-                      ].join(' ')}
-                      onClick={() => selectTemplate(t)}
-                    >
-                      <span className="flex items-center gap-2 text-sm font-medium text-[var(--color-neutral-900)]">
-                        {t.name}
-                        {!t.is_active ? (
-                          <span className="rounded bg-[var(--color-neutral-100)] px-1.5 py-0.5 text-[10px] font-normal text-[var(--color-neutral-500)]">
-                            inactive
-                          </span>
-                        ) : null}
-                      </span>
-                      <span className="font-mono text-[11px] text-[var(--color-neutral-400)]">
-                        {t.code}
-                      </span>
-                      <span className="text-[11px] text-[var(--color-neutral-500)]">
-                        {reportFamilyLabel(t.family)} · {t.formats.join(', ')}
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-          {meta && meta.totalPages > 1 ? (
-            <div className="flex items-center justify-between border-t border-[var(--color-neutral-100)] px-4 py-2 text-xs">
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={page <= 1}
-                onClick={() => patchParams({ page: String(Math.max(1, page - 1)) })}
-              >
-                Previous
-              </Button>
-              <span>
-                Page {meta.page} / {meta.totalPages}
-              </span>
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={page >= meta.totalPages}
-                onClick={() => patchParams({ page: String(page + 1) })}
-              >
-                Next
-              </Button>
-            </div>
           ) : null}
         </div>
 
@@ -654,7 +604,8 @@ export default function ReportCatalogPage() {
             </p>
           ) : (
             <p className="py-10 text-center text-sm text-[var(--color-neutral-400)]">
-              Select a report template to load its dynamic parameter schema and generate.
+              Select a sample format to load its parameter schema, bind a Puppeteer pack if needed,
+              and generate.
             </p>
           )}
         </div>

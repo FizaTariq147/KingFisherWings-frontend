@@ -22,10 +22,15 @@ import { usePartyConfirmState } from '../hooks/usePartyConfirmState';
 import {
   useDeleteParty,
   useParty,
+  useSendPartyCreditSummaryEmail,
   useSetPartyActive,
   useUpdatePartyCreditStatus,
 } from '../hooks/useParties';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import {
+  formatShareEmailSuccess,
+  ShareEmailModal,
+} from '@/features/shared/share-email';
 
 export default function PartyDetailPage() {
   const { id = '' } = useParams();
@@ -34,9 +39,12 @@ export default function PartyDetailPage() {
   const deleteParty = useDeleteParty();
   const setActive = useSetPartyActive();
   const updateCredit = useUpdatePartyCreditStatus();
+  const sendCreditSummary = useSendPartyCreditSummaryEmail(id);
   const { confirm, requestConfirm, closeConfirm } = usePartyConfirmState();
   const [actionError, setActionError] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
 
   if (!isUuid(id)) {
     return <Card className="p-6 text-sm text-[var(--color-danger-700)]">Invalid party id.</Card>;
@@ -91,6 +99,14 @@ export default function PartyDetailPage() {
           {actionError}
         </div>
       )}
+      {actionMessage ? (
+        <div
+          role="status"
+          className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900"
+        >
+          {actionMessage}
+        </div>
+      ) : null}
 
       <DetailPageTemplate
         title={party.name}
@@ -104,6 +120,14 @@ export default function PartyDetailPage() {
           {
             label: 'Transaction summary',
             onClick: () => navigate(`/parties/${id}/transaction-summary`),
+            variant: 'secondary',
+          },
+          {
+            label: 'Email credit summary',
+            onClick: () => {
+              setActionMessage(null);
+              setEmailOpen(true);
+            },
             variant: 'secondary',
           },
           {
@@ -220,6 +244,19 @@ export default function PartyDetailPage() {
           }}
         />
       )}
+
+      <ShareEmailModal
+        open={emailOpen}
+        title="Email credit summary"
+        defaultTo={party.email || ''}
+        isPending={sendCreditSummary.isPending}
+        onClose={() => setEmailOpen(false)}
+        onSend={async (dto) => {
+          const result = await sendCreditSummary.mutateAsync(dto);
+          setEmailOpen(false);
+          setActionMessage(formatShareEmailSuccess(result));
+        }}
+      />
     </div>
   );
 }

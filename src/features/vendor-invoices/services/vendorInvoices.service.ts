@@ -13,6 +13,7 @@ import { downloadVendorBlob, resolveVendorDownloadUrl } from '@/features/vendor-
 import { safeDownloadFilename } from '@/features/vendor-shared/normalize';
 import { postVendorWithOptionalFile } from '@/features/vendor-shared/vendorMultipart';
 import { vendorInvoicePdfErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
+import { postShareEmail, type ShareEmailDto, type ShareEmailResult } from '@/features/shared/share-email';
 import { VENDOR_INVOICES_API } from '../api/vendorInvoices.api';
 import type {
   VendorInvoiceDetail,
@@ -183,5 +184,21 @@ export const vendorInvoicesService = {
     if (detail) return detail;
     const item = normalizeInvoiceListItem(res.data);
     return item ? { ...item, lines: [] } : null;
+  },
+
+  async sendEmail(id: string, dto: ShareEmailDto = {}): Promise<ShareEmailResult> {
+    return postShareEmail(vendorApiClient, VENDOR_INVOICES_API.sendEmail(id), dto);
+  },
+
+  async sendPaymentProofEmail(
+    invoiceId: string,
+    proofId: string,
+    dto: ShareEmailDto = {},
+  ): Promise<ShareEmailResult> {
+    return postShareEmail(
+      vendorApiClient,
+      VENDOR_INVOICES_API.paymentProofSendEmail(invoiceId, proofId),
+      dto,
+    );
   },
 };

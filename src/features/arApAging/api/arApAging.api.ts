@@ -12,4 +12,6 @@ export const AR_AP_AGING_API = {
   apOpenItems: '/gl/ap/open-items',
   arStatement: (partyId: string) => `/gl/ar/statement/${partyId}`,
   apStatement: (partyId: string) => `/gl/ap/statement/${partyId}`,
+  arStatementSendEmail: (partyId: string) => `/gl/ar/statement/${partyId}/send-email`,
+  apStatementSendEmail: (partyId: string) => `/gl/ap/statement/${partyId}/send-email`,
 } as const;

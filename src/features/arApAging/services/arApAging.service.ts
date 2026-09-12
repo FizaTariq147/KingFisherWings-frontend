@@ -2,6 +2,7 @@ import { axiosInstance } from '@/lib/axios';
 import type { ApiEnvelope } from '@/lib/apiEnvelope';
 import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
+import { postShareEmail, type ShareEmailDto, type ShareEmailResult } from '@/features/shared/share-email';
 import { AR_AP_AGING_API } from '../api/arApAging.api';
 import {
   normalizeAgingReport,
@@ -145,5 +146,21 @@ export const arApAgingService = {
     } catch (error) {
       throw formatAxiosError(error);
     }
+  },
+
+  async sendArStatementEmail(
+    partyId: string,
+    dto: ShareEmailDto = {},
+  ): Promise<ShareEmailResult> {
+    assertPartyId(partyId);
+    return postShareEmail(axiosInstance, AR_AP_AGING_API.arStatementSendEmail(partyId), dto);
+  },
+
+  async sendApStatementEmail(
+    partyId: string,
+    dto: ShareEmailDto = {},
+  ): Promise<ShareEmailResult> {
+    assertPartyId(partyId);
+    return postShareEmail(axiosInstance, AR_AP_AGING_API.apStatementSendEmail(partyId), dto);
   },
 };

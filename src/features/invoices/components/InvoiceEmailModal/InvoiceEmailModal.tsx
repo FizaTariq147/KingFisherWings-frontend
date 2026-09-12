@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/Button';
@@ -23,6 +23,7 @@ export function InvoiceEmailModal({
   onClose,
   onSend,
 }: InvoiceEmailModalProps) {
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const {
     register,
     handleValidatedSubmit,
@@ -37,6 +38,7 @@ export function InvoiceEmailModal({
 
   useEffect(() => {
     if (!open) return;
+    setSubmitError(null);
     reset({ to_email: defaultTo, message: '' });
   }, [open, defaultTo, reset]);
 
@@ -45,17 +47,30 @@ export function InvoiceEmailModal({
       <form
         className="space-y-3"
         onSubmit={handleValidatedSubmit(async (values) => {
+          setSubmitError(null);
           try {
             await onSend({
-              to_email: values.to_email,
-              message: values.message || undefined,
+              to_email: values.to_email.trim(),
+              message: values.message?.trim() || undefined,
             });
           } catch (err) {
-            applyApiErrors(err);
-            throw err;
+            const banner = applyApiErrors(err);
+            setSubmitError(
+              banner || (err instanceof Error ? err.message : 'Could not send invoice email.'),
+            );
+            // Do not rethrow — keeps the alert in the modal and avoids Uncaught (in promise).
           }
         })}
       >
+        {submitError ? (
+          <p
+            role="alert"
+            className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
+          >
+            {submitError}
+          </p>
+        ) : null}
+
         <Input
           label="To email *"
           type="email"
@@ -75,7 +90,7 @@ export function InvoiceEmailModal({
             Cancel
           </Button>
           <Button type="submit" disabled={isPending}>
-            {isPending ? 'Sending…' : 'Send email'}
+            {isPending ? 'Sending… (PDF + email can take a few minutes)' : 'Send email'}
           </Button>
         </div>
       </form>

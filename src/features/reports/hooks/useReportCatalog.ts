@@ -37,6 +37,27 @@ export function useReportTemplates(
   });
 }
 
+/** Multi-page live browse for FRESA-style sectioned catalog (not single-page only). */
+export function useReportTemplatesBrowse(
+  params: {
+    search?: string;
+    family?: string;
+    context?: string;
+    includeInactive?: boolean;
+    rolloutPhase?: number;
+  } = {},
+  enabled = true,
+) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: [...reportCatalogKeys.all, 'browse', params] as const,
+    queryFn: () => reportCatalogService.listTemplatesBrowse(params),
+    enabled: Boolean(accessToken) && enabled,
+    staleTime: 30_000,
+    retry: 1,
+  });
+}
+
 export function useReportTemplate(idOrCode: string, enabled = true) {
   const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({

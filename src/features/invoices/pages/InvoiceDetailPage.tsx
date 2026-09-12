@@ -24,6 +24,7 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 import { invoiceToPdfModel } from '../utils/invoiceToPdfModel';
 import { loadInvoiceJobForPdf } from '../utils/loadInvoiceJobForPdf';
 import { invoiceDisplayNumber } from '../utils/normalizeInvoice';
+import { buildInvoiceFresaCatalogPath } from '@/features/reports/constants/fresaPdfParity.constants';
 
 function Field({ label, value }: { label: string; value?: string | number | null }) {
   return (
@@ -200,9 +201,16 @@ export default function InvoiceDetailPage() {
       variant: 'secondary' as const,
     },
     {
-      label: 'Reports',
+      label: 'FRESA formats',
+      onClick: () => navigate(buildInvoiceFresaCatalogPath(id)),
+      variant: 'secondary' as const,
+    },
+    {
+      label: 'Reports catalog',
       onClick: () =>
-        navigate(`/reports/catalog?context=invoice&invoice_id=${encodeURIComponent(id)}`),
+        navigate(
+          `/reports/catalog?context=invoice&invoice_id=${encodeURIComponent(id)}&family=commercial`,
+        ),
       variant: 'secondary' as const,
     },
     ...(canCancel
@@ -373,12 +381,24 @@ export default function InvoiceDetailPage() {
       <InvoiceEmailModal
         open={emailOpen}
         isPending={actions.send.isPending}
+        defaultTo={party?.email || ''}
         onClose={() => setEmailOpen(false)}
         onSend={async (dto) => {
-          await actions.send.mutateAsync(dto);
-          setEmailOpen(false);
-          setActionMessage('Invoice emailed.');
-          refetch();
+          try {
+            await actions.send.mutateAsync(dto);
+            setEmailOpen(false);
+            setActionError(null);
+            setActionMessage(
+              'Invoice emailed (PDF attached when SMTP succeeds). Check inbox and Spam.',
+            );
+            refetch();
+          } catch (err) {
+            // Modal shows the error; keep page error banner in sync for SMTP/503.
+            setActionMessage(null);
+            setActionError(
+              err instanceof Error ? err.message : 'Could not send invoice email.',
+            );
+          }
         }}
       />
 

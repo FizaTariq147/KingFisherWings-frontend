@@ -47,3 +47,15 @@ export function useCreateVendorDispute() {
     },
   });
 }
+
+export function useSendVendorDisputeEmail() {
+  return useMutation({
+    mutationFn: ({
+      id,
+      dto,
+    }: {
+      id: string;
+      dto?: import('@/features/shared/share-email').ShareEmailDto;
+    }) => vendorDisputesService.sendEmail(id, dto),
+  });
+}
