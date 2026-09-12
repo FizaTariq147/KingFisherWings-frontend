@@ -34,6 +34,8 @@ export const PARTY_API = {
   /** Customer transaction summary (may 404 until backend ships). */
   transactionSummary: (id: string) => `/parties/${id}/transaction-summary`,
   sendTransactionSummary: (id: string) => `/parties/${id}/transaction-summary/send`,
+  /** Credit summary email (Part 7 share). */
+  creditSummarySendEmail: (id: string) => `/parties/${id}/credit/summary/send-email`,
 } as const;
 
 export const PARTY_PORTAL_DOCUMENT_TYPES = [

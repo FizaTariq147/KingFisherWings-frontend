@@ -12,6 +12,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table';
+import {
+  formatShareEmailSuccess,
+  ShareEmailModal,
+} from '@/features/shared/share-email';
 import { GL_PAYMENT_ROUTE_PREFIX } from '../api/glPayment.api';
 import { GlPaymentStatusBadge } from '../components/GlPaymentStatusBadge';
 import { PaymentAllocationForm } from '../components/PaymentAllocationForm';
@@ -27,6 +31,7 @@ import {
   useGlPayment,
   usePostGlPayment,
   useRemovePaymentAllocation,
+  useSendGlPaymentRemittanceEmail,
 } from '../hooks/useGlPayments';
 import { glPaymentDisplayNumber } from '../utils/normalizeGlPayment';
 import { getErrorMessage } from '../utils/getErrorMessage';
@@ -49,10 +54,12 @@ export default function GlPaymentDetailPage() {
   const post = usePostGlPayment(id);
   const cancel = useCancelGlPayment(id);
   const remove = useDeleteGlPayment();
+  const sendRemittance = useSendGlPaymentRemittanceEmail(id);
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [showAllocate, setShowAllocate] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -127,6 +134,11 @@ export default function GlPaymentDetailPage() {
       : []),
     ...(isPosted
       ? [
+          {
+            label: 'Email remittance',
+            onClick: () => setEmailOpen(true),
+            variant: 'secondary' as const,
+          },
           {
             label: 'Cancel',
             onClick: () => {
@@ -325,6 +337,19 @@ export default function GlPaymentDetailPage() {
             ),
           },
         ]}
+      />
+
+      <ShareEmailModal
+        open={emailOpen}
+        title="Email remittance advice"
+        description="Leave To empty to use the party / portal emails configured on the server."
+        isPending={sendRemittance.isPending}
+        onClose={() => setEmailOpen(false)}
+        onSend={async (dto) => {
+          const result = await sendRemittance.mutateAsync(dto);
+          setEmailOpen(false);
+          setActionMessage(formatShareEmailSuccess(result));
+        }}
       />
     </>
   );

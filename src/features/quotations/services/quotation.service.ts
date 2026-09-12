@@ -2,7 +2,12 @@ import { axiosInstance } from '@/lib/axios';
 import type { ApiEnvelope } from '@/lib/apiEnvelope';
 import { isUuid } from '@/lib/isUuid';
 import { resolveSessionCompanyIdAsync } from '@/lib/resolveSessionCompanyId';
-import { withGatewayRetry } from '@/lib/wakeApi';
+import { wakeApi, withGatewayRetry } from '@/lib/wakeApi';
+import {
+  formatShareEmailError,
+  normalizeShareEmailResult,
+  SHARE_EMAIL_TIMEOUT_MS,
+} from '@/features/shared/share-email';
 import { ensureJobNumberFormatReady } from '@/features/organization/utils/ensureJobNumberFormat';
 import { normalizeJob } from '@/features/jobs/utils/normalizeJob';
 import { quotationToCreateJobDto } from '../utils/createJobFromQuotation';
@@ -852,12 +857,25 @@ export const quotationService = {
   async sendEmail(id: string, dto: SendQuotationEmailDto): Promise<unknown> {
     assertId(id);
     try {
-      const res = await withGatewayRetry(() =>
-        axiosInstance.post<unknown>(QUOTATION_API.sendEmail(id), dto),
-      );
-      return unwrapEntity(res.data);
+      const body: Record<string, string> = {
+        to_email: dto.to_email.trim(),
+      };
+      const cc = dto.cc_email?.trim();
+      if (cc) body.cc_email = cc;
+      if (dto.pdf_mode === 'CUSTOMER' || dto.pdf_mode === 'INTERNAL') {
+        body.pdf_mode = dto.pdf_mode;
+      }
+      const message = dto.message?.trim();
+      if (message) body.message = message.slice(0, 500);
+
+      // Wake cold dyno; PDF generate + SMTP often exceeds the default 120s client timeout.
+      await wakeApi(45_000);
+      const res = await axiosInstance.post<unknown>(QUOTATION_API.sendEmail(id), body, {
+        timeout: SHARE_EMAIL_TIMEOUT_MS,
+      });
+      return unwrapEntity(res.data) ?? normalizeShareEmailResult(res.data);
     } catch (error) {
-      throw formatAxiosError(error);
+      throw formatShareEmailError(error, 'Could not send quotation email.');
     }
   },
 

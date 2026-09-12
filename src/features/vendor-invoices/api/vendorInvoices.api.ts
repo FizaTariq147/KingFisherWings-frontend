@@ -6,7 +6,10 @@ export const VENDOR_INVOICES_API = {
   submit: '/vendor/invoices/submit',
   detail: (id: string) => `/vendor/invoices/${encodeURIComponent(id)}`,
   pdf: (id: string) => `/vendor/invoices/${encodeURIComponent(id)}/pdf`,
+  sendEmail: (id: string) => `/vendor/invoices/${encodeURIComponent(id)}/send-email`,
   paymentProofs: (id: string) => `/vendor/invoices/${encodeURIComponent(id)}/payment-proofs`,
+  paymentProofSendEmail: (id: string, proofId: string) =>
+    `/vendor/invoices/${encodeURIComponent(id)}/payment-proofs/${encodeURIComponent(proofId)}/send-email`,
 } as const;
 
 export const VENDOR_INVOICE_STATUSES = [

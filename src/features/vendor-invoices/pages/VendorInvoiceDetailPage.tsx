@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Download } from 'lucide-react';
+import { ArrowLeft, Download, Mail } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import {
@@ -13,11 +13,31 @@ import {
   PortalPanel,
   PortalStatCard,
 } from '@/features/portal-auth/components/portal-ui';
+import {
+  formatShareEmailSuccess,
+  ShareEmailModal,
+  type ShareEmailDto,
+} from '@/features/shared/share-email';
 import { formatVendorMoney } from '@/features/vendor-shared/formatMoney';
 import { VendorQueryError } from '@/features/vendor-shared/VendorQueryError';
 import { vendorInvoicePdfErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
-import { useDownloadVendorInvoicePdf, useVendorInvoice, useVendorInvoicePaymentProofs, useUploadVendorInvoicePaymentProof } from '../hooks/useVendorInvoices';
-import { PaymentProofList, PaymentProofUploadForm } from '@/features/payment-proofs/components/PaymentProofPanels';
+import {
+  useDownloadVendorInvoicePdf,
+  useSendVendorInvoiceEmail,
+  useSendVendorPaymentProofEmail,
+  useUploadVendorInvoicePaymentProof,
+  useVendorInvoice,
+  useVendorInvoicePaymentProofs,
+} from '../hooks/useVendorInvoices';
+import {
+  PaymentProofList,
+  PaymentProofUploadForm,
+} from '@/features/payment-proofs/components/PaymentProofPanels';
+import type { PaymentProof } from '@/features/payment-proofs/types/paymentProof.types';
+
+type ShareTarget =
+  | { kind: 'invoice' }
+  | { kind: 'proof'; proof: PaymentProof };
 
 export default function VendorInvoiceDetailPage() {
   const { id = '' } = useParams();
@@ -26,7 +46,11 @@ export default function VendorInvoiceDetailPage() {
   const download = useDownloadVendorInvoicePdf();
   const { data: proofs = [] } = useVendorInvoicePaymentProofs(id);
   const uploadProof = useUploadVendorInvoicePaymentProof(id);
+  const sendInvoiceEmail = useSendVendorInvoiceEmail();
+  const sendProofEmail = useSendVendorPaymentProofEmail();
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [emailMessage, setEmailMessage] = useState<string | null>(null);
+  const [shareTarget, setShareTarget] = useState<ShareTarget | null>(null);
 
   if (isLoading) return <PortalLoadingState label="Loading invoice…" />;
   if (isError || !data) {
@@ -40,6 +64,22 @@ export default function VendorInvoiceDetailPage() {
     );
   }
 
+  const emailPending = sendInvoiceEmail.isPending || sendProofEmail.isPending;
+
+  const onShare = async (dto: ShareEmailDto) => {
+    if (!shareTarget) return;
+    const result =
+      shareTarget.kind === 'invoice'
+        ? await sendInvoiceEmail.mutateAsync({ id: data.id, dto })
+        : await sendProofEmail.mutateAsync({
+            invoiceId: data.id,
+            proofId: shareTarget.proof.id,
+            dto,
+          });
+    setShareTarget(null);
+    setEmailMessage(formatShareEmailSuccess(result));
+  };
+
   return (
     <div className="space-y-5">
       <Link
@@ -50,7 +90,11 @@ export default function VendorInvoiceDetailPage() {
       </Link>
       <PortalPageHeader
         title={data.number}
-        description={[data.invoiceDate, data.dueDate ? `Due ${data.dueDate}` : null].filter(Boolean).join(' · ') || 'Invoice detail'}
+        description={
+          [data.invoiceDate, data.dueDate ? `Due ${data.dueDate}` : null]
+            .filter(Boolean)
+            .join(' · ') || 'Invoice detail'
+        }
         actions={
           <>
             {data.status ? <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge> : null}
@@ -61,6 +105,19 @@ export default function VendorInvoiceDetailPage() {
               onClick={() => navigate(`/vendor/disputes?invoice_id=${encodeURIComponent(data.id)}`)}
             >
               Raise dispute
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              disabled={emailPending}
+              onClick={() => {
+                setEmailMessage(null);
+                setShareTarget({ kind: 'invoice' });
+              }}
+            >
+              <Mail size={14} />
+              Email PI
             </Button>
             <Button
               type="button"
@@ -88,7 +145,13 @@ export default function VendorInvoiceDetailPage() {
         </p>
       ) : !data.pdfUrl && String(data.status || '').toUpperCase() === 'DRAFT' ? (
         <p className="text-sm text-[var(--color-neutral-500)]">
-          PDF download becomes available after your forwarder posts this draft purchase invoice in ERP.
+          PDF download becomes available after your forwarder posts this draft purchase invoice in
+          ERP.
+        </p>
+      ) : null}
+      {emailMessage ? (
+        <p className="text-sm text-emerald-700" role="status">
+          {emailMessage}
         </p>
       ) : null}
 
@@ -100,7 +163,10 @@ export default function VendorInvoiceDetailPage() {
           <PortalStatCard label="Paid" value={formatVendorMoney(data.paidAmount, data.currencyCode)} />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Balance due" value={formatVendorMoney(data.outstandingBalance, data.currencyCode)} />
+          <PortalStatCard
+            label="Balance due"
+            value={formatVendorMoney(data.outstandingBalance, data.currencyCode)}
+          />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
           <PortalStatCard label="Tax" value={formatVendorMoney(data.taxTotal, data.currencyCode)} />
@@ -119,14 +185,19 @@ export default function VendorInvoiceDetailPage() {
         ) : (
           <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {data.lines.map((line) => (
-              <PortalAnimatedListItem key={line.id} className="flex items-center justify-between gap-3 px-4 py-3">
+              <PortalAnimatedListItem
+                key={line.id}
+                className="flex items-center justify-between gap-3 px-4 py-3"
+              >
                 <div className="min-w-0">
                   <div className="text-sm font-medium">{line.description}</div>
                   <div className="text-xs text-[var(--color-neutral-500)]">
                     Qty {line.quantity ?? '—'} · {formatVendorMoney(line.unitPrice, data.currencyCode)}
                   </div>
                 </div>
-                <div className="text-sm font-semibold">{formatVendorMoney(line.lineTotal, data.currencyCode)}</div>
+                <div className="text-sm font-semibold">
+                  {formatVendorMoney(line.lineTotal, data.currencyCode)}
+                </div>
               </PortalAnimatedListItem>
             ))}
           </PortalAnimatedList>
@@ -134,7 +205,18 @@ export default function VendorInvoiceDetailPage() {
       </PortalPanel>
       <PortalPanel padded className="space-y-4">
         <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Payment proofs</h2>
-        <PaymentProofList proofs={proofs} />
+        <PaymentProofList
+          proofs={proofs}
+          sendingProofId={
+            sendProofEmail.isPending && shareTarget?.kind === 'proof'
+              ? shareTarget.proof.id
+              : null
+          }
+          onSendEmail={(proof) => {
+            setEmailMessage(null);
+            setShareTarget({ kind: 'proof', proof });
+          }}
+        />
         <PaymentProofUploadForm
           disabled={uploadProof.isPending}
           onUpload={async (file, dto) => {
@@ -142,6 +224,17 @@ export default function VendorInvoiceDetailPage() {
           }}
         />
       </PortalPanel>
+
+      <ShareEmailModal
+        open={Boolean(shareTarget)}
+        title={
+          shareTarget?.kind === 'proof' ? 'Email payment proof to admin' : 'Email PI PDF to admin'
+        }
+        description="Default admin inbox is the tenant email / finance users when To is left empty."
+        isPending={emailPending}
+        onClose={() => setShareTarget(null)}
+        onSend={onShare}
+      />
     </div>
   );
 }

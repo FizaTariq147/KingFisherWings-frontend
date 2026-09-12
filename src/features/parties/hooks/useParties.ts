@@ -1,6 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
+import type { ShareEmailDto } from '@/features/shared/share-email';
 import { partyService } from '../services/party.service';
 import type {
   CreatePartyAddressDto,
@@ -151,5 +152,11 @@ export function usePartyHistory(partyId: string) {
     queryKey: partyKeys.history(partyId),
     queryFn: () => partyService.getHistory(partyId),
     enabled: Boolean(accessToken) && isUuid(partyId),
+  });
+}
+
+export function useSendPartyCreditSummaryEmail(partyId: string) {
+  return useMutation({
+    mutationFn: (dto: ShareEmailDto = {}) => partyService.sendCreditSummaryEmail(partyId, dto),
   });
 }

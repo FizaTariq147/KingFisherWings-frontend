@@ -2,6 +2,7 @@ import { vendorApiClient } from '@/lib/vendorApiClient';
 import { normalizeFinancePaymentsSummary } from '@/features/payment-proofs/utils/normalizePaymentProof';
 import type { FinanceOpenItemsSummary } from '@/features/payment-proofs/types/paymentProof.types';
 import { downloadVendorBlob } from '@/features/vendor-shared/downloadVendorBlob';
+import { postShareEmail, type ShareEmailDto, type ShareEmailResult } from '@/features/shared/share-email';
 import { VENDOR_ADVANCES_API, VENDOR_PAYMENTS_API } from '../api/vendorPayments.api';
 import type {
   VendorPaymentListParams,
@@ -24,6 +25,10 @@ export const vendorPaymentsService = {
     await downloadVendorBlob(VENDOR_PAYMENTS_API.remittance(id), fallbackName, {
       accept: 'application/pdf, application/octet-stream, */*',
     });
+  },
+
+  async sendRemittanceEmail(id: string, dto: ShareEmailDto = {}): Promise<ShareEmailResult> {
+    return postShareEmail(vendorApiClient, VENDOR_PAYMENTS_API.remittanceSendEmail(id), dto);
   },
 
   async listAdvances(params: VendorPaymentListParams = {}): Promise<VendorPaymentListResult> {

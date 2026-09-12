@@ -2,6 +2,7 @@ import { axiosInstance } from '@/lib/axios';
 import type { ApiEnvelope } from '@/lib/apiEnvelope';
 import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
+import { postShareEmail, type ShareEmailDto, type ShareEmailResult } from '@/features/shared/share-email';
 import { PARTY_API } from '../api/party.api';
 import { normalizeParties, normalizeParty, normalizePartyAddress, normalizePartyContact } from '../utils/normalizeParty';
 import {
@@ -360,5 +361,14 @@ export const partyService = {
     } catch (error) {
       throw formatAxiosError(error);
     }
+  },
+
+  /** POST /parties/{id}/credit/summary/send-email */
+  async sendCreditSummaryEmail(
+    id: string,
+    dto: ShareEmailDto = {},
+  ): Promise<ShareEmailResult> {
+    assertPartyId(id);
+    return postShareEmail(axiosInstance, PARTY_API.creditSummarySendEmail(id), dto);
   },
 };

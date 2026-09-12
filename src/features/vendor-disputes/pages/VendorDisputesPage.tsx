@@ -18,10 +18,19 @@ import {
   PortalPanel,
   portalSelectClassName,
 } from '@/features/portal-auth/components/portal-ui';
+import {
+  formatShareEmailSuccess,
+  ShareEmailModal,
+} from '@/features/shared/share-email';
 import { VendorQueryError } from '@/features/vendor-shared/VendorQueryError';
 import { vendorErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import { VENDOR_DISPUTE_STATUSES } from '../api/vendorDisputes.api';
-import { useCreateVendorDispute, useVendorDispute, useVendorDisputes } from '../hooks/useVendorDisputes';
+import {
+  useCreateVendorDispute,
+  useSendVendorDisputeEmail,
+  useVendorDispute,
+  useVendorDisputes,
+} from '../hooks/useVendorDisputes';
 import type { VendorDispute } from '../types/vendorDisputes.types';
 
 const createDisputeSchema = z.object({
@@ -40,7 +49,15 @@ const createDisputeSchema = z.object({
 
 type CreateDisputeValues = z.infer<typeof createDisputeSchema>;
 
-function DisputeRow({ dispute }: { dispute: VendorDispute }) {
+function DisputeRow({
+  dispute,
+  onEmail,
+  emailPending,
+}: {
+  dispute: VendorDispute;
+  onEmail: (id: string) => void;
+  emailPending?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const detail = useVendorDispute(dispute.id, open);
   const shown = detail.data ?? dispute;
@@ -60,7 +77,18 @@ function DisputeRow({ dispute }: { dispute: VendorDispute }) {
             {open ? 'Hide detail' : 'View detail'}
           </div>
         </button>
-        {shown.status ? <Badge variant="info">{shown.status.replaceAll('_', ' ')}</Badge> : null}
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          {shown.status ? <Badge variant="info">{shown.status.replaceAll('_', ' ')}</Badge> : null}
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            disabled={emailPending}
+            onClick={() => onEmail(dispute.id)}
+          >
+            Email admin
+          </Button>
+        </div>
       </div>
       {open ? (
         <div className="mt-3 space-y-2 border-t border-[var(--color-neutral-100)] pt-3">
@@ -97,7 +125,10 @@ export default function VendorDisputesPage() {
   );
   const { data, isLoading, isError, error, refetch } = useVendorDisputes(params);
   const create = useCreateVendorDispute();
+  const sendEmail = useSendVendorDisputeEmail();
   const [formError, setFormError] = useState<string | null>(null);
+  const [emailMessage, setEmailMessage] = useState<string | null>(null);
+  const [emailDisputeId, setEmailDisputeId] = useState<string | null>(null);
   const [attachment, setAttachment] = useState<File | null>(null);
   const form = useForm<CreateDisputeValues>({
     resolver: zodResolver(createDisputeSchema),
@@ -117,6 +148,11 @@ export default function VendorDisputesPage() {
   return (
     <div className="space-y-5">
       <PortalPageHeader title="Disputes" description="Raise and track invoice disputes." />
+      {emailMessage ? (
+        <p className="text-sm text-emerald-700" role="status">
+          {emailMessage}
+        </p>
+      ) : null}
 
       <PortalPanel padded>
         {formError ? (
@@ -235,7 +271,14 @@ export default function VendorDisputesPage() {
           <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
             {items.map((d) => (
               <PortalAnimatedListItem key={d.id} className="px-4 py-3.5">
-                <DisputeRow dispute={d} />
+                <DisputeRow
+                  dispute={d}
+                  emailPending={sendEmail.isPending && emailDisputeId === d.id}
+                  onEmail={(id) => {
+                    setEmailMessage(null);
+                    setEmailDisputeId(id);
+                  }}
+                />
               </PortalAnimatedListItem>
             ))}
           </PortalAnimatedList>
@@ -257,6 +300,20 @@ export default function VendorDisputesPage() {
           </Button>
         </div>
       ) : null}
+
+      <ShareEmailModal
+        open={Boolean(emailDisputeId)}
+        title="Email dispute to admin"
+        description="Default admin inbox is the tenant email / finance users when To is left empty."
+        isPending={sendEmail.isPending}
+        onClose={() => setEmailDisputeId(null)}
+        onSend={async (dto) => {
+          if (!emailDisputeId) return;
+          const result = await sendEmail.mutateAsync({ id: emailDisputeId, dto });
+          setEmailDisputeId(null);
+          setEmailMessage(formatShareEmailSuccess(result));
+        }}
+      />
     </div>
   );
 }

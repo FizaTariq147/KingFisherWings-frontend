@@ -1,6 +1,7 @@
 import { vendorApiClient, VendorApiError } from '@/lib/vendorApiClient';
 import { unwrapData } from '@/features/vendor-shared/normalize';
 import { postVendorWithOptionalFile } from '@/features/vendor-shared/vendorMultipart';
+import { postShareEmail, type ShareEmailDto, type ShareEmailResult } from '@/features/shared/share-email';
 import { VENDOR_DISPUTES_API } from '../api/vendorDisputes.api';
 import type {
   VendorDispute,
@@ -36,5 +37,9 @@ export const vendorDisputesService = {
     const item = normalizeVendorDispute(unwrapData(res.data) ?? res.data);
     if (!item) throw new VendorApiError('Could not raise dispute.', 400);
     return item;
+  },
+
+  async sendEmail(id: string, dto: ShareEmailDto = {}): Promise<ShareEmailResult> {
+    return postShareEmail(vendorApiClient, VENDOR_DISPUTES_API.sendEmail(id), dto);
   },
 };

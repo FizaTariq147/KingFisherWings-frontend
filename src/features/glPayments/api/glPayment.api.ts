@@ -9,4 +9,5 @@ export const GL_PAYMENT_API = {
     `/gl/payments/${id}/allocations/${allocationId}`,
   post: (id: string) => `/gl/payments/${id}/post`,
   cancel: (id: string) => `/gl/payments/${id}/cancel`,
+  remittanceSendEmail: (id: string) => `/gl/payments/${id}/remittance/send-email`,
 } as const;
