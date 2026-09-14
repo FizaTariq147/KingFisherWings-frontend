@@ -24,12 +24,13 @@ import {
   useUpdatePortalPreferences,
 } from '@/features/portal-preferences/hooks/usePortalPreferences';
 import {
-  useDownloadPortalInvoicePdf,
   useExportPortalInvoicesCsv,
   usePortalInvoiceSummary,
   usePortalInvoices,
   usePortalInvoiceOpenItems,
+  usePortalInvoicePdfBlob,
 } from '../hooks/usePortalInvoices';
+import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 
 export default function PortalInvoicesPage() {
   const [page, setPage] = useState(1);
@@ -45,6 +46,9 @@ export default function PortalInvoicesPage() {
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [filterSaved, setFilterSaved] = useState(false);
   const [viewOpenOnly, setViewOpenOnly] = useState(false);
+  const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
+  const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
+  const [pdfReadyFileName, setPdfReadyFileName] = useState('invoice.pdf');
 
   useEffect(() => {
     if (filtersReady || prefs.isLoading) return;
@@ -69,10 +73,31 @@ export default function PortalInvoicesPage() {
   const openItems = usePortalInvoiceOpenItems(viewOpenOnly);
   const allInvoices = usePortalInvoices(params);
   const active = viewOpenOnly ? openItems : allInvoices;
-  const download = useDownloadPortalInvoicePdf();
+  const pdfBlob = usePortalInvoicePdfBlob();
   const items = active.data?.items ?? [];
   const meta = active.data?.meta;
   const { isLoading, isError, error, refetch, isFetching } = active;
+
+  const openInvoicePdf = (invoiceId: string, name: string) => {
+    setPdfError(null);
+    setPdfReadyBlob(null);
+    setPdfReadyFileName(`${name || 'invoice'}.pdf`);
+    setPdfReadyOpen(true);
+    void pdfBlob
+      .mutateAsync({ id: invoiceId, name })
+      .then(({ blob, fileName }) => {
+        setPdfReadyBlob(blob);
+        setPdfReadyFileName(fileName);
+      })
+      .catch((err) => {
+        setPdfReadyOpen(false);
+        setPdfError(
+          err instanceof PortalApiError || err instanceof Error
+            ? err.message
+            : 'Could not download invoice PDF.',
+        );
+      });
+  };
 
   return (
     <div className="space-y-5">
@@ -248,21 +273,10 @@ export default function PortalInvoicesPage() {
                 </Link>
                 <div className="flex items-center gap-2 shrink-0">
                   {inv.status ? <Badge variant="info">{inv.status.replaceAll('_', ' ')}</Badge> : null}
-                  <Button type="button" size="sm" variant="secondary" disabled={download.isPending}
-                    onClick={() => {
-                      setPdfError(null);
-                      void download
-                        .mutateAsync({ id: inv.id, name: inv.number })
-                        .catch((err) => {
-                          setPdfError(
-                            err instanceof PortalApiError || err instanceof Error
-                              ? err.message
-                              : 'Could not download invoice PDF.',
-                          );
-                        });
-                    }}>
+                  <Button type="button" size="sm" variant="secondary" disabled={pdfBlob.isPending}
+                    onClick={() => openInvoicePdf(inv.id, inv.number)}>
                     <Download size={14} aria-hidden="true" />
-                    {download.isPending ? 'Downloading…' : 'PDF'}
+                    {pdfBlob.isPending ? 'Preparing…' : 'PDF'}
                   </Button>
                 </div>
               </PortalAnimatedListItem>
@@ -279,6 +293,19 @@ export default function PortalInvoicesPage() {
           </div>
         </div>
       )}
+
+      <PdfReadyModal
+        open={pdfReadyOpen}
+        onClose={() => {
+          setPdfReadyOpen(false);
+          setPdfReadyBlob(null);
+        }}
+        blob={pdfReadyBlob}
+        title="Invoice PDF ready"
+        fileName={pdfReadyFileName}
+        skipBranding
+        description="Your invoice PDF was created successfully."
+      />
     </div>
   );
 }

@@ -1,13 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Save } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { FieldError } from '@/components/ui/FieldError/FieldError';
 import { useInlineValidation } from '@/lib/validation';
 import { WMS_ROUTE_PREFIX } from '../api/wms.api';
 import { useWmsUomOptions, WmsSelect } from '../components/WmsFormHelpers';
+import {
+  WmsFormAlert,
+  WmsFormCard,
+  WmsFormFooter,
+  WmsFormGrid,
+  WmsFormSpan2,
+} from '../components/WmsFormLayout';
 import { WmsPageHeader } from '../components/WmsPageHeader';
 import { useCreateWmsItem, useUpdateWmsItem, useWmsItem } from '../hooks/useWms';
 import { createWmsItemSchema, createWmsItemSchemaWithUoms } from '../schemas/wms.schema';
@@ -102,109 +105,124 @@ export default function WmsItemFormPage() {
   };
 
   const pending = createMutation.isPending || updateMutation.isPending;
+  const cancelTo = isEdit ? `${WMS_ROUTE_PREFIX}/items/${id}` : `${WMS_ROUTE_PREFIX}/items`;
 
   return (
-    <div className="space-y-4">
+    <div className="mx-auto max-w-3xl space-y-4">
       <WmsPageHeader
-        backTo={isEdit ? `${WMS_ROUTE_PREFIX}/items/${id}` : `${WMS_ROUTE_PREFIX}/items`}
+        backTo={cancelTo}
         backLabel={isEdit ? 'Item detail' : 'Items'}
         title={isEdit ? 'Edit item' : 'New item'}
+        description="SKU master with code, UOM, and low-stock threshold."
       />
 
-      <Card className="max-w-xl p-4">
-        {isEdit && detailQuery.isLoading ? (
-          <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>
-        ) : (
-          <form className="space-y-4" onSubmit={handleSubmit} noValidate>
-            <Input
-              label="Code"
-              value={code}
-              error={fieldError('code')}
-              hint="Uppercase letters, numbers, and hyphens (e.g. FLT-001)"
-              onChange={(e) => {
-                const next = e.target.value.toUpperCase();
-                setCode(next);
-                revalidate(itemSchema, values({ code: next }));
-              }}
-              onBlur={() => validatePath(itemSchema, values(), 'code')}
-              required
-            />
-            <Input
-              label="Name"
-              value={name}
-              error={fieldError('name')}
-              hint="Real product name (not random characters)"
-              onChange={(e) => {
-                const next = e.target.value;
-                setName(next);
-                revalidate(itemSchema, values({ name: next }));
-              }}
-              onBlur={() => validatePath(itemSchema, values(), 'name')}
-              required
-            />
-            <Input
-              label="Description"
-              value={description}
-              error={fieldError('description')}
-              onChange={(e) => {
-                const next = e.target.value;
-                setDescription(next);
-                revalidate(itemSchema, values({ description: next }));
-              }}
-              onBlur={() => validatePath(itemSchema, values(), 'description')}
-            />
-            <WmsSelect
-              label="UOM"
-              value={uomCode}
-              onChange={(v) => {
-                const next = v.toUpperCase();
-                setUomCode(next);
-                revalidate(itemSchema, values({ uom_code: next }));
-              }}
-              onBlur={() => validatePath(itemSchema, values(), 'uom_code')}
-              options={uomSelectOptions}
-              required
-              disabled={uomsLoading || uomsEmpty}
-              error={fieldError('uom_code')}
-            />
-            {uomsEmpty ? (
-              <p className="text-xs text-[var(--color-danger-600)]">
-                No UOM masters found. Create codes under Masters → Units of Measure first.
-              </p>
-            ) : null}
-            <Input
-              label="Low stock threshold"
-              type="number"
-              min={0}
-              value={lowStock}
-              error={fieldError('low_stock_threshold')}
-              onChange={(e) => {
-                const next = e.target.value;
-                setLowStock(next);
-                revalidate(itemSchema, values({ low_stock_threshold: next }));
-              }}
-              onBlur={() => validatePath(itemSchema, values(), 'low_stock_threshold')}
-            />
-            <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
-              <input
-                type="checkbox"
-                checked={isActive}
+      {isEdit && detailQuery.isLoading ? (
+        <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>
+      ) : (
+        <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+          <WmsFormAlert message={formError} />
+
+          <WmsFormCard title="Item details">
+            <WmsFormGrid>
+              <Input
+                label="Code"
+                value={code}
+                error={fieldError('code')}
+                hint="Uppercase letters, numbers, and hyphens (e.g. FLT-001)"
                 onChange={(e) => {
-                  const next = e.target.checked;
-                  setIsActive(next);
-                  revalidate(itemSchema, values({ is_active: next }));
+                  const next = e.target.value.toUpperCase();
+                  setCode(next);
+                  revalidate(itemSchema, values({ code: next }));
                 }}
+                onBlur={() => validatePath(itemSchema, values(), 'code')}
+                required
               />
-              Active
-            </label>
-            <FieldError message={formError} />
-            <Button type="submit" disabled={pending || uomsEmpty}>
-              <Save className="h-4 w-4" />
-              {isEdit ? 'Save changes' : 'Create item'}
-            </Button>
-          </form>
-        )}
-      </Card>
+              <Input
+                label="Name"
+                value={name}
+                error={fieldError('name')}
+                hint="Real product name (not random characters)"
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setName(next);
+                  revalidate(itemSchema, values({ name: next }));
+                }}
+                onBlur={() => validatePath(itemSchema, values(), 'name')}
+                required
+              />
+              <WmsFormSpan2>
+                <Input
+                  label="Description"
+                  value={description}
+                  error={fieldError('description')}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    setDescription(next);
+                    revalidate(itemSchema, values({ description: next }));
+                  }}
+                  onBlur={() => validatePath(itemSchema, values(), 'description')}
+                />
+              </WmsFormSpan2>
+              <WmsSelect
+                label="UOM"
+                value={uomCode}
+                onChange={(v) => {
+                  const next = v.toUpperCase();
+                  setUomCode(next);
+                  revalidate(itemSchema, values({ uom_code: next }));
+                }}
+                onBlur={() => validatePath(itemSchema, values(), 'uom_code')}
+                options={uomSelectOptions}
+                required
+                disabled={uomsLoading || uomsEmpty}
+                error={fieldError('uom_code')}
+              />
+              <Input
+                label="Low stock threshold"
+                type="number"
+                min={0}
+                value={lowStock}
+                error={fieldError('low_stock_threshold')}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setLowStock(next);
+                  revalidate(itemSchema, values({ low_stock_threshold: next }));
+                }}
+                onBlur={() => validatePath(itemSchema, values(), 'low_stock_threshold')}
+              />
+              {uomsEmpty ? (
+                <WmsFormSpan2>
+                  <p className="text-xs text-[var(--color-danger-600)]">
+                    No UOM masters found. Create codes under Masters → Units of Measure first.
+                  </p>
+                </WmsFormSpan2>
+              ) : null}
+              <WmsFormSpan2>
+                <label className="inline-flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-[var(--color-neutral-300)]"
+                    checked={isActive}
+                    onChange={(e) => {
+                      const next = e.target.checked;
+                      setIsActive(next);
+                      revalidate(itemSchema, values({ is_active: next }));
+                    }}
+                  />
+                  Active
+                </label>
+              </WmsFormSpan2>
+            </WmsFormGrid>
+          </WmsFormCard>
+
+          <WmsFormFooter
+            onCancel={() => navigate(cancelTo)}
+            submitLabel={isEdit ? 'Save changes' : 'Create item'}
+            isSubmitting={pending}
+            disabled={uomsEmpty}
+          />
+        </form>
+      )}
     </div>
   );
 }

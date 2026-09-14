@@ -127,6 +127,19 @@ export function menuKeysFromStaffAccess(record: Record<string, unknown>): Permis
     keys.add('menu_management');
   }
 
+  const roleRaw = record.role;
+  const roleSlug =
+    typeof roleRaw === 'string'
+      ? roleRaw.trim().toUpperCase()
+      : typeof roleRaw === 'object' && roleRaw && typeof (roleRaw as { slug?: string }).slug === 'string'
+        ? String((roleRaw as { slug: string }).slug).trim().toUpperCase()
+        : '';
+  if (roleSlug === 'WAREHOUSE_STAFF') {
+    keys.add('menu_warehouse');
+  }
+
+  // Other module menus (HR / …) come from JWT matrix keys via hasMatrixModuleAccess.
+
   return [...keys];
 }
 

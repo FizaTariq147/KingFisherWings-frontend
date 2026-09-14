@@ -78,11 +78,12 @@ export type DownloadVendorBlobOptions = {
   hops?: number;
 };
 
-export async function downloadVendorBlob(
+/** Authenticated blob fetch for vendor files (no auto-download). */
+export async function fetchVendorBlob(
   url: string,
   fallbackName: string,
   paramsOrOptions?: Record<string, unknown> | DownloadVendorBlobOptions,
-): Promise<void> {
+): Promise<{ blob: Blob; filename: string }> {
   const options: DownloadVendorBlobOptions =
     paramsOrOptions &&
     ('params' in paramsOrOptions || 'accept' in paramsOrOptions || 'hops' in paramsOrOptions)
@@ -135,11 +136,10 @@ export async function downloadVendorBlob(
         if (!nextUrl || !isApiOriginUrl(nextUrl)) {
           throw new VendorApiError('Download URL is not allowed.', 400);
         }
-        await downloadVendorBlob(nextUrl, fallbackName, {
+        return fetchVendorBlob(nextUrl, fallbackName, {
           accept: options.accept,
           hops: hops + 1,
         });
-        return;
       }
       throw new VendorApiError(messageFromJson(parsed, 'Download failed.'), res.status || 400);
     }
@@ -153,14 +153,7 @@ export async function downloadVendorBlob(
       ) || fallbackName,
       fallbackName,
     );
-    if (isPdfBlob(rebuilt, filename)) {
-      throw new VendorApiError(
-        'Download was expected to be a PDF but the server returned a non-PDF response.',
-        res.status || 400,
-      );
-    }
-    triggerBlobDownload(rebuilt, filename);
-    return;
+    return { blob: rebuilt, filename };
   }
 
   if (!(blob instanceof Blob) || blob.size === 0) {
@@ -175,6 +168,16 @@ export async function downloadVendorBlob(
     ) || fallbackName,
     fallbackName,
   );
+  return { blob, filename };
+}
+
+export async function downloadVendorBlob(
+  url: string,
+  fallbackName: string,
+  paramsOrOptions?: Record<string, unknown> | DownloadVendorBlobOptions,
+): Promise<void> {
+  const { blob, filename } = await fetchVendorBlob(url, fallbackName, paramsOrOptions);
+
   if (await blobLooksLikePdf(blob)) {
     await triggerBrandedPdfDownload(blob, filename, { filename, branding: { title: filename } });
     return;
@@ -182,7 +185,7 @@ export async function downloadVendorBlob(
   if (isPdfBlob(blob, filename)) {
     throw new VendorApiError(
       'Download was expected to be a PDF but the server returned a non-PDF response.',
-      res.status || 400,
+      400,
     );
   }
   triggerBlobDownload(blob, filename);

@@ -1,6 +1,8 @@
 import { axiosInstance } from '@/lib/axios';
 import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { masterService } from '@/features/masters/services/master.service';
 import { WMS_API } from '../api/wms.api';
 import type {
   AdjustStockDto,
@@ -19,6 +21,7 @@ import type {
   WmsItemListParams,
   WmsItemListResult,
   WmsSettings,
+  WmsWarehouseSummary,
 } from '../types/wms.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import {
@@ -27,8 +30,11 @@ import {
   normalizeWmsDocument,
   normalizeWmsDocuments,
   normalizeWmsItem,
+  mergeWarehouseSummaries,
   normalizeWmsItems,
   normalizeWmsSettings,
+  normalizeWmsWarehouses,
+  warehouseSummaryFromRecord,
   unwrapEntity,
   unwrapList,
 } from '../utils/normalizeWms';
@@ -36,6 +42,87 @@ import type { WmsDocument, WmsItem, WmsStockRow } from '../types/wms.types';
 
 function assertId(id: string, label = 'id'): void {
   if (!id || !isUuid(id)) throw new Error(`Invalid ${label}.`);
+}
+
+async function tryListMasterWarehouses(): Promise<WmsWarehouseSummary[]> {
+  const listParams = [
+    { page: 1, limit: 500, is_active: true, order: 'asc' as const },
+    { page: 1, limit: 500, order: 'asc' as const },
+    { page: 1, limit: 50, order: 'asc' as const },
+  ];
+
+  for (const params of listParams) {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(MASTER_PATHS.warehouses, { params }),
+      );
+      const fromResponse = normalizeWmsWarehouses(res.data);
+      if (fromResponse.length) return fromResponse;
+
+      const fromItems = normalizeWmsWarehouses(
+        (await masterService.list(MASTER_PATHS.warehouses, params)).items,
+      );
+      if (fromItems.length) return fromItems;
+    } catch {
+      // Try next query shape or fall through to other sources.
+    }
+  }
+
+  try {
+    const all = await masterService.listAll(MASTER_PATHS.warehouses, { order: 'asc' }, 100);
+    return normalizeWmsWarehouses(all.items);
+  } catch {
+    return [];
+  }
+}
+
+function warehousesFromStockRows(rows: WmsStockRow[]): WmsWarehouseSummary[] {
+  const out: WmsWarehouseSummary[] = [];
+  const seen = new Set<string>();
+  for (const row of rows) {
+    const id = String(row.warehouse_id ?? '').trim();
+    if (!id || !isUuid(id) || seen.has(id)) continue;
+    seen.add(id);
+    out.push({
+      id,
+      name: row.warehouse_name || undefined,
+    });
+  }
+  return out;
+}
+
+function warehousesFromDocuments(docs: WmsDocument[]): WmsWarehouseSummary[] {
+  const out: WmsWarehouseSummary[] = [];
+  const seen = new Set<string>();
+
+  const push = (row: WmsWarehouseSummary | null | undefined) => {
+    if (!row?.id || !isUuid(row.id) || seen.has(row.id)) return;
+    seen.add(row.id);
+    out.push(row);
+  };
+
+  for (const doc of docs) {
+    const raw = doc as Record<string, unknown>;
+    push(warehouseSummaryFromRecord(raw.warehouse ?? raw.Warehouse));
+    push(warehouseSummaryFromRecord(raw.from_warehouse ?? raw.fromWarehouse));
+    push(warehouseSummaryFromRecord(raw.to_warehouse ?? raw.toWarehouse));
+
+    const id = String(doc.warehouse_id ?? '').trim();
+    if (id && isUuid(id)) {
+      push({ id });
+    }
+  }
+  return out;
+}
+
+async function tryFetchWarehouseById(id: string): Promise<WmsWarehouseSummary | null> {
+  if (!isUuid(id)) return null;
+  try {
+    const record = await masterService.getById(MASTER_PATHS.warehouses, id);
+    return warehouseSummaryFromRecord(record);
+  } catch {
+    return null;
+  }
 }
 
 function buildItemQuery(params: WmsItemListParams): Record<string, string | number | boolean> {
@@ -70,6 +157,54 @@ async function requestList(raw: unknown): Promise<unknown[]> {
 }
 
 export const wmsService = {
+  /**
+   * Registered master warehouses for WMS forms.
+   * Merges every source the current user can read (never throws on 403/404).
+   * Primary catalog: GET /masters/warehouses (Swagger — no /wms/warehouses route yet).
+   */
+  async listWarehouses(preferredId?: string): Promise<WmsWarehouseSummary[]> {
+    try {
+      const groups: WmsWarehouseSummary[][] = [];
+
+      groups.push(await tryListMasterWarehouses());
+
+      try {
+        const res = await withGatewayRetry(() => axiosInstance.get(WMS_API.warehouses));
+        groups.push(normalizeWmsWarehouses(res.data));
+      } catch {
+        // Optional future WMS-scoped warehouse list (not in current Swagger).
+      }
+
+      try {
+        groups.push(warehousesFromStockRows(await this.stockOnHand({})));
+      } catch {
+        // Stock may be empty or forbidden — continue.
+      }
+
+      for (const listFn of [
+        () => this.listGrns(),
+        () => this.listGdos(),
+        () => this.listAsns(),
+        () => this.listTransfers(),
+      ] as const) {
+        try {
+          groups.push(warehousesFromDocuments(await listFn()));
+        } catch {
+          // Ignore per-source failures.
+        }
+      }
+
+      if (preferredId && isUuid(preferredId)) {
+        const byId = await tryFetchWarehouseById(preferredId);
+        if (byId) groups.push([byId]);
+      }
+
+      return mergeWarehouseSummaries(...groups);
+    } catch {
+      return [];
+    }
+  },
+
   async getSettings(): Promise<WmsSettings | null> {
     try {
       const res = await withGatewayRetry(() => axiosInstance.get(WMS_API.settings));

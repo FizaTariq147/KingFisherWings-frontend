@@ -1,6 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { isUuid } from '@/lib/isUuid';
+import { useAuthStore } from '@/store/authStore';
 import { MASTER_PATHS } from '../api/masterPaths';
 import { masterService } from '../services/master.service';
 import type { MasterListParams, MasterRecord } from '../types/master.types';
@@ -23,6 +24,7 @@ export function useMasterList(
   params: MasterListParams,
   options?: { fetchAll?: boolean },
 ) {
+  const accessToken = useAuthStore((s) => s.accessToken);
   const isWorldPlace = resourceKey === 'ports' || resourceKey === 'airports';
   const fetchAll = Boolean(options?.fetchAll);
   // Exclude page/limit from the all-pages cache key so paging is client-side.
@@ -41,7 +43,7 @@ export function useMasterList(
       fetchAll
         ? masterService.listAll(basePath, queryParams, 500)
         : masterService.list(basePath, params),
-    enabled: Boolean(resourceKey && basePath),
+    enabled: Boolean(accessToken && resourceKey && basePath),
     placeholderData: keepPreviousData,
     // Ports/airports change after seed — don't keep stale catalogs.
     staleTime: isWorldPlace ? 0 : 30_000,
@@ -49,10 +51,11 @@ export function useMasterList(
 }
 
 export function useMasterDetail(resourceKey: string, basePath: string, id: string) {
+  const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({
     queryKey: masterKeys.detail(resourceKey, id),
     queryFn: () => masterService.getById(basePath, id),
-    enabled: Boolean(basePath) && isUuid(id),
+    enabled: Boolean(accessToken && basePath) && isUuid(id),
   });
 }
 
@@ -64,6 +67,7 @@ export function useMasterOptions(
   /** When true, include inactive rows (e.g. departments must list everything). */
   includeInactive = false,
 ) {
+  const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({
     queryKey: [...masterKeys.options(resourceKey), includeInactive ? 'all' : 'active'] as const,
     queryFn: async () => {
@@ -88,7 +92,7 @@ export function useMasterOptions(
       const all = await masterService.list(basePath, { page: 1, limit: 500, order: 'asc' });
       return all.items;
     },
-    enabled: enabled && Boolean(basePath),
+    enabled: enabled && Boolean(accessToken && basePath),
     staleTime: 60_000,
   });
 }
@@ -113,6 +117,7 @@ export function useMasterPlaceOptions(
   /** Keep currently selected IDs visible even when not in the search page. */
   ensureIds: string[] = [],
 ) {
+  const accessToken = useAuthStore((s) => s.accessToken);
   const basePath = MASTER_PATHS[kind];
   const q = search.trim();
   const ensureKey = ensureIds.filter((id) => isUuid(id)).sort().join(',');
@@ -137,7 +142,7 @@ export function useMasterPlaceOptions(
         })
       ).items;
     },
-    enabled: enabled && Boolean(basePath),
+    enabled: enabled && Boolean(accessToken && basePath),
     placeholderData: keepPreviousData,
     staleTime: 60_000,
   });
@@ -162,7 +167,7 @@ export function useMasterPlaceOptions(
       }
       return rows;
     },
-    enabled: enabled && missingIds.length > 0,
+    enabled: enabled && Boolean(accessToken) && missingIds.length > 0,
     staleTime: 60_000,
   });
 

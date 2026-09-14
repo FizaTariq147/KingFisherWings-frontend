@@ -51,6 +51,11 @@ interface NavItem {
   Icon: LucideIcon;
   permission: PermissionKey | null;
   permissionAny?: PermissionKey[];
+  /**
+   * Permission-matrix module key from GET /users/permission-matrix (e.g. `wms`, `hr`).
+   * Checked against JWT keys like `wms_module.see` — not hardcoded role lists.
+   */
+  matrixModule?: string;
   adminOnly?: boolean;
   iconStyle?: NavIconStyle;
   /** Highlight when pathname starts with this prefix (e.g. sub-routes). */
@@ -306,12 +311,13 @@ const OPS_NAV_ITEMS: NavItem[] = [
     permissionAny: ['menu_accounts', 'menu_finance'],
   },
   { label: 'NVOCC', path: '/nvocc', Icon: Building2, permission: 'menu_nvocc' },
-  { label: 'HR', path: '/hr', Icon: UserCircle, permission: 'menu_hr', activePrefix: '/hr' },
+  { label: 'HR', path: '/hr', Icon: UserCircle, permission: 'menu_hr', matrixModule: 'hr', activePrefix: '/hr' },
   {
     label: 'Warehouse',
     path: '/warehouse',
     Icon: Warehouse,
-    permission: 'menu_hr',
+    permission: 'menu_warehouse',
+    matrixModule: 'wms',
     activePrefix: '/warehouse',
   },
   { label: 'Reports', path: '/reports', Icon: BarChart3, permission: 'menu_reports' },
@@ -411,11 +417,15 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
       ...group,
       items: group.items.filter((item) => {
         if (isTenantAdmin) return true;
-        if (!item.permission && !item.permissionAny) return true;
+        if (item.matrixModule) {
+          if (authCtx?.hasMatrixModule(item.matrixModule, 'see')) return true;
+        }
+        if (!item.permission && !item.permissionAny && !item.matrixModule) return true;
         if (item.permissionAny?.length) {
           return item.permissionAny.some((p) => authCtx?.hasPermission(p) ?? false);
         }
-        return authCtx?.hasPermission(item.permission!) ?? false;
+        if (!item.permission) return false;
+        return authCtx?.hasPermission(item.permission) ?? false;
       }),
     })).filter((group) => group.items.length > 0);
   }, [authCtx, isSuperAdminArea, isTenantAdmin]);

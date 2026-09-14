@@ -10,6 +10,7 @@ import type {
 
 export const userPermissionKeys = {
   matrix: [...userKeys.all, 'permission-matrix'] as const,
+  rolePresets: [...userKeys.all, 'role-presets'] as const,
   user: (userId: string) => [...userKeys.all, 'permissions', userId] as const,
   roles: [...userKeys.all, 'roles'] as const,
 };
@@ -19,6 +20,16 @@ export function usePermissionMatrix() {
   return useQuery({
     queryKey: userPermissionKeys.matrix,
     queryFn: () => userPermissionMatrixService.getPermissionMatrix(),
+    enabled: Boolean(accessToken),
+    staleTime: 60_000,
+  });
+}
+
+export function useRolePresets() {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: userPermissionKeys.rolePresets,
+    queryFn: () => userPermissionMatrixService.getRolePresets(),
     enabled: Boolean(accessToken),
     staleTime: 60_000,
   });

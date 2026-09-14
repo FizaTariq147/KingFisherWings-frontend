@@ -74,6 +74,13 @@ export function useDownloadPortalInvoicePdf() {
   });
 }
 
+export function usePortalInvoicePdfBlob() {
+  return useMutation({
+    mutationFn: ({ id, name }: { id: string; name?: string }) =>
+      portalInvoicesService.getPdfBlob(id, name || 'invoice'),
+  });
+}
+
 export function usePortalInvoiceOpenItems(enabled = true) {
   const accessToken = usePortalAuthStore((s) => s.accessToken);
   const scope = usePortalQueryScope();

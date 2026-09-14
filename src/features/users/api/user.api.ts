@@ -8,9 +8,11 @@ export const USER_API = {
   forceLogout: (id: string) => `/users/${id}/force-logout`,
   /** UsersController_changeOwnPassword — same DTO as POST /auth/change-password */
   meChangePassword: '/users/me/change-password',
-  /** Tenant Admin permission catalog (modules → submodules → see/read/write). */
+  /** Tenant Admin permission catalog (modules → submodules → access / see/read/write). */
   permissionMatrix: '/users/permission-matrix',
   userPermissionMatrix: (id: string) => `/users/${id}/permission-matrix`,
+  /** Role → default permission_grants for create-user wizard Step 1→3. */
+  rolePresets: '/users/role-presets',
   /** Legacy flat permissions (fallback). */
   permissions: (id: string) => `/users/${id}/permissions`,
 } as const;

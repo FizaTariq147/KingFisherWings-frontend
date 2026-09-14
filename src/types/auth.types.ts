@@ -12,6 +12,7 @@ export type PermissionKey =
   | 'menu_accounts'
   | 'menu_nvocc'
   | 'menu_hr'
+  | 'menu_warehouse'
   | 'menu_masters'
   | 'menu_reports'
   | 'menu_settings'
@@ -64,11 +65,37 @@ export interface AuthUser {
   email: string
   tenantId: string
   companyId?: string
+  /**
+   * Assigned / default warehouse from GET /auth/me when the API provides it
+   * (warehouse_id, default_warehouse_id, etc.). Used to auto-fill WMS forms.
+   */
+  warehouseId?: string
+  /** Nested warehouse row from GET /auth/me when the API embeds code/name. */
+  assignedWarehouse?: {
+    id: string
+    code?: string
+    name?: string
+  }
+  /** Optional scoped warehouse list from GET /auth/me for warehouse staff. */
+  allowedWarehouses?: Array<{
+    id: string
+    code?: string
+    name?: string
+  }>
   role: Role
   permissions: PermissionKey[]
   product: 'KingFisher Tech Gold' | 'KingFisher Tech Global' | 'KingFisher Tech App' | 'KingFisher Tech Analytics'
   /** Staff with a temporary password must set their own before using the app. */
   mustChangePassword?: boolean
+  /**
+   * Optional effective matrix summary from GET /auth/me (access per module/submodule).
+   * Bridged classic codes still live in `permissions` after re-login.
+   */
+  permissionMatrix?: Array<{
+    module: string
+    submodule: string
+    access: 'none' | 'read' | 'write'
+  }>
 }
 
 // Decoded JWT payload shape from NestJS backend

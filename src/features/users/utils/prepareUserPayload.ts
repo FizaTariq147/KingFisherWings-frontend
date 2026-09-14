@@ -34,6 +34,8 @@ const ALLOWED_USER_FIELDS = new Set([
   'max_concurrent_sessions',
   'role_ids',
   'permission_ids',
+  'permission_grants',
+  'permission_grants_mode',
   'single_device_login',
   'single_device_policy',
 ]);
@@ -122,6 +124,32 @@ export function prepareUserPayload<T extends Record<string, unknown>>(
 
   // Staff users must be ACTIVE to sign in via /auth/login.
   if (!out.status) out.status = 'ACTIVE';
+
+  if (Array.isArray(out.permission_grants)) {
+    const cleaned = out.permission_grants
+      .map((row) => {
+        if (!row || typeof row !== 'object') return null;
+        const r = row as Record<string, unknown>;
+        const module = typeof r.module === 'string' ? r.module.trim() : '';
+        const submodule = typeof r.submodule === 'string' ? r.submodule.trim() : '';
+        const accessRaw = typeof r.access === 'string' ? r.access.trim().toLowerCase() : '';
+        const access =
+          accessRaw === 'none' || accessRaw === 'read' || accessRaw === 'write' ? accessRaw : null;
+        if (!module || !submodule || !access) return null;
+        return { module, submodule, access };
+      })
+      .filter(Boolean);
+    if (cleaned.length === 0) delete out.permission_grants;
+    else out.permission_grants = cleaned;
+  }
+
+  if (
+    typeof out.permission_grants_mode === 'string' &&
+    out.permission_grants_mode !== 'merge_with_preset' &&
+    out.permission_grants_mode !== 'replace'
+  ) {
+    delete out.permission_grants_mode;
+  }
 
   return out as T;
 }

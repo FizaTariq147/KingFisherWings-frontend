@@ -22,18 +22,19 @@ import { formatVendorMoney } from '@/features/vendor-shared/formatMoney';
 import { VendorQueryError } from '@/features/vendor-shared/VendorQueryError';
 import { vendorInvoicePdfErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import {
-  useDownloadVendorInvoicePdf,
   useSendVendorInvoiceEmail,
   useSendVendorPaymentProofEmail,
   useUploadVendorInvoicePaymentProof,
   useVendorInvoice,
   useVendorInvoicePaymentProofs,
+  useVendorInvoicePdfBlob,
 } from '../hooks/useVendorInvoices';
 import {
   PaymentProofList,
   PaymentProofUploadForm,
 } from '@/features/payment-proofs/components/PaymentProofPanels';
 import type { PaymentProof } from '@/features/payment-proofs/types/paymentProof.types';
+import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 
 type ShareTarget =
   | { kind: 'invoice' }
@@ -43,7 +44,7 @@ export default function VendorInvoiceDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError, error, refetch } = useVendorInvoice(id);
-  const download = useDownloadVendorInvoicePdf();
+  const pdfBlob = useVendorInvoicePdfBlob();
   const { data: proofs = [] } = useVendorInvoicePaymentProofs(id);
   const uploadProof = useUploadVendorInvoicePaymentProof(id);
   const sendInvoiceEmail = useSendVendorInvoiceEmail();
@@ -51,6 +52,26 @@ export default function VendorInvoiceDetailPage() {
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [emailMessage, setEmailMessage] = useState<string | null>(null);
   const [shareTarget, setShareTarget] = useState<ShareTarget | null>(null);
+  const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
+  const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
+  const [pdfReadyFileName, setPdfReadyFileName] = useState('invoice.pdf');
+
+  const openInvoicePdf = (invoiceId: string, name: string, pdfUrl?: string) => {
+    setPdfError(null);
+    setPdfReadyBlob(null);
+    setPdfReadyFileName(name.endsWith('.pdf') ? name : `${name || 'invoice'}.pdf`);
+    setPdfReadyOpen(true);
+    void pdfBlob
+      .mutateAsync({ id: invoiceId, name, pdfUrl })
+      .then(({ blob, fileName }) => {
+        setPdfReadyBlob(blob);
+        setPdfReadyFileName(fileName);
+      })
+      .catch((err) => {
+        setPdfReadyOpen(false);
+        setPdfError(vendorInvoicePdfErrorMessage(err));
+      });
+  };
 
   if (isLoading) return <PortalLoadingState label="Loading invoice…" />;
   if (isError || !data) {
@@ -123,18 +144,11 @@ export default function VendorInvoiceDetailPage() {
               type="button"
               size="sm"
               variant="secondary"
-              disabled={download.isPending}
-              onClick={() => {
-                setPdfError(null);
-                void download
-                  .mutateAsync({ id: data.id, name: `${data.number}.pdf`, pdfUrl: data.pdfUrl })
-                  .catch((err) => {
-                    setPdfError(vendorInvoicePdfErrorMessage(err));
-                  });
-              }}
+              disabled={pdfBlob.isPending}
+              onClick={() => openInvoicePdf(data.id, `${data.number}.pdf`, data.pdfUrl)}
             >
               <Download size={14} />
-              {download.isPending ? 'Downloading…' : 'PDF'}
+              {pdfBlob.isPending ? 'Preparing…' : 'PDF'}
             </Button>
           </>
         }
@@ -207,6 +221,7 @@ export default function VendorInvoiceDetailPage() {
         <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Payment proofs</h2>
         <PaymentProofList
           proofs={proofs}
+          viewer="vendor"
           sendingProofId={
             sendProofEmail.isPending && shareTarget?.kind === 'proof'
               ? shareTarget.proof.id
@@ -235,6 +250,19 @@ export default function VendorInvoiceDetailPage() {
         isPending={emailPending}
         onClose={() => setShareTarget(null)}
         onSend={onShare}
+      />
+
+      <PdfReadyModal
+        open={pdfReadyOpen}
+        onClose={() => {
+          setPdfReadyOpen(false);
+          setPdfReadyBlob(null);
+        }}
+        blob={pdfReadyBlob}
+        title="Invoice PDF ready"
+        fileName={pdfReadyFileName}
+        skipBranding
+        description="Your invoice PDF was created successfully."
       />
     </div>
   );

@@ -173,12 +173,12 @@ export type DownloadPortalBlobOptions = {
   branding?: PdfBrandingOptions;
 };
 
-/** Authenticated blob download for portal CSV/PDF/attachments. */
-export async function downloadPortalBlob(
+/** Authenticated blob fetch for portal CSV/PDF/attachments (no auto-download). */
+export async function fetchPortalBlob(
   url: string,
   fallbackName: string,
   paramsOrOptions?: Record<string, unknown> | DownloadPortalBlobOptions,
-): Promise<void> {
+): Promise<{ blob: Blob; filename: string }> {
   const options: DownloadPortalBlobOptions =
     paramsOrOptions &&
     ('params' in paramsOrOptions ||
@@ -229,8 +229,7 @@ export async function downloadPortalBlob(
       const embedded = base64PdfFromJson(parsed);
       if (embedded && (await blobLooksLikePdf(embedded))) {
         const filename = resolveDownloadFilename(fallbackName, fallbackName, options.branding);
-        await savePdfBlob(embedded, filename, options.branding);
-        return;
+        return { blob: embedded, filename };
       }
       const fileUrl = fileUrlFromJson(parsed);
       if (fileUrl) {
@@ -238,12 +237,11 @@ export async function downloadPortalBlob(
         if (!nextUrl || !isApiOriginUrl(nextUrl)) {
           throw new PortalApiError('Download URL is not allowed.', 400);
         }
-        await downloadPortalBlob(nextUrl, fallbackName, {
+        return fetchPortalBlob(nextUrl, fallbackName, {
           accept: options.accept,
           hops: hops + 1,
           branding: options.branding,
         });
-        return;
       }
       throw new PortalApiError(messageFromJson(parsed, 'Download failed.'), res.status || 400);
     }
@@ -265,6 +263,26 @@ export async function downloadPortalBlob(
     options.branding,
   );
 
+  return { blob, filename };
+}
+
+/** Authenticated blob download for portal CSV/PDF/attachments. */
+export async function downloadPortalBlob(
+  url: string,
+  fallbackName: string,
+  paramsOrOptions?: Record<string, unknown> | DownloadPortalBlobOptions,
+): Promise<void> {
+  const options: DownloadPortalBlobOptions =
+    paramsOrOptions &&
+    ('params' in paramsOrOptions ||
+      'accept' in paramsOrOptions ||
+      'hops' in paramsOrOptions ||
+      'branding' in paramsOrOptions)
+      ? (paramsOrOptions as DownloadPortalBlobOptions)
+      : { params: paramsOrOptions as Record<string, unknown> | undefined };
+
+  const { blob, filename } = await fetchPortalBlob(url, fallbackName, paramsOrOptions);
+
   if (await blobLooksLikePdf(blob)) {
     await savePdfBlob(blob, filename, options.branding);
     return;
@@ -272,7 +290,7 @@ export async function downloadPortalBlob(
   if (isPdfBlob(blob, filename)) {
     throw new PortalApiError(
       'Download was expected to be a PDF but the server returned a non-PDF response.',
-      res.status || 400,
+      400,
     );
   }
   triggerBlobDownload(blob, filename);

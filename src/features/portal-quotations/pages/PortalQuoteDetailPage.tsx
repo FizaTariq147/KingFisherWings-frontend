@@ -14,6 +14,7 @@ import {
   PortalPanel,
   PortalStatCard,
 } from '@/features/portal-auth/components/portal-ui';
+import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 import { QuotationStatusBadge } from '@/features/quotations/components/QuotationStatusBadge';
 import { PortalQuotationDecisionPanel } from '../components/PortalQuotationDecisionPanel';
 import { PortalQuotationNegotiationPanel } from '../components/PortalQuotationNegotiationPanel';
@@ -39,6 +40,9 @@ export default function PortalQuoteDetailPage() {
   const [pdfPending, setPdfPending] = useState(false);
   const [pdfUnavailable, setPdfUnavailable] = useState(false);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
+  const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
+  const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
+  const [pdfReadyFileName, setPdfReadyFileName] = useState('quotation.pdf');
 
   const canTryPdf = useMemo(() => {
     if (!data) return false;
@@ -48,6 +52,30 @@ export default function PortalQuoteDetailPage() {
     const status = (data.status || '').toUpperCase();
     return !status || PDF_LIKELY_STATUSES.has(status);
   }, [data]);
+
+  const openQuotePdf = (quoteId: string, name: string) => {
+    setPdfError(null);
+    setPdfPending(true);
+    setPdfReadyBlob(null);
+    setPdfReadyFileName(`${name || 'quotation'}.pdf`);
+    setPdfReadyOpen(true);
+    void portalQuotationsService
+      .getPdfBlob(quoteId, name || 'quotation')
+      .then(({ blob, fileName }) => {
+        setPdfReadyBlob(blob);
+        setPdfReadyFileName(fileName);
+      })
+      .catch((err) => {
+        setPdfReadyOpen(false);
+        setPdfUnavailable(true);
+        setPdfError(
+          err instanceof PortalApiError || err instanceof Error
+            ? err.message
+            : 'PDF is not ready for this quotation yet.',
+        );
+      })
+      .finally(() => setPdfPending(false));
+  };
 
   if (isLoading) {
     return <PortalLoadingState label="Loading quotation…" />;
@@ -105,25 +133,10 @@ export default function PortalQuoteDetailPage() {
                 size="sm"
                 variant="secondary"
                 disabled={pdfPending}
-                onClick={() => {
-                  setPdfError(null);
-                  setPdfPending(true);
-                  const quoteId = id || data.id;
-                  void portalQuotationsService
-                    .downloadPdf(quoteId, data.number || 'quotation')
-                    .catch((err) => {
-                      setPdfUnavailable(true);
-                      setPdfError(
-                        err instanceof PortalApiError || err instanceof Error
-                          ? err.message
-                          : 'PDF is not ready for this quotation yet.',
-                      );
-                    })
-                    .finally(() => setPdfPending(false));
-                }}
+                onClick={() => openQuotePdf(id || data.id, data.number || 'quotation')}
               >
                 <Download size={14} aria-hidden="true" />
-                {pdfPending ? 'Downloading…' : 'Download PDF'}
+                {pdfPending ? 'Preparing…' : 'Download PDF'}
               </Button>
             ) : null}
           </div>
@@ -249,6 +262,19 @@ export default function PortalQuoteDetailPage() {
           </PortalAnimatedList>
         )}
       </PortalPanel>
+
+      <PdfReadyModal
+        open={pdfReadyOpen}
+        onClose={() => {
+          setPdfReadyOpen(false);
+          setPdfReadyBlob(null);
+        }}
+        blob={pdfReadyBlob}
+        title="Quotation PDF ready"
+        fileName={pdfReadyFileName}
+        skipBranding
+        description="Your quotation PDF was created successfully."
+      />
     </div>
   );
 }

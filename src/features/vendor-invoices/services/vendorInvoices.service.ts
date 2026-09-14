@@ -4,15 +4,21 @@ import { periodQueryParams } from '@/lib/apiPeriod';
 import type { PaymentProof, UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
 import { normalizePaymentProof, normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
 import {
+  buildPaymentProofUploadFields,
   formatPaymentProofUploadError,
   postPaymentProofMultipart,
 } from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
 import { formatPdfFilename, stripPdfExtension } from '@/features/files/utils/pdfFilename';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
 import { generateInvoicePdf } from '@/features/invoices/utils/generateInvoicePdf';
 import { portalInvoiceToPdfModel } from '@/features/invoices/utils/invoiceToPdfModel';
 import { useVendorAuthStore } from '@/features/vendor-auth/store/vendorAuthStore';
-import { downloadVendorBlob, resolveVendorDownloadUrl } from '@/features/vendor-shared/downloadVendorBlob';
+import {
+  downloadVendorBlob,
+  fetchVendorBlob,
+  resolveVendorDownloadUrl,
+} from '@/features/vendor-shared/downloadVendorBlob';
 import { safeDownloadFilename } from '@/features/vendor-shared/normalize';
 import { postVendorWithOptionalFile } from '@/features/vendor-shared/vendorMultipart';
 import { vendorInvoicePdfErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
@@ -40,10 +46,20 @@ function friendlyVendorInvoicePdfError(err: unknown): VendorApiError {
   return new VendorApiError(message, status);
 }
 
-async function downloadPdfFromUrl(url: string, fallbackName: string): Promise<void> {
+async function fetchPdfFromUrl(
+  url: string,
+  fallbackName: string,
+): Promise<{ blob: Blob; fileName: string }> {
   const safeName = safeDownloadFilename(fallbackName, 'invoice.pdf');
   const name = safeName.toLowerCase().endsWith('.pdf') ? safeName : `${safeName}.pdf`;
-  await downloadVendorBlob(resolveVendorDownloadUrl(url), name, { accept: PDF_ACCEPT });
+  const result = await fetchVendorBlob(resolveVendorDownloadUrl(url), name, { accept: PDF_ACCEPT });
+  if (!(await blobLooksLikePdf(result.blob))) {
+    throw new VendorApiError(
+      'Download was expected to be a PDF but the server returned a non-PDF response.',
+      400,
+    );
+  }
+  return { blob: result.blob, fileName: result.filename };
 }
 
 export const vendorInvoicesService = {
@@ -80,15 +96,7 @@ export const vendorInvoicesService = {
         vendorApiClient,
         VENDOR_INVOICES_API.paymentProofs(invoiceId),
         file,
-        {
-          ...(dto.amount != null && Number.isFinite(dto.amount)
-            ? { amount: String(dto.amount) }
-            : {}),
-          ...(dto.payment_date ? { payment_date: dto.payment_date } : {}),
-          ...(dto.reference ? { reference: dto.reference } : {}),
-          ...(dto.notes ? { notes: dto.notes } : {}),
-          ...(dto.currency_code ? { currency_code: dto.currency_code } : {}),
-        },
+        buildPaymentProofUploadFields(dto, 'portal'),
       );
       const proof = normalizePaymentProof(data);
       if (!proof) throw new VendorApiError('Upload failed — server returned an unexpected response.', 500);
@@ -115,11 +123,11 @@ export const vendorInvoicesService = {
     return detail;
   },
 
-  async downloadPdf(
+  async getPdfBlob(
     id: string,
     fallbackName = 'invoice.pdf',
     pdfUrl?: string,
-  ): Promise<void> {
+  ): Promise<{ blob: Blob; fileName: string }> {
     const safeName = safeDownloadFilename(fallbackName, 'invoice.pdf');
     const ref = stripPdfExtension(safeName) || 'invoice';
     const filename = formatPdfFilename(ref, 'invoice');
@@ -161,8 +169,7 @@ export const vendorInvoicesService = {
             },
           ),
         );
-        triggerBlobDownload(blob, formatPdfFilename(detail.number || ref, 'invoice'));
-        return;
+        return { blob, fileName: formatPdfFilename(detail.number || ref, 'invoice') };
       } catch {
         /* fall through to server PDF */
       }
@@ -171,18 +178,35 @@ export const vendorInvoicesService = {
     const resolvedPdfUrl = pdfUrl?.trim() || detail?.pdfUrl;
     if (resolvedPdfUrl) {
       try {
-        await downloadPdfFromUrl(resolvedPdfUrl, filename);
-        return;
+        return await fetchPdfFromUrl(resolvedPdfUrl, filename);
       } catch {
         /* fall through to generated PDF route */
       }
     }
 
     try {
-      await downloadVendorBlob(VENDOR_INVOICES_API.pdf(id), filename, { accept: PDF_ACCEPT });
+      const result = await fetchVendorBlob(VENDOR_INVOICES_API.pdf(id), filename, {
+        accept: PDF_ACCEPT,
+      });
+      if (!(await blobLooksLikePdf(result.blob))) {
+        throw new VendorApiError(
+          'Download was expected to be a PDF but the server returned a non-PDF response.',
+          400,
+        );
+      }
+      return { blob: result.blob, fileName: result.filename };
     } catch (primaryErr) {
       throw friendlyVendorInvoicePdfError(primaryErr);
     }
+  },
+
+  async downloadPdf(
+    id: string,
+    fallbackName = 'invoice.pdf',
+    pdfUrl?: string,
+  ): Promise<void> {
+    const { blob, fileName } = await this.getPdfBlob(id, fallbackName, pdfUrl);
+    triggerBlobDownload(blob, fileName);
   },
 
   async submit(dto: VendorInvoiceSubmitDto): Promise<VendorInvoiceDetail | null> {

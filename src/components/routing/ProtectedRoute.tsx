@@ -10,6 +10,8 @@ interface ProtectedRouteProps {
   redirectTo?:           string
   requirePermissions?:   PermissionKey[]
   requireAnyPermission?: PermissionKey[]
+  /** Matrix module key from GET /users/permission-matrix (e.g. `wms`). */
+  requireMatrixModule?:  string
   requireRole?:          string
   /** Pass if any of these role slugs is enough (e.g. admin | tenant_admin). */
   requireAnyRole?:       string[]
@@ -19,10 +21,11 @@ export default function ProtectedRoute({
   redirectTo = '/login',
   requirePermissions,
   requireAnyPermission,
+  requireMatrixModule,
   requireRole,
   requireAnyRole,
 }: ProtectedRouteProps) {
-  const { isAuthenticated, isLoading, hasPermission, hasAnyPermission, hasRole } = useAuth()
+  const { isAuthenticated, isLoading, hasPermission, hasAnyPermission, hasMatrixModule, hasRole } = useAuth()
   const accessToken = useAuthStore((s) => s.accessToken)
   const storeAuthenticated = useAuthStore((s) => s.isAuthenticated && Boolean(s.accessToken))
   const storeUser = useAuthStore((s) => s.user)
@@ -53,6 +56,7 @@ export default function ProtectedRoute({
 
   // ── Permission / role check
   const denied =
+    (requireMatrixModule && !hasMatrixModule(requireMatrixModule, 'see')) ||
     (requirePermissions   && !hasPermission(...requirePermissions))   ||
     (requireAnyPermission && !hasAnyPermission(...requireAnyPermission)) ||
     roleDenied

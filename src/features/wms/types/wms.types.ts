@@ -1,5 +1,12 @@
 export type WmsValuationMethod = 'FIFO' | 'LIFO';
 
+/** Master warehouse row for WMS form dropdowns (from GET /wms/warehouses or /masters/warehouses). */
+export interface WmsWarehouseSummary {
+  id: string;
+  code?: string;
+  name?: string;
+}
+
 export interface WmsSettings {
   valuation_method: WmsValuationMethod;
   default_free_days: number;

@@ -20,10 +20,182 @@ import {
   mergeStaffPermissions,
   resolveAuthRoleSlug,
 } from '@/features/users/constants/userPermissions'
+import {
+  hasMatrixModuleAccess,
+  type MatrixAccessLevel,
+} from '@/features/users/utils/matrixPermissionAccess'
 import { bootstrapLocaleSession, clearLocaleSession } from '@/features/locale/bootstrap/localeBootstrap'
 import { pickPreferredCountryCode } from '@/store/locale/localeSlice'
 import { useAuthStore } from '@/store/authStore'
+import { warehouseSummaryFromRecord } from '@/features/wms/utils/normalizeWms'
 import type { AuthUser, PermissionKey, Role } from '@/types/auth.types'
+
+type MeMatrixGrant = NonNullable<AuthUser['permissionMatrix']>[number]
+
+function parseMeAccess(raw: unknown): MeMatrixGrant['access'] | null {
+  if (typeof raw !== 'string') return null
+  const v = raw.trim().toLowerCase()
+  if (v === 'none' || v === 'read' || v === 'write') return v
+  if (v === 'read_write' || v === 'read-write' || v === 'full') return 'write'
+  if (v === 'view' || v === 'readonly') return 'read'
+  return null
+}
+
+/** Effective matrix summary + synthetic JWT-style keys from GET /auth/me. */
+function extractMePermissionMatrix(record: Record<string, unknown>): {
+  summary: MeMatrixGrant[]
+  keys: string[]
+} {
+  const summary: MeMatrixGrant[] = []
+  const keys: string[] = []
+
+  const pushGrant = (module: string, submodule: string, access: MeMatrixGrant['access']) => {
+    if (!module || !submodule) return
+    summary.push({ module, submodule, access })
+    if (access === 'none') return
+    const levels =
+      access === 'write' ? (['see', 'read', 'write'] as const) : (['see', 'read'] as const)
+    for (const level of levels) {
+      if (submodule === 'module') {
+        keys.push(`${module}_module.${level}`)
+      } else {
+        keys.push(`${module}_${submodule}.${level}`)
+      }
+    }
+    // Classic bridge-style hints (BE also puts these on JWT after re-login)
+    if (access === 'read' || access === 'write') {
+      keys.push(`${module}.view`)
+      keys.push(`${module}.read`)
+    }
+    if (access === 'write') {
+      keys.push(`${module}.write`)
+      keys.push(`${module}.manage`)
+    }
+  }
+
+  const root =
+    record.permission_matrix ??
+    record.permissionMatrix ??
+    record.effective_access ??
+    record.access_summary
+
+  const asObj = root && typeof root === 'object' && !Array.isArray(root)
+    ? (root as Record<string, unknown>)
+    : null
+
+  const list: unknown[] =
+    (Array.isArray(root) && root) ||
+    (Array.isArray(asObj?.grants) && (asObj!.grants as unknown[])) ||
+    (Array.isArray(asObj?.permission_grants) && (asObj!.permission_grants as unknown[])) ||
+    (Array.isArray(asObj?.tree) && (asObj!.tree as unknown[])) ||
+    (Array.isArray(asObj?.modules) && (asObj!.modules as unknown[])) ||
+    []
+
+  for (const row of list) {
+    if (!row || typeof row !== 'object') continue
+    const r = row as Record<string, unknown>
+    const module =
+      typeof r.module === 'string'
+        ? r.module
+        : typeof r.key === 'string'
+          ? r.key
+          : ''
+    const nested =
+      (Array.isArray(r.submodules) && r.submodules) ||
+      (Array.isArray(r.children) && r.children) ||
+      []
+
+    if (nested.length) {
+      for (const sub of nested) {
+        if (!sub || typeof sub !== 'object') continue
+        const s = sub as Record<string, unknown>
+        const submodule =
+          typeof s.submodule === 'string'
+            ? s.submodule
+            : typeof s.key === 'string'
+              ? s.key
+              : ''
+        const access =
+          parseMeAccess(s.access) ??
+          (s.write === true ? 'write' : s.read === true || s.see === true ? 'read' : 'none')
+        pushGrant(module, submodule, access)
+      }
+      continue
+    }
+
+    const submodule = typeof r.submodule === 'string' ? r.submodule : ''
+    const access =
+      parseMeAccess(r.access) ??
+      (r.write === true ? 'write' : r.read === true || r.see === true ? 'read' : 'none')
+    if (module && submodule) pushGrant(module, submodule, access)
+  }
+
+  return { summary, keys: [...new Set(keys)] }
+}
+
+function pickWarehouseSummariesFromMe(record: Record<string, unknown>): {
+  warehouseId?: string
+  assignedWarehouse?: AuthUser['assignedWarehouse']
+  allowedWarehouses?: AuthUser['allowedWarehouses']
+} {
+  const allowedKeys = [
+    'warehouses',
+    'allowed_warehouses',
+    'allowedWarehouses',
+    'scoped_warehouses',
+    'scopedWarehouses',
+  ] as const
+
+  const allowedWarehouses: NonNullable<AuthUser['allowedWarehouses']> = []
+  const seen = new Set<string>()
+
+  const push = (raw: unknown) => {
+    const row = warehouseSummaryFromRecord(raw)
+    if (!row || seen.has(row.id)) return
+    seen.add(row.id)
+    allowedWarehouses.push(row)
+  }
+
+  for (const key of allowedKeys) {
+    const list = record[key]
+    if (!Array.isArray(list)) continue
+    for (const row of list) push(row)
+  }
+
+  for (const key of ['warehouse', 'assigned_warehouse', 'assignedWarehouse', 'default_warehouse', 'defaultWarehouse'] as const) {
+    push(record[key])
+  }
+
+  const idCandidates = [
+    record.warehouse_id,
+    record.default_warehouse_id,
+    record.warehouseId,
+    record.defaultWarehouseId,
+    record.assigned_warehouse_id,
+  ]
+  let warehouseId: string | undefined
+  for (const c of idCandidates) {
+    if (typeof c === 'string' && /^[0-9a-f-]{36}$/i.test(c.trim())) {
+      warehouseId = c.trim()
+      break
+    }
+  }
+
+  const assignedWarehouse =
+    allowedWarehouses.find((w) => w.id === warehouseId) ??
+    allowedWarehouses[0] ??
+    (warehouseId ? { id: warehouseId } : undefined)
+
+  if (assignedWarehouse && !warehouseId) {
+    warehouseId = assignedWarehouse.id
+  }
+
+  return {
+    ...(warehouseId ? { warehouseId } : {}),
+    ...(assignedWarehouse ? { assignedWarehouse } : {}),
+    ...(allowedWarehouses.length ? { allowedWarehouses } : {}),
+  }
+}
 
 function authMeErrorStatus(err: unknown): number | undefined {
   return (err as { response?: { status?: number } })?.response?.status
@@ -50,6 +222,8 @@ export interface AuthContextValue {
   isLoading:        boolean
   hasPermission:    (...keys: PermissionKey[]) => boolean
   hasAnyPermission: (...keys: PermissionKey[]) => boolean
+  /** Access from JWT matrix keys (`{module}_module.see|read|write`, `{module}.view`, …). */
+  hasMatrixModule:  (moduleKey: string, level?: MatrixAccessLevel) => boolean
   hasRole:          (roleSlug: string) => boolean
   logout:           () => Promise<void>
 }
@@ -138,13 +312,14 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
   const fromMe = normalizePermissionKeys(record.permissions)
   const fromJwt = permissionsFromAccessToken(accessToken)
   const fromStaffFlags = menuKeysFromStaffAccess(record)
+  const matrixFromMe = extractMePermissionMatrix(record)
   const isTenantAdmin =
     isTenantUserManagerRole(role.slug) || isTenantUserManagerRole(role.name)
 
   // Staff: Tenant Admin functional/visibility flags own `menu_*` when present on /auth/me.
   // JWT role menus must not re-open Finance/Ops the admin turned off.
   const permissions = mergeStaffPermissions({
-    fromMe,
+    fromMe: [...fromMe, ...normalizePermissionKeys(matrixFromMe.keys)],
     fromJwt,
     fromStaffFlags,
     staffFlagsPresent: hasStaffAccessFlags(record),
@@ -156,16 +331,20 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     ? pickMustChangePassword(record)
     : undefined
 
+  const warehouseFromMe = pickWarehouseSummariesFromMe(record)
+
   return {
     id: id || email,
     name,
     email,
     tenantId,
     companyId: companyId || undefined,
+    ...warehouseFromMe,
     role,
     permissions,
     product: (record.product as AuthUser['product']) || 'KingFisher Tech Gold',
     mustChangePassword,
+    ...(matrixFromMe.summary.length ? { permissionMatrix: matrixFromMe.summary } : {}),
   }
 }
 
@@ -177,10 +356,16 @@ function seedUserFromAuthStore(accessToken: string): AuthUser | null {
   const roleSlug = resolveAuthRoleSlug(storeUser.role)
   const fromJwt = permissionsFromAccessToken(accessToken)
   const isTenantAdmin = isTenantUserManagerRole(roleSlug)
-  let permissions = [...new Set(fromJwt)] as PermissionKey[]
-  if (!isTenantAdmin) {
-    permissions = [...new Set([...permissions, 'menu_dashboard', 'menu_settings'])] as PermissionKey[]
-  }
+  const fromStaffFlags = menuKeysFromStaffAccess({ role: roleSlug })
+  const permissions = mergeStaffPermissions({
+    fromMe: [],
+    fromJwt,
+    fromStaffFlags,
+    // Only treat role-derived menus as authoritative when they actually grant keys
+    // (e.g. WAREHOUSE_STAFF → menu_warehouse). Otherwise keep JWT menus until /me.
+    staffFlagsPresent: fromStaffFlags.length > 0,
+    isTenantAdmin,
+  })
 
   const id = storeUser.id || storeUser.email
   if (!id) return null
@@ -332,6 +517,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return keys.some((k) => user.permissions.includes(k))
   }, [user])
 
+  const hasMatrixModule = useCallback(
+    (moduleKey: string, level: MatrixAccessLevel = 'see') => {
+      if (DEV_BYPASS_AUTH) return true
+      if (!user) return false
+      if (isTenantUserManagerRole(user.role.slug) || isTenantUserManagerRole(user.role.name)) {
+        return true
+      }
+      return hasMatrixModuleAccess(user.permissions, moduleKey, level)
+    },
+    [user],
+  )
+
   const hasRole = useCallback((slug: string) => {
     if (DEV_BYPASS_AUTH) return true
     if (!user?.role) return false
@@ -353,9 +550,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     hasPermission,
     hasAnyPermission,
+    hasMatrixModule,
     hasRole,
     logout,
-  }), [user, isLoading, hasPermission, hasAnyPermission, hasRole, logout])
+  }), [user, isLoading, hasPermission, hasAnyPermission, hasMatrixModule, hasRole, logout])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

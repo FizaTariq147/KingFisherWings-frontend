@@ -23,11 +23,13 @@ export interface PaymentProof {
 }
 
 export interface UploadPaymentProofDto {
+  /** Maps to multipart `amount_claimed` (backend validated DTO). */
   amount?: number;
+  /** YYYY-MM-DD → multipart `payment_date`. */
   payment_date?: string;
   reference?: string;
   notes?: string;
-  /** ISO currency from the invoice when known (helps backend avoid null crashes). */
+  /** Optional; ISO currency from the open invoice. */
   currency_code?: string;
 }
 

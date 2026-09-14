@@ -1,3 +1,4 @@
+import { isUuid } from '@/lib/isUuid';
 import type {
   WmsDocument,
   WmsItem,
@@ -5,6 +6,7 @@ import type {
   WmsPaginationMeta,
   WmsSettings,
   WmsStockRow,
+  WmsWarehouseSummary,
 } from '../types/wms.types';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -54,6 +56,7 @@ export function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
     envelope.items,
     envelope.results,
     envelope.rows,
+    envelope.warehouses,
   ];
 
   for (const candidate of candidates) {
@@ -66,6 +69,7 @@ export function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
       (Array.isArray(nested.items) && nested.items) ||
       (Array.isArray(nested.results) && nested.results) ||
       (Array.isArray(nested.rows) && nested.rows) ||
+      (Array.isArray(nested.warehouses) && nested.warehouses) ||
       (Array.isArray(nested.data) && nested.data) ||
       null;
     if (list) {
@@ -166,4 +170,60 @@ export function normalizeStockRows(items: unknown[]): WmsStockRow[] {
 
 export function displayDocNumber(doc: WmsDocument): string {
   return doc.document_number || doc.id.slice(0, 8);
+}
+
+export function wmsWarehouseLabel(row: Pick<WmsWarehouseSummary, 'code' | 'name' | 'id'>): string {
+  return [row.code, row.name].filter(Boolean).join(' — ') || row.id;
+}
+
+export function warehouseSummaryFromRecord(raw: unknown): WmsWarehouseSummary | null {
+  const r = asRecord(raw);
+  if (!r) return null;
+  const id = pickString(r, 'id', 'warehouse_id', 'warehouseId');
+  if (!id || !isUuid(id)) return null;
+  return {
+    id,
+    code: pickString(r, 'code', 'warehouse_code', 'warehouseCode') || undefined,
+    name: pickString(r, 'name', 'warehouse_name', 'warehouseName', 'label') || undefined,
+  };
+}
+
+export function mergeWarehouseSummaries(
+  ...groups: Array<WmsWarehouseSummary[] | undefined>
+): WmsWarehouseSummary[] {
+  const map = new Map<string, WmsWarehouseSummary>();
+  for (const group of groups) {
+    for (const row of group ?? []) {
+      if (!row?.id || !isUuid(row.id)) continue;
+      const prev = map.get(row.id);
+      map.set(row.id, {
+        id: row.id,
+        code: row.code || prev?.code,
+        name: row.name || prev?.name,
+      });
+    }
+  }
+  return [...map.values()].sort((a, b) => wmsWarehouseLabel(a).localeCompare(wmsWarehouseLabel(b)));
+}
+
+/** Normalize GET /wms/warehouses or GET /masters/warehouses list payloads. */
+export function normalizeWmsWarehouses(raw: unknown): WmsWarehouseSummary[] {
+  const { items } = unwrapList(raw);
+  const out: WmsWarehouseSummary[] = [];
+  const seen = new Set<string>();
+
+  for (const row of items) {
+    const r = asRecord(row);
+    if (!r) continue;
+    const id = pickString(r, 'id', 'warehouse_id', 'warehouseId');
+    if (!id || !isUuid(id) || seen.has(id)) continue;
+    seen.add(id);
+    out.push({
+      id,
+      code: pickString(r, 'code', 'warehouse_code', 'warehouseCode') || undefined,
+      name: pickString(r, 'name', 'warehouse_name', 'warehouseName', 'label') || undefined,
+    });
+  }
+
+  return out.sort((a, b) => wmsWarehouseLabel(a).localeCompare(wmsWarehouseLabel(b)));
 }

@@ -577,7 +577,7 @@ export const router = createBrowserRouter([
             ],
           },
           {
-            element: <ProtectedRoute requirePermissions={['menu_hr']} />,
+            element: <ProtectedRoute requireMatrixModule="hr" />,
             children: [
               { path: '/hr', element: <HrMenuPage /> },
               { path: '/hr/employee-master', element: <EmployeesListPage /> },
@@ -594,6 +594,11 @@ export const router = createBrowserRouter([
               { path: '/hr/evaluations', element: <EvaluationsPage /> },
               { path: '/hr/letters', element: <LettersPage /> },
               { path: '/hr/reports', element: <HrReportsPage /> },
+            ],
+          },
+          {
+            element: <ProtectedRoute requireMatrixModule="wms" />,
+            children: [
               { path: '/warehouse', element: <WarehouseMenuPage /> },
               { path: '/warehouse/settings', element: <WmsSettingsPage /> },
               { path: '/warehouse/items', element: <WmsItemsListPage /> },

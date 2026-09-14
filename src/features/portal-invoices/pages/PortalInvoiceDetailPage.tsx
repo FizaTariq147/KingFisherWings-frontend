@@ -14,17 +14,42 @@ import {
   PortalPanel,
   PortalStatCard,
 } from '@/features/portal-auth/components/portal-ui';
-import { useDownloadPortalInvoicePdf, usePortalInvoice, usePortalInvoicePaymentProofs, useUploadPortalInvoicePaymentProof } from '../hooks/usePortalInvoices';
+import { usePortalInvoice, usePortalInvoicePaymentProofs, usePortalInvoicePdfBlob, useUploadPortalInvoicePaymentProof } from '../hooks/usePortalInvoices';
 import { PaymentProofList, PaymentProofUploadForm } from '@/features/payment-proofs/components/PaymentProofPanels';
+import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 
 export default function PortalInvoiceDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError, error, refetch } = usePortalInvoice(id);
-  const download = useDownloadPortalInvoicePdf();
+  const pdfBlob = usePortalInvoicePdfBlob();
   const { data: proofs = [] } = usePortalInvoicePaymentProofs(id);
   const uploadProof = useUploadPortalInvoicePaymentProof(id);
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
+  const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
+  const [pdfReadyFileName, setPdfReadyFileName] = useState('invoice.pdf');
+
+  const openInvoicePdf = (invoiceId: string, name: string) => {
+    setPdfError(null);
+    setPdfReadyBlob(null);
+    setPdfReadyFileName(`${name || 'invoice'}.pdf`);
+    setPdfReadyOpen(true);
+    void pdfBlob
+      .mutateAsync({ id: invoiceId, name })
+      .then(({ blob, fileName }) => {
+        setPdfReadyBlob(blob);
+        setPdfReadyFileName(fileName);
+      })
+      .catch((err) => {
+        setPdfReadyOpen(false);
+        setPdfError(
+          err instanceof PortalApiError || err instanceof Error
+            ? err.message
+            : 'Could not download invoice PDF.',
+        );
+      });
+  };
 
   if (isLoading) return <PortalLoadingState label="Loading invoice…" />;
   if (isError || !data) {
@@ -74,20 +99,9 @@ export default function PortalInvoiceDetailPage() {
                 Shipment
               </Button>
             ) : null}
-            <Button type="button" size="sm" variant="secondary" disabled={download.isPending}
-              onClick={() => {
-                setPdfError(null);
-                void download
-                  .mutateAsync({ id: data.id, name: data.number })
-                  .catch((err) => {
-                    setPdfError(
-                      err instanceof PortalApiError || err instanceof Error
-                        ? err.message
-                        : 'Could not download invoice PDF.',
-                    );
-                  });
-              }}>
-              <Download size={14} /> {download.isPending ? 'Downloading…' : 'Download PDF'}
+            <Button type="button" size="sm" variant="secondary" disabled={pdfBlob.isPending}
+              onClick={() => openInvoicePdf(data.id, data.number)}>
+              <Download size={14} /> {pdfBlob.isPending ? 'Preparing…' : 'Download PDF'}
             </Button>
           </>
         }
@@ -124,7 +138,7 @@ export default function PortalInvoiceDetailPage() {
       </PortalPanel>
       <PortalPanel padded className="space-y-4">
         <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Payment proofs</h2>
-        <PaymentProofList proofs={proofs} />
+        <PaymentProofList proofs={proofs} viewer="portal" />
         <PaymentProofUploadForm
           disabled={uploadProof.isPending}
           currencyCode={data.currencyCode}
@@ -133,6 +147,19 @@ export default function PortalInvoiceDetailPage() {
           }}
         />
       </PortalPanel>
+
+      <PdfReadyModal
+        open={pdfReadyOpen}
+        onClose={() => {
+          setPdfReadyOpen(false);
+          setPdfReadyBlob(null);
+        }}
+        blob={pdfReadyBlob}
+        title="Invoice PDF ready"
+        fileName={pdfReadyFileName}
+        skipBranding
+        description="Your invoice PDF was created successfully."
+      />
     </div>
   );
 }

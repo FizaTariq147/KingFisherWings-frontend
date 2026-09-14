@@ -3,31 +3,207 @@ import { Link } from 'react-router-dom';
 import { isUuid } from '@/lib/isUuid';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { useParties } from '@/features/parties/hooks/useParties';
+import { useJobs } from '@/features/jobs/hooks/useJobs';
+import { useAuth } from '@/hooks/useAuth';
 import { WMS_ROUTE_PREFIX } from '../api/wms.api';
-import { useWmsItems } from '../hooks/useWms';
+import { useWmsAsns, useWmsItems, useWmsWarehouses } from '../hooks/useWms';
+import {
+  displayDocNumber,
+  mergeWarehouseSummaries,
+  wmsWarehouseLabel,
+} from '../utils/normalizeWms';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
 /** Backend GET /wms/items enforces limit max 100. */
 const WMS_ITEM_OPTIONS_LIMIT = 100;
 
+type SelectOption = { value: string; label: string };
+
+/**
+ * Warehouse options — registered Masters → Warehouses (GET /masters/warehouses),
+ * merged with WMS activity and any warehouse rows returned on GET /auth/me.
+ */
 export function useWmsWarehouseOptions() {
-  const { data: warehouses = [], isLoading } = useMasterOptions(
-    'warehouses',
-    MASTER_PATHS.warehouses,
-    true,
+  const { user } = useAuth();
+
+  const preferredId = useMemo(() => {
+    const fromUser = user?.warehouseId ?? user?.assignedWarehouse?.id;
+    return fromUser && isUuid(fromUser) ? fromUser : undefined;
+  }, [user?.warehouseId, user?.assignedWarehouse?.id]);
+
+  const authWarehouses = useMemo(
+    () =>
+      mergeWarehouseSummaries(
+        user?.allowedWarehouses,
+        user?.assignedWarehouse ? [user.assignedWarehouse] : undefined,
+      ),
+    [user?.allowedWarehouses, user?.assignedWarehouse],
   );
+
+  const warehousesQuery = useWmsWarehouses(preferredId);
+
+  const warehouses = useMemo(
+    () => mergeWarehouseSummaries(authWarehouses, warehousesQuery.data),
+    [authWarehouses, warehousesQuery.data],
+  );
+
   const options = useMemo(() => {
-    const opts: Array<{ value: string; label: string }> = [{ value: '', label: 'Select warehouse…' }];
+    const opts: SelectOption[] = [];
     for (const w of warehouses) {
-      if (!isUuid(String(w.id))) continue;
+      opts.push({ value: w.id, label: wmsWarehouseLabel(w) });
+    }
+
+    const loading = warehousesQuery.isLoading;
+
+    const placeholder: SelectOption = {
+      value: '',
+      label: loading
+        ? 'Loading warehouses…'
+        : opts.length
+          ? 'Select warehouse…'
+          : warehousesQuery.isError
+            ? 'Could not load warehouses'
+            : 'No master warehouses found',
+    };
+
+    return [placeholder, ...opts];
+  }, [warehouses, warehousesQuery.isLoading, warehousesQuery.isError]);
+
+  const isLoading = warehousesQuery.isLoading;
+  const isError = warehousesQuery.isError && warehouses.length === 0;
+  const errorMessage = isError ? getErrorMessage(warehousesQuery.error) : null;
+
+  const refetch = () => {
+    void warehousesQuery.refetch();
+  };
+
+  return {
+    options,
+    isLoading,
+    isError,
+    errorMessage,
+    preferredId,
+    selectableCount: options.filter((o) => o.value).length,
+    refetch,
+  };
+}
+
+/** Shown when master warehouses cannot be loaded into GRN/GDO/ASN forms. */
+export function WmsWarehousesEmptyHint({
+  selectableCount,
+  isLoading,
+  errorMessage,
+  onRetry,
+}: {
+  selectableCount: number;
+  isLoading?: boolean;
+  errorMessage?: string | null;
+  onRetry?: () => void;
+}) {
+  if (isLoading || selectableCount > 0) return null;
+
+  return (
+    <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+      {errorMessage
+        ? `Could not load master warehouses: ${errorMessage}. `
+        : 'No master warehouses are available for this user. '}
+      Register warehouses under <strong>Masters → Warehouses</strong>. Warehouse staff need{' '}
+      <strong>WMS read</strong> and either <strong>GET /masters/warehouses</strong> access or a scoped
+      warehouse list on <strong>GET /auth/me</strong>.{' '}
+      {onRetry ? (
+        <button type="button" className="font-medium underline" onClick={onRetry}>
+          Retry
+        </button>
+      ) : null}
+    </p>
+  );
+}
+
+/** Party picker — same source as Payment Request / ERP forms. */
+export function useWmsPartyOptions() {
+  const { data, isLoading, isError } = useParties({ page: 1, limit: 200, order: 'asc' });
+  const parties = data?.parties ?? [];
+  const options = useMemo(() => {
+    const opts: SelectOption[] = [
+      {
+        value: '',
+        label: isLoading
+          ? 'Loading parties…'
+          : isError
+            ? 'Failed to load parties'
+            : parties.length
+              ? 'Select party (optional)…'
+              : 'No parties found',
+      },
+    ];
+    for (const p of parties) {
+      if (!isUuid(p.id)) continue;
       opts.push({
-        value: String(w.id),
-        label: [w.code, w.name].filter(Boolean).join(' — ') || String(w.id),
+        value: p.id,
+        label: p.code ? `${p.name} (${p.code})` : p.name,
       });
     }
     return opts;
-  }, [warehouses]);
-  return { options, isLoading };
+  }, [parties, isLoading, isError]);
+  return { options, isLoading, isError, selectableCount: options.filter((o) => o.value).length };
+}
+
+/** Job picker for optional job_id on ASN/GRN/GDO. */
+export function useWmsJobOptions() {
+  const { data, isLoading, isError } = useJobs({ page: 1, limit: 100 });
+  const list = data?.jobs ?? [];
+  const options = useMemo(() => {
+    const opts: SelectOption[] = [
+      {
+        value: '',
+        label: isLoading
+          ? 'Loading jobs…'
+          : isError
+            ? 'Failed to load jobs'
+            : list.length
+              ? 'Select job (optional)…'
+              : 'No jobs found',
+      },
+    ];
+    for (const j of list) {
+      if (!j.id || !isUuid(j.id)) continue;
+      opts.push({
+        value: j.id,
+        label: j.job_number || j.id,
+      });
+    }
+    return opts;
+  }, [list, isLoading, isError]);
+  return { options, isLoading, isError, selectableCount: options.filter((o) => o.value).length };
+}
+
+/** ASN picker for optional asn_id on GRN. */
+export function useWmsAsnOptions() {
+  const { data = [], isLoading, isError } = useWmsAsns();
+  const options = useMemo(() => {
+    const opts: SelectOption[] = [
+      {
+        value: '',
+        label: isLoading
+          ? 'Loading ASNs…'
+          : isError
+            ? 'Failed to load ASNs'
+            : data.length
+              ? 'Select ASN (optional)…'
+              : 'No ASNs found',
+      },
+    ];
+    for (const doc of data) {
+      if (!doc.id || !isUuid(doc.id)) continue;
+      opts.push({
+        value: doc.id,
+        label: displayDocNumber(doc),
+      });
+    }
+    return opts;
+  }, [data, isLoading, isError]);
+  return { options, isLoading, isError, selectableCount: options.filter((o) => o.value).length };
 }
 
 /** UOM picker options from Masters → Units of Measure (code is stored on WMS items). */
@@ -135,7 +311,7 @@ export function WmsSelect({
   const fieldId = id || label.toLowerCase().replace(/\s+/g, '-');
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={fieldId} className="text-xs font-medium text-[var(--color-neutral-600)]">
+      <label htmlFor={fieldId} className="text-xs font-medium text-[var(--color-neutral-500)]">
         {label}
         {required ? <span className="text-[var(--color-danger-500)]"> *</span> : null}
       </label>

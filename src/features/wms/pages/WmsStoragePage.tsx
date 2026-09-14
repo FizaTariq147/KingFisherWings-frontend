@@ -1,15 +1,25 @@
 import { useState } from 'react';
-import { Calculator, RefreshCw, Save } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { FieldError } from '@/components/ui/FieldError/FieldError';
 import { isUuid } from '@/lib/isUuid';
 import { useInlineValidation } from '@/lib/validation';
 import { WMS_ROUTE_PREFIX, WMS_STORAGE_CHARGE_STATUSES } from '../api/wms.api';
 import { WmsCurrencyField } from '../components/WmsCurrencyField';
 import { WmsPageHeader } from '../components/WmsPageHeader';
-import { useWmsWarehouseOptions, WmsSelect } from '../components/WmsFormHelpers';
+import {
+  useWmsPartyOptions,
+  useWmsWarehouseOptions,
+  WmsSelect,
+} from '../components/WmsFormHelpers';
+import {
+  WmsFormAlert,
+  WmsFormCard,
+  WmsFormFooter,
+  WmsFormGrid,
+  WmsFormSpan2,
+} from '../components/WmsFormLayout';
 import {
   useCalculateWmsStorage,
   useInvoiceWmsStorage,
@@ -20,6 +30,7 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function WmsStoragePage() {
   const { options: warehouseOptions } = useWmsWarehouseOptions();
+  const { options: partyOptions } = useWmsPartyOptions();
   const calculateMutation = useCalculateWmsStorage();
   const invoiceMutation = useInvoiceWmsStorage();
   const calcValidation = useInlineValidation();
@@ -45,6 +56,10 @@ export default function WmsStoragePage() {
   const chargesEnabled = isUuid(chargesParams.party_id) && Boolean(chargesParams.status);
   const chargesQuery = useWmsStorageCharges(chargesParams, chargesEnabled);
 
+  const partyRequiredOptions = partyOptions.map((o) =>
+    o.value === '' ? { ...o, label: 'Select party…' } : o,
+  );
+
   const calcValues = (
     patch: Partial<{
       warehouse_id: string;
@@ -64,6 +79,18 @@ export default function WmsStoragePage() {
     rate_per_day: patch.rate_per_day ?? ratePerDay,
     currency_code: patch.currency_code ?? currencyCode,
   });
+
+  const resetCalc = () => {
+    setWarehouseId('');
+    setPartyId('');
+    setPeriodFrom('');
+    setPeriodTo('');
+    setFreeDays('');
+    setRatePerDay('');
+    setCurrencyCode('AED');
+    setCalcResult(null);
+    calcValidation.clearErrors();
+  };
 
   const handleCalculate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,129 +144,137 @@ export default function WmsStoragePage() {
         description="Calculate storage charges and create draft invoices."
       />
 
-      <Card className="max-w-xl space-y-4 p-4">
-        <h3 className="flex items-center gap-2 text-sm font-semibold">
-          <Calculator className="h-4 w-4" />
-          Calculate storage
-        </h3>
-        <form className="space-y-3" onSubmit={handleCalculate} noValidate>
-          <WmsSelect
-            label="Warehouse"
-            value={warehouseId}
-            onChange={(v) => {
-              setWarehouseId(v);
-              calcValidation.revalidate(calculateStorageSchema, calcValues({ warehouse_id: v }));
-            }}
-            onBlur={() =>
-              calcValidation.validatePath(calculateStorageSchema, calcValues(), 'warehouse_id')
-            }
-            options={warehouseOptions}
-            required
-            error={calcValidation.fieldError('warehouse_id')}
-          />
-          <Input
-            label="Party ID"
-            value={partyId}
-            error={calcValidation.fieldError('party_id')}
-            onChange={(e) => {
-              const next = e.target.value;
-              setPartyId(next);
-              calcValidation.revalidate(calculateStorageSchema, calcValues({ party_id: next }));
-            }}
-            onBlur={() =>
-              calcValidation.validatePath(calculateStorageSchema, calcValues(), 'party_id')
-            }
-            required
-          />
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Input
-              label="Period from"
-              type="date"
-              value={periodFrom}
-              error={calcValidation.fieldError('period_from')}
-              onChange={(e) => {
-                const next = e.target.value;
-                setPeriodFrom(next);
-                calcValidation.revalidate(calculateStorageSchema, calcValues({ period_from: next }));
-              }}
-              onBlur={() =>
-                calcValidation.validatePath(calculateStorageSchema, calcValues(), 'period_from')
-              }
-              required
-            />
-            <Input
-              label="Period to"
-              type="date"
-              value={periodTo}
-              error={calcValidation.fieldError('period_to')}
-              onChange={(e) => {
-                const next = e.target.value;
-                setPeriodTo(next);
-                calcValidation.revalidate(calculateStorageSchema, calcValues({ period_to: next }));
-              }}
-              onBlur={() =>
-                calcValidation.validatePath(calculateStorageSchema, calcValues(), 'period_to')
-              }
-              required
-            />
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Input
-              label="Free days"
-              type="number"
-              min={0}
-              value={freeDays}
-              error={calcValidation.fieldError('free_days')}
-              onChange={(e) => {
-                const next = e.target.value;
-                setFreeDays(next);
-                calcValidation.revalidate(calculateStorageSchema, calcValues({ free_days: next }));
-              }}
-              onBlur={() =>
-                calcValidation.validatePath(calculateStorageSchema, calcValues(), 'free_days')
-              }
-            />
-            <Input
-              label="Rate per day"
-              type="number"
-              min={0}
-              step="0.01"
-              value={ratePerDay}
-              error={calcValidation.fieldError('rate_per_day')}
-              onChange={(e) => {
-                const next = e.target.value;
-                setRatePerDay(next);
-                calcValidation.revalidate(calculateStorageSchema, calcValues({ rate_per_day: next }));
-              }}
-              onBlur={() =>
-                calcValidation.validatePath(calculateStorageSchema, calcValues(), 'rate_per_day')
-              }
-            />
-          </div>
-          <WmsCurrencyField
-            label="Currency"
-            value={currencyCode}
-            onChange={(v) => {
-              setCurrencyCode(v);
-              calcValidation.revalidate(calculateStorageSchema, calcValues({ currency_code: v }));
-            }}
-            error={calcValidation.fieldError('currency_code')}
-          />
-          <FieldError message={calcValidation.formError} />
-          <Button type="submit" disabled={calculateMutation.isPending}>
-            Calculate
-          </Button>
-        </form>
-        {calcResult ? (
-          <pre className="overflow-x-auto rounded bg-[var(--color-neutral-50)] p-2 text-xs">
-            {JSON.stringify(calcResult, null, 2)}
-          </pre>
-        ) : null}
-      </Card>
+      <div className="mx-auto max-w-3xl space-y-4">
+        <form className="space-y-4" onSubmit={handleCalculate} noValidate>
+          <WmsFormAlert message={calcValidation.formError} />
 
-      <Card className="p-4">
-        <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
-          <h3 className="text-sm font-semibold">Storage charges</h3>
+          <WmsFormCard title="Calculate storage">
+            <WmsFormGrid>
+              <WmsSelect
+                label="Warehouse"
+                value={warehouseId}
+                onChange={(v) => {
+                  setWarehouseId(v);
+                  calcValidation.revalidate(calculateStorageSchema, calcValues({ warehouse_id: v }));
+                }}
+                onBlur={() =>
+                  calcValidation.validatePath(calculateStorageSchema, calcValues(), 'warehouse_id')
+                }
+                options={warehouseOptions}
+                required
+                error={calcValidation.fieldError('warehouse_id')}
+              />
+              <WmsSelect
+                label="Party"
+                value={partyId}
+                onChange={(v) => {
+                  setPartyId(v);
+                  calcValidation.revalidate(calculateStorageSchema, calcValues({ party_id: v }));
+                }}
+                onBlur={() =>
+                  calcValidation.validatePath(calculateStorageSchema, calcValues(), 'party_id')
+                }
+                options={partyRequiredOptions}
+                required
+                error={calcValidation.fieldError('party_id')}
+              />
+              <Input
+                label="Period from"
+                type="date"
+                value={periodFrom}
+                error={calcValidation.fieldError('period_from')}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setPeriodFrom(next);
+                  calcValidation.revalidate(calculateStorageSchema, calcValues({ period_from: next }));
+                }}
+                onBlur={() =>
+                  calcValidation.validatePath(calculateStorageSchema, calcValues(), 'period_from')
+                }
+                required
+              />
+              <Input
+                label="Period to"
+                type="date"
+                value={periodTo}
+                error={calcValidation.fieldError('period_to')}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setPeriodTo(next);
+                  calcValidation.revalidate(calculateStorageSchema, calcValues({ period_to: next }));
+                }}
+                onBlur={() =>
+                  calcValidation.validatePath(calculateStorageSchema, calcValues(), 'period_to')
+                }
+                required
+              />
+              <Input
+                label="Free days"
+                type="number"
+                min={0}
+                value={freeDays}
+                error={calcValidation.fieldError('free_days')}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setFreeDays(next);
+                  calcValidation.revalidate(calculateStorageSchema, calcValues({ free_days: next }));
+                }}
+                onBlur={() =>
+                  calcValidation.validatePath(calculateStorageSchema, calcValues(), 'free_days')
+                }
+              />
+              <Input
+                label="Rate per day"
+                type="number"
+                min={0}
+                step="0.01"
+                value={ratePerDay}
+                error={calcValidation.fieldError('rate_per_day')}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setRatePerDay(next);
+                  calcValidation.revalidate(calculateStorageSchema, calcValues({ rate_per_day: next }));
+                }}
+                onBlur={() =>
+                  calcValidation.validatePath(calculateStorageSchema, calcValues(), 'rate_per_day')
+                }
+              />
+              <WmsFormSpan2>
+                <WmsCurrencyField
+                  label="Currency"
+                  value={currencyCode}
+                  onChange={(v) => {
+                    setCurrencyCode(v);
+                    calcValidation.revalidate(calculateStorageSchema, calcValues({ currency_code: v }));
+                  }}
+                  error={calcValidation.fieldError('currency_code')}
+                />
+              </WmsFormSpan2>
+            </WmsFormGrid>
+          </WmsFormCard>
+
+          <WmsFormFooter
+            onCancel={resetCalc}
+            submitLabel="Calculate"
+            isSubmitting={calculateMutation.isPending}
+          />
+        </form>
+
+        {calcResult ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Calculation result</CardTitle>
+            </CardHeader>
+            <pre className="overflow-x-auto p-4 pt-0 text-xs">
+              {JSON.stringify(calcResult, null, 2)}
+            </pre>
+          </Card>
+        ) : null}
+      </div>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between gap-2">
+          <CardTitle>Storage charges</CardTitle>
           <Button
             type="button"
             variant="secondary"
@@ -247,83 +282,86 @@ export default function WmsStoragePage() {
             disabled={!chargesEnabled || chargesQuery.isFetching}
           >
             <RefreshCw className={`h-4 w-4 ${chargesQuery.isFetching ? 'animate-spin' : ''}`} />
+            Refresh
           </Button>
-        </div>
+        </CardHeader>
 
-        <div className="mb-4 grid max-w-xl gap-3 sm:grid-cols-2">
-          <Input
-            label="Party ID"
-            value={chargePartyId}
-            onChange={(e) => {
-              setChargePartyId(e.target.value);
-              setSelectedChargeIds([]);
-            }}
-            required
-            hint="Required by GET /wms/storage/charges"
-          />
-          <WmsSelect
-            label="Status"
-            value={chargeStatus}
-            onChange={(v) => {
-              setChargeStatus(v);
-              setSelectedChargeIds([]);
-            }}
-            options={WMS_STORAGE_CHARGE_STATUSES.map((s) => ({ value: s, label: s }))}
-            required
-          />
-        </div>
-
-        {!chargesEnabled ? (
-          <p className="text-sm text-[var(--color-neutral-400)]">
-            Enter a valid party ID and status to load charges.
-          </p>
-        ) : chargesQuery.isLoading ? (
-          <p className="text-sm text-[var(--color-neutral-400)]">Loading charges…</p>
-        ) : chargesQuery.isError ? (
-          <p className="text-sm text-[var(--color-danger-600)]">
-            {getErrorMessage(chargesQuery.error)}
-          </p>
-        ) : !charges.length ? (
-          <p className="text-sm text-[var(--color-neutral-400)]">No storage charges.</p>
-        ) : (
-          <div className="space-y-2">
-            {charges.map((charge, idx) => {
-              const id = String(charge.id ?? idx);
-              return (
-                <label
-                  key={id}
-                  className="flex cursor-pointer items-start gap-3 rounded border p-3 text-sm hover:bg-[var(--color-neutral-50)]"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedChargeIds.includes(id)}
-                    onChange={() => toggleCharge(id)}
-                    className="mt-1"
-                    disabled={chargeStatus !== 'OPEN'}
-                  />
-                  <pre className="flex-1 overflow-x-auto text-xs">{JSON.stringify(charge, null, 2)}</pre>
-                </label>
-              );
-            })}
+        <div className="space-y-4 p-4 pt-0">
+          <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
+            <WmsSelect
+              label="Party"
+              value={chargePartyId}
+              onChange={(v) => {
+                setChargePartyId(v);
+                setSelectedChargeIds([]);
+              }}
+              options={partyRequiredOptions}
+              required
+            />
+            <WmsSelect
+              label="Status"
+              value={chargeStatus}
+              onChange={(v) => {
+                setChargeStatus(v);
+                setSelectedChargeIds([]);
+              }}
+              options={WMS_STORAGE_CHARGE_STATUSES.map((s) => ({ value: s, label: s }))}
+              required
+            />
           </div>
-        )}
 
-        {success ? <p className="mt-3 text-sm text-[var(--color-success-600)]">{success}</p> : null}
-        <FieldError
-          message={invoiceValidation.formError || invoiceValidation.fieldError('charge_ids')}
-        />
+          {!chargesEnabled ? (
+            <p className="text-sm text-[var(--color-neutral-400)]">
+              Select a party and status to load charges.
+            </p>
+          ) : chargesQuery.isLoading ? (
+            <p className="text-sm text-[var(--color-neutral-400)]">Loading charges…</p>
+          ) : chargesQuery.isError ? (
+            <p className="text-sm text-[var(--color-danger-600)]">
+              {getErrorMessage(chargesQuery.error)}
+            </p>
+          ) : !charges.length ? (
+            <p className="text-sm text-[var(--color-neutral-400)]">No storage charges.</p>
+          ) : (
+            <div className="space-y-2">
+              {charges.map((charge, idx) => {
+                const id = String(charge.id ?? idx);
+                return (
+                  <label
+                    key={id}
+                    className="flex cursor-pointer items-start gap-3 rounded border p-3 text-sm hover:bg-[var(--color-neutral-50)]"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedChargeIds.includes(id)}
+                      onChange={() => toggleCharge(id)}
+                      className="mt-1"
+                      disabled={chargeStatus !== 'OPEN'}
+                    />
+                    <pre className="flex-1 overflow-x-auto text-xs">{JSON.stringify(charge, null, 2)}</pre>
+                  </label>
+                );
+              })}
+            </div>
+          )}
 
-        <Button
-          type="button"
-          className="mt-3"
-          onClick={handleInvoice}
-          disabled={
-            invoiceMutation.isPending || !selectedChargeIds.length || chargeStatus !== 'OPEN'
-          }
-        >
-          <Save className="h-4 w-4" />
-          Invoice selected
-        </Button>
+          {success ? <p className="text-sm text-[var(--color-success-600)]">{success}</p> : null}
+          <WmsFormAlert
+            message={invoiceValidation.formError || invoiceValidation.fieldError('charge_ids')}
+          />
+
+          <div className="flex justify-end">
+            <Button
+              type="button"
+              onClick={handleInvoice}
+              disabled={
+                invoiceMutation.isPending || !selectedChargeIds.length || chargeStatus !== 'OPEN'
+              }
+            >
+              {invoiceMutation.isPending ? 'Saving…' : 'Invoice selected'}
+            </Button>
+          </div>
+        </div>
       </Card>
     </div>
   );
