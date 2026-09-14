@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { RefreshCw, Save } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { FieldError } from '@/components/ui/FieldError/FieldError';
 import { isUuid } from '@/lib/isUuid';
 import { useInlineValidation } from '@/lib/validation';
 import { WMS_ROUTE_PREFIX } from '../api/wms.api';
@@ -24,6 +23,13 @@ import {
   useWmsWarehouseOptions,
   WmsSelect,
 } from '../components/WmsFormHelpers';
+import {
+  WmsFormAlert,
+  WmsFormCard,
+  WmsFormFooter,
+  WmsFormGrid,
+  WmsFormSpan2,
+} from '../components/WmsFormLayout';
 import { adjustStockSchema, createTransferSchema } from '../schemas/wms.schema';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
@@ -218,6 +224,15 @@ function AdjustStockPanel() {
     remarks: patch.remarks ?? remarks,
   });
 
+  const resetForm = () => {
+    setWarehouseId('');
+    setItemId('');
+    setQuantity('');
+    setRemarks('');
+    clearErrors();
+    setSuccess(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearErrors();
@@ -235,66 +250,79 @@ function AdjustStockPanel() {
   };
 
   return (
-    <Card className="max-w-xl space-y-4 p-4">
+    <div className="mx-auto max-w-3xl space-y-4">
       <form className="space-y-4" onSubmit={handleSubmit} noValidate>
-        <WmsSelect
-          label="Warehouse"
-          value={warehouseId}
-          onChange={(v) => {
-            setWarehouseId(v);
-            revalidate(adjustStockSchema, values({ warehouse_id: v }));
-          }}
-          onBlur={() => validatePath(adjustStockSchema, values(), 'warehouse_id')}
-          options={warehouseOptions}
-          required
-          error={fieldError('warehouse_id')}
+        <WmsFormAlert message={formError} />
+        {success ? (
+          <p className="text-sm text-[var(--color-success-600)]" role="status">
+            {success}
+          </p>
+        ) : null}
+
+        <WmsFormCard title="Adjust stock">
+          <WmsFormGrid>
+            <WmsSelect
+              label="Warehouse"
+              value={warehouseId}
+              onChange={(v) => {
+                setWarehouseId(v);
+                revalidate(adjustStockSchema, values({ warehouse_id: v }));
+              }}
+              onBlur={() => validatePath(adjustStockSchema, values(), 'warehouse_id')}
+              options={warehouseOptions}
+              required
+              error={fieldError('warehouse_id')}
+            />
+            <WmsSelect
+              label="Item"
+              value={itemId}
+              onChange={(v) => {
+                setItemId(v);
+                revalidate(adjustStockSchema, values({ item_id: v }));
+              }}
+              onBlur={() => validatePath(adjustStockSchema, values(), 'item_id')}
+              options={itemOptions}
+              required
+              error={fieldError('item_id')}
+            />
+            <Input
+              label="Quantity (+/-)"
+              type="number"
+              step="any"
+              value={quantity}
+              error={fieldError('quantity')}
+              onChange={(e) => {
+                const next = e.target.value;
+                setQuantity(next);
+                revalidate(adjustStockSchema, values({ quantity: next }));
+              }}
+              onBlur={() => validatePath(adjustStockSchema, values(), 'quantity')}
+              required
+            />
+            <WmsFormSpan2>
+              <Input
+                label="Remarks"
+                value={remarks}
+                error={fieldError('remarks')}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setRemarks(next);
+                  revalidate(adjustStockSchema, values({ remarks: next }));
+                }}
+                onBlur={() => validatePath(adjustStockSchema, values(), 'remarks')}
+                required
+              />
+            </WmsFormSpan2>
+          </WmsFormGrid>
+        </WmsFormCard>
+
+        <WmsFormFooter
+          onCancel={resetForm}
+          submitLabel="Adjust stock"
+          isSubmitting={adjustMutation.isPending}
         />
-        <WmsSelect
-          label="Item"
-          value={itemId}
-          onChange={(v) => {
-            setItemId(v);
-            revalidate(adjustStockSchema, values({ item_id: v }));
-          }}
-          onBlur={() => validatePath(adjustStockSchema, values(), 'item_id')}
-          options={itemOptions}
-          required
-          error={fieldError('item_id')}
-        />
-        <Input
-          label="Quantity (+/-)"
-          type="number"
-          step="any"
-          value={quantity}
-          error={fieldError('quantity')}
-          onChange={(e) => {
-            const next = e.target.value;
-            setQuantity(next);
-            revalidate(adjustStockSchema, values({ quantity: next }));
-          }}
-          onBlur={() => validatePath(adjustStockSchema, values(), 'quantity')}
-          required
-        />
-        <Input
-          label="Remarks"
-          value={remarks}
-          error={fieldError('remarks')}
-          onChange={(e) => {
-            const next = e.target.value;
-            setRemarks(next);
-            revalidate(adjustStockSchema, values({ remarks: next }));
-          }}
-          onBlur={() => validatePath(adjustStockSchema, values(), 'remarks')}
-          required
-        />
-        <FieldError message={formError} />
-        {success ? <p className="text-sm text-[var(--color-success-600)]">{success}</p> : null}
-        <Button type="submit" disabled={adjustMutation.isPending}>
-          <Save className="h-4 w-4" />
-          Adjust stock
-        </Button>
       </form>
-    </Card>
+    </div>
   );
 }
 
@@ -329,6 +357,15 @@ function TransfersPanel() {
     quantity: patch.quantity ?? quantity,
   });
 
+  const resetForm = () => {
+    setFromWarehouseId('');
+    setToWarehouseId('');
+    setItemId('');
+    setQuantity('1');
+    setRemarks('');
+    clearErrors();
+  };
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     clearErrors();
@@ -350,90 +387,100 @@ function TransfersPanel() {
 
   return (
     <div className="space-y-4">
-      <Card className="max-w-xl space-y-4 p-4">
-        <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">New transfer</h3>
-        <form className="space-y-3" onSubmit={handleCreate} noValidate>
-          <WmsSelect
-            label="From warehouse"
-            value={fromWarehouseId}
-            onChange={(v) => {
-              setFromWarehouseId(v);
-              revalidate(createTransferSchema, values({ from_warehouse_id: v }));
-            }}
-            onBlur={() => validatePath(createTransferSchema, values(), 'from_warehouse_id')}
-            options={warehouseOptions}
-            required
-            error={fieldError('from_warehouse_id')}
-          />
-          <WmsSelect
-            label="To warehouse"
-            value={toWarehouseId}
-            onChange={(v) => {
-              setToWarehouseId(v);
-              revalidate(createTransferSchema, values({ to_warehouse_id: v }));
-            }}
-            onBlur={() => validatePath(createTransferSchema, values(), 'to_warehouse_id')}
-            options={warehouseOptions}
-            required
-            error={fieldError('to_warehouse_id')}
-          />
-          <WmsSelect
-            label="Item"
-            value={itemId}
-            onChange={(v) => {
-              setItemId(v);
-              revalidate(createTransferSchema, values({ item_id: v }));
-            }}
-            onBlur={() => validatePath(createTransferSchema, values(), 'item_id')}
-            options={itemOptions}
-            required
-            error={fieldError('item_id')}
-          />
-          <Input
-            label="Quantity"
-            type="number"
-            min={0.0001}
-            value={quantity}
-            error={fieldError('quantity')}
-            onChange={(e) => {
-              const next = e.target.value;
-              setQuantity(next);
-              revalidate(createTransferSchema, values({ quantity: next }));
-            }}
-            onBlur={() => validatePath(createTransferSchema, values(), 'quantity')}
-          />
-          <Input
-            label="Remarks"
-            value={remarks}
-            error={fieldError('remarks')}
-            onChange={(e) => {
-              const next = e.target.value;
-              setRemarks(next);
-              revalidate(createTransferSchema, values({ remarks: next }));
-            }}
-            onBlur={() => validatePath(createTransferSchema, values(), 'remarks')}
-          />
-          <FieldError message={formError} />
-          <Button type="submit" disabled={createMutation.isPending}>
-            Create transfer
-          </Button>
-        </form>
-      </Card>
+      <div className="mx-auto max-w-3xl space-y-4">
+        <form className="space-y-4" onSubmit={handleCreate} noValidate>
+          <WmsFormAlert message={formError} />
 
-      <Card className="p-4">
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold">Transfers</h3>
+          <WmsFormCard title="New transfer">
+            <WmsFormGrid>
+              <WmsSelect
+                label="From warehouse"
+                value={fromWarehouseId}
+                onChange={(v) => {
+                  setFromWarehouseId(v);
+                  revalidate(createTransferSchema, values({ from_warehouse_id: v }));
+                }}
+                onBlur={() => validatePath(createTransferSchema, values(), 'from_warehouse_id')}
+                options={warehouseOptions}
+                required
+                error={fieldError('from_warehouse_id')}
+              />
+              <WmsSelect
+                label="To warehouse"
+                value={toWarehouseId}
+                onChange={(v) => {
+                  setToWarehouseId(v);
+                  revalidate(createTransferSchema, values({ to_warehouse_id: v }));
+                }}
+                onBlur={() => validatePath(createTransferSchema, values(), 'to_warehouse_id')}
+                options={warehouseOptions}
+                required
+                error={fieldError('to_warehouse_id')}
+              />
+              <WmsSelect
+                label="Item"
+                value={itemId}
+                onChange={(v) => {
+                  setItemId(v);
+                  revalidate(createTransferSchema, values({ item_id: v }));
+                }}
+                onBlur={() => validatePath(createTransferSchema, values(), 'item_id')}
+                options={itemOptions}
+                required
+                error={fieldError('item_id')}
+              />
+              <Input
+                label="Quantity"
+                type="number"
+                min={0.0001}
+                value={quantity}
+                error={fieldError('quantity')}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setQuantity(next);
+                  revalidate(createTransferSchema, values({ quantity: next }));
+                }}
+                onBlur={() => validatePath(createTransferSchema, values(), 'quantity')}
+              />
+              <WmsFormSpan2>
+                <Input
+                  label="Remarks"
+                  value={remarks}
+                  error={fieldError('remarks')}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    setRemarks(next);
+                    revalidate(createTransferSchema, values({ remarks: next }));
+                  }}
+                  onBlur={() => validatePath(createTransferSchema, values(), 'remarks')}
+                />
+              </WmsFormSpan2>
+            </WmsFormGrid>
+          </WmsFormCard>
+
+          <WmsFormFooter
+            onCancel={resetForm}
+            submitLabel="Create transfer"
+            isSubmitting={createMutation.isPending}
+          />
+        </form>
+      </div>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between gap-2">
+          <CardTitle>Transfers</CardTitle>
           <Button type="button" variant="secondary" onClick={() => refetch()} disabled={isFetching}>
             <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
+            Refresh
           </Button>
-        </div>
-        {isLoading ? (
-          <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>
-        ) : !transfers.length ? (
-          <p className="text-sm text-[var(--color-neutral-400)]">No transfers.</p>
-        ) : (
-          <div className="space-y-2">
-            {transfers.map((t) => (
+        </CardHeader>
+        <div className="space-y-2 p-4 pt-0">
+          {isLoading ? (
+            <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>
+          ) : !transfers.length ? (
+            <p className="text-sm text-[var(--color-neutral-400)]">No transfers.</p>
+          ) : (
+            transfers.map((t) => (
               <div
                 key={t.id}
                 className="flex flex-wrap items-center justify-between gap-2 rounded border p-3 text-sm"
@@ -451,9 +498,9 @@ function TransfersPanel() {
                   Post
                 </Button>
               </div>
-            ))}
-          </div>
-        )}
+            ))
+          )}
+        </div>
       </Card>
     </div>
   );

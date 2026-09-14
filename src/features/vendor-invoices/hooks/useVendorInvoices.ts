@@ -81,6 +81,20 @@ export function useDownloadVendorInvoicePdf() {
   });
 }
 
+export function useVendorInvoicePdfBlob() {
+  return useMutation({
+    mutationFn: ({
+      id,
+      name,
+      pdfUrl,
+    }: {
+      id: string;
+      name?: string;
+      pdfUrl?: string;
+    }) => vendorInvoicesService.getPdfBlob(id, name || 'invoice.pdf', pdfUrl),
+  });
+}
+
 export function useSubmitVendorInvoice() {
   const queryClient = useQueryClient();
   const scope = useVendorQueryScope();

@@ -23,13 +23,14 @@ import { formatVendorMoney } from '@/features/vendor-shared/formatMoney';
 import { vendorErrorMessage, vendorInvoicePdfErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import { VENDOR_INVOICE_STATUSES } from '../api/vendorInvoices.api';
 import {
-  useDownloadVendorInvoicePdf,
   useExportVendorInvoicesCsv,
   useSubmitVendorInvoice,
   useVendorInvoiceOpenItems,
+  useVendorInvoicePdfBlob,
   useVendorInvoiceSummary,
   useVendorInvoices,
 } from '../hooks/useVendorInvoices';
+import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 
 export default function VendorInvoicesPage() {
   const location = useLocation();
@@ -52,6 +53,9 @@ export default function VendorInvoicesPage() {
   const [exportError, setExportError] = useState<string | null>(null);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [viewOpenOnly, setViewOpenOnly] = useState(false);
+  const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
+  const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
+  const [pdfReadyFileName, setPdfReadyFileName] = useState('invoice.pdf');
 
   const params = useMemo(
     () => ({
@@ -69,12 +73,29 @@ export default function VendorInvoicesPage() {
   const openItems = useVendorInvoiceOpenItems(viewOpenOnly);
   const allInvoices = useVendorInvoices(params);
   const active = viewOpenOnly ? openItems : allInvoices;
-  const download = useDownloadVendorInvoicePdf();
+  const pdfBlob = useVendorInvoicePdfBlob();
   const exportCsv = useExportVendorInvoicesCsv();
   const submit = useSubmitVendorInvoice();
   const items = active.data?.items ?? [];
   const meta = active.data?.meta;
   const { isLoading, isError, error, refetch, isFetching } = active;
+
+  const openInvoicePdf = (invoiceId: string, name: string) => {
+    setPdfError(null);
+    setPdfReadyBlob(null);
+    setPdfReadyFileName(name.endsWith('.pdf') ? name : `${name || 'invoice'}.pdf`);
+    setPdfReadyOpen(true);
+    void pdfBlob
+      .mutateAsync({ id: invoiceId, name })
+      .then(({ blob, fileName }) => {
+        setPdfReadyBlob(blob);
+        setPdfReadyFileName(fileName);
+      })
+      .catch((err) => {
+        setPdfReadyOpen(false);
+        setPdfError(vendorInvoicePdfErrorMessage(err));
+      });
+  };
 
   return (
     <div className="space-y-5">
@@ -349,18 +370,11 @@ export default function VendorInvoicesPage() {
                     type="button"
                     size="sm"
                     variant="secondary"
-                    disabled={download.isPending}
-                    onClick={() => {
-                      setPdfError(null);
-                      void download
-                        .mutateAsync({ id: inv.id, name: `${inv.number}.pdf` })
-                        .catch((err) => {
-                          setPdfError(vendorInvoicePdfErrorMessage(err));
-                        });
-                    }}
+                    disabled={pdfBlob.isPending}
+                    onClick={() => openInvoicePdf(inv.id, `${inv.number}.pdf`)}
                   >
                     <Download size={14} aria-hidden="true" />
-                    {download.isPending ? 'Downloading…' : 'PDF'}
+                    {pdfBlob.isPending ? 'Preparing…' : 'PDF'}
                   </Button>
                 </div>
               </PortalAnimatedListItem>
@@ -396,6 +410,19 @@ export default function VendorInvoicesPage() {
           </div>
         </div>
       ) : null}
+
+      <PdfReadyModal
+        open={pdfReadyOpen}
+        onClose={() => {
+          setPdfReadyOpen(false);
+          setPdfReadyBlob(null);
+        }}
+        blob={pdfReadyBlob}
+        title="Invoice PDF ready"
+        fileName={pdfReadyFileName}
+        skipBranding
+        description="Your invoice PDF was created successfully."
+      />
     </div>
   );
 }

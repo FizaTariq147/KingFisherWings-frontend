@@ -1,22 +1,31 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { UserForm } from '../components/UserForm';
 import { UserDetailSkeleton } from '../components/UserDetailSkeleton';
+import { useUpdateUserPermissions, useUserPermissions } from '../hooks/useUserPermissionMatrix';
 import { useUpdateUser, useUser } from '../hooks/useUsers';
 import { useUserTenantScope } from '../hooks/useUserTenantScope';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import type { UpdateUserFormValues } from '../types/user.types';
 import { userToFormValues } from '../utils/userToFormValues';
 import { formatUserLabel } from '../utils/userToFormValues';
+import { toAccessGrants } from '../utils/permissionAccess';
 
 export default function UserEditPage() {
-  const { id } = useParams();
+  const { id = '' } = useParams();
   const navigate = useNavigate();
   const { tenantId, sessionScoped, userPath } = useUserTenantScope();
-  const { data: user, isLoading, isError } = useUser(tenantId, id!);
-  const updateUser = useUpdateUser(tenantId || 'session', id!);
+  const { data: user, isLoading, isError } = useUser(tenantId, id);
+  const updateUser = useUpdateUser(tenantId || 'session', id);
+  const assignmentQuery = useUserPermissions(id);
+  const updatePermissions = useUpdateUserPermissions(id);
   const [apiError, setApiError] = useState<string | null>(null);
+
+  const initialPermissionGrants = useMemo(
+    () => assignmentQuery.data?.grants ?? [],
+    [assignmentQuery.data?.grants],
+  );
 
   if (!tenantId && !sessionScoped) {
     return (
@@ -26,7 +35,7 @@ export default function UserEditPage() {
     );
   }
 
-  if (isLoading) {
+  if (isLoading || assignmentQuery.isLoading) {
     return <UserDetailSkeleton />;
   }
 
@@ -82,11 +91,26 @@ export default function UserEditPage() {
         mode="edit"
         tenantId={tenantId}
         defaultValues={userToFormValues(user)}
-        isSubmitting={updateUser.isPending}
-        onSubmit={async (values) => {
+        initialPermissionGrants={initialPermissionGrants}
+        isSubmitting={updateUser.isPending || updatePermissions.isPending}
+        onSubmit={async (values, meta) => {
           setApiError(null);
           try {
-            await updateUser.mutateAsync(values as UpdateUserFormValues);
+            const accessGrants = toAccessGrants(meta?.permissionGrants ?? []);
+
+            await updateUser.mutateAsync({
+              ...(values as UpdateUserFormValues),
+              ...(accessGrants.length
+                ? {
+                    permission_grants: accessGrants,
+                    permission_grants_mode: 'replace' as const,
+                  }
+                : {}),
+            });
+            const grants = meta?.permissionGrants ?? [];
+            if (grants.length > 0) {
+              await updatePermissions.mutateAsync({ grants });
+            }
             navigate(userPath(`/${id}`));
           } catch (err) {
             setApiError(getErrorMessage(err) || 'Failed to update user.');

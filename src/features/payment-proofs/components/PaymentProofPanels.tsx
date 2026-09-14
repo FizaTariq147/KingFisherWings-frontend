@@ -4,13 +4,21 @@ import { Input } from '@/components/ui/Input';
 import { pickValidatedUploadFile, PAYMENT_PROOF_UPLOAD_OPTIONS } from '@/lib/fileUploadValidation';
 import type { PaymentProof, UploadPaymentProofDto } from '../types/paymentProof.types';
 import { Badge } from '@/components/ui/Badge';
+import { PaymentProofOpenButton } from './PaymentProofOpenButton';
+import type { PaymentProofViewer } from '../utils/openPaymentProofFile';
 
 interface PaymentProofUploadFormProps {
   onUpload: (file: File, dto: UploadPaymentProofDto) => Promise<void>;
   disabled?: boolean;
+  /** Prefill currency from the open invoice when known. */
+  currencyCode?: string;
 }
 
-export function PaymentProofUploadForm({ onUpload, disabled }: PaymentProofUploadFormProps) {
+export function PaymentProofUploadForm({
+  onUpload,
+  disabled,
+  currencyCode,
+}: PaymentProofUploadFormProps) {
   const [file, setFile] = useState<File | null>(null);
   const [amount, setAmount] = useState('');
   const [paymentDate, setPaymentDate] = useState('');
@@ -29,11 +37,22 @@ export function PaymentProofUploadForm({ onUpload, disabled }: PaymentProofUploa
     setMessage(null);
     setPending(true);
     try {
+      const amountRaw = amount.trim();
+      let amountValue: number | undefined;
+      if (amountRaw) {
+        amountValue = Number(amountRaw);
+        if (!Number.isFinite(amountValue)) {
+          setError('Amount must be a valid number.');
+          setPending(false);
+          return;
+        }
+      }
       const dto: UploadPaymentProofDto = {
-        ...(amount.trim() ? { amount: Number(amount) } : {}),
+        ...(amountValue != null ? { amount: amountValue } : {}),
         ...(paymentDate ? { payment_date: paymentDate } : {}),
         ...(reference.trim() ? { reference: reference.trim() } : {}),
         ...(notes.trim() ? { notes: notes.trim() } : {}),
+        ...(currencyCode?.trim() ? { currency_code: currencyCode.trim() } : {}),
       };
       await onUpload(file, dto);
       setMessage('Payment proof uploaded.');
@@ -66,8 +85,18 @@ export function PaymentProofUploadForm({ onUpload, disabled }: PaymentProofUploa
         }}
       />
       <div className="grid gap-2 sm:grid-cols-2">
-        <Input placeholder="Amount paid" value={amount} onChange={(e) => setAmount(e.target.value)} />
-        <Input type="date" value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)} />
+        <Input
+          label="Amount claimed"
+          placeholder="e.g. 100.00"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+        <Input
+          label="Payment date"
+          type="date"
+          value={paymentDate}
+          onChange={(e) => setPaymentDate(e.target.value)}
+        />
         <Input
           placeholder="Bank reference"
           value={reference}
@@ -94,10 +123,13 @@ export function PaymentProofList({
   proofs,
   onSendEmail,
   sendingProofId,
+  viewer = 'portal',
 }: {
   proofs: PaymentProof[];
   onSendEmail?: (proof: PaymentProof) => void;
   sendingProofId?: string | null;
+  /** Auth context for opening stored files (portal customer vs vendor vs staff). */
+  viewer?: PaymentProofViewer;
 }) {
   if (proofs.length === 0) {
     return <p className="text-sm text-[var(--color-neutral-400)]">No payment proofs yet.</p>;
@@ -109,7 +141,7 @@ export function PaymentProofList({
           key={proof.id}
           className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-[var(--color-neutral-100)] px-3 py-2 text-sm"
         >
-          <div>
+          <div className="min-w-0">
             <p className="font-medium">{proof.fileName || proof.reference || 'Proof'}</p>
             <p className="text-xs text-[var(--color-neutral-500)]">
               {[proof.paymentDate, proof.amount != null ? String(proof.amount) : null]
@@ -117,12 +149,13 @@ export function PaymentProofList({
                 .join(' · ')}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {proof.status ? (
               <Badge variant="neutral" dot={false}>
                 {proof.status.replaceAll('_', ' ')}
               </Badge>
             ) : null}
+            <PaymentProofOpenButton proof={proof} viewer={viewer} />
             {onSendEmail ? (
               <Button
                 type="button"

@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/hooks/useAuth';
 import type { PaymentProof } from '../types/paymentProof.types';
 import { useInvoicePaymentProofs, useReviewPaymentProof } from '../hooks/usePaymentProofs';
+import { PaymentProofOpenButton } from './PaymentProofOpenButton';
 
 function proofVariant(status?: string): 'success' | 'warning' | 'danger' | 'info' | 'neutral' {
   const s = (status || '').toUpperCase();
@@ -122,7 +123,7 @@ function ProofRow({
   return (
     <div className="rounded-md border border-[var(--color-neutral-200)] px-3 py-3 text-sm space-y-2">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
+        <div className="min-w-0">
           <p className="font-medium">{proof.fileName || proof.reference || proof.id}</p>
           <p className="text-xs text-[var(--color-neutral-500)]">
             {[proof.paymentDate, proof.amount != null ? String(proof.amount) : null, proof.reference]
@@ -130,11 +131,14 @@ function ProofRow({
               .join(' · ')}
           </p>
         </div>
-        {proof.status ? (
-          <Badge variant={proofVariant(proof.status)} dot={false}>
-            {proof.status.replaceAll('_', ' ')}
-          </Badge>
-        ) : null}
+        <div className="flex flex-wrap items-center gap-2">
+          {proof.status ? (
+            <Badge variant={proofVariant(proof.status)} dot={false}>
+              {proof.status.replaceAll('_', ' ')}
+            </Badge>
+          ) : null}
+          <PaymentProofOpenButton proof={proof} viewer="staff" />
+        </div>
       </div>
       {proof.notes ? <p className="text-xs text-[var(--color-neutral-600)]">{proof.notes}</p> : null}
       {proof.reviewNotes ? (

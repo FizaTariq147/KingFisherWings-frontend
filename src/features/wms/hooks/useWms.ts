@@ -22,6 +22,7 @@ import type {
 export const wmsKeys = {
   all: ['tenant', 'wms'] as const,
   settings: () => [...wmsKeys.all, 'settings'] as const,
+  warehouses: () => [...wmsKeys.all, 'warehouses'] as const,
   items: (params: WmsItemListParams) => [...wmsKeys.all, 'items', params] as const,
   item: (id: string) => [...wmsKeys.all, 'item', id] as const,
   asns: () => [...wmsKeys.all, 'asns'] as const,
@@ -57,6 +58,17 @@ export function useWmsSettings() {
     queryFn: () => wmsService.getSettings(),
     enabled: useWmsEnabled(),
     staleTime: 60_000,
+  });
+}
+
+/** Master-registered warehouses for GRN/GDO/ASN (merged masters + WMS activity). */
+export function useWmsWarehouses(preferredId?: string) {
+  return useQuery({
+    queryKey: [...wmsKeys.warehouses(), preferredId ?? ''] as const,
+    queryFn: () => wmsService.listWarehouses(preferredId),
+    enabled: useWmsEnabled(),
+    staleTime: 60_000,
+    retry: 1,
   });
 }
 

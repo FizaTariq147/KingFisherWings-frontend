@@ -1,7 +1,11 @@
 import { portalApiClient, PortalApiError } from '@/lib/portalApiClient';
 import type { ApiPeriodQuery } from '@/lib/apiPeriod';
 import { periodQueryParams } from '@/lib/apiPeriod';
-import { buildPaymentProofFormData } from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
+import {
+  buildPaymentProofUploadFields,
+  formatPaymentProofUploadError,
+  postPaymentProofMultipartFetch,
+} from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
 import type { PaymentProof, UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
 import { normalizePaymentProof, normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
 import { invoicePdfBranding } from '@/features/files/utils/pdfBranding';
@@ -9,8 +13,10 @@ import { formatPdfFilename, stripPdfExtension } from '@/features/files/utils/pdf
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import {
   downloadPortalBlob,
+  fetchPortalBlob,
   resolvePortalDownloadUrl,
 } from '@/features/portal-shared/downloadPortalBlob';
+import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
 import { asRecord, pickString, unwrapData } from '@/features/portal-shared/normalize';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import { PORTAL_DOCUMENTS_API } from '@/features/portal-documents/api/portalDocuments.api';
@@ -86,30 +92,31 @@ function sleep(ms: number): Promise<void> {
   });
 }
 
-async function tryDownloadFromPdfUrl(
+async function tryFetchFromPdfUrl(
   pdfUrl: string | undefined,
   filename: string,
   branding: ReturnType<typeof invoicePdfBranding>,
-): Promise<boolean> {
+): Promise<{ blob: Blob; fileName: string } | null> {
   const url = pdfUrl?.trim();
-  if (!url) return false;
+  if (!url) return null;
   try {
-    await downloadPortalBlob(resolvePortalDownloadUrl(url), filename, {
+    const result = await fetchPortalBlob(resolvePortalDownloadUrl(url), filename, {
       accept: PDF_ACCEPT,
       branding,
     });
-    return true;
+    if (!(await blobLooksLikePdf(result.blob))) return null;
+    return { blob: result.blob, fileName: result.filename };
   } catch {
-    return false;
+    return null;
   }
 }
 
 /** When GET /pdf returns JSON metadata (same shape as staff), follow pdf_url. */
-async function tryDownloadFromPdfMetadata(
+async function tryFetchFromPdfMetadata(
   id: string,
   filename: string,
   branding: ReturnType<typeof invoicePdfBranding>,
-): Promise<boolean> {
+): Promise<{ blob: Blob; fileName: string } | null> {
   try {
     const res = await portalApiClient.get(PORTAL_INVOICES_API.pdf(id), {
       headers: { Accept: 'application/json' },
@@ -117,10 +124,10 @@ async function tryDownloadFromPdfMetadata(
     const root = asRecord(res.data) ?? {};
     const data = asRecord(unwrapData(res.data)) ?? root;
     const url = pickPortalInvoicePdfUrl(data) || pickString(root.pdf_url, root.customer_pdf_url);
-    if (!url) return false;
-    return tryDownloadFromPdfUrl(url, filename, branding);
+    if (!url) return null;
+    return tryFetchFromPdfUrl(url, filename, branding);
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -148,16 +155,22 @@ export const portalInvoicesService = {
     file: File,
     dto: UploadPaymentProofDto,
   ): Promise<PaymentProof> {
-    const form = buildPaymentProofFormData(file, {
-      ...(dto.amount != null ? { amount: String(dto.amount) } : {}),
-      ...(dto.payment_date ? { payment_date: dto.payment_date } : {}),
-      ...(dto.reference ? { reference: dto.reference } : {}),
-      ...(dto.notes ? { notes: dto.notes } : {}),
-    });
-    const res = await portalApiClient.post(PORTAL_INVOICES_API.paymentProofs(invoiceId), form);
-    const proof = normalizePaymentProof(res.data);
-    if (!proof) throw new Error('Upload failed.');
-    return proof;
+    if (!invoiceId?.trim()) throw new Error('Invoice id is required.');
+    try {
+      const token = usePortalAuthStore.getState().accessToken;
+      const data = await postPaymentProofMultipartFetch({
+        path: PORTAL_INVOICES_API.paymentProofs(invoiceId),
+        file,
+        accessToken: token,
+        fields: buildPaymentProofUploadFields(dto, 'portal'),
+        errorFactory: (message, status) => new PortalApiError(message, status),
+      });
+      const proof = normalizePaymentProof(data);
+      if (!proof) throw new Error('Upload failed — server returned an unexpected response.');
+      return proof;
+    } catch (error) {
+      throw formatPaymentProofUploadError(error);
+    }
   },
   async exportCsv(params: PortalInvoiceListParams = {}): Promise<void> {
     await downloadPortalBlob(PORTAL_INVOICES_API.exportCsv, 'invoices.csv', {
@@ -175,7 +188,10 @@ export const portalInvoicesService = {
     if (!detail) throw new Error('Invoice not found.');
     return detail;
   },
-  async downloadPdf(id: string, invoiceNumber = 'invoice'): Promise<void> {
+  async getPdfBlob(
+    id: string,
+    invoiceNumber = 'invoice',
+  ): Promise<{ blob: Blob; fileName: string }> {
     const ref = stripPdfExtension(invoiceNumber) || 'invoice';
     const filename = formatPdfFilename(ref, 'invoice');
     const branding = invoicePdfBranding(ref);
@@ -227,38 +243,48 @@ export const portalInvoicesService = {
             },
           ),
         );
-        triggerBlobDownload(blob, formatPdfFilename(detail.number || ref, 'invoice'));
-        return;
+        return { blob, fileName: formatPdfFilename(detail.number || ref, 'invoice') };
       } catch {
         /* fall through to server PDF */
       }
     }
 
-    if (await tryDownloadFromPdfUrl(detail?.pdfUrl, filename, branding)) return;
+    const fromUrl = await tryFetchFromPdfUrl(detail?.pdfUrl, filename, branding);
+    if (fromUrl) return fromUrl;
 
     let lastError: unknown;
     for (let attempt = 0; attempt < 3; attempt += 1) {
       if (attempt > 0) await sleep(700 * attempt);
 
       try {
-        await downloadPortalBlob(PORTAL_INVOICES_API.pdf(id), filename, {
+        const result = await fetchPortalBlob(PORTAL_INVOICES_API.pdf(id), filename, {
           accept: PDF_ACCEPT,
           branding,
         });
-        return;
+        if (await blobLooksLikePdf(result.blob)) {
+          return { blob: result.blob, fileName: result.filename };
+        }
+        throw new PortalApiError('Download was expected to be a PDF but the server returned a non-PDF response.', 400);
       } catch (primaryErr) {
         lastError = primaryErr;
         const status = primaryErr instanceof PortalApiError ? primaryErr.status : 0;
         if (status === 403) throw friendlyInvoicePdfError(primaryErr);
 
-        if (await tryDownloadFromPdfMetadata(id, filename, branding)) return;
+        const fromMeta = await tryFetchFromPdfMetadata(id, filename, branding);
+        if (fromMeta) return fromMeta;
 
         try {
-          await downloadPortalBlob(PORTAL_DOCUMENTS_API.downloadInvoice(id), filename, {
+          const result = await fetchPortalBlob(PORTAL_DOCUMENTS_API.downloadInvoice(id), filename, {
             accept: PDF_ACCEPT,
             branding,
           });
-          return;
+          if (await blobLooksLikePdf(result.blob)) {
+            return { blob: result.blob, fileName: result.filename };
+          }
+          throw new PortalApiError(
+            'Download was expected to be a PDF but the server returned a non-PDF response.',
+            400,
+          );
         } catch (fallbackErr) {
           lastError = fallbackErr;
           const fallbackStatus =
@@ -280,5 +306,10 @@ export const portalInvoicesService = {
     }
 
     throw friendlyInvoicePdfError(lastError);
+  },
+
+  async downloadPdf(id: string, invoiceNumber = 'invoice'): Promise<void> {
+    const { blob, fileName } = await this.getPdfBlob(id, invoiceNumber);
+    triggerBlobDownload(blob, fileName);
   },
 };

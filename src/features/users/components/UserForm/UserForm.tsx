@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
+import type { ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -10,15 +10,26 @@ import { useAppForm } from '@/lib/validation';
 import { QuotationWizardNav } from '@/features/quotations/components/quotation-wizard';
 import { ASSIGNABLE_USER_ROLES } from '../../constants/user.constants';
 import type { UserRole } from '../../constants/user.constants';
-import {
-  USER_FUNCTIONAL_FLAGS,
-  USER_VISIBILITY_PERMISSIONS,
-} from '../../constants/userPermissions';
 import { useTenantCompanies } from '../../hooks/useTenantCompanies';
+import { useRolePresets } from '../../hooks/useUserPermissionMatrix';
 import { createUserSchema, updateUserSchema, USER_STATUSES } from '../../schemas/user.schema';
+import type { PermissionMatrixGrant } from '../../types/userPermissionMatrix.types';
 import type { CreateUserFormValues, UpdateUserFormValues } from '../../types/user.types';
 import { formatUserRole } from '../../utils/formatUserRole';
+import { matrixGrantsFromAccessGrants } from '../../utils/normalizeUserPermissionMatrix';
+import { UserPermissionMatrixEditor } from '../UserPermissionMatrixEditor';
 import { UserRoleSelectGrid, UserWizardStepper } from '../user-wizard';
+
+export type UserFormSubmitMeta = {
+  /**
+   * Matrix selection as see/read/write (+ access).
+   * Create sends `permission_grants` (access) on POST /users when the grid was set;
+   * otherwise the backend applies the role preset from `role`.
+   */
+  permissionGrants: PermissionMatrixGrant[];
+  /** True after the admin changes any access radio (not the initial preset load). */
+  matrixTouched: boolean;
+};
 
 interface UserFormProps {
   mode: 'create' | 'edit';
@@ -26,7 +37,12 @@ interface UserFormProps {
   layout?: 'flat' | 'wizard';
   tenantId?: string;
   defaultValues?: Partial<CreateUserFormValues>;
-  onSubmit: (values: CreateUserFormValues | UpdateUserFormValues) => void | Promise<void>;
+  /** Existing matrix grants when editing (GET /users/:id/permission-matrix). */
+  initialPermissionGrants?: PermissionMatrixGrant[];
+  onSubmit: (
+    values: CreateUserFormValues | UpdateUserFormValues,
+    meta?: UserFormSubmitMeta,
+  ) => void | Promise<void>;
   onCancel?: () => void;
   isSubmitting?: boolean;
 }
@@ -91,6 +107,7 @@ export function UserForm({
   layout = 'flat',
   tenantId,
   defaultValues,
+  initialPermissionGrants,
   onSubmit,
   onCancel,
   isSubmitting,
@@ -99,6 +116,9 @@ export function UserForm({
   const [step, setStep] = useState(0);
   const schema = mode === 'create' ? createUserSchema : updateUserSchema;
   const { data: companies = [] } = useTenantCompanies(!!tenantId || isWizard);
+  const rolePresetsQuery = useRolePresets();
+  /** After admin edits the matrix, stop re-applying role presets on role change. */
+  const [matrixTouched, setMatrixTouched] = useState(false);
 
   const form = useAppForm<CreateUserFormValues>({
     resolver: zodResolver(schema) as unknown as Resolver<CreateUserFormValues>,
@@ -123,10 +143,42 @@ export function UserForm({
   const [allowedMacText, setAllowedMacText] = useState(
     joinLines(defaultValues?.allowed_mac_addresses),
   );
+  const permissionGrantsRef = useRef<PermissionMatrixGrant[]>([]);
+  const skipMatrixTouchRef = useRef(true);
 
   const fieldError = (name: keyof CreateUserFormValues) => errors[name]?.message;
   const phone = watch('phone') ?? '';
   const role = watch('role');
+
+  const presetGrantsForRole = useMemo(() => {
+    if (mode !== 'create' || !role) return [] as PermissionMatrixGrant[];
+    const presets = rolePresetsQuery.data?.presets ?? [];
+    const match = presets.find((p) => p.code.toUpperCase() === String(role).toUpperCase());
+    if (!match?.default_grants?.length) return [] as PermissionMatrixGrant[];
+    return matrixGrantsFromAccessGrants(match.default_grants);
+  }, [mode, role, rolePresetsQuery.data?.presets]);
+
+  const editorInitialGrants = useMemo(() => {
+    if (mode === 'edit' && initialPermissionGrants?.length) {
+      return initialPermissionGrants;
+    }
+    if (mode === 'create' && !matrixTouched && presetGrantsForRole.length) {
+      return presetGrantsForRole;
+    }
+    if (initialPermissionGrants?.length) return initialPermissionGrants;
+    return presetGrantsForRole;
+  }, [mode, initialPermissionGrants, matrixTouched, presetGrantsForRole]);
+
+  const editorRemountKey = useMemo(() => {
+    if (mode === 'edit') return `edit-${JSON.stringify(initialPermissionGrants ?? [])}`;
+    if (!matrixTouched) return `role-${role}-${presetGrantsForRole.length}`;
+    return `touched-${role}`;
+  }, [mode, initialPermissionGrants, matrixTouched, role, presetGrantsForRole.length]);
+
+  // Remount / preset reload emits an initial onChange — don't treat that as a user edit.
+  useEffect(() => {
+    skipMatrixTouchRef.current = true;
+  }, [editorRemountKey]);
 
   const buildSubmitValues = (values: CreateUserFormValues) => ({
     ...values,
@@ -147,7 +199,10 @@ export function UserForm({
   });
 
   const submitForm = handleValidatedSubmit((values) => {
-    onSubmit(buildSubmitValues(values));
+    onSubmit(buildSubmitValues(values), {
+      permissionGrants: permissionGrantsRef.current,
+      matrixTouched,
+    });
   });
 
   const goNext = async () => {
@@ -194,7 +249,13 @@ export function UserForm({
         ))}
       </FormSelect>
       {!isWizard ? (
-        <FormSelect label="Role" error={fieldError('role')} {...register('role')}>
+        <FormSelect
+          label="Role"
+          error={fieldError('role')}
+          {...register('role', {
+            onChange: () => setMatrixTouched(false),
+          })}
+        >
           {ASSIGNABLE_USER_ROLES.map((r) => (
             <option key={r} value={r}>
               {formatUserRole(r)}
@@ -215,25 +276,32 @@ export function UserForm({
   );
 
   const permissionsFields = (
-    <div className="space-y-4">
-      <div>
-        <p className="mb-2 text-xs font-medium text-[var(--color-neutral-600)]">Functional flags</p>
-        <CheckboxGrid>
-          {USER_FUNCTIONAL_FLAGS.map((key) => (
-            <CheckboxField key={key} label={formatFieldLabel(key)} {...register(key)} />
-          ))}
-        </CheckboxGrid>
-      </div>
-      <div>
-        <p className="mb-2 text-xs font-medium text-[var(--color-neutral-600)]">
-          Visibility permissions
+    <div className="space-y-2">
+      {mode === 'create' && rolePresetsQuery.data?.available === false ? (
+        <p className="text-xs text-[var(--color-neutral-500)]">
+          Role presets API is not available yet — matrix starts empty. Defaults will apply after{' '}
+          <code className="text-[10px]">GET /users/role-presets</code> is enabled.
         </p>
-        <CheckboxGrid cols={3}>
-          {USER_VISIBILITY_PERMISSIONS.map((key) => (
-            <CheckboxField key={key} label={formatFieldLabel(key)} {...register(key)} />
-          ))}
-        </CheckboxGrid>
-      </div>
+      ) : null}
+      {mode === 'create' && presetGrantsForRole.length > 0 && !matrixTouched ? (
+        <p className="text-xs text-[var(--color-neutral-500)]">
+          Defaults loaded from role preset for{' '}
+          <strong>{formatUserRole(String(role || ''))}</strong>. Change any row to override.
+        </p>
+      ) : null}
+      <UserPermissionMatrixEditor
+        key={editorRemountKey}
+        initialGrants={editorInitialGrants}
+        onChange={(grants) => {
+          permissionGrantsRef.current = grants;
+          if (skipMatrixTouchRef.current) {
+            skipMatrixTouchRef.current = false;
+            return;
+          }
+          setMatrixTouched(true);
+        }}
+        description="Per submodule: None / Read / Read & Write. Catalog from GET /users/permission-matrix; create sends permission_grants on POST /users."
+      />
     </div>
   );
 
@@ -301,9 +369,10 @@ export function UserForm({
           <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
             <UserRoleSelectGrid
               value={role}
-              onChange={(next: UserRole) =>
-                setValue('role', next, { shouldValidate: true, shouldDirty: true })
-              }
+              onChange={(next: UserRole) => {
+                setMatrixTouched(false);
+                setValue('role', next, { shouldValidate: true, shouldDirty: true });
+              }}
               error={fieldError('role')}
             />
           </div>
@@ -418,43 +487,8 @@ export function UserForm({
   );
 }
 
-function formatFieldLabel(key: string) {
-  return key
-    .replace(/^can_see_/, 'Can see ')
-    .replace(/^is_/, '')
-    .split('_')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
-}
-
 function Grid({ children }: { children: ReactNode }) {
   return <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{children}</div>;
-}
-
-function CheckboxGrid({ children, cols = 2 }: { children: ReactNode; cols?: 2 | 3 }) {
-  const colClass = cols === 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2';
-  return <div className={`grid grid-cols-1 ${colClass} gap-3`}>{children}</div>;
-}
-
-function CheckboxField({
-  label,
-  ...props
-}: InputHTMLAttributes<HTMLInputElement> & { label: string }) {
-  const id = label.toLowerCase().replace(/\s+/g, '-');
-  return (
-    <label
-      htmlFor={id}
-      className="inline-flex items-center gap-2 text-sm text-[var(--color-neutral-700)] cursor-pointer"
-    >
-      <input
-        id={id}
-        type="checkbox"
-        className="h-4 w-4 rounded border-[var(--color-neutral-300)] text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
-        {...props}
-      />
-      {label}
-    </label>
-  );
 }
 
 function FormSelect({

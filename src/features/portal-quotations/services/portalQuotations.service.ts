@@ -1,7 +1,8 @@
 import { portalApiClient, PortalApiError } from '@/lib/portalApiClient';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
-import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
+import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
+import { fetchPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import { generateQuotationPdf } from '@/features/quotations/utils/generateQuotationPdf';
 import { PORTAL_QUOTATIONS_API } from '../api/portalQuotations.api';
@@ -141,10 +142,10 @@ export const portalQuotationsService = {
     return normalizeNegotiationTimeline(res.data);
   },
 
-  async downloadPdf(
+  async getPdfBlob(
     id: string,
     quotationNumber = 'quotation',
-  ): Promise<void> {
+  ): Promise<{ blob: Blob; fileName: string }> {
     const filename = formatPdfFilename(quotationNumber, 'quotation');
 
     const throwFriendly = (err: unknown): never => {
@@ -196,16 +197,28 @@ export const portalQuotationsService = {
         generatedBy: user?.email || user?.fullName,
         confirmNote: 'Please confirm the quote.',
       });
-      triggerBlobDownload(blob, filename);
+      return { blob, fileName: filename };
     } catch {
-      // Layout build failed — fall back to authenticated server PDF download.
+      // Layout build failed — fall back to authenticated server PDF fetch.
       try {
-        await downloadPortalBlob(PORTAL_QUOTATIONS_API.pdf(id), filename, {
+        const result = await fetchPortalBlob(PORTAL_QUOTATIONS_API.pdf(id), filename, {
           accept: 'application/pdf, application/octet-stream, */*',
         });
+        if (!(await blobLooksLikePdf(result.blob))) {
+          throw new PortalApiError(
+            'Download was expected to be a PDF but the server returned a non-PDF response.',
+            400,
+          );
+        }
+        return { blob: result.blob, fileName: result.filename };
       } catch (fallbackErr) {
         throwFriendly(fallbackErr);
       }
     }
+  },
+
+  async downloadPdf(id: string, quotationNumber = 'quotation'): Promise<void> {
+    const { blob, fileName } = await this.getPdfBlob(id, quotationNumber);
+    triggerBlobDownload(blob, fileName);
   },
 };

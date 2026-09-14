@@ -9,8 +9,10 @@ import { UserForm } from '../components/UserForm';
 import { useCreateUser } from '../hooks/useUsers';
 import { useUserTenantScope } from '../hooks/useUserTenantScope';
 import { userService } from '../services/user.service';
+import { userPermissionMatrixService } from '../services/userPermissionMatrix.service';
 import type { CreateUserDto } from '../types/user.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { toAccessGrants } from '../utils/permissionAccess';
 
 function CopyValue({ value, label }: { value: string; label: string }) {
   const [copied, setCopied] = useState(false);
@@ -194,18 +196,50 @@ export default function UserCreatePage() {
           tenantId={tenantId}
           isSubmitting={createUser.isPending}
           onCancel={() => navigate(userPath())}
-          onSubmit={async (values) => {
+          onSubmit={async (values, meta) => {
             setApiError(null);
             try {
+              const accessGrants = toAccessGrants(meta?.permissionGrants ?? []);
+              const hasExplicitAccess = accessGrants.some((g) => g.access !== 'none');
+              // Prefer BE role preset when Step 3 was left on defaults and grid is empty.
+              const sendGrants =
+                Boolean(meta?.matrixTouched) || hasExplicitAccess;
+
               const dto: CreateUserDto = {
                 ...(values as CreateUserDto),
                 status: 'ACTIVE',
                 ...(tenantId ? { tenant_id: tenantId } : {}),
+                ...(sendGrants
+                  ? {
+                      permission_grants: accessGrants,
+                      permission_grants_mode: 'replace' as const,
+                    }
+                  : {}),
               };
               const result = await createUser.mutateAsync(dto);
               const email = String(values.email || result.user?.email || '')
                 .trim()
                 .toLowerCase();
+
+              // Fallback PUT when we sent an explicit grid (older BE or sync after create).
+              if (sendGrants) {
+                try {
+                  await userPermissionMatrixService.updateUserPermissions(result.user.id, {
+                    grants: meta?.permissionGrants ?? [],
+                  });
+                } catch (permErr) {
+                  setApiError(
+                    `User created. Permissions may need a re-save: ${getErrorMessage(permErr)}. Open the user and set the permission matrix if login lacks access.`,
+                  );
+                  setCreatedLogin({
+                    userId: result.user.id,
+                    email,
+                    temporaryPassword: result.temporary_password || '',
+                  });
+                  return;
+                }
+              }
+
               if (!result.temporary_password) {
                 setApiError(
                   'User created but no temporary password was returned. Open the user and click Reset password.',

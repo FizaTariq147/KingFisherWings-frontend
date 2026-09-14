@@ -22,7 +22,7 @@ function unwrapListPayload(raw: unknown): { items: unknown[]; meta?: PaginationM
   const envelope = asRecord(raw);
   if (!envelope) return { items: [] };
 
-  const listKeys = ['items', 'results', 'records', 'ports', 'airports', 'data'] as const;
+  const listKeys = ['items', 'results', 'records', 'ports', 'airports', 'warehouses', 'data'] as const;
 
   // Top-level list (no `data` wrapper), e.g. { items, meta } or { ports, meta }
   for (const key of listKeys) {

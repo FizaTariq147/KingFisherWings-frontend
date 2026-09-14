@@ -6,6 +6,7 @@ import type {
 } from '../constants/user.constants';
 import type { UserFunctionalFlag, UserVisibilityPermission } from '../constants/userPermissions';
 import type { CreateUserFormValues, UpdateUserFormValues } from '../schemas/user.schema';
+import type { PermissionAccessGrant } from './userPermissionMatrix.types';
 
 export type { CreateUserFormValues, UpdateUserFormValues } from '../schemas/user.schema';
 
@@ -67,9 +68,16 @@ export interface User extends UserFlags, UserVisibility, UserSecurity {
   single_device_policy?: 'TERMINATE_OLDEST' | 'REJECT_NEW';
 }
 
-export type CreateUserDto = CreateUserFormValues;
+export type CreateUserDto = CreateUserFormValues & {
+  permission_grants?: PermissionAccessGrant[];
+  /** Default merge_with_preset — listed grants override role preset; unspecified follow preset. */
+  permission_grants_mode?: 'merge_with_preset' | 'replace';
+};
 
-export type UpdateUserDto = UpdateUserFormValues;
+export type UpdateUserDto = UpdateUserFormValues & {
+  permission_grants?: PermissionAccessGrant[];
+  permission_grants_mode?: 'merge_with_preset' | 'replace';
+};
 
 export interface UpdateUserStatusDto {
   status: UserStatus;
