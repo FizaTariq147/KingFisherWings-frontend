@@ -1,7 +1,10 @@
 import { portalApiClient, PortalApiError } from '@/lib/portalApiClient';
 import type { ApiPeriodQuery } from '@/lib/apiPeriod';
 import { periodQueryParams } from '@/lib/apiPeriod';
-import { buildPaymentProofFormData } from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
+import {
+  formatPaymentProofUploadError,
+  postPaymentProofMultipartFetch,
+} from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
 import type { PaymentProof, UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
 import { normalizePaymentProof, normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
 import { invoicePdfBranding } from '@/features/files/utils/pdfBranding';
@@ -148,16 +151,30 @@ export const portalInvoicesService = {
     file: File,
     dto: UploadPaymentProofDto,
   ): Promise<PaymentProof> {
-    const form = buildPaymentProofFormData(file, {
-      ...(dto.amount != null ? { amount: String(dto.amount) } : {}),
-      ...(dto.payment_date ? { payment_date: dto.payment_date } : {}),
-      ...(dto.reference ? { reference: dto.reference } : {}),
-      ...(dto.notes ? { notes: dto.notes } : {}),
-    });
-    const res = await portalApiClient.post(PORTAL_INVOICES_API.paymentProofs(invoiceId), form);
-    const proof = normalizePaymentProof(res.data);
-    if (!proof) throw new Error('Upload failed.');
-    return proof;
+    if (!invoiceId?.trim()) throw new Error('Invoice id is required.');
+    try {
+      const token = usePortalAuthStore.getState().accessToken;
+      const data = await postPaymentProofMultipartFetch({
+        path: PORTAL_INVOICES_API.paymentProofs(invoiceId),
+        file,
+        accessToken: token,
+        fields: {
+          ...(dto.amount != null && Number.isFinite(dto.amount)
+            ? { amount: String(dto.amount) }
+            : {}),
+          ...(dto.payment_date ? { payment_date: dto.payment_date } : {}),
+          ...(dto.reference ? { reference: dto.reference } : {}),
+          ...(dto.notes ? { notes: dto.notes } : {}),
+          ...(dto.currency_code ? { currency_code: dto.currency_code } : {}),
+        },
+        errorFactory: (message, status) => new PortalApiError(message, status),
+      });
+      const proof = normalizePaymentProof(data);
+      if (!proof) throw new Error('Upload failed — server returned an unexpected response.');
+      return proof;
+    } catch (error) {
+      throw formatPaymentProofUploadError(error);
+    }
   },
   async exportCsv(params: PortalInvoiceListParams = {}): Promise<void> {
     await downloadPortalBlob(PORTAL_INVOICES_API.exportCsv, 'invoices.csv', {

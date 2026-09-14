@@ -32,11 +32,20 @@ function formatApiErrorMessage(data: unknown, fallback: string): string {
   }
 
   if (typeof message === 'string' && message.trim()) {
-    return message;
+    return message.trim();
+  }
+
+  if (message && typeof message === 'object') {
+    const nested = formatApiErrorMessage(message, '');
+    if (nested) return nested;
   }
 
   if (typeof record.error === 'string' && record.error.trim()) {
-    return record.error;
+    return record.error.trim();
+  }
+
+  if (typeof record.detail === 'string' && record.detail.trim()) {
+    return record.detail.trim();
   }
 
   return fallback;

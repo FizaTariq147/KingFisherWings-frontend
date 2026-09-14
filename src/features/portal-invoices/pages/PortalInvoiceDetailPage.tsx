@@ -127,6 +127,7 @@ export default function PortalInvoiceDetailPage() {
         <PaymentProofList proofs={proofs} />
         <PaymentProofUploadForm
           disabled={uploadProof.isPending}
+          currencyCode={data.currencyCode}
           onUpload={async (file, dto) => {
             await uploadProof.mutateAsync({ file, dto });
           }}

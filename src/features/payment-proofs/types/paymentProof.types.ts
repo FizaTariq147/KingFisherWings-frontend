@@ -27,6 +27,8 @@ export interface UploadPaymentProofDto {
   payment_date?: string;
   reference?: string;
   notes?: string;
+  /** ISO currency from the invoice when known (helps backend avoid null crashes). */
+  currency_code?: string;
 }
 
 export interface ReviewPaymentProofDto {

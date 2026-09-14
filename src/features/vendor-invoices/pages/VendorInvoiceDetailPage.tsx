@@ -219,6 +219,7 @@ export default function VendorInvoiceDetailPage() {
         />
         <PaymentProofUploadForm
           disabled={uploadProof.isPending}
+          currencyCode={data.currencyCode}
           onUpload={async (file, dto) => {
             await uploadProof.mutateAsync({ file, dto });
           }}

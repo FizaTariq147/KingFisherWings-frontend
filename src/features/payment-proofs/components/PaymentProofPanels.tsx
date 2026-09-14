@@ -8,9 +8,15 @@ import { Badge } from '@/components/ui/Badge';
 interface PaymentProofUploadFormProps {
   onUpload: (file: File, dto: UploadPaymentProofDto) => Promise<void>;
   disabled?: boolean;
+  /** Prefill currency from the open invoice when known. */
+  currencyCode?: string;
 }
 
-export function PaymentProofUploadForm({ onUpload, disabled }: PaymentProofUploadFormProps) {
+export function PaymentProofUploadForm({
+  onUpload,
+  disabled,
+  currencyCode,
+}: PaymentProofUploadFormProps) {
   const [file, setFile] = useState<File | null>(null);
   const [amount, setAmount] = useState('');
   const [paymentDate, setPaymentDate] = useState('');
@@ -29,11 +35,22 @@ export function PaymentProofUploadForm({ onUpload, disabled }: PaymentProofUploa
     setMessage(null);
     setPending(true);
     try {
+      const amountRaw = amount.trim();
+      let amountValue: number | undefined;
+      if (amountRaw) {
+        amountValue = Number(amountRaw);
+        if (!Number.isFinite(amountValue)) {
+          setError('Amount must be a valid number.');
+          setPending(false);
+          return;
+        }
+      }
       const dto: UploadPaymentProofDto = {
-        ...(amount.trim() ? { amount: Number(amount) } : {}),
+        ...(amountValue != null ? { amount: amountValue } : {}),
         ...(paymentDate ? { payment_date: paymentDate } : {}),
         ...(reference.trim() ? { reference: reference.trim() } : {}),
         ...(notes.trim() ? { notes: notes.trim() } : {}),
+        ...(currencyCode?.trim() ? { currency_code: currencyCode.trim() } : {}),
       };
       await onUpload(file, dto);
       setMessage('Payment proof uploaded.');

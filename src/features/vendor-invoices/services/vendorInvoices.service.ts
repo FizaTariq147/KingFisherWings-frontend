@@ -3,7 +3,10 @@ import type { ApiPeriodQuery } from '@/lib/apiPeriod';
 import { periodQueryParams } from '@/lib/apiPeriod';
 import type { PaymentProof, UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
 import { normalizePaymentProof, normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
-import { buildPaymentProofFormData } from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
+import {
+  formatPaymentProofUploadError,
+  postPaymentProofMultipart,
+} from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
 import { formatPdfFilename, stripPdfExtension } from '@/features/files/utils/pdfFilename';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { generateInvoicePdf } from '@/features/invoices/utils/generateInvoicePdf';
@@ -71,16 +74,28 @@ export const vendorInvoicesService = {
     file: File,
     dto: UploadPaymentProofDto,
   ): Promise<PaymentProof> {
-    const form = buildPaymentProofFormData(file, {
-      ...(dto.amount != null ? { amount: String(dto.amount) } : {}),
-      ...(dto.payment_date ? { payment_date: dto.payment_date } : {}),
-      ...(dto.reference ? { reference: dto.reference } : {}),
-      ...(dto.notes ? { notes: dto.notes } : {}),
-    });
-    const res = await vendorApiClient.post(VENDOR_INVOICES_API.paymentProofs(invoiceId), form);
-    const proof = normalizePaymentProof(res.data);
-    if (!proof) throw new Error('Upload failed.');
-    return proof;
+    if (!invoiceId?.trim()) throw new VendorApiError('Invoice id is required.', 400);
+    try {
+      const data = await postPaymentProofMultipart(
+        vendorApiClient,
+        VENDOR_INVOICES_API.paymentProofs(invoiceId),
+        file,
+        {
+          ...(dto.amount != null && Number.isFinite(dto.amount)
+            ? { amount: String(dto.amount) }
+            : {}),
+          ...(dto.payment_date ? { payment_date: dto.payment_date } : {}),
+          ...(dto.reference ? { reference: dto.reference } : {}),
+          ...(dto.notes ? { notes: dto.notes } : {}),
+          ...(dto.currency_code ? { currency_code: dto.currency_code } : {}),
+        },
+      );
+      const proof = normalizePaymentProof(data);
+      if (!proof) throw new VendorApiError('Upload failed — server returned an unexpected response.', 500);
+      return proof;
+    } catch (error) {
+      throw formatPaymentProofUploadError(error);
+    }
   },
 
   async exportCsv(params: VendorInvoiceListParams = {}): Promise<void> {
