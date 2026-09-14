@@ -24,7 +24,9 @@ import type { ReportFamily, ReportTemplate } from '../types/reportCatalog.types'
 import { reportContextLabel, reportFamilyLabel } from '../types/reportCatalog.types';
 import { metaToTemplate } from '../utils/normalizeReportCatalog';
 import { ReportCatalogBrowseList } from '../components/ReportCatalog/ReportCatalogBrowseList';
+import { InvoiceFormatBrowseStrip } from '../components/ReportCatalog/InvoiceFormatBrowseStrip';
 import { ReportGeneratePanel } from '../components/ReportCatalog/ReportGeneratePanel';
+import { isInvoiceReportFormatCode } from '../types/invoiceFormatPreview.types';
 
 const CATALOG_STATE_KEY = 'kfg-report-catalog-url';
 
@@ -242,6 +244,24 @@ export default function ReportCatalogPage() {
       false,
     );
   };
+
+  const selectInvoiceFormatCode = (code: string) => {
+    patchParams(
+      {
+        code,
+        family: 'commercial',
+        context: 'invoice',
+        ...(code === selectedCode ? {} : { pack: null }),
+      },
+      false,
+    );
+  };
+
+  const showInvoiceFormatStrip =
+    family === 'commercial' ||
+    contextFilter === 'invoice' ||
+    Boolean(invoiceId) ||
+    isInvoiceReportFormatCode(selectedCode);
 
   const clearSelection = () => {
     patchParams({ code: null, pack: null });
@@ -551,6 +571,12 @@ export default function ReportCatalogPage() {
             .join(' · ')}
         </p>
       )}
+
+      <InvoiceFormatBrowseStrip
+        visible={showInvoiceFormatStrip}
+        selectedCode={selectedCode || undefined}
+        onSelect={selectInvoiceFormatCode}
+      />
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.9fr)]">
         <div className="overflow-hidden rounded-xl border border-[var(--color-neutral-200)] bg-white">

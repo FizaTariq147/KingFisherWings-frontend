@@ -1,4 +1,5 @@
 import { axiosInstance } from '@/lib/axios';
+import { ensureErpAccessToken } from '@/lib/ensureErpAccessToken';
 import { USER_API } from '@/features/users/api/user.api';
 import { AUTH_API } from '../api/auth.api';
 import type {
@@ -186,6 +187,7 @@ export const authService = {
   },
 
   async listSessions(): Promise<unknown> {
+    await ensureErpAccessToken();
     const { data } = await axiosInstance.get<unknown>(AUTH_API.sessions);
     return data;
   },
@@ -205,8 +207,9 @@ export const authService = {
     if (!id) {
       throw new Error('Missing session id for revoke.');
     }
-    // Do not encodeUUID path segments — axios path is already a full relative URL.
-    await axiosInstance.post(AUTH_API.revokeSession(id));
+    await ensureErpAccessToken();
+    // Encode path segment safely (UUIDs are fine; avoids odd id characters).
+    await axiosInstance.post(AUTH_API.revokeSession(encodeURIComponent(id)));
   },
 
   /**
@@ -219,6 +222,7 @@ export const authService = {
     let sessionId = preferredSessionId?.trim() || '';
 
     try {
+      await ensureErpAccessToken();
       const resolved = await this.resolveCurrentSessionId();
       if (resolved) sessionId = resolved;
     } catch {

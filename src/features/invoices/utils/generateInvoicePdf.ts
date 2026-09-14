@@ -1,11 +1,13 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage, type PDFImage } from 'pdf-lib';
+import logoAsset from '@/assets/logo.png';
 import { safePdfText } from '@/features/files/utils/sanitizePdfText';
 
-/** A4 portrait — KingFisher tax invoice layout (matches design snippet). */
-const PAGE_W = 595.28;
-const PAGE_H = 841.89;
+/** A4 portrait defaults — Letter override via model.pageSize. */
+const A4_W = 595.28;
+const A4_H = 841.89;
+const LETTER_W = 612;
+const LETTER_H = 792;
 const MARGIN = 32;
-const CONTENT_W = PAGE_W - MARGIN * 2;
 
 const NAVY = rgb(0.039, 0.161, 0.259); // #0A2942
 const ORANGE = rgb(0.957, 0.447, 0.078); // #F47214
@@ -75,6 +77,8 @@ export type InvoicePdfModel = {
   numberLabel?: string;
   /** Meta row label for document date — default `Invoice Date`. */
   dateLabel?: string;
+  /** Page size — default A4. USA formats may use Letter. */
+  pageSize?: 'A4' | 'Letter';
   billTo: InvoicePdfBillTo;
   shipment?: InvoicePdfShipment;
   lines: InvoicePdfChargeLine[];
@@ -306,18 +310,37 @@ async function embedLogo(doc: PDFDocument): Promise<{
   width: number;
   height: number;
 }> {
-  try {
-    const url = new URL('/kingfisher-logo.png', window.location.origin).href;
-    const res = await fetch(url);
-    if (!res.ok) return { image: null, width: 0, height: 0 };
-    const bytes = await res.arrayBuffer();
-    const image = await doc.embedPng(bytes);
-    const maxH = 48;
-    const scale = maxH / image.height;
-    return { image, width: image.width * scale, height: maxH };
-  } catch {
-    return { image: null, width: 0, height: 0 };
+  const candidates = [
+    typeof logoAsset === 'string' ? logoAsset : undefined,
+    '/kingfisher-logo.png',
+    typeof window !== 'undefined'
+      ? new URL('/kingfisher-logo.png', window.location.origin).href
+      : undefined,
+  ].filter(Boolean) as string[];
+
+  for (const raw of candidates) {
+    try {
+      const url =
+        raw.startsWith('data:') || /^https?:\/\//i.test(raw) || raw.startsWith('blob:')
+          ? raw
+          : new URL(raw, window.location.origin).href;
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const bytes = await res.arrayBuffer();
+      let image: PDFImage;
+      try {
+        image = await doc.embedPng(bytes);
+      } catch {
+        image = await doc.embedJpg(bytes);
+      }
+      const maxH = 48;
+      const scale = maxH / image.height;
+      return { image, width: image.width * scale, height: maxH };
+    } catch {
+      /* try next */
+    }
   }
+  return { image: null, width: 0, height: 0 };
 }
 
 function wrapLines(font: PDFFont, text: string, size: number, maxW: number, maxLines = 8): string[] {
@@ -353,7 +376,7 @@ function drawMiniIcon(
 }
 
 /**
- * Client-side KingFisher tax invoice PDF (portrait A4).
+ * Client-side KingFisher tax invoice PDF (portrait A4 or Letter).
  * Layout mirrors the FRESA / KingFisher tax-invoice snippet.
  * Self-contained — use skipBranding when previewing/downloading.
  */
@@ -362,6 +385,10 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
   const logo = await embedLogo(doc);
+
+  const PAGE_W = model.pageSize === 'Letter' ? LETTER_W : A4_W;
+  const PAGE_H = model.pageSize === 'Letter' ? LETTER_H : A4_H;
+  const CONTENT_W = PAGE_W - MARGIN * 2;
 
   const currency = model.currencyCode?.trim().toUpperCase() || 'AED';
   const companyName = safePdfText(model.company?.name || 'KINGFISHER WINGS GROUP').toUpperCase();
@@ -382,7 +409,7 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
 
   const ensureSpace = (need: number) => {
     if (y - need >= FOOTER_RESERVE + 8) return false;
-    drawPageFooter(page, font, fontBold, companyPhone, companyEmail, companyWeb);
+    drawPageFooter(page, font, fontBold, companyPhone, companyEmail, companyWeb, PAGE_W, CONTENT_W);
     page = doc.addPage([PAGE_W, PAGE_H]);
     // Continuation top bar
     page.drawRectangle({ x: 0, y: PAGE_H - 4, width: PAGE_W * 0.72, height: 4, color: NAVY });
@@ -796,10 +823,10 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
 
   y -= blockH + 10;
 
-  drawPageFooter(page, font, fontBold, companyPhone, companyEmail, companyWeb);
+  drawPageFooter(page, font, fontBold, companyPhone, companyEmail, companyWeb, PAGE_W, CONTENT_W);
 
   const bytes = await doc.save();
-  return new Blob([bytes], { type: 'application/pdf' });
+  return new Blob([new Uint8Array(bytes)], { type: 'application/pdf' });
 }
 
 function drawPageFooter(
@@ -809,16 +836,18 @@ function drawPageFooter(
   phone: string,
   email: string,
   website: string,
+  pageW: number,
+  contentW: number,
 ): void {
   const top = 48;
   page.drawLine({
     start: { x: MARGIN, y: top + 16 },
-    end: { x: PAGE_W - MARGIN, y: top + 16 },
+    end: { x: pageW - MARGIN, y: top + 16 },
     thickness: 0.6,
     color: RULE,
   });
 
-  const colW = CONTENT_W / 3;
+  const colW = contentW / 3;
   const items: Array<{ label: string; value: string; kind: 'phone' | 'mail' | 'web' }> = [
     { label: 'CALL US ANYTIME', value: phone, kind: 'phone' },
     { label: 'MAIL TO US', value: email, kind: 'mail' },
@@ -831,11 +860,11 @@ function drawPageFooter(
     drawText(page, fit(font, item.value, 7.5, colW - 20), x + 14, top - 8, 7.5, font, TEXT);
   });
 
-  page.drawRectangle({ x: 0, y: 0, width: PAGE_W, height: 8, color: NAVY });
+  page.drawRectangle({ x: 0, y: 0, width: pageW, height: 8, color: NAVY });
   page.drawRectangle({
-    x: PAGE_W * 0.78,
+    x: pageW * 0.78,
     y: 0,
-    width: PAGE_W * 0.22,
+    width: pageW * 0.22,
     height: 8,
     color: ORANGE,
   });

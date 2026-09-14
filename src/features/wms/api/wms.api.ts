@@ -12,9 +12,11 @@
  * POST       /wms/asns/{id}/confirm|cancel
  * GET/POST   /wms/grns
  * GET        /wms/grns/{id}
+ * GET        /wms/grns/{id}/pdf
  * POST       /wms/grns/{id}/post|cancel
  * GET/POST   /wms/gdos
  * GET        /wms/gdos/{id}
+ * GET        /wms/gdos/{id}/pdf
  * POST       /wms/gdos/{id}/post|cancel
  * GET        /wms/warehouses (optional future — not in current Swagger; use /masters/warehouses)
  * GET        /wms/stock/on-hand|movements|low-stock|lot-aging
@@ -37,10 +39,12 @@ export const WMS_API = {
   asnCancel: (id: string) => `/wms/asns/${id}/cancel`,
   grns: '/wms/grns',
   grn: (id: string) => `/wms/grns/${id}`,
+  grnPdf: (id: string) => `/wms/grns/${id}/pdf`,
   grnPost: (id: string) => `/wms/grns/${id}/post`,
   grnCancel: (id: string) => `/wms/grns/${id}/cancel`,
   gdos: '/wms/gdos',
   gdo: (id: string) => `/wms/gdos/${id}`,
+  gdoPdf: (id: string) => `/wms/gdos/${id}/pdf`,
   gdoPost: (id: string) => `/wms/gdos/${id}/post`,
   gdoCancel: (id: string) => `/wms/gdos/${id}/cancel`,
   /** Registered master warehouses for GRN/GDO/ASN (scoped for warehouse staff). */

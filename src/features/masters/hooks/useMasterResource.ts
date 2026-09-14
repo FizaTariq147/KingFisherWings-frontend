@@ -22,11 +22,12 @@ export function useMasterList(
   resourceKey: string,
   basePath: string,
   params: MasterListParams,
-  options?: { fetchAll?: boolean },
+  options?: { fetchAll?: boolean; enabled?: boolean },
 ) {
   const accessToken = useAuthStore((s) => s.accessToken);
   const isWorldPlace = resourceKey === 'ports' || resourceKey === 'airports';
   const fetchAll = Boolean(options?.fetchAll);
+  const enabledOpt = options?.enabled !== false;
   // Exclude page/limit from the all-pages cache key so paging is client-side.
   const queryParams: MasterListParams = fetchAll
     ? {
@@ -43,10 +44,12 @@ export function useMasterList(
       fetchAll
         ? masterService.listAll(basePath, queryParams, 500)
         : masterService.list(basePath, params),
-    enabled: Boolean(accessToken && resourceKey && basePath),
+    enabled: enabledOpt && Boolean(accessToken && resourceKey && basePath),
     placeholderData: keepPreviousData,
+    // Always re-check after create/edit navigation back to the list.
+    refetchOnMount: 'always',
     // Ports/airports change after seed — don't keep stale catalogs.
-    staleTime: isWorldPlace ? 0 : 30_000,
+    staleTime: isWorldPlace ? 0 : 15_000,
   });
 }
 
@@ -194,29 +197,54 @@ export function usePlaceSearchQuery(delayMs = 300) {
   return { query, setQuery, debouncedSearch: debounced };
 }
 
+function relatedMasterKeys(resourceKey: string): string[] {
+  if (resourceKey === 'ports' || resourceKey === 'seaport' || resourceKey === 'landport') {
+    return ['ports', 'seaport', 'landport'];
+  }
+  return [resourceKey];
+}
+
 function useInvalidateMaster(resourceKey: string) {
   const queryClient = useQueryClient();
   return (detailId?: string) => {
-    queryClient.invalidateQueries({ queryKey: masterKeys.resource(resourceKey) });
-    queryClient.invalidateQueries({ queryKey: masterKeys.all });
-    if (detailId) {
-      queryClient.invalidateQueries({ queryKey: masterKeys.detail(resourceKey, detailId) });
+    for (const key of relatedMasterKeys(resourceKey)) {
+      queryClient.invalidateQueries({ queryKey: masterKeys.resource(key) });
+      if (detailId) {
+        queryClient.invalidateQueries({ queryKey: masterKeys.detail(key, detailId) });
+      }
     }
+    queryClient.invalidateQueries({ queryKey: masterKeys.all });
   };
 }
 
 export function useMasterMutations(resourceKey: string, basePath: string) {
   const invalidate = useInvalidateMaster(resourceKey);
+  const queryClient = useQueryClient();
 
   const create = useMutation({
     mutationFn: (dto: Record<string, unknown>) => masterService.create(basePath, dto),
-    onSuccess: () => invalidate(),
+    onSuccess: (created) => {
+      // Seed detail cache immediately so navigation never flashes empty.
+      if (created?.id) {
+        for (const key of relatedMasterKeys(resourceKey)) {
+          queryClient.setQueryData(masterKeys.detail(key, created.id), created);
+        }
+      }
+      invalidate(created?.id);
+    },
   });
 
   const update = useMutation({
     mutationFn: ({ id, dto }: { id: string; dto: Record<string, unknown> }) =>
       masterService.update(basePath, id, dto),
-    onSuccess: (_data, { id }) => invalidate(id),
+    onSuccess: (updated, { id }) => {
+      if (updated?.id) {
+        for (const key of relatedMasterKeys(resourceKey)) {
+          queryClient.setQueryData(masterKeys.detail(key, id), updated);
+        }
+      }
+      invalidate(id);
+    },
   });
 
   const remove = useMutation({
@@ -227,7 +255,12 @@ export function useMasterMutations(resourceKey: string, basePath: string) {
   const setActive = useMutation({
     mutationFn: ({ id, is_active }: { id: string; is_active: boolean }) =>
       masterService.setActive(basePath, id, is_active),
-    onSuccess: (_data: MasterRecord, { id }) => invalidate(id),
+    onSuccess: (updated: MasterRecord, { id }) => {
+      if (updated?.id) {
+        queryClient.setQueryData(masterKeys.detail(resourceKey, id), updated);
+      }
+      invalidate(id);
+    },
   });
 
   const seedDefaults = useMutation({

@@ -1,0 +1,2736 @@
+import type { InvoiceFormatPreview } from '../types/invoiceFormatPreview.types';
+
+/** Auto-generated — run scripts/generate-invoice-format-previews.mjs */
+export const INVOICE_FORMAT_PREVIEWS = [
+  {
+    "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+    "formatNumber": 1,
+    "name": "Invoice Report Format-1 Tax Invoice India",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header / GSTIN"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Tax invoice no. & dates"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to (buyer GSTIN)"
+      },
+      {
+        "id": "shipTo",
+        "label": "Ship to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "SAC/HSN",
+          "Description",
+          "Qty",
+          "Rate",
+          "Taxable",
+          "CGST",
+          "SGST",
+          "IGST",
+          "Amount"
+        ]
+      },
+      {
+        "id": "taxBreakdown",
+        "label": "GST summary"
+      },
+      {
+        "id": "totals",
+        "label": "Totals (INR)"
+      },
+      {
+        "id": "bankDetails",
+        "label": "Bank details"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Declaration / signature"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+    "formatNumber": 2,
+    "name": "Invoice Report Format-2 Tax Invoice India",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header / GSTIN"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Tax invoice no. & dates"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to (buyer GSTIN)"
+      },
+      {
+        "id": "shipTo",
+        "label": "Ship to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "SAC/HSN",
+          "Description",
+          "Qty",
+          "Rate",
+          "Taxable",
+          "CGST",
+          "SGST",
+          "IGST",
+          "Amount"
+        ]
+      },
+      {
+        "id": "taxBreakdown",
+        "label": "GST summary"
+      },
+      {
+        "id": "totals",
+        "label": "Totals (INR)"
+      },
+      {
+        "id": "bankDetails",
+        "label": "Bank details"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Declaration / signature"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+    "formatNumber": 3,
+    "name": "Invoice Report Format-3 Summary Invoice",
+    "samplePdfUrl": null,
+    "layoutKind": "summary",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice summary meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Customer"
+      },
+      {
+        "id": "lineTable",
+        "label": "Charge summary",
+        "columns": [
+          "Charge",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
+    "formatNumber": 4,
+    "name": "Invoice Report Format-4 Standard Tax Invoice",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header / GSTIN"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Tax invoice no. & dates"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to (buyer GSTIN)"
+      },
+      {
+        "id": "shipTo",
+        "label": "Ship to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "SAC/HSN",
+          "Description",
+          "Qty",
+          "Rate",
+          "Taxable",
+          "CGST",
+          "SGST",
+          "IGST",
+          "Amount"
+        ]
+      },
+      {
+        "id": "taxBreakdown",
+        "label": "GST summary"
+      },
+      {
+        "id": "totals",
+        "label": "Totals (INR)"
+      },
+      {
+        "id": "bankDetails",
+        "label": "Bank details"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Declaration / signature"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA",
+    "formatNumber": 5,
+    "name": "Invoice Report Format-5 Tax Invoice India",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header / GSTIN"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Tax invoice no. & dates"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to (buyer GSTIN)"
+      },
+      {
+        "id": "shipTo",
+        "label": "Ship to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "SAC/HSN",
+          "Description",
+          "Qty",
+          "Rate",
+          "Taxable",
+          "CGST",
+          "SGST",
+          "IGST",
+          "Amount"
+        ]
+      },
+      {
+        "id": "taxBreakdown",
+        "label": "GST summary"
+      },
+      {
+        "id": "totals",
+        "label": "Totals (INR)"
+      },
+      {
+        "id": "bankDetails",
+        "label": "Bank details"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Declaration / signature"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA",
+    "formatNumber": 6,
+    "name": "Invoice Report Format-6 Simple Invoice (India)",
+    "samplePdfUrl": null,
+    "layoutKind": "simple",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice no. & date"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE",
+    "formatNumber": 7,
+    "name": "Invoice Report Format-7 Simple Invoice",
+    "samplePdfUrl": null,
+    "layoutKind": "simple",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice no. & date"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+    "formatNumber": 8,
+    "name": "Invoice Report Format-8 Standard Invoice Arabic",
+    "samplePdfUrl": null,
+    "layoutKind": "arabic_rtl",
+    "paper": "A4",
+    "rtl": true,
+    "showGst": false,
+    "showArabic": true,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header (EN/AR)"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "وصف",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals / VAT"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA",
+    "formatNumber": 9,
+    "name": "Invoice Report Format-9 Standard Invoice USA",
+    "samplePdfUrl": null,
+    "layoutKind": "usa",
+    "paper": "Letter",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice # / due date"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "shipTo",
+        "label": "Ship to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Item",
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Subtotal / Tax / Total (USD)"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Payment terms"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE",
+    "formatNumber": 10,
+    "name": "Invoice Report Format-10 Standard Invoice",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND",
+    "formatNumber": 11,
+    "name": "Invoice Report Format-11 Standard Invoice Land",
+    "samplePdfUrl": null,
+    "layoutKind": "land",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Transport invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Transport lines",
+        "columns": [
+          "Route",
+          "Vehicle",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED",
+    "formatNumber": 12,
+    "name": "Invoice Report Format-12 Standard Invoice Preprinted",
+    "samplePdfUrl": null,
+    "layoutKind": "preprinted",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Preprinted letterhead zone"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta (aligned boxes)"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "#",
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals box"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Stamp / signature"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA",
+    "formatNumber": 13,
+    "name": "Invoice Report Format-13 Standard Invoice USA",
+    "samplePdfUrl": null,
+    "layoutKind": "usa",
+    "paper": "Letter",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice # / due date"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "shipTo",
+        "label": "Ship to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Item",
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Subtotal / Tax / Total (USD)"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Payment terms"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_14_INVOICE",
+    "formatNumber": 14,
+    "name": "Invoice Report Format-14 Invoice",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_15_INVOICE_FCY",
+    "formatNumber": 15,
+    "name": "Invoice Report Format-15 Invoice FCY",
+    "samplePdfUrl": null,
+    "layoutKind": "usa",
+    "paper": "Letter",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice # / due date"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "shipTo",
+        "label": "Ship to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Item",
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Subtotal / Tax / Total (USD)"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Payment terms"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED",
+    "formatNumber": 16,
+    "name": "Invoice Report Format-16 Standard Tax Invoice Preprinted",
+    "samplePdfUrl": null,
+    "layoutKind": "preprinted",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Preprinted letterhead zone"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta (aligned boxes)"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "#",
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals box"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Stamp / signature"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_17_INVOICE_JASPER",
+    "formatNumber": 17,
+    "name": "Invoice Report Format-17 Invoice Jasper",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE",
+    "formatNumber": 18,
+    "name": "Invoice Report Format-18 Land Freight Transportation Invoice",
+    "samplePdfUrl": null,
+    "layoutKind": "land",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Transport invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Transport lines",
+        "columns": [
+          "Route",
+          "Vehicle",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM",
+    "formatNumber": 19,
+    "name": "Invoice Report Format-19 Debit Note Vietnam",
+    "samplePdfUrl": null,
+    "layoutKind": "debit_vietnam",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Debit note meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Debit to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "VAT",
+          "Amount"
+        ]
+      },
+      {
+        "id": "taxBreakdown",
+        "label": "VAT"
+      },
+      {
+        "id": "totals",
+        "label": "Totals (VND)"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA",
+    "formatNumber": 20,
+    "name": "Invoice Report Format-20 Tax Invoice India",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header / GSTIN"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Tax invoice no. & dates"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to (buyer GSTIN)"
+      },
+      {
+        "id": "shipTo",
+        "label": "Ship to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "SAC/HSN",
+          "Description",
+          "Qty",
+          "Rate",
+          "Taxable",
+          "CGST",
+          "SGST",
+          "IGST",
+          "Amount"
+        ]
+      },
+      {
+        "id": "taxBreakdown",
+        "label": "GST summary"
+      },
+      {
+        "id": "totals",
+        "label": "Totals (INR)"
+      },
+      {
+        "id": "bankDetails",
+        "label": "Bank details"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Declaration / signature"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
+    "formatNumber": 21,
+    "name": "Invoice Report Format-21 Warehouse Invoice",
+    "samplePdfUrl": null,
+    "layoutKind": "warehouse",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company / warehouse header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Warehouse invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Storage / handling lines",
+        "columns": [
+          "SKU",
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_22",
+    "formatNumber": 22,
+    "name": "Invoice Report Format-22",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_23",
+    "formatNumber": 23,
+    "name": "Invoice Report Format-23",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_24",
+    "formatNumber": 24,
+    "name": "Invoice Report Format-24",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_25",
+    "formatNumber": 25,
+    "name": "Invoice Report Format-25",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_26",
+    "formatNumber": 26,
+    "name": "Invoice Report Format-26",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_27",
+    "formatNumber": 27,
+    "name": "Invoice Report Format-27",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_28",
+    "formatNumber": 28,
+    "name": "Invoice Report Format-28",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_29",
+    "formatNumber": 29,
+    "name": "Invoice Report Format-29",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_30",
+    "formatNumber": 30,
+    "name": "Invoice Report Format-30",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_31",
+    "formatNumber": 31,
+    "name": "Invoice Report Format-31",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_32",
+    "formatNumber": 32,
+    "name": "Invoice Report Format-32",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_33",
+    "formatNumber": 33,
+    "name": "Invoice Report Format-33",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_34",
+    "formatNumber": 34,
+    "name": "Invoice Report Format-34",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_35",
+    "formatNumber": 35,
+    "name": "Invoice Report Format-35",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_36",
+    "formatNumber": 36,
+    "name": "Invoice Report Format-36",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_37",
+    "formatNumber": 37,
+    "name": "Invoice Report Format-37",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_38",
+    "formatNumber": 38,
+    "name": "Invoice Report Format-38",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_39",
+    "formatNumber": 39,
+    "name": "Invoice Report Format-39",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_40",
+    "formatNumber": 40,
+    "name": "Invoice Report Format-40",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_41",
+    "formatNumber": 41,
+    "name": "Invoice Report Format-41",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_42",
+    "formatNumber": 42,
+    "name": "Invoice Report Format-42",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_43",
+    "formatNumber": 43,
+    "name": "Invoice Report Format-43",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_44",
+    "formatNumber": 44,
+    "name": "Invoice Report Format-44",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_45",
+    "formatNumber": 45,
+    "name": "Invoice Report Format-45",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_46",
+    "formatNumber": 46,
+    "name": "Invoice Report Format-46",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_47",
+    "formatNumber": 47,
+    "name": "Invoice Report Format-47",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_48",
+    "formatNumber": 48,
+    "name": "Invoice Report Format-48",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_49",
+    "formatNumber": 49,
+    "name": "Invoice Report Format-49",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_50",
+    "formatNumber": 50,
+    "name": "Invoice Report Format-50",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_51",
+    "formatNumber": 51,
+    "name": "Invoice Report Format-51",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_52",
+    "formatNumber": 52,
+    "name": "Invoice Report Format-52",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_53",
+    "formatNumber": 53,
+    "name": "Invoice Report Format-53",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_54",
+    "formatNumber": 54,
+    "name": "Invoice Report Format-54",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_55",
+    "formatNumber": 55,
+    "name": "Invoice Report Format-55",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_56",
+    "formatNumber": 56,
+    "name": "Invoice Report Format-56",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_57",
+    "formatNumber": 57,
+    "name": "Invoice Report Format-57",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_58",
+    "formatNumber": 58,
+    "name": "Invoice Report Format-58",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_59",
+    "formatNumber": 59,
+    "name": "Invoice Report Format-59",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_60",
+    "formatNumber": 60,
+    "name": "Invoice Report Format-60",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_61",
+    "formatNumber": 61,
+    "name": "Invoice Report Format-61",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  }
+] as InvoiceFormatPreview[];

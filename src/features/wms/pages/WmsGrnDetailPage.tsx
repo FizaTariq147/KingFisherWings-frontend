@@ -12,6 +12,7 @@ import {
 } from '../components/WmsDocumentDetail';
 import { WmsPageHeader } from '../components/WmsPageHeader';
 import { useWmsGrn, useWmsGrnActions, wmsKeys } from '../hooks/useWms';
+import { useWmsDocumentPdf } from '../hooks/useWmsDocumentPdf';
 import { displayDocNumber } from '../utils/normalizeWms';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
@@ -21,6 +22,16 @@ export default function WmsGrnDetailPage() {
   const { data: doc, isLoading, isError, error, refetch, isFetching } = useWmsGrn(id);
   const { post, cancel } = useWmsGrnActions(id);
   const warehouseLabel = useWmsWarehouseLabel(doc?.warehouse_id);
+  const {
+    button: pdfButton,
+    modal: pdfModal,
+    error: pdfError,
+  } = useWmsDocumentPdf({
+    kind: 'grn',
+    id,
+    doc,
+    warehouseLabel,
+  });
 
   const status = (doc?.status ?? '').toLowerCase();
   const canPost = Boolean(doc) && !status.includes('post') && !status.includes('cancel');
@@ -46,6 +57,7 @@ export default function WmsGrnDetailPage() {
                 <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
+              {pdfButton}
               {canPost ? (
                 <Button
                   type="button"
@@ -112,7 +124,9 @@ export default function WmsGrnDetailPage() {
         {(post.isError || cancel.isError) && (
           <p className="text-[var(--color-danger-600)]">{getErrorMessage(post.error ?? cancel.error)}</p>
         )}
+        {pdfError ? <p className="text-[var(--color-danger-600)]">{pdfError}</p> : null}
       </Card>
+      {pdfModal}
     </div>
   );
 }

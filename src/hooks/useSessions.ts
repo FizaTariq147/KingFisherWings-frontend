@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { authService } from '@/features/auth/services/auth.service'
 import { normalizeActiveSessions } from '@/features/auth/utils/normalizeSessions'
-import { accessTokenExpiresAtMs } from '@/lib/tenantFromAuth'
+import {
+  ensureErpAccessToken,
+  waitForErpAuthHydration,
+} from '@/lib/ensureErpAccessToken'
 import { useAuthStore } from '@/store/authStore'
 import type { ActiveSession } from '@/types/session.types'
 
@@ -38,16 +41,6 @@ function getErrorMessage(error: unknown): string {
   return 'Request failed.'
 }
 
-async function ensureFreshAccessToken(): Promise<void> {
-  const { accessToken, refreshToken, refreshAccessToken } = useAuthStore.getState()
-  if (!refreshToken) return
-  const expiresAt = accessToken ? accessTokenExpiresAtMs(accessToken) : null
-  const needsRefresh =
-    !accessToken || (expiresAt != null && expiresAt <= Date.now() + 15_000)
-  if (!needsRefresh) return
-  await refreshAccessToken()
-}
-
 export function useSessions(): UseSessionsReturn {
   const [sessions, setSessions] = useState<ActiveSession[]>([])
   const [isLoading, setLoading] = useState(true)
@@ -64,9 +57,16 @@ export function useSessions(): UseSessionsReturn {
     setLoading(true)
     setError(null)
 
-    authService
-      .listSessions()
-      .then((data) => {
+    ;(async () => {
+      try {
+        await waitForErpAuthHydration()
+        if (cancelled) return
+        await ensureErpAccessToken()
+        if (cancelled) return
+        if (!useAuthStore.getState().accessToken && !useAuthStore.getState().refreshToken) {
+          throw new Error('Not signed in.')
+        }
+        const data = await authService.listSessions()
         if (cancelled) return
         const normalized = normalizeActiveSessions(data)
         setSessions(normalized)
@@ -74,13 +74,12 @@ export function useSessions(): UseSessionsReturn {
         if (current?.id) {
           useAuthStore.setState({ sessionId: current.id })
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         if (!cancelled) setError(getErrorMessage(err) || 'Failed to load sessions.')
-      })
-      .finally(() => {
+      } finally {
         if (!cancelled) setLoading(false)
-      })
+      }
+    })()
 
     return () => {
       cancelled = true
@@ -93,11 +92,7 @@ export function useSessions(): UseSessionsReturn {
     const target = sessions.find((s) => s.id === id)
     const isCurrent = Boolean(target?.isCurrent)
     try {
-      try {
-        await ensureFreshAccessToken()
-      } catch {
-        // Interceptor may still refresh on the revoke call.
-      }
+      await ensureErpAccessToken()
       await authService.revokeSession(id)
       setSessions((prev) => prev.filter((s) => s.id !== id))
       if (isCurrent) {

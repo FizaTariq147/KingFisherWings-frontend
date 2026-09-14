@@ -377,7 +377,7 @@ export const useAuthStore = create<AuthStore>()(
             accessToken: pair.accessToken,
             refreshToken: pair.refreshToken || refreshToken,
             sessionId,
-            sessionExpired: false,
+            // Do not clear sessionExpired here — idle modal Continue owns that.
           })
         } catch (err) {
           if (get().sessionExpired) throw err
@@ -463,24 +463,34 @@ export const useAuthStore = create<AuthStore>()(
         if (!refreshToken) {
           throw new Error('Session cannot be continued. Sign in again.')
         }
-        const pair = await authService.refresh({ refresh_token: refreshToken })
-        let sessionId =
-          pair.sessionId ||
-          sessionIdFromAccessToken(pair.accessToken) ||
-          get().sessionId
-        set({
-          accessToken: pair.accessToken,
-          refreshToken: pair.refreshToken || refreshToken,
-          sessionId,
-          lastActiveAt: Date.now(),
-          sessionExpired: false,
-          isAuthenticated: true,
-        })
         try {
-          const resolved = await authService.resolveCurrentSessionId()
-          if (resolved) set({ sessionId: resolved })
-        } catch {
-          // Keep JWT/login session id.
+          const pair = await authService.refresh({ refresh_token: refreshToken })
+          let sessionId =
+            pair.sessionId ||
+            sessionIdFromAccessToken(pair.accessToken) ||
+            get().sessionId
+          set({
+            accessToken: pair.accessToken,
+            refreshToken: pair.refreshToken || refreshToken,
+            sessionId,
+            lastActiveAt: Date.now(),
+            sessionExpired: false,
+            isAuthenticated: true,
+          })
+          try {
+            const resolved = await authService.resolveCurrentSessionId()
+            if (resolved) set({ sessionId: resolved })
+          } catch {
+            // Keep JWT/login session id — Continue already succeeded.
+          }
+        } catch (err) {
+          const status = (err as { response?: { status?: number } })?.response?.status
+          if (status === 401 || status === 403) {
+            throw new Error('Refresh token expired. Please sign in again.')
+          }
+          throw err instanceof Error
+            ? err
+            : new Error('Could not continue session. Please try again.')
         }
       },
 

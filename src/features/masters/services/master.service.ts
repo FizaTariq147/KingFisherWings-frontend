@@ -17,20 +17,116 @@ function asRecord(value: unknown): Record<string, unknown> | null {
   return value as Record<string, unknown>;
 }
 
+/** Unwrap create/get/update bodies that nest the row under data / item / record / entity. */
+function unwrapMasterEntity(raw: unknown): unknown {
+  let cur: unknown = raw;
+  for (let depth = 0; depth < 4; depth += 1) {
+    const record = asRecord(cur);
+    if (!record) return cur;
+
+    const direct = normalizeMasterRecord(record);
+    if (direct) return record;
+
+    const nestedKeys = [
+      'data',
+      'item',
+      'record',
+      'entity',
+      'result',
+      'warehouse',
+      'port',
+      'airport',
+      'airline',
+      'bank',
+      'branch',
+      'currency',
+      'department',
+      'designation',
+      'holiday',
+      'vessel',
+      'trucker',
+      'tax_rate',
+      'taxRate',
+      'charge_code',
+      'chargeCode',
+      'container_type',
+      'containerType',
+      'shipping_line',
+      'shippingLine',
+      'unit_of_measure',
+      'unitOfMeasure',
+      'hs_code',
+      'hsCode',
+      'courier_vendor',
+      'courierVendor',
+      'exchange_rate',
+      'exchangeRate',
+    ];
+    let next: unknown;
+    for (const key of nestedKeys) {
+      if (record[key] != null && typeof record[key] === 'object' && !Array.isArray(record[key])) {
+        next = record[key];
+        break;
+      }
+    }
+    if (next === undefined) return cur;
+    cur = next;
+  }
+  return cur;
+}
+
+function firstObjectArray(
+  record: Record<string, unknown>,
+  preferredKeys: string[],
+): unknown[] | null {
+  for (const key of preferredKeys) {
+    const list = record[key];
+    if (Array.isArray(list)) return list;
+  }
+  // Fallback: any array of row-like objects (resource-named keys, e.g. airlines/banks).
+  for (const value of Object.values(record)) {
+    if (
+      Array.isArray(value) &&
+      value.length > 0 &&
+      value.every((row) => row && typeof row === 'object' && !Array.isArray(row))
+    ) {
+      return value;
+    }
+  }
+  for (const value of Object.values(record)) {
+    if (Array.isArray(value)) return value;
+  }
+  return null;
+}
+
 function unwrapListPayload(raw: unknown): { items: unknown[]; meta?: PaginationMeta } {
   if (Array.isArray(raw)) return { items: raw };
   const envelope = asRecord(raw);
   if (!envelope) return { items: [] };
 
-  const listKeys = ['items', 'results', 'records', 'ports', 'airports', 'warehouses', 'data'] as const;
+  const preferred = [
+    'items',
+    'results',
+    'records',
+    'ports',
+    'airports',
+    'warehouses',
+    'airlines',
+    'banks',
+    'branches',
+    'currencies',
+    'departments',
+    'designations',
+    'holidays',
+    'truckers',
+    'vessels',
+    'data',
+  ];
 
   // Top-level list (no `data` wrapper), e.g. { items, meta } or { ports, meta }
-  for (const key of listKeys) {
-    if (key === 'data') continue;
-    const list = envelope[key];
-    if (Array.isArray(list)) {
-      return { items: list, meta: normalizeMeta(envelope.meta, list.length) };
-    }
+  const top = firstObjectArray(envelope, preferred.filter((k) => k !== 'data'));
+  if (top) {
+    return { items: top, meta: normalizeMeta(envelope.meta, top.length) };
   }
 
   const data = envelope.data;
@@ -40,14 +136,12 @@ function unwrapListPayload(raw: unknown): { items: unknown[]; meta?: PaginationM
 
   const nested = asRecord(data);
   if (nested) {
-    for (const key of listKeys) {
-      const list = nested[key];
-      if (Array.isArray(list)) {
-        return {
-          items: list,
-          meta: normalizeMeta(nested.meta ?? envelope.meta, list.length),
-        };
-      }
+    const nestedList = firstObjectArray(nested, preferred);
+    if (nestedList) {
+      return {
+        items: nestedList,
+        meta: normalizeMeta(nested.meta ?? envelope.meta, nestedList.length),
+      };
     }
   }
 
@@ -550,10 +644,7 @@ export const masterService = {
       const res = await withGatewayRetry(() =>
         axiosInstance.get<ApiEnvelope<MasterRecord> | MasterRecord>(masterById(basePath, id)),
       );
-      const raw = res.data;
-      const envelope = asRecord(raw);
-      const data = envelope && 'data' in envelope ? envelope.data : raw;
-      const record = normalizeMasterRecord(data);
+      const record = normalizeMasterRecord(unwrapMasterEntity(res.data));
       if (!record) throw new Error('Master record not found.');
       return record;
     } catch (error) {
@@ -563,28 +654,37 @@ export const masterService = {
 
   async create(basePath: string, dto: Record<string, unknown>): Promise<MasterRecord> {
     try {
+      // Default active so list filters / status badges match newly created rows.
+      const withDefaults: Record<string, unknown> = {
+        is_active: true,
+        ...dto,
+      };
+      if (typeof withDefaults.is_active !== 'boolean') withDefaults.is_active = true;
+
       let raw: unknown;
       if (basePath.includes('/masters/holidays')) {
-        raw = await postHolidayWithFallbacks(basePath, dto);
+        raw = await postHolidayWithFallbacks(basePath, withDefaults);
       } else if (basePath.includes('/masters/tax-rates')) {
-        raw = await postTaxRateWithFallbacks(basePath, dto);
+        raw = await postTaxRateWithFallbacks(basePath, withDefaults);
       } else if (basePath.includes('/quotations/tariffs')) {
-        raw = await postTariffWithFallbacks(basePath, dto);
+        raw = await postTariffWithFallbacks(basePath, withDefaults);
       } else {
         raw = (
           await withGatewayRetry(() =>
             axiosInstance.post<ApiEnvelope<MasterRecord> | MasterRecord>(
               basePath,
-              prepareMasterPayload(dto),
+              prepareMasterPayload(withDefaults),
             ),
           )
         ).data;
       }
 
-      const envelope = asRecord(raw);
-      const data = envelope && 'data' in envelope ? envelope.data : raw;
-      const record = normalizeMasterRecord(data);
-      if (!record) throw new Error('Create succeeded but no record was returned.');
+      const record = normalizeMasterRecord(unwrapMasterEntity(raw));
+      if (!record) {
+        throw new Error(
+          'Create succeeded but the API did not return a record with id. Backend must return the created entity (with id) in the 201 body.',
+        );
+      }
       return record;
     } catch (error) {
       throw formatAxiosError(error, { basePath });
@@ -609,9 +709,7 @@ export const masterService = {
           body,
         ),
       );
-      const envelope = asRecord(res.data);
-      const data = envelope && 'data' in envelope ? envelope.data : res.data;
-      const record = normalizeMasterRecord(data);
+      const record = normalizeMasterRecord(unwrapMasterEntity(res.data));
       if (!record) throw new Error('Update succeeded but no record was returned.');
       return record;
     } catch (error) {
