@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { MasterListPage } from '@/components/layout/MasterListPage';
 import { isUuid } from '@/lib/isUuid';
+import { MASTER_PATHS } from '../api/masterPaths';
 import { getMasterResource } from '../config/masterResources';
 import {
   masterKeys,
   useMasterList,
   useMasterMutations,
+  useMasterOptions,
 } from '../hooks/useMasterResource';
 import {
   useMasterPageRoute,
@@ -38,6 +40,7 @@ function isWorldPlaceResource(key: string): boolean {
 
 export default function MasterResourceListPage(props: MasterPageRouteProps = {}) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const { resourceKey, backHref, backLabel, newPath, detailPath, editPath } =
     useMasterPageRoute(props);
@@ -47,7 +50,7 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
   const listResourceKey = resource?.key ?? resourceKey;
   const basePath = resource?.basePath ?? '';
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(() => (searchParams.get('search') ?? '').trim());
   const [status, setStatus] = useState<MasterStatusFilter>('all');
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [page, setPage] = useState(1);
@@ -56,14 +59,34 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
   const [seedMessage, setSeedMessage] = useState<string | null>(null);
   const [seeding, setSeeding] = useState(false);
   const autoSeedAttempted = useRef(false);
+  /** Swagger: GET /masters/exchange-rates requires currency_id. */
+  const currencyFromUrl = searchParams.get('currency_id') ?? '';
+  const searchFromUrl = searchParams.get('search') ?? '';
+  const [exchangeCurrencyId, setExchangeCurrencyId] = useState(
+    isUuid(currencyFromUrl) ? currencyFromUrl : '',
+  );
+
+  useEffect(() => {
+    if (isUuid(currencyFromUrl)) setExchangeCurrencyId(currencyFromUrl);
+  }, [currencyFromUrl]);
+
+  useEffect(() => {
+    if (searchFromUrl.trim()) setSearch(searchFromUrl.trim());
+  }, [searchFromUrl, resourceKey]);
 
   const debouncedSearch = useDebouncedValue(search, 300);
+  const isExchangeRates = resourceKey === 'exchange-rates';
+  const { data: currencyOptions = [] } = useMasterOptions(
+    'currencies',
+    MASTER_PATHS.currencies,
+    isExchangeRates,
+  );
 
   useEffect(() => {
     setPage(1);
     autoSeedAttempted.current = false;
     setSeedMessage(null);
-  }, [debouncedSearch, status, order, resourceKey]);
+  }, [debouncedSearch, status, order, resourceKey, exchangeCurrencyId]);
 
   const listParams: MasterListParams = {
     page,
@@ -71,13 +94,21 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
     search: debouncedSearch.trim() || undefined,
     is_active: status === 'all' ? undefined : status === 'active',
     order,
-    extra: resource?.listDefaults,
+    extra: {
+      ...(resource?.listDefaults ?? {}),
+      ...(isExchangeRates && isUuid(exchangeCurrencyId)
+        ? { currency_id: exchangeCurrencyId }
+        : {}),
+    },
   };
+
+  const listEnabled = Boolean(resource) && (!isExchangeRates || isUuid(exchangeCurrencyId));
 
   const { data, isLoading, isFetching, isError, error, refetch } = useMasterList(
     listResourceKey,
     basePath,
     listParams,
+    { enabled: listEnabled },
   );
   const mutations = useMasterMutations(listResourceKey, basePath);
 
@@ -88,10 +119,18 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
       search: debouncedSearch.trim() || undefined,
       is_active: status === 'all' ? undefined : status === 'active',
       order,
-      extra: resource?.listDefaults,
+      extra: {
+        ...(resource?.listDefaults ?? {}),
+        ...(isExchangeRates && isUuid(exchangeCurrencyId)
+          ? { currency_id: exchangeCurrencyId }
+          : {}),
+      },
     };
     const fresh = await masterService.list(basePath, freshParams);
-    queryClient.setQueryData(masterKeys.list(listResourceKey, freshParams), fresh);
+    queryClient.setQueryData(
+      [...masterKeys.list(listResourceKey, freshParams), 'paged'],
+      fresh,
+    );
     await queryClient.invalidateQueries({ queryKey: masterKeys.resource(listResourceKey) });
     setPage(pageNo);
     return fresh;
@@ -355,6 +394,40 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
         </div>
       )}
 
+      {isExchangeRates ? (
+        <div className="flex flex-wrap items-end gap-3 rounded-lg border border-[var(--color-neutral-200)] bg-white px-3 py-3">
+          <label className="flex min-w-[220px] flex-1 flex-col gap-1 text-xs font-medium text-[var(--color-neutral-600)]">
+            Currency (required)
+            <select
+              className="rounded-md border border-[var(--color-neutral-300)] px-3 py-2 text-sm text-[var(--color-neutral-800)]"
+              value={exchangeCurrencyId}
+              onChange={(e) => setExchangeCurrencyId(e.target.value)}
+            >
+              <option value="">Select currency…</option>
+              {currencyOptions.map((c) => {
+                const code = String(c.code ?? '').toUpperCase();
+                const name = masterDisplayValue(c, 'name');
+                const label =
+                  code && name !== '—' && name.toUpperCase() !== code
+                    ? `${code} — ${name}`
+                    : code || name;
+                return (
+                  <option key={c.id} value={c.id}>
+                    {label}
+                  </option>
+                );
+              })}
+            </select>
+          </label>
+          {!isUuid(exchangeCurrencyId) ? (
+            <p className="text-xs text-[var(--color-neutral-500)]">
+              Swagger requires <code>currency_id</code> on GET /masters/exchange-rates. Create a rate,
+              then select that currency here to see it in the list.
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
       <MasterListPage
         title={resource.title}
         columns={resource.columns}
@@ -371,10 +444,21 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
         totalPages={totalPages}
         total={tenantTotal}
         onPage={setPage}
-        isLoading={isLoading || seeding}
+        isLoading={(isLoading || seeding) && listEnabled}
         isFetching={isFetching}
         isError={isError}
-        errorMessage={error instanceof Error ? error.message : null}
+        errorMessage={
+          !listEnabled && isExchangeRates
+            ? 'Select a currency to load exchange rates.'
+            : error instanceof Error
+              ? error.message
+              : null
+        }
+        emptyMessage={
+          !listEnabled && isExchangeRates
+            ? 'Select a currency above to list rates for that currency.'
+            : undefined
+        }
         animateRows={!worldPlace}
         onAdd={() => navigate(newPath)}
         onView={

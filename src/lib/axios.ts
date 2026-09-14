@@ -2,6 +2,7 @@ import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import { AUTH_API } from '@/features/auth/api/auth.api'
 import { matchesAnyApiPath } from '@/lib/apiPath'
 import { erpAccessBlockMessage } from '@/lib/detectErpAccessBlock'
+import { ensureErpAccessToken } from '@/lib/ensureErpAccessToken'
 import { useAuthStore } from '@/store/authStore'
 
 interface RetryConfig extends InternalAxiosRequestConfig {
@@ -53,22 +54,18 @@ axiosInstance.interceptors.request.use(async (config) => {
     }
     return config
   }
-  const token = useAuthStore.getState().accessToken
+
+  // Proactive refresh when access is missing/expired — prevents flaky 401 on
+  // GET /auth/sessions and POST …/revoke (access token is not persisted).
+  let token = useAuthStore.getState().accessToken
+  if (useAuthStore.getState().refreshToken) {
+    token = (await ensureErpAccessToken()) ?? token
+  }
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
 // ── Response: silent refresh on 401 ───────────────────────────────────────
-let isRefreshing = false
-let pendingQueue: { resolve: (t: string) => void; reject: (e: unknown) => void }[] = []
-
-const processQueue = (error: unknown, token: string | null) => {
-  pendingQueue.forEach(({ resolve, reject }) =>
-    error ? reject(error) : resolve(token!),
-  )
-  pendingQueue = []
-}
-
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
@@ -87,31 +84,26 @@ axiosInstance.interceptors.response.use(
 
     if (error.response?.status !== 401) return Promise.reject(error)
 
-    if (isRefreshing) {
-      return new Promise<string>((resolve, reject) => {
-        pendingQueue.push({ resolve, reject })
-      }).then((newToken) => {
-        original.headers.Authorization = `Bearer ${newToken}`
-        return axiosInstance(original)
-      })
+    // Idle modal is showing — Continue / Revoke own refresh; do not auto-retry.
+    if (useAuthStore.getState().sessionExpired) {
+      return Promise.reject(error)
+    }
+
+    if (!useAuthStore.getState().refreshToken) {
+      useAuthStore.getState().markSessionExpired()
+      return Promise.reject(error)
     }
 
     original._retry = true
-    isRefreshing = true
 
     try {
-      await useAuthStore.getState().refreshAccessToken()
-      const newToken = useAuthStore.getState().accessToken
+      const newToken = await ensureErpAccessToken(0, { force: true })
       if (!newToken) throw new Error('No access token after refresh')
-      processQueue(null, newToken)
       original.headers.Authorization = `Bearer ${newToken}`
       return axiosInstance(original)
     } catch (refreshError) {
-      processQueue(refreshError, null)
       useAuthStore.getState().markSessionExpired()
       return Promise.reject(refreshError)
-    } finally {
-      isRefreshing = false
     }
   },
 )

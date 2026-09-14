@@ -886,9 +886,33 @@ export default function MasterResourceFormPage(props: MasterPageRouteProps = {})
       } else {
         const created = await mutations.create.mutateAsync(payload);
         if (resource.createOnly || !created?.id) {
-          navigate(listPath);
+          if (resource.key === 'exchange-rates') {
+            const currencyId = String(
+              created?.currency_id ?? payload.currency_id ?? '',
+            ).trim();
+            navigate(
+              isUuid(currencyId) ? `${listPath}?currency_id=${currencyId}` : listPath,
+            );
+          } else {
+            navigate(listPath);
+          }
         } else {
-          navigate(detailPath(created.id));
+          // Land on list with search so the new row is visible (not buried by sort/pagination).
+          const searchHint = String(
+            created.code ??
+              created.iata_code ??
+              created.un_locode ??
+              created.iso_code ??
+              created.name ??
+              payload.code ??
+              payload.name ??
+              '',
+          ).trim();
+          if (searchHint) {
+            navigate(`${listPath}?search=${encodeURIComponent(searchHint)}`);
+          } else {
+            navigate(detailPath(created.id));
+          }
         }
       }
     } catch (err) {

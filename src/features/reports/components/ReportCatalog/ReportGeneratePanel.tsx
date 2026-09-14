@@ -21,12 +21,21 @@ import {
 } from '../../types/reportCatalog.types';
 import { formatReportActivateError } from '../../utils/normalizeReportCatalog';
 import {
+  generateInvoiceFormatLayoutPdf,
+  invoiceRecordToFormatPdfData,
+} from '../../utils/generateInvoiceFormatLayoutPdf';
+import {
   buildInitialReportParams,
   coerceReportParameters,
   downloadExtensionForFormat,
   type ReportContextIds,
 } from '../../utils/reportParameterUtils';
+import { getInvoiceFormatPreview } from '../../data/invoiceFormatPreviews';
+import { isInvoiceReportFormatCode } from '../../types/invoiceFormatPreview.types';
+import { InvoiceFormatPreviewPanel } from './InvoiceFormatPreview';
 import { ReportParameterForm } from './ReportParameterForm';
+import { invoiceService } from '@/features/invoices/services/invoice.service';
+import logoUrl from '@/assets/logo.png';
 
 type ReportGeneratePanelProps = {
   template: ReportTemplate;
@@ -83,6 +92,7 @@ export function ReportGeneratePanel({
   const [pdfReadyUrl, setPdfReadyUrl] = useState<string | null>(null);
   const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
   const [pdfReadyName, setPdfReadyName] = useState('report.pdf');
+  const [clientGenerating, setClientGenerating] = useState(false);
   const handledReadyJobId = useRef<string | null>(null);
 
   const generate = useGenerateReport();
@@ -197,9 +207,54 @@ export function ReportGeneratePanel({
     })();
   }, [jobQuery.data, format, resolved.code]);
 
+  const isInvoiceFormatPdf =
+    isInvoiceReportFormatCode(resolved.code) && format === 'PDF';
+
   const onGenerate = async () => {
     setError(null);
     setMessage(null);
+
+    // Invoice Report Format-* PDF → same KingFisher layout as the catalog preview.
+    if (isInvoiceFormatPdf) {
+      const preview = getInvoiceFormatPreview(resolved.code);
+      if (!preview) {
+        setError('Invoice format preview definition not found.');
+        return;
+      }
+      setClientGenerating(true);
+      try {
+        let data = {};
+        const invoiceId =
+          (params.invoice_id || context?.invoice_id || '').trim() || undefined;
+        if (invoiceId && isUuid(invoiceId)) {
+          try {
+            const invoice = await invoiceService.getById(invoiceId);
+            data = invoiceRecordToFormatPdfData(invoice);
+          } catch {
+            // Keep demo data if invoice fetch fails — still show layout PDF.
+          }
+        }
+        const blob = await generateInvoiceFormatLayoutPdf(preview, data, {
+          logoUrl: typeof logoUrl === 'string' ? logoUrl : undefined,
+        });
+        const fileName = formatPdfFilename(
+          `Format-${preview.formatNumber}-${resolved.code}`,
+          'invoice-format',
+        );
+        setPdfReadyName(fileName);
+        setPdfReadyBlob(blob);
+        setPdfReadyUrl(null);
+        setPdfReadyOpen(true);
+        setJobId(null);
+        setMessage('KingFisher Fresa-style layout PDF ready (matches preview).');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Could not generate layout PDF.');
+      } finally {
+        setClientGenerating(false);
+      }
+      return;
+    }
+
     if (detailFailed) {
       setError('Template is not on the backend yet. Import registry first.');
       return;
@@ -313,8 +368,15 @@ export function ReportGeneratePanel({
     bindRenderer.isPending ||
     activate.isPending ||
     deactivate.isPending ||
+    clientGenerating ||
     jobQuery.data?.status === 'queued' ||
     jobQuery.data?.status === 'running';
+
+  const canClientInvoicePdf = isInvoiceReportFormatCode(resolved.code) && format === 'PDF';
+  const generateBlocked =
+    busy ||
+    detail.isLoading ||
+    (!canClientInvoicePdf && (detailFailed || !resolved.is_active));
 
   const rendererStatus = reportRendererStatus(resolved);
   const activateLikely = canActivateReportTemplate(resolved);
@@ -374,6 +436,20 @@ export function ReportGeneratePanel({
 
       {resolved.description ? (
         <p className="text-sm text-[var(--color-neutral-600)]">{resolved.description}</p>
+      ) : null}
+
+      {isInvoiceReportFormatCode(resolved.code) ? (
+        <InvoiceFormatPreviewPanel code={resolved.code} />
+      ) : null}
+
+      {isInvoiceReportFormatCode(resolved.code) ? (
+        <div
+          role="status"
+          className="rounded-md border border-sky-100 bg-sky-50 px-3 py-2 text-xs text-sky-950"
+        >
+          <strong>Generate</strong> builds the KingFisher layout PDF for this format&apos;s layout
+          style (India GST, Arabic RTL, USA numbered, etc.) — matching the preview above.
+        </div>
       ) : null}
 
       {detail.isLoading ? (
@@ -504,7 +580,9 @@ export function ReportGeneratePanel({
           className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
           value={format}
           onChange={(e) => setFormat(e.target.value as ReportExportFormat)}
-          disabled={detailFailed || !resolved.is_active}
+          disabled={
+            detail.isLoading || (!isInvoiceReportFormatCode(resolved.code) && (detailFailed || !resolved.is_active))
+          }
         >
           {formats.map((f) => (
             <option key={f} value={f}>
@@ -575,10 +653,10 @@ export function ReportGeneratePanel({
         </Button>
         <Button
           type="button"
-          disabled={busy || detailFailed || detail.isLoading || !resolved.is_active}
+          disabled={generateBlocked}
           onClick={() => void onGenerate()}
         >
-          {busy && generate.isPending ? 'Generating…' : 'Generate'}
+          {clientGenerating || (busy && generate.isPending) ? 'Generating…' : 'Generate'}
         </Button>
       </div>
 
@@ -591,10 +669,14 @@ export function ReportGeneratePanel({
         }}
         blob={pdfReadyBlob}
         url={pdfReadyBlob ? null : pdfReadyUrl}
-        title="Report PDF ready"
+        title={canClientInvoicePdf ? 'KingFisher invoice format PDF ready' : 'Report PDF ready'}
         fileName={pdfReadyName}
         skipBranding
-        description="Your report PDF was created successfully. Preview or download — no page redirect."
+        description={
+          canClientInvoicePdf
+            ? 'PDF uses the same KingFisher layout as the catalog preview. Preview or download.'
+            : 'Your report PDF was created successfully. Preview or download — no page redirect.'
+        }
       />
     </div>
   );

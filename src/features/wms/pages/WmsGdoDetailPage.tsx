@@ -14,6 +14,7 @@ import {
 import { useWmsItemOptions } from '../components/WmsFormHelpers';
 import { WmsPageHeader } from '../components/WmsPageHeader';
 import { useWmsGdo, useWmsGdoActions, wmsKeys } from '../hooks/useWms';
+import { useWmsDocumentPdf } from '../hooks/useWmsDocumentPdf';
 import { displayDocNumber } from '../utils/normalizeWms';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
@@ -39,6 +40,18 @@ export default function WmsGdoDetailPage() {
     }
     return map;
   }, [itemOptions]);
+
+  const {
+    button: pdfButton,
+    modal: pdfModal,
+    error: pdfError,
+  } = useWmsDocumentPdf({
+    kind: 'gdo',
+    id,
+    doc,
+    warehouseLabel,
+    itemLabelById,
+  });
 
   const status = (doc?.status ?? '').toLowerCase();
   const canPost = Boolean(doc) && !status.includes('post') && !status.includes('cancel');
@@ -68,6 +81,7 @@ export default function WmsGdoDetailPage() {
                 <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
+              {pdfButton}
               {canPost ? (
                 <Button
                   type="button"
@@ -152,7 +166,9 @@ export default function WmsGdoDetailPage() {
             ) : null}
           </div>
         ) : null}
+        {pdfError ? <p className="text-[var(--color-danger-600)]">{pdfError}</p> : null}
       </Card>
+      {pdfModal}
     </div>
   );
 }

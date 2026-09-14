@@ -12,7 +12,9 @@
  *
  * Format-1 Tax Invoice India = backend pack `commercial.invoice_tax_india_1`
  * (see BACKEND_REPORT_CATALOG_API.md + fresaPdfParity.constants.ts). Invoice detail
- * "FRESA formats" deep-links the catalog; it does not draw FRESA layouts in FE.
+ * "FRESA formats" deep-links the catalog. Catalog may show sample/mock previews from
+ * invoiceFormatPreviews.json — those are preview-only and do not replace Generate or
+ * default invoice PDF.
  */
 export const DOCUMENT_PDF_PRESERVE = {
   quotationClient: 'src/features/quotations/utils/generateQuotationPdf.ts',

@@ -305,6 +305,19 @@ export const wmsService = {
     return request(() => axiosInstance.post(WMS_API.grnCancel(id)), normalizeWmsDocument) as Promise<WmsDocument>;
   },
 
+  /** GET /wms/grns/{id}/pdf — on-demand Goods Received Note PDF. */
+  async downloadGrnPdf(id: string): Promise<Blob> {
+    assertId(id, 'GRN id');
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(WMS_API.grnPdf(id), { responseType: 'blob' }),
+      );
+      return res.data as Blob;
+    } catch (error) {
+      throw new Error(getErrorMessage(error));
+    }
+  },
+
   async listGdos(): Promise<WmsDocument[]> {
     const res = await withGatewayRetry(() => axiosInstance.get(WMS_API.gdos));
     return normalizeWmsDocuments(await requestList(res.data));
@@ -327,6 +340,19 @@ export const wmsService = {
   async cancelGdo(id: string): Promise<WmsDocument> {
     assertId(id, 'GDO id');
     return request(() => axiosInstance.post(WMS_API.gdoCancel(id)), normalizeWmsDocument) as Promise<WmsDocument>;
+  },
+
+  /** GET /wms/gdos/{id}/pdf — on-demand GDO/GDN (Goods Dispatch) PDF. */
+  async downloadGdoPdf(id: string): Promise<Blob> {
+    assertId(id, 'GDO id');
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(WMS_API.gdoPdf(id), { responseType: 'blob' }),
+      );
+      return res.data as Blob;
+    } catch (error) {
+      throw new Error(getErrorMessage(error));
+    }
   },
 
   async stockOnHand(params: StockOnHandParams = {}): Promise<WmsStockRow[]> {
