@@ -9,6 +9,8 @@ import type {
   ReportTemplateMeta,
   ReportTemplateParamField,
 } from '../types/reportCatalog.types';
+import { resolveInvoiceFormatDisplayName } from '../constants/invoiceFormatCatalogNames';
+import { resolveAccountsFormatDisplayName } from '../constants/accountsFormatCatalog';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -152,10 +154,15 @@ function parametersFromSchemaObject(raw: unknown): ReportTemplateParamField[] | 
 }
 
 export function metaToTemplate(meta: ReportTemplateMeta, index: number): ReportTemplate {
+  const rawName = meta.name;
+  const name = resolveAccountsFormatDisplayName(
+    meta.code,
+    resolveInvoiceFormatDisplayName(meta.code, rawName),
+  );
   return {
     id: meta.code || `local-${index}`,
     code: meta.code,
-    name: meta.name,
+    name,
     family: meta.family,
     contexts: meta.contexts,
     formats: meta.formats,
@@ -191,7 +198,10 @@ export function normalizeReportTemplate(raw: unknown, fallback?: ReportTemplateM
   return {
     id: str(r?.id) || code,
     code,
-    name,
+    name: resolveAccountsFormatDisplayName(
+      code,
+      resolveInvoiceFormatDisplayName(code, name),
+    ),
     family: normalizeFamily(r?.family ?? r?.category ?? fallback?.family),
     contexts: normalizeContexts(r?.contexts ?? r?.context ?? fallback?.contexts),
     formats: normalizeFormats(r?.formats ?? r?.export_formats ?? fallback?.formats),

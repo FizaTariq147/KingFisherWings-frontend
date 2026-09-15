@@ -32,7 +32,7 @@ import {
 } from '../../utils/reportParameterUtils';
 import { getInvoiceFormatPreview } from '../../data/invoiceFormatPreviews';
 import { isInvoiceReportFormatCode } from '../../types/invoiceFormatPreview.types';
-import { InvoiceFormatPreviewPanel } from './InvoiceFormatPreview';
+import { InvoiceFormatAutoPdf } from './InvoiceFormatAutoPdf';
 import { ReportParameterForm } from './ReportParameterForm';
 import { invoiceService } from '@/features/invoices/services/invoice.service';
 import logoUrl from '@/assets/logo.png';
@@ -246,7 +246,7 @@ export function ReportGeneratePanel({
         setPdfReadyUrl(null);
         setPdfReadyOpen(true);
         setJobId(null);
-        setMessage('KingFisher Fresa-style layout PDF ready (matches preview).');
+        setMessage('PDF ready — same layout as the KingFisher preview above.');
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Could not generate layout PDF.');
       } finally {
@@ -382,6 +382,44 @@ export function ReportGeneratePanel({
   const activateLikely = canActivateReportTemplate(resolved);
   const needsPackBind = !detailFailed && rendererStatus !== 'ready';
   const canDeactivate = resolved.is_active && Boolean(detail.data || !discoveryMode);
+  const isInvoiceFormat = isInvoiceReportFormatCode(resolved.code);
+
+  if (isInvoiceFormat) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h3 className="text-sm font-semibold text-[var(--color-neutral-900)]">{resolved.name}</h3>
+            <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
+              Format-{getInvoiceFormatPreview(resolved.code)?.formatNumber ?? '—'}
+            </p>
+          </div>
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Close
+          </Button>
+        </div>
+
+        <InvoiceFormatAutoPdf code={resolved.code} invoiceId={context?.invoice_id} />
+
+        {error ? <p className="text-sm text-[var(--color-danger-600)]">{error}</p> : null}
+
+        <PdfReadyModal
+          open={pdfReadyOpen}
+          onClose={() => {
+            setPdfReadyOpen(false);
+            setPdfReadyBlob(null);
+            setPdfReadyUrl(null);
+          }}
+          blob={pdfReadyBlob}
+          url={pdfReadyBlob ? null : pdfReadyUrl}
+          title="Invoice format PDF"
+          fileName={pdfReadyName}
+          skipBranding
+          description="Preview or download."
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -392,41 +430,6 @@ export function ReportGeneratePanel({
           <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
             {reportFamilyLabel(resolved.family)} · {formats.join(' / ')}
             {resolved.is_active ? ' · active' : ' · inactive'}
-            {discoveryMode ? ' · discovery' : ''}
-          </p>
-          <div className="mt-1.5 flex flex-wrap gap-1">
-            {!resolved.is_active ? (
-              <span className="rounded bg-[var(--color-neutral-100)] px-1.5 py-0.5 text-[10px] text-[var(--color-neutral-500)]">
-                inactive
-              </span>
-            ) : (
-              <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] text-emerald-800">
-                active
-              </span>
-            )}
-            {rendererStatus === 'pending' ? (
-              <span className="rounded bg-amber-50 px-1.5 py-0.5 text-[10px] text-amber-900">
-                pending pack
-              </span>
-            ) : null}
-            {rendererStatus === 'ready' ? (
-              <span className="rounded bg-sky-50 px-1.5 py-0.5 text-[10px] text-sky-900">
-                pack ready — FRESA-like PDF via backend
-              </span>
-            ) : null}
-            {rendererStatus === 'missing' ? (
-              <span className="rounded bg-[var(--color-neutral-100)] px-1.5 py-0.5 text-[10px] text-[var(--color-neutral-500)]">
-                no pack
-              </span>
-            ) : null}
-          </div>
-          <p className="mt-1 font-mono text-[10px] text-[var(--color-neutral-400)]">
-            renderer:{' '}
-            {rendererStatus === 'missing'
-              ? '(not set)'
-              : rendererStatus === 'pending'
-                ? `${resolved.renderer_key} (pending)`
-                : resolved.renderer_key}
           </p>
         </div>
         <Button type="button" variant="secondary" onClick={onClose}>
@@ -436,20 +439,6 @@ export function ReportGeneratePanel({
 
       {resolved.description ? (
         <p className="text-sm text-[var(--color-neutral-600)]">{resolved.description}</p>
-      ) : null}
-
-      {isInvoiceReportFormatCode(resolved.code) ? (
-        <InvoiceFormatPreviewPanel code={resolved.code} />
-      ) : null}
-
-      {isInvoiceReportFormatCode(resolved.code) ? (
-        <div
-          role="status"
-          className="rounded-md border border-sky-100 bg-sky-50 px-3 py-2 text-xs text-sky-950"
-        >
-          <strong>Generate</strong> builds the KingFisher layout PDF for this format&apos;s layout
-          style (India GST, Arabic RTL, USA numbered, etc.) — matching the preview above.
-        </div>
       ) : null}
 
       {detail.isLoading ? (
@@ -471,10 +460,7 @@ export function ReportGeneratePanel({
           role="status"
           className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
         >
-          PDF layout is <strong>not</strong> built in the frontend. Bind one of the implemented{' '}
-          <strong>Puppeteer packs</strong> ({packOptions.length || '…'} keys from{' '}
-          <span className="font-mono">GET /reports/templates/renderers</span>), then Activate.
-          FRESA visual parity for this format requires a matching pack on the backend.
+          Bind a Puppeteer pack, then Activate to enable Generate.
         </div>
       ) : null}
 
@@ -487,47 +473,13 @@ export function ReportGeneratePanel({
         </div>
       ) : null}
 
-      {isCommercialInvoiceFormat && context?.invoice_id ? (
-        <div
-          role="status"
-          className="rounded-md border border-sky-100 bg-sky-50 px-3 py-2 text-xs text-sky-950"
-        >
-          Invoice context locked:{' '}
-          <span className="font-mono">{context.invoice_id}</span>
-          {params.invoice_id ? (
-            <>
-              {' '}
-              · param <span className="font-mono">invoice_id</span> pre-filled
-            </>
-          ) : null}
-          . Layout is a backend Puppeteer pack (Format-1 key{' '}
-          <span className="font-mono">commercial.invoice_tax_india_1</span>) — not the default
-          invoice PDF button.
-        </div>
-      ) : null}
-
-      {isCommercialInvoiceFormat && needsPackBind ? (
-        <div
-          role="status"
-          className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
-        >
-          Commercial invoice formats need a matching pack on{' '}
-          <span className="font-mono">GET /reports/templates/renderers</span>
-          {suggestedCommercialPack
-            ? ` (suggested: ${suggestedCommercialPack})`
-            : ' (expected: commercial.invoice_tax_india_1 for Format-1)'}. Bind + Activate before
-          Generate. GST columns (SAC, SGST/CGST/IGST) come from the backend payload — FE does not
-          invent them.
-        </div>
-      ) : null}
-
       {!detailFailed ? (
         <div className="space-y-1">
           <label
             className="text-xs font-medium text-[var(--color-neutral-500)]"
             htmlFor="report-renderer-pack"
           >
-            Puppeteer pack (renderer_key)
+            Puppeteer pack
           </label>
           <select
             id="report-renderer-pack"
@@ -550,12 +502,6 @@ export function ReportGeneratePanel({
               </option>
             ))}
           </select>
-          {renderersQuery.isError ? (
-            <p className="text-xs text-[var(--color-danger-600)]">
-              Could not load renderers. Restart API so Swagger/routes include{' '}
-              <span className="font-mono">/reports/templates/renderers</span>.
-            </p>
-          ) : null}
         </div>
       ) : null}
 
@@ -580,9 +526,7 @@ export function ReportGeneratePanel({
           className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
           value={format}
           onChange={(e) => setFormat(e.target.value as ReportExportFormat)}
-          disabled={
-            detail.isLoading || (!isInvoiceReportFormatCode(resolved.code) && (detailFailed || !resolved.is_active))
-          }
+          disabled={detail.isLoading || detailFailed || !resolved.is_active}
         >
           {formats.map((f) => (
             <option key={f} value={f}>
@@ -602,8 +546,8 @@ export function ReportGeneratePanel({
       ) : !detail.isLoading && !detailFailed ? (
         <p className="text-xs text-[var(--color-neutral-500)]">
           {lockedContextKeys.length
-            ? `No extra parameters — using locked context (${lockedContextKeys.join(', ')}).`
-            : 'No parameter schema from API — generate will send context IDs only (if any).'}
+            ? `Using locked context (${lockedContextKeys.join(', ')}).`
+            : 'No extra parameters.'}
         </p>
       ) : null}
 
@@ -656,7 +600,7 @@ export function ReportGeneratePanel({
           disabled={generateBlocked}
           onClick={() => void onGenerate()}
         >
-          {clientGenerating || (busy && generate.isPending) ? 'Generating…' : 'Generate'}
+          {busy && generate.isPending ? 'Generating…' : 'Generate'}
         </Button>
       </div>
 
@@ -669,14 +613,10 @@ export function ReportGeneratePanel({
         }}
         blob={pdfReadyBlob}
         url={pdfReadyBlob ? null : pdfReadyUrl}
-        title={canClientInvoicePdf ? 'KingFisher invoice format PDF ready' : 'Report PDF ready'}
+        title="Report PDF ready"
         fileName={pdfReadyName}
         skipBranding
-        description={
-          canClientInvoicePdf
-            ? 'PDF uses the same KingFisher layout as the catalog preview. Preview or download.'
-            : 'Your report PDF was created successfully. Preview or download — no page redirect.'
-        }
+        description="Preview or download."
       />
     </div>
   );

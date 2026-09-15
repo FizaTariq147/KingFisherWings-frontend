@@ -13,7 +13,7 @@ const registryPath = path.join(root, 'src/features/reports/data/fresaReportRegis
 const outPath = path.join(root, 'src/features/reports/data/invoiceFormatPreviews.json');
 
 const SAMPLE_URLS = {};
-/** Kept empty on purpose — catalog previews use KingFisher layout mocks only (no Fresa PDF fetch). */
+/** Layouts are KingFisher JSON UI only — sample CDN URLs are not used at runtime. */
 
 const SECTION_PRESETS = {
   tax_india: [

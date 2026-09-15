@@ -1,69 +1,490 @@
 import type { InvoiceFormatPreview } from '../../../types/invoiceFormatPreview.types';
-import { DEMO, FormatBadge, KF, KfLogo, Shell } from './shared';
+import { DEMO, FormatBadge, FRESA1, KF, KfLogo, Shell, TAX_COLORS } from './shared';
+import { InvoiceUserFooter } from './InvoiceUserFooter';
 
-/** India GST tax invoice — dense shipment grid + SAC/CGST/SGST columns (Fresa Format-1 style). */
+/**
+ * Tax invoice family — Formats 1 / 2 / 4 / 5.
+ * Colors match Format-4 sample PDF (black + #F3F3F3). Same footer on all.
+ */
 export function TaxIndiaLayout({ preview }: { preview: InvoiceFormatPreview }) {
+  if (preview.formatNumber === 5) return <TaxIndiaFormat5 preview={preview} />;
+  if (preview.formatNumber === 4) return <TaxIndiaFormat4 preview={preview} />;
+  if (preview.formatNumber === 2) return <TaxIndiaFormat2 preview={preview} />;
+  return <TaxIndiaFormat1 preview={preview} />;
+}
+
+/** Format-1 Tax Invoice India — SGST/CGST split columns. */
+function TaxIndiaFormat1({ preview }: { preview: InvoiceFormatPreview }) {
+  const d = FRESA1;
+
   return (
-    <Shell className="border-[var(--color-neutral-400)]">
-      <div className="flex items-start justify-between gap-3 border-b px-3 py-2" style={{ borderColor: KF.border }}>
-        <div>
-          <KfLogo className="h-9" />
-          <p className="mt-1 text-[11px] font-bold" style={{ color: KF.navy }}>
-            {KF.company}
+    <Shell className="border-black text-[8px] leading-tight text-black">
+      <div
+        className="flex items-start gap-3 border-b border-black px-2 py-2"
+        style={{ backgroundColor: TAX_COLORS.fill }}
+      >
+        <KfLogo className="h-11 shrink-0" />
+        <div className="min-w-0 flex-1">
+          <p className="text-[12px] font-bold uppercase tracking-wide">{KF.company}</p>
+          <p className="text-[8px]">{KF.address}</p>
+          <p className="text-[8px]">WEB : {KF.web}</p>
+        </div>
+      </div>
+
+      <p className="border-b border-black py-1.5 text-center text-[13px] font-bold tracking-widest">
+        TAX INVOICE
+      </p>
+      <p className="px-2 pt-0.5 text-[7px] text-[var(--color-neutral-400)]">
+        Format-{preview.formatNumber} · tax india · KingFisher Logistic
+      </p>
+
+      <div className="grid grid-cols-2 border-b border-black">
+        <div className="border-r border-black p-1.5">
+          <p>
+            <span className="font-bold">Bill To :</span> {d.billTo}
           </p>
-          <p className="text-[9px] text-[var(--color-neutral-500)]">
-            {KF.address} · WEB: {KF.web}
+          <p className="mt-0.5">{d.billAddr}</p>
+          <p>
+            <span className="font-bold">Phone :</span> {d.phone}
           </p>
-          <p className="text-[9px] text-[var(--color-neutral-500)]">GSTIN: {DEMO.gstin}</p>
+          <p>
+            <span className="font-bold">GSTIN No. :</span> {d.gstin}
+          </p>
+        </div>
+        <div className="space-y-0.5 p-1.5">
+          <p>
+            <span className="font-bold">Invoice No./Date :</span> {d.invoiceNo} / {d.date}{' '}
+            <span className="text-[7px]">(CREATED)</span>
+          </p>
+          <p>
+            <span className="font-bold">Due Date :</span> {d.due}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-x-2 border-b border-black p-1.5">
+        <F1 k="Shipper" v={d.shipper} />
+        <F1 k="Consignee" v={d.consignee} />
+        <F1 k="Job No." v={d.job} />
+        <F1 k="Shipment No." v={d.shipment} />
+        <F1 k="MBL / MAWB No." v={d.mbl} />
+        <F1 k="HBL / HAWB No." v={d.hbl} />
+        <F1 k="Place of Receipt" v={d.placeOfReceipt} />
+        <F1 k="POR" v={d.por} />
+        <F1 k="POL" v={d.pol} />
+        <F1 k="POD" v={d.pod} />
+        <F1 k="Place of Delivery" v={d.placeOfDelivery} />
+        <F1 k="Vessel / Voyage" v={d.vessel} />
+        <F1 k="ETD" v={d.etd} />
+        <F1 k="ETA" v={d.eta} />
+        <F1 k="Reference No." v={d.reference} />
+        <F1 k="Currency" v={d.currency} />
+        <F1 k="IGM No." v={d.igm} />
+        <F1 k="INCO Terms" v={d.inco} />
+        <div className="col-span-2">
+          <F1 k="Narration" v={d.narration} />
+        </div>
+        <div className="col-span-2">
+          <F1 k="Remarks" v={d.remarks} />
+        </div>
+      </div>
+
+      <ContainerStrip />
+      <GstSplitChargesTable />
+      <WordsAndTotals />
+      <TermsAndBank />
+      <InvoiceUserFooter />
+    </Shell>
+  );
+}
+
+/**
+ * Format-2 Tax Invoice India — client / origin-destination party block + credit term.
+ * @see https://fresatechnologies.com/wp-content/uploads/report-formats/invoice-report-format-2-tax-invoice-india.pdf
+ */
+function TaxIndiaFormat2({ preview }: { preview: InvoiceFormatPreview }) {
+  const d = FRESA1;
+
+  return (
+    <Shell className="border-black text-[8px] leading-tight text-black">
+      <div className="flex items-start justify-between gap-3 border-b border-black px-2 py-2" style={{ backgroundColor: TAX_COLORS.fill }}>
+        <div className="flex items-start gap-2">
+          <KfLogo className="h-10 shrink-0" />
+          <div>
+            <p className="text-[12px] font-bold uppercase">{KF.company}</p>
+            <p className="text-[8px]">{KF.address}</p>
+            <p className="text-[8px]">WEB : {KF.web}</p>
+          </div>
         </div>
         <div className="text-end">
-          <p className="text-lg font-bold tracking-wide" style={{ color: KF.navy }}>
-            TAX INVOICE
-          </p>
-          <FormatBadge preview={preview} />
+          <p className="text-[13px] font-bold tracking-widest">TAX INVOICE</p>
+          <p className="text-[7px] text-[var(--color-neutral-400)]">Format-{preview.formatNumber}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-0 border-b" style={{ borderColor: KF.border }}>
-        <div className="border-r p-2" style={{ borderColor: KF.border }}>
-          <p className="mb-1 text-[9px] font-bold uppercase" style={{ color: KF.navy }}>
-            Bill To
+      <div className="grid grid-cols-2 border-b border-black">
+        <div className="border-r border-black p-1.5">
+          <p>
+            <span className="font-bold">Client :</span> {d.billTo}
           </p>
-          <p className="font-semibold">{DEMO.billTo}</p>
-          <p className="text-[var(--color-neutral-500)]">{DEMO.billAddr}</p>
-          <p className="text-[var(--color-neutral-500)]">Phone: {DEMO.phone}</p>
-          <p className="text-[var(--color-neutral-500)]">GSTIN No.: {DEMO.gstin}</p>
+          <p className="mt-0.5">{d.billAddr}</p>
+          <p>
+            <span className="font-bold">Phone :</span> {d.phone}
+          </p>
+          <p>
+            <span className="font-bold">GSTIN No. :</span> {d.gstin}
+          </p>
+          <p>
+            <span className="font-bold">Credit Term :</span> CASH
+          </p>
         </div>
-        <div className="space-y-0.5 p-2 text-[9px]">
-          <Row k="Invoice No./Date" v={`${DEMO.invoiceNo} / ${DEMO.date}`} />
-          <Row k="Due Date" v={DEMO.due} />
-          <Row k="Job No." v={DEMO.job} />
-          <Row k="Currency" v="INR 1.000000" />
+        <div className="space-y-0.5 p-1.5">
+          <p>
+            <span className="font-bold">Invoice No. :</span> {d.invoiceNo} / {d.date} (CREATED)
+          </p>
+          <p>
+            <span className="font-bold">Job No. :</span> {d.job}
+          </p>
+          <p>
+            <span className="font-bold">Shipment No. :</span> {d.shipment}
+          </p>
+          <p>
+            <span className="font-bold">Line / Subline No. :</span> 128 / 12
+          </p>
         </div>
       </div>
 
+      <div className="grid grid-cols-3 gap-0 border-b border-black text-[7.5px]">
+        <div className="border-r border-black p-1.5">
+          <p className="font-bold">Shipper</p>
+          <p>{d.shipper}</p>
+          <p className="mt-1 font-bold">Origin</p>
+          <p>CHENNAI (EX MADRAS), INDIA</p>
+        </div>
+        <div className="border-r border-black p-1.5">
+          <p className="font-bold">Consignee</p>
+          <p>{d.consignee}</p>
+          <p className="mt-1 font-bold">Destination</p>
+          <p>JEBEL ALI, UNITED ARAB EMIRATES</p>
+        </div>
+        <div className="space-y-0.5 p-1.5">
+          <F1 k="MBL / MAWB No." v={d.mbl} />
+          <F1 k="HBL / HAWB No." v={d.hbl} />
+          <F1 k="Vessel / Voyage" v={d.vessel} />
+          <F1 k="ETD" v={d.etd} />
+          <F1 k="ETA" v={d.eta} />
+          <F1 k="INCO Terms" v={d.inco} />
+          <F1 k="Currency" v={d.currency} />
+          <F1 k="Reference No." v={d.reference} />
+          <F1 k="IGM No." v={d.igm} />
+          <F1 k="PO No." v="987898" />
+        </div>
+      </div>
+
+      <div className="border-b border-black px-1.5 py-1">
+        <F1 k="Remarks" v={d.remarks} />
+      </div>
+
+      <ContainerStrip />
+      <GstSplitChargesTable />
+      <WordsAndTotals />
+      <TermsAndBank />
+      <InvoiceUserFooter />
+    </Shell>
+  );
+}
+
+/**
+ * Format-5 — title INVOICE, combined Tax% / Tax Amount (not split SGST/CGST).
+ * @see https://fresatechnologies.com/wp-content/uploads/report-formats/invoice-report-format-5-tax-invoice-india.pdf
+ */
+function TaxIndiaFormat5({ preview }: { preview: InvoiceFormatPreview }) {
+  const d = FRESA1;
+  const lines = [
+    {
+      desc: 'FREIGHT CHARGE',
+      unit: "20' DRY CONTAINER",
+      qty: '1',
+      rate: '100.00',
+      curr: 'USD',
+      ex: '70.00000',
+      fcy: '100.00',
+      taxable: '7,000.00',
+      nontax: '7,000.00',
+      taxPct: '0.00',
+      taxAmt: '0.00',
+      total: '7,000.00',
+    },
+    {
+      desc: 'TERMINAL HANDLING CHARGES 20"GP',
+      unit: "20' DRY CONTAINER",
+      qty: '1',
+      rate: '5,500.00',
+      curr: 'INR',
+      ex: '1.00000',
+      fcy: '5,500.00',
+      taxable: '5,500.00',
+      nontax: '',
+      taxPct: '18.00',
+      taxAmt: '990.00',
+      total: '6,490.00',
+    },
+    {
+      desc: 'SEAL FEE',
+      unit: 'PER CONTAINER',
+      qty: '1',
+      rate: '300.00',
+      curr: 'INR',
+      ex: '1.00000',
+      fcy: '300.00',
+      taxable: '300.00',
+      nontax: '',
+      taxPct: '18.00',
+      taxAmt: '54.00',
+      total: '354.00',
+    },
+    {
+      desc: 'BILL OF LADING',
+      unit: 'PER SHIPMENT',
+      qty: '1',
+      rate: '3,000.00',
+      curr: 'INR',
+      ex: '1.00000',
+      fcy: '3,000.00',
+      taxable: '3,000.00',
+      nontax: '',
+      taxPct: '18.00',
+      taxAmt: '540.00',
+      total: '3,540.00',
+    },
+  ];
+
+  return (
+    <Shell className="border-black text-[8px] leading-tight text-black">
       <div
-        className="grid grid-cols-2 gap-x-3 gap-y-0.5 border-b bg-[var(--color-neutral-50)] p-2 text-[9px]"
-        style={{ borderColor: KF.border }}
+        className="flex items-start gap-3 border-b border-black px-2 py-2"
+        style={{ backgroundColor: TAX_COLORS.fill }}
       >
-        <Row k="Shipper" v={DEMO.shipper} />
-        <Row k="Consignee" v={DEMO.consignee} />
-        <Row k="MBL / MAWB No." v={DEMO.mbl} />
-        <Row k="HBL / HAWB No." v={DEMO.hbl} />
-        <Row k="POL" v={DEMO.pol} />
-        <Row k="POD" v={DEMO.pod} />
-        <Row k="Vessel / Voyage" v={DEMO.vessel} />
-        <Row k="ETD / ETA" v={`${DEMO.etd} / ${DEMO.eta}`} />
-        <Row k="Container" v={DEMO.container} />
-        <Row k="INCO Terms" v="CFR" />
+        <KfLogo className="h-11 shrink-0" />
+        <div className="min-w-0 flex-1">
+          <p className="text-[12px] font-bold uppercase tracking-wide">{KF.company}</p>
+          <p className="text-[8px]">{KF.address}</p>
+          <p className="text-[8px]">WEB : {KF.web}</p>
+        </div>
       </div>
 
-      <table className="w-full border-collapse text-[8px]">
+      <p className="border-b border-black py-1.5 text-center text-[13px] font-bold tracking-widest">
+        INVOICE
+      </p>
+      <p className="px-2 pt-0.5 text-[7px] text-[var(--color-neutral-400)]">
+        Format-{preview.formatNumber} · tax india · KingFisher Logistic
+      </p>
+
+      <div className="grid grid-cols-2 border-b border-black">
+        <div className="border-r border-black p-1.5">
+          <p>
+            <span className="font-bold">Bill To :</span> {d.billTo}
+          </p>
+          <p className="mt-0.5">{d.billAddr}</p>
+          <p>
+            <span className="font-bold">Phone :</span> {d.phone}
+          </p>
+          <p>
+            <span className="font-bold">GSTIN No. :</span> {d.gstin}
+          </p>
+        </div>
+        <div className="space-y-0.5 p-1.5">
+          <p>
+            <span className="font-bold">Invoice No. :</span> {d.invoiceNo} / {d.date} (CREATED)
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-x-2 border-b border-black p-1.5">
+        <F1 k="Shipper" v={d.shipper} />
+        <F1 k="Consignee" v={d.consignee} />
+        <F1 k="Job No." v={d.job} />
+        <F1 k="Shipment No." v={d.shipment} />
+        <F1 k="MBL / MAWB No." v={d.mbl} />
+        <F1 k="HBL / HAWB No." v={d.hbl} />
+        <F1 k="Place of Receipt" v={d.placeOfReceipt} />
+        <F1 k="Port of Loading" v="CHENNAI (EX MADRAS), INDIA" />
+        <F1 k="Port of Discharge" v="JEBEL ALI, UNITED ARAB EMIRATES" />
+        <F1 k="Place of Delivery" v={d.placeOfDelivery} />
+        <F1 k="Vessel / Voyage" v={d.vessel} />
+        <F1 k="ETD" v={d.etd} />
+        <F1 k="ETA" v={d.eta} />
+        <F1 k="Reference No." v={d.reference} />
+        <F1 k="Currency" v={d.currency} />
+        <F1 k="IGM No." v={d.igm} />
+        <F1 k="Line / Subline No." v="128 / 12" />
+        <F1 k="INCO Terms" v={d.inco} />
+        <F1 k="PO No." v="987898" />
+        <div className="col-span-2">
+          <F1 k="Narration" v={d.narration} />
+        </div>
+        <div className="col-span-2">
+          <F1 k="Remarks" v={d.remarks} />
+        </div>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[620px] border-collapse text-[6.5px]">
+          <thead>
+            <tr className="bg-[#F3F3F3]">
+              {[
+                'Charges',
+                'Unit',
+                'SAC Code',
+                'Qty',
+                'Amount / Qty',
+                'Currency',
+                'Ex.Rate',
+                'FCY Amount',
+                'Taxable Amount',
+                'Non Taxable Amount',
+                'Tax%',
+                'Tax Amount',
+                'Total Amount (INR)',
+              ].map((h) => (
+                <th key={h} className="border border-black px-0.5 py-0.5 font-bold leading-tight">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {lines.map((line, i) => (
+              <tr key={i}>
+                <td className="border border-black px-0.5 py-0.5 font-medium">{line.desc}</td>
+                <td className="border border-black px-0.5 py-0.5">{line.unit}</td>
+                <td className="border border-black px-0.5 py-0.5" />
+                <td className="border border-black px-0.5 py-0.5 text-end">{line.qty}</td>
+                <td className="border border-black px-0.5 py-0.5 text-end">{line.rate}</td>
+                <td className="border border-black px-0.5 py-0.5">{line.curr}</td>
+                <td className="border border-black px-0.5 py-0.5 text-end">{line.ex}</td>
+                <td className="border border-black px-0.5 py-0.5 text-end">{line.fcy}</td>
+                <td className="border border-black px-0.5 py-0.5 text-end">{line.taxable}</td>
+                <td className="border border-black px-0.5 py-0.5 text-end">{line.nontax}</td>
+                <td className="border border-black px-0.5 py-0.5 text-end">{line.taxPct}</td>
+                <td className="border border-black px-0.5 py-0.5 text-end">{line.taxAmt}</td>
+                <td className="border border-black px-0.5 py-0.5 text-end font-semibold">{line.total}</td>
+              </tr>
+            ))}
+            <tr className="bg-[#F3F3F3] font-bold">
+              <td className="border border-black px-0.5 py-0.5" colSpan={8}>
+                Tax Amount (INR) GST18-SGST9% {d.sgstSum} GST18-CGST9% {d.cgstSum}
+              </td>
+              <td className="border border-black px-0.5 py-0.5 text-end">{d.taxableSum}</td>
+              <td className="border border-black px-0.5 py-0.5 text-end">{d.nontaxSum}</td>
+              <td className="border border-black px-0.5 py-0.5" />
+              <td className="border border-black px-0.5 py-0.5 text-end">1,584.00</td>
+              <td className="border border-black px-0.5 py-0.5 text-end">{d.grandTotal}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <WordsAndTotals />
+      <ContainerStrip />
+      <TermsAndBank />
+      <InvoiceUserFooter />
+    </Shell>
+  );
+}
+
+/**
+ * Format-4 Standard Tax Invoice (Dubai / AED) — Fresa sample colors + structure.
+ * @see https://fresatechnologies.com/wp-content/uploads/report-formats/invoice-report-format-4-standard-tax-invoice.pdf
+ */
+function TaxIndiaFormat4({ preview }: { preview: InvoiceFormatPreview }) {
+  const lines = [
+    { desc: 'DELIVERY ORDER CHARGES', qty: '1.00', cur: 'AED', ex: '1.000000', rate: '275.000', tax: '5.00', fcy: '275.00', vat: '13.75', total: '288.75' },
+    { desc: 'THC CHARGES', qty: '1.90', cur: 'AED', ex: '1.000000', rate: '50.000', tax: '5.00', fcy: '95.15', vat: '4.76', total: '99.91' },
+    { desc: 'DOCUMENTATION CHARGES', qty: '1.00', cur: 'AED', ex: '1.000000', rate: '100.000', tax: '5.00', fcy: '100.00', vat: '5.00', total: '105.00' },
+    { desc: 'HANDLING CHARGES', qty: '1.00', cur: 'AED', ex: '1.000000', rate: '250.000', tax: '5.00', fcy: '250.00', vat: '12.50', total: '262.50' },
+  ];
+
+  return (
+    <Shell className="border-black text-[8px] leading-tight text-black">
+      <div className="flex items-start gap-3 border-b border-black px-2 py-2" style={{ backgroundColor: TAX_COLORS.fill }}>
+        <KfLogo className="h-11 shrink-0" />
+        <div className="min-w-0 flex-1">
+          <p className="text-[12px] font-bold uppercase tracking-wide">{KF.company}</p>
+          <p className="text-[8px]">{KF.address}</p>
+          <p className="text-[8px]">WEB : {KF.web}</p>
+        </div>
+        <div className="text-end">
+          <p className="text-[13px] font-bold tracking-widest">TAX INVOICE</p>
+          <p className="text-[7px] text-[var(--color-neutral-500)]">Format-{preview.formatNumber}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 border-b border-black">
+        <div className="border-r border-black p-1.5">
+          <p>
+            <span className="font-bold">Client :</span> FRESA DEMO DUBAI LLC
+          </p>
+          <p>AL NABHA, DUBAI</p>
+          <p>
+            <span className="font-bold">Phone :</span> 04-233456
+          </p>
+          <p>
+            <span className="font-bold">GSTIN No. :</span> 29760737473
+          </p>
+          <p>
+            <span className="font-bold">Credit Term :</span> CASH
+          </p>
+        </div>
+        <div className="space-y-0.5 p-1.5">
+          <p>
+            <span className="font-bold">Invoice No. :</span> INV1800564
+          </p>
+          <p>
+            <span className="font-bold">Date :</span> 27-NOV-18 (CREATED)
+          </p>
+          <p>
+            <span className="font-bold">Job No. :</span> CCDXBSI18000061 / 27-NOV-18
+          </p>
+          <p>
+            <span className="font-bold">Shipment No. :</span> BDXBSI180115 / 27-NOV-18
+          </p>
+          <p>
+            <span className="font-bold">Department :</span> LCL IMPORT
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-x-2 border-b border-black p-1.5">
+        <F1 k="Shipper" v="PAHILAJRAI JAIKISHIN AND CO" />
+        <F1 k="Consignee" v="FRESA DEMO DUBAI LLC" />
+        <F1 k="Origin" v="NHAVA SHEVA (JAWAHARLAL NEHRU), INDIA" />
+        <F1 k="Destination" v="JEBEL ALI, UAE" />
+        <F1 k="MBL No." v="NSA.JEA.18/26917 / 12-OCT-18" />
+        <F1 k="HBL No." v="500138050266 / 10-OCT-18" />
+        <F1 k="Vsl / Voyage" v="NORTHERN GENERAL / 0068" />
+        <F1 k="ETD / ETA" v="12-Oct-18 / 24-Oct-18" />
+        <F1 k="Reference No." v="REFE NO. 987890/22-NOV-18" />
+        <F1 k="Currency" v="AED 1.000000" />
+        <F1 k="TRN No." v="VATNO98766655555" />
+        <F1 k="Total Pcs / G.Wt / Vol" v="12.00 / 1,116.00 / 1.903" />
+        <div className="col-span-2">
+          <F1 k="Remarks" v="SHIPMENT FROM INDIA - PO REF # 7778909 DATE 14/10/2018" />
+        </div>
+        <div className="col-span-2">
+          <F1
+            k="Narration"
+            v="BDXBSI180115 Job No. CCDXBSI18000061 / MBL No. NSA.JEA.18/26917 / HBL No. 500138050266"
+          />
+        </div>
+      </div>
+
+      <table className="w-full border-collapse text-[7px]">
         <thead>
-          <tr className="bg-[var(--color-neutral-800)] text-white">
-            {['SAC', 'Charges', 'Qty', 'Curr', 'Ex.Rate', 'Taxable', 'SGST%', 'SGST', 'CGST%', 'CGST', 'Amount'].map(
+          <tr style={{ backgroundColor: TAX_COLORS.fill }}>
+            {['Charge', 'Qty', 'Cur.', 'Ex.Rate', 'Amount / Qty', 'Tax %', 'FCY Amount', 'VAT Amount (AED)', 'Total'].map(
               (h) => (
-                <th key={h} className="border border-[var(--color-neutral-600)] px-0.5 py-1 font-semibold">
+                <th key={h} className="border border-black px-1 py-0.5 text-start font-bold">
                   {h}
                 </th>
               ),
@@ -71,81 +492,199 @@ export function TaxIndiaLayout({ preview }: { preview: InvoiceFormatPreview }) {
           </tr>
         </thead>
         <tbody>
-          {DEMO.lines.map((line, i) => (
-            <tr key={i} className="border-b" style={{ borderColor: KF.border }}>
-              <td className="border px-0.5 py-1 font-mono" style={{ borderColor: KF.border }}>
-                {line.sac}
-              </td>
-              <td className="border px-0.5 py-1 font-medium" style={{ borderColor: KF.border }}>
-                {line.desc}
-              </td>
-              <td className="border px-0.5 py-1 text-end" style={{ borderColor: KF.border }}>
-                {line.qty}
-              </td>
-              <td className="border px-0.5 py-1" style={{ borderColor: KF.border }}>
-                INR
-              </td>
-              <td className="border px-0.5 py-1 text-end" style={{ borderColor: KF.border }}>
-                1.00
-              </td>
-              <td className="border px-0.5 py-1 text-end" style={{ borderColor: KF.border }}>
-                {line.amount}
-              </td>
-              <td className="border px-0.5 py-1 text-end" style={{ borderColor: KF.border }}>
-                9
-              </td>
-              <td className="border px-0.5 py-1 text-end" style={{ borderColor: KF.border }}>
-                {(Number(line.amount.replace(/,/g, '')) * 0.09).toFixed(2)}
-              </td>
-              <td className="border px-0.5 py-1 text-end" style={{ borderColor: KF.border }}>
-                9
-              </td>
-              <td className="border px-0.5 py-1 text-end" style={{ borderColor: KF.border }}>
-                {(Number(line.amount.replace(/,/g, '')) * 0.09).toFixed(2)}
-              </td>
-              <td className="border px-0.5 py-1 text-end font-semibold" style={{ borderColor: KF.border }}>
-                {(Number(line.amount.replace(/,/g, '')) * 1.18).toFixed(2)}
-              </td>
+          {lines.map((l, i) => (
+            <tr key={i}>
+              <td className="border border-black px-1 py-0.5 font-medium">{l.desc}</td>
+              <td className="border border-black px-1 py-0.5 text-end">{l.qty}</td>
+              <td className="border border-black px-1 py-0.5">{l.cur}</td>
+              <td className="border border-black px-1 py-0.5 text-end">{l.ex}</td>
+              <td className="border border-black px-1 py-0.5 text-end">{l.rate}</td>
+              <td className="border border-black px-1 py-0.5 text-end">{l.tax}</td>
+              <td className="border border-black px-1 py-0.5 text-end">{l.fcy}</td>
+              <td className="border border-black px-1 py-0.5 text-end">{l.vat}</td>
+              <td className="border border-black px-1 py-0.5 text-end font-semibold">{l.total}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <div className="grid grid-cols-2 gap-2 p-2">
-        <div className="border p-2 text-[9px]" style={{ borderColor: KF.border }}>
-          <p className="mb-1 font-bold" style={{ color: KF.navy }}>
-            Bank Details
-          </p>
-          <p>Beneficiary: {KF.company}</p>
-          <p>Bank: HDFC · A/c: XXXXXXXXXXX</p>
-          <p>IFSC / SWIFT: XXXXXX</p>
-          <p className="mt-2 text-[var(--color-neutral-500)]">
-            Terms: Payment by cash/transfer. Discrepancies within 15 days.
+      <div className="grid grid-cols-2 border-b border-black">
+        <div className="border-r border-black p-1.5 text-[7.5px]">
+          <p className="mb-0.5 font-bold">Terms and conditions</p>
+          <p className="mb-1 font-bold">ELECTRONIC &amp; WIRE TRANSFER INFORMATION</p>
+          <p>{KF.company} ACCOUNT #: XXXXXXXXXXXXX (USD)</p>
+          <p>SWIFT ID #: 0198766 · WIRE TRANSFER ROUTING #: 9877777</p>
+          <p>ACH/DOMESTIC/ABA ROUTING #: 9876666 · {KF.address}</p>
+          <p className="mt-1">
+            Payment shall be made for full amount on or prior to due date, free of charges, without any
+            deductions. All bank charges are for the account of the paying remitter.
           </p>
         </div>
-        <div className="space-y-1 text-[9px]">
-          <div className="flex justify-between border-b py-0.5" style={{ borderColor: KF.border }}>
-            <span>Taxable Amount (INR)</span>
-            <span className="font-semibold">{DEMO.subtotal}</span>
+        <div className="space-y-1 p-1.5 text-[8px]">
+          <div className="flex justify-between border-b border-black py-0.5">
+            <span>Sub Total :</span>
+            <span className="font-semibold">720.15</span>
           </div>
-          <div className="flex justify-between border-b py-0.5" style={{ borderColor: KF.border }}>
-            <span>GST18-SGST9% + CGST9%</span>
-            <span className="font-semibold">{DEMO.tax}</span>
+          <div className="flex justify-between border-b border-black py-0.5">
+            <span>VAT-05 :</span>
+            <span className="font-semibold">36.01</span>
           </div>
-          <div
-            className="flex justify-between px-1 py-1.5 font-bold text-white"
-            style={{ backgroundColor: KF.navy }}
-          >
-            <span>Total Amount (INR)</span>
-            <span>{DEMO.total}</span>
+          <div className="flex justify-between px-1 py-1 font-bold" style={{ backgroundColor: TAX_COLORS.fill }}>
+            <span>Total :</span>
+            <span>AED 756.16</span>
           </div>
-          <p className="text-[8px] italic text-[var(--color-neutral-500)]">{DEMO.words.replace('AED', 'INR')}</p>
+          <p className="text-[7px] italic text-[var(--color-neutral-600)]">
+            Dirham Seven Hundred Fifty-Six and Sixteen Fils Only
+          </p>
         </div>
       </div>
-      <p className="border-t px-2 py-1 text-[8px] text-[var(--color-neutral-400)]" style={{ borderColor: KF.border }}>
-        Computer generated · KingFisher Wings · Format-{preview.formatNumber}
-      </p>
+
+      <InvoiceUserFooter />
     </Shell>
+  );
+}
+
+function ContainerStrip() {
+  const c = FRESA1.container;
+  return (
+    <table className="w-full border-collapse border-b border-black text-[7px]">
+      <thead>
+        <tr className="bg-[#F3F3F3]">
+          {['Container No.', 'Type', 'No of Pcs', 'Gross Weight', 'Volume', 'Volume Weight'].map((h) => (
+            <th key={h} className="border border-black px-1 py-0.5 text-start font-bold">
+              {h}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="border border-black px-1 py-0.5">{c.no}</td>
+          <td className="border border-black px-1 py-0.5">{c.type}</td>
+          <td className="border border-black px-1 py-0.5">{c.pcs}</td>
+          <td className="border border-black px-1 py-0.5">{c.gw}</td>
+          <td className="border border-black px-1 py-0.5">{c.vol}</td>
+          <td className="border border-black px-1 py-0.5">—</td>
+        </tr>
+      </tbody>
+    </table>
+  );
+}
+
+function GstSplitChargesTable() {
+  const d = FRESA1;
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[640px] border-collapse text-[6.5px]">
+        <thead>
+          <tr className="bg-[#F3F3F3]">
+            {[
+              'Charges',
+              'SAC Code',
+              'Qty',
+              'Amount / Qty',
+              'Currency',
+              'Ex.Rate',
+              'FCY Amount',
+              'Taxable Amount',
+              'Non Taxable Amount',
+              'SGST %',
+              'SGST',
+              'CGST %',
+              'CGST',
+              'I/UGST %',
+              'I/UGST',
+              'Total Amount (INR)',
+            ].map((h) => (
+              <th key={h} className="border border-black px-0.5 py-0.5 font-bold leading-tight">
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {d.lines.map((line, i) => (
+            <tr key={i}>
+              <td className="border border-black px-0.5 py-0.5 font-medium">{line.desc}</td>
+              <td className="border border-black px-0.5 py-0.5" />
+              <td className="border border-black px-0.5 py-0.5 text-end">{line.qty}</td>
+              <td className="border border-black px-0.5 py-0.5 text-end">{line.rate}</td>
+              <td className="border border-black px-0.5 py-0.5">{line.curr}</td>
+              <td className="border border-black px-0.5 py-0.5 text-end">{line.ex}</td>
+              <td className="border border-black px-0.5 py-0.5 text-end">{line.fcy}</td>
+              <td className="border border-black px-0.5 py-0.5 text-end">{line.taxable}</td>
+              <td className="border border-black px-0.5 py-0.5 text-end">{line.nontax}</td>
+              <td className="border border-black px-0.5 py-0.5 text-end">{line.sgstPct}</td>
+              <td className="border border-black px-0.5 py-0.5 text-end">{line.sgst}</td>
+              <td className="border border-black px-0.5 py-0.5 text-end">{line.cgstPct}</td>
+              <td className="border border-black px-0.5 py-0.5 text-end">{line.cgst}</td>
+              <td className="border border-black px-0.5 py-0.5" />
+              <td className="border border-black px-0.5 py-0.5" />
+              <td className="border border-black px-0.5 py-0.5 text-end font-semibold">{line.total}</td>
+            </tr>
+          ))}
+          <tr className="bg-[#F3F3F3] font-bold">
+            <td className="border border-black px-0.5 py-0.5" colSpan={7}>
+              Tax Amount (INR) GST18-SGST9% {d.sgstSum} GST18-CGST9% {d.cgstSum}
+            </td>
+            <td className="border border-black px-0.5 py-0.5 text-end">{d.taxableSum}</td>
+            <td className="border border-black px-0.5 py-0.5 text-end">{d.nontaxSum}</td>
+            <td className="border border-black px-0.5 py-0.5" />
+            <td className="border border-black px-0.5 py-0.5 text-end">{d.sgstSum}</td>
+            <td className="border border-black px-0.5 py-0.5" />
+            <td className="border border-black px-0.5 py-0.5 text-end">{d.cgstSum}</td>
+            <td className="border border-black px-0.5 py-0.5" />
+            <td className="border border-black px-0.5 py-0.5" />
+            <td className="border border-black px-0.5 py-0.5 text-end">{d.grandTotal}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function WordsAndTotals() {
+  const d = FRESA1;
+  return (
+    <div className="flex items-center justify-between border-b border-black px-2 py-1 text-[8px]">
+      <p className="italic">{d.words}</p>
+      <p className="font-bold">{d.grandTotal}</p>
+    </div>
+  );
+}
+
+function TermsAndBank() {
+  return (
+    <div className="grid grid-cols-2 gap-0 border-b border-black text-[7.5px]">
+      <div className="border-r border-black p-1.5">
+        <p className="mb-0.5 font-bold">Terms</p>
+        <p>
+          1. Payment to be made by cash. The company is not responsible for any cash settlement without
+          an official receipt.
+        </p>
+        <p className="mt-0.5">
+          2. Any discrepancy should be notified to us in writing within 15 days from the invoice date
+          after which NONE will be accepted.
+        </p>
+      </div>
+      <div className="p-1.5">
+        <p className="mb-0.5 font-bold">Bank Details</p>
+        <p>Beneficiary Name: {KF.company}</p>
+        <p>Bank : HDFC</p>
+        <p>A/c No : XXXXXXXXXXX</p>
+        <p>IBAN Code : ABA:XXXXXX</p>
+        <p>Swift Code : XXXXXX</p>
+        <p>Address : {KF.address}</p>
+      </div>
+    </div>
+  );
+}
+
+function F1({ k, v }: { k: string; v: string }) {
+  return (
+    <p className="truncate">
+      <span className="font-bold">{k} :</span> {v}
+    </p>
   );
 }
 
@@ -210,6 +749,7 @@ export function SummaryLayout({ preview }: { preview: InvoiceFormatPreview }) {
           </p>
         </div>
       </div>
+      <InvoiceUserFooter />
     </Shell>
   );
 }

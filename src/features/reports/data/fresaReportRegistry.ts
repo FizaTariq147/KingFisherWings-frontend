@@ -3,7 +3,7 @@ import type {
   ReportGapStatus,
   ReportTemplateMeta,
 } from '../types/reportCatalog.types';
-import { FRESA_REPORT_REGISTRY as GENERATED } from './fresaReportRegistry.generated';
+import { FRESA_REPORT_REGISTRY as GENERATED } from './fresaReportRegistry.generated.ts';
 
 /** Static FRESA-aligned taxonomy (Phase 0 registry). */
 export const FRESA_REPORT_REGISTRY: ReportTemplateMeta[] = GENERATED;

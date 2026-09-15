@@ -293,7 +293,7 @@ export function invoiceFormatToInvoicePdfModel(
       `KingFisher layout for Format-${preview.formatNumber} (${formatLabel}). ` +
       'This is a computer-generated tax invoice / statement of charges. Payment is due by the due date.',
     company: {
-      name: 'KINGFISHER WINGS GROUP',
+      name: 'KingFisher Logistic',
       tagline: 'FREIGHT - LOGISTICS - GENERAL TRADING',
       phone: '+971 55 5355 286',
       email: 'info@kingfisherwingsgroup.com',

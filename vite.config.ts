@@ -26,6 +26,10 @@ export default defineConfig(({ mode }) => ({
 
   server: {
     host: 'localhost',
+    // Local sample PDFs under tmp/ can be locked on Windows (EBUSY) — never watch them.
+    watch: {
+      ignored: ['**/tmp/**', '**/tmp/sample-pdfs/**'],
+    },
     allowedHosts: [
       'localhost',
       '127.0.0.1',
