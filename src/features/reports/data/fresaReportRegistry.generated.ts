@@ -1,7 +1,7 @@
 import type { ReportTemplateMeta } from '../types/reportCatalog.types';
 
-/** Auto-generated — run scripts/generate-fresa-report-registry.mjs */
-export const FRESA_REPORT_REGISTRY = [
+/** Auto-synced — includes Accounts formats from sample-report-formats */
+export const FRESA_REPORT_REGISTRY: ReportTemplateMeta[] = [
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
     "name": "HBL Draft Report Format Jasper",
@@ -7921,7 +7921,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_22",
-    "name": "Invoice Report Format-22",
+    "name": "Invoice Report Format-22 Standard Tax Invoice Format-22",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -7931,7 +7931,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-22",
+    "description": "Invoice Report Format-22 Standard Tax Invoice Format-22 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -7955,7 +7955,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_23",
-    "name": "Invoice Report Format-23",
+    "name": "Invoice Report Format-23 Purchase Invoice",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -7965,7 +7965,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-23",
+    "description": "Invoice Report Format-23 Purchase Invoice — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -7989,7 +7989,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_24",
-    "name": "Invoice Report Format-24",
+    "name": "Invoice Report Format-24 Simple Invoice With OS",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -7999,7 +7999,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-24",
+    "description": "Invoice Report Format-24 Simple Invoice With OS — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8023,7 +8023,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_25",
-    "name": "Invoice Report Format-25",
+    "name": "Invoice Report Format-25 Simple Invoice India With OS",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8033,7 +8033,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-25",
+    "description": "Invoice Report Format-25 Simple Invoice India With OS — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8057,7 +8057,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_26",
-    "name": "Invoice Report Format-26",
+    "name": "Invoice Report Format-26 FG Simple Invoice",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8067,7 +8067,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-26",
+    "description": "Invoice Report Format-26 FG Simple Invoice — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8091,7 +8091,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_27",
-    "name": "Invoice Report Format-27",
+    "name": "Invoice Report Format-27 Standard Invoice Tanzania",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8101,7 +8101,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-27",
+    "description": "Invoice Report Format-27 Standard Invoice Tanzania — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8125,7 +8125,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_28",
-    "name": "Invoice Report Format-28",
+    "name": "Invoice Report Format Singapore",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8135,7 +8135,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-28",
+    "description": "Invoice Report Format Singapore — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8159,7 +8159,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_29",
-    "name": "Invoice Report Format-29",
+    "name": "Invoice Report Format Land Freight Transportation",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8169,7 +8169,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-29",
+    "description": "Invoice Report Format Land Freight Transportation — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8193,7 +8193,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_30",
-    "name": "Invoice Report Format-30",
+    "name": "Invoice Report Format Overseas Debit Note Format-2",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8203,109 +8203,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-30",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ]
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_31",
-    "name": "Invoice Report Format-31",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-31",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ]
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_32",
-    "name": "Invoice Report Format-32",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-32",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ]
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_33",
-    "name": "Invoice Report Format-33",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-33",
+    "description": "Invoice Report Format Overseas Debit Note Format-2 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8329,7 +8227,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_34",
-    "name": "Invoice Report Format-34",
+    "name": "Invoice Report Format-34 Standard Invoice Arabic",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8339,7 +8237,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-34",
+    "description": "Invoice Report Format-34 Standard Invoice Arabic — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8363,7 +8261,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_35",
-    "name": "Invoice Report Format-35",
+    "name": "Invoice Report Format-35 Standard Invoice Arabic Format-1",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8373,7 +8271,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-35",
+    "description": "Invoice Report Format-35 Standard Invoice Arabic Format-1 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8397,7 +8295,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_36",
-    "name": "Invoice Report Format-36",
+    "name": "Invoice Report Format-36 Standard Invoice Arabic Format-1 Alt",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8407,7 +8305,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-36",
+    "description": "Invoice Report Format-36 Standard Invoice Arabic Format-1 Alt — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8431,7 +8329,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_37",
-    "name": "Invoice Report Format-37",
+    "name": "Invoice Report Format-37 Standard Invoice Arabic Oman",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8441,7 +8339,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-37",
+    "description": "Invoice Report Format-37 Standard Invoice Arabic Oman — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8465,7 +8363,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_38",
-    "name": "Invoice Report Format-38",
+    "name": "Invoice Report Format-38 Standard Invoice Arabic Format-2",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8475,7 +8373,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-38",
+    "description": "Invoice Report Format-38 Standard Invoice Arabic Format-2 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8499,7 +8397,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_39",
-    "name": "Invoice Report Format-39",
+    "name": "Invoice Report Format-39 Standard Invoice Arabic Format-3",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8509,7 +8407,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-39",
+    "description": "Invoice Report Format-39 Standard Invoice Arabic Format-3 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8533,7 +8431,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_40",
-    "name": "Invoice Report Format-40",
+    "name": "Invoice Report Format-40 Standard Invoice Arabic Format-4",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8543,7 +8441,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-40",
+    "description": "Invoice Report Format-40 Standard Invoice Arabic Format-4 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8567,7 +8465,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_41",
-    "name": "Invoice Report Format-41",
+    "name": "Invoice Report Format-41 Standard Invoice Arabic Format-5",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8577,7 +8475,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-41",
+    "description": "Invoice Report Format-41 Standard Invoice Arabic Format-5 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8601,7 +8499,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_42",
-    "name": "Invoice Report Format-42",
+    "name": "Invoice Report Format-42 Standard Invoice Arabic Format-7",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8611,7 +8509,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-42",
+    "description": "Invoice Report Format-42 Standard Invoice Arabic Format-7 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8635,7 +8533,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_43",
-    "name": "Invoice Report Format-43",
+    "name": "Invoice Report Format-43 Standard Courier Invoice",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8645,7 +8543,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-43",
+    "description": "Invoice Report Format-43 Standard Courier Invoice — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8669,7 +8567,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_44",
-    "name": "Invoice Report Format-44",
+    "name": "Invoice Report Format-44 Standard Invoice FCY",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8679,7 +8577,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-44",
+    "description": "Invoice Report Format-44 Standard Invoice FCY — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8703,7 +8601,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_45",
-    "name": "Invoice Report Format-45",
+    "name": "Invoice Report Format-45 Standard Invoice FCY Format-2",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8713,7 +8611,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-45",
+    "description": "Invoice Report Format-45 Standard Invoice FCY Format-2 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8737,7 +8635,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_46",
-    "name": "Invoice Report Format-46",
+    "name": "Invoice Report Format-46 FG Standard Invoice FCY",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8747,7 +8645,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-46",
+    "description": "Invoice Report Format-46 FG Standard Invoice FCY — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8771,7 +8669,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_47",
-    "name": "Invoice Report Format-47",
+    "name": "Invoice Report Format-47 Standard Invoice Kampala",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8781,7 +8679,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-47",
+    "description": "Invoice Report Format-47 Standard Invoice Kampala — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8805,7 +8703,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_48",
-    "name": "Invoice Report Format-48",
+    "name": "Invoice Report Format-48 Standard Invoice USA",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8815,7 +8713,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-48",
+    "description": "Invoice Report Format-48 Standard Invoice USA — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8839,7 +8737,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_49",
-    "name": "Invoice Report Format-49",
+    "name": "Invoice Report Format-49 Standard Tax Invoice Format-16 Cum AN",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8849,7 +8747,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-49",
+    "description": "Invoice Report Format-49 Standard Tax Invoice Format-16 Cum AN — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8873,7 +8771,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_50",
-    "name": "Invoice Report Format-50",
+    "name": "Invoice Report Format-50 Standard Invoice Malaysia",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8883,7 +8781,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-50",
+    "description": "Invoice Report Format-50 Standard Invoice Malaysia — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8907,7 +8805,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_51",
-    "name": "Invoice Report Format-51",
+    "name": "Invoice Report Format-51 Standard Invoice USA Format-2",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8917,7 +8815,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-51",
+    "description": "Invoice Report Format-51 Standard Invoice USA Format-2 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8941,7 +8839,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_52",
-    "name": "Invoice Report Format-52",
+    "name": "Invoice Report Format-52 Standard Tax Invoice",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8951,7 +8849,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-52",
+    "description": "Invoice Report Format-52 Standard Tax Invoice — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -8975,7 +8873,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_53",
-    "name": "Invoice Report Format-53",
+    "name": "Invoice Report Format-53 Summary Invoice",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -8985,7 +8883,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-53",
+    "description": "Invoice Report Format-53 Summary Invoice — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -9009,7 +8907,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_54",
-    "name": "Invoice Report Format-54",
+    "name": "Invoice Report Format-54 Tax Invoice India",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -9019,7 +8917,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-54",
+    "description": "Invoice Report Format-54 Tax Invoice India — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -9043,7 +8941,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_55",
-    "name": "Invoice Report Format-55",
+    "name": "Invoice Report Format-55 Tax Invoice India Reimbursement Bill",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -9053,7 +8951,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-55",
+    "description": "Invoice Report Format-55 Tax Invoice India Reimbursement Bill — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -9077,7 +8975,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_56",
-    "name": "Invoice Report Format-56",
+    "name": "Invoice Report Format-56 FG Tax Invoice India",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -9087,7 +8985,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-56",
+    "description": "Invoice Report Format-56 FG Tax Invoice India — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -9111,7 +9009,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_57",
-    "name": "Invoice Report Format-57",
+    "name": "Invoice Report Format-57 FG Tax Invoice India Format-1",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -9121,7 +9019,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-57",
+    "description": "Invoice Report Format-57 FG Tax Invoice India Format-1 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -9145,7 +9043,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_58",
-    "name": "Invoice Report Format-58",
+    "name": "Invoice Report Format-58 Tax Invoice India Format-1",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -9155,7 +9053,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-58",
+    "description": "Invoice Report Format-58 Tax Invoice India Format-1 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -9179,7 +9077,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_59",
-    "name": "Invoice Report Format-59",
+    "name": "Invoice Report Format-59 Tax Invoice India Format-2",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -9189,7 +9087,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-59",
+    "description": "Invoice Report Format-59 Tax Invoice India Format-2 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -9213,7 +9111,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_60",
-    "name": "Invoice Report Format-60",
+    "name": "Invoice Report Format-60 FG Tax Invoice India Format-2",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -9223,7 +9121,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-60",
+    "description": "Invoice Report Format-60 FG Tax Invoice India Format-2 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -9247,7 +9145,7 @@ export const FRESA_REPORT_REGISTRY = [
   },
   {
     "code": "INVOICE_REPORT_FORMAT_61",
-    "name": "Invoice Report Format-61",
+    "name": "Invoice Report Format-61 FG Tax Invoice India Format-6",
     "family": "commercial",
     "contexts": [
       "invoice"
@@ -9257,7 +9155,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 4,
     "gapStatus": "partial_document_pdf",
-    "description": "FRESA sample: Invoice Report Format-61",
+    "description": "Invoice Report Format-61 FG Tax Invoice India Format-6 — additional format; does not replace default invoice PDF",
     "defaultParams": [
       {
         "name": "from_date",
@@ -17545,6 +17443,894 @@ export const FRESA_REPORT_REGISTRY = [
         "label": "Job",
         "type": "uuid",
         "required": true
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_62",
+    "name": "Invoice Report Format-62 FG Tax Invoice India Format-7",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-62 FG Tax Invoice India Format-7 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_63",
+    "name": "Invoice Report Format-63 FG Tax Invoice India Format-8",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-63 FG Tax Invoice India Format-8 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_64",
+    "name": "Invoice Report Format-64 FG Tax Invoice India Format-3",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-64 FG Tax Invoice India Format-3 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_65",
+    "name": "Invoice Report Format-65 FG Tax Invoice India Format-4",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-65 FG Tax Invoice India Format-4 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_66",
+    "name": "Invoice Report Format-66 FG Tax Invoice India Format-5",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-66 FG Tax Invoice India Format-5 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_67",
+    "name": "Invoice Report Format-67 FG Tax Invoice Malaysia",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-67 FG Tax Invoice Malaysia — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_68",
+    "name": "Invoice Report Format-68 FG Tax Invoice Singapore",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-68 FG Tax Invoice Singapore — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_69",
+    "name": "Invoice Report Format-69 Warehouse Invoice",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-69 Warehouse Invoice — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_70",
+    "name": "Invoice Report Format-70 Warehouse Invoice India Format",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-70 Warehouse Invoice India Format — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_71",
+    "name": "Invoice Report Format-71 Proforma Invoice All Charges",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-71 Proforma Invoice All Charges — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_72",
+    "name": "Invoice Report Format-72 Standard Tax Invoice Format-13",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-72 Standard Tax Invoice Format-13 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_73",
+    "name": "Invoice Report Format-73 Standard Tax Invoice Format-14",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-73 Standard Tax Invoice Format-14 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_74",
+    "name": "Invoice Report Format-74 Standard Tax Invoice Format-15",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-74 Standard Tax Invoice Format-15 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_75",
+    "name": "Invoice Report Format-75 Standard Tax Invoice Format-16",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-75 Standard Tax Invoice Format-16 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_76",
+    "name": "Invoice Report Format-76 Standard Tax Invoice Format-17",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-76 Standard Tax Invoice Format-17 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_77",
+    "name": "Invoice Report Format-77 Standard Tax Invoice Format-18",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-77 Standard Tax Invoice Format-18 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_78",
+    "name": "Invoice Report Format-78 Standard Tax Invoice Format-19",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-78 Standard Tax Invoice Format-19 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_79",
+    "name": "Invoice Report Format-79 Standard Tax Invoice Format-20",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-79 Standard Tax Invoice Format-20 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_80",
+    "name": "Invoice Report Format-80 Standard Tax Invoice Format-21",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-80 Standard Tax Invoice Format-21 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_81",
+    "name": "Invoice Report Format-81 Standard Tax Invoice Format-22",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-81 Standard Tax Invoice Format-22 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_82",
+    "name": "Invoice Report Format-82 Standard Tax Invoice Format-5",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-82 Standard Tax Invoice Format-5 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_83",
+    "name": "Invoice Report Format-83 Standard Tax Invoice Format-6",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-83 Standard Tax Invoice Format-6 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_84",
+    "name": "Invoice Report Format-84 Standard Tax Invoice Format-9",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-84 Standard Tax Invoice Format-9 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_85",
+    "name": "Invoice Report Format-85 Standard Invoice Format-2",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "partial_document_pdf",
+    "description": "Invoice Report Format-85 Standard Invoice Format-2 — additional format; does not replace default invoice PDF",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "RECEIPT_VOUCHER_REPORT_FORMAT_1",
+    "name": "Receipt Voucher Report Format-1",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "partial_document_pdf",
+    "description": "Receipt Voucher Report Format-1 — Accounts format from Fresa sample-report-formats",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ]
+  },
+  {
+    "code": "RECEIPT_VOUCHER_REPORT_FORMAT_2",
+    "name": "Receipt Voucher Report Format-2",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "partial_document_pdf",
+    "description": "Receipt Voucher Report Format-2 — Accounts format from Fresa sample-report-formats",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
       }
     ]
   }

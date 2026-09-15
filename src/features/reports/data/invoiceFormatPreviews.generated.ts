@@ -1,7 +1,7 @@
 import type { InvoiceFormatPreview } from '../types/invoiceFormatPreview.types';
 
-/** Auto-generated — run scripts/generate-invoice-format-previews.mjs */
-export const INVOICE_FORMAT_PREVIEWS = [
+/** Auto-generated — run: node scripts/extend-invoice-formats-72-85.mjs */
+export const INVOICE_FORMAT_PREVIEWS: InvoiceFormatPreview[] = [
   {
     "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
     "formatNumber": 1,
@@ -419,7 +419,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
     "samplePdfUrl": null,
     "layoutKind": "usa",
     "paper": "Letter",
-    "rtl": false,
+    "rtl": true,
     "showGst": false,
     "showArabic": false,
     "sections": [
@@ -467,7 +467,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
-    "rtl": false,
+    "rtl": true,
     "showGst": false,
     "showArabic": false,
     "sections": [
@@ -1016,7 +1016,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_22",
     "formatNumber": 22,
-    "name": "Invoice Report Format-22",
+    "name": "Invoice Report Format-22 Standard Tax Invoice Format-22",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1059,7 +1059,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_23",
     "formatNumber": 23,
-    "name": "Invoice Report Format-23",
+    "name": "Invoice Report Format-23 Purchase Invoice",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1102,7 +1102,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_24",
     "formatNumber": 24,
-    "name": "Invoice Report Format-24",
+    "name": "Invoice Report Format-24 Simple Invoice With OS",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1145,7 +1145,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_25",
     "formatNumber": 25,
-    "name": "Invoice Report Format-25",
+    "name": "Invoice Report Format-25 Simple Invoice India With OS",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1188,7 +1188,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_26",
     "formatNumber": 26,
-    "name": "Invoice Report Format-26",
+    "name": "Invoice Report Format-26 FG Simple Invoice",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1231,7 +1231,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_27",
     "formatNumber": 27,
-    "name": "Invoice Report Format-27",
+    "name": "Invoice Report Format-27 Standard Invoice Tanzania",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1274,7 +1274,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_28",
     "formatNumber": 28,
-    "name": "Invoice Report Format-28",
+    "name": "Invoice Report Format Singapore",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1317,7 +1317,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_29",
     "formatNumber": 29,
-    "name": "Invoice Report Format-29",
+    "name": "Invoice Report Format Land Freight Transportation",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1360,136 +1360,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_30",
     "formatNumber": 30,
-    "name": "Invoice Report Format-30",
-    "samplePdfUrl": null,
-    "layoutKind": "generic",
-    "paper": "A4",
-    "rtl": false,
-    "showGst": false,
-    "showArabic": false,
-    "sections": [
-      {
-        "id": "companyHeader",
-        "label": "Company header"
-      },
-      {
-        "id": "invoiceMeta",
-        "label": "Invoice meta"
-      },
-      {
-        "id": "billTo",
-        "label": "Bill to"
-      },
-      {
-        "id": "lineTable",
-        "label": "Lines",
-        "columns": [
-          "Description",
-          "Qty",
-          "Rate",
-          "Amount"
-        ]
-      },
-      {
-        "id": "totals",
-        "label": "Totals"
-      },
-      {
-        "id": "footerNotes",
-        "label": "Notes"
-      }
-    ]
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_31",
-    "formatNumber": 31,
-    "name": "Invoice Report Format-31",
-    "samplePdfUrl": null,
-    "layoutKind": "generic",
-    "paper": "A4",
-    "rtl": false,
-    "showGst": false,
-    "showArabic": false,
-    "sections": [
-      {
-        "id": "companyHeader",
-        "label": "Company header"
-      },
-      {
-        "id": "invoiceMeta",
-        "label": "Invoice meta"
-      },
-      {
-        "id": "billTo",
-        "label": "Bill to"
-      },
-      {
-        "id": "lineTable",
-        "label": "Lines",
-        "columns": [
-          "Description",
-          "Qty",
-          "Rate",
-          "Amount"
-        ]
-      },
-      {
-        "id": "totals",
-        "label": "Totals"
-      },
-      {
-        "id": "footerNotes",
-        "label": "Notes"
-      }
-    ]
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_32",
-    "formatNumber": 32,
-    "name": "Invoice Report Format-32",
-    "samplePdfUrl": null,
-    "layoutKind": "generic",
-    "paper": "A4",
-    "rtl": false,
-    "showGst": false,
-    "showArabic": false,
-    "sections": [
-      {
-        "id": "companyHeader",
-        "label": "Company header"
-      },
-      {
-        "id": "invoiceMeta",
-        "label": "Invoice meta"
-      },
-      {
-        "id": "billTo",
-        "label": "Bill to"
-      },
-      {
-        "id": "lineTable",
-        "label": "Lines",
-        "columns": [
-          "Description",
-          "Qty",
-          "Rate",
-          "Amount"
-        ]
-      },
-      {
-        "id": "totals",
-        "label": "Totals"
-      },
-      {
-        "id": "footerNotes",
-        "label": "Notes"
-      }
-    ]
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_33",
-    "formatNumber": 33,
-    "name": "Invoice Report Format-33",
+    "name": "Invoice Report Format Overseas Debit Note Format-2",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1532,7 +1403,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_34",
     "formatNumber": 34,
-    "name": "Invoice Report Format-34",
+    "name": "Invoice Report Format-34 Standard Invoice Arabic",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1575,7 +1446,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_35",
     "formatNumber": 35,
-    "name": "Invoice Report Format-35",
+    "name": "Invoice Report Format-35 Standard Invoice Arabic Format-1",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1618,7 +1489,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_36",
     "formatNumber": 36,
-    "name": "Invoice Report Format-36",
+    "name": "Invoice Report Format-36 Standard Invoice Arabic Format-1 Alt",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1661,7 +1532,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_37",
     "formatNumber": 37,
-    "name": "Invoice Report Format-37",
+    "name": "Invoice Report Format-37 Standard Invoice Arabic Oman",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1704,7 +1575,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_38",
     "formatNumber": 38,
-    "name": "Invoice Report Format-38",
+    "name": "Invoice Report Format-38 Standard Invoice Arabic Format-2",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1747,7 +1618,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_39",
     "formatNumber": 39,
-    "name": "Invoice Report Format-39",
+    "name": "Invoice Report Format-39 Standard Invoice Arabic Format-3",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1790,7 +1661,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_40",
     "formatNumber": 40,
-    "name": "Invoice Report Format-40",
+    "name": "Invoice Report Format-40 Standard Invoice Arabic Format-4",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1833,7 +1704,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_41",
     "formatNumber": 41,
-    "name": "Invoice Report Format-41",
+    "name": "Invoice Report Format-41 Standard Invoice Arabic Format-5",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1876,7 +1747,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_42",
     "formatNumber": 42,
-    "name": "Invoice Report Format-42",
+    "name": "Invoice Report Format-42 Standard Invoice Arabic Format-7",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1919,7 +1790,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_43",
     "formatNumber": 43,
-    "name": "Invoice Report Format-43",
+    "name": "Invoice Report Format-43 Standard Courier Invoice",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -1962,7 +1833,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_44",
     "formatNumber": 44,
-    "name": "Invoice Report Format-44",
+    "name": "Invoice Report Format-44 Standard Invoice FCY",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -2005,7 +1876,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_45",
     "formatNumber": 45,
-    "name": "Invoice Report Format-45",
+    "name": "Invoice Report Format-45 Standard Invoice FCY Format-2",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -2048,7 +1919,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_46",
     "formatNumber": 46,
-    "name": "Invoice Report Format-46",
+    "name": "Invoice Report Format-46 FG Standard Invoice FCY",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -2091,7 +1962,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_47",
     "formatNumber": 47,
-    "name": "Invoice Report Format-47",
+    "name": "Invoice Report Format-47 Standard Invoice Kampala",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -2134,7 +2005,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_48",
     "formatNumber": 48,
-    "name": "Invoice Report Format-48",
+    "name": "Invoice Report Format-48 Standard Invoice USA",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -2177,7 +2048,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_49",
     "formatNumber": 49,
-    "name": "Invoice Report Format-49",
+    "name": "Invoice Report Format-49 Standard Tax Invoice Format-16 Cum AN",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -2220,7 +2091,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_50",
     "formatNumber": 50,
-    "name": "Invoice Report Format-50",
+    "name": "Invoice Report Format-50 Standard Invoice Malaysia",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -2263,7 +2134,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_51",
     "formatNumber": 51,
-    "name": "Invoice Report Format-51",
+    "name": "Invoice Report Format-51 Standard Invoice USA Format-2",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -2306,7 +2177,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_52",
     "formatNumber": 52,
-    "name": "Invoice Report Format-52",
+    "name": "Invoice Report Format-52 Standard Tax Invoice",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -2349,7 +2220,7 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_53",
     "formatNumber": 53,
-    "name": "Invoice Report Format-53",
+    "name": "Invoice Report Format-53 Summary Invoice",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -2392,12 +2263,12 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_54",
     "formatNumber": 54,
-    "name": "Invoice Report Format-54",
+    "name": "Invoice Report Format-54 Tax Invoice India",
     "samplePdfUrl": null,
-    "layoutKind": "generic",
+    "layoutKind": "tax_india",
     "paper": "A4",
     "rtl": false,
-    "showGst": false,
+    "showGst": true,
     "showArabic": false,
     "sections": [
       {
@@ -2435,12 +2306,12 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_55",
     "formatNumber": 55,
-    "name": "Invoice Report Format-55",
+    "name": "Invoice Report Format-55 Tax Invoice India Reimbursement Bill",
     "samplePdfUrl": null,
-    "layoutKind": "generic",
+    "layoutKind": "tax_india",
     "paper": "A4",
     "rtl": false,
-    "showGst": false,
+    "showGst": true,
     "showArabic": false,
     "sections": [
       {
@@ -2478,12 +2349,12 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_56",
     "formatNumber": 56,
-    "name": "Invoice Report Format-56",
+    "name": "Invoice Report Format-56 FG Tax Invoice India",
     "samplePdfUrl": null,
-    "layoutKind": "generic",
+    "layoutKind": "tax_india",
     "paper": "A4",
     "rtl": false,
-    "showGst": false,
+    "showGst": true,
     "showArabic": false,
     "sections": [
       {
@@ -2521,12 +2392,12 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_57",
     "formatNumber": 57,
-    "name": "Invoice Report Format-57",
+    "name": "Invoice Report Format-57 FG Tax Invoice India Format-1",
     "samplePdfUrl": null,
-    "layoutKind": "generic",
+    "layoutKind": "tax_india",
     "paper": "A4",
     "rtl": false,
-    "showGst": false,
+    "showGst": true,
     "showArabic": false,
     "sections": [
       {
@@ -2564,12 +2435,12 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_58",
     "formatNumber": 58,
-    "name": "Invoice Report Format-58",
+    "name": "Invoice Report Format-58 Tax Invoice India Format-1",
     "samplePdfUrl": null,
-    "layoutKind": "generic",
+    "layoutKind": "tax_india",
     "paper": "A4",
     "rtl": false,
-    "showGst": false,
+    "showGst": true,
     "showArabic": false,
     "sections": [
       {
@@ -2607,12 +2478,12 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_59",
     "formatNumber": 59,
-    "name": "Invoice Report Format-59",
+    "name": "Invoice Report Format-59 Tax Invoice India Format-2",
     "samplePdfUrl": null,
-    "layoutKind": "generic",
+    "layoutKind": "tax_india",
     "paper": "A4",
     "rtl": false,
-    "showGst": false,
+    "showGst": true,
     "showArabic": false,
     "sections": [
       {
@@ -2650,7 +2521,480 @@ export const INVOICE_FORMAT_PREVIEWS = [
   {
     "code": "INVOICE_REPORT_FORMAT_60",
     "formatNumber": 60,
-    "name": "Invoice Report Format-60",
+    "name": "Invoice Report Format-60 FG Tax Invoice India Format-2",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_61",
+    "formatNumber": 61,
+    "name": "Invoice Report Format-61 FG Tax Invoice India Format-6",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_62",
+    "formatNumber": 62,
+    "name": "Invoice Report Format-62 FG Tax Invoice India Format-7",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_63",
+    "formatNumber": 63,
+    "name": "Invoice Report Format-63 FG Tax Invoice India Format-8",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_64",
+    "formatNumber": 64,
+    "name": "Invoice Report Format-64 FG Tax Invoice India Format-3",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_65",
+    "formatNumber": 65,
+    "name": "Invoice Report Format-65 FG Tax Invoice India Format-4",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_66",
+    "formatNumber": 66,
+    "name": "Invoice Report Format-66 FG Tax Invoice India Format-5",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_67",
+    "formatNumber": 67,
+    "name": "Invoice Report Format-67 FG Tax Invoice Malaysia",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_68",
+    "formatNumber": 68,
+    "name": "Invoice Report Format-68 FG Tax Invoice Singapore",
+    "samplePdfUrl": null,
+    "layoutKind": "tax_india",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_69",
+    "formatNumber": 69,
+    "name": "Invoice Report Format-69 Warehouse Invoice",
+    "samplePdfUrl": null,
+    "layoutKind": "warehouse",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_70",
+    "formatNumber": 70,
+    "name": "Invoice Report Format-70 Warehouse Invoice India Format",
+    "samplePdfUrl": null,
+    "layoutKind": "warehouse",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": false,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_71",
+    "formatNumber": 71,
+    "name": "Invoice Report Format-71 Proforma Invoice All Charges",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
@@ -2691,14 +3035,573 @@ export const INVOICE_FORMAT_PREVIEWS = [
     ]
   },
   {
-    "code": "INVOICE_REPORT_FORMAT_61",
-    "formatNumber": 61,
-    "name": "Invoice Report Format-61",
+    "code": "INVOICE_REPORT_FORMAT_72",
+    "formatNumber": 72,
+    "name": "Invoice Report Format-72 Standard Tax Invoice Format-13",
     "samplePdfUrl": null,
     "layoutKind": "generic",
     "paper": "A4",
     "rtl": false,
-    "showGst": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_73",
+    "formatNumber": 73,
+    "name": "Invoice Report Format-73 Standard Tax Invoice Format-14",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_74",
+    "formatNumber": 74,
+    "name": "Invoice Report Format-74 Standard Tax Invoice Format-15",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_75",
+    "formatNumber": 75,
+    "name": "Invoice Report Format-75 Standard Tax Invoice Format-16",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_76",
+    "formatNumber": 76,
+    "name": "Invoice Report Format-76 Standard Tax Invoice Format-17",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_77",
+    "formatNumber": 77,
+    "name": "Invoice Report Format-77 Standard Tax Invoice Format-18",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_78",
+    "formatNumber": 78,
+    "name": "Invoice Report Format-78 Standard Tax Invoice Format-19",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_79",
+    "formatNumber": 79,
+    "name": "Invoice Report Format-79 Standard Tax Invoice Format-20",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_80",
+    "formatNumber": 80,
+    "name": "Invoice Report Format-80 Standard Tax Invoice Format-21",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_81",
+    "formatNumber": 81,
+    "name": "Invoice Report Format-81 Standard Tax Invoice Format-22",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_82",
+    "formatNumber": 82,
+    "name": "Invoice Report Format-82 Standard Tax Invoice Format-5",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_83",
+    "formatNumber": 83,
+    "name": "Invoice Report Format-83 Standard Tax Invoice Format-6",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_84",
+    "formatNumber": 84,
+    "name": "Invoice Report Format-84 Standard Tax Invoice Format-9",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
+    "showArabic": false,
+    "sections": [
+      {
+        "id": "companyHeader",
+        "label": "Company header"
+      },
+      {
+        "id": "invoiceMeta",
+        "label": "Invoice meta"
+      },
+      {
+        "id": "billTo",
+        "label": "Bill to"
+      },
+      {
+        "id": "lineTable",
+        "label": "Lines",
+        "columns": [
+          "Description",
+          "Qty",
+          "Rate",
+          "Amount"
+        ]
+      },
+      {
+        "id": "totals",
+        "label": "Totals"
+      },
+      {
+        "id": "footerNotes",
+        "label": "Notes"
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_85",
+    "formatNumber": 85,
+    "name": "Invoice Report Format-85 Standard Invoice Format-2",
+    "samplePdfUrl": null,
+    "layoutKind": "generic",
+    "paper": "A4",
+    "rtl": false,
+    "showGst": true,
     "showArabic": false,
     "sections": [
       {

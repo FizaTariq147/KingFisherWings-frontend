@@ -46,6 +46,7 @@ e2e/.auth/
 # Local temp / swagger extracts / analysis artifacts
 .tmp-*
 .tmp*
+tmp/
 
 # Optional local reports (keep docs/*.md tracked; ignore raw JSON dumps at root)
 .tmp-api-test-results.json

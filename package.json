@@ -18,7 +18,8 @@
     "seed:documentation": "node scripts/seed-documentation-test-data.mjs",
     "test:integration": "node scripts/api-matrix-test.mjs && playwright test --project=setup --project=chromium --project=authenticated",
     "test:integration-report": "node scripts/integration-automation-report.mjs",
-    "doctor": "npx react-doctor@latest"
+    "doctor": "npx react-doctor@latest",
+    "build:invoice-ui-layouts": "node scripts/build-invoice-format-ui-layouts.mjs"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.10.0",
@@ -35,6 +36,8 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.42.0",
     "gsap": "^3.15.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
     "libphonenumber-js": "^1.13.8",
     "lucide-react": "^1.21.0",
     "pdf-lib": "^1.17.1",
@@ -62,6 +65,7 @@
     "@storybook/addon-vitest": "^10.4.6",
     "@storybook/react-vite": "^10.4.6",
     "@types/babel__core": "^7.20.5",
+    "@types/html2canvas": "^0.5.35",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
