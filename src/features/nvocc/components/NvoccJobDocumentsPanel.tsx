@@ -14,10 +14,13 @@ import {
   useNvoccJobGenerationStatus,
 } from '../hooks/useNvoccJobs';
 import { JobDocumentGenerationStatusCard } from '@/features/jobs/components/JobDocumentGenerationStatusCard';
+import { NvoccJobWorkflowPanel } from './NvoccJobWorkflowPanel';
 
 const DOCUMENT_GENERATORS = [
   { key: 'hblDraft', label: 'HBL draft' },
   { key: 'hblOriginal', label: 'HBL original' },
+  { key: 'hblDraftGated', label: 'HBL draft (gated)' },
+  { key: 'hblOriginalGated', label: 'HBL original (gated)' },
   { key: 'hblExpressRelease', label: 'HBL express release' },
   { key: 'surrenderNotice', label: 'Surrender notice' },
   { key: 'mbl', label: 'MBL' },
@@ -75,8 +78,11 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
 
   return (
     <div className="space-y-4">
+      <NvoccJobWorkflowPanel jobId={jobId} />
+
       <p className="text-sm text-[var(--color-neutral-500)]">
-        NVOCC job documents use <code className="text-xs">/nvocc/jobs/{'{id}'}/documents/*</code> endpoints.
+        NVOCC job documents use <code className="text-xs">/nvocc/jobs/{'{id}'}/documents/*</code>{' '}
+        endpoints. Prefer gated HBL after portal draft request + payment.
       </p>
 
       {error && <p className="text-sm text-[var(--color-danger-600)]">{error}</p>}
@@ -150,13 +156,28 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
           <CardTitle>Milestones</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 flex flex-wrap gap-2">
-          <Button type="button" variant="secondary" size="sm" onClick={() => run(() => actions.submitSi.mutateAsync(), 'SI submitted.')}>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => run(() => actions.submitSi.mutateAsync(), 'SI submitted.')}
+          >
             Submit SI
           </Button>
-          <Button type="button" variant="secondary" size="sm" onClick={() => run(() => actions.submitVgm.mutateAsync(), 'VGM submitted.')}>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => run(() => actions.submitVgm.mutateAsync(), 'VGM submitted.')}
+          >
             Submit VGM
           </Button>
-          <Button type="button" variant="secondary" size="sm" onClick={() => run(() => actions.podReceived.mutateAsync(), 'POD received recorded.')}>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => run(() => actions.podReceived.mutateAsync(), 'POD received recorded.')}
+          >
             POD received
           </Button>
         </div>

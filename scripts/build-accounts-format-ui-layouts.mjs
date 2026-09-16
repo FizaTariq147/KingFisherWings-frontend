@@ -53,8 +53,14 @@ const CATALOG = [
   ['OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER', 'Outstanding Letter Report Format-2 Outstanding Letter Jasper', 'outstanding_2_jasper', 2],
   ['OUTSTANDING_LETTER_REPORT_FORMAT_3_OUTSTANDING_LETTER_WITH_AGING', 'Outstanding Letter Report Format-3 Outstanding Letter With Aging', 'outstanding_3_aging', 3],
   ['OUTSTANDING_LETTER_REPORT_FORMAT_4_OUTSTANDING_LETTER_WITH_BL_DETAILS', 'Outstanding Letter Report Format-4 Outstanding Letter With BL Details', 'outstanding_4_bl', 4],
+  ['OUTSTANDING_LETTER_REPORT_FORMAT_5_OUTSTANDING_LETTER_WITH_INVOICES', 'Outstanding Letter Report Format-5 Outstanding Letter With Invoices', 'outstanding_5_invoices', 5],
   ['AP_AGING_SUMMARY_REPORT_FORMAT', 'AP Aging Summary Report Format', 'ap_aging', 1],
+  ['AR_AGING_SUMMARY_REPORT_FORMAT', 'AR Aging Summary Report Format', 'ar_aging', 1],
   ['AP_OUTSTANDING_STATEMENT_REPORT_FORMAT', 'AP Outstanding Statement Report Format', 'ap_outstanding', 1],
+  ['AR_JOB_NOT_INVOICE_REPORT_FORMAT', 'AR Job Not Invoice Report Format', 'ar_job_not_invoice', 1],
+  ['BANK_CASH_BOOK_SUMMARY_LIST_REPORT_FORMAT', 'Bank Cash Book Summary List Report Format', 'bank_cash_book', 1],
+  ['PURCHASE_INVOICE_REPORT_FORMAT_1', 'Purchase Invoice Report Format-1', 'purchase_invoice_1', 1],
+  ['PURCHASE_INVOICE_REPORT_FORMAT_2', 'Purchase Invoice Report Format-2', 'purchase_invoice_2', 2],
   ['GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT', 'GL Listing Sort By Customer Code Voucher Report Format', 'gl_listing', 1],
   ['GL_REPORT_CURRENCY_WISE_VOUCHER_REPORT_FORMAT', 'GL Report Currency Wise Voucher Report Format', 'gl_currency', 1],
   ['GL_REPORT_VOUCHER_REPORT_FORMAT', 'GL Report Voucher Report Format', 'gl_report', 1],
@@ -1190,6 +1196,46 @@ const KINDS = {
       ],
     }),
 
+  /** outstanding-letter-report-format-5-with-invoices */
+  outstanding_5_invoices: () =>
+    layout({
+      demo: {
+        invoiceNo: 'OL-5',
+        currency: 'INR',
+        total: '48,486.00',
+        words: 'Rupee Forty-Eight Thousand Four Hundred Eighty-Six Only',
+        billToPhone: 'N/A',
+        partyLeft: OL_PARTY,
+        letterBody: OL_LETTER.replace('10-Feb-19', '10-FEB-19'),
+        tableHeaders: [
+          'Date',
+          'Invoice No',
+          'Shipment / Job',
+          'Invoice Amount',
+          'Received',
+          'O/S Amount',
+          'Aging',
+        ],
+        tableRows: [
+          ['25-JAN-19', 'MAAINV1900713', 'B/SFI/19/0166', '9,440.00', '', '9,440.00', '14'],
+          ['31-JAN-19', 'MAAINV1900728', 'B/EXP/19/0255', '2,950.00', '', '2,950.00', '8'],
+          ['05-FEB-19', 'MAAINV1900731', 'B/EXP/19/0256', '20,434.00', '', '20,434.00', '3'],
+          ['10-FEB-19', 'MAAINV1900736', 'B/SI/19/0039', '15,662.00', '', '15,662.00', '-2'],
+        ],
+        termsLines: OL_BANK,
+        bankLines: BANK,
+      },
+      blocks: [
+        { type: 'companyHeader', showContact: true },
+        { type: 'docTitle', text: 'OUTSTANDING LETTER — WITH INVOICES', align: 'center' },
+        { type: 'letterBody' },
+        { type: 'chargeTable', headerColor: 'fill' },
+        { type: 'wordsAndTotal' },
+        { type: 'termsBank' },
+        { type: 'colorfulFooter' },
+      ],
+    }),
+
   /** ap-aging-summary-report-format.pdf */
   ap_aging: () =>
     layout({
@@ -1233,6 +1279,182 @@ const KINDS = {
         { type: 'docTitle', text: 'A/P Aging Summary', align: 'center' },
         { type: 'fieldGrid', cols: 2 },
         { type: 'chargeTable', headerColor: 'fill' },
+        { type: 'wordsAndTotal' },
+        { type: 'colorfulFooter' },
+      ],
+    }),
+
+  /** ar-aging-summary-report-format.pdf */
+  ar_aging: () =>
+    layout({
+      demo: {
+        invoiceNo: 'AR-AGE-1',
+        currency: 'INR',
+        total: '1,245,320.00',
+        words: 'Total Amount: 1,245,320.00',
+        totalLabel: 'Total Amount:',
+        fieldGrid: [
+          { k: 'Branch Name', v: 'ALL' },
+          { k: 'COA Name', v: 'SUNDRY DEBTORS' },
+          { k: 'To Date', v: '14-FEB-19' },
+        ],
+        tableHeaders: [
+          'Organization',
+          'Salesperson',
+          'O/S Amount',
+          '0 to 30',
+          '31 To 60',
+          '61 To 90',
+          '91 To 120',
+          '121 To 150',
+          '151 Above',
+        ],
+        tableRows: [
+          ['AL NASER TRADING COMPANY LLC', 'RAM', '48,486.00', '48,486.00', '', '', '', '', ''],
+          ['4G LOGISTICS INDIA PVT LTD', 'ARUL SELVAN', '1,196,834.00', '25,000.00', '11,000.00', '', '', '', '1,160,834.00'],
+          ['Total Amount:', '', '1,245,320.00', '73,486.00', '11,000.00', '', '', '', '1,160,834.00'],
+        ],
+        termsLines: TERMS,
+      },
+      blocks: [
+        { type: 'companyHeader' },
+        { type: 'docTitle', text: 'A/R Aging Summary', align: 'center' },
+        { type: 'fieldGrid', cols: 2 },
+        { type: 'chargeTable', headerColor: 'fill' },
+        { type: 'wordsAndTotal' },
+        { type: 'colorfulFooter' },
+      ],
+    }),
+
+  /** ar-job-not-invoice-report-format.xlsx */
+  ar_job_not_invoice: () =>
+    layout({
+      demo: {
+        invoiceNo: 'AR-JNI-1',
+        currency: 'INR',
+        total: '3',
+        words: 'Jobs without sales invoice: 3',
+        fieldGrid: [
+          { k: 'From Date', v: '01-JAN-19' },
+          { k: 'To Date', v: '14-FEB-19' },
+          { k: 'Branch', v: 'ALL' },
+        ],
+        tableHeaders: ['Job No.', 'Shipment No.', 'Customer', 'ETD', 'ATA', 'Status'],
+        tableRows: [
+          ['CEXP190148', 'B/EXP/19/0251', '4G LOGISTICS INDIA PVT LTD', '20-JAN-19', '', 'Open'],
+          ['CEXP190150', 'B/EXP/19/0254', 'AL NASER TRADING', '28-JAN-19', '', 'Open'],
+          ['CSFI190012', 'B/SFI/19/0166', '3M LOGISTICS SERVICE', '05-FEB-19', '', 'Open'],
+        ],
+        termsLines: TERMS,
+      },
+      blocks: [
+        { type: 'companyHeader' },
+        { type: 'docTitle', text: 'AR JOB NOT INVOICE', align: 'center' },
+        { type: 'fieldGrid', cols: 2 },
+        { type: 'chargeTable', headerColor: 'accent' },
+        { type: 'colorfulFooter' },
+      ],
+    }),
+
+  /** bank-cash-book-summary-list-report-format.xlsx */
+  bank_cash_book: () =>
+    layout({
+      demo: {
+        invoiceNo: 'BCB-1',
+        currency: 'INR',
+        total: '125,450.00',
+        words: 'Closing Balance: 125,450.00',
+        fieldGrid: [
+          { k: 'From Date', v: '01-JAN-19' },
+          { k: 'To Date', v: '14-FEB-19' },
+          { k: 'Bank / Cash', v: 'HDFC CURRENT A/C' },
+        ],
+        tableHeaders: ['Date', 'Voucher No.', 'Narration', 'Debit', 'Credit', 'Balance'],
+        tableRows: [
+          ['01-JAN-19', '', 'Opening Balance', '', '', '100,000.00'],
+          ['15-JAN-19', 'MAABR1900089', 'Customer receipt', '40,000.00', '', '140,000.00'],
+          ['28-JAN-19', 'MAAPV1900042', 'Vendor payment', '', '14,550.00', '125,450.00'],
+        ],
+        termsLines: TERMS,
+      },
+      blocks: [
+        { type: 'companyHeader' },
+        { type: 'docTitle', text: 'BANK / CASH BOOK SUMMARY', align: 'center' },
+        { type: 'fieldGrid', cols: 2 },
+        { type: 'chargeTable', headerColor: 'fill' },
+        { type: 'wordsAndTotal' },
+        { type: 'colorfulFooter' },
+      ],
+    }),
+
+  purchase_invoice_1: () =>
+    layout({
+      demo: {
+        invoiceNo: 'MAPINV190021',
+        invoiceDate: '28-JAN-19',
+        currency: 'INR',
+        total: '18,880.00',
+        words: 'Rupee Eighteen Thousand Eight Hundred Eighty Only',
+        partyLeft: {
+          title: 'Vendor',
+          lines: ['OCEAN CARRIER LINES', 'CHENNAI TAMIL NADU INDIA'],
+        },
+        fieldGrid: [
+          { k: 'Purchase Invoice No.', v: 'MAPINV190021' },
+          { k: 'Date', v: '28-JAN-19' },
+          { k: 'Job / Shipment', v: 'B/EXP/19/0254' },
+          { k: 'Currency', v: 'INR' },
+        ],
+        tableHeaders: ['Charge', 'Qty', 'Rate', 'Amount'],
+        tableRows: [
+          ['Ocean Freight', '1', '12,000.00', '12,000.00'],
+          ['THC', '1', '4,000.00', '4,000.00'],
+          ['Documentation', '1', '2,880.00', '2,880.00'],
+        ],
+        termsLines: TERMS,
+      },
+      blocks: [
+        { type: 'companyHeader', showContact: true },
+        { type: 'docTitle', text: 'PURCHASE INVOICE — FORMAT 1', align: 'center', band: true },
+        { type: 'partyTriple' },
+        { type: 'fieldGrid', cols: 2 },
+        { type: 'chargeTable', headerColor: 'primary' },
+        { type: 'wordsAndTotal' },
+        { type: 'colorfulFooter' },
+      ],
+    }),
+
+  purchase_invoice_2: () =>
+    layout({
+      demo: {
+        invoiceNo: 'MAPINV190022',
+        invoiceDate: '30-JAN-19',
+        currency: 'USD',
+        total: '875.00',
+        words: 'USD Eight Hundred Seventy-Five Only',
+        partyLeft: {
+          title: 'Vendor',
+          lines: ['GLOBAL FREIGHT AGENTS LLC', 'DUBAI UAE'],
+        },
+        fieldGrid: [
+          { k: 'Purchase Invoice No.', v: 'MAPINV190022' },
+          { k: 'Date', v: '30-JAN-19' },
+          { k: 'Job / Shipment', v: 'B/SFI/19/0166' },
+          { k: 'Currency', v: 'USD' },
+        ],
+        tableHeaders: ['Charge', 'Qty', 'Rate', 'Amount'],
+        tableRows: [
+          ['Agency Fee', '1', '500.00', '500.00'],
+          ['Handling', '1', '375.00', '375.00'],
+        ],
+        termsLines: TERMS,
+      },
+      blocks: [
+        { type: 'companyHeader', showContact: true },
+        { type: 'docTitle', text: 'PURCHASE INVOICE — FORMAT 2', align: 'center', band: true },
+        { type: 'partyTriple' },
+        { type: 'fieldGrid', cols: 2 },
+        { type: 'chargeTable', headerColor: 'accent' },
         { type: 'wordsAndTotal' },
         { type: 'colorfulFooter' },
       ],

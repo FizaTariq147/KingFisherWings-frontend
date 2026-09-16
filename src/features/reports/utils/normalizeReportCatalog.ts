@@ -13,6 +13,10 @@ import { resolveInvoiceFormatDisplayName } from '../constants/invoiceFormatCatal
 import { resolveAccountsFormatDisplayName } from '../constants/accountsFormatCatalog';
 import { resolveWmsFormatDisplayName } from '../constants/wmsFormatCatalog';
 import { resolveArrivalNoticeFormatDisplayName } from '../constants/arrivalNoticeFormatCatalog';
+import { resolveDeliveryOrderFormatDisplayName } from '../constants/deliveryOrderFormatCatalog';
+import { resolveHawbFormatDisplayName } from '../constants/hawbFormatCatalog';
+import { resolveHblFormatDisplayName } from '../constants/hblFormatCatalog';
+import { resolveOtherReportsFormatDisplayName } from '../constants/otherReportsFormatCatalog';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -157,13 +161,25 @@ function parametersFromSchemaObject(raw: unknown): ReportTemplateParamField[] | 
 
 export function metaToTemplate(meta: ReportTemplateMeta, index: number): ReportTemplate {
   const rawName = meta.name;
-  const name = resolveArrivalNoticeFormatDisplayName(
+  const name = resolveOtherReportsFormatDisplayName(
     meta.code,
-    resolveWmsFormatDisplayName(
+    resolveHblFormatDisplayName(
       meta.code,
-      resolveAccountsFormatDisplayName(
+      resolveHawbFormatDisplayName(
         meta.code,
-        resolveInvoiceFormatDisplayName(meta.code, rawName),
+        resolveDeliveryOrderFormatDisplayName(
+          meta.code,
+          resolveArrivalNoticeFormatDisplayName(
+            meta.code,
+            resolveWmsFormatDisplayName(
+              meta.code,
+              resolveAccountsFormatDisplayName(
+                meta.code,
+                resolveInvoiceFormatDisplayName(meta.code, rawName),
+              ),
+            ),
+          ),
+        ),
       ),
     ),
   );
@@ -206,13 +222,25 @@ export function normalizeReportTemplate(raw: unknown, fallback?: ReportTemplateM
   return {
     id: str(r?.id) || code,
     code,
-    name: resolveArrivalNoticeFormatDisplayName(
+    name: resolveOtherReportsFormatDisplayName(
       code,
-      resolveWmsFormatDisplayName(
+      resolveHblFormatDisplayName(
         code,
-        resolveAccountsFormatDisplayName(
+        resolveHawbFormatDisplayName(
           code,
-          resolveInvoiceFormatDisplayName(code, name),
+          resolveDeliveryOrderFormatDisplayName(
+            code,
+            resolveArrivalNoticeFormatDisplayName(
+              code,
+              resolveWmsFormatDisplayName(
+                code,
+                resolveAccountsFormatDisplayName(
+                  code,
+                  resolveInvoiceFormatDisplayName(code, name),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     ),

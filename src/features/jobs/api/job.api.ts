@@ -12,6 +12,21 @@ export const JOB_API = {
     `/jobs/${id}/prorate-cost/${chargeCodeId}`,
 
   airDetails: (id: string) => `/jobs/${id}/air-details`,
+  airBookingForm: (id: string) => `/jobs/${id}/air-booking-form`,
+  airCsTriage: (id: string) => `/jobs/${id}/air/cs-triage`,
+  airMarkQuoteSent: (id: string) => `/jobs/${id}/air/mark-quote-sent`,
+  airSendInvoice: (id: string) => `/jobs/${id}/air/send-invoice`,
+  airUldRequests: (id: string) => `/jobs/${id}/air/uld-requests`,
+  airIssueUldRequest: (id: string, requestId: string) =>
+    `/jobs/${id}/air/uld-requests/${requestId}/issue`,
+  airAllocateUldRequest: (id: string, requestId: string) =>
+    `/jobs/${id}/air/uld-requests/${requestId}/allocate`,
+  airStageBuildUp: (id: string) => `/jobs/${id}/air/stage/build-up`,
+  airStageMawbReceived: (id: string) => `/jobs/${id}/air/stage/mawb-received`,
+  airStageMawbIssued: (id: string) => `/jobs/${id}/air/stage/mawb-issued`,
+  airStagePod: (id: string) => `/jobs/${id}/air/stage/pod`,
+  airConfirmPayment: (id: string) => `/jobs/${id}/air/accounts/confirm-payment`,
+  airCloseReport: (id: string) => `/jobs/${id}/air/close-report`,
   seaFclDetails: (id: string) => `/jobs/${id}/sea-fcl-details`,
   seaLclDetails: (id: string) => `/jobs/${id}/sea-lcl-details`,
   submitSi: (id: string) => `/jobs/${id}/sea-fcl-details/si-submission`,
@@ -122,6 +137,11 @@ export const JOB_API = {
 
   generateHawb: (id: string) => `/jobs/${id}/documents/hawb`,
   generateMawb: (id: string) => `/jobs/${id}/documents/mawb`,
+  generateHawbDraftGated: (id: string) => `/jobs/${id}/documents/hawb-draft-gated`,
+  generateHawbFinalGated: (id: string) => `/jobs/${id}/documents/hawb-final-gated`,
+  generatePreCanGated: (id: string) => `/jobs/${id}/documents/pre-can-gated`,
+  generateCanGated: (id: string) => `/jobs/${id}/documents/can-gated`,
+  generateDeliveryOrderGated: (id: string) => `/jobs/${id}/documents/delivery-order-gated`,
   generateHbl: (id: string) => `/jobs/${id}/documents/hbl`,
   generateHblExpressRelease: (id: string) => `/jobs/${id}/documents/hbl-express-release`,
   generateMbl: (id: string) => `/jobs/${id}/documents/mbl`,

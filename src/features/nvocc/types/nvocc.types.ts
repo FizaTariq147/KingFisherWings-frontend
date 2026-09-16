@@ -365,3 +365,49 @@ export interface NvoccUtilizationReportParams {
 export interface RecordNvoccMblReceivedDto {
   mbl_number?: string;
 }
+
+/** Sea-export workflow booking form (GET/PUT /nvocc/bookings/:id/booking-form). */
+export type NvoccBookingForm = Record<string, unknown> & {
+  id?: string;
+  booking_id?: string;
+  shipper_ref?: string;
+  commodity?: string;
+  marks_numbers?: string;
+  container_type_id?: string;
+  container_count?: number;
+  cbm_allocated?: number;
+  gross_weight?: number;
+  pieces?: number;
+  incoterms?: string;
+  freight_terms?: string;
+  other_charges_terms?: string;
+  hs_code?: string;
+  notes?: string;
+};
+
+export type UpdateNvoccBookingFormDto = Record<string, unknown>;
+
+export interface NvoccContainerRequest {
+  id: string;
+  job_id?: string;
+  container_type_id?: string;
+  container_type_code?: string;
+  quantity?: number;
+  status?: string;
+  cro_number?: string;
+  container_number?: string;
+  issued_at?: string;
+  allocated_at?: string;
+  notes?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CreateNvoccContainerRequestDto {
+  container_type_id?: string;
+  quantity?: number;
+  notes?: string;
+  [key: string]: unknown;
+}
+
+export type NvoccWorkflowActionDto = Record<string, unknown>;

@@ -16,6 +16,7 @@ export const mastersMenu: MenuTile[] = [
   { id: 'branches', title: 'Branches', description: 'Company branches and head-office flags.', icon: GitBranch, iconColor: 'bg-teal-600', path: '/masters/branches' },
   { id: 'charge-codes', title: 'Charge Codes', description: 'Charge codes, tax links and GL mapping.', icon: Receipt, iconColor: 'bg-amber-600', path: '/masters/charge-codes' },
   { id: 'container-types', title: 'Container Type', description: 'To maintain container details such as container type, volume, weight and TEU.', icon: Container, iconColor: 'bg-purple-600', path: '/masters/container-types' },
+  { id: 'air-pallet-types', title: 'Air Pallet Types', description: 'ULD / air pallet type codes, payload and volume defaults.', icon: Boxes, iconColor: 'bg-sky-700', path: '/masters/air-pallet-types' },
   { id: 'courier-vendors', title: 'Courier Vendors', description: 'Courier / express vendors with tracking URL templates.', icon: Truck, iconColor: 'bg-orange-600', path: '/masters/courier-vendors' },
   { id: 'countries', title: 'Country', description: 'To maintain country details such as ISO codes, dial code and region.', icon: Globe, iconColor: 'bg-purple-500', path: '/masters/countries' },
   { id: 'currencies', title: 'Currency', description: 'To maintain currency code, name, symbol and decimals.', icon: DollarSign, iconColor: 'bg-gray-500', path: '/masters/currencies' },

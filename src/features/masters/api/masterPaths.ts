@@ -7,6 +7,7 @@ export const MASTER_PATHS = {
   branches: '/masters/branches',
   'charge-codes': '/masters/charge-codes',
   'container-types': '/masters/container-types',
+  'air-pallet-types': '/masters/air-pallet-types',
   'courier-vendors': '/masters/courier-vendors',
   countries: '/masters/countries',
   currencies: '/masters/currencies',

@@ -10,13 +10,16 @@ import type {
   ConvertNvoccBookingToJobDto,
   CopyNvoccVoyageDto,
   CreateNvoccBookingDto,
+  CreateNvoccContainerRequestDto,
   CreateNvoccEnquiryDto,
   CreateNvoccTariffDto,
   CreateNvoccVoyageDto,
   ListResult,
   MarkNvoccEnquiryLostDto,
   NvoccBooking,
+  NvoccBookingForm,
   NvoccBookingListParams,
+  NvoccContainerRequest,
   NvoccEnquiry,
   NvoccEnquiryListParams,
   NvoccLoadListItem,
@@ -27,10 +30,12 @@ import type {
   NvoccUtilizationReportParams,
   NvoccVoyage,
   NvoccVoyageListParams,
+  NvoccWorkflowActionDto,
   RecordNvoccMblReceivedDto,
   SendCutoffReminderDto,
   SendNvoccRateDto,
   UpdateNvoccBookingDto,
+  UpdateNvoccBookingFormDto,
   UpdateNvoccEnquiryDto,
   UpdateNvoccLoadListItemDto,
   UpdateNvoccTariffDto,
@@ -39,6 +44,8 @@ import type {
 import {
   normalizeMany,
   normalizeNvoccBooking,
+  normalizeNvoccBookingForm,
+  normalizeNvoccContainerRequest,
   normalizeNvoccEnquiry,
   normalizeNvoccLoadListItem,
   normalizeNvoccTariff,
@@ -78,13 +85,14 @@ async function getResource<T>(
 }
 
 async function mutateResource(
-  method: 'post' | 'patch' | 'delete',
+  method: 'post' | 'put' | 'patch' | 'delete',
   path: string,
   body?: object,
 ): Promise<unknown> {
   const res = await withGatewayRetry(() => {
     if (method === 'delete') return axiosInstance.delete(path);
     if (method === 'patch') return axiosInstance.patch(path, body);
+    if (method === 'put') return axiosInstance.put(path, body);
     return axiosInstance.post(path, body);
   });
   return unwrapEntity(res.data);
@@ -500,6 +508,69 @@ export const nvoccBookingService = {
       throw formatNvoccError(error);
     }
   },
+
+  async csTriage(id: string, dto: NvoccWorkflowActionDto = {}): Promise<NvoccBooking> {
+    try {
+      const raw = await mutateResource(
+        'post',
+        NVOCC_API.bookings.csTriage(id),
+        prepareNvoccPayload(dto),
+      );
+      return normalizeNvoccBooking(raw) ?? this.get(id);
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async markQuoteSent(id: string, dto: NvoccWorkflowActionDto = {}): Promise<NvoccBooking> {
+    try {
+      const raw = await mutateResource(
+        'post',
+        NVOCC_API.bookings.markQuoteSent(id),
+        prepareNvoccPayload(dto),
+      );
+      return normalizeNvoccBooking(raw) ?? this.get(id);
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async getBookingForm(id: string): Promise<NvoccBookingForm> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(NVOCC_API.bookings.bookingForm(id)),
+      );
+      return normalizeNvoccBookingForm(unwrapEntity(res.data) ?? res.data);
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async updateBookingForm(id: string, dto: UpdateNvoccBookingFormDto): Promise<NvoccBookingForm> {
+    try {
+      const raw = await mutateResource(
+        'put',
+        NVOCC_API.bookings.bookingForm(id),
+        prepareNvoccPayload(dto),
+      );
+      return normalizeNvoccBookingForm(raw);
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async sendInvoice(id: string, dto: NvoccWorkflowActionDto = {}): Promise<Record<string, unknown>> {
+    try {
+      const raw = await mutateResource(
+        'post',
+        NVOCC_API.bookings.sendInvoice(id),
+        prepareNvoccPayload(dto),
+      );
+      return (raw as Record<string, unknown>) ?? {};
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
 };
 
 async function postNvoccJobDocument(
@@ -530,6 +601,10 @@ export const nvoccJobService = {
     postNvoccJobDocument(NVOCC_API.jobs.hblDraft(jobId), dto),
   hblOriginal: (jobId: string, dto?: GenerateJobDocumentDto) =>
     postNvoccJobDocument(NVOCC_API.jobs.hblOriginal(jobId), dto),
+  hblDraftGated: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.hblDraftGated(jobId), dto),
+  hblOriginalGated: (jobId: string, dto?: GenerateJobDocumentDto) =>
+    postNvoccJobDocument(NVOCC_API.jobs.hblOriginalGated(jobId), dto),
   hblExpressRelease: (jobId: string, dto?: GenerateJobDocumentDto) =>
     postNvoccJobDocument(NVOCC_API.jobs.hblExpressRelease(jobId), dto),
   surrenderNotice: (jobId: string, dto?: GenerateJobDocumentDto) =>
@@ -556,6 +631,116 @@ export const nvoccJobService = {
     postNvoccJobDocument(NVOCC_API.jobs.jobPnl(jobId), dto),
   proformaInvoice: (jobId: string, dto?: GenerateJobDocumentDto) =>
     postNvoccJobDocument(NVOCC_API.jobs.proformaInvoice(jobId), dto),
+
+  async listContainerRequests(jobId: string): Promise<NvoccContainerRequest[]> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(NVOCC_API.jobs.containerRequests(jobId)),
+      );
+      const raw = unwrapList(res.data, ['items', 'container_requests', 'requests']);
+      return normalizeMany(raw.items, normalizeNvoccContainerRequest);
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async createContainerRequest(
+    jobId: string,
+    dto: CreateNvoccContainerRequestDto = {},
+  ): Promise<NvoccContainerRequest> {
+    try {
+      const raw = await mutateResource(
+        'post',
+        NVOCC_API.jobs.containerRequests(jobId),
+        prepareNvoccPayload(dto),
+      );
+      const item = normalizeNvoccContainerRequest(raw);
+      if (!item) throw new Error('Container request was created but not returned.');
+      return item;
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async issueContainerRequest(
+    jobId: string,
+    requestId: string,
+    dto: NvoccWorkflowActionDto = {},
+  ): Promise<NvoccContainerRequest> {
+    try {
+      const raw = await mutateResource(
+        'post',
+        NVOCC_API.jobs.issueContainerRequest(jobId, requestId),
+        prepareNvoccPayload(dto),
+      );
+      const item = normalizeNvoccContainerRequest(raw);
+      if (!item) throw new Error('CRO issue did not return a container request.');
+      return item;
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async allocateContainerRequest(
+    jobId: string,
+    requestId: string,
+    dto: NvoccWorkflowActionDto = {},
+  ): Promise<NvoccContainerRequest> {
+    try {
+      const raw = await mutateResource(
+        'post',
+        NVOCC_API.jobs.allocateContainerRequest(jobId, requestId),
+        prepareNvoccPayload(dto),
+      );
+      const item = normalizeNvoccContainerRequest(raw);
+      if (!item) throw new Error('Container allocate did not return a container request.');
+      return item;
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async stageLoading(jobId: string, dto: NvoccWorkflowActionDto = {}): Promise<Record<string, unknown>> {
+    try {
+      const raw = await mutateResource(
+        'post',
+        NVOCC_API.jobs.stageLoading(jobId),
+        prepareNvoccPayload(dto),
+      );
+      return (raw as Record<string, unknown>) ?? {};
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async confirmPayment(
+    jobId: string,
+    dto: NvoccWorkflowActionDto = {},
+  ): Promise<Record<string, unknown>> {
+    try {
+      const raw = await mutateResource(
+        'post',
+        NVOCC_API.jobs.confirmPayment(jobId),
+        prepareNvoccPayload(dto),
+      );
+      return (raw as Record<string, unknown>) ?? {};
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
+
+  async closeReport(jobId: string, dto: NvoccWorkflowActionDto = {}): Promise<Record<string, unknown>> {
+    try {
+      const raw = await mutateResource(
+        'post',
+        NVOCC_API.jobs.closeReport(jobId),
+        prepareNvoccPayload(dto),
+      );
+      return (raw as Record<string, unknown>) ?? {};
+    } catch (error) {
+      throw formatNvoccError(error);
+    }
+  },
 
   async mblReceived(jobId: string, dto: RecordNvoccMblReceivedDto = {}): Promise<Record<string, unknown>> {
     try {

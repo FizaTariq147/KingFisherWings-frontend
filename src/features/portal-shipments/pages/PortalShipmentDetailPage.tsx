@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Download, Package, Scale, Box } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
@@ -18,8 +19,11 @@ import {
 import {
   useDownloadPortalShipmentDocument,
   usePortalShipment,
+  usePortalShipmentActions,
+  usePortalShipmentContainerRequests,
   usePortalShipmentDocuments,
   usePortalShipmentMilestones,
+  usePortalShipmentUldRequests,
 } from '../hooks/usePortalShipments';
 
 export default function PortalShipmentDetailPage() {
@@ -28,10 +32,46 @@ export default function PortalShipmentDetailPage() {
   const { data, isLoading, isError, error, refetch } = usePortalShipment(id);
   const milestonesQuery = usePortalShipmentMilestones(id, Boolean(data) && !data?.milestones?.length);
   const documentsQuery = usePortalShipmentDocuments(id, Boolean(data));
+  const isAir =
+    data?.jobType === 'AIR_EXPORT' ||
+    data?.jobType === 'AIR_IMPORT' ||
+    String(data?.jobType ?? '').startsWith('AIR_');
+  const isNvoccOrSea =
+    data?.jobType === 'NVOCC_EXPORT' ||
+    data?.jobType === 'NVOCC_IMPORT' ||
+    String(data?.jobType ?? '').includes('SEA_') ||
+    !isAir;
+  const containerRequestsQuery = usePortalShipmentContainerRequests(
+    id,
+    Boolean(data) && isNvoccOrSea,
+  );
+  const uldRequestsQuery = usePortalShipmentUldRequests(id, Boolean(data) && isAir);
+  const actions = usePortalShipmentActions(id);
   const download = useDownloadPortalShipmentDocument();
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
 
   const milestones = data?.milestones?.length ? data.milestones : milestonesQuery.data ?? [];
   const documents = data?.documents?.length ? data.documents : documentsQuery.data ?? [];
+  const containerRequests = containerRequestsQuery.data ?? [];
+  const uldRequests = uldRequestsQuery.data ?? [];
+
+  const runAction = async (fn: () => Promise<unknown>, success: string) => {
+    setActionError(null);
+    setActionMessage(null);
+    try {
+      await fn();
+      setActionMessage(success);
+      await refetch();
+      await containerRequestsQuery.refetch();
+      await uldRequestsQuery.refetch();
+      await milestonesQuery.refetch();
+    } catch (err) {
+      setActionError(
+        err instanceof PortalApiError || err instanceof Error ? err.message : 'Action failed.',
+      );
+    }
+  };
 
   if (isLoading) {
     return <PortalLoadingState label="Loading shipment…" />;
@@ -109,6 +149,175 @@ export default function PortalShipmentDetailPage() {
           <p className="text-sm text-[var(--color-neutral-700)]">{data.cargoSummary}</p>
         </PortalPanel>
       ) : null}
+
+      {actionError ? (
+        <p className="text-sm text-[var(--color-danger-600)]">{actionError}</p>
+      ) : null}
+      {actionMessage ? (
+        <p className="text-sm text-[var(--color-success-700)]">{actionMessage}</p>
+      ) : null}
+
+      {isAir ? (
+        <PortalPanel padded>
+          <h2 className="mb-2 text-sm font-semibold text-[var(--color-neutral-900)]">
+            Air ULD & document requests
+          </h2>
+          <p className="mb-3 text-xs text-[var(--color-neutral-500)]">
+            Confirm cargo drop-off after ULD allocate, then request draft HAWB (export) or delivery
+            order (import).
+          </p>
+
+          {uldRequestsQuery.isLoading ? (
+            <p className="text-sm text-[var(--color-neutral-400)]">Loading ULD requests…</p>
+          ) : uldRequests.length === 0 ? (
+            <p className="mb-3 text-sm text-[var(--color-neutral-400)]">
+              No ULD requests yet. Staff must issue / allocate first (export).
+            </p>
+          ) : (
+            <PortalAnimatedList className="mb-3 space-y-2">
+              {uldRequests.map((req) => (
+                <PortalAnimatedListItem
+                  key={req.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[var(--color-neutral-200)] px-3 py-2.5"
+                >
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium truncate">
+                      {req.uldNumber || req.palletType || 'ULD line'}
+                    </div>
+                    <div className="text-xs text-[var(--color-neutral-500)]">
+                      {[req.status, req.palletType].filter(Boolean).join(' · ') || req.lineId}
+                    </div>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    disabled={
+                      req.canConfirmDropoff === false || actions.confirmUldDropoff.isPending
+                    }
+                    onClick={() =>
+                      void runAction(
+                        () => actions.confirmUldDropoff.mutateAsync({ lineId: req.lineId }),
+                        'Cargo drop-off confirmed.',
+                      )
+                    }
+                  >
+                    Confirm drop-off
+                  </Button>
+                </PortalAnimatedListItem>
+              ))}
+            </PortalAnimatedList>
+          )}
+
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              size="sm"
+              disabled={actions.requestDraftHawb.isPending}
+              onClick={() =>
+                void runAction(
+                  () => actions.requestDraftHawb.mutateAsync({}),
+                  'Draft HAWB requested.',
+                )
+              }
+            >
+              Request draft HAWB
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              disabled={actions.requestDeliveryOrder.isPending}
+              onClick={() =>
+                void runAction(
+                  () => actions.requestDeliveryOrder.mutateAsync({}),
+                  'Delivery order requested.',
+                )
+              }
+            >
+              Request delivery order
+            </Button>
+          </div>
+        </PortalPanel>
+      ) : (
+        <PortalPanel padded>
+          <h2 className="mb-2 text-sm font-semibold text-[var(--color-neutral-900)]">
+            Container & port actions
+          </h2>
+          <p className="mb-3 text-xs text-[var(--color-neutral-500)]">
+            Confirm yard pick after CRO, confirm port token, then request draft BL for Docs to issue.
+          </p>
+
+          {containerRequestsQuery.isLoading ? (
+            <p className="text-sm text-[var(--color-neutral-400)]">Loading container requests…</p>
+          ) : containerRequests.length === 0 ? (
+            <p className="mb-3 text-sm text-[var(--color-neutral-400)]">
+              No container requests yet. Staff must issue CRO / allocate first.
+            </p>
+          ) : (
+            <PortalAnimatedList className="mb-3 space-y-2">
+              {containerRequests.map((req) => (
+                <PortalAnimatedListItem
+                  key={req.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[var(--color-neutral-200)] px-3 py-2.5"
+                >
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium truncate">
+                      {req.containerNumber || req.croNumber || req.containerType || 'Container line'}
+                    </div>
+                    <div className="text-xs text-[var(--color-neutral-500)]">
+                      {[req.status, req.containerType, req.croNumber && `CRO ${req.croNumber}`]
+                        .filter(Boolean)
+                        .join(' · ') || req.lineId}
+                    </div>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    disabled={req.canConfirmPick === false || actions.confirmPick.isPending}
+                    onClick={() =>
+                      void runAction(
+                        () => actions.confirmPick.mutateAsync({ lineId: req.lineId }),
+                        'Container pick confirmed.',
+                      )
+                    }
+                  >
+                    Confirm pick
+                  </Button>
+                </PortalAnimatedListItem>
+              ))}
+            </PortalAnimatedList>
+          )}
+
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              disabled={actions.confirmPortToken.isPending}
+              onClick={() =>
+                void runAction(
+                  () => actions.confirmPortToken.mutateAsync({}),
+                  'Port token confirmed.',
+                )
+              }
+            >
+              Confirm port token
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              disabled={actions.requestDraftBl.isPending}
+              onClick={() =>
+                void runAction(() => actions.requestDraftBl.mutateAsync({}), 'Draft BL requested.')
+              }
+            >
+              Request draft BL
+            </Button>
+          </div>
+        </PortalPanel>
+      )}
 
       <PortalPanel padded>
         <h2 className="mb-4 text-sm font-semibold text-[var(--color-neutral-900)]">Milestones</h2>

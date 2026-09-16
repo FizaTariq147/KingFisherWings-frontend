@@ -21,9 +21,11 @@ import type {
   NvoccTariffListParams,
   NvoccTariffLookupParams,
   NvoccVoyageListParams,
+  NvoccWorkflowActionDto,
   SendCutoffReminderDto,
   SendNvoccRateDto,
   UpdateNvoccBookingDto,
+  UpdateNvoccBookingFormDto,
   UpdateNvoccEnquiryDto,
   UpdateNvoccLoadListItemDto,
   UpdateNvoccTariffDto,
@@ -56,6 +58,7 @@ export const nvoccKeys = {
     all: ['tenant', 'nvocc', 'bookings'] as const,
     list: (params: NvoccBookingListParams) => [...nvoccKeys.bookings.all, 'list', params] as const,
     detail: (id: string) => [...nvoccKeys.bookings.all, id] as const,
+    bookingForm: (id: string) => [...nvoccKeys.bookings.all, id, 'booking-form'] as const,
   },
 };
 
@@ -283,6 +286,7 @@ export function useNvoccBookingActions(id: string) {
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: nvoccKeys.bookings.all });
     queryClient.invalidateQueries({ queryKey: nvoccKeys.bookings.detail(id) });
+    queryClient.invalidateQueries({ queryKey: nvoccKeys.bookings.bookingForm(id) });
   };
   return {
     confirm: useMutation({ mutationFn: () => nvoccBookingService.confirm(id), onSuccess: invalidate }),
@@ -295,5 +299,38 @@ export function useNvoccBookingActions(id: string) {
       mutationFn: (dto: SendCutoffReminderDto) => nvoccBookingService.sendCutoffReminder(id, dto),
       onSuccess: invalidate,
     }),
+    csTriage: useMutation({
+      mutationFn: (dto: NvoccWorkflowActionDto = {}) => nvoccBookingService.csTriage(id, dto),
+      onSuccess: invalidate,
+    }),
+    markQuoteSent: useMutation({
+      mutationFn: (dto: NvoccWorkflowActionDto = {}) => nvoccBookingService.markQuoteSent(id, dto),
+      onSuccess: invalidate,
+    }),
+    sendInvoice: useMutation({
+      mutationFn: (dto: NvoccWorkflowActionDto = {}) => nvoccBookingService.sendInvoice(id, dto),
+      onSuccess: invalidate,
+    }),
   };
+}
+
+export function useNvoccBookingForm(id: string, enabled = true) {
+  const token = useToken();
+  return useQuery({
+    queryKey: nvoccKeys.bookings.bookingForm(id),
+    queryFn: () => nvoccBookingService.getBookingForm(id),
+    enabled: Boolean(token) && isUuid(id) && enabled,
+  });
+}
+
+export function useUpdateNvoccBookingForm(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: UpdateNvoccBookingFormDto) => nvoccBookingService.updateBookingForm(id, dto),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: nvoccKeys.bookings.bookingForm(id) });
+      queryClient.invalidateQueries({ queryKey: nvoccKeys.bookings.detail(id) });
+      queryClient.invalidateQueries({ queryKey: nvoccKeys.bookings.all });
+    },
+  });
 }

@@ -6,11 +6,42 @@ Base: `https://kingfisherwings-backend.onrender.com` (tenant Bearer auth)
 Frontend catalog UI: `/reports/catalog` (FRESA-like **Sample report formats** browse)  
 Client: `src/features/reports/api/reportCatalog.api.ts` + `reportCatalog.service.ts`
 
-Do **not** change existing document PDF APIs (`POST /quotations/:id/pdf`, `POST /invoices/:id/pdf`, portal/vendor PDF flows). Catalog templates are additive.
-
-**Rendering:** There is **no Jasper upload** and the frontend owns **zero** per-report PDF layouts. Templates bind to **Puppeteer data packs** from `GET /reports/templates/renderers` (historically `ops.*` / `sea.*`; commercial invoice packs use `commercial.*` e.g. `commercial.invoice_tax_india_1`).
-
 Restart the API after deploy so Swagger picks up new routes.
+
+---
+
+## Preserve existing report functionality (do not regress)
+
+Catalog work is **additive only**. Backend must keep all previously implemented report/PDF behaviour working:
+
+| Must keep unchanged | Notes |
+|---------------------|--------|
+| `POST /invoices/:id/pdf` | Default invoice PDF (staff + existing clients) |
+| `POST /quotations/:id/pdf` | Default quotation PDF |
+| Portal / vendor PDF flows | Existing download/generate paths |
+| Live catalog endpoints below | `GET/POST /reports/templates*`, generate, jobs, download — keep contracts stable |
+| Already-bound packs / activated templates | Do not unbind or rename keys without a migration |
+| Existing `ops.*` / `sea.*` (and any shipped) pack keys | Keep generating; new packs are additive |
+
+**Do not:** replace default invoice/quotation PDF buttons with catalog Format-N; remove or break `/reports/*` routes already in use; require FE to invent `renderer_key` values.
+
+FE preserve reference: `src/features/reports/utils/documentPdfPreserve.ts`.
+
+---
+
+## Current backend requirements
+
+FE catalog browse is ready for Invoice, Accounts, WMS, Arrival Notice, Delivery Order, HAWB, HBL, and Other Reports (names, strips, search, demo layout previews). **Live FRESA-like PDFs still need backend packs + data loaders.**
+
+1. **Additive Puppeteer packs** for catalog codes — bind via `/reports/*` only; never change default invoice/quotation PDF APIs.
+2. **Expose every implemented pack** on `GET /reports/templates/renderers` (allow `commercial.*`, `air.*`, `finance.*`, `wms.*` in addition to `ops.*` / `sea.*`).
+3. **Auto-map** `template_code → renderer_key` on import/activate when a pack exists; unmatched stay `pending.{CODE}` / inactive.
+4. **Activate gate:** only activate real pack keys (not `pending.*`). Generate must fail clearly if pack/data is missing (no fake PDF bytes).
+5. **Parameter schemas + tenant data loaders** per pack family (`job_id`, `invoice_id`, `quotation_id`, `party_id`, GL period, ASN id, list filters) including company branding (logo, legal name, address, GSTIN/VAT, bank).
+6. **Priority shells** (one pack → many codes): start with `commercial.invoice_tax_india_1` for Format-1; then HBL / Arrival / DO / HAWB / Accounts / WMS / Other list shells.
+7. **No Jasper upload**; do not scrape Fresa sample site into the API. FE demo JSON layouts are preview-only until packs ship.
+
+FE handoff constants: `src/features/reports/constants/fresaPdfParity.constants.ts`.
 
 ---
 
@@ -21,34 +52,31 @@ Restart the API after deploy so Swagger picks up new routes.
 | Catalog browse (names, sections) | FRESA-like listing | Frontend (done) |
 | Generated PDF / print layout | Pixel match to FRESA samples | **Backend Puppeteer packs only** |
 
-Do **not** scrape https://fresatechnologies.com/sample-report-formats/ into the app. Do **not** build ~600 React/Jasper layouts in KingFisher Wings FE.
-
 Until a pack exists, imported rows stay `renderer_key=pending.{CODE}` / inactive and Generate correctly fails.
-
-FE constants for this handoff: `src/features/reports/constants/fresaPdfParity.constants.ts`
 
 ---
 
 ## Backend workstream A — Priority families + Puppeteer packs
 
-Implement packs in **kingfisherwings-backend** in this order (matches FE `reportRollout.constants.ts`):
+Implement packs in **kingfisherwings-backend** in this order (matches FE `reportRollout.constants.ts`). **Ship new packs without removing or renaming existing ones.**
 
 | Phase | Family | Registry ~count | Pack approach |
 |-------|--------|-----------------|---------------|
 | 1 | `ops_list` | 110 | Shared list/table HTML shell; column config per code |
-| 2 | `sea_docs` | 134 | HBL shell + Arrival Notice shell; many codes → few packs |
-| 3 | `air_docs` (+ quotation) | 75 + 18 | HAWB/MAWB / air notice shells |
+| 2 | `sea_docs` | 134 | HBL shell + Arrival Notice + Delivery Order shells; many codes → few packs |
+| 3 | `air_docs` (+ quotation) | 75 + 18 | HAWB/MAWB / air notice / air DO shells |
 | 4 | `commercial` | 99 | Invoice-format packs (**additive**; keep `POST /invoices/:id/pdf`) |
-| 5 | `finance` | 91 | Aging / SOA / trial balance / outstanding letter packs |
+| 5 | `finance` | 91 | Aging / SOA / trial balance / voucher / outstanding letter packs |
 | 6 | `wms` | 58 | ASN / warehouse note packs |
 
 Per pack checklist:
 
 1. HTML/CSS matching FRESA sample (margins, headers, logos, tables, field placement).
-2. Register key so it appears on `GET /reports/templates/renderers` (`ops.*` or `sea.*`).
+2. Register key so it appears on `GET /reports/templates/renderers`.
 3. Query/data loader for parameters from template schema.
 4. Smoke: bind → activate → `POST /reports/generate` → download → visual diff vs FRESA sample.
 5. Prefer **one pack → many template codes** when layouts share structure (e.g. all HBL Draft-* → `sea.hbl_draft`).
+6. Regression check: existing invoice/quotation PDFs and previously activated catalog templates still work.
 
 ---
 
@@ -70,14 +98,18 @@ On import, new rows typically get `renderer_key=pending.{CODE}`. To make a forma
 Maintain a map `template_code → renderer_key` (or regex/family rules), e.g.:
 
 ```text
-HBL_DRAFT_*                              → sea.hbl_draft
-ARRIVAL_NOTICE_SEA_*                     → sea.arrival_notice
-DSR_* / OPS_LIST_*                       → ops.list_generic
+HBL_DRAFT_* / FG_HBL_*                   → sea.hbl_draft / sea.hbl_original
+ARRIVAL_NOTICE_* / FG_ARRIVAL_*          → sea.arrival_notice | air.arrival_notice
+DELIVERY_* / FG_DELIVERY_* / PROOF_OF_*  → sea.delivery_order | air.delivery_order
+HAWB_*                                   → air.hawb_draft
+DSR_* / OPS_LIST_* / JOB_LIST_*          → ops.list_generic
 INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA → commercial.invoice_tax_india_1
 INVOICE_REPORT_FORMAT_*                  → commercial.invoice_* (per format pack)
+JOURNAL_/PAYMENT_/RECEIPT_* / *_AGING_*  → finance.*
+ADVANCE_SHIPPING_NOTE*                   → wms.asn*
 ```
 
-On `POST …/import` or `POST …/activate`, if a rule matches, set real `renderer_key` instead of leaving `pending.*`. Unmatched codes stay pending.
+On `POST …/import` or `POST …/activate`, if a rule matches, set real `renderer_key` instead of leaving `pending.*`. Unmatched codes stay pending. Do not overwrite an already-bound real pack key with `pending.*`.
 
 ### Activate gate
 
@@ -90,8 +122,8 @@ On `POST …/import` or `POST …/activate`, if a rule matches, set real `render
 
 | Layer | Responsibility |
 |-------|----------------|
-| **Frontend** | List/import templates; FRESA-style sectioned browse; schema-driven params; bind pack keys from `/renderers`; generate → poll → **PdfReadyModal** (no `/files` redirect). |
-| **Backend** | Implement/expand Puppeteer packs; map `pending.{CODE}` → packs; render PDF bytes that match FRESA samples. |
+| **Frontend** | List/import templates; FRESA-style sectioned browse; schema-driven params; bind pack keys from `/renderers`; generate → poll → **PdfReadyModal** (no `/files` redirect). Demo JSON layouts are preview-only. |
+| **Backend** | Implement/expand Puppeteer packs; map `pending.{CODE}` → packs; render PDF bytes that match FRESA samples — without breaking default document PDFs or existing packs. |
 
 ---
 
@@ -153,7 +185,7 @@ If still `pending.*`, pass `renderer_key` to bind+activate.
 
 ---
 
-## Frontend flow (unchanged — no per-report layouts)
+## Frontend flow (unchanged — catalog generate remains additive)
 
 1. **Import registry** (batched)  
 2. **Include inactive** (default on) → sectioned Live browse by API family  
@@ -163,7 +195,7 @@ If still `pending.*`, pass `renderer_key` to bind+activate.
 
 Only templates whose codes map to an existing pack can render FRESA-like PDFs. Other FRESA names stay pending until backend adds more packs.
 
-Preserve: `src/features/reports/utils/documentPdfPreserve.ts` (quotation/invoice pdf-lib).
+**Preserve:** `src/features/reports/utils/documentPdfPreserve.ts` (quotation/invoice pdf-lib + existing `POST …/pdf`). Catalog Format-N must never replace those defaults.
 
 ---
 

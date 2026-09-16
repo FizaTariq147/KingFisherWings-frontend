@@ -1,0 +1,19421 @@
+import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
+
+/** Auto-generated HBL formats — run: node scripts/build-hbl-format-ui-layouts.mjs */
+export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+    "formatNumber": 0,
+    "name": "HBL Draft Report Format Jasper",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format Jasper"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Jasper Draft"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT (JASPER)",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "FG_HBL_HKG",
+    "formatNumber": 1,
+    "name": "FG HBL HKG",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Region",
+          "v": "HKG"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "FG HBL HKG"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "FG HBL — HONG KONG",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "FG_HBL_FORMAT_1",
+    "formatNumber": 2,
+    "name": "FG HBL Format-1",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "FG HBL Format-1"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "FG Format-1"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "FG HBL — FORMAT 1",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "FG_HBL_MAGICLOGISYS",
+    "formatNumber": 3,
+    "name": "FG HBL Magiclogisys",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Template",
+          "v": "Magiclogisys"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Magiclogisys"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "FG HBL — MAGICLOGISYS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_2",
+    "formatNumber": 4,
+    "name": "HBL Draft Report Format-2",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-2"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-2"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 2",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_4",
+    "formatNumber": 5,
+    "name": "HBL Draft Report Format-4",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-4"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-4"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 4",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_5",
+    "formatNumber": 6,
+    "name": "HBL Draft Report Format-5",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-5"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-5"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 5",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_6",
+    "formatNumber": 7,
+    "name": "HBL Draft Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-6"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 6",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_7",
+    "formatNumber": 8,
+    "name": "HBL Draft Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 7",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_8",
+    "formatNumber": 9,
+    "name": "HBL Draft Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 8",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_9",
+    "formatNumber": 10,
+    "name": "HBL Draft Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 9",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_10",
+    "formatNumber": 11,
+    "name": "HBL Draft Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-10"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 10",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_11",
+    "formatNumber": 12,
+    "name": "HBL Draft Report Format-11",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-11"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-11"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 11",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_12",
+    "formatNumber": 13,
+    "name": "HBL Draft Report Format-12",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-12"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-12"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 12",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_13",
+    "formatNumber": 14,
+    "name": "HBL Draft Report Format-13",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-13"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-13"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 13",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_14",
+    "formatNumber": 15,
+    "name": "HBL Draft Report Format-14",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-14"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-14"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 14",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_15",
+    "formatNumber": 16,
+    "name": "HBL Draft Report Format-15",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-15"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-15"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 15",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_16",
+    "formatNumber": 17,
+    "name": "HBL Draft Report Format-16",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-16"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-16"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 16",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_17",
+    "formatNumber": 18,
+    "name": "HBL Draft Report Format-17",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-17"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-17"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 17",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_18",
+    "formatNumber": 19,
+    "name": "HBL Draft Report Format-18",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-18"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-18"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 18",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_19",
+    "formatNumber": 20,
+    "name": "HBL Draft Report Format-19",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-19"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-19"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 19",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_20",
+    "formatNumber": 21,
+    "name": "HBL Draft Report Format-20",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-20"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-20"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 20",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_23",
+    "formatNumber": 22,
+    "name": "HBL Draft Report Format-23",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-23"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-23"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 23",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_25",
+    "formatNumber": 23,
+    "name": "HBL Draft Report Format-25",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-25"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-25"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 25",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_26",
+    "formatNumber": 24,
+    "name": "HBL Draft Report Format-26",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-26"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-26"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 26",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_27",
+    "formatNumber": 25,
+    "name": "HBL Draft Report Format-27",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-27"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-27"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 27",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_29",
+    "formatNumber": 26,
+    "name": "HBL Draft Report Format-29",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "letterBody": "HTML-rendered draft HBL — sample export from Fresa Gold.",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-29"
+        },
+        {
+          "k": "Renderer",
+          "v": "HTML draft layout"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "Generated from HTML draft template.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "HTML Format-29"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 29 (HTML)",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_33",
+    "formatNumber": 27,
+    "name": "HBL Draft Report Format-33",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-33"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-33"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 33",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_40",
+    "formatNumber": 28,
+    "name": "HBL Draft Report Format-40",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-40"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-40"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 40",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_41",
+    "formatNumber": 29,
+    "name": "HBL Draft Report Format-41",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-41"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-41"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 41",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_42",
+    "formatNumber": 30,
+    "name": "HBL Draft Report Format-42",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-42"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-42"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 42",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_43",
+    "formatNumber": 31,
+    "name": "HBL Draft Report Format-43",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-43"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-43"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 43",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_44",
+    "formatNumber": 32,
+    "name": "HBL Draft Report Format-44",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-44"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-44"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 44",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_45",
+    "formatNumber": 33,
+    "name": "HBL Draft Report Format-45",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-45"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-45"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 45",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_46",
+    "formatNumber": 34,
+    "name": "HBL Draft Report Format-46",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-46"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-46"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 46",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_47",
+    "formatNumber": 35,
+    "name": "HBL Draft Report Format-47",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-47"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-47"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 47",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_48",
+    "formatNumber": 36,
+    "name": "HBL Draft Report Format-48",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-48"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-48"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 48",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_49",
+    "formatNumber": 37,
+    "name": "HBL Draft Report Format-49",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-49"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-49"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 49",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_50",
+    "formatNumber": 38,
+    "name": "HBL Draft Report Format-50",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-50"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-50"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 50",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_51",
+    "formatNumber": 39,
+    "name": "HBL Draft Report Format-51",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-51"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-51"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 51",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_52",
+    "formatNumber": 40,
+    "name": "HBL Draft Report Format-52",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-52"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-52"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 52",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_53",
+    "formatNumber": 41,
+    "name": "HBL Draft Report Format-53",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-53"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-53"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 53",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_54",
+    "formatNumber": 42,
+    "name": "HBL Draft Report Format-54",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-54"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-54"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 54",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_55",
+    "formatNumber": 43,
+    "name": "HBL Draft Report Format-55",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-55"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-55"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 55",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_56",
+    "formatNumber": 44,
+    "name": "HBL Draft Report Format-56",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-56"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-56"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 56",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_59",
+    "formatNumber": 45,
+    "name": "HBL Draft Report Format-59",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-59"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-59"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 59",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_60",
+    "formatNumber": 46,
+    "name": "HBL Draft Report Format-60",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-60"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-60"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 60",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_61",
+    "formatNumber": 47,
+    "name": "HBL Draft Report Format-61",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-61"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-61"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 61",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_63",
+    "formatNumber": 48,
+    "name": "HBL Draft Report Format-63",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-63"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-63"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 63",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_64",
+    "formatNumber": 49,
+    "name": "HBL Draft Report Format-64",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-64"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-64"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 64",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_65",
+    "formatNumber": 50,
+    "name": "HBL Draft Report Format-65",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-65"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-65"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 65",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_66",
+    "formatNumber": 51,
+    "name": "HBL Draft Report Format-66",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-66"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-66"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 66",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_67",
+    "formatNumber": 52,
+    "name": "HBL Draft Report Format-67",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-67"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-67"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 67",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_68",
+    "formatNumber": 53,
+    "name": "HBL Draft Report Format-68",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-68"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-68"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 68",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_69",
+    "formatNumber": 54,
+    "name": "HBL Draft Report Format-69",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-69"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-69"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 69",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_70",
+    "formatNumber": 55,
+    "name": "HBL Draft Report Format-70",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-70"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-70"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 70",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_72",
+    "formatNumber": 55,
+    "name": "HBL Draft Report Format-72",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-72"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-72"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 72",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_73",
+    "formatNumber": 56,
+    "name": "HBL Draft Report Format-73",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-73"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-73"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 73",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_75",
+    "formatNumber": 57,
+    "name": "HBL Draft Report Format-75",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-75"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-75"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 75",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_77",
+    "formatNumber": 58,
+    "name": "HBL Draft Report Format-77",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-77"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-77"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 77",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_83",
+    "formatNumber": 59,
+    "name": "HBL Draft Report Format-83",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-83"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-83"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 83",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_84",
+    "formatNumber": 60,
+    "name": "HBL Draft Report Format-84",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-84"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-84"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 84",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_85",
+    "formatNumber": 61,
+    "name": "HBL Draft Report Format-85",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-85"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-85"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 85",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_86",
+    "formatNumber": 62,
+    "name": "HBL Draft Report Format-86",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-86"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-86"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 86",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_87",
+    "formatNumber": 63,
+    "name": "HBL Draft Report Format-87",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-87"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-87"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 87",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "FG_HBL_ORIGINAL_FORMAT_87",
+    "formatNumber": 64,
+    "name": "FG HBL Original Format-87",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "FG HBL Original Format-87"
+        },
+        {
+          "k": "Document Type",
+          "v": "ORIGINAL"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "ORIGINAL — Negotiable when duly endorsed.",
+        "FG HBL original sample (Format-87).",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Original Format-87"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — ORIGINAL FORMAT 87",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_88",
+    "formatNumber": 66,
+    "name": "HBL Draft Report Format-88",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-88"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-88"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 88",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_89",
+    "formatNumber": 67,
+    "name": "HBL Draft Report Format-89",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-89"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-89"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 89",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_90",
+    "formatNumber": 68,
+    "name": "HBL Draft Report Format-90",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-90"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-90"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 90",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_92",
+    "formatNumber": 69,
+    "name": "HBL Draft Report Format-92",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-92"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-92"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 92",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_95",
+    "formatNumber": 70,
+    "name": "HBL Draft Report Format-95",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-95"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-95"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 95",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_96",
+    "formatNumber": 71,
+    "name": "HBL Draft Report Format-96",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-96"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-96"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 96",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_97",
+    "formatNumber": 72,
+    "name": "HBL Draft Report Format-97",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-97"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-97"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 97",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_99",
+    "formatNumber": 73,
+    "name": "HBL Draft Report Format-99",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-99"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-99"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 99",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_100",
+    "formatNumber": 74,
+    "name": "HBL Draft Report Format-100",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-100"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-100"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 100",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_101",
+    "formatNumber": 75,
+    "name": "HBL Draft Report Format-101",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-101"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-101"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 101",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_102",
+    "formatNumber": 76,
+    "name": "HBL Draft Report Format-102",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-102"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-102"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 102",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_107",
+    "formatNumber": 77,
+    "name": "HBL Draft Report Format-107",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-107"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-107"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 107",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_109",
+    "formatNumber": 78,
+    "name": "HBL Draft Report Format-109",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-109"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-109"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 109",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_114",
+    "formatNumber": 79,
+    "name": "HBL Draft Report Format-114",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-114"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-114"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 114",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_116",
+    "formatNumber": 80,
+    "name": "HBL Draft Report Format-116",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-116"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-116"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 116",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_117",
+    "formatNumber": 81,
+    "name": "HBL Draft Report Format-117",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-117"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-117"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 117",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_118",
+    "formatNumber": 82,
+    "name": "HBL Draft Report Format-118",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-118"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-118"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 118",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_120",
+    "formatNumber": 83,
+    "name": "HBL Draft Report Format-120",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-120"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-120"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 120",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_122",
+    "formatNumber": 84,
+    "name": "HBL Draft Report Format-122",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-122"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-122"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 122",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_127",
+    "formatNumber": 85,
+    "name": "HBL Draft Report Format-127",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-127"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-127"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 127",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_128",
+    "formatNumber": 86,
+    "name": "HBL Draft Report Format-128",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-128"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-128"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 128",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_129",
+    "formatNumber": 87,
+    "name": "HBL Draft Report Format-129",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-129"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-129"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 129",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_130",
+    "formatNumber": 88,
+    "name": "HBL Draft Report Format-130",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-130"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-130"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 130",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_132",
+    "formatNumber": 89,
+    "name": "HBL Draft Report Format-132",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-132"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-132"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 132",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_134",
+    "formatNumber": 90,
+    "name": "HBL Draft Report Format-134",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-134"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-134"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 134",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_135",
+    "formatNumber": 91,
+    "name": "HBL Draft Report Format-135",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-135"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-135"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 135",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_136",
+    "formatNumber": 92,
+    "name": "HBL Draft Report Format-136",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-136"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-136"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 136",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_137",
+    "formatNumber": 93,
+    "name": "HBL Draft Report Format-137",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-137"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-137"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 137",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_138",
+    "formatNumber": 94,
+    "name": "HBL Draft Report Format-138",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-138"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-138"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 138",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_139",
+    "formatNumber": 95,
+    "name": "HBL Draft Report Format-139",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-139"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-139"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 139",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_140",
+    "formatNumber": 96,
+    "name": "HBL Draft Report Format-140",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-140"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-140"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 140",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_141",
+    "formatNumber": 97,
+    "name": "HBL Draft Report Format-141",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-141"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-141"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 141",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_142",
+    "formatNumber": 98,
+    "name": "HBL Draft Report Format-142",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-142"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-142"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 142",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_143",
+    "formatNumber": 99,
+    "name": "HBL Draft Report Format-143",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-143"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-143"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 143",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_144",
+    "formatNumber": 100,
+    "name": "HBL Draft Report Format-144",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-144"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-144"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 144",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_145",
+    "formatNumber": 101,
+    "name": "HBL Draft Report Format-145",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-145"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-145"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 145",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_146",
+    "formatNumber": 102,
+    "name": "HBL Draft Report Format-146",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-146"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-146"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 146",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_147",
+    "formatNumber": 103,
+    "name": "HBL Draft Report Format-147",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-147"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-147"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 147",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_148",
+    "formatNumber": 104,
+    "name": "HBL Draft Report Format-148",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-148"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-148"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 148",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_149",
+    "formatNumber": 105,
+    "name": "HBL Draft Report Format-149",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-149"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-149"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 149",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_151",
+    "formatNumber": 106,
+    "name": "HBL Draft Report Format-151",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-151"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-151"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 151",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_171",
+    "formatNumber": 107,
+    "name": "HBL Draft Report Format-171",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-171"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-171"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 171",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_172",
+    "formatNumber": 108,
+    "name": "HBL Draft Report Format-172",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "Booking Ref.",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "No. of Packages",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.000 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "24.000 CBM"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-172"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "DRAFT — Not negotiable unless marked original.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-172"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 172",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  }
+] as InvoiceFormatUiLayout[];

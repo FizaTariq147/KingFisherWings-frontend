@@ -11,7 +11,11 @@ export type AccountsFormatKind =
   | 'trial_balance'
   | 'outstanding_letter'
   | 'ap_aging'
+  | 'ar_aging'
   | 'ap_outstanding'
+  | 'ar_job_not_invoice'
+  | 'bank_cash_book'
+  | 'purchase_invoice'
   | 'gl_listing'
   | 'gl_report'
   | 'statement_of_accounts';
@@ -151,40 +155,76 @@ export const ACCOUNTS_FORMAT_CATALOG: AccountsFormatSpec[] = [
     sortOrder: 21,
   },
   {
+    code: 'OUTSTANDING_LETTER_REPORT_FORMAT_5_OUTSTANDING_LETTER_WITH_INVOICES',
+    name: 'Outstanding Letter Report Format-5 Outstanding Letter With Invoices',
+    kind: 'outstanding_letter',
+    sortOrder: 22,
+  },
+  {
     code: 'AP_AGING_SUMMARY_REPORT_FORMAT',
     name: 'AP Aging Summary Report Format',
     kind: 'ap_aging',
-    sortOrder: 22,
+    sortOrder: 23,
+  },
+  {
+    code: 'AR_AGING_SUMMARY_REPORT_FORMAT',
+    name: 'AR Aging Summary Report Format',
+    kind: 'ar_aging',
+    sortOrder: 24,
   },
   {
     code: 'AP_OUTSTANDING_STATEMENT_REPORT_FORMAT',
     name: 'AP Outstanding Statement Report Format',
     kind: 'ap_outstanding',
-    sortOrder: 23,
+    sortOrder: 25,
+  },
+  {
+    code: 'AR_JOB_NOT_INVOICE_REPORT_FORMAT',
+    name: 'AR Job Not Invoice Report Format',
+    kind: 'ar_job_not_invoice',
+    sortOrder: 26,
+  },
+  {
+    code: 'BANK_CASH_BOOK_SUMMARY_LIST_REPORT_FORMAT',
+    name: 'Bank Cash Book Summary List Report Format',
+    kind: 'bank_cash_book',
+    sortOrder: 27,
+  },
+  {
+    code: 'PURCHASE_INVOICE_REPORT_FORMAT_1',
+    name: 'Purchase Invoice Report Format-1',
+    kind: 'purchase_invoice',
+    sortOrder: 28,
+  },
+  {
+    code: 'PURCHASE_INVOICE_REPORT_FORMAT_2',
+    name: 'Purchase Invoice Report Format-2',
+    kind: 'purchase_invoice',
+    sortOrder: 29,
   },
   {
     code: 'GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT',
     name: 'GL Listing Sort By Customer Code Voucher Report Format',
     kind: 'gl_listing',
-    sortOrder: 24,
+    sortOrder: 30,
   },
   {
     code: 'GL_REPORT_CURRENCY_WISE_VOUCHER_REPORT_FORMAT',
     name: 'GL Report Currency Wise Voucher Report Format',
     kind: 'gl_report',
-    sortOrder: 25,
+    sortOrder: 31,
   },
   {
     code: 'GL_REPORT_VOUCHER_REPORT_FORMAT',
     name: 'GL Report Voucher Report Format',
     kind: 'gl_report',
-    sortOrder: 26,
+    sortOrder: 32,
   },
   {
     code: 'STATEMENT_OF_ACCOUNTS_REPORT_FORMAT',
     name: 'Statement Of Accounts Report Format',
     kind: 'statement_of_accounts',
-    sortOrder: 27,
+    sortOrder: 33,
   },
 ];
 
@@ -206,4 +246,23 @@ export function listAccountsFormats(): AccountsFormatSpec[] {
 
 export function resolveAccountsFormatDisplayName(code: string, fallbackName: string): string {
   return getAccountsFormatSpec(code)?.name || fallbackName;
+}
+
+export function accountsFormatsMatchSearch(searchQuery: string): boolean {
+  const q = searchQuery.trim().toLowerCase();
+  if (!q) return false;
+  const tokens = q.split(/\s+/).filter(Boolean);
+  const catalogHit = listAccountsFormats().some((row) => {
+    const hay = `${row.name} ${row.code} ${row.kind} accounts voucher ledger gl`.toLowerCase();
+    return tokens.every((token) => hay.includes(token));
+  });
+  if (catalogHit) return true;
+  const genericHay = 'accounts voucher journal payment receipt trial balance aging ledger gl soa';
+  return tokens.every(
+    (token) =>
+      genericHay.includes(token) ||
+      token.includes('account') ||
+      token.includes('voucher') ||
+      token.includes('gl'),
+  );
 }

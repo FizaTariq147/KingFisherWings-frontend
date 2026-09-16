@@ -8,6 +8,22 @@ export const PORTAL_SHIPMENTS_API = {
   documents: (id: string) => `/portal/shipments/${encodeURIComponent(id)}/documents`,
   downloadDocument: (id: string, docId: string) =>
     `/portal/shipments/${encodeURIComponent(id)}/documents/${encodeURIComponent(docId)}/download`,
+  containerRequests: (id: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/container-requests`,
+  confirmPick: (id: string, lineId: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/containers/${encodeURIComponent(lineId)}/confirm-pick`,
+  confirmPortToken: (id: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/port-token/confirm`,
+  requestDraftBl: (id: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/request-draft-bl`,
+  uldRequests: (id: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/uld-requests`,
+  confirmUldDropoff: (id: string, lineId: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/uld-lines/${encodeURIComponent(lineId)}/confirm-dropoff`,
+  requestDraftHawb: (id: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/request-draft-hawb`,
+  requestDeliveryOrder: (id: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/request-delivery-order`,
 } as const;
 
 export const PORTAL_JOB_STATUSES = [

@@ -161,6 +161,12 @@ const CATALOG = [
     'fg_cargo_arrival_notice_sea_format3',
     29,
   ],
+  [
+    'CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES',
+    'Cargo Arrival Notice –Sea Without Charges',
+    'cargo_arrival_notice_sea_without_charges_fg',
+    30,
+  ],
 ];
 
 const TERMS_LONG = [
@@ -1803,6 +1809,50 @@ const KINDS = {
         ],
         tableRows: [['—', '—', '—', '45', '400.00', '—', '500.00']],
         termsLines: TERMS_SHORT,
+      },
+      blocks: [
+        { type: 'companyHeader', showContact: true },
+        { type: 'docTitle', text: 'CARGO ARRIVAL NOTICE', align: 'center', band: true },
+        { type: 'partyTriple' },
+        { type: 'fieldGrid', cols: 2 },
+        { type: 'chargeTable', headerColor: 'fill' },
+        { type: 'termsBank' },
+        { type: 'colorfulFooter' },
+      ],
+    }),
+
+  /** cargo_arrival_notice_sea_without_charges_rpm_ref_251.pdf */
+  cargo_arrival_notice_sea_without_charges_fg: () =>
+    layout({
+      demo: {
+        invoiceNo: 'PLJEAMAA00001',
+        partyLeft: IMP_SHIPPER,
+        partyMid: IMP_CONSIGNEE,
+        partyNotify: IMP_NOTIFY,
+        fieldGrid: [
+          { k: 'Job No', v: 'CSFI190012 / 25-JAN-19' },
+          { k: 'MBL No', v: 'MBLCOPY87666666 / 16-JAN-19' },
+          { k: 'HBL No', v: 'PLJEAMAA00001 / 16-JAN-19' },
+          { k: 'Place of Receipt', v: 'DUBAI' },
+          { k: 'Port of Loading', v: 'JEBEL ALI, UNITED ARAB EMIRATES' },
+          { k: 'Port of Discharge', v: 'CHENNAI (EX MADRAS), INDIA' },
+          { k: 'Port of Final Destination', v: 'CHENNAI (EX MADRAS), INDIA' },
+          { k: 'Place of Delivery', v: 'CHENNAI' },
+          { k: 'ETD', v: '16-JAN-19' },
+          { k: 'ETA', v: '25-JAN-19' },
+          { k: 'Carrier', v: 'CMA CGM' },
+          { k: 'Vessel / Voyage', v: 'MSC MELINA / 987' },
+          { k: 'Service Type', v: 'FCL/FCL' },
+          { k: 'PP / CC', v: 'PREPAID' },
+          { k: 'IGM No.', v: '98778798 / 10-JAN-19' },
+        ],
+        tableHeaders: IMP_CNTR_HEADERS,
+        tableRows: IMP_CNTR_ROWS,
+        termsLines: [
+          'Note: Should you need our service to clear the cargoes on your behalf, please do not hesitate to contact the undermentioned.',
+          ...TERMS_SHORT,
+        ],
+        remarks: 'CHENNAI ARRIVAL 1X20 — WITHOUT CHARGES',
       },
       blocks: [
         { type: 'companyHeader', showContact: true },

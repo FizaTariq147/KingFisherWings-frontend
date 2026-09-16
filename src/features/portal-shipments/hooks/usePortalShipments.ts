@@ -1,4 +1,4 @@
-import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { usePortalQueryScope } from '@/features/portal-shared/usePortalQueryScope';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import type { ApiPeriodQuery, UiDashboardPeriod } from '@/lib/apiPeriod';
@@ -16,6 +16,10 @@ export const portalShipmentKeys = {
     [...portalShipmentKeys.all(scope), 'milestones', id] as const,
   documents: (scope: string, id: string) =>
     [...portalShipmentKeys.all(scope), 'documents', id] as const,
+  containerRequests: (scope: string, id: string) =>
+    [...portalShipmentKeys.all(scope), 'container-requests', id] as const,
+  uldRequests: (scope: string, id: string) =>
+    [...portalShipmentKeys.all(scope), 'uld-requests', id] as const,
 };
 
 export function usePortalShipmentSummary(
@@ -82,6 +86,91 @@ export function usePortalShipmentDocuments(id: string, enabled = true) {
     enabled: Boolean(accessToken) && Boolean(id) && enabled && scope !== 'anon',
     staleTime: 0,
   });
+}
+
+export function usePortalShipmentContainerRequests(id: string, enabled = true) {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  return useQuery({
+    queryKey: portalShipmentKeys.containerRequests(scope, id),
+    queryFn: () => portalShipmentsService.containerRequests(id),
+    enabled: Boolean(accessToken) && Boolean(id) && enabled && scope !== 'anon',
+    staleTime: 0,
+  });
+}
+
+export function usePortalShipmentUldRequests(id: string, enabled = true) {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  return useQuery({
+    queryKey: portalShipmentKeys.uldRequests(scope, id),
+    queryFn: () => portalShipmentsService.uldRequests(id),
+    enabled: Boolean(accessToken) && Boolean(id) && enabled && scope !== 'anon',
+    staleTime: 0,
+  });
+}
+
+export function usePortalShipmentActions(shipmentId: string) {
+  const queryClient = useQueryClient();
+  const scope = usePortalQueryScope();
+  const invalidate = () => {
+    void queryClient.invalidateQueries({
+      queryKey: portalShipmentKeys.detail(scope, shipmentId),
+    });
+    void queryClient.invalidateQueries({
+      queryKey: portalShipmentKeys.milestones(scope, shipmentId),
+    });
+    void queryClient.invalidateQueries({
+      queryKey: portalShipmentKeys.containerRequests(scope, shipmentId),
+    });
+    void queryClient.invalidateQueries({
+      queryKey: portalShipmentKeys.uldRequests(scope, shipmentId),
+    });
+    void queryClient.invalidateQueries({ queryKey: portalShipmentKeys.all(scope) });
+  };
+
+  return {
+    confirmPick: useMutation({
+      mutationFn: ({
+        lineId,
+        dto = {},
+      }: {
+        lineId: string;
+        dto?: Record<string, unknown>;
+      }) => portalShipmentsService.confirmPick(shipmentId, lineId, dto),
+      onSuccess: invalidate,
+    }),
+    confirmPortToken: useMutation({
+      mutationFn: (dto: Record<string, unknown> = {}) =>
+        portalShipmentsService.confirmPortToken(shipmentId, dto),
+      onSuccess: invalidate,
+    }),
+    requestDraftBl: useMutation({
+      mutationFn: (dto: Record<string, unknown> = {}) =>
+        portalShipmentsService.requestDraftBl(shipmentId, dto),
+      onSuccess: invalidate,
+    }),
+    confirmUldDropoff: useMutation({
+      mutationFn: ({
+        lineId,
+        dto = {},
+      }: {
+        lineId: string;
+        dto?: Record<string, unknown>;
+      }) => portalShipmentsService.confirmUldDropoff(shipmentId, lineId, dto),
+      onSuccess: invalidate,
+    }),
+    requestDraftHawb: useMutation({
+      mutationFn: (dto: Record<string, unknown> = {}) =>
+        portalShipmentsService.requestDraftHawb(shipmentId, dto),
+      onSuccess: invalidate,
+    }),
+    requestDeliveryOrder: useMutation({
+      mutationFn: (dto: Record<string, unknown> = {}) =>
+        portalShipmentsService.requestDeliveryOrder(shipmentId, dto),
+      onSuccess: invalidate,
+    }),
+  };
 }
 
 export function useExportPortalShipmentsCsv() {

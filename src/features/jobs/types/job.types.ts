@@ -63,6 +63,49 @@ export interface JobAirDetail {
   conversion_factor?: number;
 }
 
+/** GET/PUT /jobs/:id/air-booking-form */
+export type AirBookingForm = Record<string, unknown> & {
+  hawb_number?: string;
+  mawb_number?: string;
+  flight_number?: string;
+  flight_date?: string;
+  airline_id?: string;
+  origin_airport_id?: string;
+  dest_airport_id?: string;
+  pieces?: number;
+  gross_weight?: number;
+  chargeable_weight?: number;
+  volume_cbm?: number;
+  commodity?: string;
+  notes?: string;
+};
+
+export type UpdateAirBookingFormDto = Partial<AirBookingForm>;
+
+export type AirWorkflowActionDto = Record<string, unknown>;
+
+export interface AirUldRequest {
+  id: string;
+  job_id?: string;
+  air_pallet_type_id?: string;
+  air_pallet_type_code?: string;
+  quantity?: number;
+  status?: string;
+  uld_number?: string;
+  issued_at?: string;
+  allocated_at?: string;
+  notes?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CreateAirUldRequestDto {
+  air_pallet_type_id?: string;
+  quantity?: number;
+  notes?: string;
+  [key: string]: unknown;
+}
+
 /** Matches Swagger UpdateSeaFclJobDetailDto / nested sea_fcl_details. */
 export interface JobSeaFclDetail {
   shipping_line_id?: string;

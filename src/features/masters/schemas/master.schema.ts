@@ -73,6 +73,7 @@ function isUomField(field: MasterFieldConfig): boolean {
 const NAME_CODE_RELATED_RESOURCES = new Set([
   'departments',
   'container-types',
+  'air-pallet-types',
   'branches',
   'units-of-measure',
 ]);

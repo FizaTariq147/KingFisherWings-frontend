@@ -56,6 +56,27 @@ export function useJobActions(jobId: string) {
     mutationFn: (dto?: GenerateJobDocumentDto) => jobService.generateMawb(id, dto),
     onSuccess: () => invalidate(id),
   });
+  const generateHawbDraftGated = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) => jobService.generateHawbDraftGated(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateHawbFinalGated = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) => jobService.generateHawbFinalGated(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generatePreCanGated = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) => jobService.generatePreCanGated(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateCanGated = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) => jobService.generateCanGated(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateDeliveryOrderGated = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateDeliveryOrderGated(id, dto),
+    onSuccess: () => invalidate(id),
+  });
   const generateHbl = useMutation({
     mutationFn: (dto?: GenerateJobDocumentDto) => jobService.generateHbl(id, dto),
     onSuccess: () => invalidate(id),
@@ -215,6 +236,11 @@ export function useJobActions(jobId: string) {
     sendWhatsAppStatus,
     generateHawb,
     generateMawb,
+    generateHawbDraftGated,
+    generateHawbFinalGated,
+    generatePreCanGated,
+    generateCanGated,
+    generateDeliveryOrderGated,
     generateHbl,
     generateHblExpressRelease,
     generateMbl,

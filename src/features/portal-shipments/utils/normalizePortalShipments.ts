@@ -7,12 +7,14 @@ import {
   unwrapList,
 } from '@/features/portal-shared/normalize';
 import type {
+  PortalContainerRequest,
   PortalMilestone,
   PortalShipmentDetail,
   PortalShipmentDocument,
   PortalShipmentListItem,
   PortalShipmentListResult,
   PortalShipmentSummary,
+  PortalUldRequest,
 } from '../types/portalShipments.types';
 
 function routeLabel(record: Record<string, unknown>, side: 'origin' | 'dest'): string {
@@ -219,4 +221,98 @@ export function normalizeShipmentDetail(raw: unknown): PortalShipmentDetail | nu
       ? docsRaw.map(normalizeShipmentDocument).filter((d): d is PortalShipmentDocument => Boolean(d))
       : undefined,
   };
+}
+
+export function normalizePortalContainerRequest(raw: unknown): PortalContainerRequest | null {
+  const record = asRecord(unwrapData(raw)) ?? asRecord(raw);
+  if (!record) return null;
+  const id = pickString(record.id, record.request_id, record.line_id, record.lineId);
+  if (!id) return null;
+  const lineId = pickString(record.line_id, record.lineId, record.container_line_id, record.id) || id;
+  const status = pickString(record.status, record.request_status) || undefined;
+  const picked =
+    status?.toUpperCase().includes('PICK') ||
+    status?.toUpperCase() === 'PICKED' ||
+    status?.toUpperCase() === 'ALLOCATED';
+  return {
+    id,
+    lineId,
+    status,
+    containerType: pickString(
+      record.container_type_code,
+      record.container_type,
+      record.containerType,
+      asRecord(record.container_type)?.code,
+      asRecord(record.container_type)?.name,
+    ) || undefined,
+    containerNumber: pickString(record.container_number, record.containerNumber) || undefined,
+    croNumber: pickString(record.cro_number, record.croNumber, record.cro_reference) || undefined,
+    quantity: pickNumber(record.quantity, record.container_count),
+    canConfirmPick:
+      record.can_confirm_pick === false || record.canConfirmPick === false
+        ? false
+        : !picked,
+    notes: pickString(record.notes) || undefined,
+    raw: record,
+  };
+}
+
+export function normalizePortalContainerRequests(raw: unknown): PortalContainerRequest[] {
+  const { items } = unwrapList(raw, [
+    'items',
+    'results',
+    'container_requests',
+    'requests',
+    'containers',
+    'data',
+  ]);
+  return items
+    .map(normalizePortalContainerRequest)
+    .filter((r): r is PortalContainerRequest => Boolean(r));
+}
+
+export function normalizePortalUldRequest(raw: unknown): PortalUldRequest | null {
+  const record = asRecord(unwrapData(raw)) ?? asRecord(raw);
+  if (!record) return null;
+  const id = pickString(record.id, record.request_id, record.line_id, record.lineId);
+  if (!id) return null;
+  const lineId = pickString(record.line_id, record.lineId, record.uld_line_id, record.id) || id;
+  const status = pickString(record.status, record.request_status) || undefined;
+  const dropped =
+    status?.toUpperCase().includes('DROP') ||
+    status?.toUpperCase() === 'DROPPED' ||
+    status?.toUpperCase() === 'CARGO_DROPPED_OFF';
+  return {
+    id,
+    lineId,
+    status,
+    palletType:
+      pickString(
+        record.air_pallet_type_code,
+        record.pallet_type,
+        record.palletType,
+        asRecord(record.air_pallet_type)?.code,
+        asRecord(record.air_pallet_type)?.name,
+      ) || undefined,
+    uldNumber: pickString(record.uld_number, record.uldNumber, record.container_number) || undefined,
+    quantity: pickNumber(record.quantity, record.uld_count),
+    canConfirmDropoff:
+      record.can_confirm_dropoff === false || record.canConfirmDropoff === false
+        ? false
+        : !dropped,
+    notes: pickString(record.notes) || undefined,
+    raw: record,
+  };
+}
+
+export function normalizePortalUldRequests(raw: unknown): PortalUldRequest[] {
+  const { items } = unwrapList(raw, [
+    'items',
+    'results',
+    'uld_requests',
+    'requests',
+    'uld_lines',
+    'data',
+  ]);
+  return items.map(normalizePortalUldRequest).filter((r): r is PortalUldRequest => Boolean(r));
 }

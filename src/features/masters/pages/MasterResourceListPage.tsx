@@ -46,6 +46,7 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
     useMasterPageRoute(props);
   const resource = getMasterResource(resourceKey);
   const worldPlace = isWorldPlaceResource(resourceKey);
+  const seedDefaultsResource = Boolean(resource?.supportsSeedDefaults);
   const pageSize = worldPlace ? WORLD_PLACE_PAGE_SIZE : PAGE_SIZE;
   const listResourceKey = resource?.key ?? resourceKey;
   const basePath = resource?.basePath ?? '';
@@ -258,6 +259,25 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
     }
   };
 
+  const runSimpleSeed = async () => {
+    if (!basePath) return;
+    setActionError(null);
+    setSeeding(true);
+    setSeedMessage('Seeding defaults…');
+    try {
+      const result = await mutations.seedDefaults.mutateAsync({});
+      await fetchFreshList(1);
+      setSeedMessage(
+        `Seed defaults complete — inserted=${result.inserted}, catalog_size=${result.catalogSize}.`,
+      );
+    } catch (err) {
+      setSeedMessage(null);
+      setActionError(err instanceof Error ? err.message : 'Failed to seed defaults.');
+    } finally {
+      setSeeding(false);
+    }
+  };
+
   // Auto attempt once for tiny catalogs (seed only — does not soft-delete).
   useEffect(() => {
     if (!worldPlace || !resource || !data || isLoading || isError || seeding) return;
@@ -366,6 +386,18 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
                 Replace tiny catalog & sync
               </Button>
             ) : null}
+          </div>
+        ) : seedDefaultsResource ? (
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              disabled={seeding || isFetching}
+              onClick={() => void runSimpleSeed()}
+            >
+              {seeding ? 'Seeding…' : 'Seed defaults'}
+            </Button>
           </div>
         ) : null}
       </div>

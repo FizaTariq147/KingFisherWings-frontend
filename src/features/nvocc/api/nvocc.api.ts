@@ -40,11 +40,17 @@ export const NVOCC_API = {
     convertToJob: (id: string) => `/nvocc/bookings/${id}/convert-to-job`,
     sendCutoffReminder: (id: string) => `/nvocc/bookings/${id}/send-cutoff-reminder`,
     bookingConfirmation: (id: string) => `/nvocc/bookings/${id}/documents/booking-confirmation`,
+    csTriage: (id: string) => `/nvocc/bookings/${id}/cs-triage`,
+    markQuoteSent: (id: string) => `/nvocc/bookings/${id}/mark-quote-sent`,
+    bookingForm: (id: string) => `/nvocc/bookings/${id}/booking-form`,
+    sendInvoice: (id: string) => `/nvocc/bookings/${id}/send-invoice`,
   },
   jobs: {
     generationStatus: (id: string) => `/nvocc/jobs/${id}/documents/generation-status`,
     hblDraft: (id: string) => `/nvocc/jobs/${id}/documents/hbl-draft`,
     hblOriginal: (id: string) => `/nvocc/jobs/${id}/documents/hbl-original`,
+    hblDraftGated: (id: string) => `/nvocc/jobs/${id}/documents/hbl-draft-gated`,
+    hblOriginalGated: (id: string) => `/nvocc/jobs/${id}/documents/hbl-original-gated`,
     hblExpressRelease: (id: string) => `/nvocc/jobs/${id}/documents/hbl-express-release`,
     surrenderNotice: (id: string) => `/nvocc/jobs/${id}/documents/surrender-notice`,
     mbl: (id: string) => `/nvocc/jobs/${id}/documents/mbl`,
@@ -63,6 +69,14 @@ export const NVOCC_API = {
     submitSi: (id: string) => `/nvocc/jobs/${id}/si/submit`,
     submitVgm: (id: string) => `/nvocc/jobs/${id}/vgm/submit`,
     podReceived: (id: string) => `/nvocc/jobs/${id}/pod/received`,
+    containerRequests: (id: string) => `/nvocc/jobs/${id}/container-requests`,
+    issueContainerRequest: (jobId: string, requestId: string) =>
+      `/nvocc/jobs/${jobId}/container-requests/${requestId}/issue`,
+    allocateContainerRequest: (jobId: string, requestId: string) =>
+      `/nvocc/jobs/${jobId}/container-requests/${requestId}/allocate`,
+    stageLoading: (id: string) => `/nvocc/jobs/${id}/stage/loading`,
+    confirmPayment: (id: string) => `/nvocc/jobs/${id}/accounts/confirm-payment`,
+    closeReport: (id: string) => `/nvocc/jobs/${id}/close-report`,
   },
   reports: {
     tradeLaneProfitability: '/nvocc/reports/trade-lane-profitability',

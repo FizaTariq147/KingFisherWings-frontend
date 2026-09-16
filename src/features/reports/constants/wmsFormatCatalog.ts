@@ -65,3 +65,19 @@ export function listWmsFormats(): WmsFormatSpec[] {
 export function resolveWmsFormatDisplayName(code: string, fallbackName: string): string {
   return getWmsFormatSpec(code)?.name || fallbackName;
 }
+
+export function wmsFormatsMatchSearch(searchQuery: string): boolean {
+  const q = searchQuery.trim().toLowerCase();
+  if (!q) return false;
+  const tokens = q.split(/\s+/).filter(Boolean);
+  const catalogHit = listWmsFormats().some((row) => {
+    const hay = `${row.name} ${row.code} ${row.kind} asn wms warehouse shipping`.toLowerCase();
+    return tokens.every((token) => hay.includes(token));
+  });
+  if (catalogHit) return true;
+  const genericHay = 'wms asn advance shipping note warehouse location summary';
+  return tokens.every(
+    (token) =>
+      genericHay.includes(token) || token.includes('wms') || token.includes('asn'),
+  );
+}
