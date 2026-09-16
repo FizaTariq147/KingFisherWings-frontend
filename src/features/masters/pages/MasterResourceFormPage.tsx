@@ -842,6 +842,14 @@ export default function MasterResourceFormPage(props: MasterPageRouteProps = {})
     return <p className="text-sm text-[var(--color-neutral-500)]">Unknown master resource.</p>;
   }
 
+  if (resource.readOnly) {
+    return (
+      <p className="text-sm text-[var(--color-neutral-500)]">
+        This master is read-only (search / proxy API).
+      </p>
+    );
+  }
+
   if (isEdit && resource.createOnly) {
     return (
       <p className="text-sm text-[var(--color-neutral-500)]">

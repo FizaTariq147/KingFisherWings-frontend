@@ -1,8 +1,11 @@
+import { useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { Check, RefreshCw, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { isUuid } from '@/lib/isUuid';
+import { useParty } from '@/features/parties/hooks/useParties';
 import { WMS_ROUTE_PREFIX } from '../api/wms.api';
 import {
   WmsDetailField,
@@ -10,6 +13,7 @@ import {
   statusBadgeClass,
   useWmsWarehouseLabel,
 } from '../components/WmsDocumentDetail';
+import { useWmsItemOptions } from '../components/WmsFormHelpers';
 import { WmsPageHeader } from '../components/WmsPageHeader';
 import { useWmsGrn, useWmsGrnActions, wmsKeys } from '../hooks/useWms';
 import { useWmsDocumentPdf } from '../hooks/useWmsDocumentPdf';
@@ -22,6 +26,17 @@ export default function WmsGrnDetailPage() {
   const { data: doc, isLoading, isError, error, refetch, isFetching } = useWmsGrn(id);
   const { post, cancel } = useWmsGrnActions(id);
   const warehouseLabel = useWmsWarehouseLabel(doc?.warehouse_id);
+  const partyId = doc?.party_id && isUuid(doc.party_id) ? doc.party_id : '';
+  const { data: party } = useParty(partyId);
+  const partyLabel = party?.name || party?.short_name || doc?.party_id || undefined;
+  const { options: itemOptions } = useWmsItemOptions();
+  const itemLabelById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const opt of itemOptions) {
+      if (opt.value) map.set(opt.value, opt.label);
+    }
+    return map;
+  }, [itemOptions]);
   const {
     button: pdfButton,
     modal: pdfModal,
@@ -31,6 +46,8 @@ export default function WmsGrnDetailPage() {
     id,
     doc,
     warehouseLabel,
+    partyLabel,
+    itemLabelById,
   });
 
   const status = (doc?.status ?? '').toLowerCase();
@@ -103,7 +120,7 @@ export default function WmsGrnDetailPage() {
               <WmsDetailField label="Document" value={displayDocNumber(doc)} />
               <WmsDetailField label="Warehouse" value={warehouseLabel} />
               <WmsDetailField label="ASN" value={String(doc.asn_id ?? '—')} />
-              <WmsDetailField label="Party" value={doc.party_id ?? '—'} />
+              <WmsDetailField label="Party" value={partyLabel || doc.party_id || '—'} />
               <WmsDetailField label="Job" value={doc.job_id ?? '—'} />
               <WmsDetailField label="Remarks" value={doc.remarks ?? '—'} />
               <WmsDetailField

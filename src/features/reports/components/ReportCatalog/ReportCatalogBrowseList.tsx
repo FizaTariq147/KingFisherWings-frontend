@@ -54,6 +54,12 @@ const FAMILY_TONES: Record<string, { section: string; card: string; border: stri
       border: 'border-[var(--color-success-500)]/25',
       accent: 'bg-[var(--color-success-500)]',
     },
+    wms: {
+      section: 'text-[var(--color-success-500)]',
+      card: 'bg-[var(--color-success-50)]',
+      border: 'border-[var(--color-success-500)]/25',
+      accent: 'bg-[var(--color-success-500)]',
+    },
     management: {
       section: 'text-[var(--color-warning-500)]',
       card: 'bg-[var(--color-warning-50)]',

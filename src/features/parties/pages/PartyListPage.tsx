@@ -113,7 +113,7 @@ export default function PartyListPage() {
               });
             }}
           >
-            <Download className="h-4 w-4" />
+            <Upload className="h-4 w-4" />
             {exportParties.isPending ? 'Exporting…' : 'Export CSV'}
           </Button>
           <input
@@ -147,7 +147,7 @@ export default function PartyListPage() {
                 );
                 await refetch();
               } catch (err) {
-                setActionError(getErrorMessage(err));
+                setActionError(getErrorMessage(err) || 'Import failed.');
               }
             }}
           />
@@ -157,8 +157,8 @@ export default function PartyListPage() {
             onClick={() => fileRef.current?.click()}
             disabled={importParties.isPending}
           >
-            <Upload className="h-4 w-4" />
-            Import CSV
+            <Download className="h-4 w-4" />
+            {importParties.isPending ? 'Importing…' : 'Import CSV'}
           </Button>
           <Button type="button" onClick={() => navigate('/parties/new')}>
             Add party

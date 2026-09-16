@@ -120,6 +120,45 @@ function unwrapListPayload(raw: unknown): { items: unknown[]; meta?: PaginationM
     'holidays',
     'truckers',
     'vessels',
+    'regions',
+    'cities',
+    'zones',
+    'divisions',
+    'categories',
+    'commodities',
+    'packs',
+    'clauses',
+    'voyages',
+    'favorites',
+    'notifications',
+    'addresses',
+    'contacts',
+    'attachments',
+    'containers',
+    'users',
+    'messages',
+    'activities',
+    'categories',
+    'commodities',
+    'packs',
+    'clauses',
+    'voyages',
+    'divisions',
+    'regions',
+    'cities',
+    'zones',
+    'organization_groups',
+    'organizationGroups',
+    'custom_reports',
+    'customReports',
+    'rate_bases',
+    'rateBases',
+    'storage_slabs',
+    'storageSlabs',
+    'sales_call_activities',
+    'salesCallActivities',
+    'port_clause_maps',
+    'portClauseMaps',
     'data',
   ];
 
@@ -143,6 +182,15 @@ function unwrapListPayload(raw: unknown): { items: unknown[]; meta?: PaginationM
         meta: normalizeMeta(nested.meta ?? envelope.meta, nestedList.length),
       };
     }
+    // Single nested entity (e.g. organization profile).
+    if (normalizeMasterRecord(nested)) {
+      return { items: [nested], meta: normalizeMeta(envelope.meta, 1) };
+    }
+  }
+
+  // Single top-level entity (organization proxy).
+  if (normalizeMasterRecord(envelope)) {
+    return { items: [envelope], meta: normalizeMeta(envelope.meta, 1) };
   }
 
   return { items: [] };
@@ -164,7 +212,8 @@ function buildListQuery(params: MasterListParams): Record<string, string | numbe
     page: params.page ?? 1,
     limit: params.limit ?? 20,
   };
-  if (params.search?.trim()) query.search = params.search.trim();
+  const searchKey = params.searchQueryKey || 'search';
+  if (params.search?.trim()) query[searchKey] = params.search.trim();
   if (typeof params.is_active === 'boolean') query.is_active = params.is_active;
   if (params.order) query.order = params.order;
   if (params.extra) {

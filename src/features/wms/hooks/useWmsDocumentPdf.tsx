@@ -19,13 +19,15 @@ type UseWmsDocumentPdfArgs = {
   doc: WmsDocument | null | undefined;
   warehouseLabel?: string;
   partyLabel?: string;
+  personName?: string;
   jobLabel?: string;
   itemLabelById?: Map<string, string>;
+  company?: import('../utils/generateWmsDocumentPdf').WmsDocumentPdfCompany;
 };
 
 /**
- * Calls GET /wms/grns|gdos/{id}/pdf (unchanged API behaviour).
- * User-facing file uses the KingFisher tax-invoice layout with GRN/GDO fields.
+ * Calls GET /wms/grns|gdos/{id}/pdf (API behaviour preserved).
+ * User-facing file uses the warehouse gate-pass GRN/GDO layout (dynamic data).
  */
 export function useWmsDocumentPdf({
   kind,
@@ -33,8 +35,10 @@ export function useWmsDocumentPdf({
   doc,
   warehouseLabel,
   partyLabel,
+  personName,
   jobLabel,
   itemLabelById,
+  company,
 }: UseWmsDocumentPdfArgs) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -66,14 +70,15 @@ export function useWmsDocumentPdf({
         apiOk = false;
       }
 
-      // Invoice-matching KingFisher layout (logo left, panels, table, footer).
       const blob = await generateWmsDocumentPdf({
         kind,
         doc,
         warehouseLabel,
         partyLabel,
+        personName,
         jobLabel,
         itemLabelById,
+        company,
       });
 
       setFromApi(apiOk);
@@ -107,8 +112,8 @@ export function useWmsDocumentPdf({
       skipBranding
       description={
         fromApi
-          ? 'KingFisher invoice-style layout (WMS PDF API verified). Preview or download.'
-          : 'KingFisher invoice-style layout. Preview or download.'
+          ? 'Warehouse GRN/GDO layout with live document data (WMS PDF API verified). Preview or download.'
+          : 'Warehouse GRN/GDO layout with live document data. Preview or download.'
       }
     />
   );

@@ -1,6 +1,3 @@
-import { axiosInstance } from '@/lib/axios';
-import { withGatewayRetry } from '@/lib/wakeApi';
-import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { organizationService } from '@/features/organization/services/organization.service';
 import { savedReportService } from '@/features/glSavedReports/services/savedReport.service';
 import { arApAgingService } from '@/features/arApAging/services/arApAging.service';
@@ -12,9 +9,10 @@ import { crmEnquiriesService } from '@/features/crm/services/crmEnquiries.servic
 import { jobService } from '@/features/jobs/services/job.service';
 import { glMisService } from '@/features/glMisDashboard/services/glMis.service';
 import { quotationService } from '@/features/quotations/services/quotation.service';
+import { downloadPartyCsvExport } from '@/features/parties/utils/downloadPartyCsv';
+import { MANAGEMENT_API, MANAGEMENT_REPORT_SOURCES, type ManagementReportId } from '../api/management.api';
 import type { ManagementDashboardPayload } from '../types/management.types';
 import { useAuthStore } from '@/store/authStore';
-import { MANAGEMENT_API, MANAGEMENT_REPORT_SOURCES, type ManagementReportId } from '../api/management.api';
 import type { ManagementDateParams, ManagementReportParams } from '../types/management.types';
 import { backupKindForLabel } from '../constants/managementBackup.constants';
 import {
@@ -97,10 +95,11 @@ export const managementService = {
       const cfg = labels.length === 1 ? label : label;
       const reportType = backupKindForLabel(cfg);
       if (reportType === 'PARTIES_EXPORT') {
-        const res = await withGatewayRetry(() =>
-          axiosInstance.get(MANAGEMENT_API.partiesExport, { responseType: 'blob' }),
+        await downloadPartyCsvExport(
+          MANAGEMENT_API.partiesExport,
+          { page: 1, limit: 100, order: 'asc' },
+          'parties-export.csv',
         );
-        triggerBlobDownload(res.data as Blob, 'parties-export.csv');
         continue;
       }
       const saved = await savedReportService.create({
