@@ -11,6 +11,8 @@ export interface MasterListParams {
   page?: number;
   limit?: number;
   search?: string;
+  /** Query param name for search text (default `search`; some endpoints use `q`). */
+  searchQueryKey?: string;
   is_active?: boolean;
   order?: 'asc' | 'desc';
   /** Extra query flags (e.g. currency_id for exchange-rates, mode for ports). */
@@ -83,6 +85,12 @@ export interface MasterResourceConfig {
   supportsDelete?: boolean;
   /** No PATCH/DELETE by id (exchange-rates). */
   createOnly?: boolean;
+  /** List/search only — hide add / edit / delete. */
+  readOnly?: boolean;
+  /** Require a non-empty search before listing (e.g. address-search `q`). */
+  requiresSearch?: boolean;
+  /** Query param for search text (default `search`). */
+  searchQueryKey?: string;
   /** Default list query extras. */
   listDefaults?: Record<string, string | number | boolean>;
   /** Menu path override if different from /masters/:key */

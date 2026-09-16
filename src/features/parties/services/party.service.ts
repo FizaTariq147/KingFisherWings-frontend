@@ -11,6 +11,7 @@ import {
   preparePartyPayload,
 } from '../utils/preparePartyPayload';
 import { downloadPartyCsvExport } from '../utils/downloadPartyCsv';
+import { preparePartyImportCsvFile } from '../utils/normalizePartyImportCsv';
 import { normalizePartyHistory } from '../utils/normalizePartyHistory';
 import type {
   CreatePartyAddressDto,
@@ -68,6 +69,30 @@ function unwrapEntity(raw: unknown): unknown {
   const envelope = asRecord(raw);
   if (envelope && 'data' in envelope) return envelope.data;
   return raw;
+}
+
+function normalizeImportResult(raw: unknown): PartyImportResult {
+  const unwrapped = unwrapEntity(raw);
+  const record = asRecord(unwrapped) ?? asRecord(raw) ?? {};
+  const errorsRaw = Array.isArray(record.errors) ? record.errors : [];
+  const createdRaw =
+    (Array.isArray(record.createdIds) && record.createdIds) ||
+    (Array.isArray(record.created_ids) && record.created_ids) ||
+    [];
+  return {
+    total: Number(record.total ?? 0) || 0,
+    imported: Number(record.imported ?? record.success ?? 0) || 0,
+    failed: Number(record.failed ?? record.failures ?? 0) || 0,
+    createdIds: createdRaw.map(String),
+    errors: errorsRaw.map((err) => {
+      const row = asRecord(err) ?? {};
+      return {
+        row: Number(row.row ?? 0) || 0,
+        message: String(row.message ?? 'Import row failed'),
+        code: typeof row.code === 'string' ? row.code : undefined,
+      };
+    }),
+  };
 }
 
 function formatAxiosError(error: unknown): Error {
@@ -306,43 +331,51 @@ export const partyService = {
 
   async importCsv(file: File): Promise<PartyImportResult> {
     try {
+      const prepared = await preparePartyImportCsvFile(file);
       const form = new FormData();
-      form.append('file', file);
+      // Nest FileInterceptor('file') — field name must be exactly `file`.
+      form.append('file', prepared, prepared.name || 'parties.csv');
       const res = await withGatewayRetry(() =>
-        axiosInstance.post<unknown>(PARTY_API.import, form),
-      );
-      const raw = unwrapEntity(res.data);
-      const record = asRecord(raw) ?? {};
-      const errorsRaw = Array.isArray(record.errors) ? record.errors : [];
-      return {
-        total: Number(record.total ?? 0) || 0,
-        imported: Number(record.imported ?? 0) || 0,
-        failed: Number(record.failed ?? 0) || 0,
-        createdIds: Array.isArray(record.createdIds)
-          ? record.createdIds.map(String)
-          : Array.isArray(record.created_ids)
-            ? (record.created_ids as unknown[]).map(String)
-            : [],
-        errors: errorsRaw.map((err) => {
-          const row = asRecord(err) ?? {};
-          return {
-            row: Number(row.row ?? 0) || 0,
-            message: String(row.message ?? 'Import row failed'),
-            code: typeof row.code === 'string' ? row.code : undefined,
-          };
+        axiosInstance.post<unknown>(PARTY_API.import, form, {
+          // Let the browser set multipart boundary; a bare multipart/form-data or
+          // application/json Content-Type makes Multer report "No file uploaded".
+          transformRequest: [
+            (data, headers) => {
+              if (headers && typeof headers === 'object' && data instanceof FormData) {
+                const h = headers as Record<string, unknown> & {
+                  delete?: (key: string) => void;
+                };
+                delete h['Content-Type'];
+                delete h['content-type'];
+                h.delete?.('Content-Type');
+                h.delete?.('content-type');
+              }
+              return data;
+            },
+          ],
+          validateStatus: (status) => status === 201 || (status >= 200 && status < 300),
         }),
-      };
+      );
+      return normalizeImportResult(res.data);
     } catch (error) {
       throw formatAxiosError(error);
     }
   },
 
-  /** GET /parties/export — CSV with same filters as list. */
+  /** GET /parties/export — JSON `{ csv, filename }` (or raw CSV). Uses list filters, not list page. */
   async exportCsv(params: PartyListParams = {}): Promise<void> {
     try {
       await downloadPartyCsvExport(
         PARTY_API.export,
-        buildListQuery(params),
+        buildListQuery({
+          search: params.search,
+          party_type: params.party_type,
+          credit_status: params.credit_status,
+          company_id: params.company_id,
+          order: params.order,
+          page: 1,
+          limit: 100,
+        }),
         'parties.csv',
       );
     } catch (error) {

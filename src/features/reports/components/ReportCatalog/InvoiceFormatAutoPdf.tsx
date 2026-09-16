@@ -5,6 +5,7 @@ import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { getInvoiceFormatPreview } from '../../data/invoiceFormatPreviews';
 import { getInvoiceFormatUiLayout } from '../../data/invoiceFormatUiLayouts';
 import { getAccountsFormatUiLayout } from '../../data/accountsFormatUiLayouts';
+import { getWmsFormatUiLayout } from '../../data/wmsFormatUiLayouts';
 import type { InvoiceFormatPreview } from '../../types/invoiceFormatPreview.types';
 import {
   generateInvoiceFormatLayoutPdf,
@@ -25,7 +26,10 @@ function isUuid(value: string): boolean {
 }
 
 function previewFromLayout(code: string): InvoiceFormatPreview | undefined {
-  const layout = getInvoiceFormatUiLayout(code) ?? getAccountsFormatUiLayout(code);
+  const layout =
+    getInvoiceFormatUiLayout(code) ??
+    getAccountsFormatUiLayout(code) ??
+    getWmsFormatUiLayout(code);
   if (!layout) return undefined;
   return {
     code: layout.code,

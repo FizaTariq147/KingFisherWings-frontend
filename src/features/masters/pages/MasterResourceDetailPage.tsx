@@ -110,7 +110,7 @@ export default function MasterResourceDetailPage(props: MasterPageRouteProps = {
           <p className="text-xs font-mono text-[var(--color-neutral-400)] mt-1">{data.id}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {!resource.createOnly && (
+          {!resource.readOnly && !resource.createOnly && (
             <Button
               variant="secondary"
               onClick={() => navigate(editPath(id))}
@@ -119,7 +119,7 @@ export default function MasterResourceDetailPage(props: MasterPageRouteProps = {
               Edit
             </Button>
           )}
-          {!resource.createOnly && (
+          {!resource.readOnly && !resource.createOnly && (
             <Button
               variant="secondary"
               disabled={pending}
@@ -130,7 +130,7 @@ export default function MasterResourceDetailPage(props: MasterPageRouteProps = {
               {active ? 'Deactivate' : 'Activate'}
             </Button>
           )}
-          {resource.supportsDelete !== false && (
+          {!resource.readOnly && resource.supportsDelete !== false && (
             <Button
               variant="danger"
               disabled={pending}

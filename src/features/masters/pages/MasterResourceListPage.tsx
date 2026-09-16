@@ -92,6 +92,7 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
     page,
     limit: pageSize,
     search: debouncedSearch.trim() || undefined,
+    searchQueryKey: resource?.searchQueryKey,
     is_active: status === 'all' ? undefined : status === 'active',
     order,
     extra: {
@@ -102,7 +103,12 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
     },
   };
 
-  const listEnabled = Boolean(resource) && (!isExchangeRates || isUuid(exchangeCurrencyId));
+  const requiresSearch = Boolean(resource?.requiresSearch);
+  const hasSearch = Boolean(debouncedSearch.trim());
+  const listEnabled =
+    Boolean(resource) &&
+    (!isExchangeRates || isUuid(exchangeCurrencyId)) &&
+    (!requiresSearch || hasSearch);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useMasterList(
     listResourceKey,
@@ -117,6 +123,7 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
       page: pageNo,
       limit: pageSize,
       search: debouncedSearch.trim() || undefined,
+      searchQueryKey: resource?.searchQueryKey,
       is_active: status === 'all' ? undefined : status === 'active',
       order,
       extra: {
@@ -450,6 +457,8 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
         errorMessage={
           !listEnabled && isExchangeRates
             ? 'Select a currency to load exchange rates.'
+            : !listEnabled && requiresSearch
+              ? 'Enter a search term to load results.'
             : error instanceof Error
               ? error.message
               : null
@@ -457,12 +466,14 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
         emptyMessage={
           !listEnabled && isExchangeRates
             ? 'Select a currency above to list rates for that currency.'
+            : !listEnabled && requiresSearch
+              ? 'Type in the search box to query this master.'
             : undefined
         }
         animateRows={!worldPlace}
-        onAdd={() => navigate(newPath)}
+        onAdd={resource.readOnly ? undefined : () => navigate(newPath)}
         onView={
-          resource.createOnly
+          resource.readOnly || resource.createOnly
             ? undefined
             : (index) => {
                 const id = items[index]?.id;
@@ -474,7 +485,7 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
               }
         }
         onEdit={
-          resource.createOnly
+          resource.readOnly || resource.createOnly
             ? undefined
             : (index) => {
                 const id = items[index]?.id;
@@ -486,7 +497,7 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
               }
         }
         onDelete={
-          resource.supportsDelete === false
+          resource.readOnly || resource.supportsDelete === false
             ? undefined
             : (index) => {
                 const id = items[index]?.id;
@@ -499,7 +510,7 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
               }
         }
         onToggleActive={
-          resource.createOnly || !supportsActiveToggle
+          resource.readOnly || resource.createOnly || !supportsActiveToggle
             ? undefined
             : (index, nextActive) => {
                 const id = items[index]?.id;
@@ -513,7 +524,7 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
               }
         }
         pendingActionIndex={pendingIndex}
-        supportsDelete={resource.supportsDelete !== false}
+        supportsDelete={resource.supportsDelete !== false && !resource.readOnly}
       />
     </div>
   );

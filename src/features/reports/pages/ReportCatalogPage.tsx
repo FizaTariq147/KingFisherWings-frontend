@@ -17,10 +17,23 @@ import { InvoiceFormatBrowseStrip } from '../components/ReportCatalog/InvoiceFor
 import { InvoiceFormatAutoPdf } from '../components/ReportCatalog/InvoiceFormatAutoPdf';
 import { AccountsFormatBrowseStrip } from '../components/ReportCatalog/AccountsFormatBrowseStrip';
 import { AccountsFormatAutoPdf } from '../components/ReportCatalog/AccountsFormatAutoPdf';
+import { WmsFormatBrowseStrip } from '../components/ReportCatalog/WmsFormatBrowseStrip';
+import { WmsFormatAutoPdf } from '../components/ReportCatalog/WmsFormatAutoPdf';
+import { ArrivalNoticeFormatBrowseStrip } from '../components/ReportCatalog/ArrivalNoticeFormatBrowseStrip';
+import { ArrivalNoticeFormatAutoPdf } from '../components/ReportCatalog/ArrivalNoticeFormatAutoPdf';
 import { isInvoiceReportFormatCode } from '../types/invoiceFormatPreview.types';
 import { hasInvoiceFormatUiLayout } from '../data/invoiceFormatUiLayouts';
 import { hasAccountsFormatUiLayout } from '../data/accountsFormatUiLayouts';
+import { hasWmsFormatUiLayout } from '../data/wmsFormatUiLayouts';
+import { hasArrivalNoticeFormatUiLayout } from '../data/arrivalNoticeFormatUiLayouts';
 import { isAccountsFormatCode } from '../constants/accountsFormatCatalog';
+import { isWmsFormatCode } from '../constants/wmsFormatCatalog';
+import {
+  getArrivalNoticeFormatSpec,
+  isArrivalNoticeFormatCode,
+  listArrivalNoticeFormats,
+  arrivalNoticeFormatsMatchSearch,
+} from '../constants/arrivalNoticeFormatCatalog';
 
 const CATALOG_STATE_KEY = 'kfg-report-catalog-url';
 
@@ -130,11 +143,62 @@ export default function ReportCatalogPage() {
   }, [deferredSearch, family, contextFilter]);
 
   const liveItems = liveBrowse.data?.items ?? [];
-  const items = backendUnavailable || liveBrowse.isError ? localItems : liveItems;
+  const items = useMemo(() => {
+    const base = backendUnavailable || liveBrowse.isError ? localItems : liveItems;
+    const q = deferredSearch.trim().toLowerCase();
+    const qTokens = q ? q.split(/\s+/).filter(Boolean) : [];
+    const pinArrival =
+      Boolean(qTokens.length) && arrivalNoticeFormatsMatchSearch(deferredSearch);
+
+    // Only surface Arrival Notice formats at the top when search matches them.
+    const pinned = pinArrival
+      ? listArrivalNoticeFormats()
+          .filter((spec) => family === 'all' || family === spec.family)
+          .filter((spec) => contextFilter === 'all' || contextFilter === 'job')
+          .filter((spec) => {
+            const hay = `${spec.name} ${spec.code} ${spec.kind}`.toLowerCase();
+            return qTokens.every((token) => hay.includes(token));
+          })
+          .map((spec, i) => {
+            const existing = base.find((t) => t.code.toUpperCase() === spec.code.toUpperCase());
+            if (existing) {
+              return { ...existing, name: spec.name };
+            }
+            return metaToTemplate(
+              {
+                code: spec.code,
+                name: spec.name,
+                family: spec.family,
+                contexts: ['job'],
+                formats: ['PDF'],
+                rolloutPhase: 3,
+                gapStatus: 'partial_document_pdf',
+                description: `FRESA sample: ${spec.name}`,
+                defaultParams: [
+                  { name: 'job_id', label: 'Job', type: 'uuid', required: true },
+                ],
+              },
+              i,
+            );
+          })
+      : [];
+
+    const pinnedCodes = new Set(pinned.map((t) => t.code.toUpperCase()));
+    const rest = base.filter((t) => !pinnedCodes.has(t.code.toUpperCase()));
+    return [...pinned, ...rest];
+  }, [
+    backendUnavailable,
+    liveBrowse.isError,
+    localItems,
+    liveItems,
+    deferredSearch,
+    family,
+    contextFilter,
+  ]);
   const metaTotal =
     backendUnavailable || liveBrowse.isError
-      ? localItems.length
-      : (liveBrowse.data?.meta.total ?? localItems.length);
+      ? items.length
+      : Math.max(liveBrowse.data?.meta.total ?? 0, items.length);
   const listLoading = !backendUnavailable && liveBrowse.isLoading;
 
   const familyOptions = useMemo(() => {
@@ -178,6 +242,29 @@ export default function ReportCatalogPage() {
     );
   };
 
+  const selectWmsFormatCode = (code: string) => {
+    patchParams(
+      {
+        code,
+        family: 'wms',
+        context: 'wms',
+      },
+      false,
+    );
+  };
+
+  const selectArrivalNoticeFormatCode = (code: string) => {
+    const spec = getArrivalNoticeFormatSpec(code);
+    patchParams(
+      {
+        code,
+        family: spec?.family || 'sea_docs',
+        context: 'job',
+      },
+      false,
+    );
+  };
+
   const showInvoiceFormatStrip =
     family === 'commercial' ||
     contextFilter === 'invoice' ||
@@ -189,10 +276,24 @@ export default function ReportCatalogPage() {
     contextFilter === 'gl' ||
     isAccountsFormatCode(selectedCode);
 
+  const showWmsFormatStrip =
+    family === 'wms' ||
+    contextFilter === 'wms' ||
+    isWmsFormatCode(selectedCode);
+
+  const showArrivalNoticeFormatStrip =
+    isArrivalNoticeFormatCode(selectedCode) ||
+    arrivalNoticeFormatsMatchSearch(deferredSearch);
+
   const isInvoiceSelected = isInvoiceReportFormatCode(selectedCode);
   const isAccountsSelected = isAccountsFormatCode(selectedCode);
+  const isWmsSelected = isWmsFormatCode(selectedCode);
+  const isArrivalNoticeSelected = isArrivalNoticeFormatCode(selectedCode);
   const hasInvoiceLayout = isInvoiceSelected && hasInvoiceFormatUiLayout(selectedCode);
   const hasAccountsLayout = isAccountsSelected && hasAccountsFormatUiLayout(selectedCode);
+  const hasWmsLayout = isWmsSelected && hasWmsFormatUiLayout(selectedCode);
+  const hasArrivalNoticeLayout =
+    isArrivalNoticeSelected && hasArrivalNoticeFormatUiLayout(selectedCode);
 
   return (
     <div className="space-y-4">
@@ -201,7 +302,7 @@ export default function ReportCatalogPage() {
       <div>
         <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Report formats</h2>
         <p className="mt-0.5 text-sm text-[var(--color-neutral-500)]">
-          {metaTotal} reports — open an Invoice or Accounts format to preview its PDF.
+          {metaTotal} reports — open an Invoice, Accounts, WMS, or Arrival Notice format to preview its PDF.
         </p>
       </div>
 
@@ -289,6 +390,19 @@ export default function ReportCatalogPage() {
         onSelect={selectAccountsFormatCode}
       />
 
+      <WmsFormatBrowseStrip
+        visible={showWmsFormatStrip}
+        selectedCode={selectedCode || undefined}
+        onSelect={selectWmsFormatCode}
+      />
+
+      <ArrivalNoticeFormatBrowseStrip
+        visible={showArrivalNoticeFormatStrip}
+        selectedCode={selectedCode || undefined}
+        onSelect={selectArrivalNoticeFormatCode}
+        searchQuery={deferredSearch}
+      />
+
       <div className="overflow-hidden rounded-xl border border-[var(--color-neutral-200)] bg-white shadow-sm">
         <ReportCatalogBrowseList
           items={items}
@@ -303,7 +417,15 @@ export default function ReportCatalogPage() {
         <InvoiceFormatAutoPdf code={selectedCode} invoiceId={invoiceId} />
       ) : hasAccountsLayout ? (
         <AccountsFormatAutoPdf code={selectedCode} />
-      ) : selected && !isInvoiceSelected && !isAccountsSelected ? (
+      ) : hasWmsLayout ? (
+        <WmsFormatAutoPdf code={selectedCode} />
+      ) : hasArrivalNoticeLayout ? (
+        <ArrivalNoticeFormatAutoPdf code={selectedCode} />
+      ) : selected &&
+        !isInvoiceSelected &&
+        !isAccountsSelected &&
+        !isWmsSelected &&
+        !isArrivalNoticeSelected ? (
         <p className="rounded-xl border border-[var(--color-neutral-200)] bg-white px-4 py-3 text-sm text-[var(--color-neutral-600)]">
           {selected.name} — PDF layout for this report is provided by the backend when available.
         </p>

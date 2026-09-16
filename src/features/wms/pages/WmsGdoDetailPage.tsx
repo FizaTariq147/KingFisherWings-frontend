@@ -4,6 +4,8 @@ import { Link, useParams } from 'react-router-dom';
 import { Check, RefreshCw, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { isUuid } from '@/lib/isUuid';
+import { useParty } from '@/features/parties/hooks/useParties';
 import { WMS_ROUTE_PREFIX } from '../api/wms.api';
 import {
   WmsDetailField,
@@ -31,6 +33,9 @@ export default function WmsGdoDetailPage() {
   const { data: doc, isLoading, isError, error, refetch, isFetching } = useWmsGdo(id);
   const { post, cancel } = useWmsGdoActions(id);
   const warehouseLabel = useWmsWarehouseLabel(doc?.warehouse_id);
+  const partyId = doc?.party_id && isUuid(doc.party_id) ? doc.party_id : '';
+  const { data: party } = useParty(partyId);
+  const partyLabel = party?.name || party?.short_name || doc?.party_id || undefined;
   const { options: itemOptions } = useWmsItemOptions();
 
   const itemLabelById = useMemo(() => {
@@ -50,6 +55,7 @@ export default function WmsGdoDetailPage() {
     id,
     doc,
     warehouseLabel,
+    partyLabel,
     itemLabelById,
   });
 
@@ -126,7 +132,7 @@ export default function WmsGdoDetailPage() {
             <div>
               <WmsDetailField label="Document" value={displayDocNumber(doc)} />
               <WmsDetailField label="Warehouse" value={warehouseLabel} />
-              <WmsDetailField label="Party" value={doc.party_id ?? '—'} />
+              <WmsDetailField label="Party" value={partyLabel || doc.party_id || '—'} />
               <WmsDetailField label="Job" value={doc.job_id ?? '—'} />
               <WmsDetailField label="Remarks" value={doc.remarks ?? '—'} />
               <WmsDetailField
