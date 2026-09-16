@@ -32,6 +32,7 @@ export type ArrivalNoticeFormatKind =
   | 'cargo_arrival_notice_sea_format3'
   | 'cargo_arrival_notice_sea_format1'
   | 'cargo_arrival_notice_sea_without_charges_format1'
+  | 'cargo_arrival_notice_sea_without_charges_fg'
   | 'sea_arrival_notice_lcl_vietnam'
   | 'fg_cargo_arrival_notice_sea_format3';
 
@@ -248,6 +249,13 @@ export const ARRIVAL_NOTICE_FORMAT_CATALOG: ArrivalNoticeFormatSpec[] = [
     name: 'FG Cargo Arrival Notice SEA Format-3',
     kind: 'fg_cargo_arrival_notice_sea_format3',
     sortOrder: 29,
+    family: 'sea_docs',
+  },
+  {
+    code: 'CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES',
+    name: 'Cargo Arrival Notice –Sea Without Charges',
+    kind: 'cargo_arrival_notice_sea_without_charges_fg',
+    sortOrder: 30,
     family: 'sea_docs',
   },
 ];

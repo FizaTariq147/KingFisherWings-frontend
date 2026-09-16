@@ -5580,5 +5580,179 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "colorfulFooter"
       }
     ]
+  },
+  {
+    "code": "CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+    "formatNumber": 30,
+    "name": "Cargo Arrival Notice –Sea Without Charges",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLJEAMAA00001",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT",
+          "AL NABHA SHARJAH SHARJAH UNITED ARAB EMIRATES"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "NUNGAMBAKKAM CHENNAI TAMIL NADU 600084 INDIA",
+          "EMAIL: ram@fresatechnologies.com"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify1",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "NUNGAMBAKKAM CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job No",
+          "v": "CSFI190012 / 25-JAN-19"
+        },
+        {
+          "k": "MBL No",
+          "v": "MBLCOPY87666666 / 16-JAN-19"
+        },
+        {
+          "k": "HBL No",
+          "v": "PLJEAMAA00001 / 16-JAN-19"
+        },
+        {
+          "k": "Place of Receipt",
+          "v": "DUBAI"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Final Destination",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "CHENNAI"
+        },
+        {
+          "k": "ETD",
+          "v": "16-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "25-JAN-19"
+        },
+        {
+          "k": "Carrier",
+          "v": "CMA CGM"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "MSC MELINA / 987"
+        },
+        {
+          "k": "Service Type",
+          "v": "FCL/FCL"
+        },
+        {
+          "k": "PP / CC",
+          "v": "PREPAID"
+        },
+        {
+          "k": "IGM No.",
+          "v": "98778798 / 10-JAN-19"
+        }
+      ],
+      "tableHeaders": [
+        "Container",
+        "Type",
+        "Goods Description",
+        "No. of Pkgs",
+        "Volume",
+        "Gross Weight"
+      ],
+      "tableRows": [
+        [
+          "TENU9876666",
+          "20' DC",
+          "STC: VALVE MATERIALS",
+          "100",
+          "20.00",
+          "18,000.00"
+        ]
+      ],
+      "termsLines": [
+        "Note: Should you need our service to clear the cargoes on your behalf, please do not hesitate to contact the undermentioned.",
+        "1. Kindly contact our Imports Department/Customer Service for Actual Arrival.",
+        "2. D.O Counter Timings – 10.00am to 01.00pm & 02.00pm to 4.30pm.",
+        "3. Cheque in favor of “KingFisher Logistic”.",
+        "4. Partial Payments are not acceptable.",
+        "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days.",
+        "6. After Free days storage charges applicable."
+      ],
+      "remarks": "CHENNAI ARRIVAL 1X20 — WITHOUT CHARGES"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "docTitle",
+        "text": "CARGO ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
   }
 ] as InvoiceFormatUiLayout[];

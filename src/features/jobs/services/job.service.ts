@@ -6,6 +6,7 @@ import { enrichJobsWithDisplayNames } from '@/features/customers/utils/resolveCu
 import { ensureJobNumberFormatReady } from '@/features/organization/utils/ensureJobNumberFormat';
 import { JOB_API } from '../api/job.api';
 import {
+  normalizeAirUldRequest,
   normalizeJob,
   normalizeJobs,
   normalizePaginationMeta,
@@ -75,6 +76,11 @@ import type {
   SubmitLclSiDto,
   SubmitSiDto,
   SubmitVgmDto,
+  AirBookingForm,
+  AirUldRequest,
+  AirWorkflowActionDto,
+  CreateAirUldRequestDto,
+  UpdateAirBookingFormDto,
   UpdateAirJobDetailDto,
   UpdateBillOfLadingDto,
   UpdateCourierJobDetailDto,
@@ -318,6 +324,125 @@ export const jobService = {
       () => axiosInstance.patch(JOB_API.airDetails(id), dto),
       normalizeJob,
     );
+  },
+
+  async getAirBookingForm(id: string): Promise<AirBookingForm> {
+    assertId(id);
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.airBookingForm(id)));
+    const data = unwrapEntity(res.data);
+    return (
+      data && typeof data === 'object' && !Array.isArray(data)
+        ? (data as AirBookingForm)
+        : {}
+    );
+  },
+
+  async updateAirBookingForm(id: string, dto: UpdateAirBookingFormDto): Promise<AirBookingForm> {
+    assertId(id);
+    const res = await withGatewayRetry(() =>
+      axiosInstance.put(JOB_API.airBookingForm(id), dto),
+    );
+    const data = unwrapEntity(res.data);
+    return (
+      data && typeof data === 'object' && !Array.isArray(data)
+        ? (data as AirBookingForm)
+        : {}
+    );
+  },
+
+  async airCsTriage(id: string, dto: AirWorkflowActionDto = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.airCsTriage(id), dto));
+  },
+
+  async airMarkQuoteSent(id: string, dto: AirWorkflowActionDto = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.airMarkQuoteSent(id), dto));
+  },
+
+  async airSendInvoice(id: string, dto: AirWorkflowActionDto = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.airSendInvoice(id), dto));
+  },
+
+  async listAirUldRequests(id: string): Promise<AirUldRequest[]> {
+    assertId(id);
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.airUldRequests(id)));
+    const { items } = unwrapList(res.data);
+    return items
+      .map((raw) => normalizeAirUldRequest(raw))
+      .filter((item): item is AirUldRequest => Boolean(item));
+  },
+
+  async createAirUldRequest(
+    id: string,
+    dto: CreateAirUldRequestDto = {},
+  ): Promise<AirUldRequest> {
+    assertId(id);
+    const res = await withGatewayRetry(() =>
+      axiosInstance.post(JOB_API.airUldRequests(id), dto),
+    );
+    const item = normalizeAirUldRequest(unwrapEntity(res.data) ?? res.data);
+    if (!item) throw new Error('ULD request was created but not returned.');
+    return item;
+  },
+
+  async issueAirUldRequest(
+    id: string,
+    requestId: string,
+    dto: AirWorkflowActionDto = {},
+  ): Promise<AirUldRequest> {
+    assertId(id);
+    const res = await withGatewayRetry(() =>
+      axiosInstance.post(JOB_API.airIssueUldRequest(id, requestId), dto),
+    );
+    const item = normalizeAirUldRequest(unwrapEntity(res.data) ?? res.data);
+    if (!item) throw new Error('ULD issue did not return a request.');
+    return item;
+  },
+
+  async allocateAirUldRequest(
+    id: string,
+    requestId: string,
+    dto: AirWorkflowActionDto = {},
+  ): Promise<AirUldRequest> {
+    assertId(id);
+    const res = await withGatewayRetry(() =>
+      axiosInstance.post(JOB_API.airAllocateUldRequest(id, requestId), dto),
+    );
+    const item = normalizeAirUldRequest(unwrapEntity(res.data) ?? res.data);
+    if (!item) throw new Error('ULD allocate did not return a request.');
+    return item;
+  },
+
+  async airStageBuildUp(id: string, dto: AirWorkflowActionDto = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.airStageBuildUp(id), dto));
+  },
+
+  async airStageMawbReceived(id: string, dto: AirWorkflowActionDto = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.airStageMawbReceived(id), dto));
+  },
+
+  async airStageMawbIssued(id: string, dto: AirWorkflowActionDto = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.airStageMawbIssued(id), dto));
+  },
+
+  async airStagePod(id: string, dto: AirWorkflowActionDto = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.airStagePod(id), dto));
+  },
+
+  async airConfirmPayment(id: string, dto: AirWorkflowActionDto = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.airConfirmPayment(id), dto));
+  },
+
+  async airCloseReport(id: string, dto: AirWorkflowActionDto = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.airCloseReport(id), dto));
   },
 
   async updateSeaFclDetails(id: string, dto: UpdateSeaFclJobDetailDto): Promise<Job> {
@@ -962,6 +1087,16 @@ export const jobService = {
     jobService.generateDocument(id, JOB_API.generateHawb(id), dto),
   generateMawb: (id: string, dto?: GenerateJobDocumentDto) =>
     jobService.generateDocument(id, JOB_API.generateMawb(id), dto),
+  generateHawbDraftGated: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateHawbDraftGated(id), dto),
+  generateHawbFinalGated: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateHawbFinalGated(id), dto),
+  generatePreCanGated: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generatePreCanGated(id), dto),
+  generateCanGated: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateCanGated(id), dto),
+  generateDeliveryOrderGated: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateDeliveryOrderGated(id), dto),
   generateHbl: (id: string, dto?: GenerateJobDocumentDto) =>
     jobService.generateDocument(id, JOB_API.generateHbl(id), dto),
   generateHblExpressRelease: (id: string, dto?: GenerateJobDocumentDto) =>

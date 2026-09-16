@@ -1,4 +1,4 @@
-import type { Job, JobCharge, JobListParams, JobMilestone, JobNote } from '../types/job.types';
+import type { Job, JobCharge, JobListParams, JobMilestone, JobNote, AirUldRequest } from '../types/job.types';
 import type { JobStatus, JobType } from '../constants/job.constants';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -66,10 +66,43 @@ export function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
       (Array.isArray(nested.items) && nested.items) ||
       (Array.isArray(nested.results) && nested.results) ||
       (Array.isArray(nested.jobs) && nested.jobs) ||
+      (Array.isArray(nested.uld_requests) && nested.uld_requests) ||
+      (Array.isArray(nested.requests) && nested.requests) ||
       [];
     return { items: list, meta: nested.meta ?? envelope.meta };
   }
-  return { items: [] };
+  const topList =
+    (Array.isArray(envelope.items) && envelope.items) ||
+    (Array.isArray(envelope.results) && envelope.results) ||
+    (Array.isArray(envelope.uld_requests) && envelope.uld_requests) ||
+    (Array.isArray(envelope.requests) && envelope.requests) ||
+    [];
+  return { items: topList, meta: envelope.meta };
+}
+
+export function normalizeAirUldRequest(raw: unknown): AirUldRequest | null {
+  const record = asRecord(unwrapEntity(raw)) ?? asRecord(raw);
+  if (!record) return null;
+  const id = pickString(record, 'id', 'request_id');
+  if (!id) return null;
+  const pallet = asRecord(record.air_pallet_type) ?? asRecord(record.pallet_type);
+  return {
+    id,
+    job_id: pickString(record, 'job_id') || undefined,
+    air_pallet_type_id: pickString(record, 'air_pallet_type_id', 'pallet_type_id') || undefined,
+    air_pallet_type_code:
+      pickString(record, 'air_pallet_type_code', 'pallet_type_code', 'code') ||
+      pickString(pallet ?? {}, 'code', 'name') ||
+      undefined,
+    quantity: num(record.quantity ?? record.uld_count),
+    status: pickString(record, 'status') || undefined,
+    uld_number: pickString(record, 'uld_number', 'uld_code', 'container_number') || undefined,
+    issued_at: pickString(record, 'issued_at') || undefined,
+    allocated_at: pickString(record, 'allocated_at') || undefined,
+    notes: pickString(record, 'notes') || undefined,
+    created_at: pickString(record, 'created_at') || undefined,
+    updated_at: pickString(record, 'updated_at') || undefined,
+  };
 }
 
 export function normalizePaginationMeta(

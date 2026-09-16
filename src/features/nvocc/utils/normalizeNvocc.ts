@@ -1,5 +1,7 @@
 import type {
   NvoccBooking,
+  NvoccBookingForm,
+  NvoccContainerRequest,
   NvoccEnquiry,
   NvoccLoadListItem,
   NvoccTariff,
@@ -183,6 +185,51 @@ export function normalizeNvoccLoadListItem(raw: unknown): NvoccLoadListItem | nu
     cargo_received_date: str(record.cargo_received_date),
     stuffing_date: str(record.stuffing_date),
     vessel_loaded_date: str(record.vessel_loaded_date),
+  };
+}
+
+export function normalizeNvoccBookingForm(raw: unknown): NvoccBookingForm {
+  const record = asRecord(raw) ?? {};
+  return {
+    ...record,
+    id: idOf(record) ?? str(record.id),
+    booking_id: str(record.booking_id),
+    shipper_ref: str(record.shipper_ref),
+    commodity: str(record.commodity),
+    marks_numbers: str(record.marks_numbers),
+    container_type_id: str(record.container_type_id),
+    container_count: num(record.container_count),
+    cbm_allocated: num(record.cbm_allocated),
+    gross_weight: num(record.gross_weight),
+    pieces: num(record.pieces),
+    incoterms: str(record.incoterms),
+    freight_terms: str(record.freight_terms),
+    other_charges_terms: str(record.other_charges_terms),
+    hs_code: str(record.hs_code),
+    notes: str(record.notes),
+  };
+}
+
+export function normalizeNvoccContainerRequest(raw: unknown): NvoccContainerRequest | null {
+  const record = asRecord(raw);
+  if (!record) return null;
+  const id = idOf(record);
+  if (!id) return null;
+  return {
+    id,
+    job_id: str(record.job_id),
+    container_type_id: str(record.container_type_id),
+    container_type_code:
+      str(record.container_type_code) ?? nestedName(record, 'container_type'),
+    quantity: num(record.quantity) ?? num(record.container_count),
+    status: str(record.status),
+    cro_number: str(record.cro_number) ?? str(record.cro_reference),
+    container_number: str(record.container_number),
+    issued_at: str(record.issued_at),
+    allocated_at: str(record.allocated_at),
+    notes: str(record.notes),
+    created_at: str(record.created_at),
+    updated_at: str(record.updated_at),
   };
 }
 

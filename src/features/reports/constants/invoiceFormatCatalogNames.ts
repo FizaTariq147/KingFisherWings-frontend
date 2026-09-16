@@ -110,3 +110,18 @@ export function resolveInvoiceFormatDisplayName(code: string, fallbackName: stri
   if (n == null) return fallbackName;
   return getInvoiceFormatCatalogName(n, fallbackName);
 }
+
+export function invoiceFormatsMatchSearch(searchQuery: string): boolean {
+  const q = searchQuery.trim().toLowerCase();
+  if (!q) return false;
+  const tokens = q.split(/\s+/).filter(Boolean);
+  const catalogHit = Object.entries(INVOICE_FORMAT_CATALOG_NAMES).some(([num, name]) => {
+    const hay = `${name} INVOICE_REPORT_FORMAT_${num} invoice`.toLowerCase();
+    return tokens.every((token) => hay.includes(token));
+  });
+  if (catalogHit) return true;
+  const genericHay = 'invoice report format tax commercial billing';
+  return tokens.every(
+    (token) => genericHay.includes(token) || token.includes('invoice'),
+  );
+}

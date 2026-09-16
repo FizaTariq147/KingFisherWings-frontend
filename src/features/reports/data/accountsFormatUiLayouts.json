@@ -3975,6 +3975,141 @@
     ]
   },
   {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_5_OUTSTANDING_LETTER_WITH_INVOICES",
+    "formatNumber": 5,
+    "name": "Outstanding Letter Report Format-5 Outstanding Letter With Invoices",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "OL-5",
+      "currency": "INR",
+      "total": "48,486.00",
+      "words": "Rupee Forty-Eight Thousand Four Hundred Eighty-Six Only",
+      "billToPhone": "N/A",
+      "partyLeft": {
+        "title": "To",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM",
+          "CHENNAI TAMILNADU 600084"
+        ]
+      },
+      "letterBody": "Please find here below the details of your outstanding invoices as of today. (10-FEB-19) Requesting you to settle the same at the earliest, your outstanding past due balance is (INR 2,191.80), as details on the statement of outstanding given below.",
+      "tableHeaders": [
+        "Date",
+        "Invoice No",
+        "Shipment / Job",
+        "Invoice Amount",
+        "Received",
+        "O/S Amount",
+        "Aging"
+      ],
+      "tableRows": [
+        [
+          "25-JAN-19",
+          "MAAINV1900713",
+          "B/SFI/19/0166",
+          "9,440.00",
+          "",
+          "9,440.00",
+          "14"
+        ],
+        [
+          "31-JAN-19",
+          "MAAINV1900728",
+          "B/EXP/19/0255",
+          "2,950.00",
+          "",
+          "2,950.00",
+          "8"
+        ],
+        [
+          "05-FEB-19",
+          "MAAINV1900731",
+          "B/EXP/19/0256",
+          "20,434.00",
+          "",
+          "20,434.00",
+          "3"
+        ],
+        [
+          "10-FEB-19",
+          "MAAINV1900736",
+          "B/SI/19/0039",
+          "15,662.00",
+          "",
+          "15,662.00",
+          "-2"
+        ]
+      ],
+      "termsLines": [
+        "KINDLY ISSUE CHEQUE IN FAVOUR OF KingFisher Logistic OR PLEASE USE OUR FOLLOWING BANK DETAILS TO DO TT OR BANK TRANSFER",
+        "BENEFICIARY NAME : KingFisher Logistic",
+        "BANK NAME : YOUR BANK NAME",
+        "A/C NO : XXXXXXXXXXXXX",
+        "IBAN NO : XXXXXXXXXXXXX",
+        "SWIFT CODE : XXXXXXXXXXXXX",
+        "THANKS & REGARDS",
+        "FINANCE - ACCOUNTS RECEIVABLE"
+      ],
+      "bankLines": [
+        "Beneficiary Name: KingFisher Logistic",
+        "Bank : HDFC",
+        "A/c No : XXXXXXXXXXX",
+        "IBAN No : XXXXXXXXXXX",
+        "Swift Code : XXXXXX",
+        "Address : Dubai, United Arab Emirates"
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER — WITH INVOICES",
+        "align": "center"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
     "code": "AP_AGING_SUMMARY_REPORT_FORMAT",
     "formatNumber": 1,
     "name": "AP Aging Summary Report Format",
@@ -4102,6 +4237,127 @@
       {
         "type": "docTitle",
         "text": "A/P Aging Summary",
+        "align": "center"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "AR_AGING_SUMMARY_REPORT_FORMAT",
+    "formatNumber": 1,
+    "name": "AR Aging Summary Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "AR-AGE-1",
+      "currency": "INR",
+      "total": "1,245,320.00",
+      "words": "Total Amount: 1,245,320.00",
+      "totalLabel": "Total Amount:",
+      "fieldGrid": [
+        {
+          "k": "Branch Name",
+          "v": "ALL"
+        },
+        {
+          "k": "COA Name",
+          "v": "SUNDRY DEBTORS"
+        },
+        {
+          "k": "To Date",
+          "v": "14-FEB-19"
+        }
+      ],
+      "tableHeaders": [
+        "Organization",
+        "Salesperson",
+        "O/S Amount",
+        "0 to 30",
+        "31 To 60",
+        "61 To 90",
+        "91 To 120",
+        "121 To 150",
+        "151 Above"
+      ],
+      "tableRows": [
+        [
+          "AL NASER TRADING COMPANY LLC",
+          "RAM",
+          "48,486.00",
+          "48,486.00",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "4G LOGISTICS INDIA PVT LTD",
+          "ARUL SELVAN",
+          "1,196,834.00",
+          "25,000.00",
+          "11,000.00",
+          "",
+          "",
+          "",
+          "1,160,834.00"
+        ],
+        [
+          "Total Amount:",
+          "",
+          "1,245,320.00",
+          "73,486.00",
+          "11,000.00",
+          "",
+          "",
+          "",
+          "1,160,834.00"
+        ]
+      ],
+      "termsLines": [
+        "1. This is a computer generated document and does not require a signature."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader"
+      },
+      {
+        "type": "docTitle",
+        "text": "A/R Aging Summary",
         "align": "center"
       },
       {
@@ -4269,6 +4525,447 @@
       },
       {
         "type": "agingSummary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "AR_JOB_NOT_INVOICE_REPORT_FORMAT",
+    "formatNumber": 1,
+    "name": "AR Job Not Invoice Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "AR-JNI-1",
+      "currency": "INR",
+      "total": "3",
+      "words": "Jobs without sales invoice: 3",
+      "fieldGrid": [
+        {
+          "k": "From Date",
+          "v": "01-JAN-19"
+        },
+        {
+          "k": "To Date",
+          "v": "14-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "ALL"
+        }
+      ],
+      "tableHeaders": [
+        "Job No.",
+        "Shipment No.",
+        "Customer",
+        "ETD",
+        "ATA",
+        "Status"
+      ],
+      "tableRows": [
+        [
+          "CEXP190148",
+          "B/EXP/19/0251",
+          "4G LOGISTICS INDIA PVT LTD",
+          "20-JAN-19",
+          "",
+          "Open"
+        ],
+        [
+          "CEXP190150",
+          "B/EXP/19/0254",
+          "AL NASER TRADING",
+          "28-JAN-19",
+          "",
+          "Open"
+        ],
+        [
+          "CSFI190012",
+          "B/SFI/19/0166",
+          "3M LOGISTICS SERVICE",
+          "05-FEB-19",
+          "",
+          "Open"
+        ]
+      ],
+      "termsLines": [
+        "1. This is a computer generated document and does not require a signature."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader"
+      },
+      {
+        "type": "docTitle",
+        "text": "AR JOB NOT INVOICE",
+        "align": "center"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "BANK_CASH_BOOK_SUMMARY_LIST_REPORT_FORMAT",
+    "formatNumber": 1,
+    "name": "Bank Cash Book Summary List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "BCB-1",
+      "currency": "INR",
+      "total": "125,450.00",
+      "words": "Closing Balance: 125,450.00",
+      "fieldGrid": [
+        {
+          "k": "From Date",
+          "v": "01-JAN-19"
+        },
+        {
+          "k": "To Date",
+          "v": "14-FEB-19"
+        },
+        {
+          "k": "Bank / Cash",
+          "v": "HDFC CURRENT A/C"
+        }
+      ],
+      "tableHeaders": [
+        "Date",
+        "Voucher No.",
+        "Narration",
+        "Debit",
+        "Credit",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "01-JAN-19",
+          "",
+          "Opening Balance",
+          "",
+          "",
+          "100,000.00"
+        ],
+        [
+          "15-JAN-19",
+          "MAABR1900089",
+          "Customer receipt",
+          "40,000.00",
+          "",
+          "140,000.00"
+        ],
+        [
+          "28-JAN-19",
+          "MAAPV1900042",
+          "Vendor payment",
+          "",
+          "14,550.00",
+          "125,450.00"
+        ]
+      ],
+      "termsLines": [
+        "1. This is a computer generated document and does not require a signature."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader"
+      },
+      {
+        "type": "docTitle",
+        "text": "BANK / CASH BOOK SUMMARY",
+        "align": "center"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PURCHASE_INVOICE_REPORT_FORMAT_1",
+    "formatNumber": 1,
+    "name": "Purchase Invoice Report Format-1",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "MAPINV190021",
+      "invoiceDate": "28-JAN-19",
+      "currency": "INR",
+      "total": "18,880.00",
+      "words": "Rupee Eighteen Thousand Eight Hundred Eighty Only",
+      "partyLeft": {
+        "title": "Vendor",
+        "lines": [
+          "OCEAN CARRIER LINES",
+          "CHENNAI TAMIL NADU INDIA"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Purchase Invoice No.",
+          "v": "MAPINV190021"
+        },
+        {
+          "k": "Date",
+          "v": "28-JAN-19"
+        },
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "Currency",
+          "v": "INR"
+        }
+      ],
+      "tableHeaders": [
+        "Charge",
+        "Qty",
+        "Rate",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "Ocean Freight",
+          "1",
+          "12,000.00",
+          "12,000.00"
+        ],
+        [
+          "THC",
+          "1",
+          "4,000.00",
+          "4,000.00"
+        ],
+        [
+          "Documentation",
+          "1",
+          "2,880.00",
+          "2,880.00"
+        ]
+      ],
+      "termsLines": [
+        "1. This is a computer generated document and does not require a signature."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "docTitle",
+        "text": "PURCHASE INVOICE — FORMAT 1",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PURCHASE_INVOICE_REPORT_FORMAT_2",
+    "formatNumber": 2,
+    "name": "Purchase Invoice Report Format-2",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "MAPINV190022",
+      "invoiceDate": "30-JAN-19",
+      "currency": "USD",
+      "total": "875.00",
+      "words": "USD Eight Hundred Seventy-Five Only",
+      "partyLeft": {
+        "title": "Vendor",
+        "lines": [
+          "GLOBAL FREIGHT AGENTS LLC",
+          "DUBAI UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Purchase Invoice No.",
+          "v": "MAPINV190022"
+        },
+        {
+          "k": "Date",
+          "v": "30-JAN-19"
+        },
+        {
+          "k": "Job / Shipment",
+          "v": "B/SFI/19/0166"
+        },
+        {
+          "k": "Currency",
+          "v": "USD"
+        }
+      ],
+      "tableHeaders": [
+        "Charge",
+        "Qty",
+        "Rate",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "Agency Fee",
+          "1",
+          "500.00",
+          "500.00"
+        ],
+        [
+          "Handling",
+          "1",
+          "375.00",
+          "375.00"
+        ]
+      ],
+      "termsLines": [
+        "1. This is a computer generated document and does not require a signature."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "docTitle",
+        "text": "PURCHASE INVOICE — FORMAT 2",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "wordsAndTotal"
       },
       {
         "type": "colorfulFooter"

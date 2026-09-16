@@ -83,6 +83,8 @@ export interface MasterResourceConfig {
   /** Primary display field for titles/labels. */
   labelField: string;
   supportsDelete?: boolean;
+  /** Show Seed defaults action (POST …/seed-defaults). */
+  supportsSeedDefaults?: boolean;
   /** No PATCH/DELETE by id (exchange-rates). */
   createOnly?: boolean;
   /** List/search only — hide add / edit / delete. */

@@ -24,6 +24,11 @@ interface JobDocumentsPanelProps {
 const GENERATORS = [
   { key: 'hawb', label: 'HAWB', fn: 'generateHawb' as const },
   { key: 'mawb', label: 'MAWB', fn: 'generateMawb' as const },
+  { key: 'hawb-draft-gated', label: 'HAWB draft (gated)', fn: 'generateHawbDraftGated' as const },
+  { key: 'hawb-final-gated', label: 'HAWB final (gated)', fn: 'generateHawbFinalGated' as const },
+  { key: 'pre-can-gated', label: 'Pre-CAN (gated)', fn: 'generatePreCanGated' as const },
+  { key: 'can-gated', label: 'CAN (gated)', fn: 'generateCanGated' as const },
+  { key: 'do-gated', label: 'Delivery order (gated)', fn: 'generateDeliveryOrderGated' as const },
   { key: 'hbl', label: 'HBL', fn: 'generateHbl' as const },
   { key: 'hbl-er', label: 'HBL Express', fn: 'generateHblExpressRelease' as const },
   { key: 'mbl', label: 'MBL', fn: 'generateMbl' as const },

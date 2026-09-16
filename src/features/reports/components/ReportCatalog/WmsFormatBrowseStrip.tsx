@@ -5,6 +5,7 @@ type WmsFormatBrowseStripProps = {
   selectedCode?: string;
   onSelect: (code: string) => void;
   visible: boolean;
+  searchQuery?: string;
 };
 
 const KIND_TONES: Record<
@@ -48,10 +49,20 @@ export function WmsFormatBrowseStrip({
   selectedCode,
   onSelect,
   visible,
+  searchQuery = '',
 }: WmsFormatBrowseStripProps) {
   if (!visible) return null;
 
-  const items = listWmsFormats();
+  const all = listWmsFormats();
+  const q = searchQuery.trim().toLowerCase();
+  const tokens = q ? q.split(/\s+/).filter(Boolean) : [];
+  const items = !tokens.length
+    ? all
+    : all.filter((row) => {
+        const hay = `${row.name} ${row.code} ${row.kind}`.toLowerCase();
+        return tokens.every((token) => hay.includes(token));
+      });
+  const qActive = Boolean(tokens.length);
 
   return (
     <div className="space-y-2.5 rounded-xl border border-[var(--color-neutral-200)] bg-[var(--color-surface)] p-3.5 shadow-sm">
@@ -59,38 +70,46 @@ export function WmsFormatBrowseStrip({
         <h3 className="text-xs font-semibold uppercase tracking-wide text-[var(--color-success-500)]">
           WMS — Advance Shipping Note
         </h3>
-        <p className="text-[10px] text-[var(--color-neutral-400)]">{items.length} formats</p>
+        <p className="text-[10px] text-[var(--color-neutral-400)]">
+          {qActive ? `${items.length} of ${all.length} formats` : `${all.length} formats`}
+        </p>
       </div>
-      <div className="-mx-0.5 flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:thin]">
-        {items.map((row) => {
-          const active = selectedCode === row.code;
-          const tone = KIND_TONES[row.kind];
-          return (
-            <button
-              key={row.code}
-              type="button"
-              onClick={() => onSelect(row.code)}
-              title={row.name}
-              className={[
-                'relative min-w-[8.75rem] max-w-[11rem] shrink-0 overflow-hidden rounded-lg border px-2.5 py-2.5 text-left transition',
-                tone.bg,
-                tone.border,
-                active
-                  ? 'ring-2 ring-[var(--color-secondary)] ring-offset-1 shadow-md'
-                  : 'hover:-translate-y-0.5 hover:shadow-sm',
-              ].join(' ')}
-            >
-              <span className={`absolute inset-y-0 left-0 w-1 ${tone.accent}`} aria-hidden />
-              <p className={`pl-1.5 text-[10px] font-bold uppercase tracking-wide ${tone.label}`}>
-                #{row.sortOrder}
-              </p>
-              <p className="mt-0.5 line-clamp-2 pl-1.5 text-[11px] font-medium leading-snug text-[var(--color-neutral-800)]">
-                {row.name}
-              </p>
-            </button>
-          );
-        })}
-      </div>
+      {items.length === 0 ? (
+        <p className="px-1 py-2 text-xs text-[var(--color-neutral-500)]">
+          No WMS formats match “{searchQuery.trim()}”.
+        </p>
+      ) : (
+        <div className="-mx-0.5 flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:thin]">
+          {items.map((row) => {
+            const active = selectedCode === row.code;
+            const tone = KIND_TONES[row.kind];
+            return (
+              <button
+                key={row.code}
+                type="button"
+                onClick={() => onSelect(row.code)}
+                title={row.name}
+                className={[
+                  'relative min-w-[8.75rem] max-w-[11rem] shrink-0 overflow-hidden rounded-lg border px-2.5 py-2.5 text-left transition',
+                  tone.bg,
+                  tone.border,
+                  active
+                    ? 'ring-2 ring-[var(--color-secondary)] ring-offset-1 shadow-md'
+                    : 'hover:-translate-y-0.5 hover:shadow-sm',
+                ].join(' ')}
+              >
+                <span className={`absolute inset-y-0 left-0 w-1 ${tone.accent}`} aria-hidden />
+                <p className={`pl-1.5 text-[10px] font-bold uppercase tracking-wide ${tone.label}`}>
+                  #{row.sortOrder}
+                </p>
+                <p className="mt-0.5 line-clamp-2 pl-1.5 text-[11px] font-medium leading-snug text-[var(--color-neutral-800)]">
+                  {row.name}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

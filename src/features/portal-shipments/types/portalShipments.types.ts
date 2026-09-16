@@ -67,3 +67,30 @@ export interface PortalShipmentDetail extends PortalShipmentListItem {
   milestones: PortalMilestone[];
   documents?: PortalShipmentDocument[];
 }
+
+/** Portal view of staff-issued container requests / CRO lines. */
+export interface PortalContainerRequest {
+  id: string;
+  lineId: string;
+  status?: string;
+  containerType?: string;
+  containerNumber?: string;
+  croNumber?: string;
+  quantity?: number;
+  canConfirmPick?: boolean;
+  notes?: string;
+  raw?: Record<string, unknown>;
+}
+
+/** Portal view of air ULD / pallet lines. */
+export interface PortalUldRequest {
+  id: string;
+  lineId: string;
+  status?: string;
+  palletType?: string;
+  uldNumber?: string;
+  quantity?: number;
+  canConfirmDropoff?: boolean;
+  notes?: string;
+  raw?: Record<string, unknown>;
+}

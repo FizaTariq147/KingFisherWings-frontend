@@ -6,6 +6,7 @@ import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob'
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { PORTAL_SHIPMENTS_API } from '../api/portalShipments.api';
 import type {
+  PortalContainerRequest,
   PortalMilestone,
   PortalShipmentDetail,
   PortalShipmentDocument,
@@ -13,9 +14,12 @@ import type {
   PortalShipmentListParams,
   PortalShipmentListResult,
   PortalShipmentSummary,
+  PortalUldRequest,
 } from '../types/portalShipments.types';
 import {
   normalizeMilestones,
+  normalizePortalContainerRequests,
+  normalizePortalUldRequests,
   normalizeShipmentDetail,
   normalizeShipmentDocuments,
   normalizeShipmentList,
@@ -90,4 +94,87 @@ export const portalShipmentsService = {
       ) || fallbackName;
     triggerBlobDownload(res.data as Blob, filename);
   },
+
+  async containerRequests(id: string): Promise<PortalContainerRequest[]> {
+    const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.containerRequests(id));
+    return normalizePortalContainerRequests(res.data);
+  },
+
+  async confirmPick(
+    shipmentId: string,
+    lineId: string,
+    dto: Record<string, unknown> = {},
+  ): Promise<Record<string, unknown>> {
+    const res = await portalApiClient.post(
+      PORTAL_SHIPMENTS_API.confirmPick(shipmentId, lineId),
+      dto,
+    );
+    return (asRecord(unwrapData(res.data)) ?? asRecord(res.data) ?? {}) as Record<string, unknown>;
+  },
+
+  async confirmPortToken(
+    shipmentId: string,
+    dto: Record<string, unknown> = {},
+  ): Promise<Record<string, unknown>> {
+    const res = await portalApiClient.post(
+      PORTAL_SHIPMENTS_API.confirmPortToken(shipmentId),
+      dto,
+    );
+    return (asRecord(unwrapData(res.data)) ?? asRecord(res.data) ?? {}) as Record<string, unknown>;
+  },
+
+  async requestDraftBl(
+    shipmentId: string,
+    dto: Record<string, unknown> = {},
+  ): Promise<Record<string, unknown>> {
+    const res = await portalApiClient.post(
+      PORTAL_SHIPMENTS_API.requestDraftBl(shipmentId),
+      dto,
+    );
+    return (asRecord(unwrapData(res.data)) ?? asRecord(res.data) ?? {}) as Record<string, unknown>;
+  },
+
+  async uldRequests(id: string): Promise<PortalUldRequest[]> {
+    const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.uldRequests(id));
+    return normalizePortalUldRequests(res.data);
+  },
+
+  async confirmUldDropoff(
+    shipmentId: string,
+    lineId: string,
+    dto: Record<string, unknown> = {},
+  ): Promise<Record<string, unknown>> {
+    const res = await portalApiClient.post(
+      PORTAL_SHIPMENTS_API.confirmUldDropoff(shipmentId, lineId),
+      dto,
+    );
+    return (asRecord(unwrapData(res.data)) ?? asRecord(res.data) ?? {}) as Record<string, unknown>;
+  },
+
+  async requestDraftHawb(
+    shipmentId: string,
+    dto: Record<string, unknown> = {},
+  ): Promise<Record<string, unknown>> {
+    const res = await portalApiClient.post(
+      PORTAL_SHIPMENTS_API.requestDraftHawb(shipmentId),
+      dto,
+    );
+    return (asRecord(unwrapData(res.data)) ?? asRecord(res.data) ?? {}) as Record<string, unknown>;
+  },
+
+  async requestDeliveryOrder(
+    shipmentId: string,
+    dto: Record<string, unknown> = {},
+  ): Promise<Record<string, unknown>> {
+    const res = await portalApiClient.post(
+      PORTAL_SHIPMENTS_API.requestDeliveryOrder(shipmentId),
+      dto,
+    );
+    return (asRecord(unwrapData(res.data)) ?? asRecord(res.data) ?? {}) as Record<string, unknown>;
+  },
 };
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  return value as Record<string, unknown>;
+}

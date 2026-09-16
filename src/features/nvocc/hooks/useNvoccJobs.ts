@@ -3,12 +3,17 @@ import { isUuid } from '@/lib/isUuid';
 import type { GenerateJobDocumentDto, SendPreAlertDto } from '@/features/jobs/types/job.types';
 import { useAuthStore } from '@/store/authStore';
 import { nvoccJobService } from '../services/nvocc.service';
-import type { RecordNvoccMblReceivedDto } from '../types/nvocc.types';
+import type {
+  CreateNvoccContainerRequestDto,
+  NvoccWorkflowActionDto,
+  RecordNvoccMblReceivedDto,
+} from '../types/nvocc.types';
 import { useInvalidateJobs } from '@/features/jobs/hooks/useJobs';
 
 export const nvoccJobKeys = {
   all: ['tenant', 'nvocc', 'jobs'] as const,
   generationStatus: (jobId: string) => [...nvoccJobKeys.all, jobId, 'generation-status'] as const,
+  containerRequests: (jobId: string) => [...nvoccJobKeys.all, jobId, 'container-requests'] as const,
 };
 
 function useToken() {
@@ -25,6 +30,15 @@ export function useNvoccJobGenerationStatus(jobId: string, enabled = false) {
   });
 }
 
+export function useNvoccContainerRequests(jobId: string, enabled = true) {
+  const token = useToken();
+  return useQuery({
+    queryKey: nvoccJobKeys.containerRequests(jobId),
+    queryFn: () => nvoccJobService.listContainerRequests(jobId),
+    enabled: Boolean(token) && isUuid(jobId) && enabled,
+  });
+}
+
 /** NVOCC job document + milestone actions (POST /nvocc/jobs/{id}/*). */
 export function useNvoccJobActions(jobId: string) {
   const invalidateJobs = useInvalidateJobs();
@@ -33,6 +47,7 @@ export function useNvoccJobActions(jobId: string) {
   const onSuccess = () => {
     invalidateJobs(jobId);
     void queryClient.invalidateQueries({ queryKey: nvoccJobKeys.generationStatus(jobId) });
+    void queryClient.invalidateQueries({ queryKey: nvoccJobKeys.containerRequests(jobId) });
   };
 
   return {
@@ -42,6 +57,14 @@ export function useNvoccJobActions(jobId: string) {
     }),
     hblOriginal: useMutation({
       mutationFn: (dto?: GenerateJobDocumentDto) => nvoccJobService.hblOriginal(jobId, dto),
+      onSuccess,
+    }),
+    hblDraftGated: useMutation({
+      mutationFn: (dto?: GenerateJobDocumentDto) => nvoccJobService.hblDraftGated(jobId, dto),
+      onSuccess,
+    }),
+    hblOriginalGated: useMutation({
+      mutationFn: (dto?: GenerateJobDocumentDto) => nvoccJobService.hblOriginalGated(jobId, dto),
       onSuccess,
     }),
     hblExpressRelease: useMutation({
@@ -114,6 +137,43 @@ export function useNvoccJobActions(jobId: string) {
     }),
     podReceived: useMutation({
       mutationFn: () => nvoccJobService.podReceived(jobId),
+      onSuccess,
+    }),
+    createContainerRequest: useMutation({
+      mutationFn: (dto: CreateNvoccContainerRequestDto = {}) =>
+        nvoccJobService.createContainerRequest(jobId, dto),
+      onSuccess,
+    }),
+    issueContainerRequest: useMutation({
+      mutationFn: ({
+        requestId,
+        dto = {},
+      }: {
+        requestId: string;
+        dto?: NvoccWorkflowActionDto;
+      }) => nvoccJobService.issueContainerRequest(jobId, requestId, dto),
+      onSuccess,
+    }),
+    allocateContainerRequest: useMutation({
+      mutationFn: ({
+        requestId,
+        dto = {},
+      }: {
+        requestId: string;
+        dto?: NvoccWorkflowActionDto;
+      }) => nvoccJobService.allocateContainerRequest(jobId, requestId, dto),
+      onSuccess,
+    }),
+    stageLoading: useMutation({
+      mutationFn: (dto: NvoccWorkflowActionDto = {}) => nvoccJobService.stageLoading(jobId, dto),
+      onSuccess,
+    }),
+    confirmPayment: useMutation({
+      mutationFn: (dto: NvoccWorkflowActionDto = {}) => nvoccJobService.confirmPayment(jobId, dto),
+      onSuccess,
+    }),
+    closeReport: useMutation({
+      mutationFn: (dto: NvoccWorkflowActionDto = {}) => nvoccJobService.closeReport(jobId, dto),
       onSuccess,
     }),
   };
