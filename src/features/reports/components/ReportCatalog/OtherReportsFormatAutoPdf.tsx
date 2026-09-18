@@ -29,7 +29,7 @@ export function OtherReportsFormatAutoPdf({ code, autoOpen = true }: Props) {
       code: layout.code,
       formatNumber: layout.formatNumber || spec?.sortOrder || 0,
       name: layout.name || spec?.name || layout.code,
-      samplePdfUrl: spec?.samplePdfUrl ?? null,
+      samplePdfUrl: null,
       layoutKind: 'warehouse',
       paper: layout.paper,
       rtl: layout.rtl,

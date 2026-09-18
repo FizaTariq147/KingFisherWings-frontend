@@ -60,11 +60,73 @@ function normalizeStatus(
   );
 }
 
+function canonicalizeJobTypeToken(value: unknown): string {
+  return String(value ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+}
+
+/** Map API job_type / jobType / mode aliases → canonical JobType. */
 function normalizeJobType(value: unknown): JobType {
-  const raw = String(value ?? 'SEA_FCL_EXPORT').trim().toUpperCase();
-  return (JOB_TYPES as readonly string[]).includes(raw)
-    ? (raw as JobType)
-    : 'SEA_FCL_EXPORT';
+  const raw = canonicalizeJobTypeToken(value);
+  if (!raw) return 'SEA_FCL_EXPORT';
+  if ((JOB_TYPES as readonly string[]).includes(raw)) return raw as JobType;
+
+  const aliases: Record<string, JobType> = {
+    AIR: 'AIR_EXPORT',
+    AIR_EXP: 'AIR_EXPORT',
+    AIR_IMP: 'AIR_IMPORT',
+    NVOCC: 'NVOCC_EXPORT',
+    NVOCC_EXP: 'NVOCC_EXPORT',
+    NVOCC_IMP: 'NVOCC_IMPORT',
+    SEA_EXPORT: 'SEA_FCL_EXPORT',
+    SEA_IMPORT: 'SEA_FCL_IMPORT',
+    SEA_FCL: 'SEA_FCL_EXPORT',
+    SEA_LCL: 'SEA_LCL_EXPORT',
+    FCL_EXPORT: 'SEA_FCL_EXPORT',
+    FCL_IMPORT: 'SEA_FCL_IMPORT',
+    LCL_EXPORT: 'SEA_LCL_EXPORT',
+    LCL_IMPORT: 'SEA_LCL_IMPORT',
+  };
+  if (aliases[raw]) return aliases[raw];
+
+  // Preserve AIR_/NVOCC_ family even if an unexpected suffix arrives (gate must still apply).
+  if (raw.startsWith('AIR_')) {
+    return raw.includes('IMP') ? 'AIR_IMPORT' : 'AIR_EXPORT';
+  }
+  if (raw.startsWith('NVOCC_')) {
+    return raw.includes('IMP') ? 'NVOCC_IMPORT' : 'NVOCC_EXPORT';
+  }
+
+  return 'SEA_FCL_EXPORT';
+}
+
+function pickJobType(r: Record<string, unknown>): JobType {
+  const nested =
+    asRecord(r.job) ??
+    asRecord(r.shipment) ??
+    asRecord(r.freight) ??
+    asRecord(r.details);
+  const candidates = [
+    r.job_type,
+    r.jobType,
+    r.service_type,
+    r.serviceType,
+    r.transport_mode,
+    r.transportMode,
+    r.mode_of_transport,
+    r.modeOfTransport,
+    nested?.job_type,
+    nested?.jobType,
+    nested?.service_type,
+    nested?.serviceType,
+  ];
+  for (const c of candidates) {
+    const s = str(c);
+    if (s) return normalizeJobType(s);
+  }
+  return 'SEA_FCL_EXPORT';
 }
 
 export function normalizeQuotationLine(raw: unknown): QuotationLine | null {
@@ -129,7 +191,7 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     status: normalizeStatus(r.status, id, r),
     company_id:
       pickStr(r, 'company_id', 'companyId') ?? pickStr(nestedCompany ?? {}, 'id'),
-    job_type: normalizeJobType(r.job_type),
+    job_type: pickJobType(r),
     customer_id,
     customer_name:
       pickStr(r, 'customer_name', 'customerName') ??

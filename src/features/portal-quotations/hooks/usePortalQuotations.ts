@@ -46,6 +46,8 @@ export const portalQuotationKeys = {
     [...portalQuotationKeys.all(scope), 'costing-options', dto] as const,
   negotiation: (scope: string, id: string) =>
     [...portalQuotationKeys.all(scope), 'negotiation', id] as const,
+  bookingForm: (scope: string, id: string) =>
+    [...portalQuotationKeys.all(scope), 'booking-form', id] as const,
 };
 
 function patchPortalQuotationCaches(
@@ -317,6 +319,73 @@ export function usePortalQuotationCounterOffer() {
         qc.setQueryData(portalQuotationKeys.detail(scope, q.id), q);
         void qc.invalidateQueries({ queryKey: portalQuotationKeys.negotiation(scope, q.id) });
       }
+    },
+  });
+}
+
+export function usePortalQuotationBookingForm(
+  id: string,
+  enabled = true,
+  opts: {
+    isAir?: boolean;
+    jobId?: string;
+    bookingId?: string;
+    quoteNumber?: string;
+    jobType?: string;
+  } = {},
+) {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  const isAir = Boolean(opts.isAir);
+  const jobId = opts.jobId?.trim() || '';
+  const bookingId = opts.bookingId?.trim() || '';
+  return useQuery({
+    queryKey: [
+      ...portalQuotationKeys.bookingForm(scope, id),
+      isAir ? 'air' : 'sea',
+      bookingId || 'no-booking',
+      jobId || 'no-job',
+    ] as const,
+    queryFn: () =>
+      portalQuotationsService.getBookingForm({
+        quotationId: id,
+        bookingId: bookingId || undefined,
+        jobId: jobId || undefined,
+        isAir,
+        quoteNumber: opts.quoteNumber,
+        jobType: opts.jobType,
+      }),
+    enabled: Boolean(accessToken) && Boolean(id) && enabled && scope !== 'anon',
+    retry: false,
+  });
+}
+
+export function useUpdatePortalQuotationBookingForm(id: string) {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: ({
+      dto,
+      isAir = false,
+      jobId,
+      bookingId,
+      quoteNumber,
+      jobType,
+    }: {
+      dto: import('../types/portalQuotations.types').PortalBookingFormUpsertDto;
+      isAir?: boolean;
+      jobId?: string;
+      bookingId?: string;
+      quoteNumber?: string;
+      jobType?: string;
+    }) =>
+      portalQuotationsService.updateBookingForm(
+        { quotationId: id, jobId, bookingId, isAir, quoteNumber, jobType },
+        dto,
+      ),
+    onSuccess: (form) => {
+      qc.setQueryData(portalQuotationKeys.bookingForm(scope, id), form);
+      void qc.invalidateQueries({ queryKey: portalQuotationKeys.bookingForm(scope, id) });
     },
   });
 }

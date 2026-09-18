@@ -9,6 +9,7 @@ export type QuotationConfirmKind =
   | 'mark-won'
   | 'mark-lost'
   | 'convert'
+  | 'start-air-ops'
   | 'archive'
   | 'expire'
   | 'delete'

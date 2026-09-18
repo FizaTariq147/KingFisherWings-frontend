@@ -5,13 +5,15 @@ import { Modal } from '@/components/ui/Modal';
 import { LOST_REASONS, type LostReason } from '../../constants/quotation.constants';
 import type { QuotationConfirmKind } from '../../hooks/useQuotationConfirmState';
 import { quotationDisplayNumber } from '../../utils/normalizeQuotation';
+import { usesGatedFreightQuoteFlow } from '../../utils/quotationStatus';
 import type { Quotation } from '../../types/quotation.types';
+import { isNvoccQuoteJobType } from '@/features/nvocc/constants/seaExportWorkflow';
 
 const CONFIG: Record<
   Exclude<QuotationConfirmKind, 'mark-lost' | 'approve' | 'reject'>,
   {
     title: string;
-    description: (label: string) => string;
+    description: (label: string, quotation?: Quotation) => string;
     confirmLabel: string;
     variant: 'danger' | 'primary';
   }
@@ -30,8 +32,16 @@ const CONFIG: Record<
   },
   'mark-won': {
     title: 'Mark as approved?',
-    description: (label) =>
-      `${label} will be marked customer-approved, then a job and draft customer invoice are created automatically.`,
+    description: (label, quotation) => {
+      const jt = quotation?.job_type;
+      if (isNvoccQuoteJobType(jt)) {
+        return `${label} will be marked customer-approved only — no job and no invoice yet. Next: NVOCC Bookings (booking form → send invoice → convert/CRO).`;
+      }
+      if (usesGatedFreightQuoteFlow(jt)) {
+        return `${label} will be marked customer-approved only — no automatic job. Next: customer completes the portal booking form, then you send invoice (Start air ops job only if a job shell is needed for Ops APIs).`;
+      }
+      return `${label} will be marked customer-approved, then a job and draft customer invoice are created automatically.`;
+    },
     confirmLabel: 'Mark approved',
     variant: 'primary',
   },
@@ -40,6 +50,13 @@ const CONFIG: Record<
     description: (label) =>
       `${label} will create a job, copy revenue charges, and create a draft customer invoice.`,
     confirmLabel: 'Convert',
+    variant: 'primary',
+  },
+  'start-air-ops': {
+    title: 'Start air ops job?',
+    description: (label) =>
+      `${label} creates an air job shell only (manual — not Convert to job / no draft invoice). Then follow exact gates on the job: CS_TRIAGED → QUOTE_SENT → CUSTOMER_ACCEPTED → BOOKING_FORM_COMPLETE → INVOICE_SENT → export/import ops.`,
+    confirmLabel: 'Start air ops',
     variant: 'primary',
   },
   archive: {
@@ -190,7 +207,9 @@ export function QuotationConfirmModal({
       <div className="space-y-4">
         <div className="flex gap-3 rounded-lg border border-[var(--color-warning-200)] bg-[var(--color-warning-50)] px-3 py-2">
           <AlertTriangle className="h-4 w-4 text-[var(--color-warning-600)] shrink-0 mt-0.5" />
-          <p className="text-sm text-[var(--color-neutral-700)]">{cfg.description(label)}</p>
+          <p className="text-sm text-[var(--color-neutral-700)]">
+            {cfg.description(label, quotation)}
+          </p>
         </div>
         <div className="flex justify-end gap-2">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>

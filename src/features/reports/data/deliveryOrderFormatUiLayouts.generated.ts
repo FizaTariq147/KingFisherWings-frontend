@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Auto-generated Delivery Order formats — run: node scripts/build-delivery-order-format-ui-layouts.mjs */
+/** Permanent JSON UI layouts — deliveryOrderFormatUiLayouts. */
 export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "DELIVERY_CONFIRMATION_REPORT_FORMAT",

@@ -4,37 +4,11 @@
  * Confirmation, Air, plus FG/SEA variants; official PDFs supersede rpm samples
  * for shared codes).
  */
-export type ArrivalNoticeFormatKind =
-  | 'format1_jasper'
-  | 'format2_jasper'
-  | 'format3_usa'
-  | 'format4_usa'
-  | 'cargo_arrival_notice_sea'
-  | 'cargo_arrival_notice_sea_format6'
-  | 'cargo_arrival_notice_sea_format7'
-  | 'cargo_arrival_notice_sea_without_charges'
-  | 'cargo_arrival_notice_sea_without_charges_format9'
-  | 'sea_arrival_notice_fcl_vietnam'
-  | 'arrival_confirmation'
-  | 'cargo_arrival_notice_air'
-  | 'arrival_confirmation_format1'
-  | 'arrival_information'
-  | 'fg_arrival_information'
-  | 'fg_arrival_notice'
-  | 'fg_arrival_notice_format2'
-  | 'fg_arrival_notice_without_chg'
-  | 'fg_arrival_notice_format3'
-  | 'cargo_arrival_notice_air_without_charges'
-  | 'fg_cargo_arrival_notice'
-  | 'fg_cargo_arrival_notice_format1'
-  | 'fg_cargo_arrival_notice_sea'
-  | 'cargo_arrival_notice_sea_format2'
-  | 'cargo_arrival_notice_sea_format3'
-  | 'cargo_arrival_notice_sea_format1'
-  | 'cargo_arrival_notice_sea_without_charges_format1'
-  | 'cargo_arrival_notice_sea_without_charges_fg'
-  | 'sea_arrival_notice_lcl_vietnam'
-  | 'fg_cargo_arrival_notice_sea_format3';
+import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
+import { listArrivalNoticeFormatUiLayouts } from '../data/arrivalNoticeFormatUiLayouts';
+import { REMAINING_FORMAT_CATALOG } from './remainingFormatCatalog.generated.ts';
+
+export type ArrivalNoticeFormatKind = string;
 
 export type ArrivalNoticeFormatSpec = {
   code: string;
@@ -260,9 +234,36 @@ export const ARRIVAL_NOTICE_FORMAT_CATALOG: ArrivalNoticeFormatSpec[] = [
   },
 ];
 
-const byCode = new Map(
-  ARRIVAL_NOTICE_FORMAT_CATALOG.map((row) => [row.code.toUpperCase(), row]),
-);
+const ARRIVAL_EXTRA: ArrivalNoticeFormatSpec[] = REMAINING_FORMAT_CATALOG.filter(
+  (r) => r.bucket === 'arrival' || r.bucket === 'arrival_extra',
+).map((r, i) => ({
+  code: r.code,
+  name: r.name,
+  kind: `arrival_extra_${r.sortOrder || i + 1}`,
+  sortOrder: 1000 + (r.sortOrder || i + 1),
+  family: (r.family === 'air_docs' ? 'air_docs' : 'sea_docs') as 'sea_docs' | 'air_docs',
+}));
+
+const ALL_ARRIVAL_FORMATS: ArrivalNoticeFormatSpec[] = (() => {
+  const by = new Map<string, ArrivalNoticeFormatSpec>();
+  for (const row of [...ARRIVAL_NOTICE_FORMAT_CATALOG, ...ARRIVAL_EXTRA]) {
+    by.set(row.code.toUpperCase(), row);
+  }
+  listArrivalNoticeFormatUiLayouts().forEach((layout, i) => {
+    const key = layout.code.toUpperCase();
+    const existing = by.get(key);
+    by.set(key, {
+      code: layout.code,
+      name: layout.name || existing?.name || layout.code,
+      kind: existing?.kind || `arrival_${layout.formatNumber || i + 1}`,
+      sortOrder: existing?.sortOrder ?? layout.formatNumber ?? 2000 + i,
+      family: existing?.family || 'sea_docs',
+    });
+  });
+  return [...by.values()];
+})();
+
+const byCode = new Map(ALL_ARRIVAL_FORMATS.map((row) => [row.code.toUpperCase(), row]));
 
 export function isArrivalNoticeFormatCode(code: string): boolean {
   return byCode.has(code.trim().toUpperCase());
@@ -273,7 +274,7 @@ export function getArrivalNoticeFormatSpec(code: string): ArrivalNoticeFormatSpe
 }
 
 export function listArrivalNoticeFormats(): ArrivalNoticeFormatSpec[] {
-  return ARRIVAL_NOTICE_FORMAT_CATALOG.slice().sort((a, b) => a.sortOrder - b.sortOrder);
+  return ALL_ARRIVAL_FORMATS.slice().sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 export function resolveArrivalNoticeFormatDisplayName(code: string, fallbackName: string): string {
@@ -282,11 +283,5 @@ export function resolveArrivalNoticeFormatDisplayName(code: string, fallbackName
 
 /** True when search tokens match at least one Arrival Notice catalog row. */
 export function arrivalNoticeFormatsMatchSearch(searchQuery: string): boolean {
-  const q = searchQuery.trim().toLowerCase();
-  if (!q) return false;
-  const tokens = q.split(/\s+/).filter(Boolean);
-  return listArrivalNoticeFormats().some((row) => {
-    const hay = `${row.name} ${row.code} ${row.kind}`.toLowerCase();
-    return tokens.every((token) => hay.includes(token));
-  });
+  return catalogRowsMatchSearch(listArrivalNoticeFormats(), searchQuery);
 }

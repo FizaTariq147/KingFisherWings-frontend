@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
 import { QuotationEmailModal } from '../components/QuotationEmailModal';
@@ -19,6 +19,13 @@ import { useQuotationNegotiation } from '../hooks/useQuotationNegotiation';
 import { useDeleteQuotation, useQuotation, useQuotationRevisions } from '../hooks/useQuotations';
 import { useQuotationResolvedLabels } from '../hooks/useQuotationResolvedLabels';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { isAirQuoteJobType } from '@/features/jobs/constants/airWorkflow';
+import { NvoccSeaExportFlowRail } from '@/features/nvocc/components/NvoccSeaExportFlowRail';
+import {
+  isNvoccQuoteJobType,
+  quotationStatusToSeaExportStage,
+  type SeaExportStageId,
+} from '@/features/nvocc/constants/seaExportWorkflow';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import {
   isAwaitingCustomerDecision,
@@ -29,12 +36,14 @@ import { recalculateQuotationTotals } from '../utils/recalculateQuotationTotals'
 import {
   canArchiveQuotation,
   canConvertQuotationToJob,
+  canStartAirOpsJobFromQuote,
   canStaffInternallyApprove,
   canStaffMarkCustomerDecision,
   canStaffSendToCustomer,
   coerceQuotationStatus,
   isQuotationDraftEditable,
   isQuotationLinesEditable,
+  usesGatedFreightQuoteFlow,
 } from '../utils/quotationStatus';
 
 function statusTone(
@@ -117,10 +126,19 @@ export default function QuotationDetailPage() {
     );
   }, [quotation, negotiationTimeline?.events]);
 
-  // Customer Approved (portal or staff) → auto create job + draft invoice once.
+  // Customer Approved → auto job+invoice for **standard** modes only.
+  // NVOCC / Air: never auto-convert and never auto-create a job shell.
   useEffect(() => {
     if (!quotation || !id) return;
     if (status !== 'APPROVED') return;
+    // Defense in depth: gate on normalized type and AIR_/NVOCC_ prefixes.
+    if (
+      usesGatedFreightQuoteFlow(quotation.job_type) ||
+      isAirQuoteJobType(quotation.job_type) ||
+      isNvoccQuoteJobType(quotation.job_type)
+    ) {
+      return;
+    }
     if (quotation.job_id && quotation.invoice_id) return;
     if (autoFulfillAttempted.current === id) return;
     if (actions.fulfillApproved.isPending || pending) return;
@@ -130,6 +148,15 @@ export default function QuotationDetailPage() {
     void actions.fulfillApproved
       .mutateAsync()
       .then((result) => {
+        // Re-check after mutation in case job_type was corrected mid-flight.
+        if (
+          usesGatedFreightQuoteFlow(quotation.job_type) ||
+          isAirQuoteJobType(quotation.job_type) ||
+          isNvoccQuoteJobType(quotation.job_type)
+        ) {
+          void refetch();
+          return;
+        }
         const jobId =
           result && typeof result === 'object' && 'job_id' in result
             ? String((result as { job_id?: string }).job_id ?? '')
@@ -214,13 +241,24 @@ export default function QuotationDetailPage() {
         const invoiceId =
           q.invoice_id ||
           (result as { invoice?: { id?: string } }).invoice?.id;
+        // NVOCC/Air: never treat approve as convert (even if backend already linked a job).
+        if (jobId && usesGatedFreightQuoteFlow(quotation.job_type)) {
+          setActionMessage(successMsg || 'Approved only — continue the gated ops flow.');
+          void refetch();
+          return;
+        }
         if (jobId) {
           setActionMessage(
             invoiceId
               ? 'Converted to job and draft customer invoice created.'
               : successMsg || 'Converted to job.',
           );
-          navigate(jobDetailPath(String(jobId), quotation.job_type));
+          navigate(
+            jobDetailPath({
+              id: String(jobId),
+              job_type: quotation.job_type,
+            }),
+          );
           return;
         }
       }
@@ -268,11 +306,29 @@ export default function QuotationDetailPage() {
           },
         ]
       : []),
-    ...(canConvertQuotationToJob(status)
+    ...(canConvertQuotationToJob(status, quotation.job_type)
       ? [
           {
             label: 'Convert to job',
             onClick: () => requestConfirm('convert', quotation),
+            variant: 'primary' as const,
+          },
+        ]
+      : []),
+    ...(canStartAirOpsJobFromQuote(status, quotation.job_type, quotation.job_id)
+      ? [
+          {
+            label: 'Start air ops job',
+            onClick: () => requestConfirm('start-air-ops', quotation),
+            variant: 'primary' as const,
+          },
+        ]
+      : []),
+    ...(isNvoccQuoteJobType(quotation.job_type) && status === 'APPROVED'
+      ? [
+          {
+            label: 'Continue on NVOCC bookings',
+            onClick: () => navigate('/nvocc/booking-list'),
             variant: 'primary' as const,
           },
         ]
@@ -297,7 +353,7 @@ export default function QuotationDetailPage() {
 
   return (
     <>
-      {(actionError || actionMessage) && (
+            {(actionError || actionMessage) && (
         <div className="mb-3 space-y-2">
           {actionError && (
             <div
@@ -327,6 +383,99 @@ export default function QuotationDetailPage() {
           )}
         </div>
       )}
+
+            {quotation && isNvoccQuoteJobType(quotation.job_type) ? (
+        <div className="mb-3 space-y-3 rounded-lg border border-gray-200 bg-white p-4">
+          <NvoccSeaExportFlowRail
+            current={quotationStatusToSeaExportStage(status, {
+              hasJob: Boolean(quotation.job_id),
+            })}
+            done={(() => {
+              const current = quotationStatusToSeaExportStage(status, {
+                hasJob: Boolean(quotation.job_id),
+              });
+              const order: SeaExportStageId[] = [
+                'customer-request',
+                'cs-receive',
+                'quote-sent',
+                'customer-accept',
+                'booking-form',
+                'invoice',
+                'cro-container',
+              ];
+              const idx = order.indexOf(current);
+              const map: Partial<Record<SeaExportStageId, boolean>> = {};
+              order.forEach((id, i) => {
+                if (i < idx) map[id] = true;
+              });
+              return map;
+            })()}
+            band="1-2"
+          />
+          <p className="text-sm text-gray-600">
+            After customer approve, this quote does <strong>not</strong> auto-convert to a job.
+            Continue Stage 1–2 on{' '}
+            <Link className="underline text-[var(--color-primary-600)]" to="/nvocc/booking-list">
+              NVOCC Bookings
+            </Link>
+            : <strong>Booking form → Send invoice</strong>, then CRO / container. Other job types
+            still auto-convert on approve.
+          </p>
+          {quotation.job_id ? (
+            <button
+              type="button"
+              className="text-sm underline text-[var(--color-primary-600)]"
+              onClick={() =>
+                navigate(
+                  jobDetailPath({
+                    id: quotation.job_id!,
+                    job_type: quotation.job_type,
+                  }),
+                )
+              }
+            >
+              Open linked job (Stage 3–4)
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+
+      {quotation && isAirQuoteJobType(quotation.job_type) ? (
+        <div
+          role="note"
+          className="mb-3 rounded-lg border px-3 py-2 text-sm"
+          style={{
+            background: 'var(--color-primary-50, #EFF6FF)',
+            borderColor: 'var(--color-primary-200, #BFDBFE)',
+            color: 'var(--color-neutral-700)',
+          }}
+        >
+          Air freight: after approve there is <strong>no auto job / no invoice</strong>. Customer
+          completes the <strong>booking form in the portal</strong> (BOOKING_FORM_COMPLETE), then
+          staff sends invoice. Use <strong>Start air ops job</strong> when Ops APIs need a job
+          shell. Gate order: CS triage → quote sent → customer accept → booking form → invoice →
+          export/import ops.
+          {quotation.job_id ? (
+            <>
+              {' '}
+              <button
+                type="button"
+                className="underline text-[var(--color-primary-600)]"
+                onClick={() =>
+                  navigate(
+                    jobDetailPath({
+                      id: quotation.job_id!,
+                      job_type: quotation.job_type,
+                    }),
+                  )
+                }
+              >
+                Open linked job
+              </button>
+            </>
+          ) : null}
+        </div>
+      ) : null}
 
       <DetailPageTemplate
         title={title}
@@ -475,7 +624,11 @@ export default function QuotationDetailPage() {
             if (kind === 'mark-won')
               return run(
                 () => actions.markWon.mutateAsync(),
-                'Approved — job and draft customer invoice created.',
+                usesGatedFreightQuoteFlow(quotation.job_type)
+                  ? isNvoccQuoteJobType(quotation.job_type)
+                    ? 'Approved only — no job created. Customer fills booking form in portal, then send invoice on NVOCC Bookings → CRO.'
+                    : 'Approved only — no job created. Customer fills booking form in portal, then send invoice on Air Ops (Start air ops job if needed).'
+                  : 'Approved — job and draft customer invoice created.',
               );
             if (kind === 'mark-lost' && extra?.reason)
               return run(
@@ -488,16 +641,29 @@ export default function QuotationDetailPage() {
               );
             if (kind === 'duplicate')
               return run(() => actions.duplicate.mutateAsync(), 'Duplicated.');
+            if (kind === 'start-air-ops')
+              return run(async () => {
+                const q = await actions.createOpsJobWithoutInvoice.mutateAsync();
+                const jobId =
+                  q && typeof q === 'object' && 'job_id' in q
+                    ? String((q as { job_id?: string }).job_id ?? '')
+                    : '';
+                if (jobId) {
+                  navigate(
+                    jobDetailPath({
+                      id: jobId,
+                      job_type: (q as { job_type?: string }).job_type ?? quotation.job_type,
+                    }),
+                  );
+                }
+                return q;
+              }, 'Air job created — wait for customer booking form, then send invoice on Ops.');
             if (kind === 'convert')
               return run(async () => {
                 const q = await actions.convertToJob.mutateAsync();
                 const jobId =
                   q && typeof q === 'object' && 'job_id' in q
                     ? String((q as { job_id?: string }).job_id ?? '')
-                    : '';
-                const invoiceId =
-                  q && typeof q === 'object' && 'invoice_id' in q
-                    ? String((q as { invoice_id?: string }).invoice_id ?? '')
                     : '';
                 if (jobId) {
                   navigate(

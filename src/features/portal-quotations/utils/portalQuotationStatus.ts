@@ -4,6 +4,7 @@ import {
   isCustomerApprovedStatus,
   isCustomerDisapprovedStatus,
 } from '@/features/quotations/utils/quotationStatus';
+import { getCustomerQuoteDecision } from '@/features/quotations/utils/customerQuoteDecision';
 import type { PortalQuotationDetail, PortalQuotationListItem } from '../types/portalQuotations.types';
 
 export function normalizePortalQuoteStatus(status?: string): string {
@@ -26,6 +27,43 @@ export function applyPortalCustomerDecisionStatus(
   }
   if (isCustomerDisapprovedStatus(current) || current === 'EXPIRED') return detail;
   return { ...detail, status: 'APPROVED' };
+}
+
+/** True when the customer has approved — unlocks the portal booking form (NVOCC + Air). */
+export function portalQuoteShowsBookingForm(
+  quote?: PortalQuotationListItem | PortalQuotationDetail | null,
+): boolean {
+  if (!quote?.id) return false;
+  const jt = String(
+    (quote as PortalQuotationDetail).jobType ??
+      (quote as PortalQuotationDetail).raw?.job_type ??
+      (quote as PortalQuotationDetail).raw?.jobType ??
+      '',
+  )
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  const gated = jt.startsWith('NVOCC') || jt.startsWith('AIR');
+  if (!gated) return false;
+
+  const raw = String(quote.status ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, '_');
+  if (
+    raw === 'APPROVED' ||
+    raw === 'WON' ||
+    raw === 'ACCEPTED' ||
+    raw === 'CUSTOMER_ACCEPTED' ||
+    raw === 'CONVERTED'
+  ) {
+    return true;
+  }
+
+  const s = normalizePortalQuoteStatus(quote.status);
+  if (isCustomerDisapprovedStatus(s) || s === 'EXPIRED') return false;
+  if (isCustomerApprovedStatus(s) || s === 'CONVERTED') return true;
+  if (getCustomerQuoteDecision(quote.id) === 'APPROVED') return true;
+  return false;
 }
 
 export function portalQuoteHasPricing(
@@ -97,6 +135,11 @@ export function portalQuoteStatusMessage(
     return 'Counter-offer submitted. Your forwarder will respond shortly. Approving now accepts their current offer, not your counter.';
   }
   if (isCustomerApprovedStatus(s) || s === 'CONVERTED' || s === 'ACCEPTED') {
+    const detail = quote as PortalQuotationDetail | undefined;
+    const jt = String(detail?.jobType ?? detail?.raw?.job_type ?? '').toUpperCase();
+    if (jt.startsWith('AIR') || jt.startsWith('NVOCC')) {
+      return 'You approved this quotation. Complete the booking form below next.';
+    }
     return 'You approved this quotation.';
   }
   if (isCustomerDisapprovedStatus(s) || s === 'REJECTED') {

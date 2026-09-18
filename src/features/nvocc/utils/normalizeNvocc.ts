@@ -190,23 +190,58 @@ export function normalizeNvoccLoadListItem(raw: unknown): NvoccLoadListItem | nu
 
 export function normalizeNvoccBookingForm(raw: unknown): NvoccBookingForm {
   const record = asRecord(raw) ?? {};
+  const partiesRaw = Array.isArray(record.parties) ? record.parties : [];
+  const parties = partiesRaw
+    .map((item) => {
+      const p = asRecord(item);
+      if (!p) return null;
+      const kind = String(p.party_kind ?? '').toUpperCase();
+      if (kind !== 'SHIPPER' && kind !== 'CONSIGNEE' && kind !== 'NOTIFY') return null;
+      return {
+        party_kind: kind as 'SHIPPER' | 'CONSIGNEE' | 'NOTIFY',
+        full_name: str(p.full_name),
+        address: str(p.address),
+        city: str(p.city),
+        country: str(p.country),
+        entity_kind:
+          String(p.entity_kind ?? '').toUpperCase() === 'INDIVIDUAL' ? 'INDIVIDUAL' : 'COMPANY',
+        other_details: str(p.other_details),
+      };
+    })
+    .filter(Boolean) as NvoccBookingForm['parties'];
+
   return {
     ...record,
     id: idOf(record) ?? str(record.id),
     booking_id: str(record.booking_id),
-    shipper_ref: str(record.shipper_ref),
+    date_of_request: str(record.date_of_request),
+    voyage_ref: str(record.voyage_ref),
+    client_booking_no: str(record.client_booking_no),
+    gross_weight_kg: num(record.gross_weight_kg),
+    net_weight_kg: num(record.net_weight_kg),
+    pol: str(record.pol),
+    pod: str(record.pod),
+    shipper_owned_container: Boolean(record.shipper_owned_container),
+    is_dg: Boolean(record.is_dg),
+    teu_count: num(record.teu_count),
     commodity: str(record.commodity),
-    marks_numbers: str(record.marks_numbers),
-    container_type_id: str(record.container_type_id),
-    container_count: num(record.container_count),
-    cbm_allocated: num(record.cbm_allocated),
-    gross_weight: num(record.gross_weight),
-    pieces: num(record.pieces),
-    incoterms: str(record.incoterms),
-    freight_terms: str(record.freight_terms),
-    other_charges_terms: str(record.other_charges_terms),
     hs_code: str(record.hs_code),
-    notes: str(record.notes),
+    final_use: str(record.final_use),
+    activity_sector: str(record.activity_sector),
+    insurance_details: str(record.insurance_details),
+    lc_bank_details: str(record.lc_bank_details),
+    attach_commercial_invoice: Boolean(record.attach_commercial_invoice),
+    attach_correspondence: Boolean(record.attach_correspondence),
+    attach_cod_form: Boolean(record.attach_cod_form),
+    attach_licence: Boolean(record.attach_licence),
+    booking_agent_line: str(record.booking_agent_line),
+    agent_requester_name: str(record.agent_requester_name),
+    sq_bl_booking_reference: str(record.sq_bl_booking_reference),
+    request_details: str(record.request_details),
+    consent_accepted: Boolean(record.consent_accepted),
+    parties,
+    // Only true when API explicitly marks the form complete (drafts omit / false).
+    mark_complete: record.mark_complete === true,
   };
 }
 

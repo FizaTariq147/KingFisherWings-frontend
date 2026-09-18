@@ -17,8 +17,7 @@ function resolveLayoutCode(code: string): string {
 }
 
 export function getHawbFormatUiLayout(code: string): InvoiceFormatUiLayout | undefined {
-  const resolved = resolveLayoutCode(code);
-  return byCode.get(resolved);
+  return byCode.get(resolveLayoutCode(code));
 }
 
 export function hasHawbFormatUiLayout(code: string): boolean {

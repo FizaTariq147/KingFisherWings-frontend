@@ -11,5 +11,7 @@ export const INVOICE_API = {
   post: (id: string) => `/invoices/${id}/post`,
   send: (id: string) => `/invoices/${id}/send`,
   pdf: (id: string) => `/invoices/${id}/pdf`,
+  /** Optional debug payload for FRESA invoice format packs (does not replace default PDF). */
+  formatPayload: (id: string) => `/invoices/${id}/format-payload`,
   cancel: (id: string) => `/invoices/${id}/cancel`,
 } as const;

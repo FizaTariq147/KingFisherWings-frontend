@@ -642,11 +642,16 @@ export const quotationService = {
     }
   },
 
-  async markWon(id: string): Promise<ConvertToJobResult> {
+  async markWon(id: string): Promise<ConvertToJobResult | Quotation> {
     assertId(id);
     try {
-      // Customer accepted → APPROVED, then auto-create job + draft invoice.
       await postAction(QUOTATION_API.markWon(id));
+      const quotation = await this.getById(id);
+      const { usesGatedFreightQuoteFlow } = await import('../utils/quotationStatus');
+      // NVOCC / Air: APPROVED only — never auto convert-to-job / never auto-create job shell.
+      if (usesGatedFreightQuoteFlow(quotation.job_type)) {
+        return quotation;
+      }
       return await this.convertToJob(id);
     } catch (error) {
       throw formatAxiosError(error);
@@ -654,16 +659,22 @@ export const quotationService = {
   },
 
   /**
-   * When portal already set APPROVED, staff ERP auto-creates job + draft invoice.
-   * No-op if already converted / has a job.
+   * When portal already set APPROVED, staff ERP auto-creates job + draft invoice
+   * for **standard** modes only.
+   * NVOCC / Air: no-op (gated booking-form → send-invoice → convert on booking/job).
    */
   async fulfillApprovedQuotation(id: string): Promise<ConvertToJobResult | Quotation> {
     assertId(id);
     const quotation = await this.getById(id);
-    const { canConvertQuotationToJob, coerceQuotationStatus } = await import(
-      '../utils/quotationStatus'
-    );
+    const { canConvertQuotationToJob, coerceQuotationStatus, usesGatedFreightQuoteFlow } =
+      await import('../utils/quotationStatus');
     const status = coerceQuotationStatus(quotation.status);
+
+    // Hard stop: never convert / never draft-invoice for gated freight quotes.
+    if (usesGatedFreightQuoteFlow(quotation.job_type)) {
+      return quotation;
+    }
+
     if (quotation.job_id || status === 'CONVERTED') {
       if (quotation.job_id && !quotation.invoice_id) {
         try {
@@ -675,10 +686,52 @@ export const quotationService = {
       }
       return quotation;
     }
-    if (!canConvertQuotationToJob(status)) {
+    if (!canConvertQuotationToJob(status, quotation.job_type)) {
       return quotation;
     }
     return this.convertToJob(id);
+  },
+
+  /**
+   * Air only — explicit staff action. Creates a job shell for Ops APIs
+   * (`/jobs/:id/air-booking-form`, `/air/send-invoice`) without draft invoice.
+   * Never call this automatically from mark-won / portal accept.
+   */
+  async createOpsJobWithoutInvoice(id: string): Promise<Quotation> {
+    assertId(id);
+    const quotation = await this.getById(id);
+    const { coerceQuotationStatus, usesGatedFreightQuoteFlow } = await import(
+      '../utils/quotationStatus'
+    );
+    if (!usesGatedFreightQuoteFlow(quotation.job_type)) {
+      throw new Error('createOpsJobWithoutInvoice is only for Air gated quotes.');
+    }
+    const jt = String(quotation.job_type ?? '').toUpperCase();
+    if (!jt.startsWith('AIR_')) {
+      throw new Error('NVOCC quotes do not create a job here — use NVOCC Bookings → send invoice → convert.');
+    }
+    if (quotation.job_id) return quotation;
+    if (coerceQuotationStatus(quotation.status) !== 'APPROVED') {
+      throw new Error(
+        `Quotation must be customer-approved before starting air ops (current status: ${quotation.status}).`,
+      );
+    }
+    const companyId =
+      quotation.company_id && isUuid(quotation.company_id)
+        ? quotation.company_id
+        : await resolveSessionCompanyIdAsync();
+    if (!companyId || !isUuid(companyId)) {
+      throw new Error(
+        'This quotation has no Company. Save a company on the quotation, then continue.',
+      );
+    }
+    await ensureJobNumberFormatReady();
+    const branchId = await ensureJobBranchReady(companyId);
+    return createJobFallbackFromQuotation({
+      ...quotation,
+      company_id: companyId,
+      branch_id: branchId,
+    });
   },
 
   async markLost(id: string, dto: MarkLostDto): Promise<Quotation> {
@@ -704,10 +757,14 @@ export const quotationService = {
     let quotation: Quotation | undefined;
     try {
       quotation = await this.getById(id);
-      const { canConvertQuotationToJob } = await import('../utils/quotationStatus');
-      if (!canConvertQuotationToJob(quotation.status)) {
+      const { canConvertQuotationToJob, usesGatedFreightQuoteFlow } = await import(
+        '../utils/quotationStatus'
+      );
+      if (!canConvertQuotationToJob(quotation.status, quotation.job_type)) {
         throw new Error(
-          `Quotation must be customer-approved before convert (current status: ${quotation.status}).`,
+          usesGatedFreightQuoteFlow(quotation.job_type)
+            ? `NVOCC/Air quotes do not convert here — continue Booking form → Send invoice on the gated flow (current status: ${quotation.status}).`
+            : `Quotation must be customer-approved before convert (current status: ${quotation.status}).`,
         );
       }
 

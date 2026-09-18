@@ -1185,5 +1185,6333 @@
         "type": "colorfulFooter"
       }
     ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_LOCATION_SUMMARY",
+    "formatNumber": 1,
+    "name": "Advance Shipping Note Location Summary",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-1"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-1"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE LOCATION SUMMARY",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_2",
+    "formatNumber": 2,
+    "name": "Advance Shipping Note Report Format-2",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-2"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-2"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_3",
+    "formatNumber": 3,
+    "name": "Advance Shipping Note Report Format-3",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-3"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-3"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_4",
+    "formatNumber": 4,
+    "name": "Advance Shipping Note Report Format-4",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-4"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-4"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_5",
+    "formatNumber": 5,
+    "name": "Advance Shipping Note Report Format-5",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-5"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-5"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_6",
+    "formatNumber": 6,
+    "name": "Advance Shipping Note Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-6"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "Advance Shipping Note Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "Advance Shipping Note Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "Advance Shipping Note Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_10",
+    "formatNumber": 10,
+    "name": "Advance Shipping Note Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-10"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_11",
+    "formatNumber": 11,
+    "name": "Advance Shipping Note Report Format-11",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-11"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-11"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_12",
+    "formatNumber": 12,
+    "name": "Advance Shipping Note Report Format-12",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-12"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-12"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_13",
+    "formatNumber": 13,
+    "name": "Advance Shipping Note Report Format-13",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-13"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-13"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_14",
+    "formatNumber": 14,
+    "name": "Advance Shipping Note Report Format-14",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-14"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-14"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_15",
+    "formatNumber": 15,
+    "name": "Advance Shipping Note Report Format-15",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-15"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-15"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_16",
+    "formatNumber": 16,
+    "name": "Advance Shipping Note Report Format-16",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-16"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-16"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_17",
+    "formatNumber": 17,
+    "name": "Advance Shipping Note Report Format-17",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-17"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-17"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_18",
+    "formatNumber": 18,
+    "name": "Advance Shipping Note Report Format-18",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-18"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-18"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_19",
+    "formatNumber": 19,
+    "name": "Advance Shipping Note Report Format-19",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-19"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-19"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_20",
+    "formatNumber": 20,
+    "name": "Advance Shipping Note Report Format-20",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-20"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-20"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_21",
+    "formatNumber": 21,
+    "name": "Advance Shipping Note Report Format-21",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-21"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-21"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_1",
+    "formatNumber": 1,
+    "name": "WMS Stock Report Format-1",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-1"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-1"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_2",
+    "formatNumber": 2,
+    "name": "WMS Stock Report Format-2",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-2"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-2"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_3",
+    "formatNumber": 3,
+    "name": "WMS Stock Report Format-3",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-3"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-3"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_4",
+    "formatNumber": 4,
+    "name": "WMS Stock Report Format-4",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-4"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-4"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_5",
+    "formatNumber": 5,
+    "name": "WMS Stock Report Format-5",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-5"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-5"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_6",
+    "formatNumber": 6,
+    "name": "WMS Stock Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-6"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "WMS Stock Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "WMS Stock Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "WMS Stock Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_10",
+    "formatNumber": 10,
+    "name": "WMS Stock Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-10"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_11",
+    "formatNumber": 11,
+    "name": "WMS Stock Report Format-11",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-11"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-11"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_12",
+    "formatNumber": 12,
+    "name": "WMS Stock Report Format-12",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-12"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-12"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_13",
+    "formatNumber": 13,
+    "name": "WMS Stock Report Format-13",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-13"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-13"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_14",
+    "formatNumber": 14,
+    "name": "WMS Stock Report Format-14",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-14"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-14"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_15",
+    "formatNumber": 15,
+    "name": "WMS Stock Report Format-15",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-15"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-15"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GRN_REPORT_FORMAT_1",
+    "formatNumber": 1,
+    "name": "WMS GRN Report Format-1",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-1"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-1"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GRN",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GRN_REPORT_FORMAT_2",
+    "formatNumber": 2,
+    "name": "WMS GRN Report Format-2",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-2"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-2"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GRN",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GRN_REPORT_FORMAT_3",
+    "formatNumber": 3,
+    "name": "WMS GRN Report Format-3",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-3"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-3"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GRN",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GRN_REPORT_FORMAT_4",
+    "formatNumber": 4,
+    "name": "WMS GRN Report Format-4",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-4"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-4"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GRN",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GRN_REPORT_FORMAT_5",
+    "formatNumber": 5,
+    "name": "WMS GRN Report Format-5",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-5"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-5"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GRN",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GRN_REPORT_FORMAT_6",
+    "formatNumber": 6,
+    "name": "WMS GRN Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-6"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GRN",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GRN_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "WMS GRN Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GRN",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GRN_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "WMS GRN Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GRN",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GRN_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "WMS GRN Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GRN",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GRN_REPORT_FORMAT_10",
+    "formatNumber": 10,
+    "name": "WMS GRN Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-10"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GRN",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GDO_REPORT_FORMAT_1",
+    "formatNumber": 1,
+    "name": "WMS GDO Report Format-1",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-1"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-1"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GDO",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GDO_REPORT_FORMAT_2",
+    "formatNumber": 2,
+    "name": "WMS GDO Report Format-2",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-2"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-2"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GDO",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GDO_REPORT_FORMAT_3",
+    "formatNumber": 3,
+    "name": "WMS GDO Report Format-3",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-3"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-3"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GDO",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GDO_REPORT_FORMAT_4",
+    "formatNumber": 4,
+    "name": "WMS GDO Report Format-4",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-4"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-4"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GDO",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GDO_REPORT_FORMAT_5",
+    "formatNumber": 5,
+    "name": "WMS GDO Report Format-5",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-5"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-5"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GDO",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GDO_REPORT_FORMAT_6",
+    "formatNumber": 6,
+    "name": "WMS GDO Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-6"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GDO",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GDO_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "WMS GDO Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GDO",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GDO_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "WMS GDO Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GDO",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GDO_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "WMS GDO Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GDO",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "WMS_GDO_REPORT_FORMAT_10",
+    "formatNumber": 10,
+    "name": "WMS GDO Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "ASN-19001",
+      "invoiceDate": "28-JAN-19",
+      "fieldGrid": [
+        {
+          "k": "Warehouse",
+          "v": "DXB-WH-01"
+        },
+        {
+          "k": "Customer",
+          "v": "AL NASER TRADING"
+        },
+        {
+          "k": "Reference",
+          "v": "PO-77821"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-10"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "SKU",
+        "Description",
+        "Qty",
+        "UOM",
+        "Location"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "112541AASD52",
+          "WD EXTERNAL HDD",
+          "500",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "2",
+          "2253465",
+          "HP LAPTOP",
+          "4",
+          "BOX",
+          "AB0001"
+        ],
+        [
+          "3",
+          "5251255220",
+          "NVIDIA GPU",
+          "600",
+          "BOX",
+          "GOODS_RECEIPT"
+        ]
+      ],
+      "termsLines": [
+        "WMS layout preview — FRESA Gold warehouse format."
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "WMS GDO",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
   }
 ]

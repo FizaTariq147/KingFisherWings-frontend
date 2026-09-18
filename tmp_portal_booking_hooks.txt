@@ -1,0 +1,49 @@
+export function usePortalQuotationBookingForm(
+  id: string,
+  enabled = true,
+  opts: { isAir?: boolean; jobId?: string } = {},
+) {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  const isAir = Boolean(opts.isAir);
+  const jobId = opts.jobId?.trim() || '';
+  return useQuery({
+    queryKey: [
+      ...portalQuotationKeys.bookingForm(scope, id),
+      isAir ? 'air' : 'sea',
+      jobId || 'no-job',
+    ] as const,
+    queryFn: () =>
+      portalQuotationsService.getBookingForm({
+        quotationId: id,
+        jobId: jobId || undefined,
+        isAir,
+      }),
+    enabled: Boolean(accessToken) && Boolean(id) && enabled && scope !== 'anon',
+    retry: false,
+  });
+}
+
+export function useUpdatePortalQuotationBookingForm(id: string) {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: ({
+      dto,
+      isAir = false,
+      jobId,
+    }: {
+      dto: import('../types/portalQuotations.types').PortalBookingFormUpsertDto;
+      isAir?: boolean;
+      jobId?: string;
+    }) =>
+      portalQuotationsService.updateBookingForm(
+        { quotationId: id, jobId, isAir },
+        dto,
+      ),
+    onSuccess: (form) => {
+      qc.setQueryData(portalQuotationKeys.bookingForm(scope, id), form);
+      void qc.invalidateQueries({ queryKey: portalQuotationKeys.bookingForm(scope, id) });
+    },
+  });
+}

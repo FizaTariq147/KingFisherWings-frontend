@@ -8,9 +8,15 @@ type WmsFormatBrowseStripProps = {
   searchQuery?: string;
 };
 
-const KIND_TONES: Record<
-  WmsFormatKind,
-  { bg: string; border: string; accent: string; label: string }
+const DEFAULT_TONE = {
+  bg: 'bg-[var(--color-success-50)]',
+  border: 'border-[var(--color-success-500)]/30',
+  accent: 'bg-[var(--color-success-500)]',
+  label: 'text-[var(--color-success-500)]',
+};
+
+const KIND_TONES: Partial<
+  Record<WmsFormatKind, { bg: string; border: string; accent: string; label: string }>
 > = {
   asn_format_1: {
     bg: 'bg-[var(--color-success-50)]',
@@ -82,7 +88,7 @@ export function WmsFormatBrowseStrip({
         <div className="-mx-0.5 flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:thin]">
           {items.map((row) => {
             const active = selectedCode === row.code;
-            const tone = KIND_TONES[row.kind];
+            const tone = KIND_TONES[row.kind] ?? DEFAULT_TONE;
             return (
               <button
                 key={row.code}

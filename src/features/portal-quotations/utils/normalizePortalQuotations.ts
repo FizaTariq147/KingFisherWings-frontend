@@ -15,6 +15,8 @@ import type {
   PortalQuotationListResult,
   PortalQuotationSummary,
   PortalQuotationPackage,
+  PortalBookingForm,
+  PortalBookingFormParty,
 } from '../types/portalQuotations.types';
 
 function portLabel(record: Record<string, unknown>, side: 'origin' | 'dest'): string {
@@ -203,6 +205,39 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
     negotiationRound: pickNumber(data.negotiation_round, data.negotiationRound),
     convertedJobNumber:
       pickString(data.converted_job_number, data.convertedJobNumber, data.job_number) || undefined,
+    jobId:
+      pickString(
+        data.job_id,
+        data.jobId,
+        data.converted_job_id,
+        data.convertedJobId,
+        data.shipment_id,
+        data.shipmentId,
+      ) || undefined,
+    bookingId:
+      pickString(
+        data.booking_id,
+        data.bookingId,
+        data.nvocc_booking_id,
+        data.nvoccBookingId,
+        data.source_booking_id,
+        data.sourceBookingId,
+        data.related_booking_id,
+        data.relatedBookingId,
+        data.workflow_booking_id,
+        data.workflowBookingId,
+        data.portal_booking_id,
+        data.portalBookingId,
+        asRecord(data.booking)?.id,
+        asRecord(data.nvocc_booking)?.id,
+        asRecord(data.nvoccBooking)?.id,
+        asRecord(data.links)?.booking_id,
+        asRecord(data.links)?.bookingId,
+        // When quote was sourced from an NVOCC booking shell.
+        /booking/i.test(pickString(data.source, data.source_type, data.sourceType))
+          ? pickString(data.source_id, data.sourceId)
+          : undefined,
+      ) || undefined,
     packages: normalizePortalPackages(data.packages),
     negotiationPricing: normalizeNegotiationPricing(data),
     portalEstimateSnapshot: snapshotRaw
@@ -258,4 +293,93 @@ function normalizePortalPackages(raw: unknown): PortalQuotationPackage[] | undef
     });
   }
   return packages.length ? packages : undefined;
+}
+
+function normalizeBookingParties(raw: unknown): PortalBookingFormParty[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const parties: PortalBookingFormParty[] = [];
+  for (const entry of raw) {
+    const r = asRecord(entry);
+    if (!r) continue;
+    const kind = pickString(r.party_kind, r.partyKind, r.kind).toUpperCase();
+    if (kind !== 'SHIPPER' && kind !== 'CONSIGNEE' && kind !== 'NOTIFY') continue;
+    const fullName = pickString(r.full_name, r.fullName, r.name);
+    if (!fullName) continue;
+    const entity = pickString(r.entity_kind, r.entityKind).toUpperCase();
+    parties.push({
+      party_kind: kind as PortalBookingFormParty['party_kind'],
+      full_name: fullName,
+      address: pickString(r.address) || undefined,
+      city: pickString(r.city) || undefined,
+      country: pickString(r.country) || undefined,
+      entity_kind:
+        entity === 'INDIVIDUAL' || entity === 'COMPANY'
+          ? (entity as PortalBookingFormParty['entity_kind'])
+          : undefined,
+      other_details: pickString(r.other_details, r.otherDetails) || undefined,
+    });
+  }
+  return parties.length ? parties : undefined;
+}
+
+/** Normalize portal / shipment booking-form payloads (matches UpsertNvoccBookingFormDto). */
+export function normalizePortalBookingForm(raw: unknown): PortalBookingForm {
+  const data = asRecord(unwrapData(raw)) ?? asRecord(raw) ?? {};
+  const num = (...keys: unknown[]) => {
+    for (const k of keys) {
+      if (typeof k === 'number' && Number.isFinite(k)) return k;
+      if (typeof k === 'string' && k.trim() && Number.isFinite(Number(k))) return Number(k);
+    }
+    return undefined;
+  };
+  return {
+    id: pickString(data.id) || undefined,
+    quotation_id: pickString(data.quotation_id, data.quotationId) || undefined,
+    date_of_request: pickString(data.date_of_request, data.dateOfRequest) || undefined,
+    voyage_ref: pickString(data.voyage_ref, data.voyageRef) || undefined,
+    client_booking_no: pickString(data.client_booking_no, data.clientBookingNo) || undefined,
+    gross_weight_kg: num(data.gross_weight_kg, data.grossWeightKg),
+    net_weight_kg: num(data.net_weight_kg, data.netWeightKg),
+    pol:
+      pickString(
+        data.pol,
+        data.origin_airport_code,
+        data.originAirportCode,
+        data.origin,
+      ) || undefined,
+    pod:
+      pickString(
+        data.pod,
+        data.dest_airport_code,
+        data.destAirportCode,
+        data.destination,
+      ) || undefined,
+    shipper_owned_container:
+      pickBoolean(data.shipper_owned_container, data.shipperOwnedContainer) ?? undefined,
+    is_dg: pickBoolean(data.is_dg, data.isDg) ?? undefined,
+    teu_count: num(data.teu_count, data.teuCount),
+    commodity: pickString(data.commodity) || undefined,
+    hs_code: pickString(data.hs_code, data.hsCode) || undefined,
+    final_use: pickString(data.final_use, data.finalUse) || undefined,
+    activity_sector: pickString(data.activity_sector, data.activitySector) || undefined,
+    insurance_details: pickString(data.insurance_details, data.insuranceDetails) || undefined,
+    lc_bank_details: pickString(data.lc_bank_details, data.lcBankDetails) || undefined,
+    attach_commercial_invoice:
+      pickBoolean(data.attach_commercial_invoice, data.attachCommercialInvoice) ?? undefined,
+    attach_correspondence:
+      pickBoolean(data.attach_correspondence, data.attachCorrespondence) ?? undefined,
+    attach_cod_form: pickBoolean(data.attach_cod_form, data.attachCodForm) ?? undefined,
+    attach_licence: pickBoolean(data.attach_licence, data.attachLicence) ?? undefined,
+    booking_agent_line: pickString(data.booking_agent_line, data.bookingAgentLine) || undefined,
+    agent_requester_name:
+      pickString(data.agent_requester_name, data.agentRequesterName) || undefined,
+    sq_bl_booking_reference:
+      pickString(data.sq_bl_booking_reference, data.sqBlBookingReference) || undefined,
+    request_details:
+      pickString(data.request_details, data.requestDetails, data.notes, data.special_handling) ||
+      undefined,
+    consent_accepted: pickBoolean(data.consent_accepted, data.consentAccepted) ?? undefined,
+    mark_complete: pickBoolean(data.mark_complete, data.markComplete) ?? false,
+    parties: normalizeBookingParties(data.parties),
+  };
 }

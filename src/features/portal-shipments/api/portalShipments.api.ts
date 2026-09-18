@@ -24,6 +24,14 @@ export const PORTAL_SHIPMENTS_API = {
     `/portal/shipments/${encodeURIComponent(id)}/request-draft-hawb`,
   requestDeliveryOrder: (id: string) =>
     `/portal/shipments/${encodeURIComponent(id)}/request-delivery-order`,
+  /** Shared commercial — air compliance booking form (same fields as NVOCC). */
+  accept: (id: string) => `/portal/shipments/${encodeURIComponent(id)}/accept`,
+  complianceForm: (id: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/compliance-form`,
+  complianceFormSubmit: (id: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/compliance-form/submit`,
+  complianceDocument: (id: string, kind: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/compliance-form/documents/${encodeURIComponent(kind)}`,
 } as const;
 
 export const PORTAL_JOB_STATUSES = [

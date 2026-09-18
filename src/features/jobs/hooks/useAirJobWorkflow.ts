@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
+import { invoiceKeys } from '@/features/invoices/hooks/useInvoices';
 import { jobService } from '../services/job.service';
 import type {
   AirWorkflowActionDto,
@@ -37,6 +38,7 @@ export function useAirJobWorkflow(jobId: string) {
     void queryClient.invalidateQueries({ queryKey: jobKeys.airBookingForm(jobId) });
     void queryClient.invalidateQueries({ queryKey: jobKeys.documents(jobId) });
     void queryClient.invalidateQueries({ queryKey: jobKeys.docStatus(jobId) });
+    void queryClient.invalidateQueries({ queryKey: invoiceKeys.all });
   };
 
   return {

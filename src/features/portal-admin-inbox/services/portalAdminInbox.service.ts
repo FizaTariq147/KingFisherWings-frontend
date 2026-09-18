@@ -88,4 +88,43 @@ export const portalAdminInboxService = {
   async reviewCreditRequest(id: string, dto: ReviewCreditLimitDto): Promise<void> {
     await axiosInstance.patch(PORTAL_ADMIN_INBOX_API.reviewCreditRequest(id), dto, staffGetConfig);
   },
+
+  /**
+   * Find the latest customer portal booking-form submission (via portal message JSON payload).
+   * Used so Ops admin/sales can prefill the Operations booking form.
+   */
+  async findCustomerPortalBookingForm(filter: {
+    jobId?: string;
+    quotationId?: string;
+    quoteNumber?: string;
+    /** When no id match, prefer latest completed payload with this job-type prefix (AIR / NVOCC). */
+    jobTypePrefix?: string;
+  }): Promise<import('@/features/portal-quotations/utils/portalBookingFormStorage').PortalBookingFormMessagePayload | null> {
+    const {
+      parsePortalBookingFormMessagePayload,
+      portalBookingFormPayloadMatches,
+    } = await import('@/features/portal-quotations/utils/portalBookingFormStorage');
+
+    const list = await this.listMessages({ page: 1, limit: 50 });
+    type Payload = import('@/features/portal-quotations/utils/portalBookingFormStorage').PortalBookingFormMessagePayload;
+    const scored: Array<{ score: number; at: string; payload: Payload }> = [];
+    const prefix = (filter.jobTypePrefix || '').toUpperCase();
+
+    for (const msg of list.items) {
+      const payload = parsePortalBookingFormMessagePayload(msg.body);
+      if (!payload) continue;
+      const at = msg.createdAt || payload.submittedAt || '';
+      if (portalBookingFormPayloadMatches(payload, filter)) {
+        scored.push({ score: 100, at, payload });
+        continue;
+      }
+      if (prefix && (payload.jobType || '').toUpperCase().startsWith(prefix) && payload.mark_complete) {
+        scored.push({ score: 10, at, payload });
+      }
+    }
+
+    if (!scored.length) return null;
+    scored.sort((a, b) => b.score - a.score || String(b.at).localeCompare(String(a.at)));
+    return scored[0]?.payload ?? null;
+  },
 };

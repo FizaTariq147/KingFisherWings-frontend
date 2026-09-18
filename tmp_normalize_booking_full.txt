@@ -1,0 +1,99 @@
+  async downloadPdf(id: string, quotationNumber = 'quotation'): Promise<void> {
+    const { blob, fileName } = await this.getPdfBlob(id, quotationNumber);
+    triggerBlobDownload(blob, fileName);
+  },
+
+  async getBookingForm(opts: {
+    quotationId: string;
+    jobId?: string;
+    isAir?: boolean;
+  }): Promise<PortalBookingForm> {
+    const paths = portalBookingFormPaths(opts);
+    let lastError: unknown;
+    for (const path of paths) {
+      try {
+        const res = await portalApiClient.get(path);
+        return normalizePortalBookingForm(unwrapData(res.data) ?? res.data);
+      } catch (error) {
+        const status = portalErrorStatus(error);
+        if (status === 404) {
+          lastError = error;
+          continue;
+        }
+        throw error;
+      }
+    }
+    // No form row yet on any candidate — empty draft for the UI.
+    if (lastError) {
+      return { quotation_id: opts.quotationId, mark_complete: false };
+    }
+    return { quotation_id: opts.quotationId, mark_complete: false };
+  },
+
+  async updateBookingForm(
+    opts: {
+      quotationId: string;
+      jobId?: string;
+      isAir?: boolean;
+    },
+    dto: PortalBookingFormUpsertDto,
+  ): Promise<PortalBookingForm> {
+    const paths = portalBookingFormPaths(opts);
+    let lastError: unknown;
+    for (const path of paths) {
+      try {
+        const res = await portalApiClient.put(path, dto);
+        return normalizePortalBookingForm(unwrapData(res.data) ?? res.data);
+      } catch (error) {
+        const status = portalErrorStatus(error);
+        // 405 = route exists but method wrong → try POST on same path only.
+        if (status === 405) {
+          try {
+            const res = await portalApiClient.post(path, dto);
+            return normalizePortalBookingForm(unwrapData(res.data) ?? res.data);
+          } catch (postErr) {
+            lastError = postErr;
+            continue;
+          }
+        }
+        if (status === 404) {
+          lastError = error;
+          continue;
+        }
+        throw error;
+      }
+    }
+    const detail =
+      lastError instanceof PortalApiError
+        ? lastError.message
+        : 'Portal booking-form API is not available yet.';
+    throw new PortalApiError(
+      `${detail} Tried: ${paths.join(', ')}. Backend needs GET/PUT on one of these paths.`,
+      404,
+    );
+  },
+};
+
+function portalErrorStatus(error: unknown): number {
+  if (error instanceof PortalApiError) return error.status;
+  const ax = error as { response?: { status?: number }; status?: number };
+  return ax.response?.status ?? ax.status ?? 0;
+}
+
+/** Prefer shipment/job paths for air; never use /portal/quotations/:id/air-booking-form. */
+function portalBookingFormPaths(opts: {
+  quotationId: string;
+  jobId?: string;
+  isAir?: boolean;
+}): string[] {
+  const jobId = opts.jobId?.trim();
+  const paths: string[] = [];
+  if (jobId) {
+    if (opts.isAir) {
+      paths.push(PORTAL_SHIPMENTS_API.airBookingForm(jobId));
+    }
+    paths.push(PORTAL_SHIPMENTS_API.bookingForm(jobId));
+  }
+  paths.push(PORTAL_QUOTATIONS_API.bookingForm(opts.quotationId));
+  return paths;
+}

@@ -1,9 +1,19 @@
 import { axiosInstance } from '@/lib/axios';
 import { withGatewayRetry } from '@/lib/wakeApi';
-import type {
-  GenerateJobDocumentDto,
-  SendPreAlertDto,
-} from '@/features/jobs/types/job.types';
+import { isUuid } from '@/lib/isUuid';
+import { extractAxiosErrorDetail } from '@/lib/extractAxiosErrorDetail';
+import { resolveSessionCompanyIdAsync } from '@/lib/resolveSessionCompanyId';
+import {
+  buildJobCreateCandidatesAsync,
+  JOB_POST_AXIOS_CONFIG,
+} from '@/features/jobs/utils/buildJobCreateCandidates';
+import { ensureJobBranchReady } from '@/features/jobs/utils/ensureJobBranchReady';
+import { normalizeJob, unwrapEntity as unwrapJobEntity } from '@/features/jobs/utils/normalizeJob';
+import { ensureJobNumberFormatReady } from '@/features/organization/utils/ensureJobNumberFormat';
+import { JOB_API } from '@/features/jobs/api/job.api';
+import type { CreateJobDto, GenerateJobDocumentDto, SendPreAlertDto } from '@/features/jobs/types/job.types';
+import type { JobType } from '@/features/jobs/constants/job.constants';
+import { partyService } from '@/features/parties/services/party.service';
 import { NVOCC_API } from '../api/nvocc.api';
 import type {
   AssignLoadListContainerDto,
@@ -96,6 +106,88 @@ async function mutateResource(
     return axiosInstance.post(path, body);
   });
   return unwrapEntity(res.data);
+}
+
+/** Resolve a party UUID to use as job shipper when the booking row has none. */
+async function resolveShipperIdForBooking(booking: NvoccBooking): Promise<string | undefined> {
+  if (booking.shipper_id && isUuid(booking.shipper_id)) return booking.shipper_id;
+
+  if (booking.enquiry_id && isUuid(booking.enquiry_id)) {
+    try {
+      const enquiry = await nvoccEnquiryService.get(booking.enquiry_id);
+      if (enquiry.customer_id && isUuid(enquiry.customer_id)) return enquiry.customer_id;
+    } catch {
+      /* continue */
+    }
+  }
+
+  try {
+    const form = await nvoccBookingService.getBookingForm(booking.id);
+    const shipperParty = form.parties?.find((p) => p.party_kind === 'SHIPPER');
+    const name = shipperParty?.full_name?.trim();
+    if (name) {
+      try {
+        const listed = await partyService.list({
+          page: 1,
+          limit: 25,
+          search: name,
+          party_type: 'CUSTOMER',
+          order: 'asc',
+        });
+        const lower = name.toLowerCase();
+        const match =
+          listed.parties.find((p) => p.name.trim().toLowerCase() === lower) ||
+          listed.parties.find((p) => p.name.trim().toLowerCase().includes(lower)) ||
+          listed.parties[0];
+        if (match?.id && isUuid(match.id)) return match.id;
+      } catch {
+        /* create below */
+      }
+
+      const code = `NV${booking.id.replace(/-/g, '').slice(0, 8).toUpperCase()}`;
+      const country =
+        shipperParty?.country && /^[A-Za-z]{2}$/.test(shipperParty.country.trim())
+          ? shipperParty.country.trim().toUpperCase()
+          : 'AE';
+      const partyPayload = {
+        party_type: 'CUSTOMER' as const,
+        code,
+        name,
+        address: shipperParty?.address?.trim() || undefined,
+        city: shipperParty?.city?.trim() || undefined,
+        country_code: country,
+        is_active: true,
+        notes: `Auto-created from NVOCC booking form ${booking.booking_number || booking.id}`,
+      };
+      try {
+        const created = await partyService.create(partyPayload);
+        if (created.id && isUuid(created.id)) return created.id;
+      } catch {
+        const created = await partyService.create({
+          ...partyPayload,
+          code: `NV${Date.now().toString(36).toUpperCase().slice(-8)}`,
+        });
+        if (created.id && isUuid(created.id)) return created.id;
+      }
+    }
+  } catch {
+    /* continue */
+  }
+
+  try {
+    const listed = await partyService.list({
+      page: 1,
+      limit: 5,
+      party_type: 'CUSTOMER',
+      order: 'asc',
+    });
+    const first = listed.parties.find((p) => p.id && isUuid(p.id));
+    if (first?.id) return first.id;
+  } catch {
+    /* ignore */
+  }
+
+  return undefined;
 }
 
 export const nvoccTariffService = {
@@ -472,13 +564,145 @@ export const nvoccBookingService = {
 
   async convertToJob(id: string, dto: ConvertNvoccBookingToJobDto = {}): Promise<Record<string, unknown>> {
     try {
-      const raw = await mutateResource(
-        'post',
-        NVOCC_API.bookings.convertToJob(id),
-        prepareNvoccPayload(dto),
-      );
-      return (raw as Record<string, unknown>) ?? {};
+      let booking = await this.get(id);
+      if (booking.job_id && isUuid(booking.job_id)) {
+        return {
+          id: booking.job_id,
+          job_id: booking.job_id,
+          job_type: booking.job_type ?? 'NVOCC_EXPORT',
+          already_linked: true,
+        };
+      }
+
+      const status = String(booking.booking_status ?? '').toUpperCase().replace(/[\s-]+/g, '_');
+      const isDraft = !status || status === 'DRAFT' || status === 'NEW' || status === 'PENDING';
+
+      // Classic confirm is DRAFT-only (allocates HBL / voyage space). Gated flow bookings are
+      // already past draft (e.g. INVOICE_SENT) — never call confirm for those.
+      if (isDraft) {
+        try {
+          booking = await this.confirm(id);
+        } catch (confirmErr) {
+          const detail = extractAxiosErrorDetail(confirmErr).toLowerCase();
+          if (!detail.includes('only draft') && !detail.includes('already')) {
+            throw new Error(
+              `Confirm booking failed (status: ${booking.booking_status || 'DRAFT'}). ` +
+                `Confirm needs a voyage with free space. ${extractAxiosErrorDetail(confirmErr)}`,
+            );
+          }
+        }
+      }
+
+      const companyId =
+        (dto.company_id && isUuid(dto.company_id) ? dto.company_id : undefined) ||
+        (await resolveSessionCompanyIdAsync());
+
+      if (!companyId || !isUuid(companyId)) {
+        throw new Error(
+          'Convert to job needs a company. Ensure your user is linked to a company, then retry.',
+        );
+      }
+
+      await ensureJobNumberFormatReady();
+      const branchId =
+        (dto.branch_id && isUuid(dto.branch_id) ? dto.branch_id : undefined) ||
+        (await ensureJobBranchReady(companyId));
+
+      // Gated bookings often lack shipper_id — resolve from enquiry / form / parties, then patch.
+      let shipperId =
+        booking.shipper_id && isUuid(booking.shipper_id) ? booking.shipper_id : undefined;
+      if (!shipperId) {
+        shipperId = await resolveShipperIdForBooking(booking);
+        if (shipperId) {
+          try {
+            booking = await this.update(id, { shipper_id: shipperId });
+            shipperId = booking.shipper_id && isUuid(booking.shipper_id) ? booking.shipper_id : shipperId;
+          } catch {
+            /* still use resolved id for fallback create */
+          }
+        }
+      }
+
+      const body: ConvertNvoccBookingToJobDto = {
+        ...dto,
+        company_id: companyId,
+        branch_id: branchId,
+      };
+
+      try {
+        const raw = await mutateResource(
+          'post',
+          NVOCC_API.bookings.convertToJob(id),
+          prepareNvoccPayload(body),
+        );
+        return (raw as Record<string, unknown>) ?? {};
+      } catch (convertErr) {
+        const convertStatus = (convertErr as { response?: { status?: number } })?.response?.status;
+        if (convertStatus !== 500) throw convertErr;
+
+        // Same class of failure as quotation convert — try direct POST /jobs so Ops can continue.
+        if (!shipperId || !isUuid(shipperId)) {
+          shipperId = await resolveShipperIdForBooking(booking);
+        }
+        if (!shipperId || !isUuid(shipperId)) {
+          throw new Error(
+            `Convert to job crashed on the API (NvoccBookingsController_convertToJob). ` +
+              `Could not resolve a shipper party for fallback job create. Add a SHIPPER name on the ` +
+              `booking form (or link a Customer party), then retry. ` +
+              `Booking status: ${booking.booking_status || 'unknown'}.`,
+          );
+        }
+
+        const jobType = (booking.job_type || 'NVOCC_EXPORT') as JobType;
+        const createDto: CreateJobDto = {
+          job_type: jobType,
+          shipper_id: shipperId,
+          company_id: companyId,
+          branch_id: branchId,
+          consignee_id: booking.consignee_id,
+          commodity: booking.commodity,
+          hs_code: booking.hs_code,
+          pieces: booking.pieces,
+          gross_weight: booking.gross_weight,
+          container_type_id: booking.container_type_id,
+          container_count: booking.container_count,
+          is_dg: booking.is_dg,
+          incoterms: booking.incoterms,
+          notes: `Created as fallback from NVOCC booking ${booking.booking_number || booking.id}`,
+        };
+
+        const candidates = await buildJobCreateCandidatesAsync(createDto, companyId, branchId);
+        let lastCreateError = extractAxiosErrorDetail(convertErr);
+        for (const candidate of candidates) {
+          try {
+            const res = await withGatewayRetry(() =>
+              axiosInstance.post(JOB_API.list, candidate, JOB_POST_AXIOS_CONFIG),
+            );
+            const job = normalizeJob(unwrapJobEntity(res.data));
+            if (job?.id) {
+              return {
+                ...job,
+                id: job.id,
+                job_id: job.id,
+                job_type: job.job_type ?? jobType,
+                fallback_from_booking: true,
+                booking_id: booking.id,
+              };
+            }
+          } catch (createErr) {
+            lastCreateError = extractAxiosErrorDetail(createErr);
+          }
+        }
+
+        throw new Error(
+          `Convert to job failed (NvoccBookingsController_convertToJob HTTP 500) and fallback ` +
+            `POST /jobs also failed (JobsController_create). ${lastCreateError}`,
+        );
+      }
     } catch (error) {
+      if (error instanceof Error && !(error as { response?: unknown }).response) {
+        throw error;
+      }
       throw formatNvoccError(error);
     }
   },
@@ -542,19 +766,31 @@ export const nvoccBookingService = {
       );
       return normalizeNvoccBookingForm(unwrapEntity(res.data) ?? res.data);
     } catch (error) {
+      // Backend returns 404 until the first PUT/POST creates the form row.
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 404) {
+        return normalizeNvoccBookingForm({ booking_id: id });
+      }
       throw formatNvoccError(error);
     }
   },
 
   async updateBookingForm(id: string, dto: UpdateNvoccBookingFormDto): Promise<NvoccBookingForm> {
+    const body = prepareNvoccPayload(dto);
     try {
-      const raw = await mutateResource(
-        'put',
-        NVOCC_API.bookings.bookingForm(id),
-        prepareNvoccPayload(dto),
-      );
+      const raw = await mutateResource('put', NVOCC_API.bookings.bookingForm(id), body);
       return normalizeNvoccBookingForm(raw);
     } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      // Some backends only create via POST when no form exists yet.
+      if (status === 404 || status === 405) {
+        try {
+          const raw = await mutateResource('post', NVOCC_API.bookings.bookingForm(id), body);
+          return normalizeNvoccBookingForm(raw);
+        } catch (createError) {
+          throw formatNvoccError(createError);
+        }
+      }
       throw formatNvoccError(error);
     }
   },

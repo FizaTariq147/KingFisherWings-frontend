@@ -1,6 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
+import { invoiceKeys } from '@/features/invoices/hooks/useInvoices';
 import {
   nvoccBookingService,
   nvoccEnquiryService,
@@ -287,6 +288,7 @@ export function useNvoccBookingActions(id: string) {
     queryClient.invalidateQueries({ queryKey: nvoccKeys.bookings.all });
     queryClient.invalidateQueries({ queryKey: nvoccKeys.bookings.detail(id) });
     queryClient.invalidateQueries({ queryKey: nvoccKeys.bookings.bookingForm(id) });
+    queryClient.invalidateQueries({ queryKey: invoiceKeys.all });
   };
   return {
     confirm: useMutation({ mutationFn: () => nvoccBookingService.confirm(id), onSuccess: invalidate }),

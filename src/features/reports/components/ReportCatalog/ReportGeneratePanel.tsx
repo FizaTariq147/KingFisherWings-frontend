@@ -46,6 +46,11 @@ type ReportGeneratePanelProps = {
   /** Controlled pack selection (persisted in URL). */
   selectedPack?: string;
   onSelectedPackChange?: (pack: string) => void;
+  /**
+   * When true, skip embedding InvoiceFormatAutoPdf (catalog page already shows it).
+   * Bind / activate / generate still run for live `/reports/*` PDFs.
+   */
+  omitClientPreview?: boolean;
 };
 
 function isUuid(value: string): boolean {
@@ -62,6 +67,7 @@ export function ReportGeneratePanel({
   onTemplateUpdated,
   selectedPack: selectedPackProp,
   onSelectedPackChange,
+  omitClientPreview = false,
 }: ReportGeneratePanelProps) {
   const detailKey = isUuid(template.id) ? template.id : template.code;
   const detail = useReportTemplate(detailKey, Boolean(detailKey));
@@ -214,11 +220,18 @@ export function ReportGeneratePanel({
     setError(null);
     setMessage(null);
 
-    // Invoice Report Format-* PDF → same KingFisher layout as the catalog preview.
-    if (isInvoiceFormatPdf) {
+    const canLiveGenerate = !detailFailed && resolved.is_active;
+
+    // Prefer POST /reports/generate when pack is bound + active (additive FRESA path).
+    // Client layout PDF is preview fallback only — never POST /invoices/:id/pdf.
+    if (isInvoiceFormatPdf && !canLiveGenerate) {
       const preview = getInvoiceFormatPreview(resolved.code);
       if (!preview) {
-        setError('Invoice format preview definition not found.');
+        setError(
+          detailFailed
+            ? 'Template is not on the backend yet. Import registry first, or use the layout preview above.'
+            : 'Invoice format preview definition not found. Bind a pack and Activate for live PDF.',
+        );
         return;
       }
       setClientGenerating(true);
@@ -233,6 +246,12 @@ export function ReportGeneratePanel({
           } catch {
             // Keep demo data if invoice fetch fails — still show layout PDF.
           }
+          try {
+            const payload = await invoiceService.getFormatPayload(invoiceId, resolved.code);
+            if (payload) data = { ...data, ...payload };
+          } catch {
+            /* optional enrich */
+          }
         }
         const blob = await generateInvoiceFormatLayoutPdf(preview, data, {
           logoUrl: typeof logoUrl === 'string' ? logoUrl : undefined,
@@ -246,7 +265,7 @@ export function ReportGeneratePanel({
         setPdfReadyUrl(null);
         setPdfReadyOpen(true);
         setJobId(null);
-        setMessage('PDF ready — same layout as the KingFisher preview above.');
+        setMessage('Layout preview PDF ready (client). Bind + Activate for live backend PDF.');
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Could not generate layout PDF.');
       } finally {
@@ -384,45 +403,8 @@ export function ReportGeneratePanel({
   const canDeactivate = resolved.is_active && Boolean(detail.data || !discoveryMode);
   const isInvoiceFormat = isInvoiceReportFormatCode(resolved.code);
 
-  if (isInvoiceFormat) {
-    return (
-      <div className="space-y-4">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h3 className="text-sm font-semibold text-[var(--color-neutral-900)]">{resolved.name}</h3>
-            <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
-              Format-{getInvoiceFormatPreview(resolved.code)?.formatNumber ?? '—'}
-            </p>
-          </div>
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Close
-          </Button>
-        </div>
-
-        <InvoiceFormatAutoPdf code={resolved.code} invoiceId={context?.invoice_id} />
-
-        {error ? <p className="text-sm text-[var(--color-danger-600)]">{error}</p> : null}
-
-        <PdfReadyModal
-          open={pdfReadyOpen}
-          onClose={() => {
-            setPdfReadyOpen(false);
-            setPdfReadyBlob(null);
-            setPdfReadyUrl(null);
-          }}
-          blob={pdfReadyBlob}
-          url={pdfReadyBlob ? null : pdfReadyUrl}
-          title="Invoice format PDF"
-          fileName={pdfReadyName}
-          skipBranding
-          description="Preview or download."
-        />
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 rounded-xl border border-[var(--color-neutral-200)] bg-white p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="text-sm font-semibold text-[var(--color-neutral-900)]">{resolved.name}</h3>
@@ -430,12 +412,19 @@ export function ReportGeneratePanel({
           <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
             {reportFamilyLabel(resolved.family)} · {formats.join(' / ')}
             {resolved.is_active ? ' · active' : ' · inactive'}
+            {isInvoiceFormat
+              ? ` · Format-${getInvoiceFormatPreview(resolved.code)?.formatNumber ?? '—'}`
+              : ''}
           </p>
         </div>
         <Button type="button" variant="secondary" onClick={onClose}>
           Close
         </Button>
       </div>
+
+      {isInvoiceFormat && !omitClientPreview ? (
+        <InvoiceFormatAutoPdf code={resolved.code} invoiceId={context?.invoice_id} />
+      ) : null}
 
       {resolved.description ? (
         <p className="text-sm text-[var(--color-neutral-600)]">{resolved.description}</p>

@@ -215,6 +215,108 @@ export const invoiceService = {
     }
   },
 
+  /**
+   * Ensure a draft customer invoice exists for a job (air/NVOCC send-invoice needs invoice_id).
+   * 1) POST /invoices/from-job/:jobId (needs uninvoiced billable charges)
+   * 2) GET /invoices?job_id=
+   * 3) POST /invoices with party + job + lines (fallback when job has no billable charges yet)
+   */
+  async ensureDraftForJob(job: {
+    id: string;
+    shipper_id?: string;
+    billing_party_id?: string;
+    company_id?: string;
+    branch_id?: string;
+    currency_code?: string;
+    charges?: Array<{
+      description?: string;
+      charge_code?: string;
+      charge_code_id?: string;
+      quantity?: number;
+      unit_price?: number;
+      is_cost?: boolean;
+      is_billable?: boolean;
+    }>;
+    lineHint?: string;
+  }): Promise<Invoice> {
+    assertId(job.id, 'job');
+
+    let fromJobError = '';
+    try {
+      return await this.createFromJob(job.id);
+    } catch (err) {
+      fromJobError = err instanceof Error ? err.message : String(err);
+    }
+
+    try {
+      const listed = await this.list({ job_id: job.id, limit: 10, page: 1 });
+      const existing = listed.invoices.find((inv) => isUuid(inv.id));
+      if (existing) return existing;
+    } catch {
+      /* continue to create */
+    }
+
+    const partyId =
+      (job.billing_party_id && isUuid(job.billing_party_id) && job.billing_party_id) ||
+      (job.shipper_id && isUuid(job.shipper_id) && job.shipper_id) ||
+      '';
+    if (!partyId) {
+      throw new Error(
+        fromJobError
+          ? `${fromJobError} — also no shipper/billing party on the job to create a draft invoice.`
+          : 'Job has no shipper/billing party. Set shipper on the job, add billable charges, then retry.',
+      );
+    }
+
+    const currency = (job.currency_code || 'AED').trim().toUpperCase().slice(0, 3) || 'AED';
+    const billable = (job.charges ?? []).filter(
+      (c) => c.is_cost !== true && c.is_billable !== false,
+    );
+    const lines =
+      billable.length > 0
+        ? billable.map((c, index) => ({
+            description: (c.description || c.charge_code || `Charge ${index + 1}`).slice(0, 300),
+            quantity: Number(c.quantity) > 0 ? Number(c.quantity) : 1,
+            unit_price: Number.isFinite(Number(c.unit_price)) ? Number(c.unit_price) : 0,
+            charge_code_id:
+              c.charge_code_id && isUuid(c.charge_code_id) ? c.charge_code_id : undefined,
+            sort_order: index,
+          }))
+        : [
+            {
+              description: (job.lineHint || 'Air freight charges').slice(0, 300),
+              quantity: 1,
+              unit_price: 0,
+              sort_order: 0,
+            },
+          ];
+
+    try {
+      return await this.create({
+        party_id: partyId,
+        job_id: job.id,
+        company_id: job.company_id && isUuid(job.company_id) ? job.company_id : undefined,
+        branch_id: job.branch_id && isUuid(job.branch_id) ? job.branch_id : undefined,
+        currency_code: currency,
+        remarks: fromJobError
+          ? `Created after from-job: ${fromJobError.slice(0, 180)}`
+          : undefined,
+        lines,
+      });
+    } catch (err) {
+      const createErr = err instanceof Error ? err.message : String(err);
+      throw new Error(
+        [
+          fromJobError ? `from-job: ${fromJobError}` : null,
+          `POST /invoices: ${createErr}`,
+          'Add billable job charges (Charges tab) or ensure shipper is set, then retry.',
+        ]
+          .filter(Boolean)
+          .join(' — '),
+      );
+    }
+  },
+
   async addLine(id: string, dto: CreateInvoiceLineDto): Promise<InvoiceLine> {
     assertId(id);
     try {
@@ -315,6 +417,34 @@ export const invoiceService = {
       if (status === 404 || status === 204 || (typeof status === 'number' && status >= 500)) {
         return {};
       }
+      throw formatAxiosError(error);
+    }
+  },
+
+  /**
+   * Optional FRESA format payload for catalog AutoPdf / generate params.
+   * Additive only — never used by Invoice detail "Generate PDF" (POST /invoices/:id/pdf).
+   */
+  async getFormatPayload(
+    id: string,
+    format: string,
+  ): Promise<Record<string, unknown> | null> {
+    assertId(id);
+    const code = format.trim();
+    if (!code) return null;
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<unknown>(INVOICE_API.formatPayload(id), {
+          params: { format: code },
+          withCredentials: false,
+        }),
+      );
+      const entity = unwrapEntity(res.data);
+      const record = asRecord(entity) ?? asRecord(res.data);
+      return record;
+    } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 404 || status === 501 || status === 204) return null;
       throw formatAxiosError(error);
     }
   },

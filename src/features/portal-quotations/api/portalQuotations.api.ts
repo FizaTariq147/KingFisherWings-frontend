@@ -13,6 +13,17 @@ export const PORTAL_QUOTATIONS_API = {
   pdf: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/pdf`,
 } as const;
 
+/** Portal — NVOCC Compliance Booking Form (customer 8-step). Air uses PORTAL_SHIPMENTS_API. */
+export const PORTAL_BOOKINGS_API = {
+  accept: (id: string) => `/portal/bookings/${encodeURIComponent(id)}/accept`,
+  complianceForm: (id: string) =>
+    `/portal/bookings/${encodeURIComponent(id)}/compliance-form`,
+  complianceFormSubmit: (id: string) =>
+    `/portal/bookings/${encodeURIComponent(id)}/compliance-form/submit`,
+  complianceDocument: (id: string, kind: string) =>
+    `/portal/bookings/${encodeURIComponent(id)}/compliance-form/documents/${encodeURIComponent(kind)}`,
+} as const;
+
 export const PORTAL_QUOTATION_REJECT_REASONS = [
   'Competitor Rate',
   'No Space',

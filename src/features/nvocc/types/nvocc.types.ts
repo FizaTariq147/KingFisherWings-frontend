@@ -367,25 +367,83 @@ export interface RecordNvoccMblReceivedDto {
 }
 
 /** Sea-export workflow booking form (GET/PUT /nvocc/bookings/:id/booking-form). */
+export type NvoccBookingFormPartyKind = 'SHIPPER' | 'CONSIGNEE' | 'NOTIFY';
+export type NvoccBookingFormEntityKind = 'COMPANY' | 'INDIVIDUAL';
+
+export interface NvoccBookingFormParty {
+  party_kind: NvoccBookingFormPartyKind;
+  full_name?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  entity_kind?: NvoccBookingFormEntityKind;
+  other_details?: string;
+}
+
 export type NvoccBookingForm = Record<string, unknown> & {
   id?: string;
   booking_id?: string;
-  shipper_ref?: string;
+  date_of_request?: string;
+  voyage_ref?: string;
+  client_booking_no?: string;
+  gross_weight_kg?: number;
+  net_weight_kg?: number;
+  pol?: string;
+  pod?: string;
+  shipper_owned_container?: boolean;
+  is_dg?: boolean;
+  teu_count?: number;
   commodity?: string;
-  marks_numbers?: string;
-  container_type_id?: string;
-  container_count?: number;
-  cbm_allocated?: number;
-  gross_weight?: number;
-  pieces?: number;
-  incoterms?: string;
-  freight_terms?: string;
-  other_charges_terms?: string;
   hs_code?: string;
-  notes?: string;
+  final_use?: string;
+  activity_sector?: string;
+  insurance_details?: string;
+  lc_bank_details?: string;
+  attach_commercial_invoice?: boolean;
+  attach_correspondence?: boolean;
+  attach_cod_form?: boolean;
+  attach_licence?: boolean;
+  booking_agent_line?: string;
+  agent_requester_name?: string;
+  sq_bl_booking_reference?: string;
+  request_details?: string;
+  consent_accepted?: boolean;
+  parties?: NvoccBookingFormParty[];
+  mark_complete?: boolean;
 };
 
-export type UpdateNvoccBookingFormDto = Record<string, unknown>;
+/** PUT body — whitelist matches UpsertNvoccBookingFormDto (forbidUnknownValues). */
+export type UpdateNvoccBookingFormDto = {
+  date_of_request?: string;
+  voyage_ref?: string;
+  client_booking_no?: string;
+  gross_weight_kg?: number;
+  net_weight_kg?: number;
+  pol: string;
+  pod: string;
+  shipper_owned_container?: boolean;
+  is_dg?: boolean;
+  teu_count?: number;
+  commodity: string;
+  hs_code?: string;
+  final_use?: string;
+  activity_sector?: string;
+  insurance_details?: string;
+  lc_bank_details?: string;
+  attach_commercial_invoice?: boolean;
+  attach_correspondence?: boolean;
+  attach_cod_form?: boolean;
+  attach_licence?: boolean;
+  booking_agent_line?: string;
+  agent_requester_name?: string;
+  sq_bl_booking_reference?: string;
+  request_details?: string;
+  parties: NvoccBookingFormParty[];
+  mark_complete?: boolean;
+  consent_accepted?: boolean;
+  admin_override?: boolean;
+  stage_override_reason?: string;
+};
 
 export interface NvoccContainerRequest {
   id: string;

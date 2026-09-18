@@ -14,7 +14,6 @@ import {
   useNvoccJobGenerationStatus,
 } from '../hooks/useNvoccJobs';
 import { JobDocumentGenerationStatusCard } from '@/features/jobs/components/JobDocumentGenerationStatusCard';
-import { NvoccJobWorkflowPanel } from './NvoccJobWorkflowPanel';
 
 const DOCUMENT_GENERATORS = [
   { key: 'hblDraft', label: 'HBL draft' },
@@ -78,11 +77,10 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
 
   return (
     <div className="space-y-4">
-      <NvoccJobWorkflowPanel jobId={jobId} />
-
       <p className="text-sm text-[var(--color-neutral-500)]">
-        NVOCC job documents use <code className="text-xs">/nvocc/jobs/{'{id}'}/documents/*</code>{' '}
-        endpoints. Prefer gated HBL after portal draft request + payment.
+        CRO / loading / payment / close report live on the <strong>Ops / Mode</strong> tab.
+        Documents use <code className="text-xs">/nvocc/jobs/{'{id}'}/documents/*</code>. Prefer
+        gated HBL after portal draft request + payment.
       </p>
 
       {error && <p className="text-sm text-[var(--color-danger-600)]">{error}</p>}

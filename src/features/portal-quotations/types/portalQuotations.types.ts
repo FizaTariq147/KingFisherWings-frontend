@@ -197,6 +197,10 @@ export interface PortalQuotationDetail extends PortalQuotationListItem {
   source?: string;
   negotiationRound?: number;
   convertedJobNumber?: string;
+  /** Linked job / shipment id after air approve (or convert). */
+  jobId?: string;
+  /** Linked NVOCC booking id for portal compliance form APIs. */
+  bookingId?: string;
   packages?: PortalQuotationPackage[];
   /** Direct file URL when API includes one */
   pdfUrl?: string;
@@ -219,3 +223,84 @@ export interface PortalQuotationDetail extends PortalQuotationListItem {
     pricingSource?: string;
   }>;
 }
+
+/** Portal / Ops booking party — matches NvoccBookingFormPartyDto. */
+export type PortalBookingFormParty = {
+  party_kind: 'SHIPPER' | 'CONSIGNEE' | 'NOTIFY';
+  full_name: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  entity_kind?: 'COMPANY' | 'INDIVIDUAL';
+  /** Email, phone, website, local IDs */
+  other_details?: string;
+};
+
+/**
+ * Customer + Ops booking form — field names match UpsertNvoccBookingFormDto
+ * (GET/PUT /nvocc/bookings/:id/booking-form).
+ */
+export type PortalBookingForm = {
+  id?: string;
+  quotation_id?: string;
+  date_of_request?: string;
+  voyage_ref?: string;
+  /** Booking No (if known) from client */
+  client_booking_no?: string;
+  gross_weight_kg?: number;
+  net_weight_kg?: number;
+  pol?: string;
+  pod?: string;
+  shipper_owned_container?: boolean;
+  is_dg?: boolean;
+  teu_count?: number;
+  commodity?: string;
+  hs_code?: string;
+  final_use?: string;
+  activity_sector?: 'CIVILIAN' | 'MILITARY' | 'NUCLEAR' | string;
+  insurance_details?: string;
+  lc_bank_details?: string;
+  attach_commercial_invoice?: boolean;
+  attach_correspondence?: boolean;
+  attach_cod_form?: boolean;
+  attach_licence?: boolean;
+  booking_agent_line?: string;
+  agent_requester_name?: string;
+  sq_bl_booking_reference?: string;
+  request_details?: string;
+  consent_accepted?: boolean;
+  mark_complete?: boolean;
+  parties?: PortalBookingFormParty[];
+};
+
+/** PUT body whitelist — UpsertNvoccBookingFormDto. */
+export type PortalBookingFormUpsertDto = {
+  date_of_request?: string;
+  voyage_ref?: string;
+  client_booking_no?: string;
+  gross_weight_kg?: number;
+  net_weight_kg?: number;
+  pol: string;
+  pod: string;
+  shipper_owned_container?: boolean;
+  is_dg?: boolean;
+  teu_count?: number;
+  commodity: string;
+  hs_code?: string;
+  final_use?: string;
+  activity_sector?: 'CIVILIAN' | 'MILITARY' | 'NUCLEAR' | string;
+  insurance_details?: string;
+  lc_bank_details?: string;
+  attach_commercial_invoice?: boolean;
+  attach_correspondence?: boolean;
+  attach_cod_form?: boolean;
+  attach_licence?: boolean;
+  booking_agent_line?: string;
+  agent_requester_name?: string;
+  sq_bl_booking_reference?: string;
+  request_details?: string;
+  parties: PortalBookingFormParty[];
+  mark_complete?: boolean;
+  consent_accepted?: boolean;
+};
+

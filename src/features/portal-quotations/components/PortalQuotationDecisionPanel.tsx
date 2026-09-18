@@ -16,6 +16,25 @@ import {
   portalQuoteTotalAmount,
 } from '../utils/portalQuotationStatus';
 
+function acceptSuccessMessage(quote: PortalQuotationDetail, isNegotiating: boolean, hasCounter: boolean): string {
+  const jt = String(
+    quote.jobType ?? (quote.raw as { job_type?: string } | undefined)?.job_type ?? '',
+  ).toUpperCase();
+  if (jt.startsWith('NVOCC')) {
+    return hasCounter && isNegotiating
+      ? 'Approved at the forwarder’s offer. Complete the booking form below — Ops will finish the booking from your details.'
+      : 'Quotation approved. Complete the booking form below; Ops (admin / sales) will finish booking from your details.';
+  }
+  if (jt.startsWith('AIR')) {
+    return hasCounter && isNegotiating
+      ? 'Approved at the forwarder’s offer. Complete the air booking form below — Ops will finish the booking from your details.'
+      : 'Quotation approved. Complete the air booking form below; Ops (admin / sales) will finish booking from your details.';
+  }
+  return hasCounter && isNegotiating
+    ? 'Quotation approved at the forwarder’s offer (your counter was not applied).'
+    : 'Quotation approved. Your forwarder will proceed with booking.';
+}
+
 interface PortalQuotationDecisionPanelProps {
   quote: PortalQuotationDetail;
   /** Compact layout for list rows; default is full panel on detail page. */
@@ -59,9 +78,11 @@ export function PortalQuotationDecisionPanel({
       .then(() => {
         setConfirmAccept(false);
         onSuccess?.(
-          isNegotiating && customerCounter != null
-            ? 'Quotation approved at the forwarder’s offer (your counter was not applied).'
-            : 'Quotation approved. Your forwarder will proceed with booking.',
+          acceptSuccessMessage(
+            quote,
+            isNegotiating,
+            isNegotiating && customerCounter != null,
+          ),
         );
       })
       .catch((err) => {

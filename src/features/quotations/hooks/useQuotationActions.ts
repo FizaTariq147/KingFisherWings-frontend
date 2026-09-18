@@ -54,6 +54,10 @@ export function useQuotationActions(quotationId: string) {
     mutationFn: () => quotationService.convertToJob(id),
     onSuccess: afterStatusChange,
   });
+  const createOpsJobWithoutInvoice = useMutation({
+    mutationFn: () => quotationService.createOpsJobWithoutInvoice(id),
+    onSuccess: afterStatusChange,
+  });
   const fulfillApproved = useMutation({
     mutationFn: () => quotationService.fulfillApprovedQuotation(id),
     onSuccess: afterStatusChange,
@@ -87,6 +91,7 @@ export function useQuotationActions(quotationId: string) {
     markLost,
     duplicate,
     convertToJob,
+    createOpsJobWithoutInvoice,
     fulfillApproved,
     archive,
     expire,
