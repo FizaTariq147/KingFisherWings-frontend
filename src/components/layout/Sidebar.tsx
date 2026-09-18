@@ -301,6 +301,7 @@ const OPS_NAV_ITEMS: NavItem[] = [
   { label: 'Air Export', path: '/jobs/air-export', Icon: Plane, permission: 'menu_jobs_air_export' },
   { label: 'Sea Export', path: '/jobs/sea-export', Icon: Ship, permission: 'menu_jobs_sea_export' },
   { label: 'Sea Import', path: '/jobs/sea-import', Icon: Ship, permission: 'menu_jobs_sea_import' },
+  { label: 'NVOCC', path: '/nvocc', Icon: Building2, permission: 'menu_nvocc' },
   { label: 'Documentation', path: '/documentation', Icon: FileText, permission: 'menu_documentation' },
   { label: 'Finance', path: '/finance', Icon: Wallet, permission: 'menu_finance' },
   {
@@ -310,7 +311,6 @@ const OPS_NAV_ITEMS: NavItem[] = [
     permission: 'menu_accounts',
     permissionAny: ['menu_accounts', 'menu_finance'],
   },
-  { label: 'NVOCC', path: '/nvocc', Icon: Building2, permission: 'menu_nvocc' },
   { label: 'HR', path: '/hr', Icon: UserCircle, permission: 'menu_hr', matrixModule: 'hr', activePrefix: '/hr' },
   {
     label: 'Warehouse',
@@ -336,13 +336,13 @@ const NAV_GROUPS: NavGroup[] = [
     id: 'operations',
     title: 'Operations',
     color: SECTION_COLORS.operations,
-    items: OPS_NAV_ITEMS.slice(5, 10),
+    items: OPS_NAV_ITEMS.slice(5, 11),
   },
   {
     id: 'business',
     title: 'Business',
     color: SECTION_COLORS.business,
-    items: OPS_NAV_ITEMS.slice(10),
+    items: OPS_NAV_ITEMS.slice(11),
   },
 ];
 

@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/authStore';
 import { reportCatalogService } from '../services/reportCatalog.service';
 import type {
@@ -34,6 +34,7 @@ export function useReportTemplates(
     enabled: Boolean(accessToken) && enabled,
     staleTime: 30_000,
     retry: 1,
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -55,6 +56,7 @@ export function useReportTemplatesBrowse(
     enabled: Boolean(accessToken) && enabled,
     staleTime: 30_000,
     retry: 1,
+    placeholderData: keepPreviousData,
   });
 }
 

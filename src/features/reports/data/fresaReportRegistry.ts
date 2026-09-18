@@ -21,6 +21,7 @@ export function filterRegistry(options: {
   gapStatus?: ReportGapStatus | 'all';
 }): ReportTemplateMeta[] {
   const q = options.search?.trim().toLowerCase() ?? '';
+  const tokens = q ? q.split(/\s+/).filter(Boolean) : [];
   return FRESA_REPORT_REGISTRY.filter((t) => {
     if (options.family && options.family !== 'all' && t.family !== options.family) return false;
     if (options.context && options.context !== 'all') {
@@ -32,9 +33,9 @@ export function filterRegistry(options: {
     if (options.gapStatus && options.gapStatus !== 'all' && t.gapStatus !== options.gapStatus) {
       return false;
     }
-    if (!q) return true;
+    if (!tokens.length) return true;
     const hay = `${t.name} ${t.code} ${t.description ?? ''} ${t.family}`.toLowerCase();
-    return hay.includes(q);
+    return tokens.every((token) => hay.includes(token));
   });
 }
 

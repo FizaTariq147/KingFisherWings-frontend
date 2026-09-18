@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Auto-generated Arrival Notice formats — run: node scripts/build-arrival-notice-format-ui-layouts.mjs */
+/** Permanent JSON UI layouts — arrivalNoticeFormatUiLayouts. */
 export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
@@ -5749,6 +5749,3856 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_11",
+    "formatNumber": 11,
+    "name": "Arrival Notice Report Format-11",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-11"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-11"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_12",
+    "formatNumber": 12,
+    "name": "Arrival Notice Report Format-12",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-12"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-12"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_13",
+    "formatNumber": 13,
+    "name": "Arrival Notice Report Format-13",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-13"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-13"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_14",
+    "formatNumber": 14,
+    "name": "Arrival Notice Report Format-14",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-14"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-14"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_15",
+    "formatNumber": 15,
+    "name": "Arrival Notice Report Format-15",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-15"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-15"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_16",
+    "formatNumber": 16,
+    "name": "Arrival Notice Report Format-16",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-16"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-16"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_17",
+    "formatNumber": 17,
+    "name": "Arrival Notice Report Format-17",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-17"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-17"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_18",
+    "formatNumber": 18,
+    "name": "Arrival Notice Report Format-18",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-18"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-18"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_19",
+    "formatNumber": 19,
+    "name": "Arrival Notice Report Format-19",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-19"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-19"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_20",
+    "formatNumber": 20,
+    "name": "Arrival Notice Report Format-20",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-20"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-20"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_21",
+    "formatNumber": 21,
+    "name": "Arrival Notice Report Format-21",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-21"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-21"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_22",
+    "formatNumber": 22,
+    "name": "Arrival Notice Report Format-22",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-22"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-22"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_23",
+    "formatNumber": 23,
+    "name": "Arrival Notice Report Format-23",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-23"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-23"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_24",
+    "formatNumber": 24,
+    "name": "Arrival Notice Report Format-24",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-24"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-24"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_25",
+    "formatNumber": 25,
+    "name": "Arrival Notice Report Format-25",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-25"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-25"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_26",
+    "formatNumber": 26,
+    "name": "Arrival Notice Report Format-26",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-26"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-26"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_27",
+    "formatNumber": 27,
+    "name": "Arrival Notice Report Format-27",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-27"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-27"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_28",
+    "formatNumber": 28,
+    "name": "Arrival Notice Report Format-28",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-28"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-28"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_29",
+    "formatNumber": 29,
+    "name": "Arrival Notice Report Format-29",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-29"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-29"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_30",
+    "formatNumber": 30,
+    "name": "Arrival Notice Report Format-30",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-30"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-30"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_31",
+    "formatNumber": 31,
+    "name": "Arrival Notice Report Format-31",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-31"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-31"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_32",
+    "formatNumber": 32,
+    "name": "Arrival Notice Report Format-32",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-32"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-32"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_33",
+    "formatNumber": 33,
+    "name": "Arrival Notice Report Format-33",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-33"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-33"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_34",
+    "formatNumber": 34,
+    "name": "Arrival Notice Report Format-34",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-34"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-34"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_35",
+    "formatNumber": 35,
+    "name": "Arrival Notice Report Format-35",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "B/EXP/19/0254",
+      "invoiceDate": "28-JAN-19",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job / Shipment",
+          "v": "B/EXP/19/0254"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Layout",
+          "v": "Arrival Notice Report Format-35"
+        }
+      ],
+      "tableHeaders": [
+        "Container No.",
+        "Type",
+        "Seal",
+        "Pkgs",
+        "Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "SL988888",
+          "125",
+          "18,000.000",
+          "24.000"
+        ]
+      ],
+      "termsLines": [
+        "KingFisher layout preview — FRESA Gold report format sample.",
+        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+      ],
+      "remarks": "Format-35"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"

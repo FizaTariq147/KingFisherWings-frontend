@@ -1,0 +1,68 @@
+import type {
+  PortalQuotationDetail,
+  PortalQuotationListParams,
+  PortalQuotationListResult,
+  PortalQuotationRejectDto,
+  PortalQuotationRequestDto,
+  PortalQuotationEstimateDto,
+  PortalCostingOptionsDto,
+  PortalQuotationCounterOfferDto,
+  PortalQuotationEstimateResult,
+  PortalServiceCatalogItem,
+  PortalQuotationSummary,
+  PortalBookingForm,
+  PortalBookingFormUpsertDto,
+} from '../types/portalQuotations.types';
+import {
+  normalizeQuotationDetail,
+  normalizeQuotationList,
+  normalizeQuotationSummary,
+} from '../utils/normalizePortalQuotations';
+import {
+  normalizePortalEstimate,
+  normalizePortalServiceCatalog,
+  normalizePortalCostingOptions,
+  filterPortalServiceCatalogByJobType,
+} from '../utils/normalizePortalQuotationExtended';
+import { applyPortalCustomerDecisionStatus } from '../utils/portalQuotationStatus';
+import { portalDetailToQuotationPdfModel } from '../utils/portalDetailToQuotationPdfModel';
+import { rememberCustomerQuoteDecision } from '@/features/quotations/utils/customerQuoteDecision';
+import { normalizeNegotiationTimeline } from '@/features/quotations/utils/normalizeQuotationExtended';
+import type { NegotiationTimeline } from '@/features/quotations/types/quotationExtended.types';
+import type { ApiPeriodQuery } from '@/lib/apiPeriod';
+import { periodQueryParams } from '@/lib/apiPeriod';
+import { asRecord, pickString, unwrapData } from '@/features/portal-shared/normalize';
+
+function normalizePortalBookingForm(raw: unknown): PortalBookingForm {
+  const record = asRecord(raw) ?? {};
+  const partiesRaw = Array.isArray(record.parties) ? record.parties : [];
+  const parties = partiesRaw
+    .map((item) => {
+      const p = asRecord(item);
+      if (!p) return null;
+      const kind = String(p.party_kind ?? '').toUpperCase();
+      if (kind !== 'SHIPPER' && kind !== 'CONSIGNEE' && kind !== 'NOTIFY') return null;
+      return {
+        party_kind: kind as 'SHIPPER' | 'CONSIGNEE' | 'NOTIFY',
+        full_name: pickString(p.full_name) || '',
+        address: pickString(p.address) || undefined,
+        city: pickString(p.city) || undefined,
+        country: pickString(p.country) || undefined,
+        entity_kind:
+          String(p.entity_kind ?? '').toUpperCase() === 'INDIVIDUAL' ? 'INDIVIDUAL' : 'COMPANY',
+      };
+    })
+    .filter(Boolean) as PortalBookingForm['parties'];
+  return {
+    id: pickString(record.id) || undefined,
+    quotation_id: pickString(record.quotation_id) || undefined,
+    pol: pickString(record.pol) || undefined,
+    pod: pickString(record.pod) || undefined,
+    commodity: pickString(record.commodity) || undefined,
+    hs_code: pickString(record.hs_code) || undefined,
+    is_dg: Boolean(record.is_dg),
+    request_details: pickString(record.request_details) || undefined,
+    mark_complete: record.mark_complete === true,
+    parties,
+  };
+}

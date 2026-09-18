@@ -1,6 +1,10 @@
 /**
  * HBL formats — catalog must stay 1:1 with scripts/build-hbl-format-ui-layouts.mjs CATALOG.
  */
+import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
+import { listHblFormatUiLayouts } from '../data/hblFormatUiLayouts';
+import { REMAINING_FORMAT_CATALOG } from './remainingFormatCatalog.generated.ts';
+
 export const FRESA_HBL_SAMPLE_BASE =
   'https://fresatechnologies.com/wp-content/fresa-std-files/fresagold/sample_reports/';
 
@@ -239,7 +243,36 @@ export const HBL_FORMAT_CATALOG: HblFormatSpec[] = HBL_FORMAT_ROWS.map(
   }),
 );
 
-const byCode = new Map(HBL_FORMAT_CATALOG.map((row) => [row.code.toUpperCase(), row]));
+const HBL_EXTRA: HblFormatSpec[] = REMAINING_FORMAT_CATALOG.filter(
+  (r) => r.bucket === 'hbl' || r.bucket === 'hbl_extra',
+).map((r, i) => ({
+  code: r.code,
+  name: r.name,
+  kind: `hbl_extra_${r.sortOrder || i + 1}`,
+  sortOrder: 1000 + (r.sortOrder || i + 1),
+  family: 'sea_docs' as const,
+  samplePdfUrl: resolveHblSamplePdfUrl(r.code),
+}));
+
+const ALL_HBL_FORMATS: HblFormatSpec[] = (() => {
+  const by = new Map<string, HblFormatSpec>();
+  for (const row of [...HBL_FORMAT_CATALOG, ...HBL_EXTRA]) by.set(row.code.toUpperCase(), row);
+  listHblFormatUiLayouts().forEach((layout, i) => {
+    const key = layout.code.toUpperCase();
+    const existing = by.get(key);
+    by.set(key, {
+      code: layout.code,
+      name: layout.name || existing?.name || layout.code,
+      kind: existing?.kind || `hbl_${layout.formatNumber || i + 1}`,
+      sortOrder: existing?.sortOrder ?? layout.formatNumber ?? 2000 + i,
+      family: 'sea_docs',
+      samplePdfUrl: existing?.samplePdfUrl || resolveHblSamplePdfUrl(layout.code),
+    });
+  });
+  return [...by.values()];
+})();
+
+const byCode = new Map(ALL_HBL_FORMATS.map((row) => [row.code.toUpperCase(), row]));
 
 const REGISTRY_HBL_DRAFT = /^HBL_DRAFT_REPORT_FORMAT(_\d+|_JASPER)?$/;
 
@@ -257,7 +290,9 @@ export function getHblFormatSpec(code: string): HblFormatSpec | undefined {
 }
 
 export function listHblFormats(): HblFormatSpec[] {
-  return HBL_FORMAT_CATALOG.slice().sort((a, b) => a.sortOrder - b.sortOrder || a.code.localeCompare(b.code));
+  return ALL_HBL_FORMATS.slice().sort(
+    (a, b) => a.sortOrder - b.sortOrder || a.code.localeCompare(b.code),
+  );
 }
 
 export function resolveHblFormatDisplayName(code: string, fallbackName: string): string {
@@ -265,14 +300,5 @@ export function resolveHblFormatDisplayName(code: string, fallbackName: string):
 }
 
 export function hblFormatsMatchSearch(searchQuery: string): boolean {
-  const q = searchQuery.trim().toLowerCase();
-  if (!q) return false;
-  const tokens = q.split(/\s+/).filter(Boolean);
-  const catalogHit = listHblFormats().some((row) => {
-    const hay = `${row.name} ${row.code} ${row.kind} hbl bill lading draft`.toLowerCase();
-    return tokens.every((token) => hay.includes(token));
-  });
-  if (catalogHit) return true;
-  const genericHay = 'hbl house bill lading draft original sea';
-  return tokens.every((token) => genericHay.includes(token) || token.includes('hbl'));
+  return catalogRowsMatchSearch(listHblFormats(), searchQuery);
 }

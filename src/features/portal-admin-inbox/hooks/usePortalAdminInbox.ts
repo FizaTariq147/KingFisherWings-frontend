@@ -100,3 +100,40 @@ export function useReviewAdminCreditLimitRequest() {
     onSuccess: () => { void qc.invalidateQueries({ queryKey: portalAdminInboxKeys.creditRequests() }); },
   });
 }
+
+/** Latest customer portal booking form payload for Ops prefill (admin / sales). */
+export function useCustomerPortalBookingForm(
+  filter: {
+    jobId?: string;
+    quotationId?: string;
+    quoteNumber?: string;
+    jobTypePrefix?: string;
+  },
+  enabled = true,
+) {
+  const jobId = filter.jobId?.trim() || '';
+  const quotationId = filter.quotationId?.trim() || '';
+  const quoteNumber = filter.quoteNumber?.trim() || '';
+  const jobTypePrefix = filter.jobTypePrefix?.trim().toUpperCase() || '';
+  const hasFilter = Boolean(jobId || quotationId || quoteNumber || jobTypePrefix);
+  return useQuery({
+    queryKey: [
+      ...portalAdminInboxKeys.all,
+      'customer-booking-form',
+      jobId || 'no-job',
+      quotationId || 'no-quote',
+      quoteNumber || 'no-number',
+      jobTypePrefix || 'any-type',
+    ] as const,
+    queryFn: () =>
+      portalAdminInboxService.findCustomerPortalBookingForm({
+        jobId: jobId || undefined,
+        quotationId: quotationId || undefined,
+        quoteNumber: quoteNumber || undefined,
+        jobTypePrefix: jobTypePrefix || undefined,
+      }),
+    enabled: enabled && hasFilter,
+    staleTime: 0,
+    retry: false,
+  });
+}

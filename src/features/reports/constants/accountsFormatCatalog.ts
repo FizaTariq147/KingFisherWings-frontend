@@ -2,23 +2,11 @@
  * Accounts / other formats from https://fresatechnologies.com/sample-report-formats/
  * Exact catalog names — layouts refined when sample PDF links are shared.
  */
-export type AccountsFormatKind =
-  | 'journal_voucher'
-  | 'payment_voucher'
-  | 'payment_voucher_vietnam'
-  | 'profit_loss'
-  | 'receipt_voucher'
-  | 'trial_balance'
-  | 'outstanding_letter'
-  | 'ap_aging'
-  | 'ar_aging'
-  | 'ap_outstanding'
-  | 'ar_job_not_invoice'
-  | 'bank_cash_book'
-  | 'purchase_invoice'
-  | 'gl_listing'
-  | 'gl_report'
-  | 'statement_of_accounts';
+import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
+import { listAccountsFormatUiLayouts } from '../data/accountsFormatUiLayouts';
+import { REMAINING_FORMAT_CATALOG } from './remainingFormatCatalog.generated.ts';
+
+export type AccountsFormatKind = string;
 
 export type AccountsFormatSpec = {
   code: string;
@@ -228,9 +216,36 @@ export const ACCOUNTS_FORMAT_CATALOG: AccountsFormatSpec[] = [
   },
 ];
 
-const byCode = new Map(
-  ACCOUNTS_FORMAT_CATALOG.map((row) => [row.code.toUpperCase(), row]),
-);
+const ACCOUNTS_EXTRA: AccountsFormatSpec[] = REMAINING_FORMAT_CATALOG.filter(
+  (r) => r.bucket === 'accounts' || r.bucket === 'accounts_extra',
+).map((r, i) => ({
+  code: r.code,
+  name: r.name,
+  kind: `accounts_extra_${r.sortOrder || i + 1}`,
+  sortOrder: 1000 + (r.sortOrder || i + 1),
+}));
+
+function buildAllAccountsFormats(): AccountsFormatSpec[] {
+  const by = new Map<string, AccountsFormatSpec>();
+  for (const row of [...ACCOUNTS_FORMAT_CATALOG, ...ACCOUNTS_EXTRA]) {
+    by.set(row.code.toUpperCase(), row);
+  }
+  listAccountsFormatUiLayouts().forEach((layout, i) => {
+    const key = layout.code.toUpperCase();
+    const existing = by.get(key);
+    by.set(key, {
+      code: layout.code,
+      name: layout.name || existing?.name || layout.code,
+      kind: existing?.kind || `accounts_${layout.formatNumber || i + 1}`,
+      sortOrder: existing?.sortOrder ?? layout.formatNumber ?? 2000 + i,
+    });
+  });
+  return [...by.values()].sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name));
+}
+
+const ALL_ACCOUNTS_FORMATS: AccountsFormatSpec[] = buildAllAccountsFormats();
+
+const byCode = new Map(ALL_ACCOUNTS_FORMATS.map((row) => [row.code.toUpperCase(), row]));
 
 export function isAccountsFormatCode(code: string): boolean {
   return byCode.has(code.trim().toUpperCase());
@@ -241,7 +256,7 @@ export function getAccountsFormatSpec(code: string): AccountsFormatSpec | undefi
 }
 
 export function listAccountsFormats(): AccountsFormatSpec[] {
-  return ACCOUNTS_FORMAT_CATALOG.slice().sort((a, b) => a.sortOrder - b.sortOrder);
+  return ALL_ACCOUNTS_FORMATS.slice().sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 export function resolveAccountsFormatDisplayName(code: string, fallbackName: string): string {
@@ -249,20 +264,5 @@ export function resolveAccountsFormatDisplayName(code: string, fallbackName: str
 }
 
 export function accountsFormatsMatchSearch(searchQuery: string): boolean {
-  const q = searchQuery.trim().toLowerCase();
-  if (!q) return false;
-  const tokens = q.split(/\s+/).filter(Boolean);
-  const catalogHit = listAccountsFormats().some((row) => {
-    const hay = `${row.name} ${row.code} ${row.kind} accounts voucher ledger gl`.toLowerCase();
-    return tokens.every((token) => hay.includes(token));
-  });
-  if (catalogHit) return true;
-  const genericHay = 'accounts voucher journal payment receipt trial balance aging ledger gl soa';
-  return tokens.every(
-    (token) =>
-      genericHay.includes(token) ||
-      token.includes('account') ||
-      token.includes('voucher') ||
-      token.includes('gl'),
-  );
+  return catalogRowsMatchSearch(listAccountsFormats(), searchQuery);
 }

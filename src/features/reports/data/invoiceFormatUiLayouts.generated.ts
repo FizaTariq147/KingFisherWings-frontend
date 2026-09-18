@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Auto-generated — run: node scripts/build-invoice-format-ui-layouts.mjs */
+/** Permanent JSON UI layouts — invoiceFormatUiLayouts. */
 export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",

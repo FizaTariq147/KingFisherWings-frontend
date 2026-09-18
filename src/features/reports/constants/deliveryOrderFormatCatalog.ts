@@ -2,6 +2,9 @@
  * Delivery Order / Delivery Note / Confirmation formats from Fresa sample PDFs.
  * Each row includes the official sample PDF URL for catalog UI links.
  */
+import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
+import { listDeliveryOrderFormatUiLayouts } from '../data/deliveryOrderFormatUiLayouts';
+
 export const FRESA_DELIVERY_ORDER_SAMPLE_BASE =
   'https://fresatechnologies.com/wp-content/fresa-std-files/fresagold/sample_reports/';
 
@@ -392,9 +395,25 @@ export const DELIVERY_ORDER_FORMAT_CATALOG: DeliveryOrderFormatSpec[] = [
   },
 ];
 
-const byCode = new Map(
-  DELIVERY_ORDER_FORMAT_CATALOG.map((row) => [row.code.toUpperCase(), row]),
-);
+const ALL_DELIVERY_FORMATS: DeliveryOrderFormatSpec[] = (() => {
+  const by = new Map<string, DeliveryOrderFormatSpec>();
+  for (const row of DELIVERY_ORDER_FORMAT_CATALOG) by.set(row.code.toUpperCase(), row);
+  listDeliveryOrderFormatUiLayouts().forEach((layout, i) => {
+    const key = layout.code.toUpperCase();
+    const existing = by.get(key);
+    by.set(key, {
+      code: layout.code,
+      name: layout.name || existing?.name || layout.code,
+      kind: existing?.kind || `delivery_${layout.formatNumber || i + 1}`,
+      sortOrder: existing?.sortOrder ?? layout.formatNumber ?? 2000 + i,
+      family: existing?.family || 'sea_docs',
+      samplePdfUrl: existing?.samplePdfUrl || FRESA_REPORT_FORMAT_UPLOAD_BASE,
+    });
+  });
+  return [...by.values()];
+})();
+
+const byCode = new Map(ALL_DELIVERY_FORMATS.map((row) => [row.code.toUpperCase(), row]));
 
 const REGISTRY_DELIVERY_ORDER = /^DELIVERY_ORDER_REPORT_FORMAT_\d+$/;
 const REGISTRY_DELIVERY_AIR = /^DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT$/;
@@ -414,24 +433,14 @@ export function getDeliveryOrderFormatSpec(code: string): DeliveryOrderFormatSpe
 }
 
 export function listDeliveryOrderFormats(): DeliveryOrderFormatSpec[] {
-  return DELIVERY_ORDER_FORMAT_CATALOG.slice().sort((a, b) => a.sortOrder - b.sortOrder);
+  return ALL_DELIVERY_FORMATS.slice().sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 export function resolveDeliveryOrderFormatDisplayName(code: string, fallbackName: string): string {
   return getDeliveryOrderFormatSpec(code)?.name || fallbackName;
 }
 
-/** True when search tokens match at least one Delivery Order catalog row or registry code. */
+/** True when search tokens match at least one Delivery Order catalog row. */
 export function deliveryOrderFormatsMatchSearch(searchQuery: string): boolean {
-  const q = searchQuery.trim().toLowerCase();
-  if (!q) return false;
-  const tokens = q.split(/\s+/).filter(Boolean);
-  const catalogHit = listDeliveryOrderFormats().some((row) => {
-    const hay = `${row.name} ${row.code} ${row.kind} delivery order delivery note confirmation`.toLowerCase();
-    return tokens.every((token) => hay.includes(token));
-  });
-  if (catalogHit) return true;
-  const genericHay =
-    'delivery order delivery note confirmation consignment noc vietnam fg do proof trucker export notice edelivery e-delivery';
-  return tokens.every((token) => genericHay.includes(token) || token.includes('deliver'));
+  return catalogRowsMatchSearch(listDeliveryOrderFormats(), searchQuery);
 }

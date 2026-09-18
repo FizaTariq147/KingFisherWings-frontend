@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Auto-generated Accounts formats — run: node scripts/build-accounts-format-ui-layouts.mjs */
+/** Permanent JSON UI layouts — accountsFormatUiLayouts. */
 export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "JOURNAL_VOUCHER_REPORT_FORMAT_1",
@@ -5895,6 +5895,8094 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "wordsAndTotal"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_6",
+    "formatNumber": 6,
+    "name": "Outstanding Letter Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-6"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "Outstanding Letter Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "Outstanding Letter Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "Outstanding Letter Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_10",
+    "formatNumber": 10,
+    "name": "Outstanding Letter Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-10"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_11",
+    "formatNumber": 11,
+    "name": "Outstanding Letter Report Format-11",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-11"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-11"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_12",
+    "formatNumber": 12,
+    "name": "Outstanding Letter Report Format-12",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-12"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-12"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_13",
+    "formatNumber": 13,
+    "name": "Outstanding Letter Report Format-13",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-13"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-13"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_14",
+    "formatNumber": 14,
+    "name": "Outstanding Letter Report Format-14",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-14"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-14"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_15",
+    "formatNumber": 15,
+    "name": "Outstanding Letter Report Format-15",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-15"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-15"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_16",
+    "formatNumber": 16,
+    "name": "Outstanding Letter Report Format-16",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-16"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-16"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_17",
+    "formatNumber": 17,
+    "name": "Outstanding Letter Report Format-17",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-17"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-17"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_18",
+    "formatNumber": 18,
+    "name": "Outstanding Letter Report Format-18",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-18"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-18"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_19",
+    "formatNumber": 19,
+    "name": "Outstanding Letter Report Format-19",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-19"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-19"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_20",
+    "formatNumber": 20,
+    "name": "Outstanding Letter Report Format-20",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find outstanding details below and arrange settlement.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-20"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-20"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "OUTSTANDING LETTER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_4",
+    "formatNumber": 4,
+    "name": "Profit and Loss Report Format-4",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-4"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-4"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PROFIT AND LOSS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_5",
+    "formatNumber": 5,
+    "name": "Profit and Loss Report Format-5",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-5"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-5"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PROFIT AND LOSS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_6",
+    "formatNumber": 6,
+    "name": "Profit and Loss Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-6"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PROFIT AND LOSS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "Profit and Loss Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PROFIT AND LOSS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "Profit and Loss Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PROFIT AND LOSS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "Profit and Loss Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PROFIT AND LOSS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_10",
+    "formatNumber": 10,
+    "name": "Profit and Loss Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-10"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PROFIT AND LOSS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_11",
+    "formatNumber": 11,
+    "name": "Profit and Loss Report Format-11",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-11"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-11"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PROFIT AND LOSS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_12",
+    "formatNumber": 12,
+    "name": "Profit and Loss Report Format-12",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-12"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-12"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PROFIT AND LOSS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_13",
+    "formatNumber": 13,
+    "name": "Profit and Loss Report Format-13",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-13"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-13"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PROFIT AND LOSS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_14",
+    "formatNumber": 14,
+    "name": "Profit and Loss Report Format-14",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-14"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-14"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PROFIT AND LOSS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_15",
+    "formatNumber": 15,
+    "name": "Profit and Loss Report Format-15",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-15"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-15"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PROFIT AND LOSS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "Trial Balance Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "TRIAL BALANCE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "Trial Balance Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "TRIAL BALANCE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "Trial Balance Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "TRIAL BALANCE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_10",
+    "formatNumber": 10,
+    "name": "Trial Balance Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-10"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "TRIAL BALANCE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_11",
+    "formatNumber": 11,
+    "name": "Trial Balance Report Format-11",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-11"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-11"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "TRIAL BALANCE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_12",
+    "formatNumber": 12,
+    "name": "Trial Balance Report Format-12",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-12"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-12"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "TRIAL BALANCE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_13",
+    "formatNumber": 13,
+    "name": "Trial Balance Report Format-13",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-13"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-13"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "TRIAL BALANCE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_14",
+    "formatNumber": 14,
+    "name": "Trial Balance Report Format-14",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-14"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-14"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "TRIAL BALANCE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_15",
+    "formatNumber": 15,
+    "name": "Trial Balance Report Format-15",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-15"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-15"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "TRIAL BALANCE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_16",
+    "formatNumber": 16,
+    "name": "Trial Balance Report Format-16",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-16"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-16"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "TRIAL BALANCE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_3",
+    "formatNumber": 3,
+    "name": "Journal Voucher Report Format-3",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-3"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-3"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOURNAL VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_4",
+    "formatNumber": 4,
+    "name": "Journal Voucher Report Format-4",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-4"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-4"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOURNAL VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_5",
+    "formatNumber": 5,
+    "name": "Journal Voucher Report Format-5",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-5"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-5"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOURNAL VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_6",
+    "formatNumber": 6,
+    "name": "Journal Voucher Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-6"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOURNAL VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "Journal Voucher Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOURNAL VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "Journal Voucher Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOURNAL VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "Journal Voucher Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOURNAL VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_10",
+    "formatNumber": 10,
+    "name": "Journal Voucher Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-10"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOURNAL VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_11",
+    "formatNumber": 11,
+    "name": "Journal Voucher Report Format-11",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-11"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-11"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOURNAL VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_12",
+    "formatNumber": 12,
+    "name": "Journal Voucher Report Format-12",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-12"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-12"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOURNAL VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PAYMENT_VOUCHER_REPORT_FORMAT_4",
+    "formatNumber": 4,
+    "name": "Payment Voucher Report Format-4",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-4"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-4"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PAYMENT VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PAYMENT_VOUCHER_REPORT_FORMAT_5",
+    "formatNumber": 5,
+    "name": "Payment Voucher Report Format-5",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-5"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-5"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PAYMENT VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PAYMENT_VOUCHER_REPORT_FORMAT_6",
+    "formatNumber": 6,
+    "name": "Payment Voucher Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-6"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PAYMENT VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PAYMENT_VOUCHER_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "Payment Voucher Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PAYMENT VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PAYMENT_VOUCHER_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "Payment Voucher Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PAYMENT VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PAYMENT_VOUCHER_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "Payment Voucher Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PAYMENT VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PAYMENT_VOUCHER_REPORT_FORMAT_10",
+    "formatNumber": 10,
+    "name": "Payment Voucher Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-10"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PAYMENT VOUCHER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_2",
+    "formatNumber": 2,
+    "name": "Statement Of Accounts Report Format-2",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-2"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-2"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "STATEMENT OF ACCOUNTS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_3",
+    "formatNumber": 3,
+    "name": "Statement Of Accounts Report Format-3",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-3"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-3"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "STATEMENT OF ACCOUNTS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_4",
+    "formatNumber": 4,
+    "name": "Statement Of Accounts Report Format-4",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-4"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-4"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "STATEMENT OF ACCOUNTS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_5",
+    "formatNumber": 5,
+    "name": "Statement Of Accounts Report Format-5",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-5"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-5"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "STATEMENT OF ACCOUNTS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_6",
+    "formatNumber": 6,
+    "name": "Statement Of Accounts Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-6"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "STATEMENT OF ACCOUNTS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "Statement Of Accounts Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "STATEMENT OF ACCOUNTS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "Statement Of Accounts Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "STATEMENT OF ACCOUNTS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "Statement Of Accounts Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "FIN-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "CHENNAI, INDIA",
+      "letterBody": "Please find below the statement details. Kindly settle outstanding balances at the earliest.",
+      "fieldGrid": [
+        {
+          "k": "Currency",
+          "v": "INR"
+        },
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Chennai"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "Invoice No.",
+        "Date",
+        "Due Date",
+        "Amount",
+        "Paid",
+        "Balance"
+      ],
+      "tableRows": [
+        [
+          "INV-190251",
+          "01-JAN-19",
+          "31-JAN-19",
+          "17,384.00",
+          "0.00",
+          "17,384.00"
+        ],
+        [
+          "INV-190252",
+          "15-JAN-19",
+          "14-FEB-19",
+          "8,200.00",
+          "2,000.00",
+          "6,200.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Current",
+        "1-30",
+        "31-60",
+        "61-90",
+        "90+"
+      ],
+      "agingRow": [
+        "6,200.00",
+        "17,384.00",
+        "0.00",
+        "0.00",
+        "0.00"
+      ],
+      "total": "23,584.00",
+      "termsLines": [
+        "Accounts layout preview — FRESA Gold finance format."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "STATEMENT OF ACCOUNTS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"

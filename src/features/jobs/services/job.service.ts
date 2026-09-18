@@ -328,26 +328,52 @@ export const jobService = {
 
   async getAirBookingForm(id: string): Promise<AirBookingForm> {
     assertId(id);
-    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.airBookingForm(id)));
-    const data = unwrapEntity(res.data);
-    return (
-      data && typeof data === 'object' && !Array.isArray(data)
-        ? (data as AirBookingForm)
-        : {}
-    );
+    try {
+      const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.airBookingForm(id)));
+      const data = unwrapEntity(res.data);
+      return (
+        data && typeof data === 'object' && !Array.isArray(data)
+          ? (data as AirBookingForm)
+          : {}
+      );
+    } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 404) return {};
+      throw error;
+    }
   },
 
   async updateAirBookingForm(id: string, dto: UpdateAirBookingFormDto): Promise<AirBookingForm> {
     assertId(id);
-    const res = await withGatewayRetry(() =>
-      axiosInstance.put(JOB_API.airBookingForm(id), dto),
-    );
-    const data = unwrapEntity(res.data);
-    return (
-      data && typeof data === 'object' && !Array.isArray(data)
-        ? (data as AirBookingForm)
-        : {}
-    );
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.put(JOB_API.airBookingForm(id), dto),
+      );
+      const data = unwrapEntity(res.data);
+      return (
+        data && typeof data === 'object' && !Array.isArray(data)
+          ? (data as AirBookingForm)
+          : {}
+      );
+    } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 404 || status === 405) {
+        try {
+          const res = await withGatewayRetry(() =>
+            axiosInstance.post(JOB_API.airBookingForm(id), dto),
+          );
+          const data = unwrapEntity(res.data);
+          return (
+            data && typeof data === 'object' && !Array.isArray(data)
+              ? (data as AirBookingForm)
+              : {}
+          );
+        } catch (postErr) {
+          throw formatAxiosError(postErr);
+        }
+      }
+      throw formatAxiosError(error);
+    }
   },
 
   async airCsTriage(id: string, dto: AirWorkflowActionDto = {}): Promise<unknown> {

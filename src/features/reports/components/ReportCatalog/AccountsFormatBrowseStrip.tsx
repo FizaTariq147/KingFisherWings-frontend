@@ -8,9 +8,15 @@ type AccountsFormatBrowseStripProps = {
   searchQuery?: string;
 };
 
-const KIND_TONES: Record<
-  AccountsFormatKind,
-  { bg: string; border: string; accent: string; label: string }
+const DEFAULT_TONE = {
+  bg: 'bg-[#EEF6FF]',
+  border: 'border-[#0F4D96]/25',
+  accent: 'bg-[#0F4D96]',
+  label: 'text-[#0F4D96]',
+};
+
+const KIND_TONES: Partial<
+  Record<AccountsFormatKind, { bg: string; border: string; accent: string; label: string }>
 > = {
   journal_voucher: {
     bg: 'bg-[var(--color-primary-100)]',
@@ -110,6 +116,14 @@ const KIND_TONES: Record<
   },
 };
 
+function toneForKind(kind: string) {
+  if (KIND_TONES[kind]) return KIND_TONES[kind]!;
+  if (kind.includes('outstanding')) return KIND_TONES.outstanding_letter ?? DEFAULT_TONE;
+  if (kind.includes('profit')) return KIND_TONES.profit_loss ?? DEFAULT_TONE;
+  if (kind.includes('trial')) return KIND_TONES.trial_balance ?? DEFAULT_TONE;
+  return DEFAULT_TONE;
+}
+
 /** Compact strip for Accounts / Finance formats from Fresa sample-report-formats. */
 export function AccountsFormatBrowseStrip({
   selectedCode,
@@ -148,7 +162,7 @@ export function AccountsFormatBrowseStrip({
         <div className="-mx-0.5 flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:thin]">
           {items.map((row) => {
             const active = selectedCode === row.code;
-            const tone = KIND_TONES[row.kind];
+            const tone = toneForKind(row.kind);
             return (
               <button
                 key={row.code}

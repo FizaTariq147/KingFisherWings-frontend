@@ -17,6 +17,10 @@ import { resolveDeliveryOrderFormatDisplayName } from '../constants/deliveryOrde
 import { resolveHawbFormatDisplayName } from '../constants/hawbFormatCatalog';
 import { resolveHblFormatDisplayName } from '../constants/hblFormatCatalog';
 import { resolveOtherReportsFormatDisplayName } from '../constants/otherReportsFormatCatalog';
+import { resolveQuotationFormatDisplayName } from '../constants/quotationFormatCatalog';
+import { resolveOpsListFormatDisplayName } from '../constants/opsListFormatCatalog';
+import { resolveCommercialExtraFormatDisplayName } from '../constants/commercialExtraFormatCatalog';
+import { resolveSeaDocsExtraFormatDisplayName } from '../constants/seaDocsExtraFormatCatalog';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -161,21 +165,33 @@ function parametersFromSchemaObject(raw: unknown): ReportTemplateParamField[] | 
 
 export function metaToTemplate(meta: ReportTemplateMeta, index: number): ReportTemplate {
   const rawName = meta.name;
-  const name = resolveOtherReportsFormatDisplayName(
+  const name = resolveSeaDocsExtraFormatDisplayName(
     meta.code,
-    resolveHblFormatDisplayName(
+    resolveCommercialExtraFormatDisplayName(
       meta.code,
-      resolveHawbFormatDisplayName(
+      resolveOpsListFormatDisplayName(
         meta.code,
-        resolveDeliveryOrderFormatDisplayName(
+        resolveQuotationFormatDisplayName(
           meta.code,
-          resolveArrivalNoticeFormatDisplayName(
+          resolveOtherReportsFormatDisplayName(
             meta.code,
-            resolveWmsFormatDisplayName(
+            resolveHblFormatDisplayName(
               meta.code,
-              resolveAccountsFormatDisplayName(
+              resolveHawbFormatDisplayName(
                 meta.code,
-                resolveInvoiceFormatDisplayName(meta.code, rawName),
+                resolveDeliveryOrderFormatDisplayName(
+                  meta.code,
+                  resolveArrivalNoticeFormatDisplayName(
+                    meta.code,
+                    resolveWmsFormatDisplayName(
+                      meta.code,
+                      resolveAccountsFormatDisplayName(
+                        meta.code,
+                        resolveInvoiceFormatDisplayName(meta.code, rawName),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -222,21 +238,33 @@ export function normalizeReportTemplate(raw: unknown, fallback?: ReportTemplateM
   return {
     id: str(r?.id) || code,
     code,
-    name: resolveOtherReportsFormatDisplayName(
+    name: resolveSeaDocsExtraFormatDisplayName(
       code,
-      resolveHblFormatDisplayName(
+      resolveCommercialExtraFormatDisplayName(
         code,
-        resolveHawbFormatDisplayName(
+        resolveOpsListFormatDisplayName(
           code,
-          resolveDeliveryOrderFormatDisplayName(
+          resolveQuotationFormatDisplayName(
             code,
-            resolveArrivalNoticeFormatDisplayName(
+            resolveOtherReportsFormatDisplayName(
               code,
-              resolveWmsFormatDisplayName(
+              resolveHblFormatDisplayName(
                 code,
-                resolveAccountsFormatDisplayName(
+                resolveHawbFormatDisplayName(
                   code,
-                  resolveInvoiceFormatDisplayName(code, name),
+                  resolveDeliveryOrderFormatDisplayName(
+                    code,
+                    resolveArrivalNoticeFormatDisplayName(
+                      code,
+                      resolveWmsFormatDisplayName(
+                        code,
+                        resolveAccountsFormatDisplayName(
+                          code,
+                          resolveInvoiceFormatDisplayName(code, name),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

@@ -62,7 +62,7 @@ export function DeliveryOrderFormatAutoPdf({ code, autoOpen = true }: Props) {
 
       name: layout.name || spec?.name || layout.code,
 
-      samplePdfUrl: spec?.samplePdfUrl ?? null,
+      samplePdfUrl: null,
 
       layoutKind: 'warehouse',
 

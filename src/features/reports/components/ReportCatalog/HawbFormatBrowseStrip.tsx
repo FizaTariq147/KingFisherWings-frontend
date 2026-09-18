@@ -1,4 +1,3 @@
-import { ExternalLink } from 'lucide-react';
 import { listHawbFormats, type HawbFormatKind } from '../../constants/hawbFormatCatalog';
 
 type Props = {
@@ -44,8 +43,10 @@ function matchesSearch(
 ): boolean {
   const q = rawQuery.trim().toLowerCase();
   if (!q) return true;
-  const hay = `${row.name} ${row.code} ${row.kind} hawb air waybill`.toLowerCase();
-  return q.split(/\s+/).every((token) => hay.includes(token));
+  const tokens = q.split(/\s+/).filter((t) => t.length >= 2);
+  if (!tokens.length) return true;
+  const hay = `${row.name} ${row.code} ${row.kind}`.toLowerCase();
+  return tokens.every((token) => hay.includes(token));
 }
 
 export function HawbFormatBrowseStrip({ selectedCode, onSelect, visible, searchQuery = '' }: Props) {
@@ -75,41 +76,28 @@ export function HawbFormatBrowseStrip({ selectedCode, onSelect, visible, searchQ
             const active = selectedCode === row.code;
             const tone = KIND_TONES[row.kind] ?? DEFAULT_TONE;
             return (
-              <div
+              <button
                 key={row.code}
+                type="button"
+                onClick={() => onSelect(row.code)}
+                title={row.name}
                 className={[
-                  'relative min-w-[9.75rem] max-w-[12rem] shrink-0 overflow-hidden rounded-lg border',
+                  'relative min-w-[8.75rem] max-w-[11rem] shrink-0 overflow-hidden rounded-lg border px-2.5 py-2.5 text-left transition',
                   tone.bg,
                   tone.border,
-                  active ? 'ring-2 ring-[var(--color-secondary)] ring-offset-1 shadow-md' : '',
+                  active
+                    ? 'ring-2 ring-[var(--color-secondary)] ring-offset-1 shadow-md'
+                    : 'hover:-translate-y-0.5 hover:shadow-sm',
                 ].join(' ')}
               >
                 <span className={`absolute inset-y-0 left-0 w-1 ${tone.accent}`} aria-hidden />
-                <button
-                  type="button"
-                  onClick={() => onSelect(row.code)}
-                  title={row.name}
-                  className="w-full px-2.5 py-2.5 text-left transition hover:-translate-y-0.5 hover:shadow-sm"
-                >
-                  <p className={`pl-1.5 text-[10px] font-bold uppercase tracking-wide ${tone.label}`}>
-                    #{row.sortOrder}
-                  </p>
-                  <p className="mt-0.5 line-clamp-2 pl-1.5 text-[11px] font-medium leading-snug text-[var(--color-neutral-800)]">
-                    {row.name}
-                  </p>
-                </button>
-                <a
-                  href={row.samplePdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Open Fresa sample PDF"
-                  className="absolute right-1.5 top-1.5 rounded p-1 text-[var(--color-primary-600)] hover:bg-white/80"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-                  <span className="sr-only">Sample PDF for {row.name}</span>
-                </a>
-              </div>
+                <p className={`pl-1.5 text-[10px] font-bold uppercase tracking-wide ${tone.label}`}>
+                  #{row.sortOrder}
+                </p>
+                <p className="mt-0.5 line-clamp-2 pl-1.5 text-[11px] font-medium leading-snug text-[var(--color-neutral-800)]">
+                  {row.name}
+                </p>
+              </button>
             );
           })}
         </div>

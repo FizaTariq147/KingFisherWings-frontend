@@ -107,6 +107,12 @@ export function clearCustomerQuoteDecision(id: string) {
   writeMap(map);
 }
 
+/** Last portal accept/reject remembered when API status lags. */
+export function getCustomerQuoteDecision(id: string): CustomerQuoteDecision | null {
+  if (!id) return null;
+  return readMap()[id]?.decision ?? null;
+}
+
 export function isAwaitingCustomerDecision(status: string): boolean {
   const s = coerceQuotationStatus(status);
   return s === 'SENT' || s === 'CUSTOMER_REVIEW' || s === 'NEGOTIATING';

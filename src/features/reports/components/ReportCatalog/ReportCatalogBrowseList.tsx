@@ -34,48 +34,90 @@ export function groupTemplatesByFamily(
   }));
 }
 
-const FAMILY_TONES: Record<string, { section: string; card: string; border: string; accent: string }> =
-  {
-    commercial: {
-      section: 'text-[var(--color-primary-600)]',
-      card: 'bg-[var(--color-primary-100)]',
-      border: 'border-[var(--color-primary-500)]/25',
-      accent: 'bg-[var(--color-primary-500)]',
-    },
-    finance: {
-      section: 'text-[var(--color-secondary-700)]',
-      card: 'bg-[var(--color-secondary-100)]',
-      border: 'border-[var(--color-secondary)]/30',
-      accent: 'bg-[var(--color-secondary)]',
-    },
-    operations: {
-      section: 'text-[var(--color-success-500)]',
-      card: 'bg-[var(--color-success-50)]',
-      border: 'border-[var(--color-success-500)]/25',
-      accent: 'bg-[var(--color-success-500)]',
-    },
-    wms: {
-      section: 'text-[var(--color-success-500)]',
-      card: 'bg-[var(--color-success-50)]',
-      border: 'border-[var(--color-success-500)]/25',
-      accent: 'bg-[var(--color-success-500)]',
-    },
-    management: {
-      section: 'text-[var(--color-warning-500)]',
-      card: 'bg-[var(--color-warning-50)]',
-      border: 'border-[var(--color-warning-500)]/25',
-      accent: 'bg-[var(--color-warning-500)]',
-    },
-    other: {
-      section: 'text-[var(--color-neutral-600)]',
-      card: 'bg-[var(--color-neutral-100)]',
-      border: 'border-[var(--color-neutral-200)]',
-      accent: 'bg-[var(--color-neutral-400)]',
-    },
-  };
+const FAMILY_TONES: Record<
+  string,
+  { section: string; bg: string; border: string; accent: string; label: string }
+> = {
+  commercial: {
+    section: 'text-[var(--color-primary-600)]',
+    bg: 'bg-[var(--color-primary-100)]',
+    border: 'border-[var(--color-primary-500)]/30',
+    accent: 'bg-[var(--color-primary-500)]',
+    label: 'text-[var(--color-primary-600)]',
+  },
+  finance: {
+    section: 'text-[var(--color-secondary-700)]',
+    bg: 'bg-[var(--color-secondary-100)]',
+    border: 'border-[var(--color-secondary)]/35',
+    accent: 'bg-[var(--color-secondary)]',
+    label: 'text-[var(--color-secondary-700)]',
+  },
+  sea_docs: {
+    section: 'text-[#0F4D96]',
+    bg: 'bg-[#EEF6FF]',
+    border: 'border-[#0F4D96]/25',
+    accent: 'bg-[#0F4D96]',
+    label: 'text-[#0F4D96]',
+  },
+  air_docs: {
+    section: 'text-[#2286C8]',
+    bg: 'bg-[#E8F4FC]',
+    border: 'border-[#2286C8]/30',
+    accent: 'bg-[#2286C8]',
+    label: 'text-[#2286C8]',
+  },
+  quotation: {
+    section: 'text-[var(--color-warning-600)]',
+    bg: 'bg-[var(--color-warning-50)]',
+    border: 'border-[var(--color-warning-500)]/30',
+    accent: 'bg-[var(--color-warning-500)]',
+    label: 'text-[var(--color-warning-600)]',
+  },
+  ops_list: {
+    section: 'text-[var(--color-success-600)]',
+    bg: 'bg-[var(--color-success-50)]',
+    border: 'border-[var(--color-success-500)]/25',
+    accent: 'bg-[var(--color-success-500)]',
+    label: 'text-[var(--color-success-600)]',
+  },
+  operations: {
+    section: 'text-[var(--color-success-500)]',
+    bg: 'bg-[var(--color-success-50)]',
+    border: 'border-[var(--color-success-500)]/25',
+    accent: 'bg-[var(--color-success-500)]',
+    label: 'text-[var(--color-success-500)]',
+  },
+  wms: {
+    section: 'text-[var(--color-success-500)]',
+    bg: 'bg-[var(--color-success-50)]',
+    border: 'border-[var(--color-success-500)]/25',
+    accent: 'bg-[var(--color-success-500)]',
+    label: 'text-[var(--color-success-500)]',
+  },
+  management: {
+    section: 'text-[var(--color-warning-500)]',
+    bg: 'bg-[var(--color-warning-50)]',
+    border: 'border-[var(--color-warning-500)]/25',
+    accent: 'bg-[var(--color-warning-500)]',
+    label: 'text-[var(--color-warning-500)]',
+  },
+  other: {
+    section: 'text-[var(--color-neutral-600)]',
+    bg: 'bg-[var(--color-neutral-100)]',
+    border: 'border-[var(--color-neutral-200)]',
+    accent: 'bg-[var(--color-neutral-400)]',
+    label: 'text-[var(--color-neutral-600)]',
+  },
+};
 
 function toneForFamily(family: string) {
   return FAMILY_TONES[family] ?? FAMILY_TONES.other!;
+}
+
+function cardBadge(template: ReportTemplate, index: number): string {
+  const formatNo = parseInvoiceFormatNumber(template.code);
+  if (formatNo != null) return `Format-${formatNo}`;
+  return `#${index + 1}`;
 }
 
 type ReportCatalogBrowseListProps = {
@@ -86,7 +128,7 @@ type ReportCatalogBrowseListProps = {
   emptyHint?: string;
 };
 
-/** Clean name list by family — click opens the report/PDF. */
+/** Section-wise catalogue — same card style as the format browse strips. */
 export function ReportCatalogBrowseList({
   items,
   selectedCode,
@@ -113,48 +155,56 @@ export function ReportCatalogBrowseList({
   }
 
   return (
-    <div className="space-y-8 p-4">
+    <div className="space-y-3 p-3 sm:p-4">
       {sections.map((section) => {
         const tone = toneForFamily(section.family);
         return (
-          <section key={section.family} className="space-y-3">
-            <div className="border-b border-[var(--color-neutral-200)] pb-1.5">
-              <h3 className={`text-sm font-semibold ${tone.section}`}>
+          <section
+            key={section.family}
+            className="space-y-2.5 rounded-xl border border-[var(--color-neutral-200)] bg-[var(--color-surface)] p-3.5 shadow-sm"
+          >
+            <div className="flex items-baseline justify-between gap-2">
+              <h3 className={`text-xs font-semibold uppercase tracking-wide ${tone.section}`}>
                 {reportFamilyLabel(section.family)}
               </h3>
-              <p className="text-[11px] text-[var(--color-neutral-400)]">
-                {section.items.length} report{section.items.length === 1 ? '' : 's'}
+              <p className="text-[10px] text-[var(--color-neutral-400)]">
+                {section.items.length} format{section.items.length === 1 ? '' : 's'}
               </p>
             </div>
-            <ul className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
-              {section.items.map((t) => {
+            <div className="-mx-0.5 flex flex-wrap gap-2.5 pb-1">
+              {section.items.map((t, index) => {
                 const active = selectedCode === t.code;
                 return (
-                  <li key={`${t.id}-${t.code}`}>
-                    <button
-                      type="button"
-                      className={[
-                        'relative w-full min-w-0 overflow-hidden rounded-lg border px-3 py-2.5 text-left transition',
-                        tone.card,
-                        tone.border,
-                        active
-                          ? 'ring-2 ring-[var(--color-secondary)] ring-offset-1 shadow-md'
-                          : 'hover:-translate-y-0.5 hover:shadow-sm',
-                      ].join(' ')}
-                      onClick={() => onSelect(t)}
+                  <button
+                    key={`${t.id}-${t.code}`}
+                    type="button"
+                    onClick={() => onSelect(t)}
+                    title={t.name}
+                    className={[
+                      'relative min-w-[8.25rem] max-w-[10rem] shrink-0 overflow-hidden rounded-lg border px-2.5 py-2.5 text-left transition',
+                      tone.bg,
+                      tone.border,
+                      active
+                        ? 'ring-2 ring-[var(--color-secondary)] ring-offset-1 shadow-md'
+                        : 'hover:-translate-y-0.5 hover:shadow-sm',
+                    ].join(' ')}
+                  >
+                    <span
+                      className={`absolute inset-y-0 left-0 w-1 ${tone.accent}`}
+                      aria-hidden
+                    />
+                    <p
+                      className={`pl-1.5 text-[10px] font-bold uppercase tracking-wide ${tone.label}`}
                     >
-                      <span
-                        className={`absolute inset-y-0 left-0 w-1 ${tone.accent}`}
-                        aria-hidden
-                      />
-                      <span className="block pl-1.5 text-sm font-medium text-[var(--color-neutral-900)]">
-                        {t.name}
-                      </span>
-                    </button>
-                  </li>
+                      {cardBadge(t, index)}
+                    </p>
+                    <p className="mt-0.5 line-clamp-2 pl-1.5 text-[11px] font-medium leading-snug text-[var(--color-neutral-800)]">
+                      {t.name}
+                    </p>
+                  </button>
                 );
               })}
-            </ul>
+            </div>
           </section>
         );
       })}

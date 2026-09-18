@@ -77,6 +77,15 @@ export function InvoiceFormatAutoPdf({ code, invoiceId, autoOpen = true }: Props
           } catch {
             /* keep layout demo defaults */
           }
+          // Optional enrich from GET /invoices/:id/format-payload — additive only.
+          try {
+            const payload = await invoiceService.getFormatPayload(invoiceId, preview.code);
+            if (payload && typeof payload === 'object') {
+              data = { ...data, ...payload };
+            }
+          } catch {
+            /* endpoint may be absent; preview still works */
+          }
         }
         return generateInvoiceFormatLayoutPdf(preview, data);
       }, { fileName, title })

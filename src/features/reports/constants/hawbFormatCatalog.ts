@@ -1,15 +1,14 @@
 /**
  * HAWB formats from Fresa official report-format PDFs (names match registry / sample page).
  */
+import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
+import { listHawbFormatUiLayouts } from '../data/hawbFormatUiLayouts';
+import { REMAINING_FORMAT_CATALOG } from './remainingFormatCatalog.generated.ts';
+
 export const FRESA_HAWB_REPORT_FORMAT_BASE =
   'https://fresatechnologies.com/wp-content/uploads/report-formats/';
 
-export type HawbFormatKind =
-  | 'hawb_draft'
-  | 'hawb_draft_format_1'
-  | 'hawb_draft_format_2'
-  | 'hawb_original_pre_printed_1'
-  | 'hawb_original_pre_printed_2';
+export type HawbFormatKind = string;
 
 export type HawbFormatSpec = {
   code: string;
@@ -63,7 +62,36 @@ export const HAWB_FORMAT_CATALOG: HawbFormatSpec[] = [
   },
 ];
 
-const byCode = new Map(HAWB_FORMAT_CATALOG.map((row) => [row.code.toUpperCase(), row]));
+const HAWB_EXTRA: HawbFormatSpec[] = REMAINING_FORMAT_CATALOG.filter(
+  (r) => r.bucket === 'hawb' || r.bucket === 'hawb_extra',
+).map((r, i) => ({
+  code: r.code,
+  name: r.name,
+  kind: `hawb_extra_${r.sortOrder || i + 1}`,
+  sortOrder: 1000 + (r.sortOrder || i + 1),
+  family: 'air_docs' as const,
+  samplePdfUrl: FRESA_HAWB_REPORT_FORMAT_BASE,
+}));
+
+const ALL_HAWB_FORMATS: HawbFormatSpec[] = (() => {
+  const by = new Map<string, HawbFormatSpec>();
+  for (const row of [...HAWB_FORMAT_CATALOG, ...HAWB_EXTRA]) by.set(row.code.toUpperCase(), row);
+  listHawbFormatUiLayouts().forEach((layout, i) => {
+    const key = layout.code.toUpperCase();
+    const existing = by.get(key);
+    by.set(key, {
+      code: layout.code,
+      name: layout.name || existing?.name || layout.code,
+      kind: existing?.kind || `hawb_${layout.formatNumber || i + 1}`,
+      sortOrder: existing?.sortOrder ?? layout.formatNumber ?? 2000 + i,
+      family: 'air_docs',
+      samplePdfUrl: existing?.samplePdfUrl || FRESA_HAWB_REPORT_FORMAT_BASE,
+    });
+  });
+  return [...by.values()];
+})();
+
+const byCode = new Map(ALL_HAWB_FORMATS.map((row) => [row.code.toUpperCase(), row]));
 
 const REGISTRY_HAWB_DRAFT = /^HAWB_DRAFT_REPORT_FORMAT(_\d+)?$/;
 const REGISTRY_HAWB_ORIGINAL = /^HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_\d+$/;
@@ -82,7 +110,7 @@ export function getHawbFormatSpec(code: string): HawbFormatSpec | undefined {
 }
 
 export function listHawbFormats(): HawbFormatSpec[] {
-  return HAWB_FORMAT_CATALOG.slice().sort((a, b) => a.sortOrder - b.sortOrder);
+  return ALL_HAWB_FORMATS.slice().sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 export function resolveHawbFormatDisplayName(code: string, fallbackName: string): string {
@@ -90,14 +118,5 @@ export function resolveHawbFormatDisplayName(code: string, fallbackName: string)
 }
 
 export function hawbFormatsMatchSearch(searchQuery: string): boolean {
-  const q = searchQuery.trim().toLowerCase();
-  if (!q) return false;
-  const tokens = q.split(/\s+/).filter(Boolean);
-  const catalogHit = listHawbFormats().some((row) => {
-    const hay = `${row.name} ${row.code} ${row.kind} hawb house air waybill draft original`.toLowerCase();
-    return tokens.every((token) => hay.includes(token));
-  });
-  if (catalogHit) return true;
-  const genericHay = 'hawb house air waybill draft original pre printed mawb';
-  return tokens.every((token) => genericHay.includes(token) || token.includes('hawb'));
+  return catalogRowsMatchSearch(listHawbFormats(), searchQuery);
 }

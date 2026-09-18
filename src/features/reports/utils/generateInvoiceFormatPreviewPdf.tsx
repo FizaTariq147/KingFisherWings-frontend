@@ -66,6 +66,11 @@ export async function generateInvoiceFormatPreviewPdf(
     await wait(80);
 
     const sheet = (mount.querySelector('[data-invoice-sheet]') as HTMLElement) || mount;
+    if (!sheet || sheet.offsetWidth < 1 || sheet.offsetHeight < 1) {
+      throw new Error(
+        `Layout preview did not render for ${preview.code}. Check that the format JSON layout exists.`,
+      );
+    }
 
     // Capture the full bordered sheet as one image (no mid-box page splits).
     const canvas = await html2canvas(sheet, {
@@ -91,7 +96,13 @@ export async function generateInvoiceFormatPreviewPdf(
 
     const imgW = canvas.width;
     const imgH = canvas.height;
+    if (!Number.isFinite(imgW) || !Number.isFinite(imgH) || imgW < 1 || imgH < 1) {
+      throw new Error(`PDF capture produced an empty canvas for ${preview.code}.`);
+    }
     const scale = Math.min(usableW / imgW, usableH / imgH);
+    if (!Number.isFinite(scale) || scale <= 0) {
+      throw new Error(`Invalid PDF scale for ${preview.code}.`);
+    }
     const drawW = imgW * scale;
     const drawH = imgH * scale;
     // Top-align; footer already sits at bottom of the sheet image.

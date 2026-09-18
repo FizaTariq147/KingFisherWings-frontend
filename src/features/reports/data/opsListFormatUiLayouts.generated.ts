@@ -1,0 +1,12358 @@
+import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
+
+/** Permanent JSON UI layouts — opsListFormatUiLayouts. */
+export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
+  {
+    "code": "CONTAINER_LIST_BASED_ON_CARGO_UNPACK_DATE_LIST_REPORT_FORMAT",
+    "formatNumber": 1,
+    "name": "Container List Based On Cargo Unpack Date List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Container List Based On Cargo Unpack Date List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-1"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "CONTAINER LIST BASED ON CARGO UNPACK DATE LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "CONTAINER_SUMMARY_BASED_ON_CARRIER_LIST_REPORT_FORMAT",
+    "formatNumber": 2,
+    "name": "Container Summary Based On Carrier List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Container Summary Based On Carrier List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-2"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "CONTAINER SUMMARY BASED ON CARRIER LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "CREATED_INVOICE_LIST_REPORT_FORMAT",
+    "formatNumber": 3,
+    "name": "Created Invoice List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Created Invoice List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-3"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "CREATED INVOICE LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_1_DSR_LIST_REPORT_FORMAT",
+    "formatNumber": 1,
+    "name": "Daily Status Report Format 1 (DSR) List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format 1 (DSR) List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-1"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "EXPORT_SHIPMENTS_DEPARTED_BUT_NOT_CONFIRMED_ON_BOARD_LIST_REPORT_FORMAT",
+    "formatNumber": 5,
+    "name": "Export Shipments Departed But Not Confirmed On Board List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Export Shipments Departed But Not Confirmed On Board List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-5"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "EXPORT SHIPMENTS DEPARTED BUT NOT CONFIRMED ON BOARD LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_ATA_IS_UPDATED_AND_CARGO_UNPACK_DATE_IS_NOT_ENTERED_LIST_REPORT_FORMAT",
+    "formatNumber": 6,
+    "name": "Job ATA Is Updated And Cargo Unpack Date Is Not Entered List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job ATA Is Updated And Cargo Unpack Date Is Not Entered List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB ATA IS UPDATED AND CARGO UNPACK DATE IS NOT ENTERED LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_ATA_NOT_UPDATED_LIST_REPORT_FORMAT",
+    "formatNumber": 7,
+    "name": "Job Ata Not Updated List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Ata Not Updated List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB ATA NOT UPDATED LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_NOT_CLOSED_LIST_REPORT_FORMAT",
+    "formatNumber": 8,
+    "name": "Job Not Closed list Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Not Closed list Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB NOT CLOSED LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "MANIFEST_NOT_SENT_TO_AGENT_REPORT_FORMAT",
+    "formatNumber": 9,
+    "name": "Manifest Not Sent To Agent Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Manifest Not Sent To Agent Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "MANIFEST NOT SENT TO AGENT",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_JOBS_ATD_UPDATED_BUT_CONTAINER_LOADING_DATE_NOT_UPDATED_LIST_REPORT_FORM",
+    "formatNumber": 10,
+    "name": "Pending Jobs Atd Updated But Container Loading Date Not Updated List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Jobs Atd Updated But Container Loading Date Not Updated List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING JOBS ATD UPDATED BUT CONTAINER LOADING DATE NOT UPDATED LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENT_FOR_CARGO_DELIVERY_DO_ISSUED_LIST_REPORT_FORMAT",
+    "formatNumber": 11,
+    "name": "Pending Shipment For Cargo Delivery Do Issued List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipment For Cargo Delivery Do Issued List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-11"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENT FOR CARGO DELIVERY DO ISSUED LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_FOR_DRAFT_BL_LIST_REPORT_FORMAT",
+    "formatNumber": 12,
+    "name": "Pending Shipments For Draft BL List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments For Draft BL List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-12"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS FOR DRAFT BL LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_FOR_CARGO_ARRIVAL_NOTICE_LIST_REPORT_FORMAT",
+    "formatNumber": 13,
+    "name": "Pending Shipments For Cargo Arrival Notice List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments For Cargo Arrival Notice List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-13"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS FOR CARGO ARRIVAL NOTICE LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_FOR_CARGO_DELIVERY_LIST_REPORT_FORMAT",
+    "formatNumber": 14,
+    "name": "pending Shipments For Cargo Delivery List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "pending Shipments For Cargo Delivery List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-14"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS FOR CARGO DELIVERY LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_FOR_DELIVERY_ORDER_LIST_REPORT_FORMAT",
+    "formatNumber": 15,
+    "name": "Pending Shipments For Delivery Order List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments For Delivery Order List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-15"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS FOR DELIVERY ORDER LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ACTIVITY_COMPLETED_JOBS_LIST_REPORT_FORMAT",
+    "formatNumber": 16,
+    "name": "Activity Completed Jobs List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Activity Completed Jobs List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-16"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "ACTIVITY COMPLETED JOBS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "SHIPMENTS_WITH_NO_INVOICES_LIST",
+    "formatNumber": 17,
+    "name": "Shipments With No Invoices List",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Shipments With No Invoices List"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-17"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "SHIPMENTS WITH NO INVOICES LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST",
+    "formatNumber": 18,
+    "name": "Shipments With No Purchase Invoices List",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Shipments With No Purchase Invoices List"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-18"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "SHIPMENTS WITH NO PURCHASE INVOICES LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PREPAID_SHIPMENT_WITH_NO_PREPAID_CHARGES_LIST_REPORT_FORMAT",
+    "formatNumber": 19,
+    "name": "Prepaid Shipment With No Prepaid Charges List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Prepaid Shipment With No Prepaid Charges List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-19"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PREPAID SHIPMENT WITH NO PREPAID CHARGES LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "SALESPERSON_NOMINATION_REPORT_LIST_REPORT_FORMAT",
+    "formatNumber": 20,
+    "name": "Salesperson Nomination Report List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Salesperson Nomination Report List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-20"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "SALESPERSON NOMINATION REPORT LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "SHIPMENT_IS_NOT_LINKED_WITH_JOB_LIST_REPORT_FORMAT",
+    "formatNumber": 21,
+    "name": "Shipment Is Not Linked With Job List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Shipment Is Not Linked With Job List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-21"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "SHIPMENT IS NOT LINKED WITH JOB LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "SHIPMENTS_LIST_IMCO_LIST_REPORT_FORMAT",
+    "formatNumber": 22,
+    "name": "Shipments List IMCO List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Shipments List IMCO List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-22"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "SHIPMENTS LIST IMCO LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "SHIPMENT_STATUS_REPORT_LIST_REPORT_FORMAT",
+    "formatNumber": 23,
+    "name": "Shipment Status Report List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Shipment Status Report List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-23"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "SHIPMENT STATUS REPORT LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "SHIPMENTS_WITH_NO_HBL_NUMBER_ENTERED_LIST_REPORT_FORMAT",
+    "formatNumber": 24,
+    "name": "Shipments With No HBL Number Entered List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Shipments With No HBL Number Entered List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-24"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "SHIPMENTS WITH NO HBL NUMBER ENTERED LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "SHIPMENTS_WITH_NO_JOB_NUMBER_MAPPED_LIST_REPORT_FORMAT",
+    "formatNumber": 25,
+    "name": "Shipments With No Job Number Mapped List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Shipments With No Job Number Mapped List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-25"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "SHIPMENTS WITH NO JOB NUMBER MAPPED LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "SHIPMENT_WITH_NO_JOB_CS_LIST_REPORT_FORMAT",
+    "formatNumber": 26,
+    "name": "Shipment With No Job CS List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Shipment With No Job CS List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-26"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "SHIPMENT WITH NO JOB CS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "AGENT_NOMINATION_SHIPMENTS_LIST_REPORT_FORMAT",
+    "formatNumber": 27,
+    "name": "Agent Nomination Shipments List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Agent Nomination Shipments List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-27"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "AGENT NOMINATION SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "BILL_OF_LADING_IS_NOT_ISSUED_LIST_REPORT_FORMAT",
+    "formatNumber": 28,
+    "name": "Bill Of Lading Is Not Issued List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Bill Of Lading Is Not Issued List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-28"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "BILL OF LADING IS NOT ISSUED LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "CANCELLED_JOB_LIST_REPORT_FORMAT",
+    "formatNumber": 29,
+    "name": "Cancelled Job List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Cancelled Job List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-29"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "CANCELLED JOB LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "CARGO_ARRIVAL_NOTICE_SENT_SHIPMENTS_LIST_REPORT_FORMAT",
+    "formatNumber": 30,
+    "name": "Cargo Arrival Notice Sent Shipments List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Cargo Arrival Notice Sent Shipments List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-30"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "CARGO ARRIVAL NOTICE SENT SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "CHEQUE_COLLECTION_REPORT_LIST_REPORT_FORMAT",
+    "formatNumber": 31,
+    "name": "Cheque Collection Report List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Cheque Collection Report List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-31"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "CHEQUE COLLECTION REPORT LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "CLIENT_LOST_REPORT_FOR_LAST_N_DAYS_LIST_REPORT_FORMAT",
+    "formatNumber": 32,
+    "name": "Client Lost Report For Last N Days List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Client Lost Report For Last N Days List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-32"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "CLIENT LOST REPORT FOR LAST N DAYS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "COLLECT_SHIPMENT_WITH_NO_COLLECT_CHARGES_LIST_REPORT_FORMAT",
+    "formatNumber": 33,
+    "name": "Collect Shipment With No Collect Charges List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Collect Shipment With No Collect Charges List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-33"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "COLLECT SHIPMENT WITH NO COLLECT CHARGES LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "CREATED_QUOTATIONS_LIST_REPORT_FORMAT",
+    "formatNumber": 34,
+    "name": "Created Quotations List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0034",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0034",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "POL",
+          "v": "CHENNAI, INDIA"
+        },
+        {
+          "k": "POD",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Incoterm",
+          "v": "FOB"
+        },
+        {
+          "k": "Validity",
+          "v": "30 Days"
+        },
+        {
+          "k": "Layout",
+          "v": "Format-34"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Charge",
+        "Qty",
+        "Rate",
+        "Currency",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Ocean Freight",
+          "1",
+          "1,250.00",
+          "USD",
+          "1,250.00"
+        ],
+        [
+          "2",
+          "THC Origin",
+          "1",
+          "85.00",
+          "USD",
+          "85.00"
+        ],
+        [
+          "3",
+          "Documentation",
+          "1",
+          "45.00",
+          "USD",
+          "45.00"
+        ]
+      ],
+      "subtotal": "1,380.00",
+      "tax": "0.00",
+      "total": "1,380.00",
+      "words": "USD One Thousand Three Hundred Eighty Only",
+      "termsLines": [
+        "Rates are subject to carrier space and equipment availability.",
+        "This quotation is a KingFisher layout preview (FRESA format)."
+      ],
+      "remarks": "Format-34"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "CREATED QUOTATIONS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DO_ISSUED_SHIPMENT_LIST_REPORT_FORMAT",
+    "formatNumber": 35,
+    "name": "Do Issued Shipment List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Do Issued Shipment List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-35"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DO ISSUED SHIPMENT LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "EXPORT_CARGO_READY_BUT_NOT_STUFFED_LIST_REPORT_FORMAT",
+    "formatNumber": 36,
+    "name": "Export Cargo Ready But Not Stuffed List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Export Cargo Ready But Not Stuffed List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-36"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "EXPORT CARGO READY BUT NOT STUFFED LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_ATA_UPDATED_ARRIVAL_NOTICE_NOT_SENT_LIST_REPORT_FORMAT",
+    "formatNumber": 37,
+    "name": "Job ATA Updated Arrival Notice Not Sent List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job ATA Updated Arrival Notice Not Sent List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-37"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB ATA UPDATED ARRIVAL NOTICE NOT SENT LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "MRN_NUMBER_NOT_ENTERED_JOB_LIST_DUBAI_REPORT_FORMAT",
+    "formatNumber": 38,
+    "name": "MRN Number Not Entered Job List Dubai Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "MRN Number Not Entered Job List Dubai Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-38"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "MRN NUMBER NOT ENTERED JOB LIST DUBAI",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "SHIPMENTS_WITH_NO_COST_CHARGES_LIST_REPORT_FORMAT",
+    "formatNumber": 39,
+    "name": "Shipments With No cost Charges List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Shipments With No cost Charges List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-39"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "SHIPMENTS WITH NO COST CHARGES LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "SHIPMENTS_WITH_NO_INVOICES_LIST_REPORT_FORMAT",
+    "formatNumber": 40,
+    "name": "Shipments With No Invoices list Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Shipments With No Invoices list Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-40"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "SHIPMENTS WITH NO INVOICES LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST_REPORT_FORMAT",
+    "formatNumber": 41,
+    "name": "Shipments With No Purchase Invoices List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Shipments With No Purchase Invoices List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-41"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "SHIPMENTS WITH NO PURCHASE INVOICES LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "SHIPMENTS_WITH_NO_SALESPERSON_ENTERED_LIST_REPORT_FORMAT",
+    "formatNumber": 42,
+    "name": "Shipments With No Salesperson Entered List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Shipments With No Salesperson Entered List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-42"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "SHIPMENTS WITH NO SALESPERSON ENTERED LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "UNCOLLECTED_CARGO_FOR_AGENT_ROUTED_LIST_REPORT_FORMAT",
+    "formatNumber": 43,
+    "name": "Uncollected Cargo For Agent Routed List Report Format",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Uncollected Cargo For Agent Routed List Report Format"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-43"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "UNCOLLECTED CARGO FOR AGENT ROUTED LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_3",
+    "formatNumber": 3,
+    "name": "Daily Status Report Format-3",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-3"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-3"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_4",
+    "formatNumber": 4,
+    "name": "Daily Status Report Format-4",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-4"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-4"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_5",
+    "formatNumber": 5,
+    "name": "Daily Status Report Format-5",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-5"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-5"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_6",
+    "formatNumber": 6,
+    "name": "Daily Status Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-6"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "Daily Status Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "Daily Status Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "Daily Status Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_10",
+    "formatNumber": 10,
+    "name": "Daily Status Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-10"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_11",
+    "formatNumber": 11,
+    "name": "Daily Status Report Format-11",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-11"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-11"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_12",
+    "formatNumber": 12,
+    "name": "Daily Status Report Format-12",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-12"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-12"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_13",
+    "formatNumber": 13,
+    "name": "Daily Status Report Format-13",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-13"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-13"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_14",
+    "formatNumber": 14,
+    "name": "Daily Status Report Format-14",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-14"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-14"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_15",
+    "formatNumber": 15,
+    "name": "Daily Status Report Format-15",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-15"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-15"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_16",
+    "formatNumber": 16,
+    "name": "Daily Status Report Format-16",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-16"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-16"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_17",
+    "formatNumber": 17,
+    "name": "Daily Status Report Format-17",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-17"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-17"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_18",
+    "formatNumber": 18,
+    "name": "Daily Status Report Format-18",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-18"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-18"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_19",
+    "formatNumber": 19,
+    "name": "Daily Status Report Format-19",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-19"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-19"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_20",
+    "formatNumber": 20,
+    "name": "Daily Status Report Format-20",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-20"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-20"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_21",
+    "formatNumber": 21,
+    "name": "Daily Status Report Format-21",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-21"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-21"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_22",
+    "formatNumber": 22,
+    "name": "Daily Status Report Format-22",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Daily Status Report Format-22"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-22"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "DAILY STATUS",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_1",
+    "formatNumber": 1,
+    "name": "Pending Shipments List Report Format-1",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-1"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-1"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_2",
+    "formatNumber": 2,
+    "name": "Pending Shipments List Report Format-2",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-2"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-2"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_3",
+    "formatNumber": 3,
+    "name": "Pending Shipments List Report Format-3",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-3"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-3"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_4",
+    "formatNumber": 4,
+    "name": "Pending Shipments List Report Format-4",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-4"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-4"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_5",
+    "formatNumber": 5,
+    "name": "Pending Shipments List Report Format-5",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-5"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-5"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_6",
+    "formatNumber": 6,
+    "name": "Pending Shipments List Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-6"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "Pending Shipments List Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "Pending Shipments List Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "Pending Shipments List Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_10",
+    "formatNumber": 10,
+    "name": "Pending Shipments List Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-10"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_11",
+    "formatNumber": 11,
+    "name": "Pending Shipments List Report Format-11",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-11"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-11"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_12",
+    "formatNumber": 12,
+    "name": "Pending Shipments List Report Format-12",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-12"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-12"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_13",
+    "formatNumber": 13,
+    "name": "Pending Shipments List Report Format-13",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-13"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-13"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_14",
+    "formatNumber": 14,
+    "name": "Pending Shipments List Report Format-14",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-14"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-14"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_15",
+    "formatNumber": 15,
+    "name": "Pending Shipments List Report Format-15",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-15"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-15"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_16",
+    "formatNumber": 16,
+    "name": "Pending Shipments List Report Format-16",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-16"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-16"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_17",
+    "formatNumber": 17,
+    "name": "Pending Shipments List Report Format-17",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-17"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-17"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_18",
+    "formatNumber": 18,
+    "name": "Pending Shipments List Report Format-18",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-18"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-18"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_19",
+    "formatNumber": 19,
+    "name": "Pending Shipments List Report Format-19",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-19"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-19"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_20",
+    "formatNumber": 20,
+    "name": "Pending Shipments List Report Format-20",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-20"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-20"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_21",
+    "formatNumber": 21,
+    "name": "Pending Shipments List Report Format-21",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-21"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-21"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_22",
+    "formatNumber": 22,
+    "name": "Pending Shipments List Report Format-22",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-22"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-22"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_23",
+    "formatNumber": 23,
+    "name": "Pending Shipments List Report Format-23",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-23"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-23"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_24",
+    "formatNumber": 24,
+    "name": "Pending Shipments List Report Format-24",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-24"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-24"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_25",
+    "formatNumber": 25,
+    "name": "Pending Shipments List Report Format-25",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Pending Shipments List Report Format-25"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-25"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "PENDING SHIPMENTS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_1",
+    "formatNumber": 1,
+    "name": "Job Status List Report Format-1",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-1"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-1"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_2",
+    "formatNumber": 2,
+    "name": "Job Status List Report Format-2",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-2"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-2"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_3",
+    "formatNumber": 3,
+    "name": "Job Status List Report Format-3",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-3"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-3"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_4",
+    "formatNumber": 4,
+    "name": "Job Status List Report Format-4",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-4"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-4"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_5",
+    "formatNumber": 5,
+    "name": "Job Status List Report Format-5",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-5"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-5"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_6",
+    "formatNumber": 6,
+    "name": "Job Status List Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-6"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "Job Status List Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-7"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-7"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "Job Status List Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-8"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-8"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "Job Status List Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-9"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-9"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_10",
+    "formatNumber": 10,
+    "name": "Job Status List Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-10"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-10"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_11",
+    "formatNumber": 11,
+    "name": "Job Status List Report Format-11",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-11"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-11"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_12",
+    "formatNumber": 12,
+    "name": "Job Status List Report Format-12",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-12"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-12"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_13",
+    "formatNumber": 13,
+    "name": "Job Status List Report Format-13",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-13"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-13"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_14",
+    "formatNumber": 14,
+    "name": "Job Status List Report Format-14",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-14"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-14"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_15",
+    "formatNumber": 15,
+    "name": "Job Status List Report Format-15",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-15"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-15"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_16",
+    "formatNumber": 16,
+    "name": "Job Status List Report Format-16",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-16"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-16"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_17",
+    "formatNumber": 17,
+    "name": "Job Status List Report Format-17",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-17"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-17"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_18",
+    "formatNumber": 18,
+    "name": "Job Status List Report Format-18",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-18"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-18"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_19",
+    "formatNumber": 19,
+    "name": "Job Status List Report Format-19",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-19"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-19"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_20",
+    "formatNumber": 20,
+    "name": "Job Status List Report Format-20",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "LIST-001",
+      "invoiceDate": "10-FEB-19",
+      "billToName": "All Branches",
+      "fieldGrid": [
+        {
+          "k": "As Of",
+          "v": "10-FEB-19"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Operations"
+        },
+        {
+          "k": "Layout",
+          "v": "Job Status List Report Format-20"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Job No.",
+        "Customer",
+        "Status",
+        "ETD",
+        "ETA"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "B/EXP/19/0251",
+          "4G LOGISTICS",
+          "Pending",
+          "29-JAN-19",
+          "07-FEB-19"
+        ],
+        [
+          "2",
+          "B/EXP/19/0252",
+          "AL NASER TRADING",
+          "In Transit",
+          "30-JAN-19",
+          "08-FEB-19"
+        ],
+        [
+          "3",
+          "B/EXP/19/0253",
+          "GULF FREIGHT",
+          "Delivered",
+          "28-JAN-19",
+          "06-FEB-19"
+        ]
+      ],
+      "termsLines": [
+        "Computer generated operations list — sample preview data."
+      ],
+      "remarks": "Format-20"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "JOB STATUS LIST",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  }
+] as InvoiceFormatUiLayout[];

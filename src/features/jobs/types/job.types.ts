@@ -63,26 +63,82 @@ export interface JobAirDetail {
   conversion_factor?: number;
 }
 
-/** GET/PUT /jobs/:id/air-booking-form */
+/** GET/PUT /jobs/:id/air-booking-form — UpsertAirBookingFormDto */
+export type AirBookingFormPartyKind = 'SHIPPER' | 'CONSIGNEE' | 'NOTIFY';
+export type AirBookingFormEntityKind = 'COMPANY' | 'INDIVIDUAL';
+
+export interface AirBookingFormParty {
+  party_kind: AirBookingFormPartyKind;
+  full_name?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  entity_kind?: AirBookingFormEntityKind;
+  other_details?: string;
+}
+
 export type AirBookingForm = Record<string, unknown> & {
-  hawb_number?: string;
-  mawb_number?: string;
+  air_pallet_type_id?: string;
+  pieces?: number;
+  gross_weight_kg?: number;
+  chargeable_weight_kg?: number;
+  commodity?: string;
+  special_handling?: string;
+  notes?: string;
+  is_dg?: boolean;
   flight_number?: string;
   flight_date?: string;
-  airline_id?: string;
-  origin_airport_id?: string;
-  dest_airport_id?: string;
-  pieces?: number;
-  gross_weight?: number;
-  chargeable_weight?: number;
-  volume_cbm?: number;
-  commodity?: string;
-  notes?: string;
+  origin_airport_code?: string;
+  dest_airport_code?: string;
+  arrival_flight_number?: string;
+  mawb_from_origin?: string;
+  agent_at_origin?: string;
+  delivery_address?: string;
+  customs_value?: number;
+  parties?: AirBookingFormParty[];
+  mark_complete?: boolean;
 };
 
-export type UpdateAirBookingFormDto = Partial<AirBookingForm>;
+export type UpdateAirBookingFormDto = {
+  admin_override?: boolean;
+  stage_override_reason?: string;
+  /** @deprecated Not on UpsertAirBookingFormDto — use ULD request APIs */
+  air_pallet_type_id?: string;
+  pieces?: number;
+  gross_weight_kg?: number;
+  chargeable_weight_kg?: number;
+  /** maxLength 500 */
+  commodity?: string;
+  special_handling?: string;
+  notes?: string;
+  is_dg?: boolean;
+  /** maxLength 20 */
+  flight_number?: string;
+  flight_date?: string;
+  /** maxLength 10 — IATA/ICAO code */
+  origin_airport_code?: string;
+  /** maxLength 10 — IATA/ICAO code */
+  dest_airport_code?: string;
+  /** maxLength 20 */
+  arrival_flight_number?: string;
+  /** maxLength 50 */
+  mawb_from_origin?: string;
+  /** maxLength 200 */
+  agent_at_origin?: string;
+  delivery_address?: string;
+  customs_value?: number;
+  parties?: AirBookingFormParty[];
+  mark_complete?: boolean;
+};
 
-export type AirWorkflowActionDto = Record<string, unknown>;
+/** POST /jobs/:id/air/send-invoice — MarkAirInvoiceSentDto */
+export type MarkAirInvoiceSentDto = {
+  admin_override?: boolean;
+  stage_override_reason?: string;
+  invoice_id?: string;
+};
+
+export type AirWorkflowActionDto = MarkAirInvoiceSentDto & Record<string, unknown>;
 
 export interface AirUldRequest {
   id: string;

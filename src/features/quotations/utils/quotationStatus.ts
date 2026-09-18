@@ -16,7 +16,7 @@ let detectedStatusV2 = false;
 /** Call when any response includes INTERNALLY_APPROVED or DISAPPROVED. */
 export function markQuotationStatusV2Detected(raw?: string): void {
   const s = (raw || '').toUpperCase().replace(/\s+/g, '_');
-  if (s === 'INTERNALLY_APPROVED' || s === 'DISAPPROVED') {
+  if (s === 'INTERNALLY_APPROVED' || s === 'DISAPPROVED' || s === 'CUSTOMER_ACCEPTED') {
     detectedStatusV2 = true;
   }
 }
@@ -47,7 +47,7 @@ export function coerceQuotationStatus(value: unknown): QuotationStatus {
   // Customer reject and legacy lost/disapproved → Rejected on both portal and admin.
   if (raw === 'DISAPPROVED' || raw === 'LOST') return 'REJECTED';
   if (raw === 'WON') return 'APPROVED';
-  if (raw === 'ACCEPTED') return 'APPROVED';
+  if (raw === 'ACCEPTED' || raw === 'CUSTOMER_ACCEPTED') return 'APPROVED';
 
   if (raw === 'APPROVED') {
     // Ambiguous name: staff-internal on legacy API, customer-accepted on v2.
@@ -114,9 +114,45 @@ export function canStaffMarkCustomerDecision(status: string): boolean {
   return s === 'SENT' || s === 'CUSTOMER_REVIEW' || s === 'NEGOTIATING';
 }
 
-export function canConvertQuotationToJob(status: string): boolean {
-  const s = coerceQuotationStatus(status);
-  return s === 'APPROVED';
+export function canConvertQuotationToJob(status: string, jobType?: string): boolean {
+  // NVOCC / Air follow gated booking-form → send-invoice flows (not instant convert).
+  if (usesGatedFreightQuoteFlow(jobType)) return false;
+  return coerceQuotationStatus(status) === 'APPROVED';
+}
+
+/** NVOCC + Air use flowchart gates; other modes keep send → approve → convert. */
+export function usesGatedFreightQuoteFlow(jobType?: string): boolean {
+  const jt = String(jobType ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  if (!jt) return false;
+  return (
+    jt === 'NVOCC' ||
+    jt === 'AIR' ||
+    jt === 'NVOCC_EXPORT' ||
+    jt === 'NVOCC_IMPORT' ||
+    jt === 'AIR_EXPORT' ||
+    jt === 'AIR_IMPORT' ||
+    jt.startsWith('NVOCC_') ||
+    jt.startsWith('AIR_')
+  );
+}
+
+/**
+ * Air ops APIs need a job id. Staff may create a shell **manually** after approve
+ * (never auto). Use before air booking-form / send-invoice on the job.
+ */
+export function canStartAirOpsJobFromQuote(
+  status: string,
+  jobType?: string,
+  jobId?: string | null,
+): boolean {
+  const jt = String(jobType ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, '_');
+  return jt.startsWith('AIR_') && coerceQuotationStatus(status) === 'APPROVED' && !jobId;
 }
 
 export function isCustomerApprovedStatus(status: string): boolean {

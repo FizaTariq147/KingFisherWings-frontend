@@ -1,0 +1,2398 @@
+[
+  {
+    "code": "QUOTATION_REPORT_FORMAT_1",
+    "formatNumber": 1,
+    "name": "Quotation Report Format-1",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0001",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0001",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,380.00",
+      "tax": "0.00",
+      "total": "1,380.00",
+      "words": "USD One Thousand Three Hundred Eighty Only",
+      "remarks": "Format-1",
+      "fieldGrid": [
+        {
+          "k": "POL",
+          "v": "CHENNAI, INDIA"
+        },
+        {
+          "k": "POD",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Incoterm",
+          "v": "FOB"
+        },
+        {
+          "k": "Validity",
+          "v": "30 Days"
+        },
+        {
+          "k": "Container",
+          "v": "1 x 20' DC"
+        },
+        {
+          "k": "Layout",
+          "v": "Classic FCL quotation"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Charge",
+        "Qty",
+        "Rate",
+        "Currency",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Ocean Freight",
+          "1",
+          "1,250.00",
+          "USD",
+          "1,250.00"
+        ],
+        [
+          "2",
+          "THC Origin",
+          "1",
+          "85.00",
+          "USD",
+          "85.00"
+        ],
+        [
+          "3",
+          "Documentation",
+          "1",
+          "45.00",
+          "USD",
+          "45.00"
+        ]
+      ],
+      "termsLines": [
+        "Classic sea quotation — rates subject to space."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 1",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_2",
+    "formatNumber": 2,
+    "name": "Quotation Report Format-2",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0002",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0002",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,380.00",
+      "tax": "0.00",
+      "total": "1,380.00",
+      "words": "USD One Thousand Three Hundred Eighty Only",
+      "remarks": "Format-2",
+      "letterBody": "Thank you for your enquiry. Please find our competitive quotation as below.",
+      "fieldGrid": [
+        {
+          "k": "POL",
+          "v": "CHENNAI, INDIA"
+        },
+        {
+          "k": "POD",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Incoterm",
+          "v": "FOB"
+        },
+        {
+          "k": "Validity",
+          "v": "30 Days"
+        },
+        {
+          "k": "Container",
+          "v": "1 x 20' DC"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Charge",
+        "Qty",
+        "Rate",
+        "Currency",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Ocean Freight",
+          "1",
+          "1,250.00",
+          "USD",
+          "1,250.00"
+        ],
+        [
+          "2",
+          "THC Origin",
+          "1",
+          "85.00",
+          "USD",
+          "85.00"
+        ],
+        [
+          "3",
+          "Documentation",
+          "1",
+          "45.00",
+          "USD",
+          "45.00"
+        ]
+      ],
+      "termsLines": [
+        "Letter-style quotation with intro paragraph."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 2",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_3",
+    "formatNumber": 3,
+    "name": "Quotation Report Format-3",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0003",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0003",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,947.50",
+      "tax": "0.00",
+      "total": "1,947.50",
+      "words": "USD One Thousand Nine Hundred Forty Seven And 50/100",
+      "remarks": "Format-3",
+      "fieldGrid": [
+        {
+          "k": "Origin Airport",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Dest. Airport",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Incoterm",
+          "v": "CPT"
+        },
+        {
+          "k": "Validity",
+          "v": "15 Days"
+        },
+        {
+          "k": "Chargeable Wt",
+          "v": "450 KGS"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Charge",
+        "Chg Wt",
+        "Rate",
+        "Currency",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Air Freight",
+          "450",
+          "3.80",
+          "USD",
+          "1,710.00"
+        ],
+        [
+          "2",
+          "Fuel Surcharge",
+          "450",
+          "0.45",
+          "USD",
+          "202.50"
+        ],
+        [
+          "3",
+          "Security",
+          "1",
+          "35.00",
+          "USD",
+          "35.00"
+        ]
+      ],
+      "termsLines": [
+        "Air quotation layout — chargeable weight based."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "AIR QUOTATION — FORMAT 3",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_4",
+    "formatNumber": 4,
+    "name": "Quotation Report Format-4",
+    "paper": "Letter",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0004",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0004",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,380.00",
+      "tax": "0.00",
+      "total": "1,380.00",
+      "words": "USD One Thousand Three Hundred Eighty Only",
+      "remarks": "Format-4",
+      "fieldGrid": [
+        {
+          "k": "POL",
+          "v": "CHENNAI, INDIA"
+        },
+        {
+          "k": "POD",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Incoterm",
+          "v": "FOB"
+        },
+        {
+          "k": "Validity",
+          "v": "30 Days"
+        },
+        {
+          "k": "Container",
+          "v": "1 x 20' DC"
+        },
+        {
+          "k": "Paper",
+          "v": "US Letter"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Description",
+        "Qty",
+        "Unit",
+        "Curr",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Ocean Freight",
+          "1",
+          "1,250.00",
+          "USD",
+          "1,250.00"
+        ],
+        [
+          "2",
+          "THC Origin",
+          "1",
+          "85.00",
+          "USD",
+          "85.00"
+        ],
+        [
+          "3",
+          "Documentation",
+          "1",
+          "45.00",
+          "USD",
+          "45.00"
+        ]
+      ],
+      "termsLines": [
+        "US Letter paper quotation format."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 4",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_5",
+    "formatNumber": 5,
+    "name": "Quotation Report Format-5",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0005",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0005",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,380.00",
+      "tax": "0.00",
+      "total": "1,380.00",
+      "words": "USD One Thousand Three Hundred Eighty Only",
+      "remarks": "Format-5",
+      "fieldGrid": [
+        {
+          "k": "POL",
+          "v": "CHENNAI, INDIA"
+        },
+        {
+          "k": "POD",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Incoterm",
+          "v": "FOB"
+        },
+        {
+          "k": "Validity",
+          "v": "30 Days"
+        },
+        {
+          "k": "Container",
+          "v": "1 x 20' DC"
+        }
+      ],
+      "tableHeaders": [
+        "Charge Code",
+        "Description",
+        "Amount (USD)"
+      ],
+      "tableRows": [
+        [
+          "OFR",
+          "Ocean Freight",
+          "1,250.00"
+        ],
+        [
+          "THC",
+          "Terminal Handling",
+          "85.00"
+        ],
+        [
+          "DOC",
+          "Documentation",
+          "45.00"
+        ]
+      ],
+      "termsLines": [
+        "Compact 3-column charge summary."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 5",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_6",
+    "formatNumber": 6,
+    "name": "Quotation Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0006",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0006",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,380.00",
+      "tax": "0.00",
+      "total": "1,380.00",
+      "words": "USD One Thousand Three Hundred Eighty Only",
+      "remarks": "Format-6",
+      "letterBody": "Quotation valid for 30 days from date of issue.",
+      "fieldGrid": [
+        {
+          "k": "POL",
+          "v": "CHENNAI, INDIA"
+        },
+        {
+          "k": "POD",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Incoterm",
+          "v": "FOB"
+        },
+        {
+          "k": "Validity",
+          "v": "30 Days"
+        },
+        {
+          "k": "Container",
+          "v": "1 x 20' DC"
+        },
+        {
+          "k": "Salesperson",
+          "v": "A. Kumar"
+        },
+        {
+          "k": "Branch",
+          "v": "Dubai"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Charge",
+        "Qty",
+        "Rate",
+        "Currency",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Ocean Freight",
+          "1",
+          "1,250.00",
+          "USD",
+          "1,250.00"
+        ],
+        [
+          "2",
+          "THC Origin",
+          "1",
+          "85.00",
+          "USD",
+          "85.00"
+        ],
+        [
+          "3",
+          "Documentation",
+          "1",
+          "45.00",
+          "USD",
+          "45.00"
+        ]
+      ],
+      "agingHeaders": [
+        "Freight",
+        "Local",
+        "Docs",
+        "Total"
+      ],
+      "agingRow": [
+        "1,250.00",
+        "85.00",
+        "45.00",
+        "1,380.00"
+      ],
+      "termsLines": [
+        "Includes charge summary strip."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 6",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_7",
+    "formatNumber": 7,
+    "name": "Quotation Report Format-7",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0007",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0007",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,408.00",
+      "tax": "0.00",
+      "total": "1,408.00",
+      "words": "USD One Thousand Four Hundred Eight Only",
+      "remarks": "Format-7",
+      "partyNotify": {
+        "title": "Notify / Customer",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "POL",
+          "v": "CHENNAI, INDIA"
+        },
+        {
+          "k": "POD",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Incoterm",
+          "v": "FOB"
+        },
+        {
+          "k": "Validity",
+          "v": "30 Days"
+        },
+        {
+          "k": "Container",
+          "v": "1 x 20' DC"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Charge",
+        "Qty",
+        "Rate",
+        "Currency",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Ocean Freight",
+          "1",
+          "1,250.00",
+          "USD",
+          "1,250.00"
+        ],
+        [
+          "2",
+          "THC Origin",
+          "1",
+          "85.00",
+          "USD",
+          "85.00"
+        ],
+        [
+          "3",
+          "Documentation",
+          "1",
+          "45.00",
+          "USD",
+          "45.00"
+        ],
+        [
+          "4",
+          "Insurance",
+          "1",
+          "28.00",
+          "USD",
+          "28.00"
+        ]
+      ],
+      "termsLines": [
+        "Four-party notify layout with insurance line."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 7",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_8",
+    "formatNumber": 8,
+    "name": "Quotation Report Format-8",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0008",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0008",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,380.00",
+      "tax": "0.00",
+      "total": "1,380.00",
+      "words": "USD One Thousand Three Hundred Eighty Only",
+      "remarks": "Format-8",
+      "fieldGrid": [
+        {
+          "k": "Quote Type",
+          "v": "FCL Export"
+        },
+        {
+          "k": "Transit",
+          "v": "9 Days"
+        },
+        {
+          "k": "POL",
+          "v": "CHENNAI, INDIA"
+        },
+        {
+          "k": "POD",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Incoterm",
+          "v": "FOB"
+        },
+        {
+          "k": "Validity",
+          "v": "30 Days"
+        },
+        {
+          "k": "Container",
+          "v": "1 x 20' DC"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Charge",
+        "Buy",
+        "Sell",
+        "Curr",
+        "Profit"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Ocean Freight",
+          "1,100.00",
+          "1,250.00",
+          "USD",
+          "150.00"
+        ],
+        [
+          "2",
+          "THC",
+          "70.00",
+          "85.00",
+          "USD",
+          "15.00"
+        ],
+        [
+          "3",
+          "Docs",
+          "30.00",
+          "45.00",
+          "USD",
+          "15.00"
+        ]
+      ],
+      "termsLines": [
+        "Buy/Sell/Profit quotation sheet."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION WITH MARGIN — FORMAT 8",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_9",
+    "formatNumber": 9,
+    "name": "Quotation Report Format-9",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0009",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0009",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,947.50",
+      "tax": "0.00",
+      "total": "1,947.50",
+      "words": "USD One Thousand Nine Hundred Forty Seven And 50/100",
+      "remarks": "Format-9",
+      "letterBody": "Please confirm acceptance by return email to proceed with booking.",
+      "fieldGrid": [
+        {
+          "k": "Origin Airport",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Dest. Airport",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Incoterm",
+          "v": "CPT"
+        },
+        {
+          "k": "Validity",
+          "v": "15 Days"
+        },
+        {
+          "k": "Chargeable Wt",
+          "v": "450 KGS"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Charge",
+        "Chg Wt",
+        "Rate",
+        "Currency",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Air Freight",
+          "450",
+          "3.80",
+          "USD",
+          "1,710.00"
+        ],
+        [
+          "2",
+          "Fuel Surcharge",
+          "450",
+          "0.45",
+          "USD",
+          "202.50"
+        ],
+        [
+          "3",
+          "Security",
+          "1",
+          "35.00",
+          "USD",
+          "35.00"
+        ]
+      ],
+      "termsLines": [
+        "Air pre-alert style quotation confirmation."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 9",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_10",
+    "formatNumber": 10,
+    "name": "Quotation Report Format-10",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0010",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0010",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,380.00",
+      "tax": "0.00",
+      "total": "1,380.00",
+      "words": "USD One Thousand Three Hundred Eighty Only",
+      "remarks": "Format-10",
+      "fieldGrid": [
+        {
+          "k": "POL",
+          "v": "CHENNAI, INDIA"
+        },
+        {
+          "k": "POD",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Incoterm",
+          "v": "FOB"
+        },
+        {
+          "k": "Validity",
+          "v": "30 Days"
+        },
+        {
+          "k": "Container",
+          "v": "1 x 20' DC"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Charge",
+        "Qty",
+        "Rate",
+        "Currency",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Ocean Freight",
+          "1",
+          "1,250.00",
+          "USD",
+          "1,250.00"
+        ],
+        [
+          "2",
+          "THC Origin",
+          "1",
+          "85.00",
+          "USD",
+          "85.00"
+        ],
+        [
+          "3",
+          "Documentation",
+          "1",
+          "45.00",
+          "USD",
+          "45.00"
+        ]
+      ],
+      "bankLines": [
+        "Bank: Emirates NBD",
+        "Account: KingFisher Logistic LLC",
+        "IBAN: AE070260001234567890123",
+        "Swift: EBILAEAD"
+      ],
+      "termsLines": [
+        "Includes bank settlement details."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 10",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_11",
+    "formatNumber": 11,
+    "name": "Quotation Report Format-11",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0011",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0011",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,380.00",
+      "tax": "0.00",
+      "total": "1,380.00",
+      "words": "USD One Thousand Three Hundred Eighty Only",
+      "remarks": "Format-11",
+      "fieldGrid": [
+        {
+          "k": "Mode",
+          "v": "Sea FCL"
+        },
+        {
+          "k": "Commodity",
+          "v": "General Cargo"
+        },
+        {
+          "k": "POL",
+          "v": "CHENNAI, INDIA"
+        },
+        {
+          "k": "POD",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Incoterm",
+          "v": "FOB"
+        },
+        {
+          "k": "Validity",
+          "v": "30 Days"
+        },
+        {
+          "k": "Container",
+          "v": "1 x 20' DC"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Charge",
+        "Qty",
+        "Rate",
+        "Currency",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Ocean Freight",
+          "1",
+          "1,250.00",
+          "USD",
+          "1,250.00"
+        ],
+        [
+          "2",
+          "THC Origin",
+          "1",
+          "85.00",
+          "USD",
+          "85.00"
+        ],
+        [
+          "3",
+          "Documentation",
+          "1",
+          "45.00",
+          "USD",
+          "45.00"
+        ]
+      ],
+      "containerHeaders": [
+        "Container",
+        "Type",
+        "Payload"
+      ],
+      "containerRow": [
+        "TBA",
+        "20' DC",
+        "18,000 KGS"
+      ],
+      "termsLines": [
+        "Shipment + container planning quotation."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 11",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_12",
+    "formatNumber": 12,
+    "name": "Quotation Report Format-12",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0012",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0012",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,380.00",
+      "tax": "0.00",
+      "total": "1,380.00",
+      "words": "USD One Thousand Three Hundred Eighty Only",
+      "remarks": "Format-12",
+      "fieldGrid": [
+        {
+          "k": "POL",
+          "v": "CHENNAI, INDIA"
+        },
+        {
+          "k": "POD",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Incoterm",
+          "v": "FOB"
+        },
+        {
+          "k": "Validity",
+          "v": "30 Days"
+        },
+        {
+          "k": "Container",
+          "v": "1 x 20' DC"
+        }
+      ],
+      "tableHeaders": [
+        "Sl",
+        "Particulars",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Ocean Freight FCL",
+          "1,250.00"
+        ],
+        [
+          "2",
+          "Origin Local Charges",
+          "85.00"
+        ],
+        [
+          "3",
+          "Documentation Fee",
+          "45.00"
+        ],
+        [
+          "",
+          "Grand Total (USD)",
+          "1,380.00"
+        ]
+      ],
+      "termsLines": [
+        "Simple particulars list — India trade style."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 12",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_13",
+    "formatNumber": 13,
+    "name": "Quotation Report Format-13",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0013",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0013",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,380.00",
+      "tax": "0.00",
+      "total": "1,380.00",
+      "words": "USD One Thousand Three Hundred Eighty Only",
+      "remarks": "Format-13",
+      "letterBody": "This quotation supersedes all previous offers for the same shipment.",
+      "fieldGrid": [
+        {
+          "k": "POL",
+          "v": "CHENNAI, INDIA"
+        },
+        {
+          "k": "POD",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Incoterm",
+          "v": "FOB"
+        },
+        {
+          "k": "Validity",
+          "v": "30 Days"
+        },
+        {
+          "k": "Container",
+          "v": "1 x 20' DC"
+        },
+        {
+          "k": "Revision",
+          "v": "Rev-B"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Charge",
+        "Qty",
+        "Rate",
+        "Currency",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Ocean Freight",
+          "1",
+          "1,250.00",
+          "USD",
+          "1,250.00"
+        ],
+        [
+          "2",
+          "THC Origin",
+          "1",
+          "85.00",
+          "USD",
+          "85.00"
+        ],
+        [
+          "3",
+          "Documentation",
+          "1",
+          "45.00",
+          "USD",
+          "45.00"
+        ]
+      ],
+      "termsLines": [
+        "Revision-aware quotation layout."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 13",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_14",
+    "formatNumber": 14,
+    "name": "Quotation Report Format-14",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0014",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0014",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,947.50",
+      "tax": "97.38",
+      "total": "2,044.88",
+      "words": "USD Two Thousand Forty Four And 88/100",
+      "remarks": "Format-14",
+      "fieldGrid": [
+        {
+          "k": "Origin Airport",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Dest. Airport",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Incoterm",
+          "v": "CPT"
+        },
+        {
+          "k": "Validity",
+          "v": "15 Days"
+        },
+        {
+          "k": "Chargeable Wt",
+          "v": "450 KGS"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Charge",
+        "Chg Wt",
+        "Rate",
+        "Currency",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Air Freight",
+          "450",
+          "3.80",
+          "USD",
+          "1,710.00"
+        ],
+        [
+          "2",
+          "Fuel Surcharge",
+          "450",
+          "0.45",
+          "USD",
+          "202.50"
+        ],
+        [
+          "3",
+          "Security",
+          "1",
+          "35.00",
+          "USD",
+          "35.00"
+        ]
+      ],
+      "termsLines": [
+        "VAT-inclusive air quotation."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION WITH TAX — FORMAT 14",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "subtotalBar",
+        "variant": "tax"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_15",
+    "formatNumber": 15,
+    "name": "Quotation Report Format-15",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "info@kingfisherwingsgroup.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "QTN-19-0015",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-FEB-19",
+      "quotationNo": "QTN-19-0015",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
+      "currency": "USD",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "subtotal": "1,380.00",
+      "tax": "0.00",
+      "total": "1,380.00",
+      "words": "USD One Thousand Three Hundred Eighty Only",
+      "remarks": "Format-15",
+      "letterBody": "We look forward to your confirmation to proceed with booking.",
+      "fieldGrid": [
+        {
+          "k": "POL",
+          "v": "CHENNAI, INDIA"
+        },
+        {
+          "k": "POD",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Incoterm",
+          "v": "FOB"
+        },
+        {
+          "k": "Validity",
+          "v": "30 Days"
+        },
+        {
+          "k": "Container",
+          "v": "1 x 20' DC"
+        },
+        {
+          "k": "Prepared By",
+          "v": "Commercial Team"
+        },
+        {
+          "k": "Approved By",
+          "v": "Branch Manager"
+        }
+      ],
+      "tableHeaders": [
+        "#",
+        "Charge",
+        "Qty",
+        "Rate",
+        "Currency",
+        "Amount"
+      ],
+      "tableRows": [
+        [
+          "1",
+          "Ocean Freight",
+          "1",
+          "1,250.00",
+          "USD",
+          "1,250.00"
+        ],
+        [
+          "2",
+          "THC Origin",
+          "1",
+          "85.00",
+          "USD",
+          "85.00"
+        ],
+        [
+          "3",
+          "Documentation",
+          "1",
+          "45.00",
+          "USD",
+          "45.00"
+        ]
+      ],
+      "signatureLabels": [
+        "Prepared By",
+        "Checked By",
+        "Approved By"
+      ],
+      "termsLines": [
+        "Executive approval quotation format."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 15",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  }
+]

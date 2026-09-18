@@ -1,12 +1,11 @@
 /**
  * WMS Advance Shipping Note formats from Fresa sample PDFs (2020/03).
  */
-export type WmsFormatKind =
-  | 'asn_format_1'
-  | 'asn_standard'
-  | 'asn_location_wise'
-  | 'asn_location_wise_2'
-  | 'asn_summary';
+import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
+import { listWmsFormatUiLayouts } from '../data/wmsFormatUiLayouts';
+import { REMAINING_FORMAT_CATALOG } from './remainingFormatCatalog.generated.ts';
+
+export type WmsFormatKind = string;
 
 export type WmsFormatSpec = {
   code: string;
@@ -48,7 +47,34 @@ export const WMS_FORMAT_CATALOG: WmsFormatSpec[] = [
   },
 ];
 
-const byCode = new Map(WMS_FORMAT_CATALOG.map((row) => [row.code.toUpperCase(), row]));
+const WMS_EXTRA: WmsFormatSpec[] = REMAINING_FORMAT_CATALOG.filter(
+  (r) => r.bucket === 'wms' || r.bucket === 'wms_extra',
+).map((r, i) => ({
+  code: r.code,
+  name: r.name,
+  kind: `wms_extra_${r.sortOrder || i + 1}`,
+  sortOrder: 1000 + (r.sortOrder || i + 1),
+}));
+
+function buildAllWmsFormats(): WmsFormatSpec[] {
+  const by = new Map<string, WmsFormatSpec>();
+  for (const row of [...WMS_FORMAT_CATALOG, ...WMS_EXTRA]) by.set(row.code.toUpperCase(), row);
+  listWmsFormatUiLayouts().forEach((layout, i) => {
+    const key = layout.code.toUpperCase();
+    const existing = by.get(key);
+    by.set(key, {
+      code: layout.code,
+      name: layout.name || existing?.name || layout.code,
+      kind: existing?.kind || `wms_${layout.formatNumber || i + 1}`,
+      sortOrder: existing?.sortOrder ?? layout.formatNumber ?? 2000 + i,
+    });
+  });
+  return [...by.values()].sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name));
+}
+
+const ALL_WMS_FORMATS: WmsFormatSpec[] = buildAllWmsFormats();
+
+const byCode = new Map(ALL_WMS_FORMATS.map((row) => [row.code.toUpperCase(), row]));
 
 export function isWmsFormatCode(code: string): boolean {
   return byCode.has(code.trim().toUpperCase());
@@ -59,7 +85,7 @@ export function getWmsFormatSpec(code: string): WmsFormatSpec | undefined {
 }
 
 export function listWmsFormats(): WmsFormatSpec[] {
-  return WMS_FORMAT_CATALOG.slice().sort((a, b) => a.sortOrder - b.sortOrder);
+  return ALL_WMS_FORMATS.slice().sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 export function resolveWmsFormatDisplayName(code: string, fallbackName: string): string {
@@ -67,17 +93,5 @@ export function resolveWmsFormatDisplayName(code: string, fallbackName: string):
 }
 
 export function wmsFormatsMatchSearch(searchQuery: string): boolean {
-  const q = searchQuery.trim().toLowerCase();
-  if (!q) return false;
-  const tokens = q.split(/\s+/).filter(Boolean);
-  const catalogHit = listWmsFormats().some((row) => {
-    const hay = `${row.name} ${row.code} ${row.kind} asn wms warehouse shipping`.toLowerCase();
-    return tokens.every((token) => hay.includes(token));
-  });
-  if (catalogHit) return true;
-  const genericHay = 'wms asn advance shipping note warehouse location summary';
-  return tokens.every(
-    (token) =>
-      genericHay.includes(token) || token.includes('wms') || token.includes('asn'),
-  );
+  return catalogRowsMatchSearch(listWmsFormats(), searchQuery);
 }

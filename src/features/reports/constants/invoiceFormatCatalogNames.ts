@@ -3,6 +3,8 @@
  * Formats 1–21 follow https://fresatechnologies.com/sample-report-formats/
  * Higher numbers are additional sample-PDF variants (kept; not removed).
  */
+import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
+
 export const INVOICE_FORMAT_CATALOG_NAMES: Record<number, string> = {
   // Official Fresa sample-report-formats page
   1: 'Invoice Report Format-1 Tax Invoice India',
@@ -112,16 +114,12 @@ export function resolveInvoiceFormatDisplayName(code: string, fallbackName: stri
 }
 
 export function invoiceFormatsMatchSearch(searchQuery: string): boolean {
-  const q = searchQuery.trim().toLowerCase();
-  if (!q) return false;
-  const tokens = q.split(/\s+/).filter(Boolean);
-  const catalogHit = Object.entries(INVOICE_FORMAT_CATALOG_NAMES).some(([num, name]) => {
-    const hay = `${name} INVOICE_REPORT_FORMAT_${num} invoice`.toLowerCase();
-    return tokens.every((token) => hay.includes(token));
-  });
-  if (catalogHit) return true;
-  const genericHay = 'invoice report format tax commercial billing';
-  return tokens.every(
-    (token) => genericHay.includes(token) || token.includes('invoice'),
+  return catalogRowsMatchSearch(
+    Object.entries(INVOICE_FORMAT_CATALOG_NAMES).map(([num, name]) => ({
+      name,
+      code: `INVOICE_REPORT_FORMAT_${num}`,
+      kind: 'invoice',
+    })),
+    searchQuery,
   );
 }

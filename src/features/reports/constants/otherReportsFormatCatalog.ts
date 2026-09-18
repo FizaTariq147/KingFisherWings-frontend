@@ -1,70 +1,14 @@
 /**
  * Other Reports from Fresa official report-format PDFs (names match registry / sample page).
  */
+import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
+import { listOtherReportsFormatUiLayouts } from '../data/otherReportsFormatUiLayouts';
+import { REMAINING_FORMAT_CATALOG } from './remainingFormatCatalog.generated.ts';
+
 export const FRESA_OTHER_REPORTS_FORMAT_BASE =
   'https://fresatechnologies.com/wp-content/uploads/report-formats/';
 
-export type OtherReportsFormatKind =
-  | 'cargo_manifest'
-  | 'container_load_plan'
-  | 'freight_manifest_groupage_imports_lcl'
-  | 'transshipment_list'
-  | 'booking_confirmation_1'
-  | 'booking_confirmation_2'
-  | 'cargo_receipt_note_export_cfs'
-  | 'container_outturn'
-  | 'container_unload_plan'
-  | 'freight_manifest_lcl_exports'
-  | 'sailing_confirmation'
-  | 'consol_igm_filling_letter_jasper'
-  | 'container_movement_facilitation_cell_note'
-  | 'exchange_letter_to_carrier_agent'
-  | 'import_cargo_manifest'
-  | 'import_tally_sheet'
-  | 'letter_of_guarantee'
-  | 'rider_sheet_export_manifest'
-  | 'shipment_profit_and_loss'
-  | 'shipment_status_confirmation'
-  | 'truck_cargo_pickup_request'
-  | 'carting_confirmation'
-  | 'container_vgm_form'
-  | 'fcl_quotation'
-  | 'fcr_document'
-  | 'import_security_filling_jasper_ams'
-  | 'isf_filing_document'
-  | 'loading_confirmation'
-  | 'pickup_confirmation'
-  | 'pre_alert_to_client'
-  | 'prealert_usa_jasper'
-  | 'shipping_instruction'
-  | 'stuffing_report'
-  | 'stuffing_report_jasper'
-  | 'surrendered_letter'
-  | 'terminal_departure_tdr'
-  | 'daily_status_1'
-  | 'daily_status_2'
-  | 'job_card'
-  | 'air_quotation'
-  | 'air_quotation_with_airline'
-  | 'air_freight_atd_confirmation'
-  | 'barcode_awb'
-  | 'booking_confirmation_air'
-  | 'cargo_manifest_air_house'
-  | 'cargo_manifest_air_jasper'
-  | 'cargo_manifest_air_lc_jasper'
-  | 'shipment_freight_manifest'
-  | 'air_shipment_profit_and_loss'
-  | 'air_shipment_profit_and_loss_1'
-  | 'job_house_record_list'
-  | 'mawb_draft'
-  | 'mawb_original_preprinted_kc'
-  | 'pre_alert_air'
-  | 'cash_collection_list'
-  | 'closed_job_list'
-  | 'job_list_summary'
-  | 'payment_request_list'
-  | 'job_house_record_list_1'
-  | 'proforma_invoice_all_charges';
+export type OtherReportsFormatKind = string;
 
 export type OtherReportsFormatSpec = {
   code: string;
@@ -571,9 +515,51 @@ export const OTHER_REPORTS_FORMAT_CATALOG: OtherReportsFormatSpec[] = [
   },
 ];
 
-const byCode = new Map(OTHER_REPORTS_FORMAT_CATALOG.map((row) => [row.code.toUpperCase(), row]));
+const OTHER_EXTRA: OtherReportsFormatSpec[] = REMAINING_FORMAT_CATALOG.filter(
+  (r) => r.bucket === 'other' || r.bucket === 'other_extra',
+).map((r, i) => ({
+  code: r.code,
+  name: r.name,
+  kind: `other_extra_${r.sortOrder || i + 1}`,
+  sortOrder: 1000 + (r.sortOrder || i + 1),
+  family: (r.family === 'air_docs'
+    ? 'air_docs'
+    : r.family === 'quotation'
+      ? 'quotation'
+      : r.family === 'ops_list'
+        ? 'ops_list'
+        : r.family === 'commercial'
+          ? 'commercial'
+          : r.family === 'sea_docs'
+            ? 'sea_docs'
+            : 'other') as OtherReportsFormatSpec['family'],
+  samplePdfUrl: FRESA_OTHER_REPORTS_FORMAT_BASE,
+}));
 
-const CATALOG_CODES = new Set(OTHER_REPORTS_FORMAT_CATALOG.map((row) => row.code.toUpperCase()));
+const ALL_OTHER_REPORTS: OtherReportsFormatSpec[] = (() => {
+  const by = new Map<string, OtherReportsFormatSpec>();
+  for (const row of [...OTHER_REPORTS_FORMAT_CATALOG, ...OTHER_EXTRA]) {
+    by.set(row.code.toUpperCase(), row);
+  }
+  listOtherReportsFormatUiLayouts().forEach((layout, i) => {
+    const key = layout.code.toUpperCase();
+    const existing = by.get(key);
+    by.set(key, {
+      code: layout.code,
+      name: layout.name || existing?.name || layout.code,
+      kind: existing?.kind || `other_${layout.formatNumber || i + 1}`,
+      sortOrder: existing?.sortOrder ?? layout.formatNumber ?? 2000 + i,
+      family: existing?.family || 'other',
+      contexts: existing?.contexts,
+      samplePdfUrl: existing?.samplePdfUrl || FRESA_OTHER_REPORTS_FORMAT_BASE,
+    });
+  });
+  return [...by.values()];
+})();
+
+const byCode = new Map(ALL_OTHER_REPORTS.map((row) => [row.code.toUpperCase(), row]));
+
+const CATALOG_CODES = new Set(ALL_OTHER_REPORTS.map((row) => row.code.toUpperCase()));
 
 export function isOtherReportsFormatCode(code: string): boolean {
   const needle = code.trim().toUpperCase();
@@ -590,7 +576,7 @@ export function getOtherReportsFormatSpec(code: string): OtherReportsFormatSpec 
 }
 
 export function listOtherReportsFormats(): OtherReportsFormatSpec[] {
-  return OTHER_REPORTS_FORMAT_CATALOG.slice().sort((a, b) => a.sortOrder - b.sortOrder);
+  return ALL_OTHER_REPORTS.slice().sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 export function resolveOtherReportsFormatDisplayName(code: string, fallbackName: string): string {
@@ -598,16 +584,5 @@ export function resolveOtherReportsFormatDisplayName(code: string, fallbackName:
 }
 
 export function otherReportsFormatsMatchSearch(searchQuery: string): boolean {
-  const q = searchQuery.trim().toLowerCase();
-  if (!q) return false;
-  const tokens = q.split(/\s+/).filter(Boolean);
-  const catalogHit = listOtherReportsFormats().some((row) => {
-    const hay =
-      `${row.name} ${row.code} ${row.kind} other reports manifest booking sailing igm outturn`.toLowerCase();
-    return tokens.every((token) => hay.includes(token));
-  });
-  if (catalogHit) return true;
-  const genericHay =
-    'other reports cargo manifest container load plan freight groupage transshipment booking confirmation receipt outturn unload sailing consol igm import tally guarantee rider profit loss status truck carting vgm fcl quotation fcr exchange letter movement facilitation isf ams loading pickup pre alert prealert stuffing surrendered tdr daily job card air airline shipping instruction atd barcode awb mawb house jasper shipment';
-  return tokens.every((token) => genericHay.includes(token));
+  return catalogRowsMatchSearch(listOtherReportsFormats(), searchQuery);
 }

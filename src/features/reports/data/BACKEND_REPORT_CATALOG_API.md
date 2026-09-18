@@ -40,8 +40,59 @@ FE catalog browse is ready for Invoice, Accounts, WMS, Arrival Notice, Delivery 
 5. **Parameter schemas + tenant data loaders** per pack family (`job_id`, `invoice_id`, `quotation_id`, `party_id`, GL period, ASN id, list filters) including company branding (logo, legal name, address, GSTIN/VAT, bank).
 6. **Priority shells** (one pack → many codes): start with `commercial.invoice_tax_india_1` for Format-1; then HBL / Arrival / DO / HAWB / Accounts / WMS / Other list shells.
 7. **No Jasper upload**; do not scrape Fresa sample site into the API. FE demo JSON layouts are preview-only until packs ship.
+8. **Dynamic catalog search** (next section) so `/reports/catalog` search is API-driven and complete.
 
 FE handoff constants: `src/features/reports/constants/fresaPdfParity.constants.ts`.
+
+---
+
+## Dynamic catalog search (required for correct FE search)
+
+Catalog UI search must be driven by the templates API. Do **not** break existing list/generate/download behaviour — only make `search` reliable and complete.
+
+### Endpoints
+
+| Method | Path | Role in search flow |
+|--------|------|---------------------|
+| `GET` | `/reports/templates` | **Primary search** — `?search=&family=&context=&include_inactive=&page=&limit=` |
+| `GET` | `/reports/templates/:idOrCode` | Detail after user selects a row |
+| `POST` | `/reports/templates/import` | Ensure all FRESA format codes exist so search can find them |
+| `GET` | `/reports/templates/renderers` | Pack keys (unchanged) |
+| `POST` | `/reports/generate` | Generate after select (unchanged) |
+| `GET` | `/reports/jobs/:jobId` | Poll (unchanged) |
+| `GET` | `/reports/jobs/:jobId/download` | Download (unchanged) |
+
+### `GET /reports/templates` search contract
+
+- `search` — case-insensitive match on **`name`**, **`code`**, and **`description`**
+- Space-separated tokens = **AND** (every token must match)
+- `include_inactive=true` must return matching inactive/pending formats (FE shows them in catalog)
+- `family`, `context`, `page`, `limit` (max 200) — unchanged
+- Empty `search` = full list (existing behaviour)
+- Unknown/empty results → `data: []`, `meta.total: 0` (never 500)
+
+Example:
+
+```http
+GET /reports/templates?search=hbl%20draft&include_inactive=true&page=1&limit=200
+```
+
+### Correct flow (preserve existing PDFs)
+
+1. User types in `/reports/catalog` → FE debounces → URL `q`  
+2. FE calls `GET /reports/templates?search={q}&include_inactive=true` (+ family/context)  
+3. List + strips show matches  
+4. Select code → `GET /reports/templates/:code`  
+5. If pack bound → `POST /reports/generate` → poll → download  
+6. Keep `POST /invoices/:id/pdf` and `POST /quotations/:id/pdf` unchanged  
+
+### Backend checklist so search is complete
+
+1. `POST /reports/templates/import` — full FRESA set (Invoice, Accounts, WMS, Arrival, DO, HAWB, HBL, Other)  
+2. Search indexes `name` + `code` + `description` (not code-only)  
+3. Stable `meta.total` / `meta.totalPages` for multi-page browse  
+
+Until every format code is imported, FE may still merge local format catalogs as a fallback.
 
 ---
 
@@ -134,6 +185,8 @@ On `POST …/import` or `POST …/activate`, if a rule matches, set real `render
 Paginated template list. Params: `page`, `limit` (max 200), `search`, `family`, `context`, `include_inactive`.
 
 FE browse loads multiple pages (capped) for sectioned listing.
+
+**Search:** `search` must match `name` + `code` + `description` (case-insensitive; space-separated tokens = AND). See **Dynamic catalog search** above. Do not change response shape.
 
 ### 2. `GET /reports/templates/:idOrCode`
 
@@ -382,4 +435,7 @@ Each = new pack + bind map; **zero new FE layout code**.
 | Page | `src/features/reports/pages/ReportCatalogPage.tsx` |
 | Pack priority + Format-1 constants | `src/features/reports/constants/fresaPdfParity.constants.ts` |
 | Preserve doc PDFs | `src/features/reports/utils/documentPdfPreserve.ts` |
+| Invoice format-payload (optional) | `GET /invoices/:id/format-payload` via `invoiceService.getFormatPayload` |
+
+**Catalog page wiring (live):** selecting a template mounts `ReportGeneratePanel` (bind / activate / `POST /reports/generate`). Format AutoPdf strips remain **preview-only**. **Import registry** calls `POST /reports/templates/import`. Search uses debounced `GET /reports/templates?search=` plus local format-catalog fallback. Default invoice/quotation PDF routes are untouched.
 
