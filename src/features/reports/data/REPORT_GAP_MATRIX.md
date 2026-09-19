@@ -5,38 +5,28 @@ Generated from the local registry in `src/features/reports/data/fresaReportRegis
 ## Architecture preserve rules
 
 - Quotation / invoice / statement **document PDFs** (`pdf-lib` + existing `POST .../pdf`) stay the default.
-- Module analytics report pages under `/quotations/reports`, `/gl/*`, etc. stay primary for KPIs.
-- Catalog generate is **additive** via `/reports/*` APIs.
+- Module analytics report pages under `/quotations/reports`, `/gl/*`, `/warehouse/stock` stay primary for KPIs.
+- Catalog generate is **additive** via `/reports/*` APIs + client layout PDF fallback.
+- `covered_analytics` = module screen is the live implementation; catalogue still offers layout preview PDF.
 
 ## Family counts
 
-| Family | Count | Rollout phase |
-|--------|------:|:-------------:|
-| Ops lists | 110 | 1 |
-| Sea documents | 134 | 2 |
-| Air documents | 75 | 3 |
-| Quotations | 18 | 3 |
-| Commercial / invoices | 99 | 4 |
-| Finance & GL | 91 | 5 |
-| WMS | 58 | 6 |
-| Other | 22 | — |
-| **Total** | **607** | |
+| Family | Count |
+|--------|------:|
+| air_docs | 75 |
+| commercial | 205 |
+| finance | 93 |
+| ops_list | 114 |
+| other | 30 |
+| quotation | 18 |
+| sea_docs | 256 |
+| wms | 61 |
+| **Total** | **852** |
 
-Gap status (approx.): net_new 381 · partial_document_pdf 161 · partial_analytics 65.
+Gap status: partial_document_pdf 787 · covered_analytics 65.
 
-See catalog UI **Gap matrix** toggle, or regenerate via `node scripts/generate-fresa-report-registry.mjs`.
+Analytics gap close: 65 → covered_analytics · 51 existingPath updates.
 
-## Rollout waves
+## Backend remaining
 
-| Phase | Family | FE constant |
-|-------|--------|-------------|
-| 1 | Ops lists | `ACTIVE_REPORT_ROLLOUT_PHASE = 1` |
-| 2 | Sea docs | raise after backend pack |
-| 3 | Air + quotation formats | |
-| 4 | Commercial invoice formats | parallel to default invoice PDF |
-| 5 | Finance | wrap GL where possible |
-| 6 | WMS | |
-
-## Backend API contract
-
-See plan: `GET /reports/templates`, `GET /reports/templates/:id`, `POST /reports/generate`, `GET /reports/jobs/:id`, download.
+Live FRESA Puppeteer packs (`partial_document_pdf` → `covered_document_pdf`) still require backend pack bind/activate.

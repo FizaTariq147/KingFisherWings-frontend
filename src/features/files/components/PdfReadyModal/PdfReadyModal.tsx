@@ -1,4 +1,4 @@
-import { Download, ExternalLink } from 'lucide-react';
+import { Download, Eye } from 'lucide-react';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -143,7 +143,7 @@ export function PdfReadyModal({
               {isPending ? 'Working…' : 'Download'}
             </Button>
             <Button type="button" disabled={!ready || isPending} onClick={handlePreview}>
-              <ExternalLink size={16} aria-hidden="true" />
+              <Eye size={16} aria-hidden="true" />
               Preview PDF
             </Button>
           </div>

@@ -25,6 +25,11 @@ import {
   invoiceRecordToFormatPdfData,
 } from '../../utils/generateInvoiceFormatLayoutPdf';
 import {
+  generateCatalogLayoutPdf,
+  hasCatalogLayoutPdf,
+} from '../../utils/generateCatalogLayoutPdf';
+import { suggestReportPackKey } from '../../utils/suggestReportPackKey';
+import {
   buildInitialReportParams,
   coerceReportParameters,
   downloadExtensionForFormat,
@@ -115,21 +120,10 @@ export function ReportGeneratePanel({
     [context],
   );
 
-  const isCommercialInvoiceFormat =
-    resolved.family === 'commercial' &&
-    (resolved.contexts?.includes('invoice') ||
-      /^INVOICE_REPORT_FORMAT_/i.test(resolved.code) ||
-      Boolean(context?.invoice_id));
-
-  const suggestedCommercialPack = useMemo(() => {
-    if (!isCommercialInvoiceFormat) return null;
-    const match = packOptions.find(
-      (opt) =>
-        opt.key === 'commercial.invoice_tax_india_1' ||
-        /invoice_tax_india_1|invoice.*india/i.test(opt.key),
-    );
-    return match?.key ?? null;
-  }, [isCommercialInvoiceFormat, packOptions]);
+  const suggestedPack = useMemo(
+    () => suggestReportPackKey(resolved.code, resolved.family, packOptions),
+    [resolved.code, resolved.family, packOptions],
+  );
 
   useEffect(() => {
     setFormat((formats[0] ?? 'PDF') as ReportExportFormat);
@@ -149,7 +143,7 @@ export function ReportGeneratePanel({
       current.toLowerCase() !== 'pending'
         ? current
         : '';
-    setPackLocal(ready || suggestedCommercialPack || '');
+    setPackLocal(ready || suggestedPack || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps -- reset when template/detail/context changes
   }, [
     detail.data?.id,
@@ -161,7 +155,7 @@ export function ReportGeneratePanel({
     context?.job_id,
     context?.quotation_id,
     context?.party_id,
-    suggestedCommercialPack,
+    suggestedPack,
   ]);
 
   // When URL has no pack yet but template already has a ready key, seed it once.
@@ -176,10 +170,10 @@ export function ReportGeneratePanel({
       onSelectedPackChange?.(current);
       return;
     }
-    if (suggestedCommercialPack) {
-      onSelectedPackChange?.(suggestedCommercialPack);
+    if (suggestedPack) {
+      onSelectedPackChange?.(suggestedPack);
     }
-  }, [resolved.renderer_key, selectedPackProp, onSelectedPackChange, suggestedCommercialPack]);
+  }, [resolved.renderer_key, selectedPackProp, onSelectedPackChange, suggestedPack]);
 
   // When job is ready: show invoice-style PDF popup (no redirect / window.open).
   useEffect(() => {
@@ -221,51 +215,74 @@ export function ReportGeneratePanel({
     setMessage(null);
 
     const canLiveGenerate = !detailFailed && resolved.is_active;
+    const hasLayout = hasCatalogLayoutPdf(resolved.code);
 
     // Prefer POST /reports/generate when pack is bound + active (additive FRESA path).
-    // Client layout PDF is preview fallback only — never POST /invoices/:id/pdf.
-    if (isInvoiceFormatPdf && !canLiveGenerate) {
-      const preview = getInvoiceFormatPreview(resolved.code);
-      if (!preview) {
-        setError(
-          detailFailed
-            ? 'Template is not on the backend yet. Import registry first, or use the layout preview above.'
-            : 'Invoice format preview definition not found. Bind a pack and Activate for live PDF.',
-        );
-        return;
-      }
+    // Client layout PDF is preview fallback only — never POST /invoices/:id/pdf
+    // or POST /quotations/:id/pdf (see documentPdfPreserve.ts).
+    if (!canLiveGenerate && format === 'PDF' && (isInvoiceFormatPdf || hasLayout)) {
       setClientGenerating(true);
       try {
         let data = {};
-        const invoiceId =
-          (params.invoice_id || context?.invoice_id || '').trim() || undefined;
-        if (invoiceId && isUuid(invoiceId)) {
-          try {
-            const invoice = await invoiceService.getById(invoiceId);
-            data = invoiceRecordToFormatPdfData(invoice);
-          } catch {
-            // Keep demo data if invoice fetch fails — still show layout PDF.
+        if (isInvoiceFormatPdf) {
+          const invoiceId =
+            (params.invoice_id || context?.invoice_id || '').trim() || undefined;
+          if (invoiceId && isUuid(invoiceId)) {
+            try {
+              const invoice = await invoiceService.getById(invoiceId);
+              data = invoiceRecordToFormatPdfData(invoice);
+            } catch {
+              // Keep demo data if invoice fetch fails — still show layout PDF.
+            }
+            try {
+              const payload = await invoiceService.getFormatPayload(invoiceId, resolved.code);
+              if (payload) data = { ...data, ...payload };
+            } catch {
+              /* optional enrich */
+            }
           }
-          try {
-            const payload = await invoiceService.getFormatPayload(invoiceId, resolved.code);
-            if (payload) data = { ...data, ...payload };
-          } catch {
-            /* optional enrich */
+          const preview = getInvoiceFormatPreview(resolved.code);
+          if (preview) {
+            const blob = await generateInvoiceFormatLayoutPdf(preview, data, {
+              logoUrl: typeof logoUrl === 'string' ? logoUrl : undefined,
+            });
+            const fileName = formatPdfFilename(
+              `Format-${preview.formatNumber}-${resolved.code}`,
+              'invoice-format',
+            );
+            setPdfReadyName(fileName);
+            setPdfReadyBlob(blob);
+            setPdfReadyUrl(null);
+            setPdfReadyOpen(true);
+            setJobId(null);
+            setMessage(
+              'Layout preview PDF ready (client). Bind + Activate for live backend PDF.',
+            );
+            return;
           }
         }
-        const blob = await generateInvoiceFormatLayoutPdf(preview, data, {
-          logoUrl: typeof logoUrl === 'string' ? logoUrl : undefined,
-        });
+
+        const generated = await generateCatalogLayoutPdf(resolved.code, data);
+        if (!generated) {
+          setError(
+            detailFailed
+              ? 'Template is not on the backend yet. Import registry first, or open the layout preview above.'
+              : 'No KingFisher layout PDF for this code. Bind a pack and Activate for live PDF.',
+          );
+          return;
+        }
         const fileName = formatPdfFilename(
-          `Format-${preview.formatNumber}-${resolved.code}`,
-          'invoice-format',
+          `Format-${generated.preview.formatNumber || 'X'}-${resolved.code}`,
+          'report-format',
         );
         setPdfReadyName(fileName);
-        setPdfReadyBlob(blob);
+        setPdfReadyBlob(generated.blob);
         setPdfReadyUrl(null);
         setPdfReadyOpen(true);
         setJobId(null);
-        setMessage('Layout preview PDF ready (client). Bind + Activate for live backend PDF.');
+        setMessage(
+          'Layout preview PDF ready (client). Bind + Activate for live backend PDF.',
+        );
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Could not generate layout PDF.');
       } finally {
@@ -279,7 +296,11 @@ export function ReportGeneratePanel({
       return;
     }
     if (!resolved.is_active) {
-      setError('Template is inactive. Bind a Puppeteer pack and Activate first.');
+      setError(
+        hasLayout
+          ? 'Template is inactive for live generate. Use Generate for layout preview PDF, or Bind + Activate for live backend PDF.'
+          : 'Template is inactive. Bind a Puppeteer pack and Activate first.',
+      );
       return;
     }
     const { parameters, error: coerceError } = coerceReportParameters(fields, params);
@@ -391,11 +412,13 @@ export function ReportGeneratePanel({
     jobQuery.data?.status === 'queued' ||
     jobQuery.data?.status === 'running';
 
-  const canClientInvoicePdf = isInvoiceReportFormatCode(resolved.code) && format === 'PDF';
+  const canClientLayoutPdf =
+    format === 'PDF' &&
+    (isInvoiceReportFormatCode(resolved.code) || hasCatalogLayoutPdf(resolved.code));
   const generateBlocked =
     busy ||
     detail.isLoading ||
-    (!canClientInvoicePdf && (detailFailed || !resolved.is_active));
+    (!canClientLayoutPdf && (detailFailed || !resolved.is_active));
 
   const rendererStatus = reportRendererStatus(resolved);
   const activateLikely = canActivateReportTemplate(resolved);
@@ -441,6 +464,9 @@ export function ReportGeneratePanel({
         >
           Template not on API yet. Use <strong>Import registry</strong>, then Live API + Include
           inactive.
+          {canClientLayoutPdf
+            ? ' Generate still opens the KingFisher layout preview PDF.'
+            : ''}
         </div>
       ) : null}
 
@@ -449,7 +475,9 @@ export function ReportGeneratePanel({
           role="status"
           className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
         >
-          Bind a Puppeteer pack, then Activate to enable Generate.
+          {canClientLayoutPdf
+            ? 'Layout preview PDF is available via Generate. Bind a Puppeteer pack + Activate for live backend PDF (default invoice/quotation PDFs stay unchanged).'
+            : 'Bind a Puppeteer pack, then Activate to enable Generate.'}
         </div>
       ) : null}
 
@@ -496,13 +524,15 @@ export function ReportGeneratePanel({
 
       {resolved.existingPath ? (
         <p className="rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2 text-xs text-[var(--color-neutral-600)]">
-          Related screen:{' '}
-          <a
-            className="font-medium text-[var(--color-primary-600)] underline"
-            href={resolved.existingPath}
-          >
+          {resolved.gapStatus === 'covered_analytics'
+            ? 'Live analytics screen (primary): '
+            : 'Related screen: '}
+          <span className="font-medium text-[var(--color-neutral-800)]">
             {resolved.existingPath}
-          </a>
+          </span>
+          {resolved.gapStatus === 'covered_analytics'
+            ? ' — catalogue layout PDF remains additive and does not replace this screen.'
+            : null}
         </p>
       ) : null}
 
@@ -515,7 +545,10 @@ export function ReportGeneratePanel({
           className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
           value={format}
           onChange={(e) => setFormat(e.target.value as ReportExportFormat)}
-          disabled={detail.isLoading || detailFailed || !resolved.is_active}
+          disabled={
+            detail.isLoading ||
+            (!canClientLayoutPdf && (detailFailed || !resolved.is_active))
+          }
         >
           {formats.map((f) => (
             <option key={f} value={f}>
@@ -589,7 +622,11 @@ export function ReportGeneratePanel({
           disabled={generateBlocked}
           onClick={() => void onGenerate()}
         >
-          {busy && generate.isPending ? 'Generating…' : 'Generate'}
+          {busy && (generate.isPending || clientGenerating)
+            ? 'Generating…'
+            : !resolved.is_active && canClientLayoutPdf
+              ? 'Generate layout PDF'
+              : 'Generate'}
         </Button>
       </div>
 

@@ -1,4 +1,4 @@
-import { Download, ExternalLink } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { openPdfBlobInNewTab, type PdfBrandingOptions } from '@/features/files/utils/pdfBranding';
@@ -20,6 +20,8 @@ export interface PdfViewerModalProps {
   blob?: Blob | null;
   branding?: PdfBrandingOptions;
   skipBranding?: boolean;
+  /** Hide “Open in new tab”. Defaults to hidden when skipBranding (report catalogue). */
+  showOpenInNewTab?: boolean;
 }
 
 export function PdfViewerModal({
@@ -33,9 +35,11 @@ export function PdfViewerModal({
   blob,
   branding,
   skipBranding = false,
+  showOpenInNewTab,
 }: PdfViewerModalProps) {
   const noStamp = skipBranding || !branding;
   const blobOptions = { filename: fileName, branding };
+  const allowOpenInNewTab = showOpenInNewTab ?? !skipBranding;
 
   const handleDownload = () => {
     if (!blob) return;
@@ -92,9 +96,8 @@ export function PdfViewerModal({
               Download
             </Button>
           ) : null}
-          {src ? (
+          {src && allowOpenInNewTab ? (
             <Button type="button" disabled={loading} onClick={handleOpenInNewTab}>
-              <ExternalLink size={16} aria-hidden="true" />
               Open in new tab
             </Button>
           ) : null}

@@ -29,20 +29,84 @@ FE preserve reference: `src/features/reports/utils/documentPdfPreserve.ts`.
 
 ---
 
-## Current backend requirements
+## Backend requirements (checklist)
 
-FE catalog browse is ready for Invoice, Accounts, WMS, Arrival Notice, Delivery Order, HAWB, HBL, and Other Reports (names, strips, search, demo layout previews). **Live FRESA-like PDFs still need backend packs + data loaders.**
+FE status (do not re-do on BE): catalogue browse, strips, Import registry (852 codes), client layout preview PDF, analytics hub links (`covered_analytics` = 65).  
+**BE owns:** live FRESA-like PDF bytes for the **787** remaining `partial_document_pdf` formats via Puppeteer packs.
 
-1. **Additive Puppeteer packs** for catalog codes — bind via `/reports/*` only; never change default invoice/quotation PDF APIs.
-2. **Expose every implemented pack** on `GET /reports/templates/renderers` (allow `commercial.*`, `air.*`, `finance.*`, `wms.*` in addition to `ops.*` / `sea.*`).
-3. **Auto-map** `template_code → renderer_key` on import/activate when a pack exists; unmatched stay `pending.{CODE}` / inactive.
-4. **Activate gate:** only activate real pack keys (not `pending.*`). Generate must fail clearly if pack/data is missing (no fake PDF bytes).
-5. **Parameter schemas + tenant data loaders** per pack family (`job_id`, `invoice_id`, `quotation_id`, `party_id`, GL period, ASN id, list filters) including company branding (logo, legal name, address, GSTIN/VAT, bank).
-6. **Priority shells** (one pack → many codes): start with `commercial.invoice_tax_india_1` for Format-1; then HBL / Arrival / DO / HAWB / Accounts / WMS / Other list shells.
-7. **No Jasper upload**; do not scrape Fresa sample site into the API. FE demo JSON layouts are preview-only until packs ship.
-8. **Dynamic catalog search** (next section) so `/reports/catalog` search is API-driven and complete.
+### A. Preserve (must not break)
 
-FE handoff constants: `src/features/reports/constants/fresaPdfParity.constants.ts`.
+| Keep unchanged | Notes |
+|----------------|--------|
+| `POST /invoices/:id/pdf` | Default staff/portal invoice PDF |
+| `POST /quotations/:id/pdf` | Default quotation PDF |
+| Portal / vendor PDF flows | Existing download paths |
+| Existing `/reports/*` contracts | List, detail, import, bind, activate, generate, jobs, download |
+| Already-bound pack keys | Additive only — no rename/remove without migration |
+
+### B. API contract hardening
+
+| # | Requirement |
+|---|-------------|
+| 1 | `GET /reports/templates` — search matches **name + code + description** (case-insensitive; space tokens = AND); support `include_inactive`, `family`, `context`, paging (`limit` max 200) |
+| 2 | `GET /reports/templates/:idOrCode` — return parameter schema for Generate form |
+| 3 | `POST /reports/templates/import` — accept full FE registry (**852** codes); new rows `renderer_key=pending.{CODE}` until bound |
+| 4 | `GET /reports/templates/renderers` — expose **every** implemented pack (`ops.*`, `sea.*`, `air.*`, `commercial.*`, `finance.*`, `wms.*`, `other.*`) |
+| 5 | `POST /reports/templates/:code/bind-renderer` — `{ renderer_key, activate?: true }`; key must be from `/renderers` |
+| 6 | `POST /reports/templates/:code/activate` — only if renderer is **not** `pending.*` |
+| 7 | `POST /reports/generate` → job poll → download — real PDF bytes; clear 4xx if pack/data missing (**no fake PDF**) |
+
+### C. Puppeteer packs (priority shells — one pack → many codes)
+
+Ship in this order (matches FE `reportRollout.constants.ts` / `fresaPdfParity.constants.ts`):
+
+| Phase | Family | Formats left (~) | Suggested pack keys / shells |
+|------:|--------|-----------------:|------------------------------|
+| 1 | `ops_list` | 113 | `ops.list_generic` — DSR, pending/job status, one-off lists (column config per code) |
+| 2 | `sea_docs` | 256 | `sea.hbl_draft`, `sea.arrival_notice`, `sea.cargo_manifest`, `sea.delivery_order`, letter shells (FCR, VGM, ISF, stuffing, …) |
+| 3 | `air_docs` + `quotation` | 75 + 18 | `air.hawb_draft`, `air.mawb_draft`, `air.delivery_order`, air arrival/manifest; quotation shell |
+| 4 | `commercial` | 205 | Start `commercial.invoice_tax_india_1`; then invoice / proforma / debit / credit shells (**additive** — do not replace default invoice PDF) |
+| 5 | `finance` (vouchers/letters) | 44 | `finance.journal_voucher`, `finance.payment_voucher`, `finance.receipt_voucher`, `finance.outstanding_letter`, GL listing |
+| 6 | `wms` | 46 | `wms.asn`, `wms.grn`, `wms.gdo` (+ ASN location/summary variants) |
+| — | `other` | 30 | Booking confirmation, pre-alert shells |
+
+**Per pack checklist**
+
+1. HTML/CSS matching FRESA sample (margins, header, logo, tables, field placement).  
+2. Register on `GET /reports/templates/renderers`.  
+3. Data loader from template params: `job_id`, `invoice_id`, `quotation_id`, `party_id`, date range, `branch_id`, ASN id, list filters + tenant branding (logo, legal name, address, GSTIN/VAT, bank).  
+4. Smoke: bind → activate → generate → download → visual check vs FRESA sample.  
+5. Prefer **one pack → many template codes** when layouts share structure.  
+6. Regression: default invoice/quotation PDFs + previously activated packs still work.
+
+### D. Auto-map `pending.{CODE}` → pack (recommended)
+
+On import/activate, if a rule matches set real `renderer_key`; unmatched stay `pending.{CODE}` / inactive. Never overwrite an already-bound real pack with `pending.*`.
+
+```text
+HBL_DRAFT_* / FG_HBL_*                   → sea.hbl_draft / sea.hbl_original
+ARRIVAL_NOTICE_* / FG_ARRIVAL_*          → sea.arrival_notice | air.arrival_notice
+DELIVERY_* / FG_DELIVERY_* / PROOF_OF_*  → sea.delivery_order | air.delivery_order
+HAWB_* / MAWB_*                          → air.hawb_draft / air.mawb_draft
+*_LIST_* / DAILY_STATUS_* / JOB_STATUS_* → ops.list_generic
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA → commercial.invoice_tax_india_1
+INVOICE_REPORT_FORMAT_*                  → commercial.invoice_* (per shell)
+PROFORMA_* / DEBIT_NOTE_* / CREDIT_NOTE_* → commercial.*
+JOURNAL_* / PAYMENT_* / RECEIPT_* / OUTSTANDING_LETTER_* → finance.*
+ADVANCE_SHIPPING_NOTE* / WMS_GRN_* / WMS_GDO_* → wms.asn* / wms.grn / wms.gdo
+BOOKING_CONFIRMATION_* / PRE_ALERT_*     → other.* (or sea/air pre-alert shells)
+QUOTATION_REPORT_FORMAT_*                → commercial.quotation or ops.quotation shell
+```
+
+### E. Explicit non-goals
+
+- No Jasper upload; do not scrape Fresa sample site into the API.  
+- FE client layout PDF is preview-only until a pack is bound — BE must not rely on FE for live print parity.  
+- Do not replace module analytics screens (P&L, trial balance, AR/AP aging, WMS stock) — those are `covered_analytics` on FE hubs.
+
+FE handoff: `src/features/reports/constants/fresaPdfParity.constants.ts`,  
+`src/features/reports/data/fresaReportRegistry.json` (852),  
+`src/features/reports/data/REPORT_GAP_MATRIX.md`.
 
 ---
 
@@ -88,7 +152,7 @@ GET /reports/templates?search=hbl%20draft&include_inactive=true&page=1&limit=200
 
 ### Backend checklist so search is complete
 
-1. `POST /reports/templates/import` — full FRESA set (Invoice, Accounts, WMS, Arrival, DO, HAWB, HBL, Other)  
+1. `POST /reports/templates/import` — full FE registry (**852** codes: Invoice, Accounts, WMS, Arrival, DO, HAWB, HBL, Ops, Quotation, Other, leftover)  
 2. Search indexes `name` + `code` + `description` (not code-only)  
 3. Stable `meta.total` / `meta.totalPages` for multi-page browse  
 
@@ -111,14 +175,15 @@ Until a pack exists, imported rows stay `renderer_key=pending.{CODE}` / inactive
 
 Implement packs in **kingfisherwings-backend** in this order (matches FE `reportRollout.constants.ts`). **Ship new packs without removing or renaming existing ones.**
 
-| Phase | Family | Registry ~count | Pack approach |
-|-------|--------|-----------------|---------------|
-| 1 | `ops_list` | 110 | Shared list/table HTML shell; column config per code |
-| 2 | `sea_docs` | 134 | HBL shell + Arrival Notice + Delivery Order shells; many codes → few packs |
-| 3 | `air_docs` (+ quotation) | 75 + 18 | HAWB/MAWB / air notice / air DO shells |
-| 4 | `commercial` | 99 | Invoice-format packs (**additive**; keep `POST /invoices/:id/pdf`) |
-| 5 | `finance` | 91 | Aging / SOA / trial balance / voucher / outstanding letter packs |
-| 6 | `wms` | 58 | ASN / warehouse note packs |
+| Phase | Family | Formats left (~) | Pack approach |
+|-------|--------|-----------------:|---------------|
+| 1 | `ops_list` | 113 | Shared list/table HTML shell; column config per code |
+| 2 | `sea_docs` | 256 | HBL + Arrival Notice + Delivery Order + manifest shells; many codes → few packs |
+| 3 | `air_docs` (+ quotation) | 75 + 18 | HAWB/MAWB / air notice / air DO / quotation shells |
+| 4 | `commercial` | 205 | Invoice-format packs (**additive**; keep `POST /invoices/:id/pdf`) |
+| 5 | `finance` (vouchers/letters) | 44 | Outstanding letter / journal / payment / receipt / GL listing packs |
+| 6 | `wms` | 46 | ASN / GRN / GDO packs |
+| — | `other` | 30 | Booking confirmation / pre-alert shells |
 
 Per pack checklist:
 

@@ -582,10 +582,11 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
               <p className="text-sm font-medium text-emerald-900">Now: BOOKING_FORM_COMPLETE</p>
               <p className="text-xs text-emerald-800">
                 Customer submits{' '}
-                <code className="text-[10px]">/portal/shipments/:id/compliance-form</code> first.
-                Admin / sales can review here, mark complete if assisting, then send invoice. Fields
-                match <code className="text-[10px]">UpsertAirBookingFormDto</code> — airport codes
-                must be IATA/ICAO (max 10, e.g. DXB), not full city names from portal POL/POD.
+                <code className="text-[10px]">/portal/shipments/:id/compliance-form</code> (
+                <code className="text-[10px]">UpsertNvoccBookingFormDto</code>
+                ). Admin / sales can also complete the Ops air booking form below (
+                <code className="text-[10px]">UpsertAirBookingFormDto</code>
+                ) — IATA airport codes max 10 (e.g. DXB), not full city names from portal pol/pod.
               </p>
               {portalBookingQuery.data ? (
                 <p className="text-xs text-emerald-900">
