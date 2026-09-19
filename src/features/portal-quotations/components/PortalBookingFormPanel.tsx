@@ -13,6 +13,10 @@ import type {
 } from '../types/portalQuotations.types';
 import { portalQuoteShowsBookingForm } from '../utils/portalQuotationStatus';
 import { isAirJobType } from '@/features/jobs/constants/job.constants';
+import {
+  clipComplianceField,
+  PORTAL_COMPLIANCE_FORM_LIMITS as L,
+} from '../utils/portalComplianceFormLimits';
 
 type StepId =
   | 'voyage'
@@ -24,64 +28,73 @@ type StepId =
   | 'agent'
   | 'review';
 
-const STEPS: { id: StepId; label: string; eyebrow: string; title: string; blurb: string }[] = [
-  {
-    id: 'voyage',
-    label: 'VOYAGE',
-    eyebrow: 'VOYAGE & CARGO DETAIL',
-    title: 'Booking & Shipment Overview',
-    blurb: 'Basic voyage, weight and container details for this booking request.',
-  },
-  {
-    id: 'shipper',
-    label: 'SHIPPER',
-    eyebrow: 'SHIPPER DETAILS',
-    title: 'Shipper Information',
-    blurb: 'Enter the shipper company or person details for this booking.',
-  },
-  {
-    id: 'consignee',
-    label: 'CONSIGNEE',
-    eyebrow: 'CONSIGNEE DETAILS',
-    title: 'Consignee Information',
-    blurb: 'Enter the consignee company or person details for this booking.',
-  },
-  {
-    id: 'notify',
-    label: 'NOTIFY',
-    eyebrow: 'NOTIFY PARTY',
-    title: 'Notify Party',
-    blurb: 'Who should be notified about this shipment (or same as consignee).',
-  },
-  {
-    id: 'commodity',
-    label: 'COMMODITY',
-    eyebrow: 'COMMODITY & COMPLIANCE',
-    title: 'Commodity Details',
-    blurb: 'Describe the cargo, HS code, and compliance information.',
-  },
-  {
-    id: 'documents',
-    label: 'DOCUMENTS',
-    eyebrow: 'SUPPORTING DOCUMENTS',
-    title: 'Documents Checklist',
-    blurb: 'Indicate which supporting documents will be provided.',
-  },
-  {
-    id: 'agent',
-    label: 'AGENT',
-    eyebrow: 'BOOKING AGENT',
-    title: 'Agent & References',
-    blurb: 'Booking agent line, requester, and voyage / SQ-BL references.',
-  },
-  {
-    id: 'review',
-    label: 'REVIEW',
-    eyebrow: 'REVIEW & SUBMIT',
-    title: 'Confirm Booking Form',
-    blurb: 'Review your details, accept consent, then submit to your forwarder.',
-  },
-];
+type StepMeta = { id: StepId; label: string; eyebrow: string; title: string; blurb: string };
+
+/** Step copy — sea vs air; payload remains UpsertNvoccBookingFormDto / SubmitNvoccComplianceFormDto. */
+function getSteps(isAir: boolean): StepMeta[] {
+  return [
+    {
+      id: 'voyage',
+      label: isAir ? 'FLIGHT' : 'VOYAGE',
+      eyebrow: isAir ? 'ROUTE & CARGO DETAIL' : 'VOYAGE & CARGO DETAIL',
+      title: isAir ? 'Air Booking Overview' : 'Booking & Shipment Overview',
+      blurb: isAir
+        ? 'Origin/destination airports, weights, and DG status for this air booking request.'
+        : 'Basic voyage, weight and container details for this booking request.',
+    },
+    {
+      id: 'shipper',
+      label: 'SHIPPER',
+      eyebrow: 'SHIPPER DETAILS',
+      title: 'Shipper Information',
+      blurb: 'Enter the shipper company or person details for this booking.',
+    },
+    {
+      id: 'consignee',
+      label: 'CONSIGNEE',
+      eyebrow: 'CONSIGNEE DETAILS',
+      title: 'Consignee Information',
+      blurb: 'Enter the consignee company or person details for this booking.',
+    },
+    {
+      id: 'notify',
+      label: 'NOTIFY',
+      eyebrow: 'NOTIFY PARTY',
+      title: 'Notify Party',
+      blurb: 'Who should be notified about this shipment (or same as consignee).',
+    },
+    {
+      id: 'commodity',
+      label: 'COMMODITY',
+      eyebrow: 'COMMODITY & COMPLIANCE',
+      title: 'Commodity Details',
+      blurb: 'Describe the cargo, HS code, and compliance information.',
+    },
+    {
+      id: 'documents',
+      label: 'DOCUMENTS',
+      eyebrow: 'SUPPORTING DOCUMENTS',
+      title: 'Documents Checklist',
+      blurb: 'Indicate which supporting documents will be provided.',
+    },
+    {
+      id: 'agent',
+      label: 'AGENT',
+      eyebrow: 'BOOKING AGENT',
+      title: 'Agent & References',
+      blurb: isAir
+        ? 'Booking agent line, requester, and flight / booking references.'
+        : 'Booking agent line, requester, and voyage / SQ-BL references.',
+    },
+    {
+      id: 'review',
+      label: 'REVIEW',
+      eyebrow: 'REVIEW & SUBMIT',
+      title: 'Confirm Booking Form',
+      blurb: 'Review your details, accept consent, then submit to your forwarder.',
+    },
+  ];
+}
 
 type PartyUi = {
   full_name: string;
@@ -230,8 +243,9 @@ function PartyFields({
         <FieldLabel required={nameRequired}>Full name</FieldLabel>
         <Input
           className="mt-1"
+          maxLength={L.party_full_name}
           value={party.full_name}
-          onChange={(e) => patch({ full_name: e.target.value })}
+          onChange={(e) => patch({ full_name: e.target.value.slice(0, L.party_full_name) })}
           placeholder="Company or person name"
         />
       </label>
@@ -248,16 +262,18 @@ function PartyFields({
         <FieldLabel>City</FieldLabel>
         <Input
           className="mt-1"
+          maxLength={L.party_city}
           value={party.city}
-          onChange={(e) => patch({ city: e.target.value })}
+          onChange={(e) => patch({ city: e.target.value.slice(0, L.party_city) })}
         />
       </label>
       <label className="block">
         <FieldLabel>Country</FieldLabel>
         <Input
           className="mt-1"
+          maxLength={L.party_country}
           value={party.country}
-          onChange={(e) => patch({ country: e.target.value })}
+          onChange={(e) => patch({ country: e.target.value.slice(0, L.party_country) })}
         />
       </label>
       <label className="block">
@@ -286,28 +302,51 @@ function PartyFields({
   );
 }
 
-function toDto(form: FormUi, markComplete: boolean): PortalBookingFormUpsertDto {
+function toPartyDto(
+  kind: 'SHIPPER' | 'CONSIGNEE' | 'NOTIFY',
+  party: PartyUi,
+  fallback?: PartyUi,
+): PortalBookingFormUpsertDto['parties'][number] {
+  const fullName =
+    clipComplianceField(party.full_name, L.party_full_name) ||
+    clipComplianceField(fallback?.full_name, L.party_full_name) ||
+    (kind === 'NOTIFY' ? 'Same as consignee' : '');
+  return {
+    party_kind: kind,
+    full_name: fullName,
+    address: party.address.trim() || fallback?.address.trim() || undefined,
+    city: clipComplianceField(party.city, L.party_city) ||
+      clipComplianceField(fallback?.city, L.party_city),
+    country:
+      clipComplianceField(party.country, L.party_country) ||
+      clipComplianceField(fallback?.country, L.party_country),
+    entity_kind: party.entity_kind,
+    other_details: party.other_details.trim() || undefined,
+  };
+}
+
+/** Maps UI → UpsertNvoccBookingFormDto / SubmitNvoccComplianceFormDto (OpenAPI). */
+function toDto(form: FormUi, markComplete: boolean, isAir: boolean): PortalBookingFormUpsertDto {
   const numOrUndef = (v: string) => {
     const t = v.trim();
     if (!t) return undefined;
     const n = Number(t);
     return Number.isFinite(n) ? n : undefined;
   };
-  const notifyName = form.notify.full_name.trim() || form.consignee.full_name.trim() || 'Same as consignee';
-  const notifyAddress = form.notify.address.trim() || form.consignee.address.trim();
+  const teu = isAir ? undefined : numOrUndef(form.teu_count);
   return {
     date_of_request: form.date_of_request.trim() || undefined,
-    client_booking_no: form.client_booking_no.trim() || undefined,
-    teu_count: numOrUndef(form.teu_count),
-    pol: form.pol.trim(),
-    pod: form.pod.trim(),
+    client_booking_no: clipComplianceField(form.client_booking_no, L.client_booking_no),
+    ...(teu != null ? { teu_count: teu } : {}),
+    pol: clipComplianceField(form.pol, L.pol) ?? '',
+    pod: clipComplianceField(form.pod, L.pod) ?? '',
     gross_weight_kg: numOrUndef(form.gross_weight_kg),
     net_weight_kg: numOrUndef(form.net_weight_kg),
-    shipper_owned_container: form.shipper_owned_container,
+    shipper_owned_container: isAir ? false : form.shipper_owned_container,
     is_dg: form.is_dg,
-    commodity: form.commodity.trim(),
-    hs_code: form.hs_code.trim() || undefined,
-    final_use: form.final_use.trim() || undefined,
+    commodity: clipComplianceField(form.commodity, L.commodity) ?? '',
+    hs_code: clipComplianceField(form.hs_code, L.hs_code),
+    final_use: clipComplianceField(form.final_use, L.final_use),
     activity_sector: form.activity_sector || undefined,
     insurance_details: form.insurance_details.trim() || undefined,
     lc_bank_details: form.lc_bank_details.trim() || undefined,
@@ -316,49 +355,36 @@ function toDto(form: FormUi, markComplete: boolean): PortalBookingFormUpsertDto 
     attach_correspondence: form.attach_correspondence,
     attach_cod_form: form.attach_cod_form,
     attach_licence: form.attach_licence,
-    booking_agent_line: form.booking_agent_line.trim() || undefined,
-    agent_requester_name: form.agent_requester_name.trim() || undefined,
-    sq_bl_booking_reference: form.sq_bl_booking_reference.trim() || undefined,
-    voyage_ref: form.voyage_ref.trim() || undefined,
+    booking_agent_line: clipComplianceField(form.booking_agent_line, L.booking_agent_line),
+    agent_requester_name: clipComplianceField(form.agent_requester_name, L.agent_requester_name),
+    sq_bl_booking_reference: clipComplianceField(
+      form.sq_bl_booking_reference,
+      L.sq_bl_booking_reference,
+    ),
+    voyage_ref: clipComplianceField(form.voyage_ref, L.voyage_ref),
     consent_accepted: form.consent_accepted,
     mark_complete: markComplete,
     parties: [
-      {
-        party_kind: 'SHIPPER',
-        full_name: form.shipper.full_name.trim(),
-        address: form.shipper.address.trim() || undefined,
-        city: form.shipper.city.trim() || undefined,
-        country: form.shipper.country.trim() || undefined,
-        entity_kind: form.shipper.entity_kind,
-        other_details: form.shipper.other_details.trim() || undefined,
-      },
-      {
-        party_kind: 'CONSIGNEE',
-        full_name: form.consignee.full_name.trim(),
-        address: form.consignee.address.trim() || undefined,
-        city: form.consignee.city.trim() || undefined,
-        country: form.consignee.country.trim() || undefined,
-        entity_kind: form.consignee.entity_kind,
-        other_details: form.consignee.other_details.trim() || undefined,
-      },
-      {
-        party_kind: 'NOTIFY',
-        full_name: notifyName,
-        address: notifyAddress || undefined,
-        city: form.notify.city.trim() || form.consignee.city.trim() || undefined,
-        country: form.notify.country.trim() || form.consignee.country.trim() || undefined,
-        entity_kind: form.notify.entity_kind,
-        other_details: form.notify.other_details.trim() || undefined,
-      },
+      toPartyDto('SHIPPER', form.shipper),
+      toPartyDto('CONSIGNEE', form.consignee),
+      toPartyDto('NOTIFY', form.notify, form.consignee),
     ],
   };
 }
 
-function validateStep(step: StepId, form: FormUi): string | null {
+function validateStep(step: StepId, form: FormUi, isAir: boolean): string | null {
   if (step === 'voyage') {
-    if (!form.teu_count.trim()) return 'Number of TEUs is required (teu_count).';
-    if (!form.pol.trim()) return 'POL — Port of Loading is required (pol).';
-    if (!form.pod.trim()) return 'POD — Port of Discharge is required (pod).';
+    if (!isAir && !form.teu_count.trim()) return 'Number of TEUs is required (teu_count).';
+    if (!form.pol.trim()) {
+      return isAir
+        ? 'Origin airport / place is required (pol).'
+        : 'POL — Port of Loading is required (pol).';
+    }
+    if (!form.pod.trim()) {
+      return isAir
+        ? 'Destination airport / place is required (pod).'
+        : 'POD — Port of Discharge is required (pod).';
+    }
     if (!form.gross_weight_kg.trim()) return 'Gross weight (kg) is required (gross_weight_kg).';
     if (!form.net_weight_kg.trim()) return 'Net weight (kg) is required (net_weight_kg).';
   }
@@ -438,7 +464,8 @@ export function PortalBookingFormPanel({
   const [submitted, setSubmitted] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const step = STEPS[stepIndex] ?? STEPS[0];
+  const steps = useMemo(() => getSteps(isAir), [isAir]);
+  const step = steps[stepIndex] ?? steps[0];
 
   useEffect(() => {
     if (!enabled || submitted) return;
@@ -530,22 +557,22 @@ export function PortalBookingFormPanel({
     setError(null);
     setMsg(null);
     if (complete) {
-      for (const s of STEPS) {
-        const err = validateStep(s.id, form);
+      for (const s of steps) {
+        const err = validateStep(s.id, form, isAir);
         if (err) {
           setError(err);
-          setStepIndex(STEPS.findIndex((x) => x.id === s.id));
+          setStepIndex(steps.findIndex((x) => x.id === s.id));
           return;
         }
       }
     } else {
-      const err = validateStep('voyage', form);
+      const err = validateStep('voyage', form, isAir);
       if (err) {
         setError(err);
         return;
       }
     }
-    const dto = toDto(form, complete);
+    const dto = toDto(form, complete, isAir);
     const linked = isAir ? Boolean(jobId) : Boolean(bookingId);
     void saveForm
       .mutateAsync({
@@ -575,16 +602,16 @@ export function PortalBookingFormPanel({
 
   const goNext = () => {
     setError(null);
-    const err = validateStep(step.id, form);
+    const err = validateStep(step.id, form, isAir);
     if (err) {
       setError(err);
       return;
     }
-    if (stepIndex >= STEPS.length - 1) {
+    if (stepIndex >= steps.length - 1) {
       submit(true);
       return;
     }
-    setStepIndex((i) => Math.min(STEPS.length - 1, i + 1));
+    setStepIndex((i) => Math.min(steps.length - 1, i + 1));
   };
 
   const goBack = () => {
@@ -596,12 +623,17 @@ export function PortalBookingFormPanel({
     () => [
       ['date_of_request', form.date_of_request],
       ['client_booking_no', form.client_booking_no || '—'],
-      ['teu_count', form.teu_count],
-      ['pol', form.pol],
-      ['pod', form.pod],
+      ...(isAir ? [] : ([['teu_count', form.teu_count]] as [string, string][])),
+      [isAir ? 'pol (origin)' : 'pol', form.pol],
+      [isAir ? 'pod (dest)' : 'pod', form.pod],
       ['gross_weight_kg', form.gross_weight_kg],
       ['net_weight_kg', form.net_weight_kg],
-      ['shipper_owned_container', form.shipper_owned_container ? 'true' : 'false'],
+      ...(isAir
+        ? []
+        : ([['shipper_owned_container', form.shipper_owned_container ? 'true' : 'false']] as [
+            string,
+            string,
+          ][])),
       ['is_dg', form.is_dg ? 'true' : 'false'],
       ['commodity', form.commodity],
       ['hs_code', form.hs_code || '—'],
@@ -609,9 +641,11 @@ export function PortalBookingFormPanel({
       ['SHIPPER', form.shipper.full_name],
       ['CONSIGNEE', form.consignee.full_name],
       ['NOTIFY', form.notify.full_name || '(same as consignee)'],
+      [isAir ? 'voyage_ref (flight)' : 'voyage_ref', form.voyage_ref || '—'],
       ['booking_agent_line', form.booking_agent_line],
+      ['sq_bl_booking_reference', form.sq_bl_booking_reference || '—'],
     ],
-    [form],
+    [form, isAir],
   );
 
   if (!enabled) return null;
@@ -640,7 +674,7 @@ export function PortalBookingFormPanel({
       <div className="space-y-6 p-5 sm:p-6">
         <nav aria-label="Booking form steps" className="overflow-x-auto pb-1">
           <ol className="flex min-w-max items-center justify-between gap-0">
-            {STEPS.map((s, i) => {
+            {steps.map((s, i) => {
               const active = i === stepIndex;
               const done = i < stepIndex;
               return (
@@ -676,7 +710,7 @@ export function PortalBookingFormPanel({
                       {s.label}
                     </span>
                   </button>
-                  {i < STEPS.length - 1 ? (
+                  {i < steps.length - 1 ? (
                     <span
                       className={`mx-1 mb-5 h-[2px] flex-1 min-w-[12px] ${
                         done ? 'bg-[var(--color-secondary)]' : 'bg-[var(--color-neutral-200)]'
@@ -726,37 +760,48 @@ export function PortalBookingFormPanel({
               <FieldLabel>Booking no (if known)</FieldLabel>
               <Input
                 className="mt-1"
+                maxLength={L.client_booking_no}
                 value={form.client_booking_no}
-                onChange={(e) => patch({ client_booking_no: e.target.value })}
+                onChange={(e) =>
+                  patch({ client_booking_no: e.target.value.slice(0, L.client_booking_no) })
+                }
                 placeholder="Assigned by agent"
               />
             </label>
-            <label className="block">
-              <FieldLabel required>Number of TEUs</FieldLabel>
-              <Input
-                className="mt-1"
-                inputMode="decimal"
-                value={form.teu_count}
-                onChange={(e) => patch({ teu_count: e.target.value })}
-                placeholder="e.g. 2"
-              />
-            </label>
+            {!isAir ? (
+              <label className="block">
+                <FieldLabel required>Number of TEUs</FieldLabel>
+                <Input
+                  className="mt-1"
+                  inputMode="decimal"
+                  value={form.teu_count}
+                  onChange={(e) => patch({ teu_count: e.target.value })}
+                  placeholder="e.g. 2"
+                />
+              </label>
+            ) : null}
             <label className="block sm:col-span-1">
-              <FieldLabel required>POL – Port of Loading</FieldLabel>
+              <FieldLabel required>
+                {isAir ? 'Origin airport / place (pol)' : 'POL – Port of Loading'}
+              </FieldLabel>
               <Input
                 className="mt-1"
+                maxLength={L.pol}
                 value={form.pol}
-                onChange={(e) => patch({ pol: e.target.value })}
-                placeholder="Port of Loading required"
+                onChange={(e) => patch({ pol: e.target.value.slice(0, L.pol) })}
+                placeholder={isAir ? 'e.g. DXB or Dubai' : 'Port of Loading required'}
               />
             </label>
             <label className="block sm:col-span-1">
-              <FieldLabel required>POD – Port of Discharge</FieldLabel>
+              <FieldLabel required>
+                {isAir ? 'Destination airport / place (pod)' : 'POD – Port of Discharge'}
+              </FieldLabel>
               <Input
                 className="mt-1"
+                maxLength={L.pod}
                 value={form.pod}
-                onChange={(e) => patch({ pod: e.target.value })}
-                placeholder="Port of Discharge required"
+                onChange={(e) => patch({ pod: e.target.value.slice(0, L.pod) })}
+                placeholder={isAir ? 'e.g. LHR or London' : 'Port of Discharge required'}
               />
             </label>
             <label className="block">
@@ -777,17 +822,19 @@ export function PortalBookingFormPanel({
                 onChange={(e) => patch({ net_weight_kg: e.target.value })}
               />
             </label>
-            <div className="sm:col-span-2 lg:col-span-3">
-              <FieldLabel required>Shipper&apos;s owned container (SOC)?</FieldLabel>
-              <ChoiceToggle
-                value={form.shipper_owned_container}
-                onChange={(v) => patch({ shipper_owned_container: v })}
-                options={[
-                  { label: 'Yes', value: true },
-                  { label: 'No', value: false },
-                ]}
-              />
-            </div>
+            {!isAir ? (
+              <div className="sm:col-span-2 lg:col-span-3">
+                <FieldLabel required>Shipper&apos;s owned container (SOC)?</FieldLabel>
+                <ChoiceToggle
+                  value={form.shipper_owned_container}
+                  onChange={(v) => patch({ shipper_owned_container: v })}
+                  options={[
+                    { label: 'Yes', value: true },
+                    { label: 'No', value: false },
+                  ]}
+                />
+              </div>
+            ) : null}
             <div className="sm:col-span-2 lg:col-span-3">
               <FieldLabel required>DG / Non-DG cargo</FieldLabel>
               <ChoiceToggle
@@ -843,24 +890,27 @@ export function PortalBookingFormPanel({
               <FieldLabel required>Commodity</FieldLabel>
               <Input
                 className="mt-1"
+                maxLength={L.commodity}
                 value={form.commodity}
-                onChange={(e) => patch({ commodity: e.target.value })}
+                onChange={(e) => patch({ commodity: e.target.value.slice(0, L.commodity) })}
               />
             </label>
             <label className="block">
               <FieldLabel>HS code</FieldLabel>
               <Input
                 className="mt-1"
+                maxLength={L.hs_code}
                 value={form.hs_code}
-                onChange={(e) => patch({ hs_code: e.target.value })}
+                onChange={(e) => patch({ hs_code: e.target.value.slice(0, L.hs_code) })}
               />
             </label>
             <label className="block">
               <FieldLabel>Final use</FieldLabel>
               <Input
                 className="mt-1"
+                maxLength={L.final_use}
                 value={form.final_use}
-                onChange={(e) => patch({ final_use: e.target.value })}
+                onChange={(e) => patch({ final_use: e.target.value.slice(0, L.final_use) })}
               />
             </label>
             <label className="block">
@@ -938,8 +988,11 @@ export function PortalBookingFormPanel({
               <FieldLabel>Booking agent line</FieldLabel>
               <Input
                 className="mt-1"
+                maxLength={L.booking_agent_line}
                 value={form.booking_agent_line}
-                onChange={(e) => patch({ booking_agent_line: e.target.value })}
+                onChange={(e) =>
+                  patch({ booking_agent_line: e.target.value.slice(0, L.booking_agent_line) })
+                }
                 placeholder="KINGFISHER"
               />
             </label>
@@ -947,24 +1000,38 @@ export function PortalBookingFormPanel({
               <FieldLabel>Agent requester name</FieldLabel>
               <Input
                 className="mt-1"
+                maxLength={L.agent_requester_name}
                 value={form.agent_requester_name}
-                onChange={(e) => patch({ agent_requester_name: e.target.value })}
+                onChange={(e) =>
+                  patch({
+                    agent_requester_name: e.target.value.slice(0, L.agent_requester_name),
+                  })
+                }
               />
             </label>
             <label className="block">
-              <FieldLabel>Voyage ref</FieldLabel>
+              <FieldLabel>{isAir ? 'Flight / booking ref (voyage_ref)' : 'Voyage ref'}</FieldLabel>
               <Input
                 className="mt-1"
+                maxLength={L.voyage_ref}
                 value={form.voyage_ref}
-                onChange={(e) => patch({ voyage_ref: e.target.value })}
+                onChange={(e) => patch({ voyage_ref: e.target.value.slice(0, L.voyage_ref) })}
+                placeholder={isAir ? 'e.g. EK512 / booking ref' : undefined}
               />
             </label>
             <label className="block">
-              <FieldLabel>SQ / BL booking reference</FieldLabel>
+              <FieldLabel>
+                {isAir ? 'Quote / booking reference' : 'SQ / BL booking reference'}
+              </FieldLabel>
               <Input
                 className="mt-1"
+                maxLength={L.sq_bl_booking_reference}
                 value={form.sq_bl_booking_reference}
-                onChange={(e) => patch({ sq_bl_booking_reference: e.target.value })}
+                onChange={(e) =>
+                  patch({
+                    sq_bl_booking_reference: e.target.value.slice(0, L.sq_bl_booking_reference),
+                  })
+                }
               />
             </label>
           </div>
@@ -1029,7 +1096,7 @@ export function PortalBookingFormPanel({
           >
             {saveForm.isPending
               ? 'Submitting…'
-              : stepIndex >= STEPS.length - 1
+              : stepIndex >= steps.length - 1
                 ? 'Submit'
                 : 'Continue →'}
           </Button>

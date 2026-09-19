@@ -237,8 +237,10 @@ export type PortalBookingFormParty = {
 };
 
 /**
- * Customer + Ops booking form — field names match UpsertNvoccBookingFormDto
- * (GET/PUT /nvocc/bookings/:id/booking-form).
+ * Customer + Ops booking form — field names match UpsertNvoccBookingFormDto /
+ * SubmitNvoccComplianceFormDto (OpenAPI).
+ * NVOCC: /portal/bookings/:id/compliance-form*
+ * Air:   /portal/shipments/:id/compliance-form* (same body schema)
  */
 export type PortalBookingForm = {
   id?: string;
@@ -249,7 +251,9 @@ export type PortalBookingForm = {
   client_booking_no?: string;
   gross_weight_kg?: number;
   net_weight_kg?: number;
+  /** Port of loading (sea) or origin airport/place (air) — maxLength 100 */
   pol?: string;
+  /** Port of discharge (sea) or dest airport/place (air) — maxLength 100 */
   pod?: string;
   shipper_owned_container?: boolean;
   is_dg?: boolean;
@@ -273,19 +277,19 @@ export type PortalBookingForm = {
   parties?: PortalBookingFormParty[];
 };
 
-/** PUT body whitelist — UpsertNvoccBookingFormDto. */
+/** PUT/submit body — UpsertNvoccBookingFormDto / SubmitNvoccComplianceFormDto. */
 export type PortalBookingFormUpsertDto = {
   date_of_request?: string;
   voyage_ref?: string;
   client_booking_no?: string;
   gross_weight_kg?: number;
   net_weight_kg?: number;
-  pol: string;
-  pod: string;
+  pol?: string;
+  pod?: string;
   shipper_owned_container?: boolean;
   is_dg?: boolean;
   teu_count?: number;
-  commodity: string;
+  commodity?: string;
   hs_code?: string;
   final_use?: string;
   activity_sector?: 'CIVILIAN' | 'MILITARY' | 'NUCLEAR' | string;

@@ -10,6 +10,10 @@
  * Catalog "Invoice Report Format-N" templates are ADDITIONAL formats via
  * POST /reports/generate — never replace the default invoice/quotation PDF buttons.
  *
+ * When a catalog template has no active Puppeteer pack, Generate may open a
+ * client KingFisher layout PDF (`generateCatalogLayoutPdf`) — preview only.
+ * That path must never call POST /invoices/:id/pdf or POST /quotations/:id/pdf.
+ *
  * Format-1 Tax Invoice India = backend pack `commercial.invoice_tax_india_1`
  * (see BACKEND_REPORT_CATALOG_API.md + fresaPdfParity.constants.ts). Invoice detail
  * "FRESA formats" deep-links the catalog. Catalog may show sample/mock previews from
@@ -21,6 +25,7 @@ export const DOCUMENT_PDF_PRESERVE = {
   invoiceClient: 'src/features/invoices/utils/generateInvoicePdf.ts',
   quotationApi: 'POST /quotations/:id/pdf',
   invoiceApi: 'POST /invoices/:id/pdf',
+  catalogClientLayoutFallback: 'src/features/reports/utils/generateCatalogLayoutPdf.ts',
   fresaFormat1Code: 'INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA',
   fresaFormat1Pack: 'commercial.invoice_tax_india_1',
 } as const;
