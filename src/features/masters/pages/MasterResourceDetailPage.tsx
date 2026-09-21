@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
+import { PageBackLink } from '@/components/ui/PageBackLink';
 import { getMasterResource } from '../config/masterResources';
 import { useMasterDetail, useMasterMutations } from '../hooks/useMasterResource';
 import {
@@ -79,13 +80,7 @@ export default function MasterResourceDetailPage(props: MasterPageRouteProps = {
 
   return (
     <div className="space-y-4 max-w-3xl">
-      <button
-        type="button"
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-        onClick={() => navigate(listPath)}
-      >
-        ← Back to {resource.title}
-      </button>
+      <PageBackLink to={listPath} label="Back" />
 
       {actionError && (
         <div

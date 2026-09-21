@@ -293,4 +293,16 @@ export const voucherService = {
       throw formatAxiosError(error);
     }
   },
+
+  async batchStatus(voucherIds: string[], status: string): Promise<void> {
+    const ids = voucherIds.map((id) => id.trim()).filter(Boolean);
+    if (!ids.length) throw new Error('Enter at least one voucher id.');
+    try {
+      await withGatewayRetry(() =>
+        axiosInstance.patch(VOUCHER_API.batchStatus, { voucher_ids: ids, status }),
+      );
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
 };

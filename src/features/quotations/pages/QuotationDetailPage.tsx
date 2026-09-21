@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
 import { QuotationEmailModal } from '../components/QuotationEmailModal';
@@ -9,7 +10,8 @@ import { QuotationOverviewPanel } from '../components/QuotationOverviewPanel';
 import { QuotationPdfModal } from '../components/QuotationPdfModal';
 import { QuotationStatusBadge } from '../components/QuotationStatusBadge';
 import { QuotationTotalsSummary } from '../components/QuotationTotalsSummary';
-import { STATUS_LABELS, type LostReason, type PdfMode } from '../constants/quotation.constants';
+import { STATUS_LABELS, type LostReason } from '../constants/quotation.constants';
+import { QuotationVendorPassPanel } from '../components/QuotationVendorPassPanel';
 import {
   useQuotationActions,
   useQuotationPdf,
@@ -26,6 +28,9 @@ import {
   quotationStatusToSeaExportStage,
   type SeaExportStageId,
 } from '@/features/nvocc/constants/seaExportWorkflow';
+import { nvoccBookingService } from '@/features/nvocc/services/nvocc.service';
+import { useNvoccBookingForm } from '@/features/nvocc/hooks/useNvocc';
+import { useCustomerPortalBookingForm } from '@/features/portal-admin-inbox/hooks/usePortalAdminInbox';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import {
   isAwaitingCustomerDecision,
@@ -111,9 +116,43 @@ export default function QuotationDetailPage() {
     [lines, quotation?.discount_percent, quotation?.discount_amount],
   );
 
+  const isNvoccQuote = Boolean(quotation && isNvoccQuoteJobType(quotation.job_type));
+  const portalBookingQuery = useCustomerPortalBookingForm(
+    {
+      quotationId: id,
+      quoteNumber: quotation?.quotation_number || quotation?.quote_no,
+      jobTypePrefix: 'NVOCC',
+    },
+    isNvoccQuote && Boolean(id),
+  );
+  const linkedBookingQuery = useQuery({
+    queryKey: [
+      'nvocc',
+      'booking-for-quotation',
+      id,
+      quotation?.booking_id || '',
+      quotation?.quotation_number || quotation?.quote_no || '',
+    ],
+    queryFn: () =>
+      nvoccBookingService.findLinkedToQuotation({
+        bookingId: quotation?.booking_id,
+        quotationId: id,
+        quoteNumber: quotation?.quotation_number || quotation?.quote_no,
+        customerId: quotation?.customer_id,
+      }),
+    enabled: isNvoccQuote && Boolean(id) && Boolean(quotation),
+    staleTime: 15_000,
+    retry: 1,
+  });
+  const linkedBooking = linkedBookingQuery.data;
+  const linkedBookingFormQuery = useNvoccBookingForm(
+    linkedBooking?.id || '',
+    Boolean(linkedBooking?.id),
+  );
+
   const status = useMemo(() => {
     if (!quotation) return 'DRAFT' as const;
-    return (
+    const resolved =
       resolveCustomerFacingQuoteStatus(
         quotation.id,
         quotation.api_status ?? quotation.status,
@@ -122,9 +161,119 @@ export default function QuotationDetailPage() {
           useMemory: true,
           negotiationEvents: negotiationTimeline?.events,
         },
-      ) ?? coerceQuotationStatus(quotation.status)
-    );
-  }, [quotation, negotiationTimeline?.events]);
+      ) ?? coerceQuotationStatus(quotation.status);
+
+    const linkedJobId = quotation.job_id || linkedBooking?.job_id;
+    if (linkedJobId && (resolved === 'APPROVED' || resolved === 'WON')) {
+      return 'CONVERTED' as const;
+    }
+    return resolved;
+  }, [quotation, negotiationTimeline?.events, linkedBooking?.job_id]);
+
+  // Persist APPROVED → CONVERTED once the booking (or quote) has a job.
+  useEffect(() => {
+    const jobId = quotation?.job_id || linkedBooking?.job_id;
+    if (!id || !quotation || !jobId) return;
+    const apiStatus = coerceQuotationStatus(quotation.api_status ?? quotation.status);
+    if (apiStatus === 'CONVERTED' && quotation.job_id === jobId) return;
+    if (apiStatus !== 'APPROVED' && apiStatus !== 'WON' && apiStatus !== 'CONVERTED') return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { quotationService } = await import('../services/quotation.service');
+        await quotationService.markConvertedWithJob(id, jobId);
+        if (!cancelled) void refetch();
+      } catch {
+        /* non-fatal */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    id,
+    quotation?.id,
+    quotation?.job_id,
+    quotation?.api_status,
+    quotation?.status,
+    linkedBooking?.job_id,
+    refetch,
+  ]);
+
+  const seaExportStage = useMemo((): SeaExportStageId => {
+    return quotationStatusToSeaExportStage(status, {
+      hasJob: Boolean(quotation?.job_id || linkedBooking?.job_id),
+      hasInvoice: Boolean(quotation?.invoice_id),
+      bookingStatus: linkedBooking?.booking_status,
+      formComplete:
+        linkedBookingFormQuery.data?.mark_complete === true ||
+        portalBookingQuery.data?.mark_complete === true,
+    });
+  }, [
+    status,
+    quotation?.job_id,
+    quotation?.invoice_id,
+    linkedBooking?.job_id,
+    linkedBooking?.booking_status,
+    linkedBookingFormQuery.data?.mark_complete,
+    portalBookingQuery.data?.mark_complete,
+  ]);
+
+  const bookingHref = linkedBooking?.id
+    ? `/nvocc/bookings/${linkedBooking.id}`
+    : '/nvocc/booking-list';
+
+  const seaExportHelp = useMemo(() => {
+    if (linkedBooking?.booking_status) {
+      const gate = linkedBooking.booking_status;
+      const life = linkedBooking.lifecycle_status;
+      if (seaExportStage === 'cro-container') {
+        return {
+          text: `Live booking gate: ${gate}${life ? ` · lifecycle ${life}` : ''}. Convert to job / Issue CRO on the booking Ops tab.`,
+          href: bookingHref,
+          linkLabel: 'Open NVOCC booking',
+        };
+      }
+      if (seaExportStage === 'invoice') {
+        return {
+          text: `Live booking gate: ${gate}${life ? ` · lifecycle ${life}` : ''}. Invoice next — retry send invoice on the booking if needed.`,
+          href: bookingHref,
+          linkLabel: 'Open NVOCC booking',
+        };
+      }
+      return {
+        text: `Live booking gate: ${gate}${life ? ` · lifecycle ${life}` : ''}. Mark complete → invoice → convert on the booking.`,
+        href: bookingHref,
+        linkLabel: 'Open NVOCC booking',
+      };
+    }
+    if (seaExportStage === 'cro-container' || seaExportStage === 'invoice') {
+      return {
+        text: 'Quote is past booking-form on the workflow rail. Open NVOCC Bookings to finish convert / CRO (link the booking if the rail still lags).',
+        href: '/nvocc/booking-list',
+        linkLabel: 'NVOCC Bookings',
+      };
+    }
+    if (status === 'CONVERTED' || seaExportStage === 'cro-container') {
+      return {
+        text: 'Quotation converted to job — continue CRO / allocate on the NVOCC booking or job Ops tab.',
+        href: bookingHref,
+        linkLabel: linkedBooking?.id ? 'Open NVOCC booking' : 'NVOCC Bookings',
+      };
+    }
+    if (status === 'APPROVED' || status === 'WON') {
+      return {
+        text: 'Customer approved — continue Stage 1–2 on the linked NVOCC booking (booking form → invoice → convert). This quote does not auto-create a job.',
+        href: bookingHref,
+        linkLabel: linkedBooking?.id ? 'Open NVOCC booking' : 'NVOCC Bookings',
+      };
+    }
+    return {
+      text: 'After customer approve, continue Stage 1–2 on NVOCC Bookings: booking form → send invoice → CRO / container.',
+      href: '/nvocc/booking-list',
+      linkLabel: 'NVOCC Bookings',
+    };
+  }, [linkedBooking, seaExportStage, status, bookingHref]);
 
   // Customer Approved → auto job+invoice for **standard** modes only.
   // NVOCC / Air: never auto-convert and never auto-create a job shell.
@@ -384,16 +533,13 @@ export default function QuotationDetailPage() {
         </div>
       )}
 
+      {id ? <QuotationVendorPassPanel quotationId={id} /> : null}
+
             {quotation && isNvoccQuoteJobType(quotation.job_type) ? (
         <div className="mb-3 space-y-3 rounded-lg border border-gray-200 bg-white p-4">
           <NvoccSeaExportFlowRail
-            current={quotationStatusToSeaExportStage(status, {
-              hasJob: Boolean(quotation.job_id),
-            })}
+            current={seaExportStage}
             done={(() => {
-              const current = quotationStatusToSeaExportStage(status, {
-                hasJob: Boolean(quotation.job_id),
-              });
               const order: SeaExportStageId[] = [
                 'customer-request',
                 'cs-receive',
@@ -403,32 +549,32 @@ export default function QuotationDetailPage() {
                 'invoice',
                 'cro-container',
               ];
-              const idx = order.indexOf(current);
+              const idx = order.indexOf(seaExportStage);
               const map: Partial<Record<SeaExportStageId, boolean>> = {};
-              order.forEach((id, i) => {
-                if (i < idx) map[id] = true;
+              order.forEach((stageId, i) => {
+                if (i < idx) map[stageId] = true;
               });
               return map;
             })()}
             band="1-2"
           />
           <p className="text-sm text-gray-600">
-            After customer approve, this quote does <strong>not</strong> auto-convert to a job.
-            Continue Stage 1–2 on{' '}
-            <Link className="underline text-[var(--color-primary-600)]" to="/nvocc/booking-list">
-              NVOCC Bookings
+            {seaExportHelp.text}{' '}
+            <Link className="underline text-[var(--color-primary-600)]" to={seaExportHelp.href}>
+              {seaExportHelp.linkLabel}
             </Link>
-            : <strong>Booking form → Send invoice</strong>, then CRO / container. Other job types
-            still auto-convert on approve.
+            {linkedBookingQuery.isFetching ? (
+              <span className="ml-2 text-xs text-gray-400">Syncing booking…</span>
+            ) : null}
           </p>
-          {quotation.job_id ? (
+          {quotation.job_id || linkedBooking?.job_id ? (
             <button
               type="button"
               className="text-sm underline text-[var(--color-primary-600)]"
               onClick={() =>
                 navigate(
                   jobDetailPath({
-                    id: quotation.job_id!,
+                    id: (quotation.job_id || linkedBooking?.job_id)!,
                     job_type: quotation.job_type,
                   }),
                 )
@@ -694,18 +840,18 @@ export default function QuotationDetailPage() {
         quotationDate={quotation.quotation_date}
         quotation={quotation}
         open={pdfOpen}
-        isPending={actions.generatePdf.isPending}
+        isPending={actions.generatePdf.isPending || actions.storeClientPdf.isPending}
         pdfInfo={pdfInfo}
         error={null}
         onClose={() => setPdfOpen(false)}
-        onGenerate={async (mode: PdfMode, layout_variant?: string) => {
+        onGenerate={async (mode, opts) => {
           setActionError(null);
-          const info = await actions.generatePdf.mutateAsync({
+          const info = await actions.storeClientPdf.mutateAsync({
             mode,
-            ...(layout_variant ? { layout_variant } : {}),
+            blob: opts.blob,
+            fileName: opts.fileName,
           });
-          setActionMessage('PDF generation queued.');
-          // Do not fail the generate action if GET /pdf is empty or errors while tasks run.
+          setActionMessage('Quotation PDF generated and stored for customer portal.');
           try {
             await refetchPdf();
           } catch {

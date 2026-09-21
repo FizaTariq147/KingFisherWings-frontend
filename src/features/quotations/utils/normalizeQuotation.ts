@@ -8,6 +8,7 @@ import type { Quotation, QuotationLine } from '../types/quotation.types';
 import { normalizeNegotiationPricing } from './normalizeQuotationExtended';
 import { coerceQuotationStatus } from './quotationStatus';
 import { resolveCustomerFacingQuoteStatus } from './customerQuoteDecision';
+import { isRememberedQuotationConverted } from './quotationConvertedMemory';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -54,10 +55,27 @@ function normalizeStatus(
   id?: string,
   record?: Record<string, unknown>,
 ): QuotationStatus {
-  return (
+  const resolved =
     resolveCustomerFacingQuoteStatus(id, value, record, { useMemory: true }) ??
-    coerceQuotationStatus(value)
-  );
+    coerceQuotationStatus(value);
+
+  const jobId =
+    (record && (str(record.job_id) || str(record.jobId))) || undefined;
+  if (
+    jobId &&
+    isUuid(jobId) &&
+    (resolved === 'APPROVED' || resolved === 'WON' || resolved === 'SENT')
+  ) {
+    return 'CONVERTED';
+  }
+  if (
+    id &&
+    isRememberedQuotationConverted(id) &&
+    (resolved === 'APPROVED' || resolved === 'WON')
+  ) {
+    return 'CONVERTED';
+  }
+  return resolved;
 }
 
 function canonicalizeJobTypeToken(value: unknown): string {
@@ -282,6 +300,15 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     parent_quotation_id: str(r.parent_quotation_id),
     revision_number: num(r.revision_number),
     job_id: str(r.job_id) ?? str(r.jobId),
+    booking_id:
+      str(r.booking_id) ??
+      str(r.bookingId) ??
+      str(r.nvocc_booking_id) ??
+      str(r.nvoccBookingId) ??
+      str(r.source_booking_id) ??
+      str(r.portal_booking_id) ??
+      str(asRecord(r.booking)?.id) ??
+      str(asRecord(r.nvocc_booking)?.id),
     invoice_id: str(r.invoice_id) ?? str(r.invoiceId) ?? str(asRecord(r.invoice)?.id),
     deleted_at: (str(r.deleted_at) as string | null | undefined) ?? null,
     created_at: str(r.created_at),

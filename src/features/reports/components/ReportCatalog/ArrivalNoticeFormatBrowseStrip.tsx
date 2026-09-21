@@ -1,12 +1,13 @@
 import { listArrivalNoticeFormats } from '../../constants/arrivalNoticeFormatCatalog';
 import type { ArrivalNoticeFormatKind } from '../../constants/arrivalNoticeFormatCatalog';
+import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 
 type ArrivalNoticeFormatBrowseStripProps = {
   selectedCode?: string;
   onSelect: (code: string) => void;
   visible: boolean;
-  /** Live catalog search — filters strip cards by name/code. */
   searchQuery?: string;
+  allowedCodes?: ReadonlySet<string> | null;
 };
 
 const DEFAULT_TONE = {
@@ -88,28 +89,22 @@ const KIND_TONES: Partial<
   },
 };
 
-function matchesArrivalSearch(
-  row: { name: string; code: string; kind: string },
-  rawQuery: string,
-): boolean {
-  const q = rawQuery.trim().toLowerCase();
-  if (!q) return true;
-  const hay = `${row.name} ${row.code} ${row.kind}`.toLowerCase();
-  return q.split(/\s+/).every((token) => hay.includes(token));
-}
-
 /** Compact strip for Arrival Notice / Confirmation / Information formats. */
 export function ArrivalNoticeFormatBrowseStrip({
   selectedCode,
   onSelect,
   visible,
   searchQuery = '',
+  allowedCodes = null,
 }: ArrivalNoticeFormatBrowseStripProps) {
   if (!visible) return null;
 
   const all = listArrivalNoticeFormats();
-  const items = all.filter((row) => matchesArrivalSearch(row, searchQuery));
-  const qActive = Boolean(searchQuery.trim());
+  const { items, scopedTotal, filterActive } = filterCatalogStripRows(all, {
+    searchQuery,
+    allowedCodes,
+    selectedCode,
+  });
 
   return (
     <div className="space-y-2.5 rounded-xl border border-[var(--color-neutral-200)] bg-[var(--color-surface)] p-3.5 shadow-sm">
@@ -118,12 +113,12 @@ export function ArrivalNoticeFormatBrowseStrip({
           Arrival Notice
         </h3>
         <p className="text-[10px] text-[var(--color-neutral-400)]">
-          {qActive ? `${items.length} of ${all.length} formats` : `${all.length} formats`}
+          {filterActive ? `${items.length} of ${scopedTotal} formats` : `${all.length} formats`}
         </p>
       </div>
       {items.length === 0 ? (
         <p className="px-1 py-2 text-xs text-[var(--color-neutral-500)]">
-          No Arrival Notice formats match “{searchQuery.trim()}”.
+          No formats match the current filters.
         </p>
       ) : (
         <div className="-mx-0.5 flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:thin]">

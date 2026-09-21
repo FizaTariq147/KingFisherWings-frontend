@@ -52,6 +52,7 @@ import type {
   UpdateNvoccVoyageDto,
 } from '../types/nvocc.types';
 import {
+  isNvoccBookingLifecycleConfirmed,
   normalizeMany,
   normalizeNvoccBooking,
   normalizeNvoccBookingForm,
@@ -516,6 +517,137 @@ export const nvoccBookingService = {
     }
   },
 
+  /**
+   * Resolve the NVOCC booking that continues a quotation through Stage 1–2 gates.
+   * Used by quotation detail so the flowchart tracks live booking progress (not stuck on APPROVED).
+   */
+  async findLinkedToQuotation(opts: {
+    bookingId?: string;
+    quotationId?: string;
+    quoteNumber?: string;
+    customerId?: string;
+  }): Promise<NvoccBooking | null> {
+    const { readRememberedBookingIdForQuote, rememberQuoteBookingLink } = await import(
+      '../utils/quoteBookingLink'
+    );
+    const remembered = readRememberedBookingIdForQuote({
+      quotationId: opts.quotationId,
+      quoteNumber: opts.quoteNumber,
+    });
+    const directIds = [opts.bookingId, remembered].filter(
+      (v): v is string => Boolean(v && isUuid(v)),
+    );
+
+    for (const bookingId of directIds) {
+      try {
+        const booking = await this.get(bookingId);
+        rememberQuoteBookingLink({
+          quotationId: opts.quotationId,
+          quoteNumber: opts.quoteNumber,
+          bookingId: booking.id,
+        });
+        return booking;
+      } catch {
+        /* try next */
+      }
+    }
+
+    const quoteNumber = opts.quoteNumber?.trim();
+    const quotationId = opts.quotationId?.trim();
+    const needles = [quoteNumber, quotationId]
+      .filter((v): v is string => Boolean(v))
+      .map((v) => v.toUpperCase());
+
+    const scoreBooking = (b: NvoccBooking) => {
+      const s = String(b.booking_status ?? '').toUpperCase();
+      if (b.job_id) return 60;
+      if (s.includes('INVOICE')) return 50;
+      if (s.includes('BOOKING_FORM')) return 40;
+      if (s.includes('CUSTOMER')) return 30;
+      if (s.includes('QUOTE_SENT')) return 20;
+      if (s.includes('CS_')) return 10;
+      return 1;
+    };
+
+    const matchesNeedle = (hay: string) => {
+      const h = hay.toUpperCase();
+      return needles.some((n) => n && h.includes(n));
+    };
+
+    // 1) List bookings (search is unreliable on some backends) — prefer shipper filter.
+    let candidates: NvoccBooking[] = [];
+    try {
+      if (quoteNumber) {
+        const bySearch = await this.list({ search: quoteNumber });
+        candidates = bySearch.items;
+      }
+    } catch {
+      /* ignore */
+    }
+    try {
+      const listed = await this.list(
+        opts.customerId && isUuid(opts.customerId)
+          ? { shipper_id: opts.customerId }
+          : {},
+      );
+      const seen = new Set(candidates.map((b) => b.id));
+      for (const b of listed.items) {
+        if (!seen.has(b.id)) candidates.push(b);
+      }
+    } catch {
+      /* ignore */
+    }
+
+    // 2) Rank by form reference / text match, then commercial progress.
+    type Ranked = { booking: NvoccBooking; rank: number };
+    const ranked: Ranked[] = [];
+    const formChecks = candidates.slice(0, 25);
+    await Promise.all(
+      formChecks.map(async (booking) => {
+        let rank = scoreBooking(booking);
+        const textHay = `${booking.booking_number || ''} ${booking.shipper_ref || ''} ${booking.commodity || ''}`;
+        if (matchesNeedle(textHay)) rank += 100;
+        try {
+          const form = await this.getBookingForm(booking.id);
+          const formHay = [
+            form.sq_bl_booking_reference,
+            form.request_details,
+            form.client_booking_no,
+            form.voyage_ref,
+            String(form.quotation_id ?? ''),
+            String(form.booking_id ?? ''),
+          ]
+            .filter(Boolean)
+            .join(' ');
+          if (matchesNeedle(formHay)) rank += 200;
+          if (form.mark_complete === true) rank += 15;
+        } catch {
+          /* form may 404 */
+        }
+        ranked.push({ booking, rank });
+      }),
+    );
+
+    ranked.sort((a, b) => b.rank - a.rank);
+    const best = ranked.find((r) => r.rank >= 100) ?? (needles.length ? null : ranked[0]);
+    // Only accept a customer-list fallback when it is clearly advanced (invoice+) so we
+    // do not attach an unrelated draft booking to the quote rail.
+    const fallback =
+      best ??
+      ranked.find((r) => scoreBooking(r.booking) >= 40) ??
+      null;
+    if (fallback) {
+      rememberQuoteBookingLink({
+        quotationId: opts.quotationId,
+        quoteNumber: opts.quoteNumber,
+        bookingId: fallback.booking.id,
+      });
+      return fallback.booking;
+    }
+
+    return null;
+  },
+
   async create(dto: CreateNvoccBookingDto): Promise<NvoccBooking> {
     try {
       const raw = await mutateResource('post', NVOCC_API.bookings.create, prepareNvoccPayload(dto));
@@ -566,6 +698,27 @@ export const nvoccBookingService = {
     try {
       let booking = await this.get(id);
       if (booking.job_id && isUuid(booking.job_id)) {
+        const { rememberBookingJobLink } = await import('../utils/bookingJobLink');
+        rememberBookingJobLink({
+          bookingId: id,
+          jobId: booking.job_id,
+          jobType: booking.job_type,
+        });
+        try {
+          const { readRememberedQuoteForBooking } = await import('../utils/quoteBookingLink');
+          const { quotationService } = await import(
+            '@/features/quotations/services/quotation.service'
+          );
+          const remembered = readRememberedQuoteForBooking(id);
+          if (remembered?.quotationId && isUuid(remembered.quotationId)) {
+            await quotationService.markConvertedWithJob(
+              remembered.quotationId,
+              booking.job_id,
+            );
+          }
+        } catch {
+          /* non-fatal */
+        }
         return {
           id: booking.job_id,
           job_id: booking.job_id,
@@ -574,24 +727,67 @@ export const nvoccBookingService = {
         };
       }
 
-      const status = String(booking.booking_status ?? '').toUpperCase().replace(/[\s-]+/g, '_');
-      const isDraft = !status || status === 'DRAFT' || status === 'NEW' || status === 'PENDING';
+      // Session link from a prior fallback convert — treat as already converted.
+      {
+        const { readRememberedJobForBooking, rememberBookingJobLink } = await import(
+          '../utils/bookingJobLink'
+        );
+        const remembered = readRememberedJobForBooking(id);
+        if (remembered?.jobId && isUuid(remembered.jobId)) {
+          rememberBookingJobLink({
+            bookingId: id,
+            jobId: remembered.jobId,
+            jobType: remembered.jobType || booking.job_type,
+          });
+          try {
+            const { readRememberedQuoteForBooking } = await import('../utils/quoteBookingLink');
+            const { quotationService } = await import(
+              '@/features/quotations/services/quotation.service'
+            );
+            const quoteLink = readRememberedQuoteForBooking(id);
+            if (quoteLink?.quotationId && isUuid(quoteLink.quotationId)) {
+              await quotationService.markConvertedWithJob(
+                quoteLink.quotationId,
+                remembered.jobId,
+              );
+            }
+          } catch {
+            /* non-fatal */
+          }
+          return {
+            id: remembered.jobId,
+            job_id: remembered.jobId,
+            job_type: remembered.jobType || booking.job_type || 'NVOCC_EXPORT',
+            already_linked: true,
+            from_session: true,
+          };
+        }
+      }
 
-      // Classic confirm is DRAFT-only (allocates HBL / voyage space). Gated flow bookings are
-      // already past draft (e.g. INVOICE_SENT) — never call confirm for those.
-      if (isDraft) {
+      // Entity lifecycle (DRAFT → CONFIRMED) is separate from commercial gate (INVOICE_SENT).
+      // Backend: "Only confirmed bookings can be converted to a job."
+      const ensureConfirmed = async () => {
+        if (isNvoccBookingLifecycleConfirmed(booking.lifecycle_status)) return;
         try {
           booking = await this.confirm(id);
         } catch (confirmErr) {
           const detail = extractAxiosErrorDetail(confirmErr).toLowerCase();
-          if (!detail.includes('only draft') && !detail.includes('already')) {
-            throw new Error(
-              `Confirm booking failed (status: ${booking.booking_status || 'DRAFT'}). ` +
-                `Confirm needs a voyage with free space. ${extractAxiosErrorDetail(confirmErr)}`,
-            );
+          if (
+            detail.includes('only draft') ||
+            detail.includes('already') ||
+            detail.includes('confirmed')
+          ) {
+            booking = await this.get(id).catch(() => booking);
+            return;
           }
+          throw new Error(
+            `Confirm booking failed before convert (lifecycle: ${booking.lifecycle_status || 'DRAFT'}, gate: ${booking.booking_status || '—'}). ` +
+              `Confirm needs a voyage with free space. ${extractAxiosErrorDetail(confirmErr)}`,
+          );
         }
-      }
+      };
+
+      await ensureConfirmed();
 
       const companyId =
         (dto.company_id && isUuid(dto.company_id) ? dto.company_id : undefined) ||
@@ -616,12 +812,147 @@ export const nvoccBookingService = {
         if (shipperId) {
           try {
             booking = await this.update(id, { shipper_id: shipperId });
-            shipperId = booking.shipper_id && isUuid(booking.shipper_id) ? booking.shipper_id : shipperId;
+            shipperId =
+              booking.shipper_id && isUuid(booking.shipper_id) ? booking.shipper_id : shipperId;
           } catch {
             /* still use resolved id for fallback create */
           }
         }
       }
+
+      const rememberAndLinkJob = async (
+        jobId: string,
+        jobType?: string,
+      ): Promise<Record<string, unknown>> => {
+        const { rememberBookingJobLink } = await import('../utils/bookingJobLink');
+        rememberBookingJobLink({
+          bookingId: id,
+          jobId,
+          jobType: jobType || booking.job_type || 'NVOCC_EXPORT',
+        });
+
+        // Official convert attaches job_id; fallback / empty convert responses often do not.
+        // Try several PATCH shapes so GET booking reflects CONVERTED / linked job.
+        const patchBodies: Record<string, unknown>[] = [
+          { job_id: jobId },
+          { jobId },
+          { linked_job_id: jobId },
+          {
+            shipper_ref: [booking.shipper_ref, `JOB:${jobId}`].filter(Boolean).join(' ').slice(0, 120),
+          },
+        ];
+        for (const body of patchBodies) {
+          try {
+            const updated = await mutateResource(
+              'patch',
+              NVOCC_API.bookings.byId(id),
+              prepareNvoccPayload(body),
+            );
+            const normalized = normalizeNvoccBooking(updated);
+            if (normalized?.job_id && isUuid(normalized.job_id)) {
+              booking = normalized;
+              break;
+            }
+            // Refetch — some APIs accept patch but omit job_id in response body.
+            booking = await this.get(id).catch(() => booking);
+            if (booking.job_id && isUuid(booking.job_id)) break;
+          } catch {
+            /* try next shape */
+          }
+        }
+
+        await markLinkedQuotationConverted(jobId);
+
+        return {
+          id: jobId,
+          job_id: jobId,
+          job_type: jobType || booking.job_type || 'NVOCC_EXPORT',
+          booking_id: id,
+          booking_status: booking.booking_status,
+          lifecycle_status: booking.lifecycle_status,
+        };
+      };
+
+      const markLinkedQuotationConverted = async (jobId: string) => {
+        try {
+          const { readRememberedQuoteForBooking } = await import(
+            '../utils/quoteBookingLink'
+          );
+          const { quotationService } = await import(
+            '@/features/quotations/services/quotation.service'
+          );
+          const remembered = readRememberedQuoteForBooking(id);
+          let quotationId = remembered?.quotationId;
+          if (!quotationId || !isUuid(quotationId)) {
+            // Form / shipper-ref may carry quote number — resolve via list.
+            const quoteNumber =
+              remembered?.quoteNumber ||
+              booking.shipper_ref ||
+              booking.booking_number;
+            if (quoteNumber) {
+              const listed = await quotationService.list({
+                page: 1,
+                limit: 20,
+                search: String(quoteNumber),
+                order: 'desc',
+                ...(booking.shipper_id && isUuid(booking.shipper_id)
+                  ? { customer_id: booking.shipper_id }
+                  : {}),
+              });
+              const match =
+                listed.quotations.find(
+                  (q) =>
+                    q.quotation_number === quoteNumber ||
+                    q.quote_no === quoteNumber ||
+                    String(q.quotation_number ?? '')
+                      .toUpperCase()
+                      .includes(String(quoteNumber).toUpperCase()),
+                ) ?? listed.quotations[0];
+              quotationId = match?.id;
+            }
+          }
+          if (!quotationId && booking.shipper_id && isUuid(booking.shipper_id)) {
+            const linked = await quotationService.findLinkedToJob(jobId, {
+              customerId: booking.shipper_id,
+              jobType: booking.job_type,
+            });
+            quotationId = linked?.id;
+          }
+          if (quotationId && isUuid(quotationId)) {
+            await quotationService.markConvertedWithJob(quotationId, jobId);
+          }
+        } catch {
+          /* non-fatal — UI still shows Converted via booking job link / memory */
+        }
+      };
+
+      const extractJobPayload = (raw: unknown): Record<string, unknown> | null => {
+        if (!raw || typeof raw !== 'object') return null;
+        const record = raw as Record<string, unknown>;
+        const nested =
+          record.job && typeof record.job === 'object'
+            ? (record.job as Record<string, unknown>)
+            : record.data && typeof record.data === 'object'
+              ? (record.data as Record<string, unknown>)
+              : record;
+        const jobId =
+          (typeof nested.id === 'string' && isUuid(nested.id) ? nested.id : undefined) ||
+          (typeof nested.job_id === 'string' && isUuid(nested.job_id) ? nested.job_id : undefined) ||
+          (typeof record.job_id === 'string' && isUuid(record.job_id) ? record.job_id : undefined) ||
+          (typeof record.id === 'string' && isUuid(record.id) ? record.id : undefined);
+        if (!jobId) return null;
+        return {
+          ...nested,
+          ...record,
+          id: jobId,
+          job_id: jobId,
+          job_type:
+            nested.job_type ||
+            record.job_type ||
+            booking.job_type ||
+            'NVOCC_EXPORT',
+        };
+      };
 
       const body: ConvertNvoccBookingToJobDto = {
         ...dto,
@@ -629,27 +960,72 @@ export const nvoccBookingService = {
         branch_id: branchId,
       };
 
-      try {
-        const raw = await mutateResource(
+      const postConvert = (payload: object) =>
+        mutateResource(
           'post',
           NVOCC_API.bookings.convertToJob(id),
-          prepareNvoccPayload(body),
+          prepareNvoccPayload(payload),
         );
-        return (raw as Record<string, unknown>) ?? {};
-      } catch (convertErr) {
-        const convertStatus = (convertErr as { response?: { status?: number } })?.response?.status;
-        if (convertStatus !== 500) throw convertErr;
 
-        // Same class of failure as quotation convert — try direct POST /jobs so Ops can continue.
+      const tryConvertEndpoints = async (): Promise<Record<string, unknown> | null> => {
+        // Prefer empty body first — many OpenAPI convert DTOs are empty / whitelist-strict.
+        const attempts: object[] = [{}, prepareNvoccPayload(body), body];
+        let lastErr: unknown;
+        for (const payload of attempts) {
+          try {
+            const raw = await postConvert(payload);
+            const extracted = extractJobPayload(raw);
+            if (extracted?.job_id && typeof extracted.job_id === 'string') {
+              return await rememberAndLinkJob(
+                extracted.job_id,
+                typeof extracted.job_type === 'string' ? extracted.job_type : undefined,
+              );
+            }
+            // Convert may return booking with job_id attached.
+            booking = await this.get(id).catch(() => booking);
+            if (booking.job_id && isUuid(booking.job_id)) {
+              return await rememberAndLinkJob(booking.job_id, booking.job_type);
+            }
+            // 2xx with no job id — treat as soft failure and fall through.
+            lastErr = new Error(
+              'Convert-to-job returned success but no job id. Creating job via fallback.',
+            );
+          } catch (err) {
+            lastErr = err;
+            const detail = extractAxiosErrorDetail(err).toLowerCase();
+            const status = (err as { response?: { status?: number } })?.response?.status;
+            if (
+              status === 400 &&
+              (detail.includes('only confirmed') ||
+                detail.includes('must be confirmed') ||
+                detail.includes('not confirmed'))
+            ) {
+              await ensureConfirmed();
+              continue;
+            }
+            // Unknown property on body — next attempt uses emptier payload.
+            if (
+              status === 400 &&
+              (detail.includes('should not exist') || detail.includes('whitelist'))
+            ) {
+              continue;
+            }
+          }
+        }
+        if (lastErr) throw lastErr;
+        return null;
+      };
+
+      const createFallbackJob = async (priorError: unknown): Promise<Record<string, unknown>> => {
         if (!shipperId || !isUuid(shipperId)) {
           shipperId = await resolveShipperIdForBooking(booking);
         }
         if (!shipperId || !isUuid(shipperId)) {
           throw new Error(
-            `Convert to job crashed on the API (NvoccBookingsController_convertToJob). ` +
-              `Could not resolve a shipper party for fallback job create. Add a SHIPPER name on the ` +
-              `booking form (or link a Customer party), then retry. ` +
-              `Booking status: ${booking.booking_status || 'unknown'}.`,
+            `Convert to job failed and fallback could not resolve a shipper. ` +
+              `Add a SHIPPER name on the booking form (or link a Customer party), then retry. ` +
+              `Gate: ${booking.booking_status || '—'}; lifecycle: ${booking.lifecycle_status || '—'}. ` +
+              `${extractAxiosErrorDetail(priorError)}`,
           );
         }
 
@@ -672,7 +1048,7 @@ export const nvoccBookingService = {
         };
 
         const candidates = await buildJobCreateCandidatesAsync(createDto, companyId, branchId);
-        let lastCreateError = extractAxiosErrorDetail(convertErr);
+        let lastCreateError = extractAxiosErrorDetail(priorError);
         for (const candidate of candidates) {
           try {
             const res = await withGatewayRetry(() =>
@@ -680,14 +1056,7 @@ export const nvoccBookingService = {
             );
             const job = normalizeJob(unwrapJobEntity(res.data));
             if (job?.id) {
-              return {
-                ...job,
-                id: job.id,
-                job_id: job.id,
-                job_type: job.job_type ?? jobType,
-                fallback_from_booking: true,
-                booking_id: booking.id,
-              };
+              return await rememberAndLinkJob(job.id, job.job_type ?? jobType);
             }
           } catch (createErr) {
             lastCreateError = extractAxiosErrorDetail(createErr);
@@ -695,9 +1064,38 @@ export const nvoccBookingService = {
         }
 
         throw new Error(
-          `Convert to job failed (NvoccBookingsController_convertToJob HTTP 500) and fallback ` +
-            `POST /jobs also failed (JobsController_create). ${lastCreateError}`,
+          `Convert to job failed and fallback POST /jobs also failed. ${lastCreateError}`,
         );
+      };
+
+      try {
+        const converted = await tryConvertEndpoints();
+        if (converted) return converted;
+        return await createFallbackJob(
+          new Error('Convert-to-job returned no job id after confirmed booking.'),
+        );
+      } catch (convertErr) {
+        const convertStatus = (convertErr as { response?: { status?: number } })?.response?.status;
+        const convertDetail = extractAxiosErrorDetail(convertErr).toLowerCase();
+
+        if (
+          convertStatus === 400 &&
+          (convertDetail.includes('only confirmed') ||
+            convertDetail.includes('must be confirmed') ||
+            convertDetail.includes('not confirmed'))
+        ) {
+          await ensureConfirmed();
+          try {
+            const converted = await tryConvertEndpoints();
+            if (converted) return converted;
+          } catch {
+            /* fallback below */
+          }
+        }
+
+        // Confirmed + INVOICE_SENT: always allow Ops to proceed via POST /jobs
+        // when convert-to-job is broken (400/500/empty).
+        return await createFallbackJob(convertErr);
       }
     } catch (error) {
       if (error instanceof Error && !(error as { response?: unknown }).response) {
@@ -756,6 +1154,21 @@ export const nvoccBookingService = {
       return normalizeNvoccBooking(raw) ?? this.get(id);
     } catch (error) {
       throw formatNvoccError(error);
+    }
+  },
+
+  /**
+   * Mirror portal accept onto the NVOCC booking (sets CUSTOMER_ACCEPTED).
+   * Uses staff axios against /portal/bookings/:id/accept when the quote was
+   * approved in portal but the booking entity never received accept.
+   */
+  async tryPortalAccept(bookingId: string): Promise<NvoccBooking | null> {
+    if (!isUuid(bookingId)) return null;
+    try {
+      await mutateResource('post', `/portal/bookings/${bookingId}/accept`, {});
+      return await this.get(bookingId);
+    } catch {
+      return null;
     }
   },
 
@@ -885,10 +1298,30 @@ export const nvoccJobService = {
     dto: CreateNvoccContainerRequestDto = {},
   ): Promise<NvoccContainerRequest> {
     try {
+      // API whitelist: container_count (int 1–100). `quantity` must not be sent.
+      const rawCount = dto.container_count ?? dto.quantity;
+      const parsed =
+        rawCount == null || rawCount === ''
+          ? 1
+          : Number(rawCount);
+      const containerCount = Number.isFinite(parsed)
+        ? Math.min(100, Math.max(1, Math.trunc(parsed)))
+        : 1;
+
+      const body: Record<string, unknown> = {
+        container_count: containerCount,
+      };
+      if (dto.container_type_id && isUuid(String(dto.container_type_id))) {
+        body.container_type_id = String(dto.container_type_id).trim();
+      }
+      if (typeof dto.notes === 'string' && dto.notes.trim()) {
+        body.notes = dto.notes.trim();
+      }
+
       const raw = await mutateResource(
         'post',
         NVOCC_API.jobs.containerRequests(jobId),
-        prepareNvoccPayload(dto),
+        prepareNvoccPayload(body),
       );
       const item = normalizeNvoccContainerRequest(raw);
       if (!item) throw new Error('Container request was created but not returned.');

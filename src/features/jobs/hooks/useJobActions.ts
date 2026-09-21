@@ -125,6 +125,11 @@ export function useJobActions(jobId: string) {
       jobService.generateStuffingReport(id, dto),
     onSuccess: () => invalidate(id),
   });
+  const generateCourierReport = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateCourierReport(id, dto),
+    onSuccess: () => invalidate(id),
+  });
   const generateSailingConfirmation = useMutation({
     mutationFn: (dto?: GenerateJobDocumentDto) =>
       jobService.generateSailingConfirmation(id, dto),
@@ -191,6 +196,19 @@ export function useJobActions(jobId: string) {
       jobService.generateTransportRequest(id, dto),
     onSuccess: () => invalidate(id),
   });
+  const generateCrossBorderDeclaration = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateCrossBorderDeclaration(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateCustomsTransit = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) => jobService.generateCustomsTransit(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateDeliveryNote = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) => jobService.generateDeliveryNote(id, dto),
+    onSuccess: () => invalidate(id),
+  });
   const generateShippingAdvice = useMutation({
     mutationFn: (dto?: GenerateJobDocumentDto) =>
       jobService.generateShippingAdvice(id, dto),
@@ -252,6 +270,7 @@ export function useJobActions(jobId: string) {
     generateSurrenderNotice,
     generateSi,
     generateStuffingReport,
+    generateCourierReport,
     generateSailingConfirmation,
     generateTranshipmentConfirmation,
     generateCargoManifest,
@@ -266,6 +285,9 @@ export function useJobActions(jobId: string) {
     generateExchangeLetter,
     generateUndertakeLetter,
     generateTransportRequest,
+    generateCrossBorderDeclaration,
+    generateCustomsTransit,
+    generateDeliveryNote,
     generateShippingAdvice,
     generateProofOfDelivery,
     generateEAwb,

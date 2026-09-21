@@ -57,7 +57,9 @@ export const VENDOR_JOB_OFFERS_API = {
   vendorCounterOfferLegacy: (id: string) =>
     `/vendor/job-offers/${encodeURIComponent(id)}/counter-offer`,
   vendorJobPrice: (id: string) => `/vendor/quotes/${encodeURIComponent(id)}/price`,
+  vendorJobQuote: (id: string) => `/vendor/quotes/${encodeURIComponent(id)}/quote`,
   vendorJobPriceLegacy: (id: string) => `/vendor/job-offers/${encodeURIComponent(id)}/price`,
+  vendorJobQuoteLegacy: (id: string) => `/vendor/job-offers/${encodeURIComponent(id)}/quote`,
 
   lookupsPorts: '/vendor/lookups/ports',
   lookupsAirports: '/vendor/lookups/airports',

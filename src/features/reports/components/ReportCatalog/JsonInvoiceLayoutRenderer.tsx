@@ -5,7 +5,12 @@ import type {
   InvoiceFormatUiLayout,
   InvoiceFormatUiTheme,
 } from '../../types/invoiceFormatUiLayout.types';
+import {
+  KINGFISHER_TC_HEADER_FOOTER as TC,
+  KINGFISHER_TC_PAGE_FRAME,
+} from '../../constants/kingfisherTermsBrandColors';
 import { InvoiceUserFooter } from './invoiceLayouts/InvoiceUserFooter';
+import { TcBrandColorBar, TcBrandTagline } from './invoiceLayouts/TcBrandChrome';
 
 type Props = {
   layout: InvoiceFormatUiLayout;
@@ -38,13 +43,16 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
   const minH = paper === 'Letter' ? 'min-h-[11in]' : 'min-h-[297mm]';
 
   const bodyBlocks = blocks.filter((b) => b.type !== 'colorfulFooter');
+  const hasTopChrome = bodyBlocks.some(
+    (b) => b.type === 'colorBar' || b.type === 'summaryHero',
+  );
 
   return (
     <div
       dir={rtl ? 'rtl' : 'ltr'}
       className={`mx-auto flex ${minH} ${maxW} flex-col overflow-hidden border bg-white text-[10px] leading-normal shadow-sm ${className}`}
       style={{
-        borderColor: theme.primary,
+        ...KINGFISHER_TC_PAGE_FRAME,
         color: theme.ink,
         breakInside: 'avoid',
         pageBreakInside: 'avoid',
@@ -52,6 +60,7 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
       data-invoice-sheet="true"
     >
       <div className="flex min-h-0 flex-1 flex-col" style={{ breakInside: 'avoid' }}>
+        {!hasTopChrome ? <TcBrandColorBar size="lg" reverse={!!rtl} /> : null}
         {bodyBlocks.map((block, i) => (
           <div
             key={`${block.type}-${i}`}
@@ -97,44 +106,42 @@ function Block({
 }) {
   switch (block.type) {
     case 'colorBar':
-      return (
-        <div className="flex h-1.5 w-full">
-          <div className="w-[55%]" style={{ backgroundColor: theme.primary }} />
-          <div className="w-[20%]" style={{ backgroundColor: theme.cyan }} />
-          <div className="w-[15%]" style={{ backgroundColor: theme.orange }} />
-          <div className="w-[10%]" style={{ backgroundColor: theme.red }} />
-        </div>
-      );
+      return <TcBrandColorBar size="lg" reverse={!!layout.rtl} />;
     case 'companyHeader':
       return (
-        <div className="flex items-start gap-3 px-4 py-3" style={{ backgroundColor: theme.panel }}>
-          <img src={logo} alt={branding.company} className="h-11 w-auto object-contain" />
-          <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-bold uppercase leading-normal" style={{ color: theme.primary }}>
-              {branding.company}
-            </p>
-            <p className="mt-0.5 text-[9px] leading-normal" style={{ color: theme.gray }}>
-              {branding.address} · WEB : {branding.web}
-            </p>
-            {block.showContact ? (
-              <p className="mt-1 text-[9px] leading-normal" style={{ color: theme.gray }}>
-                {demo.billToPhone ? <>Phone : {demo.billToPhone} · </> : null}
-                {demo.fax ? <>Fax : {demo.fax} · </> : null}
-                {demo.vatNo ? <>VAT No. : {demo.vatNo}</> : null}
-                {demo.tinNo ? <> · TIN No. : {demo.tinNo}</> : null}
+        <div>
+          <div className="flex items-start gap-3 px-4 py-3" style={{ backgroundColor: theme.panel }}>
+            <img src={logo} alt={branding.company} className="h-11 w-auto object-contain" />
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-bold uppercase leading-normal" style={{ color: TC.navy }}>
+                {branding.company}
               </p>
+              <TcBrandTagline className="mt-0.5" />
+              <p className="mt-0.5 text-[9px] leading-normal" style={{ color: theme.gray }}>
+                {branding.address} · WEB : {branding.web}
+              </p>
+              {block.showContact ? (
+                <p className="mt-1 text-[9px] leading-normal" style={{ color: theme.gray }}>
+                  {demo.billToPhone ? <>Phone : {demo.billToPhone} · </> : null}
+                  {demo.fax ? <>Fax : {demo.fax} · </> : null}
+                  {demo.vatNo ? <>VAT No. : {demo.vatNo}</> : null}
+                  {demo.tinNo ? <> · TIN No. : {demo.tinNo}</> : null}
+                </p>
+              ) : null}
+            </div>
+            {block.title ? (
+              <div className="text-end">
+                <TcBrandTagline className="mb-0.5" text="DOCUMENT" />
+                <p
+                  className="text-[13px] font-bold tracking-wide leading-normal"
+                  style={{ color: themeColor(theme, block.titleColor, TC.navy) }}
+                >
+                  {block.title}
+                </p>
+              </div>
             ) : null}
           </div>
-          {block.title ? (
-            <div className="text-end">
-              <p
-                className="text-[13px] font-bold tracking-wide leading-normal"
-                style={{ color: themeColor(theme, block.titleColor, theme.primary) }}
-              >
-                {block.title}
-              </p>
-            </div>
-          ) : null}
+          <TcBrandColorBar size="sm" reverse={!!layout.rtl} />
         </div>
       );
     case 'docTitle':
@@ -178,12 +185,19 @@ function Block({
       return <ArabicHeader theme={theme} branding={branding} layout={layout} />;
     case 'summaryHero':
       return (
-        <div className="flex items-center justify-between px-4 py-3" style={{ backgroundColor: theme.primary }}>
-          <img src={logo} alt={branding.company} className="h-8 w-auto brightness-0 invert" />
-          <div className="text-end text-white">
-            <p className="text-base font-bold">SUMMARY INVOICE</p>
-            <p className="text-[7px] text-white/70">Format-{layout.formatNumber}</p>
+        <div>
+          <TcBrandColorBar size="lg" />
+          <div className="flex items-center justify-between px-4 py-3" style={{ backgroundColor: TC.navy }}>
+            <img src={logo} alt={branding.company} className="h-8 w-auto brightness-0 invert" />
+            <div className="text-end text-white">
+              <p className="text-[8px] font-semibold uppercase tracking-[0.12em]" style={{ color: TC.orange }}>
+                ALL MODES OF TRANSPORT
+              </p>
+              <p className="text-base font-bold">SUMMARY INVOICE</p>
+              <p className="text-[7px] text-white/70">Format-{layout.formatNumber}</p>
+            </div>
           </div>
+          <TcBrandColorBar size="sm" />
         </div>
       );
     case 'landRoute':
@@ -649,27 +663,33 @@ function ArabicHeader({
   layout: InvoiceFormatUiLayout;
 }) {
   return (
-    <div
-      className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 py-2"
-      style={{ backgroundColor: theme.panel }}
-    >
-      <div className="text-start">
-        <p className="text-sm font-bold" style={{ color: theme.primary }}>
-          فاتورة ضريبية
-        </p>
-        <p className="text-[8px]" style={{ color: theme.gray }}>
-          Tax Invoice
-        </p>
+    <div>
+      <TcBrandColorBar size="sm" reverse={!!layout.rtl} />
+      <div
+        className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 py-2"
+        style={{ backgroundColor: theme.panel }}
+      >
+        <div className="text-start">
+          <p className="text-sm font-bold" style={{ color: TC.navy }}>
+            فاتورة ضريبية
+          </p>
+          <TcBrandTagline className="mt-0.5" />
+          <p className="text-[8px]" style={{ color: theme.gray }}>
+            Tax Invoice
+          </p>
+        </div>
+        <img src={logo} alt={branding.company} className="h-10 w-auto object-contain" />
+        <div className="text-end">
+          <TcBrandTagline className="mb-0.5" text="DOCUMENT" />
+          <p className="text-sm font-bold" style={{ color: TC.navy }}>
+            INVOICE TAX
+          </p>
+          <p className="text-[7px]" style={{ color: theme.gray }}>
+            Format-{layout.formatNumber} · {branding.company}
+          </p>
+        </div>
       </div>
-      <img src={logo} alt={branding.company} className="h-10 w-auto object-contain" />
-      <div className="text-end">
-        <p className="text-sm font-bold" style={{ color: theme.primary }}>
-          INVOICE TAX
-        </p>
-        <p className="text-[7px]" style={{ color: theme.gray }}>
-          Format-{layout.formatNumber} · {branding.company}
-        </p>
-      </div>
+      <TcBrandColorBar size="sm" reverse={!!layout.rtl} />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import {
   Percent,
   Receipt,
   Scale,
+  Ruler,
   ScrollText,
   User,
   Wallet,
@@ -85,6 +86,7 @@ export const VENDOR_NAV_SECTIONS: VendorNavSection[] = [
       },
       { label: 'Disputes', to: '/vendor/disputes', Icon: Scale, iconStyle: navStyle('#F43F5E') },
       { label: 'Account', to: '/vendor/account', Icon: User, iconStyle: navStyle('#06B6D4') },
+      { label: 'Tools', to: '/vendor/tools', Icon: Ruler, iconStyle: navStyle('#0F766E') },
     ],
   },
 ];

@@ -18,20 +18,28 @@ function TaxIndiaFormat1({ preview }: { preview: InvoiceFormatPreview }) {
   const d = FRESA1;
 
   return (
-    <Shell className="border-black text-[8px] leading-tight text-black">
+    <Shell className="text-[8px] leading-tight text-black">
       <div
         className="flex items-start gap-3 border-b border-black px-2 py-2"
         style={{ backgroundColor: TAX_COLORS.fill }}
       >
         <KfLogo className="h-11 shrink-0" />
         <div className="min-w-0 flex-1">
-          <p className="text-[12px] font-bold uppercase tracking-wide">{KF.company}</p>
+          <p className="text-[12px] font-bold uppercase tracking-wide" style={{ color: KF.navy }}>
+            {KF.company}
+          </p>
+          <p className="text-[8px] font-semibold uppercase tracking-[0.12em]" style={{ color: KF.orange }}>
+            ALL MODES OF TRANSPORT
+          </p>
           <p className="text-[8px]">{KF.address}</p>
           <p className="text-[8px]">WEB : {KF.web}</p>
         </div>
       </div>
 
-      <p className="border-b border-black py-1.5 text-center text-[13px] font-bold tracking-widest">
+      <p
+        className="border-b py-1.5 text-center text-[13px] font-bold tracking-widest"
+        style={{ borderColor: KF.navy, color: KF.navy }}
+      >
         TAX INVOICE
       </p>
       <p className="px-2 pt-0.5 text-[7px] text-[var(--color-neutral-400)]">
@@ -106,7 +114,7 @@ function TaxIndiaFormat2({ preview }: { preview: InvoiceFormatPreview }) {
   const d = FRESA1;
 
   return (
-    <Shell className="border-black text-[8px] leading-tight text-black">
+    <Shell className="text-[8px] leading-tight text-black">
       <div className="flex items-start justify-between gap-3 border-b border-black px-2 py-2" style={{ backgroundColor: TAX_COLORS.fill }}>
         <div className="flex items-start gap-2">
           <KfLogo className="h-10 shrink-0" />
@@ -260,20 +268,28 @@ function TaxIndiaFormat5({ preview }: { preview: InvoiceFormatPreview }) {
   ];
 
   return (
-    <Shell className="border-black text-[8px] leading-tight text-black">
+    <Shell className="text-[8px] leading-tight text-black">
       <div
         className="flex items-start gap-3 border-b border-black px-2 py-2"
         style={{ backgroundColor: TAX_COLORS.fill }}
       >
         <KfLogo className="h-11 shrink-0" />
         <div className="min-w-0 flex-1">
-          <p className="text-[12px] font-bold uppercase tracking-wide">{KF.company}</p>
+          <p className="text-[12px] font-bold uppercase tracking-wide" style={{ color: KF.navy }}>
+            {KF.company}
+          </p>
+          <p className="text-[8px] font-semibold uppercase tracking-[0.12em]" style={{ color: KF.orange }}>
+            ALL MODES OF TRANSPORT
+          </p>
           <p className="text-[8px]">{KF.address}</p>
           <p className="text-[8px]">WEB : {KF.web}</p>
         </div>
       </div>
 
-      <p className="border-b border-black py-1.5 text-center text-[13px] font-bold tracking-widest">
+      <p
+        className="border-b py-1.5 text-center text-[13px] font-bold tracking-widest"
+        style={{ borderColor: KF.navy, color: KF.navy }}
+      >
         INVOICE
       </p>
       <p className="px-2 pt-0.5 text-[7px] text-[var(--color-neutral-400)]">
@@ -406,16 +422,26 @@ function TaxIndiaFormat4({ preview }: { preview: InvoiceFormatPreview }) {
   ];
 
   return (
-    <Shell className="border-black text-[8px] leading-tight text-black">
+    <Shell className="text-[8px] leading-tight text-black">
       <div className="flex items-start gap-3 border-b border-black px-2 py-2" style={{ backgroundColor: TAX_COLORS.fill }}>
         <KfLogo className="h-11 shrink-0" />
         <div className="min-w-0 flex-1">
-          <p className="text-[12px] font-bold uppercase tracking-wide">{KF.company}</p>
+          <p className="text-[12px] font-bold uppercase tracking-wide" style={{ color: KF.navy }}>
+            {KF.company}
+          </p>
+          <p className="text-[8px] font-semibold uppercase tracking-[0.12em]" style={{ color: KF.orange }}>
+            ALL MODES OF TRANSPORT
+          </p>
           <p className="text-[8px]">{KF.address}</p>
           <p className="text-[8px]">WEB : {KF.web}</p>
         </div>
         <div className="text-end">
-          <p className="text-[13px] font-bold tracking-widest">TAX INVOICE</p>
+          <p className="text-[8px] font-semibold uppercase tracking-[0.12em]" style={{ color: KF.orange }}>
+            DOCUMENT
+          </p>
+          <p className="text-[13px] font-bold tracking-widest" style={{ color: KF.navy }}>
+            TAX INVOICE
+          </p>
           <p className="text-[7px] text-[var(--color-neutral-500)]">Format-{preview.formatNumber}</p>
         </div>
       </div>
@@ -1331,18 +1357,14 @@ export function DebitVietnamLayout({ preview }: { preview: InvoiceFormatPreview 
 export function GenericLayout({ preview }: { preview: InvoiceFormatPreview }) {
   return (
     <Shell>
-      <div className="flex h-1.5 w-full">
-        <div className="w-[70%]" style={{ backgroundColor: KF.navy }} />
-        <div className="w-[30%]" style={{ backgroundColor: KF.orange }} />
-      </div>
       <div className="flex items-start justify-between gap-3 px-4 pt-3">
         <KfLogo className="h-11" />
         <div className="text-end">
           <p className="text-[11px] font-bold" style={{ color: KF.navy }}>
             {KF.company.toUpperCase()}
           </p>
-          <p className="text-[8px] font-semibold" style={{ color: KF.orange }}>
-            FREIGHT · LOGISTICS · GENERAL TRADING
+          <p className="text-[8px] font-semibold uppercase tracking-[0.12em]" style={{ color: KF.orange }}>
+            ALL MODES OF TRANSPORT
           </p>
           <p className="text-[9px] text-[var(--color-neutral-500)]">{KF.phone}</p>
           <p className="text-[9px] text-[var(--color-neutral-500)]">{KF.email}</p>
@@ -1359,7 +1381,10 @@ export function GenericLayout({ preview }: { preview: InvoiceFormatPreview }) {
           ORIGINAL
         </span>
       </div>
-      <div className="mx-4 mt-1 border-b-2" style={{ borderColor: KF.navy }} />
+      <div className="mx-4 mt-1 flex h-1 w-auto overflow-hidden">
+        <div className="w-[68%]" style={{ backgroundColor: KF.navy }} />
+        <div className="w-[32%]" style={{ backgroundColor: KF.orange }} />
+      </div>
       <FormatBadge preview={preview} />
       <div className="mt-2 grid grid-cols-2 gap-2 px-4">
         <div className="rounded border p-2" style={{ borderColor: KF.border, backgroundColor: KF.panel }}>

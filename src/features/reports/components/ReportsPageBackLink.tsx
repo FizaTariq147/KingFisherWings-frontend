@@ -1,12 +1,22 @@
 import { PageBackLink } from '@/components/ui/PageBackLink';
-import { useReportsBackLink } from '../hooks/useReportsBackLink';
 
 type ReportsPageBackLinkProps = {
+  /** Fallback only when there is no previous history entry. */
   fallbackTo: string;
-  fallbackLabel: string;
+  fallbackLabel?: string;
 };
 
-export function ReportsPageBackLink({ fallbackTo, fallbackLabel }: ReportsPageBackLinkProps) {
-  const back = useReportsBackLink({ to: fallbackTo, label: fallbackLabel });
-  return <PageBackLink to={back.to} label={back.label} />;
+/**
+ * Reports page back control — previous screen in history, not the module hub.
+ */
+export function ReportsPageBackLink({
+  fallbackTo,
+  fallbackLabel = 'Back',
+}: ReportsPageBackLinkProps) {
+  return (
+    <PageBackLink
+      to={fallbackTo}
+      label={fallbackLabel.startsWith('Back to ') ? 'Back' : fallbackLabel}
+    />
+  );
 }

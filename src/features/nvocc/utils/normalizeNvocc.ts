@@ -23,6 +23,122 @@ function nestedNumber(raw: Record<string, unknown>, ...keys: string[]): string |
   return undefined;
 }
 
+/** Booking entity lifecycle (confirm/cancel) — not the commercial gate rail. */
+const BOOKING_LIFECYCLE = new Set([
+  'DRAFT',
+  'NEW',
+  'PENDING',
+  'CREATED',
+  'CONFIRMED',
+  'CANCELLED',
+  'CANCELED',
+  'ACTIVE',
+  'CLOSED',
+]);
+
+function normStatusToken(value: unknown): string | undefined {
+  const s = str(value);
+  if (!s) return undefined;
+  return s.toUpperCase().replace(/[\s-]+/g, '_');
+}
+
+/**
+ * Prefer commercial gate stage (CS_TRIAGED / QUOTE_SENT / …) over lifecycle DRAFT/CONFIRMED.
+ * Backend often returns both: status=DRAFT (entity) and workflow_status=CS_TRIAGED (gates).
+ */
+export function pickNvoccBookingGateStatus(record: Record<string, unknown>): string | undefined {
+  const nestedWorkflow = asRecord(record.workflow);
+  const nestedCommercial = asRecord(record.commercial);
+  const candidates: unknown[] = [
+    record.commercial_stage,
+    record.commercial_status,
+    record.workflow_status,
+    record.workflow_stage,
+    record.gate_status,
+    record.stage,
+    nestedWorkflow?.status,
+    nestedWorkflow?.stage,
+    nestedCommercial?.status,
+    nestedCommercial?.stage,
+    record.booking_status,
+    record.status,
+    record.bookingStatus,
+  ];
+  const tokens = candidates
+    .map((c) => normStatusToken(c))
+    .filter((t): t is string => Boolean(t));
+
+  const gateLike = tokens.find(
+    (t) =>
+      !BOOKING_LIFECYCLE.has(t) &&
+      (t.includes('QUOTE') ||
+        t.includes('CS_') ||
+        t.includes('CUSTOMER') ||
+        t.includes('BOOKING_FORM') ||
+        t.includes('INVOICE') ||
+        t.includes('TRIAG') ||
+        t.includes('ACCEPTED')),
+  );
+  if (gateLike) return gateLike;
+
+  const nonLifecycle = tokens.find((t) => !BOOKING_LIFECYCLE.has(t));
+  if (nonLifecycle) return nonLifecycle;
+
+  return tokens[0];
+}
+
+/**
+ * Entity confirm/cancel rail (DRAFT → CONFIRMED). Distinct from commercial gate status.
+ * Convert-to-job requires CONFIRMED even when commercial stage is already INVOICE_SENT.
+ */
+export function pickNvoccBookingLifecycleStatus(
+  record: Record<string, unknown>,
+): string | undefined {
+  const candidates: unknown[] = [
+    record.lifecycle_status,
+    record.entity_status,
+    record.booking_lifecycle,
+    record.status,
+    record.booking_status,
+    record.bookingStatus,
+  ];
+  const tokens = candidates
+    .map((c) => normStatusToken(c))
+    .filter((t): t is string => Boolean(t));
+
+  const lifecycle = tokens.find((t) => BOOKING_LIFECYCLE.has(t));
+  if (lifecycle) return lifecycle;
+
+  // If only commercial tokens exist, entity is still effectively unconfirmed draft.
+  return tokens.find((t) => t === 'DRAFT' || t === 'NEW' || t === 'PENDING') ?? undefined;
+}
+
+export function isNvoccBookingLifecycleDraftish(status?: string | null): boolean {
+  const s = normStatusToken(status);
+  return !s || s === 'DRAFT' || s === 'NEW' || s === 'PENDING' || s === 'CREATED';
+}
+
+export function isNvoccBookingLifecycleConfirmed(status?: string | null): boolean {
+  const s = normStatusToken(status);
+  return s === 'CONFIRMED' || s === 'ACTIVE' || s === 'CLOSED';
+}
+
+/**
+ * Keep the stronger commercial gate when a refetch/mutation only echoes lifecycle DRAFT.
+ * Entity `status` often stays DRAFT while workflow_status advances QUOTE_SENT → …
+ */
+export function preferCommercialGateStatus(
+  primary?: string | null,
+  fallback?: string | null,
+): string | undefined {
+  const primaryTok = normStatusToken(primary);
+  const fallbackTok = normStatusToken(fallback);
+  const isLifecycle = (t?: string) => Boolean(t && BOOKING_LIFECYCLE.has(t));
+  if (primaryTok && !isLifecycle(primaryTok)) return primary ?? undefined;
+  if (fallbackTok && !isLifecycle(fallbackTok)) return fallback ?? undefined;
+  return primary ?? fallback ?? undefined;
+}
+
 export function normalizeNvoccTariff(raw: unknown): NvoccTariff | null {
   const record = asRecord(raw);
   if (!record) return null;
@@ -155,7 +271,8 @@ export function normalizeNvoccBooking(raw: unknown): NvoccBooking | null {
     other_charges_terms: str(record.other_charges_terms),
     shipper_ref: str(record.shipper_ref),
     job_type: str(record.job_type),
-    booking_status: str(record.booking_status),
+    booking_status: pickNvoccBookingGateStatus(record),
+    lifecycle_status: pickNvoccBookingLifecycleStatus(record),
     hbl_number: str(record.hbl_number),
     job_id: str(record.job_id),
     job_number: str(record.job_number),
@@ -257,6 +374,7 @@ export function normalizeNvoccContainerRequest(raw: unknown): NvoccContainerRequ
     container_type_code:
       str(record.container_type_code) ?? nestedName(record, 'container_type'),
     quantity: num(record.quantity) ?? num(record.container_count),
+    container_count: num(record.container_count) ?? num(record.quantity),
     status: str(record.status),
     cro_number: str(record.cro_number) ?? str(record.cro_reference),
     container_number: str(record.container_number),

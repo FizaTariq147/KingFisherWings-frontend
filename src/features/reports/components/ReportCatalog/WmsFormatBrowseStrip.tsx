@@ -1,11 +1,13 @@
 import { listWmsFormats } from '../../constants/wmsFormatCatalog';
 import type { WmsFormatKind } from '../../constants/wmsFormatCatalog';
+import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 
 type WmsFormatBrowseStripProps = {
   selectedCode?: string;
   onSelect: (code: string) => void;
   visible: boolean;
   searchQuery?: string;
+  allowedCodes?: ReadonlySet<string> | null;
 };
 
 const DEFAULT_TONE = {
@@ -56,19 +58,16 @@ export function WmsFormatBrowseStrip({
   onSelect,
   visible,
   searchQuery = '',
+  allowedCodes = null,
 }: WmsFormatBrowseStripProps) {
   if (!visible) return null;
 
   const all = listWmsFormats();
-  const q = searchQuery.trim().toLowerCase();
-  const tokens = q ? q.split(/\s+/).filter(Boolean) : [];
-  const items = !tokens.length
-    ? all
-    : all.filter((row) => {
-        const hay = `${row.name} ${row.code} ${row.kind}`.toLowerCase();
-        return tokens.every((token) => hay.includes(token));
-      });
-  const qActive = Boolean(tokens.length);
+  const { items, scopedTotal, filterActive } = filterCatalogStripRows(all, {
+    searchQuery,
+    allowedCodes,
+    selectedCode,
+  });
 
   return (
     <div className="space-y-2.5 rounded-xl border border-[var(--color-neutral-200)] bg-[var(--color-surface)] p-3.5 shadow-sm">
@@ -77,12 +76,12 @@ export function WmsFormatBrowseStrip({
           WMS — Advance Shipping Note
         </h3>
         <p className="text-[10px] text-[var(--color-neutral-400)]">
-          {qActive ? `${items.length} of ${all.length} formats` : `${all.length} formats`}
+          {filterActive ? `${items.length} of ${scopedTotal} formats` : `${all.length} formats`}
         </p>
       </div>
       {items.length === 0 ? (
         <p className="px-1 py-2 text-xs text-[var(--color-neutral-500)]">
-          No WMS formats match “{searchQuery.trim()}”.
+          No WMS formats match the current filters.
         </p>
       ) : (
         <div className="-mx-0.5 flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:thin]">

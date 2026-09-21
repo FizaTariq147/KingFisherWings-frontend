@@ -71,6 +71,10 @@ export default function HrReportsPage() {
     queryKey: ['hr', 'timesheets-missing'],
     queryFn: () => hrService.timesheetsMissingReport(),
   });
+  const loans = useQuery({
+    queryKey: ['hr', 'loans-outstanding'],
+    queryFn: () => hrService.loansOutstandingReport(),
+  });
 
   return (
     <div className="space-y-4">
@@ -129,6 +133,17 @@ export default function HrReportsPage() {
           </p>
         )}
         {missing.data && <SimpleTable rows={asRows(missing.data)} />}
+      </Card>
+
+      <Card>
+        <h2 className="font-medium mb-3">Loans outstanding</h2>
+        {loans.isLoading && <p className="text-sm text-gray-500">Loading…</p>}
+        {loans.isError && (
+          <p className="text-sm text-red-600">
+            {loans.error instanceof Error ? loans.error.message : 'Could not load report.'}
+          </p>
+        )}
+        {loans.data && <SimpleTable rows={asRows(loans.data)} />}
       </Card>
     </div>
   );

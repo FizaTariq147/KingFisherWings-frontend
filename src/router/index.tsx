@@ -10,6 +10,11 @@ import MyProfilePage from '../features/auth/pages/MyProfilePage'
 import SessionManagementPage from '../pages/settings/SessionManagementPage'
 import SettingsMenuPage from '../pages/settings/SettingsMenuPage'
 import LoginSecurityPage from '../pages/settings/LoginSecurityPage'
+import TransportRequestsPage from '../features/transport/pages/TransportRequestsPage'
+import PublicApiAdminPage from '../features/public-api-admin/pages/PublicApiAdminPage'
+import StaffToolsPage from '../features/tools/pages/StaffToolsPage'
+import PortalToolsPage from '../features/tools/pages/PortalToolsPage'
+import VendorToolsPage from '../features/tools/pages/VendorToolsPage'
 import Forbidden from '../pages/errors/Forbidden'
 import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
@@ -355,6 +360,7 @@ export const router = createBrowserRouter([
           { path: 'disputes', element: <PortalDisputesPage /> },
           { path: 'alerts', element: <PortalAlertsPage /> },
           { path: 'account', element: <PortalAccountPage /> },
+          { path: 'tools', element: <PortalToolsPage /> },
         ],
       },
     ],
@@ -385,6 +391,7 @@ export const router = createBrowserRouter([
           { path: 'alerts', element: <VendorAlertsPage /> },
           { path: 'tds', element: <VendorTdsPage /> },
           { path: 'account', element: <VendorAccountPage /> },
+          { path: 'tools', element: <VendorToolsPage /> },
         ],
       },
     ],
@@ -628,6 +635,16 @@ export const router = createBrowserRouter([
           { path: '/settings', element: <SettingsMenuPage /> },
           { path: '/settings/sessions', element: <SessionManagementPage /> },
           { path: '/settings/login-security', element: <LoginSecurityPage /> },
+          {
+            element: (
+              <ProtectedRoute requireAnyRole={[...TENANT_USER_MANAGER_ROLE_SLUGS]} />
+            ),
+            children: [
+              { path: '/settings/public-api', element: <PublicApiAdminPage /> },
+            ],
+          },
+          { path: '/settings/tools', element: <StaffToolsPage /> },
+          { path: '/operations/transport-requests', element: <TransportRequestsPage /> },
           {
             element: (
               <ProtectedRoute

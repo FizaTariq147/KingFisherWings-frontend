@@ -40,6 +40,7 @@ const GENERATORS = [
   { key: 'surrender', label: 'Surrender notice', fn: 'generateSurrenderNotice' as const },
   { key: 'si', label: 'SI', fn: 'generateSi' as const },
   { key: 'stuffing', label: 'Stuffing report', fn: 'generateStuffingReport' as const },
+  { key: 'courier', label: 'Courier report', fn: 'generateCourierReport' as const },
   { key: 'sailing', label: 'Sailing confirmation', fn: 'generateSailingConfirmation' as const },
   {
     key: 'tranship',
@@ -58,6 +59,13 @@ const GENERATORS = [
   { key: 'exchange', label: 'Exchange letter', fn: 'generateExchangeLetter' as const },
   { key: 'undertake', label: 'Undertake letter', fn: 'generateUndertakeLetter' as const },
   { key: 'transport', label: 'Transport request', fn: 'generateTransportRequest' as const },
+  {
+    key: 'cross-border',
+    label: 'Cross-border declaration',
+    fn: 'generateCrossBorderDeclaration' as const,
+  },
+  { key: 'customs-transit', label: 'Customs transit', fn: 'generateCustomsTransit' as const },
+  { key: 'delivery-note', label: 'Delivery note', fn: 'generateDeliveryNote' as const },
   { key: 'shipping-advice', label: 'Shipping advice', fn: 'generateShippingAdvice' as const },
   { key: 'pod-doc', label: 'Proof of delivery', fn: 'generateProofOfDelivery' as const },
   { key: 'e-awb', label: 'E-AWB', fn: 'generateEAwb' as const },

@@ -128,7 +128,10 @@ export interface NvoccBooking {
   other_charges_terms?: string;
   shipper_ref?: string;
   job_type?: string;
+  /** Commercial gate rail (CS_TRIAGED → … → INVOICE_SENT). */
   booking_status?: string;
+  /** Entity confirm/cancel rail (DRAFT → CONFIRMED). Convert-to-job needs CONFIRMED. */
+  lifecycle_status?: string;
   hbl_number?: string;
   job_id?: string;
   job_number?: string;
@@ -450,7 +453,9 @@ export interface NvoccContainerRequest {
   job_id?: string;
   container_type_id?: string;
   container_type_code?: string;
+  /** Display alias — API field is container_count. */
   quantity?: number;
+  container_count?: number;
   status?: string;
   cro_number?: string;
   container_number?: string;
@@ -463,6 +468,9 @@ export interface NvoccContainerRequest {
 
 export interface CreateNvoccContainerRequestDto {
   container_type_id?: string;
+  /** API expects container_count (integer 1–100). Prefer this over quantity. */
+  container_count?: number;
+  /** @deprecated Mapped to container_count — do not send as quantity. */
   quantity?: number;
   notes?: string;
   [key: string]: unknown;

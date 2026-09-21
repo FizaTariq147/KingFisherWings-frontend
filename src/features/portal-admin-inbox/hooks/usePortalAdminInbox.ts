@@ -133,7 +133,8 @@ export function useCustomerPortalBookingForm(
         jobTypePrefix: jobTypePrefix || undefined,
       }),
     enabled: enabled && hasFilter,
-    staleTime: 0,
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
     retry: false,
   });
 }

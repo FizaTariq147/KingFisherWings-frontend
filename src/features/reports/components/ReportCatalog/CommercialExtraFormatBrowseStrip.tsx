@@ -1,35 +1,29 @@
 import { listCommercialExtraFormats } from '../../constants/commercialExtraFormatCatalog';
+import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 
 type Props = {
   selectedCode?: string;
   onSelect: (code: string) => void;
   visible: boolean;
   searchQuery?: string;
+  allowedCodes?: ReadonlySet<string> | null;
 };
-
-function matchesSearch(
-  row: { name: string; code: string; kind: string },
-  rawQuery: string,
-): boolean {
-  const q = rawQuery.trim().toLowerCase();
-  if (!q) return true;
-  const tokens = q.split(/\s+/).filter((t) => t.length >= 2);
-  if (!tokens.length) return true;
-  const hay = `${row.name} ${row.code} ${row.kind}`.toLowerCase();
-  return tokens.every((token) => hay.includes(token));
-}
 
 export function CommercialExtraFormatBrowseStrip({
   selectedCode,
   onSelect,
   visible,
   searchQuery = '',
+  allowedCodes = null,
 }: Props) {
   if (!visible) return null;
 
   const all = listCommercialExtraFormats();
-  const items = all.filter((row) => matchesSearch(row, searchQuery));
-  const qActive = Boolean(searchQuery.trim());
+  const { items, scopedTotal, filterActive } = filterCatalogStripRows(all, {
+    searchQuery,
+    allowedCodes,
+    selectedCode,
+  });
 
   return (
     <div className="space-y-2.5 rounded-xl border border-[var(--color-neutral-200)] bg-[var(--color-surface)] p-3.5 shadow-sm">
@@ -38,12 +32,12 @@ export function CommercialExtraFormatBrowseStrip({
           Proforma / Debit formats
         </h3>
         <p className="text-[10px] text-[var(--color-neutral-400)]">
-          {qActive ? `${items.length} of ${all.length} formats` : `${all.length} formats`}
+          {filterActive ? `${items.length} of ${scopedTotal} formats` : `${all.length} formats`}
         </p>
       </div>
       {items.length === 0 ? (
         <p className="px-1 py-2 text-xs text-[var(--color-neutral-500)]">
-          No Proforma / Debit formats match “{searchQuery.trim()}”.
+          No formats match the current filters.
         </p>
       ) : (
         <div className="-mx-0.5 flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:thin]">

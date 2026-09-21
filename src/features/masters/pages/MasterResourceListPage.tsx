@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
+import { PageBackLink } from '@/components/ui/PageBackLink';
 import { MasterListPage } from '@/components/layout/MasterListPage';
 import { isUuid } from '@/lib/isUuid';
 import { MASTER_PATHS } from '../api/masterPaths';
@@ -296,13 +297,7 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
         <p className="text-sm text-[var(--color-neutral-600)]">
           Master resource “{resourceKey}” is not connected to a backend API yet.
         </p>
-        <button
-          type="button"
-          className="text-sm text-[var(--color-primary-600)] hover:underline"
-          onClick={() => navigate(backHref)}
-        >
-          ← Back to {backLabel}
-        </button>
+        <PageBackLink to={backHref} label="Back" />
       </div>
     );
   }
@@ -339,13 +334,7 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <button
-          type="button"
-          className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-          onClick={() => navigate(backHref)}
-        >
-          ← {backLabel}
-        </button>
+        <PageBackLink to={backHref} label="Back" />
         {worldPlace ? (
           <div className="flex flex-wrap gap-2">
             <Button

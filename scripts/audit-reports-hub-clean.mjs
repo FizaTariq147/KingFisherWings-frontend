@@ -16,11 +16,16 @@ const expected = [
   '/gl/mis/dashboard',
   '/gl/saved-reports',
   '/gl/cheques/reports/pdc-due',
+  '/gl/ar/aging',
+  '/gl/ap/aging',
+  '/invoices/overdue',
+  '/warehouse/stock',
+  '/masters/awb-stock-master',
+  '/masters/custom-reports',
+  '/customer-service/pricing-dashboard',
 ];
 
 const removed = [
-  '/gl/ar/aging',
-  '/gl/ap/aging',
   '/gl/ar/open-items',
   '/gl/ap/open-items',
   '/gl/accounts/trial-balance',

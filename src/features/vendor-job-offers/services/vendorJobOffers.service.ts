@@ -446,7 +446,9 @@ export const vendorPortalJobsService = {
     };
     const paths = [
       VENDOR_JOB_OFFERS_API.vendorJobPrice(id),
+      VENDOR_JOB_OFFERS_API.vendorJobQuote(id),
       VENDOR_JOB_OFFERS_API.vendorJobPriceLegacy(id),
+      VENDOR_JOB_OFFERS_API.vendorJobQuoteLegacy(id),
     ];
     for (const path of paths) {
       try {

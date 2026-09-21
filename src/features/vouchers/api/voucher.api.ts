@@ -8,4 +8,5 @@ export const VOUCHER_API = {
   lineById: (id: string, lineId: string) => `/gl/vouchers/${id}/lines/${lineId}`,
   post: (id: string) => `/gl/vouchers/${id}/post`,
   reverse: (id: string) => `/gl/vouchers/${id}/reverse`,
+  batchStatus: '/gl/vouchers/batch-status',
 } as const;

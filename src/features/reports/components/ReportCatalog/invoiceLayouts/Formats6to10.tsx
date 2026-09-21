@@ -1,7 +1,9 @@
 import type { InvoiceFormatPreview } from '../../../types/invoiceFormatPreview.types';
 import { FRESA_UI } from '../../../constants/fresaInvoiceColors';
+import { KINGFISHER_TC_HEADER_FOOTER as TC } from '../../../constants/kingfisherTermsBrandColors';
 import { KF, KfLogo, Shell } from './shared';
 import { InvoiceUserFooter } from './InvoiceUserFooter';
+import { TcBrandColorBar, TcBrandTagline } from './TcBrandChrome';
 
 const C = FRESA_UI;
 
@@ -26,7 +28,7 @@ export function Formats6to10Layout({ preview }: { preview: InvoiceFormatPreview 
 function HeaderBand({
   preview,
   title,
-  accent = C.navy,
+  accent = TC.navy,
 }: {
   preview: InvoiceFormatPreview;
   title: string;
@@ -34,23 +36,19 @@ function HeaderBand({
 }) {
   return (
     <>
-      <div className="flex h-1 w-full">
-        <div className="w-[55%]" style={{ backgroundColor: C.navy }} />
-        <div className="w-[20%]" style={{ backgroundColor: C.cyan }} />
-        <div className="w-[15%]" style={{ backgroundColor: C.orange }} />
-        <div className="w-[10%]" style={{ backgroundColor: C.red }} />
-      </div>
       <div className="flex items-start gap-3 px-3 py-2" style={{ backgroundColor: C.panel }}>
         <KfLogo className="h-10 shrink-0" />
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-bold uppercase" style={{ color: C.navy }}>
+          <p className="text-[11px] font-bold uppercase" style={{ color: TC.navy }}>
             {KF.company}
           </p>
+          <TcBrandTagline className="mt-0.5" />
           <p className="text-[7.5px]" style={{ color: C.gray }}>
             {KF.address} · WEB : {KF.web}
           </p>
         </div>
         <div className="text-end">
+          <TcBrandTagline className="mb-0.5" text="DOCUMENT" />
           <p className="text-[12px] font-bold tracking-wide" style={{ color: accent }}>
             {title}
           </p>
@@ -59,6 +57,7 @@ function HeaderBand({
           </p>
         </div>
       </div>
+      <TcBrandColorBar size="sm" />
     </>
   );
 }
@@ -308,27 +307,24 @@ function Format8Arabic({ preview }: { preview: InvoiceFormatPreview }) {
   return (
     <Shell dir="rtl" className="text-[8px] leading-tight">
       <div className="overflow-hidden border-2" style={{ borderColor: C.navy }}>
-        <div className="flex h-1 w-full">
-          <div className="w-[10%]" style={{ backgroundColor: C.red }} />
-          <div className="w-[15%]" style={{ backgroundColor: C.orange }} />
-          <div className="w-[20%]" style={{ backgroundColor: C.cyan }} />
-          <div className="w-[55%]" style={{ backgroundColor: C.navy }} />
-        </div>
+        <TcBrandColorBar size="sm" reverse />
         <div
           className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 py-2"
           style={{ backgroundColor: C.panel }}
         >
           <div className="text-start">
-            <p className="text-sm font-bold" style={{ color: C.navy }}>
+            <p className="text-sm font-bold" style={{ color: TC.navy }}>
               فاتورة ضريبية
             </p>
+            <TcBrandTagline className="mt-0.5" />
             <p className="text-[8px]" style={{ color: C.gray }}>
               Tax Invoice
             </p>
           </div>
           <KfLogo className="h-10" />
           <div className="text-end">
-            <p className="text-sm font-bold" style={{ color: C.navy }}>
+            <TcBrandTagline className="mb-0.5" text="DOCUMENT" />
+            <p className="text-sm font-bold" style={{ color: TC.navy }}>
               INVOICE TAX
             </p>
             <p className="text-[7px]" style={{ color: C.gray }}>
@@ -336,6 +332,7 @@ function Format8Arabic({ preview }: { preview: InvoiceFormatPreview }) {
             </p>
           </div>
         </div>
+        <TcBrandColorBar size="sm" reverse />
         <div className="grid grid-cols-2 border-y text-[7.5px]" style={{ borderColor: C.navy }}>
           <div className="border-l p-2" style={{ borderColor: C.navy, backgroundColor: C.offWhite }}>
             <p className="font-bold" style={{ color: C.navy }}>

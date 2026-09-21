@@ -3,6 +3,7 @@ import type {
   ReportGapStatus,
   ReportTemplateMeta,
 } from '../types/reportCatalog.types';
+import { reportCatalogRowMatchesSearch, sortReportSearchResults } from '../utils/reportCatalogSearch';
 import { FRESA_REPORT_REGISTRY as GENERATED } from './fresaReportRegistry.generated.ts';
 
 /** Static FRESA-aligned taxonomy (Phase 0 registry). */
@@ -20,9 +21,7 @@ export function filterRegistry(options: {
   rolloutPhase?: number;
   gapStatus?: ReportGapStatus | 'all';
 }): ReportTemplateMeta[] {
-  const q = options.search?.trim().toLowerCase() ?? '';
-  const tokens = q ? q.split(/\s+/).filter(Boolean) : [];
-  return FRESA_REPORT_REGISTRY.filter((t) => {
+  const filtered = FRESA_REPORT_REGISTRY.filter((t) => {
     if (options.family && options.family !== 'all' && t.family !== options.family) return false;
     if (options.context && options.context !== 'all') {
       if (!t.contexts.includes(options.context as ReportTemplateMeta['contexts'][number])) {
@@ -33,10 +32,17 @@ export function filterRegistry(options: {
     if (options.gapStatus && options.gapStatus !== 'all' && t.gapStatus !== options.gapStatus) {
       return false;
     }
-    if (!tokens.length) return true;
-    const hay = `${t.name} ${t.code} ${t.description ?? ''} ${t.family}`.toLowerCase();
-    return tokens.every((token) => hay.includes(token));
+    return reportCatalogRowMatchesSearch(
+      {
+        name: t.name,
+        code: t.code,
+        description: t.description,
+        family: t.family,
+      },
+      options.search ?? '',
+    );
   });
+  return sortReportSearchResults(filtered, options.search ?? '');
 }
 
 export interface ReportGapMatrixRow {

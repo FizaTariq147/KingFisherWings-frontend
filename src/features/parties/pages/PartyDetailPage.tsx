@@ -10,6 +10,7 @@ import { PartyConfirmModal } from '../components/PartyConfirmModal';
 import { PartyContactsSection } from '../components/PartyContactsSection';
 import { PartyCreditBadge } from '../components/PartyCreditBadge';
 import { PartyHistorySection } from '../components/PartyHistorySection';
+import { PartyEdiAndChargesSection } from '../components/PartyEdiAndChargesSection';
 import { PartyOverviewPanel } from '../components/PartyOverviewPanel';
 import { PartyStatusBadge } from '../components/PartyStatusBadge';
 import { PartyPortalPermissionsSection } from '../components/PartyPortalPermissionsSection';
@@ -207,6 +208,11 @@ export default function PartyDetailPage() {
             key: 'vendor-permissions',
             label: 'Vendor rights',
             content: <PartyVendorPermissionsSection partyId={party.id} />,
+          },
+          {
+            key: 'edi-charges',
+            label: 'EDI / charges',
+            content: <PartyEdiAndChargesSection partyId={party.id} />,
           },
           {
             key: 'history',

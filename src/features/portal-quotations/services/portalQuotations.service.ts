@@ -305,7 +305,7 @@ export const portalQuotationsService = {
             raw.includes('something went wrong');
           throw new PortalApiError(
             generic
-              ? 'PDF is not ready for this quotation yet. Your forwarder needs to generate it first (ERP: Quotations → PDF).'
+              ? 'PDF could not be prepared for this quotation. Please try again or contact your forwarder.'
               : err.message,
             err.status,
           );
@@ -315,21 +315,12 @@ export const portalQuotationsService = {
       throw err;
     };
 
-    // Same readiness gate as before: GET /portal/quotations/:id/pdf must succeed.
-    try {
-      await portalApiClient.get(PORTAL_QUOTATIONS_API.pdf(id), {
-        responseType: 'blob',
-        headers: { Accept: 'application/pdf, application/octet-stream, */*' },
-      });
-    } catch (err) {
-      throwFriendly(err);
-    }
-
+    // Prefer live KingFisher layout from quote detail (same generator as admin).
     try {
       const detail = await this.getById(id);
       const user = usePortalAuthStore.getState().user;
       const quotation = portalDetailToQuotationPdfModel(detail, {
-        customerName: user?.party?.name || user?.fullName,
+        customerName: user?.party?.name || user?.fullName || detail.number,
         contactName: user?.fullName,
         contactEmail: user?.email,
         contactPhone: user?.phone,
@@ -337,14 +328,35 @@ export const portalQuotationsService = {
       const blob = await generateQuotationPdf({
         quotation,
         company: {
-          name: user?.tenantName || 'KingFisher Wings',
+          name: user?.tenantName || 'KingFisher Wings Group',
+          tagline: 'FREIGHT - LOGISTICS - GENERAL TRADING',
+          phone: '+971 55 5355 286',
+          email: 'info@kingfisherwingsgroup.com',
+          website: 'www.kingfisherwingsgroup.com',
         },
         generatedBy: user?.email || user?.fullName,
         confirmNote: 'Please confirm the quote.',
       });
-      return { blob, fileName: filename };
-    } catch {
-      // Layout build failed — fall back to authenticated server PDF fetch.
+      return {
+        blob,
+        fileName: formatPdfFilename(detail.number || quotationNumber, 'quotation'),
+      };
+    } catch (clientErr) {
+      // Fall back to admin-stored PDF only when live layout cannot be built.
+      try {
+        const detail = await this.getById(id).catch(() => undefined);
+        if (detail?.pdfUrl) {
+          const result = await fetchPortalBlob(detail.pdfUrl, filename, {
+            accept: 'application/pdf, application/octet-stream, */*',
+          });
+          if (await blobLooksLikePdf(result.blob)) {
+            return { blob: result.blob, fileName: result.filename };
+          }
+        }
+      } catch {
+        /* continue */
+      }
+
       try {
         const result = await fetchPortalBlob(PORTAL_QUOTATIONS_API.pdf(id), filename, {
           accept: 'application/pdf, application/octet-stream, */*',
@@ -356,8 +368,11 @@ export const portalQuotationsService = {
           );
         }
         return { blob: result.blob, fileName: result.filename };
-      } catch (fallbackErr) {
-        throwFriendly(fallbackErr);
+      } catch (err) {
+        if (clientErr instanceof Error && clientErr.message) {
+          throw new PortalApiError(clientErr.message, 400);
+        }
+        throwFriendly(err);
       }
     }
   },

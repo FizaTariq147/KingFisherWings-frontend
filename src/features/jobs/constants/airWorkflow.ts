@@ -3,16 +3,11 @@
  *
  * Shared commercial (both AIR_EXPORT / AIR_IMPORT):
  *   QUOTE_REQUESTED → CS_TRIAGED → QUOTE_SENT → CUSTOMER_ACCEPTED
- *   → BOOKING_FORM_COMPLETE → INVOICE_SENT
+ *   → BOOKING_FORM_COMPLETE → auto INVOICE_SENT (draft invoice + send-invoice)
+ *   → then AIR_EXPORT / AIR_IMPORT ops on the existing job shell
  *
- * Then branch:
- *   AIR_EXPORT: ULD_REQUEST_ISSUED ∥ ULD_ALLOCATED → CARGO_DROPPED_OFF → BUILD_UP
- *               → (DRAFT_HAWB_ISSUED ∥ MAWB_ISSUED) → PAYMENT_RECEIVED
- *               → FINAL_HAWB_ISSUED → CLOSED
- *   AIR_IMPORT: MAWB_RECEIVED → PRE_CAN_ISSUED → CAN_ISSUED → PAYMENT_RECEIVED
- *               → DELIVERY_ORDER_ISSUED → POD_RECEIVED → CLOSED
- *
- * Live APIs are on /jobs/:id/air/* and gated /jobs/:id/documents/* (not generic convert-to-job).
+ * Live APIs are on /jobs/:id/air/* and gated /jobs/:id/documents/*.
+ * Air job shell is created earlier; invoice after booking form unlocks ops (no NVOCC convert-to-job).
  */
 
 export type AirWorkflowStageId =
@@ -112,16 +107,18 @@ export const AIR_EXPORT_OPS_STAGES: readonly AirWorkflowStage[] = [
     label: 'ULD request issued',
     owner: 'OPS',
     band: 'export',
-    path: 'POST …/air/uld-requests → …/issue',
+    path: '(removed — air pallet / ULD APIs retired)',
     parallelGroup: 'uld',
+    detail: 'Skip in UI; backend /air/uld-requests no longer exists',
   },
   {
     id: 'uld-allocated',
     label: 'ULD allocated',
     owner: 'OPS',
     band: 'export',
-    path: 'POST …/air/uld-requests/:id/allocate',
+    path: '(removed — air pallet / ULD APIs retired)',
     parallelGroup: 'uld',
+    detail: 'Skip in UI; backend /air/uld-requests no longer exists',
   },
   {
     id: 'cargo-dropped-off',

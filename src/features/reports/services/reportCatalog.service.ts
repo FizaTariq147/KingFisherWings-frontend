@@ -519,4 +519,22 @@ export const reportCatalogService = {
       throw formatAxiosError(error);
     }
   },
+
+  /** GET /reports/sea/kpi-weekly — requires branch_id (OpenAPI). */
+  async seaKpiWeekly(params: { branch_id: string }): Promise<Record<string, unknown>> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<unknown>(REPORT_CATALOG_API.seaKpiWeekly, {
+          params: { branch_id: params.branch_id },
+        }),
+      );
+      const data = res.data;
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        return data as Record<string, unknown>;
+      }
+      return { data };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
 };

@@ -36,6 +36,8 @@ export const PARTY_API = {
   sendTransactionSummary: (id: string) => `/parties/${id}/transaction-summary/send`,
   /** Credit summary email (Part 7 share). */
   creditSummarySendEmail: (id: string) => `/parties/${id}/credit/summary/send-email`,
+  ediCodes: (id: string) => `/parties/${id}/edi-codes`,
+  standardCharges: (id: string) => `/parties/${id}/standard-charges`,
 } as const;
 
 export const PARTY_PORTAL_DOCUMENT_TYPES = [

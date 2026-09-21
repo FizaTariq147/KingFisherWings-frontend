@@ -1,5 +1,6 @@
 import { useAuthStore } from '@/store/authStore';
 import { FRESA_UI } from '../../../constants/fresaInvoiceColors';
+import { KINGFISHER_TC_HEADER_FOOTER as TC } from '../../../constants/kingfisherTermsBrandColors';
 import {
   formatInvoicePrintedAt,
   getInvoiceFooterUserEmail,
@@ -17,6 +18,7 @@ type Props = {
  * Sample-style invoice footer:
  * color bar + Printed By / Printed Date / Powered By / Page.
  * Sticky at page bottom via parent flex layout.
+ * Header/footer bar colors match KingFisher Terms & Conditions PDF.
  */
 export function InvoiceUserFooter({
   className = '',
@@ -27,10 +29,6 @@ export function InvoiceUserFooter({
   const email =
     useAuthStore((s) => s.user?.email?.trim()) || getInvoiceFooterUserEmail();
   const printed = formatInvoicePrintedAt();
-  const primary = theme?.primary || FRESA_UI.navy;
-  const cyan = theme?.cyan || FRESA_UI.cyan;
-  const orange = theme?.orange || FRESA_UI.orange;
-  const red = theme?.red || FRESA_UI.red;
   const panel = theme?.panel || FRESA_UI.panel;
   const ink = theme?.ink || FRESA_UI.ink;
 
@@ -40,32 +38,30 @@ export function InvoiceUserFooter({
       style={{ color: ink }}
     >
       <div className="flex h-1.5 w-full">
-        <div className="w-[55%]" style={{ backgroundColor: primary }} />
-        <div className="w-[20%]" style={{ backgroundColor: cyan }} />
-        <div className="w-[15%]" style={{ backgroundColor: orange }} />
-        <div className="w-[10%]" style={{ backgroundColor: red }} />
+        <div className="w-[68%]" style={{ backgroundColor: TC.navy }} />
+        <div className="w-[32%]" style={{ backgroundColor: TC.orange }} />
       </div>
       <div className="px-3 py-2.5" style={{ backgroundColor: panel }}>
         <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
           <span>
-            <span className="font-semibold" style={{ color: primary }}>
+            <span className="font-semibold" style={{ color: TC.navy }}>
               Printed By :
             </span>{' '}
             {email}
           </span>
           <span>
-            <span className="font-semibold" style={{ color: primary }}>
+            <span className="font-semibold" style={{ color: TC.navy }}>
               Printed Date :
             </span>{' '}
             {printed}
           </span>
           <span>
-            <span className="font-semibold" style={{ color: primary }}>
+            <span className="font-semibold" style={{ color: TC.navy }}>
               Powered By :
             </span>{' '}
             {poweredBy}
           </span>
-          <span className="ml-auto font-semibold" style={{ color: orange }}>
+          <span className="ml-auto font-semibold" style={{ color: TC.orange }}>
             {pageLabel}
           </span>
         </div>

@@ -371,6 +371,18 @@ async function postConvertToJob(id: string, quotation: Quotation): Promise<Conve
 
   const jobId = extractJobIdFromConvertResponse(raw) || extractJobIdFromConvertResponse(res.data);
   if (jobId) {
+    try {
+      const { rememberQuotationConverted } = await import(
+        '../utils/quotationConvertedMemory'
+      );
+      rememberQuotationConverted(id, jobId);
+      // Best-effort persist if convert response omitted CONVERTED status.
+      await axiosInstance
+        .patch(QUOTATION_API.byId(id), { status: 'CONVERTED', job_id: jobId })
+        .catch(() => undefined);
+    } catch {
+      /* ignore */
+    }
     return {
       ...quotation,
       job_id: jobId,
@@ -387,6 +399,7 @@ async function postConvertToJob(id: string, quotation: Quotation): Promise<Conve
     if (refreshed && (refreshed.job_id || refreshed.status === 'CONVERTED')) {
       return {
         ...refreshed,
+        status: 'CONVERTED',
         ...(invoiceId ? { invoice_id: invoiceId } : {}),
       };
     }
@@ -400,11 +413,20 @@ async function postConvertToJob(id: string, quotation: Quotation): Promise<Conve
 async function createJobFallbackFromQuotation(quotation: Quotation): Promise<Quotation> {
   const { jobService } = await import('@/features/jobs/services/job.service');
   const job = await jobService.create(await quotationToCreateJobDto(quotation));
-  return {
-    ...quotation,
-    job_id: job.id,
-    status: 'CONVERTED',
-  };
+  // Copy quotation revenue charges onto the new job shell (gated air ops / convert fallback).
+  try {
+    await jobService.ensureChargesFromQuotation(job.id, quotation);
+  } catch {
+    /* non-fatal — invoice path can still apply quotation lines */
+  }
+  const marked = await quotationService.markConvertedWithJob(quotation.id, job.id);
+  return (
+    marked ?? {
+      ...quotation,
+      job_id: job.id,
+      status: 'CONVERTED',
+    }
+  );
 }
 
 async function withSessionCompany<T extends { company_id?: string }>(dto: T): Promise<T> {
@@ -478,6 +500,153 @@ export const quotationService = {
       return quotation;
     } catch (error) {
       throw formatAxiosError(error);
+    }
+  },
+
+  /**
+   * Resolve the quotation linked to a job (or booking portal quote) so invoice charges
+   * can mirror quotation revenue lines.
+   */
+  async findLinkedToJob(
+    jobId: string,
+    hints?: {
+      quotationId?: string;
+      customerId?: string;
+      jobType?: string;
+    },
+  ): Promise<Quotation | null> {
+    if (hints?.quotationId && isUuid(hints.quotationId)) {
+      try {
+        return await this.getById(hints.quotationId);
+      } catch {
+        /* fall through */
+      }
+    }
+    if (!jobId || !isUuid(jobId)) return null;
+
+    const tryMatch = (items: Quotation[]) =>
+      items.find((q) => q.job_id === jobId) ?? null;
+
+    try {
+      const listed = await this.list({
+        page: 1,
+        limit: 50,
+        order: 'desc',
+        ...(hints?.customerId && isUuid(hints.customerId)
+          ? { customer_id: hints.customerId }
+          : {}),
+        ...(hints?.jobType ? { job_type: hints.jobType as Quotation['job_type'] } : {}),
+      });
+      const matched = tryMatch(listed.quotations);
+      if (matched) {
+        if (matched.lines?.length) return matched;
+        return await this.getById(matched.id);
+      }
+    } catch {
+      /* ignore */
+    }
+
+    try {
+      const listed = await this.list({ page: 1, limit: 30, search: jobId, order: 'desc' });
+      const matched = tryMatch(listed.quotations);
+      if (matched) {
+        if (matched.lines?.length) return matched;
+        return await this.getById(matched.id);
+      }
+    } catch {
+      /* ignore */
+    }
+
+    return null;
+  },
+
+  /**
+   * Persist APPROVED/WON → CONVERTED + job_id after a job is created outside
+   * POST /quotations/:id/convert-to-job (NVOCC booking convert / job fallback).
+   * Does not create a second job.
+   */
+  async markConvertedWithJob(
+    quotationId: string,
+    jobId: string,
+  ): Promise<Quotation | null> {
+    assertId(quotationId);
+    if (!jobId || !isUuid(jobId)) return null;
+
+    const { rememberQuotationConverted } = await import(
+      '../utils/quotationConvertedMemory'
+    );
+    const { coerceQuotationStatus } = await import('../utils/quotationStatus');
+
+    rememberQuotationConverted(quotationId, jobId);
+
+    let current: Quotation | null = null;
+    try {
+      current = await this.getById(quotationId);
+    } catch {
+      return null;
+    }
+
+    if (
+      coerceQuotationStatus(current.status) === 'CONVERTED' &&
+      current.job_id === jobId
+    ) {
+      return current;
+    }
+
+    // Bypass prepareQuotationPayload — status / job_id are not header form fields.
+    const bodies: Record<string, unknown>[] = [
+      { status: 'CONVERTED', job_id: jobId },
+      { status: 'CONVERTED', jobId },
+      { job_id: jobId },
+      { jobId },
+    ];
+
+    for (const body of bodies) {
+      try {
+        const res = await withGatewayRetry(() =>
+          axiosInstance.patch<unknown>(QUOTATION_API.byId(quotationId), body),
+        );
+        const updated = normalizeQuotation(unwrapEntity(res.data));
+        if (!updated) continue;
+        if (
+          coerceQuotationStatus(updated.status) === 'CONVERTED' ||
+          updated.job_id === jobId
+        ) {
+          rememberQuotationConverted(quotationId, jobId);
+          return {
+            ...updated,
+            job_id: updated.job_id || jobId,
+            status: 'CONVERTED',
+          };
+        }
+      } catch {
+        /* try next body shape */
+      }
+    }
+
+    try {
+      const refreshed = await this.getById(quotationId);
+      if (
+        coerceQuotationStatus(refreshed.status) === 'CONVERTED' ||
+        refreshed.job_id === jobId
+      ) {
+        return {
+          ...refreshed,
+          job_id: refreshed.job_id || jobId,
+          status: 'CONVERTED',
+        };
+      }
+      return {
+        ...refreshed,
+        job_id: jobId,
+        status: 'CONVERTED',
+      };
+    } catch {
+      return {
+        ...current,
+        job_id: jobId,
+        status: 'CONVERTED',
+      };
     }
   },
 
@@ -869,9 +1038,11 @@ export const quotationService = {
     if (mode !== 'CUSTOMER' && mode !== 'INTERNAL') {
       throw new Error('PDF mode must be CUSTOMER or INTERNAL.');
     }
-    const body: Record<string, unknown> = { mode };
-    const layout = dto.layout_variant?.trim();
-    if (layout) body.layout_variant = layout.slice(0, 50);
+    const body: Record<string, unknown> = {
+      mode,
+      /** KingFisher client layout id — same visual used on staff + portal. */
+      layout_variant: (dto.layout_variant?.trim() || 'KFW_STANDARD').slice(0, 50),
+    };
 
     try {
       const res = await withGatewayRetry(() =>
@@ -890,6 +1061,54 @@ export const quotationService = {
         );
       }
       throw formatted;
+    }
+  },
+
+  /**
+   * Store the KingFisher client PDF on the quotation so portal/email can use the same file.
+   * Tries multipart upload first; falls back to JSON queue with layout_variant=KFW_STANDARD.
+   */
+  async storeClientPdf(
+    id: string,
+    opts: {
+      mode: 'CUSTOMER' | 'INTERNAL';
+      blob: Blob;
+      fileName?: string;
+    },
+  ): Promise<QuotationPdfInfo> {
+    assertId(id);
+    const mode = opts.mode === 'INTERNAL' ? 'INTERNAL' : 'CUSTOMER';
+    const fileName = (opts.fileName || `quotation-${id}.pdf`).replace(/[^\w.\- ()[\]]+/g, '_');
+    const file = new File([opts.blob], fileName, { type: 'application/pdf' });
+
+    try {
+      const form = new FormData();
+      form.append('mode', mode);
+      form.append('layout_variant', 'KFW_STANDARD');
+      form.append('file', file);
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post<unknown>(QUOTATION_API.pdf(id), form, {
+          withCredentials: false,
+          transformRequest: [
+            (data, headers) => {
+              if (headers && typeof headers === 'object' && data instanceof FormData) {
+                const h = headers as Record<string, unknown> & {
+                  delete?: (key: string) => void;
+                };
+                delete h['Content-Type'];
+                delete h['content-type'];
+                h.delete?.('Content-Type');
+                h.delete?.('content-type');
+              }
+              return data;
+            },
+          ],
+        }),
+      );
+      return normalizeQuotationPdfInfo(res.data);
+    } catch {
+      // Backend OpenAPI is JSON-only today — queue generation with KFW layout id.
+      return this.generatePdf(id, { mode, layout_variant: 'KFW_STANDARD' });
     }
   },
 
