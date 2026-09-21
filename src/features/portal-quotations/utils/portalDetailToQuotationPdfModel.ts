@@ -10,15 +10,20 @@ function asJobType(value?: string): JobType {
 }
 
 /**
- * Map portal quotation detail into the shared FRESA quotation PDF model.
- * Does not invent API fields — only remaps what the portal detail already exposes.
+ * Map portal quotation detail into the shared KingFisher quotation PDF model
+ * (same layout as invoice / staff quotation PDFs).
  */
 export function portalDetailToQuotationPdfModel(
   detail: PortalQuotationDetail,
   opts?: { customerName?: string; contactName?: string; contactEmail?: string; contactPhone?: string },
 ): Quotation {
-  const currency = detail.currencyCode || 'AED';
-  const lines: QuotationLine[] = (detail.lines ?? []).map((line, index) => {
+  const currency =
+    detail.currencyCode ||
+    detail.negotiationPricing?.currencyCode ||
+    detail.portalEstimateSnapshot?.currencyCode ||
+    'AED';
+
+  let lines: QuotationLine[] = (detail.lines ?? []).map((line, index) => {
     const qty = line.quantity != null && line.quantity > 0 ? line.quantity : 1;
     const unitPrice =
       line.unitPrice != null
@@ -42,10 +47,71 @@ export function portalDetailToQuotationPdfModel(
     };
   });
 
+  // Negotiation snapshot lines when charge lines are empty
+  if (!lines.length && detail.negotiationPricing?.lines?.length) {
+    lines = detail.negotiationPricing.lines.map((line, index) => {
+      const qty = line.quantity != null && line.quantity > 0 ? line.quantity : 1;
+      const unitPrice =
+        line.unitPrice != null
+          ? line.unitPrice
+          : line.amount != null
+            ? line.amount / qty
+            : 0;
+      return {
+        id: `neg-line-${index}`,
+        charge_code_id: '',
+        description: line.description || 'Charge',
+        quantity: qty,
+        unit_price: unitPrice,
+        currency_code: currency,
+        line_total: line.amount ?? unitPrice * qty,
+      };
+    });
+  }
+
+  if (!lines.length && detail.negotiationPricing?.customerProposedLines?.length) {
+    lines = detail.negotiationPricing.customerProposedLines.map((line, index) => {
+      const qty = line.quantity != null && line.quantity > 0 ? line.quantity : 1;
+      const unitPrice =
+        line.unitPrice != null
+          ? line.unitPrice
+          : line.amount != null
+            ? line.amount / qty
+            : 0;
+      return {
+        id: `cust-line-${index}`,
+        charge_code_id: '',
+        description: line.description || 'Charge',
+        quantity: qty,
+        unit_price: unitPrice,
+        currency_code: currency,
+        line_total: line.amount ?? unitPrice * qty,
+      };
+    });
+  }
+
+  const linesTotal = lines.reduce((sum, line) => sum + (line.line_total ?? 0), 0);
   const total =
-    lines.reduce((sum, line) => sum + (line.line_total ?? 0), 0) ||
+    linesTotal ||
     detail.negotiationPricing?.revenueTotal ||
-    detail.negotiationPricing?.tenantProposedTotal;
+    detail.negotiationPricing?.tenantProposedTotal ||
+    detail.portalEstimateSnapshot?.estimatedTotal;
+
+  // Single summary line so the invoice-style charge table is never empty
+  if (!lines.length && typeof total === 'number' && total > 0) {
+    lines = [
+      {
+        id: 'summary-total',
+        charge_code_id: '',
+        description: 'Freight / logistics charges (as quoted)',
+        quantity: 1,
+        unit_price: total,
+        currency_code: currency,
+        line_total: total,
+        unit: 'Lot',
+      },
+    ];
+  }
 
   return {
     id: detail.id,
@@ -70,8 +136,10 @@ export function portalDetailToQuotationPdfModel(
     valid_until: detail.validUntil,
     quotation_date: detail.createdAt,
     created_at: detail.createdAt,
+    job_id: detail.jobId || detail.convertedJobNumber,
     lines,
     total_amount: typeof total === 'number' ? total : undefined,
     subtotal: typeof total === 'number' ? total : undefined,
+    revenue_total: typeof total === 'number' ? total : undefined,
   };
 }

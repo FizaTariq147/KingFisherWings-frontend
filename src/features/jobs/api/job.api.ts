@@ -16,9 +16,12 @@ export const JOB_API = {
   airCsTriage: (id: string) => `/jobs/${id}/air/cs-triage`,
   airMarkQuoteSent: (id: string) => `/jobs/${id}/air/mark-quote-sent`,
   airSendInvoice: (id: string) => `/jobs/${id}/air/send-invoice`,
+  /** @deprecated Air pallet / ULD APIs removed from backend — do not call. */
   airUldRequests: (id: string) => `/jobs/${id}/air/uld-requests`,
+  /** @deprecated */
   airIssueUldRequest: (id: string, requestId: string) =>
     `/jobs/${id}/air/uld-requests/${requestId}/issue`,
+  /** @deprecated */
   airAllocateUldRequest: (id: string, requestId: string) =>
     `/jobs/${id}/air/uld-requests/${requestId}/allocate`,
   airStageBuildUp: (id: string) => `/jobs/${id}/air/stage/build-up`,
@@ -153,6 +156,7 @@ export const JOB_API = {
   generateSurrenderNotice: (id: string) => `/jobs/${id}/documents/surrender-notice`,
   generateSi: (id: string) => `/jobs/${id}/documents/si`,
   generateStuffingReport: (id: string) => `/jobs/${id}/documents/stuffing-report`,
+  generateCourierReport: (id: string) => `/jobs/${id}/documents/courier-report`,
   generateSailingConfirmation: (id: string) => `/jobs/${id}/documents/sailing-confirmation`,
   generateTranshipmentConfirmation: (id: string) =>
     `/jobs/${id}/documents/transhipment-confirmation`,
@@ -168,6 +172,12 @@ export const JOB_API = {
   generateExchangeLetter: (id: string) => `/jobs/${id}/documents/exchange-letter`,
   generateUndertakeLetter: (id: string) => `/jobs/${id}/documents/undertake-letter`,
   generateTransportRequest: (id: string) => `/jobs/${id}/documents/transport-request`,
+  generateCrossBorderDeclaration: (id: string) =>
+    `/jobs/${id}/documents/cross-border-declaration`,
+  generateCustomsTransit: (id: string) => `/jobs/${id}/documents/customs-transit`,
+  generateDeliveryNote: (id: string) => `/jobs/${id}/documents/delivery-note`,
+  seaScans: (id: string) => `/jobs/${id}/sea-scans`,
+  airComplianceForm: (id: string) => `/jobs/${id}/air/compliance-form`,
   generateShippingAdvice: (id: string) => `/jobs/${id}/documents/shipping-advice`,
   generateProofOfDelivery: (id: string) => `/jobs/${id}/documents/proof-of-delivery`,
   generateEAwb: (id: string) => `/jobs/${id}/documents/e-awb`,

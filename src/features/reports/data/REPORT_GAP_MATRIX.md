@@ -1,13 +1,14 @@
-# FRESA report catalog — gap matrix (Phase 0)
+# FRESA report catalog — gap matrix
 
-Generated from the local registry in `src/features/reports/data/fresaReportRegistry.json`.
+Generated from `fresaReportRegistry.json` + permanent JSON layouts.
+Master index: `fresaReportCatalogComplete.json` (852 reports).
 
 ## Architecture preserve rules
 
-- Quotation / invoice / statement **document PDFs** (`pdf-lib` + existing `POST .../pdf`) stay the default.
-- Module analytics report pages under `/quotations/reports`, `/gl/*`, `/warehouse/stock` stay primary for KPIs.
-- Catalog generate is **additive** via `/reports/*` APIs + client layout PDF fallback.
-- `covered_analytics` = module screen is the live implementation; catalogue still offers layout preview PDF.
+- Quotation / invoice **document PDFs** (`pdf-lib` + existing `POST .../pdf`) stay the default.
+- Module analytics screens stay primary for KPIs (`covered_analytics`).
+- Catalog generate is **additive** via `/reports/*` + client layout PDF fallback.
+- Do not change `ReportGeneratePanel` live generate / bind / activate behaviour.
 
 ## Family counts
 
@@ -23,10 +24,18 @@ Generated from the local registry in `src/features/reports/data/fresaReportRegis
 | wms | 61 |
 | **Total** | **852** |
 
-Gap status: partial_document_pdf 787 · covered_analytics 65.
+Gap status: covered_document_pdf 787 · covered_analytics 65.
 
-Analytics gap close: 65 → covered_analytics · 51 existingPath updates.
+Client layout PDF: **852/852** codes have matchable JSON UI layouts (`*FormatUiLayouts.json`).
 
-## Backend remaining
+## FE document coverage
 
-Live FRESA Puppeteer packs (`partial_document_pdf` → `covered_document_pdf`) still require backend pack bind/activate.
+`covered_document_pdf` means a permanent client JSON layout PDF is available via catalogue Generate.
+Default `POST /invoices|quotations/:id/pdf` paths stay preserved.
+
+Full store (787 rows + embedded layouts, additive): `fresaCoveredDocumentReports.json`.
+Runtime layouts remain the 13 `*FormatUiLayouts.json` files (**852/852** — do not remove).
+
+## Optional backend (additive)
+
+Live FRESA Puppeteer packs remain optional for print parity. Bind/activate via `GET /reports/templates/renderers` + `suggestedPackKey` in the complete catalog JSON — do not invent `renderer_key` values on the FE.

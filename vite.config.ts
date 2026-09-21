@@ -15,6 +15,8 @@ const dirname =
 export default defineConfig(({ mode }) => ({
   plugins: [react(), tailwindcss()],
 
+  assetsInclude: ['**/*.pdf'],
+
   esbuild: {
     drop: mode === 'production' ? ['console', 'debugger'] : [],
   },

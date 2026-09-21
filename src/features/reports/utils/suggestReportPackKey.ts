@@ -4,6 +4,7 @@
  */
 import type { ReportFamily } from '../types/reportCatalog.types';
 import { FRESA_INVOICE_FORMAT_1 } from '../constants/fresaPdfParity.constants';
+import { getRegistryByCode } from '../data/fresaReportRegistry';
 
 export type ReportPackOption = { key: string; label?: string; description?: string };
 
@@ -24,7 +25,8 @@ function hasPrefix(prefix: string) {
 
 /**
  * Best-effort pack suggestion from live renderer list.
- * Prefer specific shells, then family generic. Returns null if nothing matches.
+ * Prefer registry suggestedPackKey, then specific shells, then family generic.
+ * Returns null if nothing matches live /renderers.
  */
 export function suggestReportPackKey(
   code: string,
@@ -34,6 +36,17 @@ export function suggestReportPackKey(
   if (!options.length) return null;
   const c = code.trim().toUpperCase();
   const fam = String(family || '').toLowerCase();
+
+  const registryHint = getRegistryByCode(c)?.suggestedPackKey?.trim();
+  if (registryHint) {
+    const exact = options.find((o) => o.key === registryHint);
+    if (exact?.key) return exact.key;
+    const prefix = registryHint.split('.')[0];
+    const sameFamily = options.find(
+      (o) => o.key.startsWith(`${prefix}.`) && !/pending/i.test(o.key),
+    );
+    if (sameFamily?.key) return sameFamily.key;
+  }
 
   if (c === FRESA_INVOICE_FORMAT_1.code || /INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA/i.test(c)) {
     const exact = pick(options, [

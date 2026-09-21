@@ -303,6 +303,7 @@ const OPS_NAV_ITEMS: NavItem[] = [
   { label: 'Sea Import', path: '/jobs/sea-import', Icon: Ship, permission: 'menu_jobs_sea_import' },
   { label: 'NVOCC', path: '/nvocc', Icon: Building2, permission: 'menu_nvocc' },
   { label: 'Documentation', path: '/documentation', Icon: FileText, permission: 'menu_documentation' },
+  { label: 'Transport', path: '/operations/transport-requests', Icon: Truck, permission: 'menu_documentation' },
   { label: 'Finance', path: '/finance', Icon: Wallet, permission: 'menu_finance' },
   {
     label: 'Accounts',
@@ -336,13 +337,13 @@ const NAV_GROUPS: NavGroup[] = [
     id: 'operations',
     title: 'Operations',
     color: SECTION_COLORS.operations,
-    items: OPS_NAV_ITEMS.slice(5, 11),
+    items: OPS_NAV_ITEMS.slice(5, 12),
   },
   {
     id: 'business',
     title: 'Business',
     color: SECTION_COLORS.business,
-    items: OPS_NAV_ITEMS.slice(11),
+    items: OPS_NAV_ITEMS.slice(12),
   },
 ];
 

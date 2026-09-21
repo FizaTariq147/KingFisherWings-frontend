@@ -39,6 +39,7 @@ export function useSeaExportProgress(scope: string) {
     (id: SeaExportStageId) => {
       if (!scope) return;
       setDone((prev) => {
+        if (prev[id]) return prev; // already done — avoid re-render / effect loops
         const next = { ...prev, [id]: true };
         writeProgress(scope, next);
         return next;

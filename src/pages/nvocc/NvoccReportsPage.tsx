@@ -18,6 +18,9 @@ import {
   useNvoccUtilizationReport,
   useNvoccVoyagePnl,
 } from '@/features/nvocc/hooks/useNvoccReports';
+import { useSeaKpiWeekly } from '@/features/reports/hooks/useReportCatalog';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterList } from '@/features/masters/hooks/useMasterResource';
 import type { NvoccVoyageStatus } from '@/features/nvocc/constants/nvocc.constants';
 import { nvoccDisplayNumber } from '@/features/nvocc/utils/normalizeNvocc';
 import {
@@ -29,13 +32,14 @@ import {
 } from '@/features/nvocc/utils/normalizeNvoccReports';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 
-type ReportTab = 'trade-lane' | 'utilization' | 'enquiries' | 'voyage-pnl';
+type ReportTab = 'trade-lane' | 'utilization' | 'enquiries' | 'voyage-pnl' | 'sea-kpi';
 
 const TABS: { key: ReportTab; label: string }[] = [
   { key: 'trade-lane', label: 'Trade lane profitability' },
   { key: 'utilization', label: 'Voyage utilization' },
   { key: 'enquiries', label: 'Enquiry analytics' },
   { key: 'voyage-pnl', label: 'Voyage P&L' },
+  { key: 'sea-kpi', label: 'Sea KPI weekly' },
 ];
 
 function ReportState({
@@ -167,6 +171,7 @@ export default function NvoccReportsPage() {
   const [groupBy, setGroupBy] = useState('');
   const [voyageStatus, setVoyageStatus] = useState<NvoccVoyageStatus | ''>('');
   const [selectedVoyageId, setSelectedVoyageId] = useState('');
+  const [branchId, setBranchId] = useState('');
 
   const tradeLaneFilters = {
     from: fromDate || undefined,
@@ -184,6 +189,13 @@ export default function NvoccReportsPage() {
     to_date: toDate || undefined,
   };
 
+  const branches = useMasterList(
+    'branches',
+    MASTER_PATHS.branches,
+    { limit: 200, is_active: true },
+    { fetchAll: true, enabled: tab === 'sea-kpi' },
+  );
+
   const tradeLane = useNvoccTradeLaneReport(tradeLaneFilters, tab === 'trade-lane');
   const utilization = useNvoccUtilizationReport(utilizationFilters, tab === 'utilization');
   const enquiries = useNvoccEnquiryAnalytics(enquiryFilters, tab === 'enquiries');
@@ -191,14 +203,17 @@ export default function NvoccReportsPage() {
   const voyagePnl = useNvoccVoyagePnl(selectedVoyageId, {
     enabled: tab === 'voyage-pnl' && Boolean(selectedVoyageId),
   });
+  const seaKpi = useSeaKpiWeekly(branchId, tab === 'sea-kpi' && Boolean(branchId.trim()));
 
   const voyageOptions = voyages.data?.items ?? [];
+  const branchOptions = branches.data?.items ?? [];
 
   const refresh = () => {
     void tradeLane.refetch();
     void utilization.refetch();
     void enquiries.refetch();
     if (selectedVoyageId) void voyagePnl.refetch();
+    if (branchId.trim()) void seaKpi.refetch();
   };
 
   return (
@@ -208,7 +223,8 @@ export default function NvoccReportsPage() {
           <ReportsBackButton fallbackTo="/nvocc" fallbackLabel="Back to NVOCC" />
           <h2 className="text-sm font-semibold text-[var(--color-neutral-800)]">NVOCC reports</h2>
           <p className="text-xs text-[var(--color-neutral-400)] mt-0.5">
-            Trade lane profitability, voyage utilization, enquiry analytics, and voyage P&L.
+            Trade lane profitability, voyage utilization, enquiry analytics, voyage P&L, and sea KPI
+            weekly.
           </p>
         </div>
       </div>
@@ -286,6 +302,24 @@ export default function NvoccReportsPage() {
                     {voyage.pol_name || voyage.pod_name
                       ? ` · ${voyage.pol_name ?? '—'} → ${voyage.pod_name ?? '—'}`
                       : ''}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {tab === 'sea-kpi' && (
+            <label className="space-y-1 min-w-[240px]">
+              <span className="text-xs text-[var(--color-neutral-500)]">Branch</span>
+              <select
+                className="h-9 block w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
+                value={branchId}
+                onChange={(e) => setBranchId(e.target.value)}
+              >
+                <option value="">Select branch…</option>
+                {branchOptions.map((branch) => (
+                  <option key={branch.id} value={branch.id}>
+                    {String(branch.name || branch.code || branch.id)}
                   </option>
                 ))}
               </select>
@@ -381,6 +415,33 @@ export default function NvoccReportsPage() {
                   'line_item',
                   'description',
                   'amount',
+                ]}
+              />
+            )}
+          </>
+        )}
+
+        {tab === 'sea-kpi' && (
+          <>
+            {!branchId.trim() ? (
+              <p className="text-sm text-[var(--color-neutral-400)] py-6">
+                Select a branch to load sea KPI weekly (GET /reports/sea/kpi-weekly).
+              </p>
+            ) : (
+              <AnalyticsPanel
+                data={seaKpi.data}
+                loading={seaKpi.isLoading || branches.isLoading}
+                error={seaKpi.error}
+                preferredColumns={[
+                  'branch',
+                  'job_type',
+                  'week',
+                  'jobs',
+                  'teu',
+                  'revenue',
+                  'cost',
+                  'profit',
+                  'bookings',
                 ]}
               />
             )}

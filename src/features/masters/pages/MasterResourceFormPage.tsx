@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { CountrySelect } from '@/components/ui/CountrySelect';
 import { Input } from '@/components/ui/Input';
+import { PageBackLink } from '@/components/ui/PageBackLink';
 import { PhoneInput } from '@/components/ui/PhoneInput';
 import { getCountry, getDialCodeOptions } from '@/lib/countries';
 import { isUuid } from '@/lib/isUuid';
@@ -932,13 +933,7 @@ export default function MasterResourceFormPage(props: MasterPageRouteProps = {})
 
   return (
     <div className="space-y-4 max-w-3xl">
-      <button
-        type="button"
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-        onClick={() => navigate(listPath)}
-      >
-        ← Back to {resource.title}
-      </button>
+      <PageBackLink to={listPath} label="Back" />
 
       <Card>
         <CardHeader>

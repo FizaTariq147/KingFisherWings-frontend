@@ -168,7 +168,7 @@ export function ReportCatalogBrowseList({
                 {reportFamilyLabel(section.family)}
               </h3>
               <p className="text-[10px] text-[var(--color-neutral-400)]">
-                {section.items.length} format{section.items.length === 1 ? '' : 's'}
+                {section.items.length} report{section.items.length === 1 ? '' : 's'}
               </p>
             </div>
             <div className="-mx-0.5 flex flex-wrap gap-2.5 pb-1">

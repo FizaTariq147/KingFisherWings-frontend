@@ -14,16 +14,26 @@ import { getErrorMessage } from '../../utils/getErrorMessage';
 import { generateQuotationPdf } from '../../utils/generateQuotationPdf';
 import { normalizeQuotationPdfInfo } from '../../utils/normalizeQuotationPdf';
 
+/** Shared layout id for staff store + portal render. */
+export const QUOTATION_KFW_LAYOUT = 'KFW_STANDARD';
+
 interface QuotationPdfModalProps {
   quotationId: string;
   quotationNumber: string;
   quotationDate?: string;
-  /** Full quotation for FRESA-style client PDF layout. */
+  /** Full quotation for dynamic KingFisher PDF (required for matching portal UI). */
   quotation?: Quotation | null;
   open: boolean;
   isPending?: boolean;
   onClose: () => void;
-  onGenerate: (mode: PdfMode, layout_variant?: string) => Promise<QuotationPdfInfo | void>;
+  /**
+   * Persist the generated KingFisher PDF (upload when supported, else queue store).
+   * Receives the client blob so admin + portal share the same document.
+   */
+  onGenerate: (
+    mode: PdfMode,
+    opts: { layout_variant: string; blob: Blob; fileName: string },
+  ) => Promise<QuotationPdfInfo | void>;
   pdfInfo?: QuotationPdfInfo;
   error?: string | null;
 }
@@ -58,7 +68,6 @@ export function QuotationPdfModal({
   const user = useAuthStore((s) => s.user);
   const { data: companies = [] } = useTenantCompanies(true);
   const [mode, setMode] = useState<PdfMode>('CUSTOMER');
-  const [layout, setLayout] = useState('');
   const [poll, setPoll] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const [latestInfo, setLatestInfo] = useState<QuotationPdfInfo | undefined>(pdfInfo);
@@ -103,7 +112,6 @@ export function QuotationPdfModal({
     return () => window.clearInterval(t);
   }, [poll, open, refetch]);
 
-  // Only open ready modal from server URL if we did not already open a client-formatted blob.
   useEffect(() => {
     if (!open || !poll || readyOpen || readyBlob || !statusData) return;
     const fromStatus = normalizeQuotationPdfInfo(statusData);
@@ -128,7 +136,11 @@ export function QuotationPdfModal({
       companies.find((c) => c.id && quotation?.company_id && c.id === quotation.company_id) ||
       companies[0];
     return {
-      name: match?.name || 'KingFisher Wings',
+      name: match?.name || 'KingFisher Wings Group',
+      tagline: 'FREIGHT - LOGISTICS - GENERAL TRADING',
+      phone: '+971 55 5355 286',
+      email: 'info@kingfisherwingsgroup.com',
+      website: 'www.kingfisherwingsgroup.com',
       addressLines: [] as string[],
     };
   }, [companies, quotation?.company_id]);
@@ -140,8 +152,10 @@ export function QuotationPdfModal({
     onClose();
   };
 
-  const buildClientPdf = async (): Promise<Blob | null> => {
-    if (!quotation) return null;
+  const buildClientPdf = async (): Promise<Blob> => {
+    if (!quotation) {
+      throw new Error('Quotation data is required to generate the KingFisher PDF.');
+    }
     return generateQuotationPdf({
       quotation,
       company: companyForPdf,
@@ -168,6 +182,11 @@ export function QuotationPdfModal({
             </div>
           ) : null}
 
+          <p className="text-xs text-[var(--color-neutral-500)]">
+            Generates the KingFisher quotation layout from live quote data, stores it for the
+            customer portal, and opens the same PDF here.
+          </p>
+
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[var(--color-neutral-500)]">Mode *</span>
             <select
@@ -181,18 +200,6 @@ export function QuotationPdfModal({
                 </option>
               ))}
             </select>
-          </label>
-          <label className="block space-y-1">
-            <span className="text-xs font-medium text-[var(--color-neutral-500)]">
-              Layout variant (optional)
-            </span>
-            <input
-              className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
-              value={layout}
-              onChange={(e) => setLayout(e.target.value)}
-              maxLength={50}
-              placeholder="Leave blank for default"
-            />
           </label>
 
           {(customerUrl || internalUrl) && (
@@ -219,7 +226,7 @@ export function QuotationPdfModal({
 
           {poll && !displayError && !readyBlob ? (
             <p className="text-xs text-[var(--color-neutral-500)]">
-              Server PDF queued in background.
+              Storing PDF…
               {statusData ? ` Status: ${statusText}.` : ''}
             </p>
           ) : null}
@@ -230,7 +237,7 @@ export function QuotationPdfModal({
             </Button>
             <Button
               type="button"
-              disabled={busy}
+              disabled={busy || !quotation}
               onClick={async () => {
                 setLocalError(null);
                 setReadyOpen(false);
@@ -238,36 +245,25 @@ export function QuotationPdfModal({
                 setReadyBlob(null);
                 setClientPending(true);
                 try {
-                  // Prefer FRESA-style client layout for preview/download.
                   const blob = await buildClientPdf();
-                  if (blob) {
-                    setReadyBlob(blob);
-                    setReadyOpen(true);
-                  }
-
-                  // Keep server generate for stored/email PDFs (unchanged API).
+                  setReadyBlob(blob);
+                  setReadyOpen(true);
                   setPoll(true);
                   try {
-                    const result = await onGenerate(mode, layout.trim() || undefined);
+                    const result = await onGenerate(mode, {
+                      layout_variant: QUOTATION_KFW_LAYOUT,
+                      blob,
+                      fileName: pdfFileName,
+                    });
                     if (result) {
                       setLatestInfo((prev) => ({ ...prev, ...result }));
-                      if (!blob) {
-                        const url = pickReadyPdfUrl(result, mode);
-                        if (url) {
-                          setReadyUrl(url);
-                          setReadyOpen(true);
-                          setPoll(false);
-                        }
-                      }
                     }
                   } catch (err) {
-                    // Client PDF already shown — don't block UI on server failure.
-                    if (!blob) {
-                      setPoll(false);
-                      setLocalError(getErrorMessage(err));
-                    } else {
-                      setPoll(false);
-                    }
+                    // Client PDF already shown — storage failure is non-blocking for preview.
+                    setPoll(false);
+                    setLocalError(
+                      `${getErrorMessage(err)} (Preview is ready; storage may still be pending.)`,
+                    );
                   }
                 } catch (err) {
                   setPoll(false);
@@ -277,7 +273,7 @@ export function QuotationPdfModal({
                 }
               }}
             >
-              {busy ? 'Generating…' : 'Generate PDF'}
+              {busy ? 'Generating…' : 'Generate & store PDF'}
             </Button>
           </div>
         </div>
@@ -292,7 +288,7 @@ export function QuotationPdfModal({
         fileName={pdfFileName}
         branding={readyBlob ? undefined : pdfBranding}
         skipBranding={Boolean(readyBlob)}
-        description="Your quotation PDF was created successfully."
+        description="Same KingFisher layout is stored for the customer portal."
       />
     </>
   );

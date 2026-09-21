@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 
@@ -21,10 +21,15 @@ interface DetailPageTemplateProps {
   statusLabel?: string;
   statusTone?: 'emerald' | 'amber' | 'rose' | 'slate';
   tabs: DetailTab[];
+  /** When set and matches a tab key, select that tab (e.g. ?tab=invoices after auto-invoice). */
+  defaultTab?: string;
   actions?: DetailAction[];
   actionsDisabled?: boolean;
   sidebar?: ReactNode;
+  /** @deprecated Prefer history back via PageBackLink; kept for API compatibility. */
   onBack?: () => void;
+  /** Fallback path only when there is no in-app history. */
+  backTo?: string;
   backLabel?: string;
 }
 
@@ -47,23 +52,31 @@ export function DetailPageTemplate({
   statusLabel,
   statusTone = 'slate',
   tabs,
+  defaultTab,
   actions,
   actionsDisabled,
   sidebar,
-  onBack,
+  onBack: _onBack,
+  backTo,
   backLabel = 'Back',
 }: DetailPageTemplateProps) {
-  const [activeTab, setActiveTab] = useState(tabs[0]?.key);
+  void _onBack;
+  const initialKey =
+    (defaultTab && tabs.some((t) => t.key === defaultTab) ? defaultTab : undefined) ||
+    tabs[0]?.key;
+  const [activeTab, setActiveTab] = useState(initialKey);
+
+  useEffect(() => {
+    if (!defaultTab) return;
+    if (!tabs.some((t) => t.key === defaultTab)) return;
+    setActiveTab(defaultTab);
+    // Only react when the requested tab key changes — not when `tabs` identity updates.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- tabs content may remount; defaultTab drives selection
+  }, [defaultTab]);
 
   return (
     <div>
-      {onBack && (
-        <PageBackLink
-          label={backLabel}
-          onClick={onBack}
-          className="mb-3"
-        />
-      )}
+      <PageBackLink to={backTo} label={backLabel} className="mb-3" />
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-5">
         <div>

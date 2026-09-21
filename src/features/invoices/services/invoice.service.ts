@@ -219,7 +219,7 @@ export const invoiceService = {
    * Ensure a draft customer invoice exists for a job (air/NVOCC send-invoice needs invoice_id).
    * 1) POST /invoices/from-job/:jobId (needs uninvoiced billable charges)
    * 2) GET /invoices?job_id=
-   * 3) POST /invoices with party + job + lines (fallback when job has no billable charges yet)
+   * 3) POST /invoices with party + job + lines (fallback: job charges, else quotation lines, else placeholder)
    */
   async ensureDraftForJob(job: {
     id: string;
@@ -237,13 +237,17 @@ export const invoiceService = {
       is_cost?: boolean;
       is_billable?: boolean;
     }>;
+    /** Prefer these when job has no billable charges yet (from linked quotation). */
+    quotationLines?: CreateInvoiceLineDto[];
     lineHint?: string;
   }): Promise<Invoice> {
     assertId(job.id, 'job');
 
     let fromJobError = '';
     try {
-      return await this.createFromJob(job.id);
+      const fromJob = await this.createFromJob(job.id);
+      // from-job may return a zero-line invoice when job charges were empty — fill from quotation.
+      return await this.applyQuotationLinesIfNeeded(fromJob, job.quotationLines);
     } catch (err) {
       fromJobError = err instanceof Error ? err.message : String(err);
     }
@@ -251,7 +255,12 @@ export const invoiceService = {
     try {
       const listed = await this.list({ job_id: job.id, limit: 10, page: 1 });
       const existing = listed.invoices.find((inv) => isUuid(inv.id));
-      if (existing) return existing;
+      if (existing) {
+        const detail = existing.lines?.length
+          ? existing
+          : (await this.getById(existing.id).catch(() => existing));
+        return await this.applyQuotationLinesIfNeeded(detail, job.quotationLines);
+      }
     } catch {
       /* continue to create */
     }
@@ -272,6 +281,9 @@ export const invoiceService = {
     const billable = (job.charges ?? []).filter(
       (c) => c.is_cost !== true && c.is_billable !== false,
     );
+    const quotationLines = (job.quotationLines ?? []).filter(
+      (l) => String(l.description ?? '').trim().length > 0,
+    );
     const lines =
       billable.length > 0
         ? billable.map((c, index) => ({
@@ -282,14 +294,16 @@ export const invoiceService = {
               c.charge_code_id && isUuid(c.charge_code_id) ? c.charge_code_id : undefined,
             sort_order: index,
           }))
-        : [
-            {
-              description: (job.lineHint || 'Air freight charges').slice(0, 300),
-              quantity: 1,
-              unit_price: 0,
-              sort_order: 0,
-            },
-          ];
+        : quotationLines.length > 0
+          ? quotationLines
+          : [
+              {
+                description: (job.lineHint || 'Air freight charges').slice(0, 300),
+                quantity: 1,
+                unit_price: 0,
+                sort_order: 0,
+              },
+            ];
 
     try {
       return await this.create({
@@ -314,6 +328,43 @@ export const invoiceService = {
           .filter(Boolean)
           .join(' — '),
       );
+    }
+  },
+
+  /**
+   * If invoice has no meaningful lines, append quotation revenue lines (same as quote charges).
+   */
+  async applyQuotationLinesIfNeeded(
+    invoice: Invoice,
+    quotationLines?: CreateInvoiceLineDto[],
+  ): Promise<Invoice> {
+    const { invoiceNeedsQuotationCharges } = await import(
+      '@/features/quotations/utils/quotationRevenueCharges'
+    );
+    const lines = quotationLines?.filter((l) => String(l.description ?? '').trim().length > 0) ?? [];
+    if (!lines.length) return invoice;
+
+    let detail = invoice;
+    if (!detail.lines?.length) {
+      try {
+        detail = await this.getById(invoice.id);
+      } catch {
+        /* use what we have */
+      }
+    }
+    if (!invoiceNeedsQuotationCharges(detail.lines)) return detail;
+
+    for (const line of lines) {
+      try {
+        await this.addLine(invoice.id, line);
+      } catch {
+        /* skip duplicate / validation failures per line */
+      }
+    }
+    try {
+      return await this.getById(invoice.id);
+    } catch {
+      return detail;
     }
   },
 

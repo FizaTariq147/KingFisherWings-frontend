@@ -476,7 +476,9 @@ export function ReportGeneratePanel({
           className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
         >
           {canClientLayoutPdf
-            ? 'Layout preview PDF is available via Generate. Bind a Puppeteer pack + Activate for live backend PDF (default invoice/quotation PDFs stay unchanged).'
+            ? resolved.gapStatus === 'covered_document_pdf'
+              ? 'Client layout PDF is available via Generate. Bind a Puppeteer pack + Activate only if you need live backend print parity (default invoice/quotation PDFs stay unchanged).'
+              : 'Layout preview PDF is available via Generate. Bind a Puppeteer pack + Activate for live backend PDF (default invoice/quotation PDFs stay unchanged).'
             : 'Bind a Puppeteer pack, then Activate to enable Generate.'}
         </div>
       ) : null}
@@ -519,6 +521,17 @@ export function ReportGeneratePanel({
               </option>
             ))}
           </select>
+        </div>
+      ) : null}
+
+      {resolved.gapStatus === 'covered_document_pdf' && canClientLayoutPdf ? (
+        <div
+          role="status"
+          className="rounded-md border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs text-emerald-900"
+        >
+          Client layout PDF is available via Generate (FE coverage). Binding a Puppeteer pack
+          remains optional for live backend print parity — default invoice/quotation PDFs stay
+          unchanged.
         </div>
       ) : null}
 

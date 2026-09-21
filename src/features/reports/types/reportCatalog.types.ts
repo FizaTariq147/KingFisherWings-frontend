@@ -28,6 +28,7 @@ export type ReportGapStatus =
   | 'partial_analytics'
   | 'partial_document_pdf'
   | 'covered_analytics'
+  /** Client JSON layout PDF available (FE catalogue coverage). */
   | 'covered_document_pdf';
 
 export interface ReportTemplateParamField {
@@ -54,6 +55,17 @@ export interface ReportTemplateMeta {
   existingPath?: string;
   /** Default parameter hints when backend schema is unavailable. */
   defaultParams?: ReportTemplateParamField[];
+  /** True when a permanent *FormatUiLayouts.json row exists (client preview PDF). */
+  hasClientLayout?: boolean;
+  /** JSON layout store basename, e.g. hblFormatUiLayouts */
+  layoutStore?: string | null;
+  /** Layout bucket key used by sync scripts */
+  layoutBucket?: string | null;
+  /**
+   * Suggested Puppeteer pack for bind/activate (OpenAPI BindRendererDto pattern).
+   * Only used when present on GET /reports/templates/renderers — never invents live keys.
+   */
+  suggestedPackKey?: string;
 }
 
 export interface ReportTemplate {

@@ -1,19 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import {
   REPORT_TEMPLATE_CONTEXT_ENUM,
-  REPORT_TEMPLATE_FAMILY_ENUM,
 } from '../api/reportCatalog.api';
-import { filterRegistry } from '../data/fresaReportRegistry';
+import { filterRegistry, getRegistryByCode, FRESA_REPORT_REGISTRY } from '../data/fresaReportRegistry';
 import type { ReportFamily, ReportTemplate } from '../types/reportCatalog.types';
 import { reportContextLabel, reportFamilyLabel } from '../types/reportCatalog.types';
 import { metaToTemplate } from '../utils/normalizeReportCatalog';
 import {
-  reportTemplateMatchesSearch,
-  tokenizeReportSearch,
+  catalogStripVisibleForAllowList,
+} from '../utils/filterCatalogStripRows';
+import {
+  isReportSearchActive,
 } from '../utils/reportCatalogSearch';
 import { ReportCatalogBrowseList } from '../components/ReportCatalog/ReportCatalogBrowseList';
 import { InvoiceFormatBrowseStrip } from '../components/ReportCatalog/InvoiceFormatBrowseStrip';
@@ -138,6 +139,7 @@ import {
 import {
   getLeftoverFormatSpec,
   isLeftoverFormatCode,
+  listLeftoverFormats,
   leftoverFormatsMatchSearch,
 } from '../constants/leftoverFormatCatalog';
 
@@ -275,50 +277,43 @@ export default function ReportCatalogPage() {
   const backendUnavailable = liveBrowse.data?.backendUnavailable;
 
   const registeredLayoutEntries = useMemo(() => listAllRegisteredFormatCatalogEntries(), []);
+  /** Main catalogue list = all 852 complete registry reports. */
   const items = useMemo(() => {
-    // Catalogue browse = every permanent JSON layout (section-wise family groups below).
-    return registeredLayoutEntries
-      .filter((spec) => {
-        if (family !== 'all' && family !== spec.family) return false;
-        const ctxs = spec.contexts ?? ['job'];
-        if (contextFilter === 'all') return true;
-        return ctxs.includes(
-          contextFilter as 'job' | 'quotation' | 'list' | 'invoice' | 'gl' | 'wms' | 'party',
-        );
-      })
-      .filter((spec) =>
-        reportTemplateMatchesSearch(
-          { name: spec.name, code: spec.code, description: spec.kind },
-          searchQuery,
-        ),
-      )
-      .map((spec, i) =>
-        metaToTemplate(
-          {
-            code: spec.code,
-            name: spec.name,
-            family: spec.family,
-            contexts: spec.contexts.length ? spec.contexts : ['job'],
-            formats: ['PDF'],
-            rolloutPhase: 3,
-            gapStatus: 'partial_document_pdf',
-            description: `Layout PDF: ${spec.name}`,
-            defaultParams: [{ name: 'job_id', label: 'Job', type: 'uuid', required: true }],
-          },
-          i,
-        ),
-      );
-  }, [registeredLayoutEntries, searchQuery, family, contextFilter]);
+    const rows = filterRegistry({
+      search: searchQuery,
+      family: family === 'all' ? 'all' : (family as ReportFamily),
+      context: contextFilter,
+    });
+    return rows.map((meta, i) => metaToTemplate(meta, i));
+  }, [searchQuery, family, contextFilter]);
   const metaTotal = items.length;
-  const layoutRegistryTotal = registeredLayoutEntries.length;
+  const completeReportTotal = FRESA_REPORT_REGISTRY.length;
   const listLoading = false;
 
+  /** Family/Context allow-list for browse strips (null = no restriction). */
+  const allowedCodes = useMemo(() => {
+    if (family === 'all' && contextFilter === 'all') return null;
+    const set = new Set<string>();
+    for (const entry of registeredLayoutEntries) {
+      if (family !== 'all' && entry.family !== family) continue;
+      if (
+        contextFilter !== 'all' &&
+        !(entry.contexts ?? []).includes(
+          contextFilter as 'job' | 'quotation' | 'list' | 'invoice' | 'gl' | 'wms' | 'party',
+        )
+      ) {
+        continue;
+      }
+      set.add(entry.code.toUpperCase());
+    }
+    return set;
+  }, [registeredLayoutEntries, family, contextFilter]);
+
   const familyOptions = useMemo(() => {
-    const fromApi = new Set<string>();
-    for (const t of items) fromApi.add(t.family);
-    const base = fromApi.size > 0 ? [...fromApi].sort() : [...REPORT_TEMPLATE_FAMILY_ENUM];
-    return ['all', ...base];
-  }, [items]);
+    const fromCatalog = new Set<string>();
+    for (const entry of registeredLayoutEntries) fromCatalog.add(entry.family);
+    return ['all', ...[...fromCatalog].sort()];
+  }, [registeredLayoutEntries]);
 
   const selected = useMemo(() => {
     if (!selectedCode) return null;
@@ -340,7 +335,7 @@ export default function ReportCatalogPage() {
             contexts: ['invoice'],
             formats: ['PDF'],
             rolloutPhase: 3,
-            gapStatus: 'partial_document_pdf',
+            gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
             description: `FRESA sample: ${row.name}`,
             defaultParams: [
               { name: 'invoice_id', label: 'Invoice', type: 'uuid', required: true },
@@ -362,7 +357,7 @@ export default function ReportCatalogPage() {
           contexts: ['gl'],
           formats: ['PDF'],
           rolloutPhase: 3,
-          gapStatus: 'partial_document_pdf',
+          gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
           description: `FRESA sample: ${accounts.name}`,
           defaultParams: [],
         },
@@ -381,7 +376,7 @@ export default function ReportCatalogPage() {
           contexts: ['wms'],
           formats: ['PDF'],
           rolloutPhase: 3,
-          gapStatus: 'partial_document_pdf',
+          gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
           description: `FRESA sample: ${wms.name}`,
           defaultParams: [],
         },
@@ -398,7 +393,7 @@ export default function ReportCatalogPage() {
           contexts: ['job'],
           formats: ['PDF'],
           rolloutPhase: 3,
-          gapStatus: 'partial_document_pdf',
+          gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
           description: `FRESA sample: ${arrival.name}`,
           defaultParams: [{ name: 'job_id', label: 'Job', type: 'uuid', required: true }],
         },
@@ -415,7 +410,7 @@ export default function ReportCatalogPage() {
           contexts: ['job'],
           formats: ['PDF'],
           rolloutPhase: 3,
-          gapStatus: 'partial_document_pdf',
+          gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
           description: `FRESA sample: ${delivery.name}`,
           defaultParams: [{ name: 'job_id', label: 'Job', type: 'uuid', required: true }],
         },
@@ -432,7 +427,7 @@ export default function ReportCatalogPage() {
           contexts: ['job'],
           formats: ['PDF'],
           rolloutPhase: 3,
-          gapStatus: 'partial_document_pdf',
+          gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
           description: `FRESA sample: ${hawb.name}`,
           defaultParams: [{ name: 'job_id', label: 'Job', type: 'uuid', required: true }],
         },
@@ -449,7 +444,7 @@ export default function ReportCatalogPage() {
           contexts: ['job'],
           formats: ['PDF'],
           rolloutPhase: 3,
-          gapStatus: 'partial_document_pdf',
+          gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
           description: `FRESA sample: ${hbl.name}`,
           defaultParams: [{ name: 'job_id', label: 'Job', type: 'uuid', required: true }],
         },
@@ -466,7 +461,7 @@ export default function ReportCatalogPage() {
           contexts: other.contexts ?? ['job'],
           formats: ['PDF'],
           rolloutPhase: 3,
-          gapStatus: 'partial_document_pdf',
+          gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
           description: `FRESA sample: ${other.name}`,
           defaultParams: [{ name: 'job_id', label: 'Job', type: 'uuid', required: true }],
         },
@@ -483,7 +478,7 @@ export default function ReportCatalogPage() {
           contexts: ['quotation'],
           formats: ['PDF'],
           rolloutPhase: 3,
-          gapStatus: 'partial_document_pdf',
+          gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
           description: `FRESA sample: ${quotation.name}`,
           defaultParams: [
             { name: 'quotation_id', label: 'Quotation', type: 'uuid', required: true },
@@ -502,7 +497,7 @@ export default function ReportCatalogPage() {
           contexts: ['list', 'job'],
           formats: ['PDF'],
           rolloutPhase: 3,
-          gapStatus: 'partial_document_pdf',
+          gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
           description: `FRESA sample: ${opsList.name}`,
           defaultParams: [],
         },
@@ -519,7 +514,7 @@ export default function ReportCatalogPage() {
           contexts: ['invoice'],
           formats: ['PDF'],
           rolloutPhase: 3,
-          gapStatus: 'partial_document_pdf',
+          gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
           description: `FRESA sample: ${commercialExtra.name}`,
           defaultParams: [
             { name: 'invoice_id', label: 'Invoice', type: 'uuid', required: true },
@@ -538,7 +533,7 @@ export default function ReportCatalogPage() {
           contexts: ['job'],
           formats: ['PDF'],
           rolloutPhase: 3,
-          gapStatus: 'partial_document_pdf',
+          gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
           description: `FRESA sample: ${seaExtra.name}`,
           defaultParams: [{ name: 'job_id', label: 'Job', type: 'uuid', required: true }],
         },
@@ -555,7 +550,7 @@ export default function ReportCatalogPage() {
           contexts: leftover.contexts,
           formats: ['PDF'],
           rolloutPhase: 3,
-          gapStatus: 'partial_document_pdf',
+          gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
           description: `Leftover sample: ${leftover.name}`,
           defaultParams:
             leftover.contexts[0] === 'invoice'
@@ -579,7 +574,7 @@ export default function ReportCatalogPage() {
           contexts: entry?.contexts?.length ? entry.contexts : ['job'],
           formats: ['PDF'],
           rolloutPhase: 3,
-          gapStatus: 'partial_document_pdf',
+          gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
           description: `Layout PDF: ${layout.name || selectedCode}`,
           defaultParams: [{ name: 'job_id', label: 'Job', type: 'uuid', required: true }],
         },
@@ -593,237 +588,155 @@ export default function ReportCatalogPage() {
     patchParams({ code: t.code }, false);
   };
 
-  const selectInvoiceFormatCode = (code: string) => {
-    patchParams(
-      {
-        code,
-        family: 'commercial',
-        context: 'invoice',
-      },
-      false,
-    );
+  /** Open a format PDF — do not change Family/Context (user controls those filters). */
+  const selectFormatCode = (code: string) => {
+    patchParams({ code }, false);
   };
 
-  const selectAccountsFormatCode = (code: string) => {
-    patchParams(
-      {
-        code,
-        family: 'finance',
-        context: 'gl',
-      },
-      false,
-    );
-  };
+  const selectInvoiceFormatCode = selectFormatCode;
+  const selectAccountsFormatCode = selectFormatCode;
+  const selectWmsFormatCode = selectFormatCode;
+  const selectArrivalNoticeFormatCode = selectFormatCode;
+  const selectDeliveryOrderFormatCode = selectFormatCode;
+  const selectHawbFormatCode = selectFormatCode;
+  const selectHblFormatCode = selectFormatCode;
+  const selectOtherReportsFormatCode = selectFormatCode;
+  const selectQuotationFormatCode = selectFormatCode;
+  const selectOpsListFormatCode = selectFormatCode;
+  const selectCommercialExtraFormatCode = selectFormatCode;
+  const selectSeaDocsExtraFormatCode = selectFormatCode;
+  const selectLeftoverFormatCode = selectFormatCode;
 
-  const selectWmsFormatCode = (code: string) => {
-    patchParams(
-      {
-        code,
-        family: 'wms',
-        context: 'wms',
-      },
-      false,
-    );
-  };
+  const searchActive = isReportSearchActive(searchQuery);
 
-  const selectArrivalNoticeFormatCode = (code: string) => {
-    const spec = getArrivalNoticeFormatSpec(code);
-    patchParams(
-      {
-        code,
-        family: spec?.family || 'sea_docs',
-        context: 'job',
-      },
-      false,
-    );
-  };
-
-  const selectDeliveryOrderFormatCode = (code: string) => {
-    const spec = getDeliveryOrderFormatSpec(code);
-    patchParams(
-      {
-        code,
-        family: spec?.family || 'sea_docs',
-        context: 'job',
-      },
-      false,
-    );
-  };
-
-  const selectHawbFormatCode = (code: string) => {
-    const spec = getHawbFormatSpec(code);
-    patchParams(
-      {
-        code,
-        family: spec?.family || 'air_docs',
-        context: 'job',
-      },
-      false,
-    );
-  };
-
-  const selectHblFormatCode = (code: string) => {
-    const spec = getHblFormatSpec(code);
-    patchParams(
-      {
-        code,
-        family: spec?.family || 'sea_docs',
-        context: 'job',
-      },
-      false,
-    );
-  };
-
-  const selectOtherReportsFormatCode = (code: string) => {
-    const spec = getOtherReportsFormatSpec(code);
-    patchParams(
-      {
-        code,
-        family: spec?.family || 'sea_docs',
-        context: spec?.contexts?.[0] || 'job',
-      },
-      false,
-    );
-  };
-
-  const selectQuotationFormatCode = (code: string) => {
-    patchParams({ code, family: 'quotation', context: 'quotation' }, false);
-  };
-
-  const selectOpsListFormatCode = (code: string) => {
-    patchParams({ code, family: 'ops_list', context: 'list' }, false);
-  };
-
-  const selectCommercialExtraFormatCode = (code: string) => {
-    patchParams({ code, family: 'commercial', context: 'invoice' }, false);
-  };
-
-  const selectSeaDocsExtraFormatCode = (code: string) => {
-    const spec = getSeaDocsExtraFormatSpec(code);
-    patchParams(
-      {
-        code,
-        family: spec?.family || 'sea_docs',
-        context: 'job',
-      },
-      false,
-    );
-  };
-
-  const selectLeftoverFormatCode = (code: string) => {
-    const spec = getLeftoverFormatSpec(code);
-    patchParams(
-      {
-        code,
-        family: spec?.family || 'commercial',
-        context: spec?.contexts?.[0] || 'invoice',
-      },
-      false,
-    );
-  };
-
-  const searchActive = tokenizeReportSearch(searchQuery).length > 0;
+  const invoiceStripCodes = useMemo(
+    () => listInvoiceFormatPreviews().map((r) => r.code),
+    [],
+  );
+  const accountsStripCodes = useMemo(() => listAccountsFormats().map((r) => r.code), []);
+  const wmsStripCodes = useMemo(() => listWmsFormats().map((r) => r.code), []);
+  const arrivalStripCodes = useMemo(() => listArrivalNoticeFormats().map((r) => r.code), []);
+  const deliveryStripCodes = useMemo(() => listDeliveryOrderFormats().map((r) => r.code), []);
+  const hawbStripCodes = useMemo(() => listHawbFormats().map((r) => r.code), []);
+  const hblStripCodes = useMemo(() => listHblFormats().map((r) => r.code), []);
+  const otherStripCodes = useMemo(() => listOtherReportsFormats().map((r) => r.code), []);
+  const quotationStripCodes = useMemo(() => listQuotationFormats().map((r) => r.code), []);
+  const opsStripCodes = useMemo(() => listOpsListFormats().map((r) => r.code), []);
+  const commercialExtraStripCodes = useMemo(
+    () => listCommercialExtraFormats().map((r) => r.code),
+    [],
+  );
+  const seaDocsExtraStripCodes = useMemo(() => listSeaDocsExtraFormats().map((r) => r.code), []);
+  const leftoverStripCodes = useMemo(() => listLeftoverFormats().map((r) => r.code), []);
 
   const showInvoiceFormatStrip =
-    (family === 'all' ||
-      family === 'commercial' ||
-      contextFilter === 'invoice' ||
-      Boolean(invoiceId) ||
-      isInvoiceReportFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(
+      invoiceStripCodes,
+      allowedCodes,
+      Boolean(invoiceId) || isInvoiceReportFormatCode(selectedCode),
+    ) &&
     (!searchActive ||
       invoiceFormatsMatchSearch(searchQuery) ||
       isInvoiceReportFormatCode(selectedCode));
 
   const showAccountsFormatStrip =
-    (family === 'all' ||
-      family === 'finance' ||
-      contextFilter === 'gl' ||
-      isAccountsFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(
+      accountsStripCodes,
+      allowedCodes,
+      isAccountsFormatCode(selectedCode),
+    ) &&
     (!searchActive ||
       accountsFormatsMatchSearch(searchQuery) ||
       isAccountsFormatCode(selectedCode));
 
   const showWmsFormatStrip =
-    (family === 'all' ||
-      family === 'wms' ||
-      contextFilter === 'wms' ||
-      isWmsFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(wmsStripCodes, allowedCodes, isWmsFormatCode(selectedCode)) &&
     (!searchActive || wmsFormatsMatchSearch(searchQuery) || isWmsFormatCode(selectedCode));
 
   const showArrivalNoticeFormatStrip =
-    (family === 'all' ||
-      family === 'sea_docs' ||
-      family === 'air_docs' ||
-      isArrivalNoticeFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(
+      arrivalStripCodes,
+      allowedCodes,
+      isArrivalNoticeFormatCode(selectedCode),
+    ) &&
     (!searchActive ||
       arrivalNoticeFormatsMatchSearch(searchQuery) ||
       isArrivalNoticeFormatCode(selectedCode));
 
   const showDeliveryOrderFormatStrip =
-    (family === 'all' ||
-      family === 'sea_docs' ||
-      family === 'air_docs' ||
-      isDeliveryOrderFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(
+      deliveryStripCodes,
+      allowedCodes,
+      isDeliveryOrderFormatCode(selectedCode),
+    ) &&
     (!searchActive ||
       deliveryOrderFormatsMatchSearch(searchQuery) ||
       isDeliveryOrderFormatCode(selectedCode));
 
   const showHawbFormatStrip =
-    (family === 'all' || family === 'air_docs' || isHawbFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(hawbStripCodes, allowedCodes, isHawbFormatCode(selectedCode)) &&
     (!searchActive || hawbFormatsMatchSearch(searchQuery) || isHawbFormatCode(selectedCode));
 
   const showHblFormatStrip =
-    (family === 'all' || family === 'sea_docs' || isHblFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(hblStripCodes, allowedCodes, isHblFormatCode(selectedCode)) &&
     (!searchActive || hblFormatsMatchSearch(searchQuery) || isHblFormatCode(selectedCode));
 
   const showOtherReportsFormatStrip =
-    (family === 'all' ||
-      family === 'sea_docs' ||
-      family === 'air_docs' ||
-      family === 'quotation' ||
-      family === 'ops_list' ||
-      family === 'other' ||
-      family === 'commercial' ||
-      isOtherReportsFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(
+      otherStripCodes,
+      allowedCodes,
+      isOtherReportsFormatCode(selectedCode),
+    ) &&
     (!searchActive ||
       otherReportsFormatsMatchSearch(searchQuery) ||
       isOtherReportsFormatCode(selectedCode));
 
   const showQuotationFormatStrip =
-    (family === 'all' || family === 'quotation' || isQuotationFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(
+      quotationStripCodes,
+      allowedCodes,
+      isQuotationFormatCode(selectedCode),
+    ) &&
     (!searchActive ||
       quotationFormatsMatchSearch(searchQuery) ||
       isQuotationFormatCode(selectedCode));
 
   const showOpsListFormatStrip =
-    (family === 'all' || family === 'ops_list' || isOpsListFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(
+      opsStripCodes,
+      allowedCodes,
+      isOpsListFormatCode(selectedCode),
+    ) &&
     (!searchActive ||
       opsListFormatsMatchSearch(searchQuery) ||
       isOpsListFormatCode(selectedCode));
 
   const showCommercialExtraFormatStrip =
-    (family === 'all' ||
-      family === 'commercial' ||
-      isCommercialExtraFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(
+      commercialExtraStripCodes,
+      allowedCodes,
+      isCommercialExtraFormatCode(selectedCode),
+    ) &&
     (!searchActive ||
       commercialExtraFormatsMatchSearch(searchQuery) ||
       isCommercialExtraFormatCode(selectedCode));
 
   const showSeaDocsExtraFormatStrip =
-    (family === 'all' ||
-      family === 'sea_docs' ||
-      family === 'air_docs' ||
-      isSeaDocsExtraFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(
+      seaDocsExtraStripCodes,
+      allowedCodes,
+      isSeaDocsExtraFormatCode(selectedCode),
+    ) &&
     (!searchActive ||
       seaDocsExtraFormatsMatchSearch(searchQuery) ||
       isSeaDocsExtraFormatCode(selectedCode));
 
   const showLeftoverFormatStrip =
-    (family === 'all' ||
-      family === 'commercial' ||
-      family === 'sea_docs' ||
-      family === 'other' ||
-      isLeftoverFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(
+      leftoverStripCodes,
+      allowedCodes,
+      isLeftoverFormatCode(selectedCode),
+    ) &&
     (!searchActive ||
       leftoverFormatsMatchSearch(searchQuery) ||
       isLeftoverFormatCode(selectedCode));
@@ -883,8 +796,11 @@ export default function ReportCatalogPage() {
         <div>
           <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Report catalogue</h2>
           <p className="mt-0.5 text-sm text-[var(--color-neutral-500)]">
-            {metaTotal} of {layoutRegistryTotal} registered layout PDFs — section catalogues above;
-            click any row or strip to open a preview.
+            {metaTotal} of {completeReportTotal} complete reports
+            {isReportSearchActive(searchQuery) || family !== 'all' || contextFilter !== 'all'
+              ? ' (filtered)'
+              : ''}
+            .
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-stretch gap-1 sm:items-end">
@@ -949,11 +865,28 @@ export default function ReportCatalogPage() {
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-primary-500)]" />
               <Input
                 id="report-catalog-search"
-                className="h-10 border-[var(--color-neutral-200)] bg-white pl-9 shadow-sm focus-visible:border-[var(--color-secondary)]"
-                placeholder="Search report formats by name or code…"
+                className="h-10 border-[var(--color-neutral-200)] bg-white pl-9 pr-9 shadow-sm focus-visible:border-[var(--color-secondary)]"
+                placeholder="Search by name, code, or format # (e.g. HBL, format 3, invoice)…"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
+                autoComplete="off"
+                spellCheck={false}
               />
+              {searchInput ? (
+                <button
+                  type="button"
+                  className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded text-[var(--color-neutral-400)] transition hover:bg-[var(--color-neutral-100)] hover:text-[var(--color-neutral-700)]"
+                  aria-label="Clear search"
+                  onClick={() => {
+                    setSearchInput('');
+                    setDebouncedSearch('');
+                    lastWrittenQRef.current = '';
+                    patchParams({ q: null, page: '1' });
+                  }}
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              ) : null}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:flex sm:shrink-0">
@@ -1007,6 +940,7 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectInvoiceFormatCode}
         searchQuery={searchQuery}
+        allowedCodes={allowedCodes}
       />
 
       <AccountsFormatBrowseStrip
@@ -1014,6 +948,7 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectAccountsFormatCode}
         searchQuery={searchQuery}
+        allowedCodes={allowedCodes}
       />
 
       <WmsFormatBrowseStrip
@@ -1021,6 +956,7 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectWmsFormatCode}
         searchQuery={searchQuery}
+        allowedCodes={allowedCodes}
       />
 
       <ArrivalNoticeFormatBrowseStrip
@@ -1028,6 +964,7 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectArrivalNoticeFormatCode}
         searchQuery={searchQuery}
+        allowedCodes={allowedCodes}
       />
 
       <DeliveryOrderFormatBrowseStrip
@@ -1035,6 +972,7 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectDeliveryOrderFormatCode}
         searchQuery={searchQuery}
+        allowedCodes={allowedCodes}
       />
 
       <HawbFormatBrowseStrip
@@ -1042,6 +980,7 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectHawbFormatCode}
         searchQuery={searchQuery}
+        allowedCodes={allowedCodes}
       />
 
       <HblFormatBrowseStrip
@@ -1049,6 +988,7 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectHblFormatCode}
         searchQuery={searchQuery}
+        allowedCodes={allowedCodes}
       />
 
       <OtherReportsFormatBrowseStrip
@@ -1056,6 +996,7 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectOtherReportsFormatCode}
         searchQuery={searchQuery}
+        allowedCodes={allowedCodes}
       />
 
       <QuotationFormatBrowseStrip
@@ -1063,6 +1004,7 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectQuotationFormatCode}
         searchQuery={searchQuery}
+        allowedCodes={allowedCodes}
       />
 
       <OpsListFormatBrowseStrip
@@ -1070,6 +1012,7 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectOpsListFormatCode}
         searchQuery={searchQuery}
+        allowedCodes={allowedCodes}
       />
 
       <CommercialExtraFormatBrowseStrip
@@ -1077,6 +1020,7 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectCommercialExtraFormatCode}
         searchQuery={searchQuery}
+        allowedCodes={allowedCodes}
       />
 
       <SeaDocsExtraFormatBrowseStrip
@@ -1084,6 +1028,7 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectSeaDocsExtraFormatCode}
         searchQuery={searchQuery}
+        allowedCodes={allowedCodes}
       />
 
       <LeftoverFormatBrowseStrip
@@ -1091,6 +1036,7 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectLeftoverFormatCode}
         searchQuery={searchQuery}
+        allowedCodes={allowedCodes}
       />
 
       <ReportCatalogBrowseList

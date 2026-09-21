@@ -7,6 +7,8 @@ import { JobChargesPanel } from '../components/JobChargesPanel';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import { JobContainersPanel } from '../components/JobContainersPanel';
 import { JobDocumentsPanel } from '../components/JobDocumentsPanel';
+import { JobInvoicesPanel } from '../components/JobInvoicesPanel';
+import { JobSeaScansPanel } from '../components/JobSeaScansPanel';
 import { JobLogisticsPanel } from '../components/JobLogisticsPanel';
 import { JobMilestonesPanel } from '../components/JobMilestonesPanel';
 import { JobNotesPanel } from '../components/JobNotesPanel';
@@ -27,6 +29,7 @@ import {
   jobRoutePrefix,
   segmentFromPath,
 } from '../utils/jobRoute';
+import { isUuid } from '@/lib/isUuid';
 
 function statusTone(status: string): 'emerald' | 'amber' | 'rose' | 'slate' {
   if (status === 'COMPLETED' || status === 'DELIVERED') return 'emerald';
@@ -74,6 +77,21 @@ export default function JobDetailPage() {
     },
   );
 
+  const highlightInvoiceId = useMemo(() => {
+    const state = location.state as { invoiceId?: string } | null;
+    const fromState = state?.invoiceId;
+    if (fromState && isUuid(fromState)) return fromState;
+    const fromQuery = new URLSearchParams(location.search).get('invoice_id');
+    return fromQuery && isUuid(fromQuery) ? fromQuery : undefined;
+  }, [location.search, location.state]);
+
+  const defaultTab = useMemo(() => {
+    const fromQuery = new URLSearchParams(location.search).get('tab');
+    if (fromQuery) return fromQuery;
+    const state = location.state as { openTab?: string } | null;
+    return state?.openTab || undefined;
+  }, [location.search, location.state]);
+
   const tabs = useMemo(() => {
     if (!job) return [];
     const sea = isSeaFcl(job.job_type);
@@ -88,10 +106,18 @@ export default function JobDetailPage() {
             { key: 'stuffing', label: 'Stuffing', content: <JobStuffingPanel jobId={id} /> },
           ]
         : []),
+      ...(job.job_type.includes('SEA') || job.job_type.includes('NVOCC')
+        ? [{ key: 'sea-scans', label: 'Sea scans', content: <JobSeaScansPanel jobId={id} /> }]
+        : []),
       {
         key: 'charges',
         label: 'Charges',
         content: <JobChargesPanel job={job} onChanged={() => refetch()} />,
+      },
+      {
+        key: 'invoices',
+        label: 'Invoices',
+        content: <JobInvoicesPanel jobId={id} job={job} highlightInvoiceId={highlightInvoiceId} />,
       },
       { key: 'pnl', label: 'P&L', content: <JobPnlPanel jobId={id} /> },
       { key: 'milestones', label: 'Milestones', content: <JobMilestonesPanel jobId={id} /> },
@@ -131,7 +157,7 @@ export default function JobDetailPage() {
           ]
         : []),
     ];
-  }, [job, id, houseJobs, prefix, navigate, refetch]);
+  }, [job, id, houseJobs, prefix, navigate, refetch, highlightInvoiceId]);
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -238,6 +264,7 @@ export default function JobDetailPage() {
         statusLabel={JOB_STATUS_LABELS[job.status] ?? job.status}
         statusTone={statusTone(job.status)}
         tabs={tabs}
+        defaultTab={defaultTab}
         actions={headerActions}
         actionsDisabled={pending || actions.cancel.isPending || actions.close.isPending}
         onBack={() => navigate(prefix)}

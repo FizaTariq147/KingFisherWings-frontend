@@ -28,7 +28,7 @@ export function NvoccJobWorkflowPanel({ jobId }: NvoccJobWorkflowPanelProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [containerTypeId, setContainerTypeId] = useState('');
-  const [quantity, setQuantity] = useState('1');
+  const [containerCount, setContainerCount] = useState('1');
   const [notes, setNotes] = useState('');
 
   const hasCro = requests.some((r) => Boolean(r.cro_number));
@@ -90,9 +90,13 @@ export function NvoccJobWorkflowPanel({ jobId }: NvoccJobWorkflowPanelProps) {
                 onChange={(e) => setContainerTypeId(e.target.value)}
               />
               <Input
-                placeholder="Quantity"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
+                type="number"
+                min={1}
+                max={100}
+                step={1}
+                placeholder="Container count (1–100)"
+                value={containerCount}
+                onChange={(e) => setContainerCount(e.target.value)}
               />
               <Input placeholder="Notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
             </div>
@@ -101,9 +105,15 @@ export function NvoccJobWorkflowPanel({ jobId }: NvoccJobWorkflowPanelProps) {
               disabled={actions.createContainerRequest.isPending}
               onClick={() =>
                 run(async () => {
+                  const n = Number(containerCount);
+                  const count = Number.isFinite(n)
+                    ? Math.min(100, Math.max(1, Math.trunc(n)))
+                    : 1;
                   await actions.createContainerRequest.mutateAsync({
-                    ...(containerTypeId.trim() ? { container_type_id: containerTypeId.trim() } : {}),
-                    ...(quantity.trim() ? { quantity: Number(quantity) } : {}),
+                    ...(containerTypeId.trim()
+                      ? { container_type_id: containerTypeId.trim() }
+                      : {}),
+                    container_count: count,
                     ...(notes.trim() ? { notes: notes.trim() } : {}),
                   });
                   setNotes('');
@@ -132,7 +142,9 @@ export function NvoccJobWorkflowPanel({ jobId }: NvoccJobWorkflowPanelProps) {
                   <div className="min-w-0">
                     <p className="font-medium">
                       {req.container_type_code || req.container_type_id || 'Container request'}
-                      {req.quantity != null ? ` × ${req.quantity}` : ''}
+                      {(req.container_count ?? req.quantity) != null
+                        ? ` × ${req.container_count ?? req.quantity}`
+                        : ''}
                     </p>
                     <p className="text-xs text-[var(--color-neutral-500)]">
                       {[req.status, req.cro_number && `CRO ${req.cro_number}`, req.container_number]

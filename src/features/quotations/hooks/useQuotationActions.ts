@@ -70,9 +70,6 @@ export function useQuotationActions(quotationId: string) {
     mutationFn: () => quotationService.expire(id),
     onSuccess: afterStatusChange,
   });
-  const sendEmail = useMutation({
-    mutationFn: (dto: SendQuotationEmailDto) => quotationService.sendEmail(id, dto),
-  });
   const generatePdf = useMutation({
     mutationFn: (dto: GenerateQuotationPdfDto) => quotationService.generatePdf(id, dto),
     onSuccess: (info) => {
@@ -80,6 +77,21 @@ export function useQuotationActions(quotationId: string) {
       void queryClient.invalidateQueries({ queryKey: quotationKeys.pdf(id) });
       void queryClient.invalidateQueries({ queryKey: quotationKeys.pdfStatus(id) });
     },
+  });
+  const storeClientPdf = useMutation({
+    mutationFn: (opts: {
+      mode: 'CUSTOMER' | 'INTERNAL';
+      blob: Blob;
+      fileName?: string;
+    }) => quotationService.storeClientPdf(id, opts),
+    onSuccess: (info) => {
+      queryClient.setQueryData(quotationKeys.pdf(id), info);
+      void queryClient.invalidateQueries({ queryKey: quotationKeys.pdf(id) });
+      void queryClient.invalidateQueries({ queryKey: quotationKeys.pdfStatus(id) });
+    },
+  });
+  const sendEmail = useMutation({
+    mutationFn: (dto: SendQuotationEmailDto) => quotationService.sendEmail(id, dto),
   });
 
   return {
@@ -97,6 +109,7 @@ export function useQuotationActions(quotationId: string) {
     expire,
     sendEmail,
     generatePdf,
+    storeClientPdf,
   };
 }
 

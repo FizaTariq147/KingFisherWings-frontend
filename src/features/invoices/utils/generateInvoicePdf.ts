@@ -77,6 +77,12 @@ export type InvoicePdfModel = {
   numberLabel?: string;
   /** Meta row label for document date — default `Invoice Date`. */
   dateLabel?: string;
+  /** Meta row label for due/validity — default `Due Date`. Use `Valid Until` for quotations. */
+  dueDateLabel?: string;
+  /** Meta row label for job/ref — default `Job / Ref No.`. */
+  jobRefLabel?: string;
+  /** When true, omit Advance Received / Balance Due (quotations). */
+  hideAdvanceBalance?: boolean;
   /** Page size — default A4. USA formats may use Letter. */
   pageSize?: 'A4' | 'Letter';
   billTo: InvoicePdfBillTo;
@@ -472,6 +478,8 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   const detailsSectionTitle = safePdfText(model.detailsSectionTitle || 'INVOICE DETAILS');
   const numberLabel = safePdfText(model.numberLabel || 'Invoice No.');
   const dateLabel = safePdfText(model.dateLabel || 'Invoice Date');
+  const dueDateLabel = safePdfText(model.dueDateLabel || 'Due Date');
+  const jobRefLabel = safePdfText(model.jobRefLabel || 'Job / Ref No.');
 
   drawText(page, documentTitle, MARGIN, y, 24, fontBold, NAVY);
 
@@ -530,8 +538,8 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   const detailRows: Array<[string, string, number]> = [
     [numberLabel, model.invoiceNumber || '—', 68],
     [dateLabel, fmtDate(model.invoiceDate), 68],
-    ['Due Date', fmtDate(model.dueDate), 68],
-    ['Job / Ref No.', model.jobRef || '—', 68],
+    [dueDateLabel, fmtDate(model.dueDate), 68],
+    [jobRefLabel, model.jobRef || '—', 68],
     ['Currency', currency, 68],
   ];
   for (const [label, value, lw] of detailRows) {
@@ -725,9 +733,13 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
     { label: `VAT @ ${vatPct}%`, value: money(vatAmount) },
     { label: 'Other Charges', value: money(other) },
     { label: 'Grand Total', value: `${currency} ${money(grand)}`, kind: 'grand' },
-    { label: 'Advance Received', value: money(advance), kind: 'advance' },
-    { label: 'Balance Due', value: `${currency} ${money(balance)}`, kind: 'balance' },
   ];
+  if (!model.hideAdvanceBalance) {
+    totRows.push(
+      { label: 'Advance Received', value: money(advance), kind: 'advance' },
+      { label: 'Balance Due', value: `${currency} ${money(balance)}`, kind: 'balance' },
+    );
+  }
 
   let totalsH = 0;
   for (const row of totRows) {
@@ -740,7 +752,9 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   sectionTitle(page, 'NOTES / REMARKS', MARGIN + 10, y - 13, fontBold);
 
   const defaultRemarks =
-    'This is a computer-generated tax invoice / statement of charges. Payment is due by the due date. Please quote the invoice number as payment reference. Bank charges, if any, are for the remitter\'s account. Goods remain the property of the carrier / forwarder until paid in full where applicable.';
+    model.hideAdvanceBalance
+      ? 'This is a computer-generated quotation. Rates are subject to carrier space and equipment availability. Please confirm acceptance before the validity date. Quote the quotation number on all correspondence.'
+      : 'This is a computer-generated tax invoice / statement of charges. Payment is due by the due date. Please quote the invoice number as payment reference. Bank charges, if any, are for the remitter\'s account. Goods remain the property of the carrier / forwarder until paid in full where applicable.';
   const remarkLines = wrapLines(
     font,
     model.remarks?.trim() || defaultRemarks,

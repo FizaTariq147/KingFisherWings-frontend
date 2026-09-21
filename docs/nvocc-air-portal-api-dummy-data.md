@@ -89,13 +89,17 @@ Grants the customer portal access for this booking. Button: **CS triage**.
 
 Button: **Mark quote sent**.
 
+OpenAPI body is `WorkflowStageOverrideDto` only — do **not** send `quotation_id`
+(forbidNonWhitelisted → HTTP 400 `property quotation_id should not exist`).
+
 ```json
 {
-  "quotation_id": "6f1b7c1e-aaaa-4a01-9f00-0000000q0001",
-  "sent_to_email": "ops.test@dummy-shipper.example",
-  "notes": "Dummy quote emailed 15 Sep, valid 14 days."
+  "admin_override": true,
+  "stage_override_reason": "Staff mark quote sent after portal quote QT/NE/26/00051."
 }
 ```
+
+Optional empty body `{}` is also valid.
 
 ### GET `/nvocc/bookings/{BOOKING_ID}/booking-form`
 

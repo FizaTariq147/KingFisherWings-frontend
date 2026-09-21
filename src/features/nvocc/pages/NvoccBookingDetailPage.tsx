@@ -15,18 +15,28 @@ import {
   useNvoccBookingActions,
   useNvoccBookingForm,
   useUpdateNvoccBookingForm,
+  nvoccKeys,
 } from '@/features/nvocc/hooks/useNvocc';
+import { useQueryClient } from '@tanstack/react-query';
 import { useCustomerPortalBookingForm } from '@/features/portal-admin-inbox/hooks/usePortalAdminInbox';
 import type { PortalBookingFormMessagePayload } from '@/features/portal-quotations/utils/portalBookingFormStorage';
 import {
   firstOpenStage,
   useSeaExportProgress,
 } from '@/features/nvocc/hooks/useSeaExportProgress';
-import { nvoccDisplayNumber } from '@/features/nvocc/utils/normalizeNvocc';
+import { nvoccDisplayNumber, preferCommercialGateStatus } from '@/features/nvocc/utils/normalizeNvocc';
+import { rememberQuoteBookingLink } from '@/features/nvocc/utils/quoteBookingLink';
+import {
+  readRememberedJobForBooking,
+  rememberBookingJobLink,
+} from '@/features/nvocc/utils/bookingJobLink';
 import { extractAxiosErrorDetail } from '@/lib/extractAxiosErrorDetail';
+import { isUuid } from '@/lib/isUuid';
 import { normalizeJob } from '@/features/jobs/utils/normalizeJob';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import type { JobType } from '@/features/jobs/constants/job.constants';
+import { JobInvoicesPanel } from '@/features/jobs/components/JobInvoicesPanel';
+import { INVOICE_ROUTE_PREFIX } from '@/features/invoices/api/invoice.api';
 import type {
   NvoccBookingFormParty,
   UpdateNvoccBookingFormDto,
@@ -150,7 +160,10 @@ function applyPortalPayloadToNvoccForm(
     request_details: pick(prev.request_details, payload.request_details),
     booking_agent_line: pick(prev.booking_agent_line, payload.booking_agent_line),
     agent_requester_name: pick(prev.agent_requester_name, payload.agent_requester_name),
-    sq_bl_booking_reference: pick(prev.sq_bl_booking_reference, payload.sq_bl_booking_reference),
+    sq_bl_booking_reference: pick(
+      prev.sq_bl_booking_reference,
+      payload.sq_bl_booking_reference || payload.quoteNumber,
+    ),
     is_dg: overwrite ? Boolean(payload.is_dg) : prev.is_dg || Boolean(payload.is_dg),
     shipper_owned_container: overwrite
       ? Boolean(payload.shipper_owned_container)
@@ -198,6 +211,19 @@ function gateStatusToken(status?: string | null): string {
     .replace(/[\s-]+/g, '_');
 }
 
+/** Parse "Cannot move from CS_TRIAGED to …" style gate errors for the real server stage. */
+function statusFromGateError(error: unknown): string | undefined {
+  const detail = extractAxiosErrorDetail(error);
+  const match = detail.match(/from\s+([A-Z][A-Z0-9_]*)\s+to\s+/i);
+  return match?.[1] ? gateStatusToken(match[1]) : undefined;
+}
+
+function isAtOrPastInvoiceSent(status?: string | null): boolean {
+  const s = gateStatusToken(status);
+  if (!s) return false;
+  return s === 'INVOICE_SENT' || s.includes('INVOICE_SENT');
+}
+
 function isAtOrPastBookingFormComplete(status?: string | null): boolean {
   const s = gateStatusToken(status);
   if (!s) return false;
@@ -208,10 +234,47 @@ function isAtOrPastBookingFormComplete(status?: string | null): boolean {
   );
 }
 
-function isAtOrPastInvoiceSent(status?: string | null): boolean {
+function isAtOrPastCustomerAccepted(status?: string | null): boolean {
   const s = gateStatusToken(status);
   if (!s) return false;
-  return s === 'INVOICE_SENT' || s.includes('INVOICE_SENT');
+  return (
+    s === 'CUSTOMER_ACCEPTED' ||
+    s.includes('CUSTOMER_ACCEPTED') ||
+    isAtOrPastBookingFormComplete(s)
+  );
+}
+
+function isAtOrPastQuoteSent(status?: string | null): boolean {
+  const s = gateStatusToken(status);
+  if (!s) return false;
+  return (
+    s === 'QUOTE_SENT' ||
+    s.includes('QUOTE_SENT') ||
+    isAtOrPastCustomerAccepted(s)
+  );
+}
+
+function isAtOrPastCsTriaged(status?: string | null): boolean {
+  const s = gateStatusToken(status);
+  if (!s) return false;
+  return (
+    s === 'CS_TRIAGED' ||
+    s.includes('CS_TRIAGED') ||
+    s === 'CS_RECEIVE' ||
+    s.includes('PORTAL_ACCESS') ||
+    isAtOrPastQuoteSent(s)
+  );
+}
+
+/** Booking still at draft/new — local session checkmarks must not skip server gates. */
+function isBookingDraftish(status?: string | null): boolean {
+  const s = gateStatusToken(status);
+  return !s || s === 'DRAFT' || s === 'NEW' || s === 'PENDING' || s === 'CREATED';
+}
+
+/** Prefer commercial stage; never let lifecycle DRAFT wipe QUOTE_SENT / CUSTOMER_ACCEPTED. */
+function preferGate(primary?: string | null, fallback?: string | null): string | undefined {
+  return preferCommercialGateStatus(primary, fallback);
 }
 
 function isNotForwardStageError(error: unknown): boolean {
@@ -219,128 +282,300 @@ function isNotForwardStageError(error: unknown): boolean {
   return (
     detail.includes('not forward') ||
     detail.includes('cannot move from') ||
-    detail.includes('already at invoice_sent') ||
-    detail.includes('already invoice_sent')
+    detail.includes('already at') ||
+    detail.includes('already invoice_sent') ||
+    detail.includes('same status') ||
+    /from\s+(\w+)\s+to\s+\1/i.test(detail)
+  );
+}
+
+function isIntermediateStageError(error: unknown): boolean {
+  const detail = extractAxiosErrorDetail(error).toLowerCase();
+  return (
+    detail.includes('intermediate stages') ||
+    detail.includes('must complete') ||
+    detail.includes('current: quote_sent')
   );
 }
 
 export default function NvoccBookingDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const query = useNvoccBooking(id);
   const actions = useNvoccBookingActions(id);
   const bookingFormQuery = useNvoccBookingForm(id, Boolean(query.data));
   const updateBookingForm = useUpdateNvoccBookingForm(id);
   const booking = query.data;
   const { done, markDone, isDone } = useSeaExportProgress(id ? `booking:${id}` : '');
-  const portalBookingQuery = useCustomerPortalBookingForm(
-    {
-      jobId: booking?.job_id,
-      jobTypePrefix: 'NVOCC',
-    },
-    Boolean(booking),
-  );
 
   const [workflowMsg, setWorkflowMsg] = useState<string | null>(null);
   const [workflowError, setWorkflowError] = useState<string | null>(null);
   const [formState, setFormState] = useState<BookingFormUiState>(emptyBookingFormUi);
   const [portalPrefillApplied, setPortalPrefillApplied] = useState(false);
+  /** Quotation APPROVED / portal compliance form — unlocks customer-accept when booking_status lags. */
+  const [portalAcceptEvidence, setPortalAcceptEvidence] = useState(false);
+  /** Stable portal quote match once discovered (avoids formState in query key). */
+  const [portalQuoteHint, setPortalQuoteHint] = useState<{
+    quoteNumber?: string;
+    quotationId?: string;
+  }>({});
+  /** Last auto-created / sent customer invoice id (for Invoice section + job link). */
+  const [workflowInvoiceId, setWorkflowInvoiceId] = useState<string | undefined>();
+
+  const rememberedJob = id ? readRememberedJobForBooking(id) : null;
+  const linkedJobIdEarly = booking?.job_id || rememberedJob?.jobId;
+
+  const portalBookingQuery = useCustomerPortalBookingForm(
+    {
+      jobId: linkedJobIdEarly,
+      jobTypePrefix: 'NVOCC',
+      quoteNumber:
+        String(bookingFormQuery.data?.sq_bl_booking_reference ?? '').trim() ||
+        portalQuoteHint.quoteNumber ||
+        undefined,
+      quotationId: portalQuoteHint.quotationId,
+    },
+    Boolean(booking),
+  );
+
+  // Remember portal quote id/number once found so subsequent fetches stay on QT/NE/….
+  useEffect(() => {
+    const payload = portalBookingQuery.data;
+    if (!payload) return;
+    const quoteNumber = payload.quoteNumber?.trim();
+    const quotationId = payload.quotationId?.trim();
+    if (!quoteNumber && !quotationId) return;
+    setPortalQuoteHint((prev) => {
+      if (prev.quoteNumber === quoteNumber && prev.quotationId === quotationId) return prev;
+      return {
+        quoteNumber: quoteNumber || prev.quoteNumber,
+        quotationId: quotationId || prev.quotationId,
+      };
+    });
+  }, [portalBookingQuery.data]);
+
+  const portalFormFilled = Boolean(
+    portalBookingQuery.data &&
+      (portalBookingQuery.data.quotationId ||
+        portalBookingQuery.data.quoteNumber ||
+        Boolean(portalBookingQuery.data.commodity?.trim()) ||
+        Boolean(portalBookingQuery.data.pol?.trim()) ||
+        Boolean(portalBookingQuery.data.pod?.trim()) ||
+        (portalBookingQuery.data.parties?.length ?? 0) > 0),
+  );
+
+  // Persist quote → booking link so quotation detail can show live gate progress.
+  useEffect(() => {
+    if (!id) return;
+    const quotationId = portalBookingQuery.data?.quotationId;
+    const quoteNumber =
+      portalBookingQuery.data?.quoteNumber ||
+      String(bookingFormQuery.data?.sq_bl_booking_reference ?? '').trim() ||
+      undefined;
+    if (!quotationId && !quoteNumber) return;
+    rememberQuoteBookingLink({
+      quotationId,
+      quoteNumber,
+      bookingId: id,
+    });
+  }, [
+    id,
+    portalBookingQuery.data?.quotationId,
+    portalBookingQuery.data?.quoteNumber,
+    bookingFormQuery.data?.sq_bl_booking_reference,
+  ]);
 
   useEffect(() => {
     const form = bookingFormQuery.data;
     if (!form && !booking) return;
-    // Only advance past booking-form when API mark_complete is true (not mere draft save).
     if (form?.mark_complete === true) markDone('booking-form');
     const parties = form?.parties ?? [];
     const shipper = parties.find((p) => p.party_kind === 'SHIPPER');
     const consignee = parties.find((p) => p.party_kind === 'CONSIGNEE');
     const notify = parties.find((p) => p.party_kind === 'NOTIFY');
-    setFormState({
-      pol: String(form?.pol ?? ''),
-      pod: String(form?.pod ?? ''),
-      commodity: String(form?.commodity ?? booking?.commodity ?? ''),
-      hs_code: String(form?.hs_code ?? booking?.hs_code ?? ''),
-      voyage_ref: String(form?.voyage_ref ?? booking?.voyage_id ?? ''),
-      client_booking_no: String(form?.client_booking_no ?? ''),
-      gross_weight_kg:
-        form?.gross_weight_kg != null
-          ? String(form.gross_weight_kg)
-          : booking?.gross_weight != null
-            ? String(booking.gross_weight)
-            : '',
-      net_weight_kg: form?.net_weight_kg != null ? String(form.net_weight_kg) : '',
-      teu_count: form?.teu_count != null ? String(form.teu_count) : '',
-      date_of_request:
-        String(form?.date_of_request ?? '').slice(0, 10) || new Date().toISOString().slice(0, 10),
-      booking_agent_line: String(form?.booking_agent_line ?? 'KINGFISHER'),
-      agent_requester_name: String(form?.agent_requester_name ?? ''),
-      sq_bl_booking_reference: String(form?.sq_bl_booking_reference ?? ''),
-      final_use: String(form?.final_use ?? ''),
-      activity_sector: String(form?.activity_sector ?? ''),
-      insurance_details: String(form?.insurance_details ?? ''),
-      lc_bank_details: String(form?.lc_bank_details ?? ''),
-      request_details: String(form?.request_details ?? ''),
-      is_dg: Boolean(form?.is_dg ?? booking?.is_dg),
-      shipper_owned_container: Boolean(form?.shipper_owned_container),
-      attach_commercial_invoice: Boolean(form?.attach_commercial_invoice),
-      attach_correspondence: Boolean(form?.attach_correspondence),
-      attach_cod_form: Boolean(form?.attach_cod_form),
-      attach_licence: Boolean(form?.attach_licence),
-      consent_accepted: Boolean(form?.consent_accepted),
-      mark_complete: form?.mark_complete === true,
-      shipper_name: String(shipper?.full_name ?? ''),
-      shipper_address: String(shipper?.address ?? ''),
-      shipper_city: String(shipper?.city ?? ''),
-      shipper_country: String(shipper?.country ?? ''),
-      consignee_name: String(consignee?.full_name ?? ''),
-      consignee_address: String(consignee?.address ?? ''),
-      consignee_city: String(consignee?.city ?? ''),
-      consignee_country: String(consignee?.country ?? ''),
-      notify_name: String(notify?.full_name ?? ''),
+    setFormState((prev) => {
+      let next: BookingFormUiState = {
+        pol: String(form?.pol ?? ''),
+        pod: String(form?.pod ?? ''),
+        commodity: String(form?.commodity ?? booking?.commodity ?? ''),
+        hs_code: String(form?.hs_code ?? booking?.hs_code ?? ''),
+        voyage_ref: String(form?.voyage_ref ?? booking?.voyage_id ?? ''),
+        client_booking_no: String(form?.client_booking_no ?? ''),
+        gross_weight_kg:
+          form?.gross_weight_kg != null
+            ? String(form.gross_weight_kg)
+            : booking?.gross_weight != null
+              ? String(booking.gross_weight)
+              : '',
+        net_weight_kg: form?.net_weight_kg != null ? String(form.net_weight_kg) : '',
+        teu_count: form?.teu_count != null ? String(form.teu_count) : '',
+        date_of_request:
+          String(form?.date_of_request ?? '').slice(0, 10) || new Date().toISOString().slice(0, 10),
+        booking_agent_line: String(form?.booking_agent_line ?? 'KINGFISHER'),
+        agent_requester_name: String(form?.agent_requester_name ?? ''),
+        sq_bl_booking_reference: String(form?.sq_bl_booking_reference ?? ''),
+        final_use: String(form?.final_use ?? ''),
+        activity_sector: String(form?.activity_sector ?? ''),
+        insurance_details: String(form?.insurance_details ?? ''),
+        lc_bank_details: String(form?.lc_bank_details ?? ''),
+        request_details: String(form?.request_details ?? ''),
+        is_dg: Boolean(form?.is_dg ?? booking?.is_dg),
+        shipper_owned_container: Boolean(form?.shipper_owned_container),
+        attach_commercial_invoice: Boolean(form?.attach_commercial_invoice),
+        attach_correspondence: Boolean(form?.attach_correspondence),
+        attach_cod_form: Boolean(form?.attach_cod_form),
+        attach_licence: Boolean(form?.attach_licence),
+        consent_accepted: Boolean(form?.consent_accepted),
+        mark_complete: form?.mark_complete === true,
+        shipper_name: String(shipper?.full_name ?? ''),
+        shipper_address: String(shipper?.address ?? ''),
+        shipper_city: String(shipper?.city ?? ''),
+        shipper_country: String(shipper?.country ?? ''),
+        consignee_name: String(consignee?.full_name ?? ''),
+        consignee_address: String(consignee?.address ?? ''),
+        consignee_city: String(consignee?.city ?? ''),
+        consignee_country: String(consignee?.country ?? ''),
+        notify_name: String(notify?.full_name ?? ''),
+      };
+      // Keep portal-prefilled values when API form still has empty fields.
+      (Object.keys(next) as (keyof BookingFormUiState)[]).forEach((key) => {
+        if (typeof next[key] === 'string' && typeof prev[key] === 'string') {
+          if (!(next[key] as string).trim() && (prev[key] as string).trim()) {
+            (next as Record<string, unknown>)[key] = prev[key];
+          }
+        }
+      });
+      if (portalBookingQuery.data) {
+        next = applyPortalPayloadToNvoccForm(next, portalBookingQuery.data, {
+          overwrite: false,
+        });
+        if (portalBookingQuery.data.mark_complete === true && form?.mark_complete !== true) {
+          // Portal customer already completed — Ops still confirms via Mark complete checkbox.
+          // Pre-check only when API has not already locked mark_complete.
+        }
+      }
+      if (
+        !next.sq_bl_booking_reference.trim() &&
+        (portalQuoteHint.quoteNumber || portalBookingQuery.data?.quoteNumber)
+      ) {
+        next = {
+          ...next,
+          sq_bl_booking_reference:
+            portalQuoteHint.quoteNumber ||
+            portalBookingQuery.data?.quoteNumber ||
+            next.sq_bl_booking_reference,
+        };
+      }
+      const keys = Object.keys(next) as (keyof BookingFormUiState)[];
+      if (keys.every((k) => prev[k] === next[k])) return prev;
+      return next;
     });
-    setPortalPrefillApplied(false);
-  }, [bookingFormQuery.data, booking, markDone]);
+  }, [
+    bookingFormQuery.data,
+    booking?.id,
+    booking?.commodity,
+    booking?.hs_code,
+    booking?.voyage_id,
+    booking?.gross_weight,
+    booking?.is_dg,
+    markDone,
+    portalBookingQuery.data,
+    portalQuoteHint.quoteNumber,
+  ]);
 
   useEffect(() => {
     const payload = portalBookingQuery.data;
     if (!payload || portalPrefillApplied) return;
-    const form = bookingFormQuery.data;
-    const apiHasParties = Boolean(form?.parties?.some((p) => p.full_name?.trim()));
-    const apiHasRoute = Boolean(String(form?.pol ?? '').trim() || String(form?.pod ?? '').trim());
-    if (apiHasParties || apiHasRoute) {
-      setPortalPrefillApplied(true);
-      return;
-    }
-    setFormState((prev) => applyPortalPayloadToNvoccForm(prev, payload, { overwrite: false }));
+    setFormState((prev) => {
+      const merged = applyPortalPayloadToNvoccForm(prev, payload, { overwrite: false });
+      const withQuote = {
+        ...merged,
+        sq_bl_booking_reference:
+          merged.sq_bl_booking_reference.trim() ||
+          payload.quoteNumber ||
+          payload.sq_bl_booking_reference ||
+          merged.sq_bl_booking_reference,
+      };
+      return withQuote;
+    });
     setPortalPrefillApplied(true);
+    setPortalAcceptEvidence(true);
     setWorkflowMsg(
-      `Customer portal booking loaded (quote ${payload.quoteNumber || payload.quotationId.slice(0, 8)}). Review and complete Ops fields.`,
+      `Customer portal booking loaded (quote ${payload.quoteNumber || payload.quotationId.slice(0, 8)}). Review fields, check Mark complete, then Save → invoice + convert.`,
     );
-  }, [portalBookingQuery.data, portalPrefillApplied, bookingFormQuery.data]);
+  }, [portalBookingQuery.data, portalPrefillApplied]);
+
+  const linkedJobId = booking?.job_id || rememberedJob?.jobId;
+  const linkedJobType = (booking?.job_type ||
+    rememberedJob?.jobType ||
+    'NVOCC_EXPORT') as JobType;
+
+  // Keep session link in sync when API finally returns job_id.
+  useEffect(() => {
+    if (!id || !booking?.job_id) return;
+    rememberBookingJobLink({
+      bookingId: id,
+      jobId: booking.job_id,
+      jobType: booking.job_type,
+    });
+  }, [id, booking?.job_id, booking?.job_type]);
 
   useEffect(() => {
-    if (booking?.job_id) markDone('cro-container');
-  }, [booking?.job_id, markDone]);
+    if (linkedJobId) markDone('cro-container');
+  }, [linkedJobId, markDone]);
 
   useEffect(() => {
+    if (isAtOrPastCsTriaged(booking?.booking_status)) markDone('cs-receive');
+    if (isAtOrPastQuoteSent(booking?.booking_status)) markDone('quote-sent');
+    if (isAtOrPastCustomerAccepted(booking?.booking_status)) markDone('customer-accept');
     if (isAtOrPastBookingFormComplete(booking?.booking_status)) markDone('booking-form');
     if (isAtOrPastInvoiceSent(booking?.booking_status)) markDone('invoice');
   }, [booking?.booking_status, markDone]);
+
+  // Portal compliance form only unlocks after customer accept — treat as evidence (no network).
+  useEffect(() => {
+    if (!portalFormFilled) return;
+    setPortalAcceptEvidence((prev) => (prev ? prev : true));
+    markDone('cs-receive');
+    markDone('quote-sent');
+    markDone('customer-accept');
+  }, [portalFormFilled, markDone]);
 
   const derived = useMemo(() => {
     const map: Partial<Record<SeaExportStageId, boolean>> = { ...done };
     map['customer-request'] = true;
     const status = booking?.booking_status;
-    const formComplete =
-      bookingFormQuery.data?.mark_complete === true ||
-      Boolean(done.invoice) ||
-      isAtOrPastBookingFormComplete(status);
-    // Keep booking-form open after draft-only saves, but never regress past invoice.
-    map['booking-form'] = formComplete;
-    if (isAtOrPastInvoiceSent(status)) map.invoice = true;
-    if (booking?.job_id) map['cro-container'] = true;
+    const draftish = isBookingDraftish(status);
+    const localOk = !draftish;
+    // Customer already accepted + filled compliance form in portal → Ops is at booking-form review.
+    const portalAhead = portalAcceptEvidence || portalFormFilled;
+
+    if (portalAhead) {
+      map['cs-receive'] = true;
+      map['quote-sent'] = true;
+      map['customer-accept'] = true;
+    } else {
+      map['cs-receive'] =
+        isAtOrPastCsTriaged(status) || (localOk && Boolean(done['cs-receive']));
+      map['quote-sent'] =
+        isAtOrPastQuoteSent(status) || (localOk && Boolean(done['quote-sent']));
+      map['customer-accept'] = isAtOrPastCustomerAccepted(status);
+    }
+
+    map['booking-form'] =
+      bookingFormQuery.data?.mark_complete === true || isAtOrPastBookingFormComplete(status);
+    map.invoice = isAtOrPastInvoiceSent(status);
+    if (linkedJobId) map['cro-container'] = true;
     return map;
-  }, [done, bookingFormQuery.data?.mark_complete, booking?.job_id, booking?.booking_status]);
+  }, [
+    done,
+    bookingFormQuery.data?.mark_complete,
+    linkedJobId,
+    booking?.booking_status,
+    portalAcceptEvidence,
+    portalFormFilled,
+  ]);
 
   const currentStage = firstOpenStage(SEA_EXPORT_BOOKING_ACTION_ORDER, isDone, derived);
 
@@ -453,76 +688,744 @@ export default function NvoccBookingDetailPage() {
     return dto;
   };
 
+  const navigateToConvertedJob = async (raw: unknown, invoiceId?: string) => {
+    const record = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
+    const nested = record.job && typeof record.job === 'object' ? record.job : raw;
+    const job = normalizeJob(nested);
+    const jobId =
+      job?.id ||
+      (typeof record.job_id === 'string' ? record.job_id : undefined) ||
+      linkedJobId;
+    const jobType = (job?.job_type ||
+      record.job_type ||
+      linkedJobType ||
+      'NVOCC_EXPORT') as JobType;
+    const resolvedInvoiceId =
+      (invoiceId && isUuid(invoiceId) ? invoiceId : undefined) ||
+      (typeof record.invoice_id === 'string' && isUuid(record.invoice_id)
+        ? record.invoice_id
+        : undefined) ||
+      workflowInvoiceId;
+
+    if (jobId) {
+      rememberBookingJobLink({
+        bookingId: id,
+        jobId,
+        jobType: String(jobType),
+      });
+      // Optimistically show linked job on this page before / after refetch.
+      queryClient.setQueryData(nvoccKeys.bookings.detail(id), (prev: typeof booking) =>
+        prev ? { ...prev, job_id: jobId, job_type: String(jobType) } : prev,
+      );
+      try {
+        const { jobService } = await import('@/features/jobs/services/job.service');
+        const quotation = await resolveLinkedQuotation(jobId);
+        if (quotation) await jobService.ensureChargesFromQuotation(jobId, quotation);
+      } catch {
+        /* non-fatal */
+      }
+      if (resolvedInvoiceId) {
+        await linkInvoiceToJob(resolvedInvoiceId, jobId);
+        setWorkflowInvoiceId(resolvedInvoiceId);
+      }
+      await query.refetch();
+      const params = new URLSearchParams({ tab: 'invoices' });
+      if (resolvedInvoiceId) params.set('invoice_id', resolvedInvoiceId);
+      navigate(`${jobDetailPath({ id: jobId, job_type: jobType })}?${params.toString()}`, {
+        state: {
+          openTab: 'invoices',
+          ...(resolvedInvoiceId ? { invoiceId: resolvedInvoiceId } : {}),
+        },
+      });
+      return;
+    }
+    const refreshed = await query.refetch();
+    const linkedId = refreshed.data?.job_id || readRememberedJobForBooking(id)?.jobId;
+    if (linkedId) {
+      if (resolvedInvoiceId) await linkInvoiceToJob(resolvedInvoiceId, linkedId);
+      const params = new URLSearchParams({ tab: 'invoices' });
+      if (resolvedInvoiceId) params.set('invoice_id', resolvedInvoiceId);
+      navigate(
+        `${jobDetailPath({
+          id: linkedId,
+          job_type: (refreshed.data?.job_type || linkedJobType) as JobType,
+        })}?${params.toString()}`,
+        {
+          state: {
+            openTab: 'invoices',
+            ...(resolvedInvoiceId ? { invoiceId: resolvedInvoiceId } : {}),
+          },
+        },
+      );
+    }
+  };
+
+  const resolveLinkedQuotation = async (jobIdHint?: string) => {
+    const { quotationService } = await import(
+      '@/features/quotations/services/quotation.service'
+    );
+    type Quotation = import('@/features/quotations/types/quotation.types').Quotation;
+    const portalQuoteId = portalBookingQuery.data?.quotationId;
+    const quoteNumber =
+      portalBookingQuery.data?.quoteNumber ||
+      formState.sq_bl_booking_reference.trim() ||
+      undefined;
+
+    const remember = (q: Quotation | null): Quotation | null => {
+      if (!q || !id) return q;
+      rememberQuoteBookingLink({
+        quotationId: q.id,
+        quoteNumber: q.quotation_number || q.quote_no || quoteNumber,
+        bookingId: id,
+      });
+      return q;
+    };
+
+    if (portalQuoteId && isUuid(portalQuoteId)) {
+      try {
+        return remember(await quotationService.getById(portalQuoteId));
+      } catch {
+        /* fall through */
+      }
+    }
+
+    const jobId = jobIdHint || booking?.job_id;
+    if (jobId) {
+      const linked = await quotationService.findLinkedToJob(jobId, {
+        quotationId: portalQuoteId,
+        customerId: booking?.shipper_id,
+        jobType: booking?.job_type,
+      });
+      if (linked) return remember(linked);
+    }
+
+    if (quoteNumber) {
+      try {
+        const listed = await quotationService.list({
+          page: 1,
+          limit: 20,
+          search: quoteNumber,
+          order: 'desc',
+          ...(booking?.job_type
+            ? { job_type: booking.job_type as import('@/features/quotations/types/quotation.types').Quotation['job_type'] }
+            : {}),
+        });
+        const match =
+          listed.quotations.find(
+            (q) =>
+              q.quotation_number === quoteNumber ||
+              q.quote_no === quoteNumber ||
+              String(q.quotation_number ?? '').includes(quoteNumber) ||
+              String(q.quote_no ?? '').includes(quoteNumber),
+          ) ?? listed.quotations[0];
+        if (match) {
+          if (match.lines?.length) return remember(match);
+          return remember(await quotationService.getById(match.id));
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+    return null;
+  };
+
+  /**
+   * Advance the live booking through CS_TRIAGED → QUOTE_SENT → CUSTOMER_ACCEPTED
+   * on the server. Required before Mark complete (BOOKING_FORM_COMPLETE).
+   * UI portal evidence alone is not enough — API rejects jumps from CS_TRIAGED.
+   */
+  const advanceBookingCommercialGates = async (): Promise<string | undefined> => {
+    await portalBookingQuery.refetch();
+    let status =
+      (await query.refetch()).data?.booking_status ?? booking?.booking_status;
+    const quotation = await resolveLinkedQuotation();
+    const { isCustomerApprovedStatus } = await import(
+      '@/features/quotations/utils/quotationStatus'
+    );
+    const quoteApproved = quotation
+      ? isCustomerApprovedStatus(quotation.status) ||
+        gateStatusToken(quotation.status) === 'CUSTOMER_ACCEPTED' ||
+        gateStatusToken(quotation.status) === 'WON'
+      : false;
+    const portalFormPresent = Boolean(
+      portalBookingQuery.data?.quotationId ||
+        portalBookingQuery.data?.quoteNumber ||
+        portalFormFilled,
+    );
+
+    const absorbGateError = (error: unknown): string | undefined => {
+      const fromErr = statusFromGateError(error);
+      if (fromErr) return fromErr;
+      if (isNotForwardStageError(error) || isIntermediateStageError(error)) {
+        return gateStatusToken(status) || undefined;
+      }
+      return undefined;
+    };
+
+    /** Refetch without letting lifecycle DRAFT wipe a known commercial gate. */
+    const refetchStatus = async (fallback?: string) => {
+      const fetched = (await query.refetch()).data?.booking_status;
+      return preferGate(fetched, fallback ?? status);
+    };
+
+    const applyUpdated = (updatedStatus?: string | null, fallback?: string) =>
+      preferGate(updatedStatus, fallback ?? status);
+
+    if (!isAtOrPastCsTriaged(status)) {
+      try {
+        const updated = await actions.csTriage.mutateAsync({
+          admin_override: true,
+          stage_override_reason: quotation?.quotation_number
+            ? `Advance CS for portal quote ${quotation.quotation_number}`
+            : 'Advance CS before booking form complete',
+        });
+        status = applyUpdated(updated.booking_status, status);
+      } catch (error) {
+        const inferred = absorbGateError(error);
+        if (!inferred) throw error;
+        status = preferGate(inferred, status);
+      }
+      status = await refetchStatus(status);
+    }
+    markDone('cs-receive');
+
+    if (!isAtOrPastQuoteSent(status)) {
+      try {
+        const updated = await actions.markQuoteSent.mutateAsync({
+          admin_override: true,
+          stage_override_reason: quotation?.quotation_number
+            ? `Advance QUOTE_SENT for portal quote ${quotation.quotation_number}`
+            : 'Advance QUOTE_SENT before booking form complete',
+        });
+        status = applyUpdated(updated.booking_status, status);
+      } catch (error) {
+        const inferred = absorbGateError(error);
+        if (!inferred) throw error;
+        status = preferGate(inferred, status);
+      }
+      status = await refetchStatus(status);
+    }
+    markDone('quote-sent');
+
+    // Portal accept sets CUSTOMER_ACCEPTED on the booking (not only the quotation).
+    if (!isAtOrPastCustomerAccepted(status) && (quoteApproved || portalFormPresent) && id) {
+      try {
+        const { nvoccBookingService } = await import(
+          '@/features/nvocc/services/nvocc.service'
+        );
+        const accepted = await nvoccBookingService.tryPortalAccept(id);
+        if (accepted?.booking_status) {
+          status = applyUpdated(accepted.booking_status, status);
+        } else {
+          status = await refetchStatus(status);
+        }
+      } catch {
+        status = await refetchStatus(status);
+      }
+    }
+
+    if (isAtOrPastCustomerAccepted(status) || quoteApproved || portalFormPresent) {
+      setPortalAcceptEvidence(true);
+      markDone('customer-accept');
+    }
+
+    return status;
+  };
+
+  /**
+   * When booking lags behind portal accept / compliance form, advance
+   * CS_TRIAGED → QUOTE_SENT → CUSTOMER_ACCEPTED on the server.
+   */
+  const syncBookingGatesFromPortal = async () => {
+    setWorkflowError(null);
+    setWorkflowMsg(null);
+    const quotation = await resolveLinkedQuotation();
+    const { coerceQuotationStatus, isCustomerApprovedStatus } = await import(
+      '@/features/quotations/utils/quotationStatus'
+    );
+    const status = await advanceBookingCommercialGates();
+    const quoteApproved = quotation
+      ? isCustomerApprovedStatus(quotation.status) ||
+        gateStatusToken(quotation.status) === 'CUSTOMER_ACCEPTED' ||
+        gateStatusToken(quotation.status) === 'WON'
+      : false;
+    const portalFormPresent = Boolean(
+      portalBookingQuery.data?.quotationId ||
+        portalBookingQuery.data?.quoteNumber ||
+        portalFormFilled,
+    );
+    const bookingAccepted = isAtOrPastCustomerAccepted(status);
+    const accepted = bookingAccepted || quoteApproved || portalFormPresent;
+
+    if (accepted) {
+      setPortalAcceptEvidence(true);
+      markDone('cs-receive');
+      markDone('quote-sent');
+      markDone('customer-accept');
+      const quoteLabel =
+        quotation?.quotation_number ||
+        quotation?.quote_no ||
+        portalBookingQuery.data?.quoteNumber ||
+        'quote';
+      setWorkflowMsg(
+        portalFormPresent
+          ? `${quoteLabel}: gates synced (${gateStatusToken(status) || '—'}). Review Ops fields, then Mark complete → invoice + convert.`
+          : bookingAccepted
+            ? `CUSTOMER_ACCEPTED on booking — complete Ops booking form next.`
+            : `${quoteLabel} is customer-approved. Booking is ${gateStatusToken(status) || 'synced'} — complete Ops booking form next.`,
+      );
+      return;
+    }
+
+    setWorkflowError(
+      `Booking is ${gateStatusToken(status) || 'unknown'}` +
+        (quotation
+          ? ` · quotation ${quotation.quotation_number || quotation.id.slice(0, 8)} is ${coerceQuotationStatus(quotation.status)}`
+          : ' · linked quotation not found') +
+        '. Need QUOTE_SENT then CUSTOMER_ACCEPTED on the booking before Mark complete.',
+    );
+  };
+
+  const ensureNvoccInvoiceWithQuotationCharges = async (): Promise<string | undefined> => {
+    const { invoiceService } = await import('@/features/invoices/services/invoice.service');
+    const { quotationLinesToInvoiceLineDtos } = await import(
+      '@/features/quotations/utils/quotationRevenueCharges'
+    );
+    const quotation = await resolveLinkedQuotation();
+    const lines = quotationLinesToInvoiceLineDtos(quotation?.lines);
+    const jobId = booking?.job_id && isUuid(booking.job_id) ? booking.job_id : undefined;
+
+    // Prefer job-linked draft (same path as Air) so Invoice section lists by job_id.
+    if (jobId) {
+      try {
+        const { jobService } = await import('@/features/jobs/services/job.service');
+        let jobForInvoice = await jobService.getById(jobId);
+        if (quotation?.lines?.length) {
+          try {
+            jobForInvoice = await jobService.ensureChargesFromQuotation(jobId, quotation);
+          } catch {
+            /* keep jobForInvoice */
+          }
+        }
+        const invoice = await invoiceService.ensureDraftForJob({
+          id: jobId,
+          shipper_id: jobForInvoice.shipper_id || booking?.shipper_id,
+          billing_party_id: jobForInvoice.billing_party_id,
+          company_id: jobForInvoice.company_id,
+          branch_id: jobForInvoice.branch_id,
+          currency_code: quotation?.currency_code,
+          charges: jobForInvoice.charges,
+          quotationLines: lines,
+          lineHint: quotation?.quotation_number
+            ? `NVOCC — quotation ${quotation.quotation_number}`
+            : 'NVOCC freight charges',
+        });
+        if (invoice?.id && isUuid(invoice.id)) {
+          setWorkflowInvoiceId(invoice.id);
+          return invoice.id;
+        }
+      } catch {
+        /* fall through to party create */
+      }
+    }
+
+    const partyId = booking?.shipper_id;
+    if (!partyId || !isUuid(partyId)) return undefined;
+
+    // Reuse an invoice already linked to the job if present.
+    if (jobId) {
+      try {
+        const listed = await invoiceService.list({
+          job_id: jobId,
+          limit: 5,
+          page: 1,
+        });
+        const existing = listed.invoices.find((inv) => isUuid(inv.id));
+        if (existing) {
+          const detail = await invoiceService.getById(existing.id).catch(() => existing);
+          const filled = await invoiceService.applyQuotationLinesIfNeeded(detail, lines);
+          setWorkflowInvoiceId(filled.id);
+          return filled.id;
+        }
+      } catch {
+        /* create below */
+      }
+    }
+
+    const createLines =
+      lines.length > 0
+        ? lines
+        : [
+            {
+              description: quotation?.quotation_number
+                ? `NVOCC — quotation ${quotation.quotation_number}`
+                : 'NVOCC freight charges',
+              quantity: 1,
+              unit_price: 0,
+              sort_order: 0,
+            },
+          ];
+
+    try {
+      const created = await invoiceService.create({
+        party_id: partyId,
+        job_id: jobId,
+        currency_code: (quotation?.currency_code || 'AED').trim().toUpperCase().slice(0, 3) || 'AED',
+        exchange_rate: undefined,
+        vat_rate: undefined,
+        remarks: quotation?.quotation_number
+          ? `Charges from quotation ${quotation.quotation_number}`
+          : 'Charges from quotation',
+        lines: createLines,
+      });
+      if (created.id && isUuid(created.id)) {
+        setWorkflowInvoiceId(created.id);
+        return created.id;
+      }
+      return undefined;
+    } catch {
+      return undefined;
+    }
+  };
+
+  const linkInvoiceToJob = async (invoiceId: string, jobId: string) => {
+    if (!isUuid(invoiceId) || !isUuid(jobId)) return;
+    try {
+      const { invoiceService } = await import('@/features/invoices/services/invoice.service');
+      const { invoiceKeys } = await import('@/features/invoices/hooks/useInvoices');
+      const inv = await invoiceService.getById(invoiceId);
+      if (!inv.job_id || inv.job_id !== jobId) {
+        await invoiceService.update(invoiceId, {
+          job_id: jobId,
+          currency_code: inv.currency_code || undefined,
+          exchange_rate: inv.exchange_rate,
+          vat_rate: inv.vat_rate,
+        });
+      }
+      void queryClient.invalidateQueries({ queryKey: invoiceKeys.all });
+    } catch {
+      /* non-fatal — invoice may already be sent / immutable */
+    }
+  };
+
+  const applyQuotationChargesToInvoiceResult = async (sendResult: unknown) => {
+    const { invoiceService } = await import('@/features/invoices/services/invoice.service');
+    const { quotationLinesToInvoiceLineDtos } = await import(
+      '@/features/quotations/utils/quotationRevenueCharges'
+    );
+    const quotation = await resolveLinkedQuotation();
+    const lines = quotationLinesToInvoiceLineDtos(quotation?.lines);
+    if (!lines.length) return;
+
+    const record =
+      sendResult && typeof sendResult === 'object'
+        ? (sendResult as Record<string, unknown>)
+        : {};
+    const nestedInv =
+      record.invoice && typeof record.invoice === 'object'
+        ? (record.invoice as Record<string, unknown>)
+        : null;
+    const invoiceIdCandidates = [
+      record.invoice_id,
+      record.invoiceId,
+      nestedInv?.id,
+      workflowInvoiceId,
+    ];
+    let invoiceId = '';
+    for (const c of invoiceIdCandidates) {
+      const s = String(c ?? '');
+      if (isUuid(s)) {
+        invoiceId = s;
+        break;
+      }
+    }
+
+    if (!invoiceId && booking?.job_id) {
+      try {
+        const listed = await invoiceService.list({
+          job_id: booking.job_id,
+          limit: 5,
+          page: 1,
+        });
+        invoiceId = listed.invoices.find((inv) => isUuid(inv.id))?.id ?? '';
+      } catch {
+        /* ignore */
+      }
+    }
+
+    // Without a job yet, only trust invoice_id from send-invoice response (do not guess by party).
+    if (!invoiceId) return;
+    setWorkflowInvoiceId(invoiceId);
+    try {
+      const invoice = await invoiceService.getById(invoiceId);
+      await invoiceService.applyQuotationLinesIfNeeded(invoice, lines);
+    } catch {
+      /* non-fatal — invoice already sent */
+    }
+  };
+
   const saveBookingForm = () =>
     run(
       async () => {
-        const alreadyFormComplete =
-          bookingFormQuery.data?.mark_complete === true ||
-          isAtOrPastBookingFormComplete(booking?.booking_status);
-        const alreadyInvoiceSent = isAtOrPastInvoiceSent(booking?.booking_status);
-
         // Persist field edits without stage regression (never re-send mark_complete when past).
         await updateBookingForm.mutateAsync(buildBookingFormDto({ markComplete: false }));
-        markDone('customer-accept');
 
         if (!formState.mark_complete) {
           return;
         }
 
+        // Server must leave CS_TRIAGED before BOOKING_FORM_COMPLETE — UI checkmarks are ignored.
+        let statusBefore = await advanceBookingCommercialGates();
+        const fetchedBefore = (await query.refetch()).data?.booking_status;
+        statusBefore = preferGate(fetchedBefore, statusBefore ?? booking?.booking_status);
+
+        if (isBookingDraftish(statusBefore) || gateStatusToken(statusBefore) === 'CS_TRIAGED') {
+          // Force QUOTE_SENT one more time if still stuck at CS / lifecycle DRAFT after absorb.
+          try {
+            const updated = await actions.markQuoteSent.mutateAsync({
+              admin_override: true,
+              stage_override_reason:
+                'Force QUOTE_SENT before BOOKING_FORM_COMPLETE (portal form already on file).',
+            });
+            statusBefore = preferGate(updated.booking_status, statusBefore);
+          } catch (error) {
+            const inferred = statusFromGateError(error);
+            if (inferred) statusBefore = preferGate(inferred, statusBefore);
+            else if (!isNotForwardStageError(error)) throw error;
+          }
+          statusBefore = preferGate(
+            (await query.refetch()).data?.booking_status,
+            statusBefore,
+          );
+        }
+
+        // Portal accept may still be missing on the booking entity — retry before Mark complete.
+        if (
+          !isAtOrPastCustomerAccepted(statusBefore) &&
+          (portalAcceptEvidence || portalFormFilled) &&
+          id
+        ) {
+          try {
+            const { nvoccBookingService } = await import(
+              '@/features/nvocc/services/nvocc.service'
+            );
+            const accepted = await nvoccBookingService.tryPortalAccept(id);
+            statusBefore = preferGate(accepted?.booking_status, statusBefore);
+          } catch {
+            /* keep statusBefore */
+          }
+        }
+
+        if (isBookingDraftish(statusBefore) || gateStatusToken(statusBefore) === 'CS_TRIAGED') {
+          throw new Error(
+            `Booking commercial stage is still ${gateStatusToken(statusBefore) || 'DRAFT'} (need QUOTE_SENT → CUSTOMER_ACCEPTED before BOOKING_FORM_COMPLETE). ` +
+              'Sync booking gates (QUOTE_SENT / CUSTOMER_ACCEPTED), then Mark complete again.',
+          );
+        }
+
+        const alreadyFormComplete =
+          bookingFormQuery.data?.mark_complete === true ||
+          isAtOrPastBookingFormComplete(statusBefore);
+        const alreadyInvoiceSent = isAtOrPastInvoiceSent(statusBefore);
+        let formMarkedComplete = alreadyFormComplete;
+
         if (!alreadyFormComplete) {
           try {
-            // Compliance complete is owned by the customer portal (/submit). Staff mark_complete
-            // requires admin_override (backend 403 otherwise).
-            await updateBookingForm.mutateAsync(
+            const formResult = await updateBookingForm.mutateAsync(
               buildBookingFormDto({
                 markComplete: true,
                 adminOverride: true,
-                overrideReason:
-                  'Admin assist: customer portal owns compliance complete; marking booking form complete after review.',
+                overrideReason: isAtOrPastCustomerAccepted(statusBefore)
+                  ? 'Admin assist: customer portal owns compliance complete; marking booking form complete after review.'
+                  : 'Admin assist: portal quote accepted + form on file; advancing BOOKING_FORM_COMPLETE after QUOTE_SENT sync.',
               }),
             );
+            if (formResult.mark_complete === true) {
+              formMarkedComplete = true;
+              markDone('booking-form');
+            }
           } catch (error) {
-            // Already at INVOICE_SENT (or later) — cannot move back to BOOKING_FORM_COMPLETE.
-            if (!isNotForwardStageError(error)) throw error;
+            if (isIntermediateStageError(error)) {
+              const current =
+                statusFromGateError(error) ||
+                gateStatusToken(statusBefore) ||
+                'unknown';
+              throw new Error(
+                `${extractAxiosErrorDetail(error)} Booking commercial stage is still at ${current} on the server. ` +
+                  'Required order: CS_TRIAGED → QUOTE_SENT → CUSTOMER_ACCEPTED → BOOKING_FORM_COMPLETE. ' +
+                  'Use “Sync from portal” first, then Mark complete again.',
+              );
+            }
+            // "Already at BOOKING_FORM_COMPLETE" counts as success.
+            const fromErr = statusFromGateError(error);
+            if (fromErr && isAtOrPastBookingFormComplete(fromErr)) {
+              formMarkedComplete = true;
+            } else if (!isNotForwardStageError(error)) {
+              throw error;
+            }
           }
         }
+
+        const refreshed = await query.refetch();
+        const statusAfter = preferGate(refreshed.data?.booking_status, statusBefore);
+        const formRefreshed = await bookingFormQuery.refetch();
+        formMarkedComplete =
+          formMarkedComplete || formRefreshed.data?.mark_complete === true;
+
+        // Form mark_complete is the source of truth for BOOKING_FORM_COMPLETE.
+        // Entity booking_status often stays DRAFT until Confirm — do not block on that.
+        if (!formMarkedComplete && !isAtOrPastBookingFormComplete(statusAfter)) {
+          throw new Error(
+            `Booking form was saved but backend status is still ${gateStatusToken(statusAfter) || 'DRAFT'} (need BOOKING_FORM_COMPLETE). ` +
+              'Sync booking gates (QUOTE_SENT / CUSTOMER_ACCEPTED), then Mark complete again.',
+          );
+        }
+        markDone('customer-accept');
         markDone('booking-form');
 
-        if (!alreadyInvoiceSent) {
+        let invoiceForJob = workflowInvoiceId;
+        if (!alreadyInvoiceSent && !isAtOrPastInvoiceSent(statusAfter)) {
           try {
-            // Next gate: INVOICE_SENT — POST /nvocc/bookings/:id/send-invoice (creates invoice).
-            await actions.sendInvoice.mutateAsync({});
+            const invoiceId = await ensureNvoccInvoiceWithQuotationCharges();
+            if (invoiceId) invoiceForJob = invoiceId;
+            const sendResult = await actions.sendInvoice.mutateAsync({
+              admin_override: true,
+              stage_override_reason:
+                'Auto send-invoice after BOOKING_FORM_COMPLETE (booking form Mark complete).',
+              ...(invoiceId ? { invoice_id: invoiceId } : {}),
+            });
+            await applyQuotationChargesToInvoiceResult(sendResult ?? { invoice_id: invoiceId });
+            if (invoiceId) setWorkflowInvoiceId(invoiceId);
           } catch (error) {
+            if (isIntermediateStageError(error)) {
+              throw new Error(
+                `${extractAxiosErrorDetail(error)} Complete CUSTOMER_ACCEPTED → BOOKING_FORM_COMPLETE on the server before INVOICE_SENT. Current UI progress is ignored by the API.`,
+              );
+            }
             if (!isNotForwardStageError(error)) throw error;
           }
+        } else {
+          // Invoice already on server — only backfill lines if we can resolve the invoice id.
+          await applyQuotationChargesToInvoiceResult({});
         }
         markDone('invoice');
+
+        // Auto convert booking → NVOCC job after invoice (unless already linked).
+        const afterInvoice = await query.refetch();
+        const linkedJobId = afterInvoice.data?.job_id ?? booking?.job_id;
+        if (!linkedJobId) {
+          try {
+            const raw = await actions.convertToJob.mutateAsync({});
+            markDone('cro-container');
+            await navigateToConvertedJob(raw, invoiceForJob);
+          } catch (error) {
+            throw new Error(
+              `${extractAxiosErrorDetail(error)} Invoice was sent, but convert-to-job failed. Use “Retry convert to job” on the CRO step.`,
+            );
+          }
+        } else {
+          markDone('cro-container');
+          if (invoiceForJob) await linkInvoiceToJob(invoiceForJob, linkedJobId);
+          const params = new URLSearchParams({ tab: 'invoices' });
+          if (invoiceForJob) params.set('invoice_id', invoiceForJob);
+          navigate(
+            `${jobDetailPath({
+              id: linkedJobId,
+              job_type: (afterInvoice.data?.job_type ||
+                booking?.job_type ||
+                'NVOCC_EXPORT') as JobType,
+            })}?${params.toString()}`,
+            {
+              state: {
+                openTab: 'invoices',
+                ...(invoiceForJob ? { invoiceId: invoiceForJob } : {}),
+              },
+            },
+          );
+        }
       },
       formState.mark_complete
-        ? isAtOrPastInvoiceSent(booking?.booking_status)
-          ? 'Booking already at INVOICE_SENT — form fields saved.'
-          : 'Booking form complete — invoice generated (INVOICE_SENT).'
-        : 'Booking form draft saved. Check “Mark complete” and save again to generate invoice.',
-      formState.mark_complete ? 'invoice' : undefined,
+        ? isAtOrPastInvoiceSent(booking?.booking_status) && booking?.job_id
+          ? 'Booking already invoiced and linked to a job — form fields saved.'
+          : 'Booking form complete → invoice generated → converted to job.'
+        : 'Booking form draft saved. Check “Mark complete” and save again to generate invoice and convert to job.',
+      formState.mark_complete ? 'cro-container' : undefined,
     );
 
   const sendBookingInvoice = () =>
     run(
       async () => {
-        await actions.sendInvoice.mutateAsync({});
+        const refreshed = await query.refetch();
+        const status = preferGate(
+          refreshed.data?.booking_status,
+          booking?.booking_status,
+        );
+        const formComplete =
+          bookingFormQuery.data?.mark_complete === true ||
+          isAtOrPastBookingFormComplete(status);
+        let invoiceForJob = workflowInvoiceId;
+        if (!isAtOrPastInvoiceSent(status)) {
+          if (!formComplete) {
+            throw new Error(
+              `Cannot send invoice yet. Backend status is ${gateStatusToken(status) || 'unknown'} (need BOOKING_FORM_COMPLETE). ` +
+                'Order: QUOTE_SENT → portal CUSTOMER_ACCEPTED → booking form Mark complete → auto invoice + convert. Current: stuck before booking form complete.',
+            );
+          }
+          const invoiceId = await ensureNvoccInvoiceWithQuotationCharges();
+          if (invoiceId) invoiceForJob = invoiceId;
+          const sendResult = await actions.sendInvoice.mutateAsync({
+            admin_override: true,
+            stage_override_reason:
+              'Staff retry send-invoice after BOOKING_FORM_COMPLETE (auto path failed).',
+            ...(invoiceId ? { invoice_id: invoiceId } : {}),
+          });
+          await applyQuotationChargesToInvoiceResult(sendResult ?? { invoice_id: invoiceId });
+        } else {
+          await applyQuotationChargesToInvoiceResult({});
+        }
         markDone('invoice');
+
+        const afterInvoice = await query.refetch();
+        const linkedJobId = afterInvoice.data?.job_id ?? booking?.job_id;
+        if (!linkedJobId) {
+          const raw = await actions.convertToJob.mutateAsync({});
+          markDone('cro-container');
+          await navigateToConvertedJob(raw, invoiceForJob);
+        } else {
+          markDone('cro-container');
+          if (invoiceForJob) await linkInvoiceToJob(invoiceForJob, linkedJobId);
+          const params = new URLSearchParams({ tab: 'invoices' });
+          if (invoiceForJob) params.set('invoice_id', invoiceForJob);
+          navigate(
+            `${jobDetailPath({
+              id: linkedJobId,
+              job_type: (afterInvoice.data?.job_type ||
+                booking?.job_type ||
+                'NVOCC_EXPORT') as JobType,
+            })}?${params.toString()}`,
+            {
+              state: {
+                openTab: 'invoices',
+                ...(invoiceForJob ? { invoiceId: invoiceForJob } : {}),
+              },
+            },
+          );
+        }
       },
-      'Invoice sent — next: convert to job for CRO / container.',
-      'invoice',
+      'Invoice sent → converted to job.',
+      'cro-container',
     );
 
-  const jobHref =
-    booking?.job_id != null
-      ? jobDetailPath({
-          id: booking.job_id,
-          job_type: (booking.job_type ?? 'NVOCC_EXPORT') as JobType,
-        })
-      : null;
+  const jobHref = linkedJobId
+    ? jobDetailPath({
+        id: linkedJobId,
+        job_type: linkedJobType,
+      })
+    : null;
+
+  const displayStatus = linkedJobId
+    ? 'CONVERTED'
+    : booking?.booking_status;
 
   return (
     <div className="space-y-4">
@@ -533,8 +1436,14 @@ export default function NvoccBookingDetailPage() {
           <div className="flex flex-wrap items-start justify-between gap-3 rounded-md border border-gray-200 bg-white p-5">
             <div>
               <h1 className="text-xl font-semibold text-gray-900">{nvoccDisplayNumber(booking, 'Booking')}</h1>
-              <div className="mt-2">
-                <NvoccStatusBadge status={booking.booking_status} />
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <NvoccStatusBadge status={displayStatus} />
+                {linkedJobId && booking.booking_status ? (
+                  <span className="text-xs text-gray-500">
+                    Gate {booking.booking_status}
+                    {booking.lifecycle_status ? ` · ${booking.lifecycle_status}` : ''}
+                  </span>
+                ) : null}
               </div>
               {jobHref ? (
                 <Link
@@ -551,16 +1460,20 @@ export default function NvoccBookingDetailPage() {
                 disabled={
                   actions.confirm.isPending ||
                   Boolean(
-                    booking.booking_status &&
-                      !['DRAFT', 'NEW', 'PENDING'].includes(
-                        String(booking.booking_status).toUpperCase().replace(/[\s-]+/g, '_'),
+                    booking.lifecycle_status &&
+                      !['DRAFT', 'NEW', 'PENDING', 'CREATED'].includes(
+                        String(booking.lifecycle_status)
+                          .toUpperCase()
+                          .replace(/[\s-]+/g, '_'),
                       ),
                   )
                 }
                 title={
-                  booking.booking_status &&
-                  !['DRAFT', 'NEW', 'PENDING'].includes(
-                    String(booking.booking_status).toUpperCase().replace(/[\s-]+/g, '_'),
+                  booking.lifecycle_status &&
+                  !['DRAFT', 'NEW', 'PENDING', 'CREATED'].includes(
+                    String(booking.lifecycle_status)
+                      .toUpperCase()
+                      .replace(/[\s-]+/g, '_'),
                   )
                     ? 'Only draft bookings can be confirmed'
                     : undefined
@@ -586,8 +1499,9 @@ export default function NvoccBookingDetailPage() {
             <div className="space-y-4 px-4 pb-4">
               <NvoccSeaExportFlowRail current={currentStage} done={derived} band="1-2" />
               <p className="text-sm text-gray-500">
-                UI advances one step at a time. Complete the highlighted stage, then the next
-                panel unlocks.
+                {portalFormFilled
+                  ? 'Customer already accepted the quote and submitted the portal booking form — review Ops fields and Mark complete.'
+                  : 'UI advances one step at a time. Complete the highlighted stage, then the next panel unlocks.'}
               </p>
               {workflowError ? (
                 <p className="text-sm text-[var(--color-danger-600)]">{workflowError}</p>
@@ -599,19 +1513,60 @@ export default function NvoccBookingDetailPage() {
               {currentStage === 'cs-receive' ? (
                 <div className="rounded-md border border-amber-200 bg-amber-50 p-4 space-y-2">
                   <p className="text-sm font-medium text-amber-900">Now: Admin receives request (CS)</p>
-                  <p className="text-xs text-amber-800">Grants customer portal access.</p>
-                  <Button
-                    disabled={actions.csTriage.isPending}
-                    onClick={() =>
-                      run(
-                        () => actions.csTriage.mutateAsync({}),
-                        'Portal access granted — next: send quote.',
-                        'cs-receive',
-                      )
-                    }
-                  >
-                    CS triage
-                  </Button>
+                  <p className="text-xs text-amber-800">
+                    Booking is{' '}
+                    <strong>{gateStatusToken(booking?.booking_status) || 'unknown'}</strong>
+                    {portalFormFilled
+                      ? `. Portal already has quote ${portalBookingQuery.data?.quoteNumber || ''} accepted with a booking form — Sync jumps to Ops review.`
+                      : isBookingDraftish(booking?.booking_status)
+                        ? ' (still draft — run Sync or CS triage).'
+                        : isAtOrPastCsTriaged(booking?.booking_status)
+                          ? ' (CS already done on server — use Sync to continue).'
+                          : '.'}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      disabled={
+                        actions.csTriage.isPending ||
+                        actions.markQuoteSent.isPending ||
+                        query.isFetching
+                      }
+                      onClick={() =>
+                        void run(() => syncBookingGatesFromPortal(), undefined)
+                      }
+                    >
+                      {portalFormFilled
+                        ? 'Sync from portal → Ops booking form'
+                        : 'Sync from portal'}
+                    </Button>
+                    {!portalFormFilled ? (
+                      <Button
+                        disabled={actions.csTriage.isPending}
+                        onClick={() =>
+                          run(async () => {
+                            try {
+                              await actions.csTriage.mutateAsync({});
+                            } catch (error) {
+                              const inferred = statusFromGateError(error);
+                              if (
+                                inferred &&
+                                isAtOrPastCsTriaged(inferred) &&
+                                isNotForwardStageError(error)
+                              ) {
+                                markDone('cs-receive');
+                                await query.refetch();
+                                return;
+                              }
+                              throw error;
+                            }
+                          }, 'Portal access granted — next: send quote.', 'cs-receive')
+                        }
+                      >
+                        CS triage only
+                      </Button>
+                    ) : null}
+                  </div>
                 </div>
               ) : null}
 
@@ -619,19 +1574,49 @@ export default function NvoccBookingDetailPage() {
                 <div className="rounded-md border border-sky-200 bg-sky-50 p-4 space-y-2">
                   <p className="text-sm font-medium text-sky-900">Now: Customer accepts</p>
                   <p className="text-xs text-sky-800">
-                    Confirm the linked quotation is <strong>Approved</strong> (portal accept / Mark
-                    approved). Approve does <strong>not</strong> create a job — next Ops records the
-                    booking form.
+                    Booking status: <strong>{gateStatusToken(booking?.booking_status) || '—'}</strong>
+                    {portalBookingQuery.data
+                      ? ` · portal form loaded for ${portalBookingQuery.data.quoteNumber || portalBookingQuery.data.quotationId.slice(0, 8)}`
+                      : ''}
+                    . Accept is on the quotation in the portal (
+                    <code className="text-[10px]">POST /portal/quotations/:id/accept</code>
+                    ), then booking compliance. <strong>Refresh / sync</strong> checks the linked
+                    quotation and advances DRAFT bookings past CS / quote-sent.
                   </p>
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      markDone('customer-accept');
-                      setWorkflowMsg('Customer accept recorded — complete Ops booking form next.');
-                    }}
-                  >
-                    Customer accepted — continue
-                  </Button>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      disabled={
+                        query.isFetching ||
+                        actions.csTriage.isPending ||
+                        actions.markQuoteSent.isPending
+                      }
+                      onClick={() =>
+                        void run(() => syncBookingGatesFromPortal(), undefined)
+                      }
+                    >
+                      Refresh / sync from portal
+                    </Button>
+                    <Button
+                      type="button"
+                      disabled={
+                        !isAtOrPastCustomerAccepted(booking?.booking_status) &&
+                        !portalAcceptEvidence &&
+                        !portalBookingQuery.data
+                      }
+                      onClick={() => {
+                        setPortalAcceptEvidence(true);
+                        markDone('customer-accept');
+                        setWorkflowMsg(
+                          'Customer accept recorded — complete Ops booking form next.',
+                        );
+                        setWorkflowError(null);
+                      }}
+                    >
+                      Customer accepted — continue
+                    </Button>
+                  </div>
                 </div>
               ) : null}
 
@@ -639,20 +1624,46 @@ export default function NvoccBookingDetailPage() {
                 <div className="rounded-md border border-amber-200 bg-amber-50 p-4 space-y-2">
                   <p className="text-sm font-medium text-amber-900">Now: Admin sends quote (Sales)</p>
                   <p className="text-xs text-amber-800">
-                    After this: customer accepts → Ops booking form → send invoice → convert/CRO.
+                    {portalFormFilled
+                      ? `Portal already has ${portalBookingQuery.data?.quoteNumber || 'the quote'} accepted with a booking form — Sync to jump to Ops review.`
+                      : 'After this: customer accepts → Ops booking form → auto invoice + convert to job → CRO.'}
                   </p>
-                  <Button
-                    disabled={actions.markQuoteSent.isPending}
-                    onClick={() =>
-                      run(
-                        () => actions.markQuoteSent.mutateAsync({}),
-                        'Quote sent — next: customer accept, then Ops booking form.',
-                        'quote-sent',
-                      )
-                    }
-                  >
-                    Mark quote sent
-                  </Button>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      disabled={
+                        actions.markQuoteSent.isPending ||
+                        actions.csTriage.isPending ||
+                        query.isFetching
+                      }
+                      onClick={() =>
+                        void run(() => syncBookingGatesFromPortal(), undefined)
+                      }
+                    >
+                      {portalFormFilled
+                        ? 'Sync from portal → Ops booking form'
+                        : 'Sync from portal'}
+                    </Button>
+                    {!portalFormFilled ? (
+                      <Button
+                        disabled={actions.markQuoteSent.isPending}
+                        onClick={() =>
+                          run(
+                            async () => {
+                              await actions.markQuoteSent.mutateAsync({
+                                admin_override: true,
+                                stage_override_reason: 'Staff mark quote sent (NVOCC sea export).',
+                              });
+                            },
+                            'Quote sent — next: customer accept, then Ops booking form.',
+                            'quote-sent',
+                          )
+                        }
+                      >
+                        Mark quote sent
+                      </Button>
+                    ) : null}
+                  </div>
                 </div>
               ) : null}
 
@@ -662,9 +1673,11 @@ export default function NvoccBookingDetailPage() {
                     Now: Booking form (Ops — admin / sales)
                   </p>
                   <p className="text-xs text-emerald-800">
-                    Customer fills and submits the compliance form in the portal. Load that draft
-                    here to review / correct Ops fields. <strong>Mark complete</strong> uses an
-                    admin override (portal owns normal completion), then send-invoice.
+                    Exact gate: QUOTE_SENT → CUSTOMER_ACCEPTED → BOOKING_FORM_COMPLETE → INVOICE_SENT
+                    (with quotation charges) → convert to job. Customer fills the portal form first.{' '}
+                    <strong>Mark complete</strong> advances BOOKING_FORM_COMPLETE, then automatically
+                    generates the invoice using the same charges as the quotation and converts to a
+                    job (no separate convert step unless retry is needed).
                   </p>
                   {portalBookingQuery.data ? (
                     <p className="text-xs text-emerald-900">
@@ -673,7 +1686,8 @@ export default function NvoccBookingDetailPage() {
                         {portalBookingQuery.data.quoteNumber ||
                           portalBookingQuery.data.quotationId.slice(0, 8)}
                       </strong>
-                      .
+                      . Fields are prefilled from the customer form — review, check{' '}
+                      <strong>Mark complete</strong>, then Save.
                     </p>
                   ) : portalBookingQuery.isFetched ? (
                     <p className="text-xs text-amber-800">
@@ -782,7 +1796,7 @@ export default function NvoccBookingDetailPage() {
                           setFormState((prev) => ({ ...prev, mark_complete: e.target.checked }))
                         }
                       />
-                      Mark complete (admin override → BOOKING_FORM_COMPLETE, then send-invoice)
+                      Mark complete (admin override → BOOKING_FORM_COMPLETE → auto invoice → convert to job)
                     </label>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -799,28 +1813,41 @@ export default function NvoccBookingDetailPage() {
                       onClick={() => {
                         const payload = portalBookingQuery.data;
                         if (!payload) return;
-                        setFormState((prev) =>
-                          applyPortalPayloadToNvoccForm(prev, payload, { overwrite: true }),
-                        );
+                        setFormState((prev) => {
+                          const applied = applyPortalPayloadToNvoccForm(prev, payload, {
+                            overwrite: true,
+                          });
+                          return {
+                            ...applied,
+                            sq_bl_booking_reference:
+                              applied.sq_bl_booking_reference.trim() ||
+                              payload.quoteNumber ||
+                              applied.sq_bl_booking_reference,
+                            mark_complete: true,
+                          };
+                        });
+                        setPortalAcceptEvidence(true);
                         setWorkflowMsg(
-                          `Applied customer portal booking (quote ${payload.quoteNumber || payload.quotationId.slice(0, 8)}).`,
+                          `Applied portal quote ${payload.quoteNumber || payload.quotationId.slice(0, 8)} and checked Mark complete. Click Save to invoice + convert.`,
                         );
                       }}
                     >
                       {portalBookingQuery.isFetching
                         ? 'Loading portal…'
-                        : 'Load customer portal booking'}
+                        : 'Load portal + Mark complete'}
                     </Button>
                     <Button
                       disabled={
                         updateBookingForm.isPending ||
                         bookingFormQuery.isLoading ||
-                        actions.sendInvoice.isPending
+                        actions.sendInvoice.isPending ||
+                        actions.convertToJob.isPending
                       }
                       onClick={() => void saveBookingForm()}
                     >
-                      Save booking form
-                      {formState.mark_complete ? ' + send invoice' : ''}
+                      {formState.mark_complete
+                        ? 'Save form → complete + invoice + convert'
+                        : 'Save booking form draft'}
                     </Button>
                   </div>
                 </div>
@@ -828,14 +1855,45 @@ export default function NvoccBookingDetailPage() {
 
               {currentStage === 'invoice' ? (
                 <div className="rounded-md border border-emerald-200 bg-emerald-50 p-4 space-y-2">
-                  <p className="text-sm font-medium text-emerald-900">Now: Invoice sent by sales</p>
+                  <p className="text-sm font-medium text-emerald-900">Now: INVOICE_SENT</p>
+                  <p className="text-xs text-emerald-800">
+                    Invoice + convert run automatically when the booking form is marked complete.
+                    Use this only if auto-invoice failed — then converts to job.
+                  </p>
+                  {workflowInvoiceId ? (
+                    <p className="text-xs text-emerald-900">
+                      Invoice:{' '}
+                      <Link
+                        to={`${INVOICE_ROUTE_PREFIX}/${workflowInvoiceId}`}
+                        className="font-medium underline"
+                      >
+                        Open invoice
+                      </Link>
+                      {linkedJobId ? (
+                        <>
+                          {' · '}
+                          <Link
+                            to={`${jobDetailPath({
+                              id: linkedJobId,
+                              job_type: linkedJobType,
+                            })}?tab=invoices&invoice_id=${encodeURIComponent(workflowInvoiceId)}`}
+                            className="font-medium underline"
+                          >
+                            Job Invoices tab
+                          </Link>
+                        </>
+                      ) : null}
+                    </p>
+                  ) : null}
                   <Button
                     disabled={
-                      actions.sendInvoice.isPending || updateBookingForm.isPending
+                      actions.sendInvoice.isPending ||
+                      updateBookingForm.isPending ||
+                      actions.convertToJob.isPending
                     }
                     onClick={() => void sendBookingInvoice()}
                   >
-                    Send invoice
+                    Retry send invoice + convert
                   </Button>
                 </div>
               ) : null}
@@ -846,14 +1904,22 @@ export default function NvoccBookingDetailPage() {
                     Now: CRO + container number
                   </p>
                   <p className="text-xs text-violet-800">
-                    Creates the NVOCC job (company + branch). If convert 500s, resolves shipper from
-                    enquiry / booking-form SHIPPER (find or create party) and retries via direct job
-                    create. Then Issue CRO / Allocate on the job Ops tab.
+                    Booking is ready to convert (gate INVOICE_SENT + lifecycle CONFIRMED). Retry
+                    posts convert-to-job (empty body first), then falls back to creating the job
+                    directly if the convert API fails. Then Issue CRO / Allocate on the job Ops tab.
                   </p>
                   <p className="text-xs text-violet-900">
-                    Status: <strong>{booking.booking_status || '—'}</strong>
-                    {booking.shipper_id ? '' : ' · missing shipper_id'}
-                    {booking.voyage_id ? '' : ' · missing voyage_id (confirm may fail)'}
+                    Gate: <strong>{booking.booking_status || '—'}</strong>
+                    {' · '}
+                    Lifecycle: <strong>{booking.lifecycle_status || '—'}</strong>
+                    {linkedJobId ? (
+                      <>
+                        {' · '}
+                        Job: <strong>{linkedJobId.slice(0, 8)}…</strong>
+                      </>
+                    ) : null}
+                    {booking.shipper_id ? '' : ' · missing shipper_id (will resolve from form)'}
+                    {booking.voyage_id ? '' : ' · missing voyage_id'}
                   </p>
                   {jobHref ? (
                     <Link to={jobHref}>
@@ -866,40 +1932,13 @@ export default function NvoccBookingDetailPage() {
                         run(async () => {
                           const raw = await actions.convertToJob.mutateAsync({});
                           markDone('cro-container');
-                          const record =
-                            raw && typeof raw === 'object'
-                              ? (raw as Record<string, unknown>)
-                              : {};
-                          const nested =
-                            record.job && typeof record.job === 'object' ? record.job : raw;
-                          const job = normalizeJob(nested);
-                          const jobId =
-                            job?.id ||
-                            (typeof record.job_id === 'string' ? record.job_id : undefined);
-                          const jobType = (job?.job_type ||
-                            record.job_type ||
-                            booking.job_type ||
-                            'NVOCC_EXPORT') as JobType;
-                          if (jobId) {
-                            navigate(jobDetailPath({ id: jobId, job_type: jobType }));
-                            return;
-                          }
-                          const refreshed = await query.refetch();
-                          const linkedId = refreshed.data?.job_id;
-                          if (linkedId) {
-                            navigate(
-                              jobDetailPath({
-                                id: linkedId,
-                                job_type: (refreshed.data?.job_type ||
-                                  booking.job_type ||
-                                  'NVOCC_EXPORT') as JobType,
-                              }),
-                            );
-                          }
+                          await navigateToConvertedJob(raw, workflowInvoiceId);
                         }, 'Converted — open Ops for CRO / allocate.')
                       }
                     >
-                      Convert to job
+                      {actions.convertToJob.isPending
+                        ? 'Converting…'
+                        : 'Retry convert to job'}
                     </Button>
                   )}
                 </div>
@@ -907,12 +1946,44 @@ export default function NvoccBookingDetailPage() {
             </div>
           </Card>
 
+          {linkedJobId ? (
+            <JobInvoicesPanel
+              jobId={linkedJobId}
+              job={
+                {
+                  id: linkedJobId,
+                  shipper_id: booking.shipper_id,
+                  job_type: linkedJobType,
+                } as import('@/features/jobs/types/job.types').Job
+              }
+              highlightInvoiceId={workflowInvoiceId}
+            />
+          ) : workflowInvoiceId ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Invoice</CardTitle>
+              </CardHeader>
+              <div className="space-y-2 px-4 pb-4">
+                <p className="text-xs text-[var(--color-neutral-500)]">
+                  Draft/sent invoice from Mark complete (will list under the job Invoices tab after
+                  convert).
+                </p>
+                <Link
+                  to={`${INVOICE_ROUTE_PREFIX}/${workflowInvoiceId}`}
+                  className="text-sm font-medium text-[var(--color-primary-600)] underline"
+                >
+                  Open invoice
+                </Link>
+              </div>
+            </Card>
+          ) : null}
+
           <dl className="grid gap-4 rounded-md border border-gray-200 bg-white p-5 sm:grid-cols-2 lg:grid-cols-3">
             <Field label="Voyage" value={booking.voyage_id} />
             <Field label="Enquiry" value={booking.enquiry_id} />
             <Field label="Cargo type" value={booking.cargo_type} />
             <Field label="HBL" value={booking.hbl_number} />
-            <Field label="Job" value={booking.job_number ?? booking.job_id} />
+            <Field label="Job" value={booking.job_number ?? linkedJobId ?? booking.job_id} />
             <Field label="Shipper" value={booking.shipper_id} />
             <Field label="Consignee" value={booking.consignee_id} />
             <Field label="Containers" value={booking.container_count} />

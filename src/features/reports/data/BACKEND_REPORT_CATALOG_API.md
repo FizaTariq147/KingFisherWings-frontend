@@ -31,8 +31,16 @@ FE preserve reference: `src/features/reports/utils/documentPdfPreserve.ts`.
 
 ## Backend requirements (checklist)
 
-FE status (do not re-do on BE): catalogue browse, strips, Import registry (852 codes), client layout preview PDF, analytics hub links (`covered_analytics` = 65).  
-**BE owns:** live FRESA-like PDF bytes for the **787** remaining `partial_document_pdf` formats via Puppeteer packs.
+FE status (do not re-do on BE / do not regress catalogue Generate):
+- Catalogue browse, strips, Import registry (**852** codes)
+- Client layout PDF for **all 852** codes (`*FormatUiLayouts.json` + `generateCatalogLayoutPdf`) — **do not remove**
+- Master index: `src/features/reports/data/fresaReportCatalogComplete.json` (layoutStore + suggestedPackKey)
+- Covered document store: `src/features/reports/data/fresaCoveredDocumentReports.json` (**787** rows with full JSON layouts embedded; additive)
+- Analytics hub links (`covered_analytics` = 65)
+- Document formats covered on FE (`covered_document_pdf` = **787**) via client JSON layouts
+- Preserve: `POST /invoices|quotations/:id/pdf` + live `POST /reports/generate` when pack bound
+
+**BE optional (additive):** live FRESA-like PDF bytes via Puppeteer packs (`suggestedPackKey` in complete catalog JSON). Client layout PDF already closes the FE document gap — packs are print-parity only, not a blocker for catalogue coverage.
 
 ### A. Preserve (must not break)
 
@@ -101,7 +109,7 @@ QUOTATION_REPORT_FORMAT_*                → commercial.quotation or ops.quotati
 ### E. Explicit non-goals
 
 - No Jasper upload; do not scrape Fresa sample site into the API.  
-- FE client layout PDF is preview-only until a pack is bound — BE must not rely on FE for live print parity.  
+- FE client layout PDF closes catalogue document coverage (`covered_document_pdf`); BE packs remain optional for live print parity and must not rely on FE mock data.  
 - Do not replace module analytics screens (P&L, trial balance, AR/AP aging, WMS stock) — those are `covered_analytics` on FE hubs.
 
 FE handoff: `src/features/reports/constants/fresaPdfParity.constants.ts`,  

@@ -1,12 +1,23 @@
 import type { MenuTile } from '@/features/customers/types/menu.types';
-import { FileStack } from 'lucide-react';
+import {
+  AlertTriangle,
+  BarChart2,
+  Barcode,
+  Boxes,
+  FileEdit,
+  FileStack,
+} from 'lucide-react';
 import { accountsMenu } from '@/features/chartOfAccounts/config/accountsMenu';
+import { customerServiceMenu } from '@/features/customers/config/customerServiceMenu';
 import { reportsDocsTile } from '@/features/documents/config/documentationMenu';
 import { reportsHrTile } from '@/features/hr/config/hrMenu';
+import { financeMenu } from '@/features/invoices/config/financeMenu';
 import { managementMenu, reportsMisTile } from '@/features/management/config/managementMenu';
+import { mastersMenu } from '@/features/masters/config/mastersMenu';
 import { reportsNvoccTile } from '@/features/nvocc/config/nvoccMenu';
 import { reportsQuotationTile } from '@/features/quotations/config/quotationsMenu';
 import { reportsSalesTile } from '@/features/sales/config/salesMenu';
+import { wmsMenu } from '@/features/wms/config/wmsMenu';
 import { REPORT_CATALOG_ROUTE } from '../api/reportCatalog.api';
 
 function withSection(tile: MenuTile, section: string): MenuTile {
@@ -31,15 +42,53 @@ const managementDashboardReports = managementMenu.find(
   (tile) => tile.id === 'management-dashboard-reports',
 );
 
-/** Finance hubs only — detailed AR/AP screens stay under Accounts. */
+/** Finance hubs — GL reports + overdue invoices (Accounts deep screens stay under Accounts too). */
 const financeHubTileIds = new Set([
   'financial-reports',
   'mis-dashboard',
   'my-reports',
   'pdc-due-report',
+  'ar-aging',
+  'ap-aging',
 ]);
 
 const financeHubTiles = accountsMenu.filter((tile) => financeHubTileIds.has(tile.id));
+
+const overdueInvoicesTile = financeMenu.find((tile) => tile.id === 'overdue-invoices');
+
+const wmsStockTile = wmsMenu.find((tile) => tile.id === 'wms-stock');
+
+const customReportsTile = mastersMenu.find((tile) => tile.id === 'custom-reports');
+
+const csPricingDashboard = customerServiceMenu.find((tile) => tile.id === 'pricing-dashboard');
+
+const awbStockReportTile: MenuTile = {
+  id: 'awb-stock-low-stock-report',
+  title: 'AWB stock (low stock)',
+  description: 'Airline AWB batches at or below low-stock threshold.',
+  icon: Barcode,
+  iconColor: 'bg-sky-500',
+  path: '/masters/awb-stock-master',
+};
+
+/** Customer Service enquiry / pricing reports hub. */
+const reportsCsTile: MenuTile = csPricingDashboard
+  ? {
+      ...csPricingDashboard,
+      id: 'reports-customer-service',
+      title: 'Reports - Customer Service',
+      description:
+        'Open enquiry reports and pricing dashboard statistics for customer service.',
+      icon: BarChart2,
+    }
+  : {
+      id: 'reports-customer-service',
+      title: 'Reports - Customer Service',
+      description: 'Open enquiry reports and pricing dashboard statistics.',
+      icon: BarChart2,
+      iconColor: 'bg-emerald-500',
+      path: '/customer-service/pricing-dashboard',
+    };
 
 /** FRESA / KingFisher format catalogue (layout PDF previews + generate). */
 export const reportsCatalogTile: MenuTile = {
@@ -52,13 +101,15 @@ export const reportsCatalogTile: MenuTile = {
 };
 
 /**
- * Global Reports menu — catalogue + one hub tile per module + finance report hubs.
- * Deep GL screens (aging, open items, trial balance) live under Accounts, not here.
+ * Global Reports menu — one entry per module that owns report/analytics screens.
+ * Job-level PDFs (HAWB/HBL/stuffing/courier) stay on the job documents panel.
+ * Vendor portal has disputes admin only (no dedicated reports hub).
  */
 export const reportsMenu: MenuTile[] = dedupeByPath([
   withSection(reportsCatalogTile, 'Catalogue'),
   withSection(reportsQuotationTile, 'Module reports'),
   withSection(reportsSalesTile, 'Module reports'),
+  withSection(reportsCsTile, 'Module reports'),
   withSection(reportsHrTile, 'Module reports'),
   withSection(reportsMisTile, 'Module reports'),
   withSection(reportsNvoccTile, 'Module reports'),
@@ -67,4 +118,19 @@ export const reportsMenu: MenuTile[] = dedupeByPath([
     ? [withSection(managementDashboardReports, 'Management')]
     : []),
   ...financeHubTiles.map((tile) => withSection(tile, 'Finance & GL')),
+  ...(overdueInvoicesTile
+    ? [
+        withSection(
+          { ...overdueInvoicesTile, icon: AlertTriangle, title: 'Overdue invoices' },
+          'Finance & GL',
+        ),
+      ]
+    : []),
+  ...(wmsStockTile
+    ? [withSection({ ...wmsStockTile, icon: Boxes }, 'WMS & stock')]
+    : []),
+  withSection(awbStockReportTile, 'WMS & stock'),
+  ...(customReportsTile
+    ? [withSection({ ...customReportsTile, icon: FileEdit }, 'Masters')]
+    : []),
 ]);

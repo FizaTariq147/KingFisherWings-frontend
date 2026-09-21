@@ -14,6 +14,8 @@ export const REPORT_CATALOG_API = {
   generate: '/reports/generate',
   job: (jobId: string) => `/reports/jobs/${encodeURIComponent(jobId)}`,
   download: (jobId: string) => `/reports/jobs/${encodeURIComponent(jobId)}/download`,
+  /** GET — Sea KPI weekly summary (Reports — Sea KPI). Requires branch_id. */
+  seaKpiWeekly: '/reports/sea/kpi-weekly',
 } as const;
 
 export const REPORT_CATALOG_ROUTE = '/reports/catalog';

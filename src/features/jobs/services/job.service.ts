@@ -391,54 +391,39 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.airSendInvoice(id), dto));
   },
 
-  async listAirUldRequests(id: string): Promise<AirUldRequest[]> {
-    assertId(id);
-    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.airUldRequests(id)));
-    const { items } = unwrapList(res.data);
-    return items
-      .map((raw) => normalizeAirUldRequest(raw))
-      .filter((item): item is AirUldRequest => Boolean(item));
+  async listAirUldRequests(_id: string): Promise<AirUldRequest[]> {
+    throw new Error(
+      'Air pallet / ULD requests were removed from the backend (GET /jobs/:id/air/uld-requests).',
+    );
   },
 
   async createAirUldRequest(
-    id: string,
-    dto: CreateAirUldRequestDto = {},
+    _id: string,
+    _dto: CreateAirUldRequestDto = {},
   ): Promise<AirUldRequest> {
-    assertId(id);
-    const res = await withGatewayRetry(() =>
-      axiosInstance.post(JOB_API.airUldRequests(id), dto),
+    throw new Error(
+      'Air pallet / ULD requests were removed from the backend (POST /jobs/:id/air/uld-requests).',
     );
-    const item = normalizeAirUldRequest(unwrapEntity(res.data) ?? res.data);
-    if (!item) throw new Error('ULD request was created but not returned.');
-    return item;
   },
 
   async issueAirUldRequest(
-    id: string,
-    requestId: string,
-    dto: AirWorkflowActionDto = {},
+    _id: string,
+    _requestId: string,
+    _dto: AirWorkflowActionDto = {},
   ): Promise<AirUldRequest> {
-    assertId(id);
-    const res = await withGatewayRetry(() =>
-      axiosInstance.post(JOB_API.airIssueUldRequest(id, requestId), dto),
+    throw new Error(
+      'Air pallet / ULD issue was removed from the backend.',
     );
-    const item = normalizeAirUldRequest(unwrapEntity(res.data) ?? res.data);
-    if (!item) throw new Error('ULD issue did not return a request.');
-    return item;
   },
 
   async allocateAirUldRequest(
-    id: string,
-    requestId: string,
-    dto: AirWorkflowActionDto = {},
+    _id: string,
+    _requestId: string,
+    _dto: AirWorkflowActionDto = {},
   ): Promise<AirUldRequest> {
-    assertId(id);
-    const res = await withGatewayRetry(() =>
-      axiosInstance.post(JOB_API.airAllocateUldRequest(id, requestId), dto),
+    throw new Error(
+      'Air pallet / ULD allocate was removed from the backend.',
     );
-    const item = normalizeAirUldRequest(unwrapEntity(res.data) ?? res.data);
-    if (!item) throw new Error('ULD allocate did not return a request.');
-    return item;
   },
 
   async airStageBuildUp(id: string, dto: AirWorkflowActionDto = {}): Promise<unknown> {
@@ -809,6 +794,37 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.charges(id), dto));
   },
 
+  /**
+   * Copy quotation revenue lines onto the job as billable charges when the job has none yet.
+   * Returns the refreshed job (or original if nothing to copy).
+   */
+  async ensureChargesFromQuotation(
+    jobId: string,
+    quotation: { lines?: import('@/features/quotations/types/quotation.types').QuotationLine[] },
+  ): Promise<Job> {
+    assertId(jobId);
+    const { quotationLinesToJobChargeDtos } = await import(
+      '@/features/quotations/utils/quotationRevenueCharges'
+    );
+    const dtos = quotationLinesToJobChargeDtos(quotation.lines);
+    if (!dtos.length) return this.getById(jobId);
+
+    let job = await this.getById(jobId);
+    const existingBillable = (job.charges ?? []).filter(
+      (c) => c.is_cost !== true && c.is_billable !== false,
+    );
+    if (existingBillable.length > 0) return job;
+
+    for (const dto of dtos) {
+      try {
+        await this.createCharge(jobId, dto);
+      } catch {
+        /* skip lines the API rejects */
+      }
+    }
+    return this.getById(jobId);
+  },
+
   async updateCharge(id: string, chargeId: string, dto: UpdateJobChargeDto): Promise<unknown> {
     assertId(id);
     return request(() => axiosInstance.patch(JOB_API.charge(id, chargeId), dto));
@@ -1145,6 +1161,8 @@ export const jobService = {
     jobService.generateDocument(id, JOB_API.generateSi(id), dto),
   generateStuffingReport: (id: string, dto?: GenerateJobDocumentDto) =>
     jobService.generateDocument(id, JOB_API.generateStuffingReport(id), dto),
+  generateCourierReport: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateCourierReport(id), dto),
   generateSailingConfirmation: (id: string, dto?: GenerateJobDocumentDto) =>
     jobService.generateDocument(id, JOB_API.generateSailingConfirmation(id), dto),
   generateTranshipmentConfirmation: (id: string, dto?: GenerateJobDocumentDto) =>
@@ -1173,6 +1191,12 @@ export const jobService = {
     jobService.generateDocument(id, JOB_API.generateUndertakeLetter(id), dto),
   generateTransportRequest: (id: string, dto?: GenerateJobDocumentDto) =>
     jobService.generateDocument(id, JOB_API.generateTransportRequest(id), dto),
+  generateCrossBorderDeclaration: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateCrossBorderDeclaration(id), dto),
+  generateCustomsTransit: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateCustomsTransit(id), dto),
+  generateDeliveryNote: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateDeliveryNote(id), dto),
   generateShippingAdvice: (id: string, dto?: GenerateJobDocumentDto) =>
     jobService.generateDocument(id, JOB_API.generateShippingAdvice(id), dto),
   generateProofOfDelivery: (id: string, dto?: GenerateJobDocumentDto) =>

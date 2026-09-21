@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AlertCircle, Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
 import { VOUCHER_ROUTE_PREFIX } from '../api/voucher.api';
 import { VoucherFilters } from '../components/VoucherFilters';
 import { VoucherTable } from '../components/VoucherTable';
@@ -12,6 +13,7 @@ import {
   type VoucherType,
 } from '../constants/voucher.constants';
 import { useVouchers } from '../hooks/useVouchers';
+import { voucherService } from '../services/voucher.service';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
@@ -31,6 +33,9 @@ export default function VoucherListPage() {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [page, setPage] = useState(1);
+  const [batchIds, setBatchIds] = useState('');
+  const [batchStatus, setBatchStatus] = useState('POSTED');
+  const [batchMessage, setBatchMessage] = useState<string | null>(null);
 
   const debouncedSearch = useDebouncedValue(search, 300);
   useEffect(() => {
@@ -109,7 +114,40 @@ export default function VoucherListPage() {
         ) : isLoading ? (
           <p className="text-sm text-[var(--color-neutral-400)] py-10 text-center">Loading…</p>
         ) : (
-          <VoucherTable
+          <>
+            <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end">
+              <Input
+                label="Batch voucher ids"
+                value={batchIds}
+                onChange={(e) => setBatchIds(e.target.value)}
+                hint="Comma-separated"
+              />
+              <Input
+                label="Status"
+                value={batchStatus}
+                onChange={(e) => setBatchStatus(e.target.value)}
+              />
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  setBatchMessage(null);
+                  void voucherService
+                    .batchStatus(batchIds.split(','), batchStatus.trim())
+                    .then(() => {
+                      setBatchMessage('Batch status updated.');
+                      void refetch();
+                    })
+                    .catch((err: unknown) => setBatchMessage(getErrorMessage(err)));
+                }}
+              >
+                Update status
+              </Button>
+            </div>
+            {batchMessage ? (
+              <p className="mb-3 text-sm text-[var(--color-neutral-600)]">{batchMessage}</p>
+            ) : null}
+            <VoucherTable
             vouchers={paged}
             isFetching={isFetching}
             page={page}
@@ -118,6 +156,7 @@ export default function VoucherListPage() {
             onPage={setPage}
             onView={(v) => navigate(`${VOUCHER_ROUTE_PREFIX}/${v.id}`)}
           />
+          </>
         )}
       </Card>
     </div>

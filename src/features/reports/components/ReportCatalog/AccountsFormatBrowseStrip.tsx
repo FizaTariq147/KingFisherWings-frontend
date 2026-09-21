@@ -1,11 +1,13 @@
 import { listAccountsFormats } from '../../constants/accountsFormatCatalog';
 import type { AccountsFormatKind } from '../../constants/accountsFormatCatalog';
+import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 
 type AccountsFormatBrowseStripProps = {
   selectedCode?: string;
   onSelect: (code: string) => void;
   visible: boolean;
   searchQuery?: string;
+  allowedCodes?: ReadonlySet<string> | null;
 };
 
 const DEFAULT_TONE = {
@@ -130,19 +132,16 @@ export function AccountsFormatBrowseStrip({
   onSelect,
   visible,
   searchQuery = '',
+  allowedCodes = null,
 }: AccountsFormatBrowseStripProps) {
   if (!visible) return null;
 
   const all = listAccountsFormats();
-  const q = searchQuery.trim().toLowerCase();
-  const tokens = q ? q.split(/\s+/).filter(Boolean) : [];
-  const items = !tokens.length
-    ? all
-    : all.filter((row) => {
-        const hay = `${row.name} ${row.code} ${row.kind}`.toLowerCase();
-        return tokens.every((token) => hay.includes(token));
-      });
-  const qActive = Boolean(tokens.length);
+  const { items, scopedTotal, filterActive } = filterCatalogStripRows(all, {
+    searchQuery,
+    allowedCodes,
+    selectedCode,
+  });
 
   return (
     <div className="space-y-2.5 rounded-xl border border-[var(--color-neutral-200)] bg-[var(--color-surface)] p-3.5 shadow-sm">
@@ -151,12 +150,12 @@ export function AccountsFormatBrowseStrip({
           Accounts formats
         </h3>
         <p className="text-[10px] text-[var(--color-neutral-400)]">
-          {qActive ? `${items.length} of ${all.length} formats` : `${all.length} formats`}
+          {filterActive ? `${items.length} of ${scopedTotal} formats` : `${all.length} formats`}
         </p>
       </div>
       {items.length === 0 ? (
         <p className="px-1 py-2 text-xs text-[var(--color-neutral-500)]">
-          No Accounts formats match “{searchQuery.trim()}”.
+          No Accounts formats match the current filters.
         </p>
       ) : (
         <div className="-mx-0.5 flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:thin]">

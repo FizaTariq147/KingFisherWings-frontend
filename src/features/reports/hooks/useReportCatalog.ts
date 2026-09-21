@@ -13,6 +13,8 @@ export const reportCatalogKeys = {
   detail: (id: string) => [...reportCatalogKeys.all, 'detail', id] as const,
   renderers: () => [...reportCatalogKeys.all, 'renderers'] as const,
   job: (id: string) => [...reportCatalogKeys.all, 'job', id] as const,
+  seaKpiWeekly: (branchId: string) =>
+    [...reportCatalogKeys.all, 'sea-kpi-weekly', branchId] as const,
 };
 
 export function useReportTemplates(
@@ -158,3 +160,16 @@ export function useReportJob(jobId: string, enabled = true) {
     },
   });
 }
+
+/** GET /reports/sea/kpi-weekly — branch_id required. */
+export function useSeaKpiWeekly(branchId: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const id = branchId.trim();
+  return useQuery({
+    queryKey: reportCatalogKeys.seaKpiWeekly(id),
+    queryFn: () => reportCatalogService.seaKpiWeekly({ branch_id: id }),
+    enabled: Boolean(accessToken) && Boolean(id) && enabled,
+    staleTime: 30_000,
+  });
+}
+

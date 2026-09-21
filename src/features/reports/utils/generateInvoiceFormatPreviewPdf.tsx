@@ -4,6 +4,8 @@ import { jsPDF } from 'jspdf';
 import type { InvoiceFormatPreview } from '../types/invoiceFormatPreview.types';
 import { InvoiceFormatLayoutByKind } from '../components/ReportCatalog/invoiceLayouts';
 import type { InvoiceFormatPdfData } from './invoiceFormatToInvoicePdfModel';
+import { shouldAppendCustomerTermsPage } from './shouldAppendCustomerTermsPage';
+import { appendOfficialCustomerTermsPdf } from './appendOfficialCustomerTermsPdf';
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -28,8 +30,10 @@ async function waitForImages(root: HTMLElement): Promise<void> {
 }
 
 /**
- * Render KingFisher invoice layout to a single PDF page.
- * Scales content to fit so the page border box is never split across pages.
+ * Render KingFisher report layout to PDF (page 1 unchanged).
+ * Customer transport docs (BL draft/original, HAWB, DO, etc.) then append the
+ * official KingFisher_Terms_and_Conditions.pdf page(s) — identical UI to the file.
+ * Invoice, quotation, and admin list/finance/WMS formats are excluded.
  */
 export async function generateInvoiceFormatPreviewPdf(
   preview: InvoiceFormatPreview,
@@ -38,6 +42,7 @@ export async function generateInvoiceFormatPreviewPdf(
   const letter =
     preview.paper === 'Letter' || preview.layoutKind === 'usa' || preview.formatNumber === 9;
   const cssWidth = letter ? 816 : 794;
+  const appendTerms = shouldAppendCustomerTermsPage(preview.code);
 
   const host = document.createElement('div');
   host.setAttribute('data-invoice-format-pdf-capture', 'true');
@@ -105,14 +110,16 @@ export async function generateInvoiceFormatPreviewPdf(
     }
     const drawW = imgW * scale;
     const drawH = imgH * scale;
-    // Top-align; footer already sits at bottom of the sheet image.
     const x = margin + (usableW - drawW) / 2;
     const y = margin;
 
     const dataUrl = canvas.toDataURL('image/jpeg', 0.93);
     pdf.addImage(dataUrl, 'JPEG', x, y, drawW, drawH);
 
-    return pdf.output('blob');
+    const layoutBlob = pdf.output('blob');
+    if (!appendTerms) return layoutBlob;
+
+    return appendOfficialCustomerTermsPdf(layoutBlob);
   } finally {
     try {
       root?.unmount();

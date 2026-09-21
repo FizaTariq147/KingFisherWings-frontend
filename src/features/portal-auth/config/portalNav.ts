@@ -10,6 +10,7 @@ import {
   Package,
   Receipt,
   Route,
+  Ruler,
   Scale,
   User,
   Wallet,
@@ -90,6 +91,7 @@ export const PORTAL_NAV_SECTIONS: PortalNavSection[] = [
       { label: 'Disputes', to: '/portal/disputes', Icon: Scale, iconStyle: navStyle('#F43F5E') },
       { label: 'Alerts', to: '/portal/alerts', Icon: Bell, iconStyle: navStyle('#FF751F') },
       { label: 'Account', to: '/portal/account', Icon: User, iconStyle: navStyle('#06B6D4') },
+      { label: 'Tools', to: '/portal/tools', Icon: Ruler, iconStyle: navStyle('#0F766E') },
     ],
   },
 ];

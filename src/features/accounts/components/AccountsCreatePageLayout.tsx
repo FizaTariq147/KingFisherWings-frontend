@@ -56,7 +56,10 @@ export function AccountsCreatePageLayout({
 }: AccountsCreatePageLayoutProps) {
   return (
     <div className={className}>
-      <PageBackLink to={backTo} label={backLabel} />
+      <PageBackLink
+        to={backTo}
+        label={backLabel.startsWith('Back to ') ? 'Back' : backLabel}
+      />
       <div>
         <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">{title}</h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">{subtitle}</p>

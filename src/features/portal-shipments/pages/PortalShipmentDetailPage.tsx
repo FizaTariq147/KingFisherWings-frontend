@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Download, Package, Scale, Box } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -23,7 +23,6 @@ import {
   usePortalShipmentContainerRequests,
   usePortalShipmentDocuments,
   usePortalShipmentMilestones,
-  usePortalShipmentUldRequests,
 } from '../hooks/usePortalShipments';
 
 export default function PortalShipmentDetailPage() {
@@ -46,7 +45,7 @@ export default function PortalShipmentDetailPage() {
     id,
     Boolean(data) && isNvoccOrSea,
   );
-  const uldRequestsQuery = usePortalShipmentUldRequests(id, Boolean(data) && isAir);
+  /** Air pallet / ULD request APIs removed from backend — do not call. */
   const actions = usePortalShipmentActions(id);
   const download = useDownloadPortalShipmentDocument();
   const [actionError, setActionError] = useState<string | null>(null);
@@ -55,7 +54,6 @@ export default function PortalShipmentDetailPage() {
   const milestones = data?.milestones?.length ? data.milestones : milestonesQuery.data ?? [];
   const documents = data?.documents?.length ? data.documents : documentsQuery.data ?? [];
   const containerRequests = containerRequestsQuery.data ?? [];
-  const uldRequests = uldRequestsQuery.data ?? [];
 
   const runAction = async (fn: () => Promise<unknown>, success: string) => {
     setActionError(null);
@@ -65,7 +63,6 @@ export default function PortalShipmentDetailPage() {
       setActionMessage(success);
       await refetch();
       await containerRequestsQuery.refetch();
-      await uldRequestsQuery.refetch();
       await milestonesQuery.refetch();
     } catch (err) {
       setActionError(
@@ -89,22 +86,27 @@ export default function PortalShipmentDetailPage() {
         <Button type="button" size="sm" variant="secondary" onClick={() => refetch()}>
           Retry
         </Button>
-        <Link to="/portal/shipments" className="block text-sm text-[var(--color-primary)] underline">
-          Back to shipments
-        </Link>
+        <button
+          type="button"
+          className="block text-sm text-[var(--color-primary)] underline"
+          onClick={() => navigate(-1)}
+        >
+          Back
+        </button>
       </div>
     );
   }
 
   return (
     <div className="space-y-5">
-      <Link
-        to="/portal/shipments"
+      <button
+        type="button"
         className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-neutral-500)] hover:text-[var(--color-primary)]"
+        onClick={() => navigate(-1)}
       >
         <ArrowLeft size={14} aria-hidden="true" />
-        Back to shipments
-      </Link>
+        Back
+      </button>
       <PortalPageHeader
         title={data.reference}
         description={
@@ -161,73 +163,30 @@ export default function PortalShipmentDetailPage() {
       {isAir ? (
         <PortalPanel padded>
           <h2 className="mb-2 text-sm font-semibold text-[var(--color-neutral-900)]">
-            Air ULD & document requests
+            Air document requests
           </h2>
           <p className="mb-3 text-xs text-[var(--color-neutral-500)]">
             {isAirImport
               ? 'Import: request delivery order after payment / CAN gates.'
-              : 'Export: confirm cargo drop-off after ULD allocate, then request draft HAWB.'}
+              : 'Export: air pallet / ULD request APIs were removed. Request draft HAWB when ready.'}
           </p>
 
           {isAirExport ? (
-            <>
-              {uldRequestsQuery.isLoading ? (
-                <p className="text-sm text-[var(--color-neutral-400)]">Loading ULD requests…</p>
-              ) : uldRequests.length === 0 ? (
-                <p className="mb-3 text-sm text-[var(--color-neutral-400)]">
-                  No ULD requests yet. Staff must issue / allocate first (export).
-                </p>
-              ) : (
-                <PortalAnimatedList className="mb-3 space-y-2">
-                  {uldRequests.map((req) => (
-                    <PortalAnimatedListItem
-                      key={req.id}
-                      className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[var(--color-neutral-200)] px-3 py-2.5"
-                    >
-                      <div className="min-w-0">
-                        <div className="text-sm font-medium truncate">
-                          {req.uldNumber || req.palletType || 'ULD line'}
-                        </div>
-                        <div className="text-xs text-[var(--color-neutral-500)]">
-                          {[req.status, req.palletType].filter(Boolean).join(' · ') || req.lineId}
-                        </div>
-                      </div>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="secondary"
-                        disabled={
-                          req.canConfirmDropoff === false || actions.confirmUldDropoff.isPending
-                        }
-                        onClick={() =>
-                          void runAction(
-                            () => actions.confirmUldDropoff.mutateAsync({ lineId: req.lineId }),
-                            'Cargo drop-off confirmed.',
-                          )
-                        }
-                      >
-                        Confirm drop-off
-                      </Button>
-                    </PortalAnimatedListItem>
-                  ))}
-                </PortalAnimatedList>
-              )}
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  disabled={actions.requestDraftHawb.isPending}
-                  onClick={() =>
-                    void runAction(
-                      () => actions.requestDraftHawb.mutateAsync({}),
-                      'Draft HAWB requested.',
-                    )
-                  }
-                >
-                  Request draft HAWB
-                </Button>
-              </div>
-            </>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                size="sm"
+                disabled={actions.requestDraftHawb.isPending}
+                onClick={() =>
+                  void runAction(
+                    () => actions.requestDraftHawb.mutateAsync({}),
+                    'Draft HAWB requested.',
+                  )
+                }
+              >
+                Request draft HAWB
+              </Button>
+            </div>
           ) : (
             <div className="flex flex-wrap gap-2">
               <Button

@@ -76,7 +76,8 @@ export const SEA_EXPORT_STAGES: readonly SeaExportStage[] = [
     id: 'booking-form',
     band: '1-2',
     label: 'Booking form filled',
-    detail: 'Customer portal form first; Ops (admin / sales) completes /nvocc/bookings/:id/booking-form',
+    detail:
+      'Mark complete → auto INVOICE_SENT → auto convert-to-job (QUOTE_SENT → CUSTOMER_ACCEPTED → BOOKING_FORM_COMPLETE → INVOICE_SENT)',
     owner: 'OPS',
     kind: 'internal',
   },
@@ -84,6 +85,7 @@ export const SEA_EXPORT_STAGES: readonly SeaExportStage[] = [
     id: 'invoice',
     band: '1-2',
     label: 'Invoice sent by sales',
+    detail: 'Auto after booking form Mark complete; retry only if auto path failed',
     owner: 'SALES',
     kind: 'internal',
   },
@@ -91,7 +93,7 @@ export const SEA_EXPORT_STAGES: readonly SeaExportStage[] = [
     id: 'cro-container',
     band: '1-2',
     label: 'CRO + container number',
-    detail: 'Issue CRO (DP World) · allocate container',
+    detail: 'Auto convert-to-job after invoice; then Issue CRO / allocate on job Ops',
     owner: 'OPS',
     kind: 'document',
   },
@@ -196,14 +198,72 @@ export function seaExportStageIndex(id: SeaExportStageId): number {
 /** Map quotation status → current flowchart stage (Stage 1–2). */
 export function quotationStatusToSeaExportStage(
   status: string,
-  opts?: { hasJob?: boolean },
+  opts?: {
+    hasJob?: boolean;
+    /** Linked NVOCC booking commercial gate (CS_TRIAGED → INVOICE_SENT). */
+    bookingStatus?: string | null;
+    /** Booking form mark_complete on the linked booking. */
+    formComplete?: boolean;
+    /** Quotation or booking already has an invoice. */
+    hasInvoice?: boolean;
+  },
 ): SeaExportStageId {
+  const hasBookingSignal = Boolean(
+    opts?.bookingStatus || opts?.formComplete || opts?.hasJob || opts?.hasInvoice,
+  );
+  const fromBooking = hasBookingSignal
+    ? bookingGateToSeaExportStage(opts?.bookingStatus, {
+        hasJob: opts?.hasJob,
+        formComplete: opts?.formComplete,
+      })
+    : null;
+  // Invoice on quote with no booking row yet still advances past booking-form.
+  const fromBookingAdjusted =
+    fromBooking && opts?.hasInvoice && seaExportStageIndex(fromBooking) < seaExportStageIndex('invoice')
+      ? ('invoice' as SeaExportStageId)
+      : fromBooking;
+
   const s = status.toUpperCase().replace(/\s+/g, '_');
-  if (opts?.hasJob || s === 'CONVERTED') return 'cro-container';
-  if (s === 'APPROVED' || s === 'WON') return 'booking-form';
-  if (s === 'SENT' || s === 'CUSTOMER_REVIEW' || s === 'NEGOTIATING') return 'customer-accept';
-  if (s === 'INTERNALLY_APPROVED') return 'quote-sent';
-  if (s === 'SUBMITTED') return 'cs-receive';
+  let fromQuote: SeaExportStageId = 'customer-request';
+  if (opts?.hasJob || s === 'CONVERTED') fromQuote = 'cro-container';
+  else if (opts?.hasInvoice) fromQuote = 'invoice';
+  else if (s === 'APPROVED' || s === 'WON') fromQuote = 'booking-form';
+  else if (s === 'SENT' || s === 'CUSTOMER_REVIEW' || s === 'NEGOTIATING') fromQuote = 'customer-accept';
+  else if (s === 'INTERNALLY_APPROVED') fromQuote = 'quote-sent';
+  else if (s === 'SUBMITTED') fromQuote = 'cs-receive';
+
+  if (!fromBookingAdjusted) return fromQuote;
+
+  // Prefer the further-along of quote status vs live booking gate.
+  return seaExportStageIndex(fromBookingAdjusted) >= seaExportStageIndex(fromQuote)
+    ? fromBookingAdjusted
+    : fromQuote;
+}
+
+/**
+ * Map NVOCC booking commercial gate → Stage 1–2 flowchart node.
+ * Entity lifecycle DRAFT is ignored — use commercial stage only.
+ */
+export function bookingGateToSeaExportStage(
+  bookingStatus?: string | null,
+  opts?: { hasJob?: boolean; formComplete?: boolean },
+): SeaExportStageId {
+  if (opts?.hasJob) return 'cro-container';
+  const s = String(bookingStatus ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  if (!s || s === 'DRAFT' || s === 'NEW' || s === 'PENDING' || s === 'CREATED') {
+    return opts?.formComplete ? 'invoice' : 'customer-request';
+  }
+  if (s.includes('INVOICE_SENT') || s === 'INVOICE_SENT') return 'cro-container';
+  if (s.includes('BOOKING_FORM_COMPLETE') || opts?.formComplete) return 'invoice';
+  if (s.includes('CUSTOMER_ACCEPTED') || s.includes('ACCEPTED')) return 'booking-form';
+  if (s.includes('QUOTE_SENT')) return 'customer-accept';
+  if (s.includes('CS_TRIAGED') || s.includes('CS_RECEIVE') || s.includes('PORTAL_ACCESS')) {
+    return 'quote-sent';
+  }
+  if (s.includes('QUOTE_REQUESTED') || s.includes('REQUESTED')) return 'cs-receive';
   return 'customer-request';
 }
 

@@ -119,6 +119,7 @@ export function invoiceFormatsMatchSearch(searchQuery: string): boolean {
       name,
       code: `INVOICE_REPORT_FORMAT_${num}`,
       kind: 'invoice',
+      formatNumber: Number(num),
     })),
     searchQuery,
   );

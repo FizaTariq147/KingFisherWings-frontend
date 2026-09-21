@@ -1,13 +1,16 @@
 import type { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const BACK_LINK_CLASS =
   'text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] transition-colors';
 
 export interface PageBackLinkProps {
-  /** Destination path. Prefer this over history.back for stable navigation. */
+  /**
+   * Fallback path only when there is no in-app history
+   * (e.g. user opened the page in a new tab). Prefer history back otherwise.
+   */
   to?: string;
-  /** Shown after ← ; e.g. "Back to jobs" or "Air Export jobs". */
+  /** Shown after ← ; defaults to "Back". */
   label?: string;
   onClick?: () => void;
   className?: string;
@@ -15,8 +18,9 @@ export interface PageBackLinkProps {
 }
 
 /**
- * Job-style text back control used across list/detail/create pages.
- * Renders: ← {label}
+ * App-wide text back control.
+ * Always returns to the previous screen in history when possible —
+ * not a fixed module hub route.
  */
 export function PageBackLink({
   to,
@@ -26,24 +30,30 @@ export function PageBackLink({
   children,
 }: PageBackLinkProps) {
   const navigate = useNavigate();
-  const text = children ?? (label.startsWith('←') ? label : `← ${label}`);
+  const location = useLocation();
+  const displayLabel =
+    !label || label.startsWith('Back to ') || /^Back to /i.test(label) ? 'Back' : label;
+  const text = children ?? (displayLabel.startsWith('←') ? displayLabel : `← ${displayLabel}`);
+
+  const goBack = () => {
+    if (onClick) {
+      onClick();
+      return;
+    }
+    // In-app navigation leaves a non-default location key.
+    if (location.key !== 'default') {
+      navigate(-1);
+      return;
+    }
+    if (to) {
+      navigate(to);
+      return;
+    }
+    navigate(-1);
+  };
 
   return (
-    <button
-      type="button"
-      className={`${BACK_LINK_CLASS} ${className}`.trim()}
-      onClick={() => {
-        if (onClick) {
-          onClick();
-          return;
-        }
-        if (to) {
-          navigate(to);
-          return;
-        }
-        navigate(-1);
-      }}
-    >
+    <button type="button" className={`${BACK_LINK_CLASS} ${className}`.trim()} onClick={goBack}>
       {text}
     </button>
   );
