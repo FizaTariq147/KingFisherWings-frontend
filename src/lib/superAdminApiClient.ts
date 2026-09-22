@@ -3,6 +3,7 @@ import { useSuperAdminAuthStore } from '../features/superadmin/store/superAdminA
 import { AUTH_API } from '../features/auth/api/auth.api';
 import { normalizeTokenPair } from '../features/auth/utils/normalizeAuthResponse';
 import { matchesAnyApiPath } from '@/lib/apiPath';
+import { notifyAxiosError } from '@/lib/toastNotify';
 
 export interface ApiEnvelope<T, M = undefined> {
   data: T;
@@ -104,12 +105,17 @@ superAdminApiClient.interceptors.response.use(
 
     const isAuthBootstrap = matchesAnyApiPath(url, SUPERADMIN_NO_REFRESH);
 
+    const rejectWithToast = (error: unknown) => {
+      notifyAxiosError(error);
+      return Promise.reject(error);
+    };
+
     if (status === 401 && original && !original._retry && !isAuthBootstrap) {
       const refreshToken = useSuperAdminAuthStore.getState().refreshToken;
       if (!refreshToken) {
         useSuperAdminAuthStore.getState().logout();
         window.location.href = '/superadmin/login';
-        return Promise.reject(new ApiError(message, status));
+        return rejectWithToast(new ApiError(message, status));
       }
 
       if (isRefreshing) {
@@ -141,7 +147,7 @@ superAdminApiClient.interceptors.response.use(
         processQueue(refreshError, null);
         useSuperAdminAuthStore.getState().logout();
         window.location.href = '/superadmin/login';
-        return Promise.reject(new ApiError('Session expired. Please sign in again.', 401));
+        return rejectWithToast(new ApiError('Session expired. Please sign in again.', 401));
       } finally {
         isRefreshing = false;
       }
@@ -149,9 +155,9 @@ superAdminApiClient.interceptors.response.use(
 
     if (status === 401 && useSuperAdminAuthStore.getState().isAuthenticated && isAuthBootstrap) {
       // login/refresh failures — don't force redirect loop
-      return Promise.reject(new ApiError(message, status));
+      return rejectWithToast(new ApiError(message, status));
     }
 
-    return Promise.reject(new ApiError(message, status));
+    return rejectWithToast(new ApiError(message, status));
   },
 );

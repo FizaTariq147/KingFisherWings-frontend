@@ -135,7 +135,7 @@ export type JobDocumentType = (typeof JOB_DOCUMENT_TYPES)[number];
 
 export const DEFAULT_JOB_PAGE_SIZE = 20;
 
-export type JobSegmentKey = 'air-export' | 'sea-export' | 'sea-import';
+export type JobSegmentKey = 'air-export' | 'sea-export' | 'sea-import' | 'customs-clearance';
 
 export const JOB_SEGMENTS: Record<
   JobSegmentKey,
@@ -167,6 +167,13 @@ export const JOB_SEGMENTS: Record<
     permission: 'menu_jobs_sea_import',
     jobTypes: ['SEA_FCL_IMPORT', 'SEA_LCL_IMPORT', 'NVOCC_IMPORT'],
     defaultCreateType: 'SEA_FCL_IMPORT',
+  },
+  'customs-clearance': {
+    label: 'Customs Clearance',
+    routePrefix: '/jobs/customs-clearance',
+    permission: 'menu_jobs_air_export',
+    jobTypes: ['CUSTOMS_CLEARANCE'],
+    defaultCreateType: 'CUSTOMS_CLEARANCE',
   },
 };
 

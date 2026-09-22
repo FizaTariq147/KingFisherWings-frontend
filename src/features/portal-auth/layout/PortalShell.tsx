@@ -13,6 +13,7 @@ import { usePortalBrand } from '../hooks/usePortalBrand';
 import { usePortalAuthStore } from '../store/portalAuthStore';
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache';
 import { usePortalNotificationUnreadCount } from '@/features/portal-notifications/hooks/usePortalNotifications';
+import { NotificationToastWatcher } from '@/components/toast';
 import { PORTAL_NAV_SECTIONS } from '../config/portalNav';
 
 export function PortalShell() {
@@ -61,6 +62,7 @@ export function PortalShell() {
   return (
     <div className="portal-shell flex min-h-screen bg-[#F4F7F9]">
       <style>{portalAnimationStyles}</style>
+      <NotificationToastWatcher unreadCount={unreadCount} title="Customer portal" />
 
       <PortalSidebar
         onLogout={() => void handleLogout()}

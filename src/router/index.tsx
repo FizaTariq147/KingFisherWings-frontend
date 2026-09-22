@@ -112,6 +112,10 @@ import JobListPage from '../features/jobs/pages/JobListPage'
 import JobCreatePage from '../features/jobs/pages/JobCreatePage'
 import JobDetailPage from '../features/jobs/pages/JobDetailPage'
 import JobEditPage from '../features/jobs/pages/JobEditPage'
+import CustomsClearanceHubPage from '../features/customs-clearance/pages/CustomsClearanceHubPage'
+import HsValidatePage from '../features/customs-clearance/pages/HsValidatePage'
+import PortalCcJobsPage from '../features/portal-cc/pages/PortalCcJobsPage'
+import PortalCcJobDetailPage from '../features/portal-cc/pages/PortalCcJobDetailPage'
 import AwbStockListPage from '../features/awbStock/pages/AwbStockListPage'
 import AwbStockCreatePage from '../features/awbStock/pages/AwbStockCreatePage'
 import AwbStockDetailPage from '../features/awbStock/pages/AwbStockDetailPage'
@@ -344,6 +348,8 @@ export const router = createBrowserRouter([
           { path: 'track', element: <PortalTrackPage /> },
           { path: 'shipments', element: <PortalShipmentsPage /> },
           { path: 'shipments/:id', element: <PortalShipmentDetailPage /> },
+          { path: 'cc-jobs', element: <PortalCcJobsPage /> },
+          { path: 'cc-jobs/:id', element: <PortalCcJobDetailPage /> },
           { path: 'quotes', element: <PortalQuotesPage /> },
           { path: 'quotes/:id', element: <PortalQuoteDetailPage /> },
           { path: 'invoices', element: <PortalInvoicesPage /> },
@@ -472,6 +478,26 @@ export const router = createBrowserRouter([
               { path: '/jobs/sea-import/new', element: <JobCreatePage /> },
               { path: '/jobs/sea-import/:id/edit', element: <JobEditPage /> },
               { path: '/jobs/sea-import/:id', element: <JobDetailPage /> },
+              { path: '/jobs/customs-clearance', element: <JobListPage /> },
+              { path: '/jobs/customs-clearance/new', element: <JobCreatePage /> },
+              { path: '/jobs/customs-clearance/:id/edit', element: <JobEditPage /> },
+              { path: '/jobs/customs-clearance/:id', element: <JobDetailPage /> },
+            ],
+          },
+          {
+            element: (
+              <ProtectedRoute
+                requireAnyPermission={[
+                  'menu_jobs_air_export',
+                  'menu_jobs_sea_export',
+                  'menu_jobs_sea_import',
+                  'menu_documentation',
+                ]}
+              />
+            ),
+            children: [
+              { path: '/customs-clearance', element: <CustomsClearanceHubPage /> },
+              { path: '/customs-clearance/hs-validate', element: <HsValidatePage /> },
             ],
           },
           {

@@ -17,6 +17,13 @@ import { JobOverviewPanel } from '../components/JobOverviewPanel';
 import { JobPnlPanel } from '../components/JobPnlPanel';
 import { JobStuffingPanel } from '../components/JobStuffingPanel';
 import { JobVendorOffersPanel } from '@/features/vendor-job-offers/components/JobVendorOffersPanel';
+import { CcChecklistPanel } from '@/features/customs-clearance/components/CcChecklistPanel';
+import { CcDeclarationPanel } from '@/features/customs-clearance/components/CcDeclarationPanel';
+import { CcDetailsPanel } from '@/features/customs-clearance/components/CcDetailsPanel';
+import { CcFinancePanel } from '@/features/customs-clearance/components/CcFinancePanel';
+import { CcLinesPanel } from '@/features/customs-clearance/components/CcLinesPanel';
+import { CcQueriesPanel } from '@/features/customs-clearance/components/CcQueriesPanel';
+import { isCcJobType } from '@/features/customs-clearance/constants/ccWorkflow';
 import { JOB_STATUS_LABELS, JOB_SEGMENTS, type JobSegmentKey } from '../constants/job.constants';
 import { useJobActions } from '../hooks/useJobActions';
 import { useJobConfirmState } from '../hooks/useJobConfirmState';
@@ -95,9 +102,28 @@ export default function JobDetailPage() {
   const tabs = useMemo(() => {
     if (!job) return [];
     const sea = isSeaFcl(job.job_type);
+    const isCc = isCcJobType(job.job_type);
     return [
       { key: 'overview', label: 'Overview', content: <JobOverviewPanel job={job} /> },
       { key: 'ops', label: 'Ops / Mode', content: <JobOpsPanel job={job} /> },
+      ...(isCc
+        ? [
+            { key: 'cc-details', label: 'CC Details', content: <CcDetailsPanel jobId={id} /> },
+            { key: 'cc-lines', label: 'CC Lines', content: <CcLinesPanel jobId={id} /> },
+            {
+              key: 'cc-checklist',
+              label: 'Checklist',
+              content: <CcChecklistPanel jobId={id} />,
+            },
+            {
+              key: 'cc-declaration',
+              label: 'Declaration',
+              content: <CcDeclarationPanel jobId={id} />,
+            },
+            { key: 'cc-queries', label: 'Queries', content: <CcQueriesPanel jobId={id} /> },
+            { key: 'cc-finance', label: 'CC Finance', content: <CcFinancePanel jobId={id} /> },
+          ]
+        : []),
       ...(sea
         ? [
             { key: 'containers', label: 'Containers', content: <JobContainersPanel jobId={id} /> },

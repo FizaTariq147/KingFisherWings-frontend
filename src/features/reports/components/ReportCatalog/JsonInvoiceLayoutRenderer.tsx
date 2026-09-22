@@ -519,7 +519,8 @@ function ChargeTable({
   const headers = demo.tableHeaders ?? [];
   const rows = demo.tableRows ?? [];
   const bg = themeColor(theme, headerColor, theme.fill);
-  const fg = headerColor === 'fill' || headerColor === 'cyan' ? theme.ink : theme.white;
+  const fg =
+    headerColor === 'fill' ? theme.ink : theme.white;
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[560px] border-collapse text-[9px] leading-normal">

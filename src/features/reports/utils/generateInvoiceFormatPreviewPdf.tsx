@@ -6,6 +6,7 @@ import { InvoiceFormatLayoutByKind } from '../components/ReportCatalog/invoiceLa
 import type { InvoiceFormatPdfData } from './invoiceFormatToInvoicePdfModel';
 import { shouldAppendCustomerTermsPage } from './shouldAppendCustomerTermsPage';
 import { appendOfficialCustomerTermsPdf } from './appendOfficialCustomerTermsPdf';
+import { resolveCustomerTermsBranding } from './resolveCustomerTermsBranding';
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -119,7 +120,8 @@ export async function generateInvoiceFormatPreviewPdf(
     const layoutBlob = pdf.output('blob');
     if (!appendTerms) return layoutBlob;
 
-    return appendOfficialCustomerTermsPdf(layoutBlob);
+    const branding = await resolveCustomerTermsBranding();
+    return appendOfficialCustomerTermsPdf(layoutBlob, branding);
   } finally {
     try {
       root?.unmount();

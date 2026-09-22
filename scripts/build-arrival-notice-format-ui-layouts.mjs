@@ -18,13 +18,13 @@ const BRAND = {
 };
 
 const THEME = {
-  primary: '#0F4D96',
-  accent: '#2286C8',
+  primary: '#0A2942',
+  accent: '#0A2942',
   fill: '#F3F3F3',
   panel: '#EBF0F4',
   orange: '#F7A21C',
   red: '#DE1F26',
-  cyan: '#9AD7FF',
+  cyan: '#0A2942',
   ink: '#101010',
   gray: '#656565',
   white: '#FFFFFF',

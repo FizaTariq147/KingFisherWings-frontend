@@ -117,7 +117,7 @@ function Format6SimpleIndia({ preview }: { preview: InvoiceFormatPreview }) {
         </div>
         <table className="w-full border-collapse text-[7px]">
           <thead>
-            <tr style={{ backgroundColor: C.cyan, color: C.ink }}>
+            <tr className="text-white" style={{ backgroundColor: C.cyan }}>
               {['Charges', 'Unit', 'Qty', 'Amount/Qty', 'Currency', 'Ex.Rate', 'Amount (INR)'].map((h) => (
                 <th key={h} className="border px-1 py-1 text-start font-bold" style={{ borderColor: C.navy }}>
                   {h}
