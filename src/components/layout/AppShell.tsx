@@ -9,6 +9,8 @@ import { useUIStore } from '@/store/uiStore';
 import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore';
 import { OnboardingSteps } from '@/features/platform/components/OnboardingSteps';
 import { AppMotionStyles, AppPageTransition } from '@/components/motion';
+import { NotificationToastWatcher } from '@/components/toast';
+import { useNotificationUnreadCount } from '@/features/notifications/hooks/useNotifications';
 
 export function AppShell({ title }: { title: string }) {
   useApplyTheme();
@@ -17,6 +19,7 @@ export function AppShell({ title }: { title: string }) {
   const mobileSidebarOpen = useUIStore((s) => s.mobileSidebarOpen);
   const closeMobileSidebar = useUIStore((s) => s.closeMobileSidebar);
   const location = useLocation();
+  const unread = useNotificationUnreadCount();
   const isSuperAdminArea =
     location.pathname.startsWith('/superadmin') && !location.pathname.includes('/login');
 
@@ -46,6 +49,9 @@ export function AppShell({ title }: { title: string }) {
   return (
     <div className="flex h-[100dvh] bg-[var(--color-neutral-50)] overflow-hidden">
       <AppMotionStyles />
+      {!isSuperAdminArea ? (
+        <NotificationToastWatcher unreadCount={unread.data ?? 0} title="Admin notification" />
+      ) : null}
       <div className="hidden md:flex shrink-0">
         <Sidebar />
       </div>

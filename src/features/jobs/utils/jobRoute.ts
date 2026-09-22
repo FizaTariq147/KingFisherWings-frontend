@@ -5,6 +5,7 @@ export function segmentFromPath(pathname: string): JobSegmentKey | null {
   if (pathname.startsWith('/jobs/air-export')) return 'air-export';
   if (pathname.startsWith('/jobs/sea-export')) return 'sea-export';
   if (pathname.startsWith('/jobs/sea-import')) return 'sea-import';
+  if (pathname.startsWith('/jobs/customs-clearance')) return 'customs-clearance';
   return null;
 }
 
@@ -19,6 +20,7 @@ export function segmentForJobType(jobType: JobType): JobSegmentKey {
     if (seg.jobTypes.includes(jobType)) return key;
   }
   // Non-segment types (SERVICE_JOB, LAND, COURIER, …) — detail page loads by id.
+  if (jobType === 'CUSTOMS_CLEARANCE') return 'customs-clearance';
   if (jobType === 'SEA_FCL_IMPORT' || jobType === 'SEA_LCL_IMPORT') return 'sea-import';
   if (jobType.startsWith('SEA_') || jobType === 'NVOCC_EXPORT') return 'sea-export';
   return 'air-export';

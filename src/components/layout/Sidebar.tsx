@@ -20,6 +20,7 @@ import {
   Briefcase,
   Truck,
   Warehouse,
+  ClipboardCheck,
   LogOut,
   Loader2,
   Search,
@@ -124,6 +125,7 @@ const SIDEBAR_ICON_STYLES: Record<string, NavIconStyle> = {
   '/jobs/air-export': navStyle('#60A5FA'),
   '/jobs/sea-export': navStyle('#1E3A8A'),
   '/jobs/sea-import': navStyle('#14B8A6'),
+  '/customs-clearance': navStyle('#0F766E'),
   '/documentation': navStyle('#FACC15'),
   '/finance': navStyle('#059669'),
   '/accounts': navStyle('#22D3EE'),
@@ -301,6 +303,19 @@ const OPS_NAV_ITEMS: NavItem[] = [
   { label: 'Air Export', path: '/jobs/air-export', Icon: Plane, permission: 'menu_jobs_air_export' },
   { label: 'Sea Export', path: '/jobs/sea-export', Icon: Ship, permission: 'menu_jobs_sea_export' },
   { label: 'Sea Import', path: '/jobs/sea-import', Icon: Ship, permission: 'menu_jobs_sea_import' },
+  {
+    label: 'Customs Clearance',
+    path: '/customs-clearance',
+    Icon: ClipboardCheck,
+    permission: 'menu_jobs_air_export',
+    permissionAny: [
+      'menu_jobs_air_export',
+      'menu_jobs_sea_export',
+      'menu_jobs_sea_import',
+      'menu_documentation',
+    ],
+    activePrefix: '/customs-clearance',
+  },
   { label: 'NVOCC', path: '/nvocc', Icon: Building2, permission: 'menu_nvocc' },
   { label: 'Documentation', path: '/documentation', Icon: FileText, permission: 'menu_documentation' },
   { label: 'Transport', path: '/operations/transport-requests', Icon: Truck, permission: 'menu_documentation' },
@@ -528,7 +543,9 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
                 onNavigate={onNavigate}
                 resolveActive={(isActive) =>
                   isActive ||
-                  Boolean(item.activePrefix && location.pathname.startsWith(item.activePrefix))
+                  Boolean(item.activePrefix && location.pathname.startsWith(item.activePrefix)) ||
+                  (item.path === '/customs-clearance' &&
+                    location.pathname.startsWith('/jobs/customs-clearance'))
                 }
               />
             ))}

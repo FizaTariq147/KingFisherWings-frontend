@@ -535,6 +535,30 @@ export default function QuotationDetailPage() {
 
       {id ? <QuotationVendorPassPanel quotationId={id} /> : null}
 
+      {quotation && quotation.job_type === 'CUSTOMS_CLEARANCE' ? (
+        <div className="mb-3 rounded-lg border border-teal-200 bg-teal-50/80 p-4 text-sm text-teal-900">
+          <p className="font-medium">Customs Clearance quote</p>
+          <p className="mt-1 text-teal-800/90">
+            Customer accepts → Convert to job → open the job under Customs Clearance Ops (docs →
+            classify → file → duty → clear → invoice → close).{' '}
+            <Link className="underline" to="/customs-clearance">
+              CC hub
+            </Link>
+            {quotation.job_id ? (
+              <>
+                {' · '}
+                <Link
+                  className="underline"
+                  to={`/jobs/customs-clearance/${quotation.job_id}`}
+                >
+                  Open linked job
+                </Link>
+              </>
+            ) : null}
+          </p>
+        </div>
+      ) : null}
+
             {quotation && isNvoccQuoteJobType(quotation.job_type) ? (
         <div className="mb-3 space-y-3 rounded-lg border border-gray-200 bg-white p-4">
           <NvoccSeaExportFlowRail

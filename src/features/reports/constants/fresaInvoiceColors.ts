@@ -1,12 +1,12 @@
 /**
- * Colors extracted from Fresa Format-6 / 7 sample PDFs
- * (blue / orange / red accents + light fills).
+ * Colors for report PDF layouts.
+ * Blues match header/footer navy (#0A2942) from KingFisher T&C chrome.
  */
 export const FRESA_UI = {
-  navy: '#0F4D96',
-  sky: '#2286C8',
-  skySoft: '#2788C9',
-  cyan: '#9AD7FF',
+  navy: '#0A2942',
+  sky: '#0A2942',
+  skySoft: '#0A2942',
+  cyan: '#0A2942',
   panel: '#EBF0F4',
   orange: '#F7A21C',
   red: '#DE1F26',
@@ -18,9 +18,9 @@ export const FRESA_UI = {
 } as const;
 
 export const FRESA_PDF = {
-  navy: { r: 0.0588, g: 0.302, b: 0.5882 },
-  sky: { r: 0.1333, g: 0.5216, b: 0.7843 },
-  cyan: { r: 0.6039, g: 0.8431, b: 1.0 },
+  navy: { r: 0.0392, g: 0.1608, b: 0.2588 },
+  sky: { r: 0.0392, g: 0.1608, b: 0.2588 },
+  cyan: { r: 0.0392, g: 0.1608, b: 0.2588 },
   panel: { r: 0.9216, g: 0.9412, b: 0.9569 },
   orange: { r: 0.9686, g: 0.6353, b: 0.1098 },
   red: { r: 0.8706, g: 0.1216, b: 0.149 },

@@ -4,6 +4,8 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { NvoccJobWorkflowPanel } from '@/features/nvocc/components/NvoccJobWorkflowPanel';
 import { isNvoccJobType } from '@/features/nvocc/hooks/useNvoccJobs';
+import { CcJobWorkflowPanel } from '@/features/customs-clearance/components/CcJobWorkflowPanel';
+import { isCcJobType } from '@/features/customs-clearance/constants/ccWorkflow';
 import { AirJobWorkflowPanel } from '../AirJobWorkflowPanel';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import { useJobContainers, useJobCutoffs } from '../../hooks/useJobs';
@@ -19,6 +21,7 @@ export function JobOpsPanel({ job }: JobOpsPanelProps) {
     job.job_type === 'SEA_FCL_EXPORT' || job.job_type === 'SEA_FCL_IMPORT';
   const isAir = job.job_type === 'AIR_EXPORT' || job.job_type === 'AIR_IMPORT';
   const isNvocc = isNvoccJobType(job.job_type);
+  const isCc = isCcJobType(job.job_type);
   const { data: cutoffs } = useJobCutoffs(job.id, isSeaFcl);
   const { data: containers = [], refetch: refetchContainers } = useJobContainers(
     job.id,
@@ -85,6 +88,8 @@ export function JobOpsPanel({ job }: JobOpsPanelProps) {
       )}
 
       {isNvocc ? <NvoccJobWorkflowPanel jobId={job.id} /> : null}
+
+      {isCc ? <CcJobWorkflowPanel jobId={job.id} /> : null}
 
       {isSeaFcl && (
         <>

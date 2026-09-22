@@ -3,6 +3,8 @@ import { StoredFileLink } from '@/features/files/components/StoredFileLink';
 import { useFileDownload } from '@/features/files/hooks/useFileDownload';
 import { NvoccJobDocumentsPanel } from '@/features/nvocc/components/NvoccJobDocumentsPanel';
 import { isNvoccJobType } from '@/features/nvocc/hooks/useNvoccJobs';
+import { CcEntryPackCard } from '@/features/customs-clearance/components/CcEntryPackCard';
+import { isCcJobType } from '@/features/customs-clearance/constants/ccWorkflow';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -131,6 +133,8 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
     <div className="space-y-4">
       {error && <p className="text-sm text-[var(--color-danger-600)]">{error}</p>}
       {message && <p className="text-sm text-[var(--color-success-700)]">{message}</p>}
+
+      {isCcJobType(jobType) ? <CcEntryPackCard jobId={jobId} /> : null}
 
       <Card>
         <CardHeader>

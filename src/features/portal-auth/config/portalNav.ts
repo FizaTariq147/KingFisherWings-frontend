@@ -2,6 +2,7 @@ import type { LucideIcon } from 'lucide-react';
 import {
   Bell,
   BookOpen,
+  ClipboardCheck,
   ClipboardList,
   CircleDollarSign,
   FileText,
@@ -60,6 +61,12 @@ export const PORTAL_NAV_SECTIONS: PortalNavSection[] = [
       { label: 'Book', to: '/portal/book', Icon: BookOpen, iconStyle: navStyle('#818CF8') },
       { label: 'Track', to: '/portal/track', Icon: Route, iconStyle: navStyle('#60A5FA') },
       { label: 'Shipments', to: '/portal/shipments', Icon: Package, iconStyle: navStyle('#14B8A6') },
+      {
+        label: 'Customs clearance',
+        to: '/portal/cc-jobs',
+        Icon: ClipboardCheck,
+        iconStyle: navStyle('#0F766E'),
+      },
       { label: 'Quotes', to: '/portal/quotes', Icon: Bell, iconStyle: navStyle('#FACC15') },
     ],
   },

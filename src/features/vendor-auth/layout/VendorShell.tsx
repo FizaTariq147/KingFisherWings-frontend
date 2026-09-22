@@ -11,6 +11,7 @@ import {
 } from '@/features/portal-auth/components/portal-ui';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
 import { useVendorNotificationUnreadCount } from '@/features/vendor-notifications/hooks/useVendorNotifications';
+import { NotificationToastWatcher } from '@/components/toast';
 import { VendorSidebar } from '../components/VendorSidebar';
 import { VendorTopbar } from '../components/VendorTopbar';
 import { useVendorBrand } from '../hooks/useVendorBrand';
@@ -64,6 +65,7 @@ export function VendorShell() {
   return (
     <div className="portal-shell flex min-h-screen bg-[#F4F7F9]">
       <style>{portalAnimationStyles}</style>
+      <NotificationToastWatcher unreadCount={notificationCount} title="Vendor portal" />
 
       <VendorSidebar onLogout={() => void handleLogout()} collapsed={sidebarCollapsed} />
 

@@ -4,6 +4,7 @@ import { useVendorAuthStore } from '@/features/vendor-auth/store/vendorAuthStore
 import { normalizeVendorTokenPair } from '@/features/vendor-auth/utils/normalizeVendorAuth';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
 import { matchesAnyApiPath } from '@/lib/apiPath';
+import { notifyAxiosError } from '@/lib/toastNotify';
 
 export interface VendorApiEnvelope<T, M = undefined> {
   data: T;
@@ -130,13 +131,18 @@ vendorApiClient.interceptors.response.use(
     const original = err.config as RetryConfig | undefined;
     const url = original?.url ?? '';
 
+    const rejectWithToast = (error: unknown) => {
+      notifyAxiosError(error);
+      return Promise.reject(error);
+    };
+
     if (status === 401 && original && !original._retry && !isVendorAuthNoRefresh(url)) {
       const refreshToken = useVendorAuthStore.getState().refreshToken;
       if (!refreshToken) {
         useVendorAuthStore.getState().logout();
         clearVendorQueryCache();
         window.location.href = '/vendor/login';
-        return Promise.reject(new VendorApiError(message, status));
+        return rejectWithToast(new VendorApiError(message, status));
       }
 
       if (isRefreshing) {
@@ -166,12 +172,12 @@ vendorApiClient.interceptors.response.use(
         useVendorAuthStore.getState().logout();
         clearVendorQueryCache();
         window.location.href = '/vendor/login';
-        return Promise.reject(new VendorApiError('Session expired. Please sign in again.', 401));
+        return rejectWithToast(new VendorApiError('Session expired. Please sign in again.', 401));
       } finally {
         isRefreshing = false;
       }
     }
 
-    return Promise.reject(new VendorApiError(message, status));
+    return rejectWithToast(new VendorApiError(message, status));
   },
 );

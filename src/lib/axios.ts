@@ -3,6 +3,7 @@ import { AUTH_API } from '@/features/auth/api/auth.api'
 import { matchesAnyApiPath } from '@/lib/apiPath'
 import { erpAccessBlockMessage } from '@/lib/detectErpAccessBlock'
 import { ensureErpAccessToken } from '@/lib/ensureErpAccessToken'
+import { notifyAxiosError } from '@/lib/toastNotify'
 import { useAuthStore } from '@/store/authStore'
 
 interface RetryConfig extends InternalAxiosRequestConfig {
@@ -79,19 +80,24 @@ axiosInstance.interceptors.response.use(
       useAuthStore.getState().setErpAccessBlocked(erpBlockMessage)
     }
 
-    if (!original || original._retry) return Promise.reject(error)
-    if (isAuthNoRefreshRetryUrl(original.url)) return Promise.reject(error)
+    const rejectWithToast = (err: unknown) => {
+      notifyAxiosError(err)
+      return Promise.reject(err)
+    }
 
-    if (error.response?.status !== 401) return Promise.reject(error)
+    if (!original || original._retry) return rejectWithToast(error)
+    if (isAuthNoRefreshRetryUrl(original.url)) return rejectWithToast(error)
+
+    if (error.response?.status !== 401) return rejectWithToast(error)
 
     // Idle modal is showing — Continue / Revoke own refresh; do not auto-retry.
     if (useAuthStore.getState().sessionExpired) {
-      return Promise.reject(error)
+      return rejectWithToast(error)
     }
 
     if (!useAuthStore.getState().refreshToken) {
       useAuthStore.getState().markSessionExpired()
-      return Promise.reject(error)
+      return rejectWithToast(error)
     }
 
     original._retry = true
@@ -103,7 +109,7 @@ axiosInstance.interceptors.response.use(
       return axiosInstance(original)
     } catch (refreshError) {
       useAuthStore.getState().markSessionExpired()
-      return Promise.reject(refreshError)
+      return rejectWithToast(refreshError)
     }
   },
 )

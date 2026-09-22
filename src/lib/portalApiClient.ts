@@ -4,6 +4,7 @@ import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore
 import { normalizePortalTokenPair } from '@/features/portal-auth/utils/normalizePortalAuth';
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache';
 import { matchesAnyApiPath } from '@/lib/apiPath';
+import { notifyAxiosError } from '@/lib/toastNotify';
 
 export interface ApiEnvelope<T, M = undefined> {
   data: T;
@@ -133,13 +134,18 @@ portalApiClient.interceptors.response.use(
     const original = err.config as RetryConfig | undefined;
     const url = original?.url ?? '';
 
+    const rejectWithToast = (error: unknown) => {
+      notifyAxiosError(error);
+      return Promise.reject(error);
+    };
+
     if (status === 401 && original && !original._retry && !isPortalAuthNoRefresh(url)) {
       const refreshToken = usePortalAuthStore.getState().refreshToken;
       if (!refreshToken) {
         usePortalAuthStore.getState().logout();
         clearPortalQueryCache();
         window.location.href = '/portal/login';
-        return Promise.reject(new PortalApiError(message, status));
+        return rejectWithToast(new PortalApiError(message, status));
       }
 
       if (isRefreshing) {
@@ -172,12 +178,12 @@ portalApiClient.interceptors.response.use(
         usePortalAuthStore.getState().logout();
         clearPortalQueryCache();
         window.location.href = '/portal/login';
-        return Promise.reject(new PortalApiError('Session expired. Please sign in again.', 401));
+        return rejectWithToast(new PortalApiError('Session expired. Please sign in again.', 401));
       } finally {
         isRefreshing = false;
       }
     }
 
-    return Promise.reject(new PortalApiError(message, status));
+    return rejectWithToast(new PortalApiError(message, status));
   },
 );
