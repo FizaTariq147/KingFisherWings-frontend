@@ -14,6 +14,7 @@ export {
   toLowerCaseEmail,
   toUpperCaseCode,
   emptyToNumber,
+  normalizeHsCode,
   normalizeIsoCountryCode,
   normalizeName,
   isLogicalName,

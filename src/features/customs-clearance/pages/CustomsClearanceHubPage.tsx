@@ -1,13 +1,23 @@
 import { Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
 import { ClipboardList, FileSearch, Hash, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import { useCcDashboard, useCcQueue } from '../hooks/useCustomsClearance';
 
 export default function CustomsClearanceHubPage() {
+  const [statusFilter, setStatusFilter] = useState('');
+  const [directionFilter, setDirectionFilter] = useState('');
+  const queueParams = useMemo(() => {
+    const params: Record<string, unknown> = {};
+    if (statusFilter.trim()) params.status = statusFilter.trim();
+    if (directionFilter.trim()) params.direction = directionFilter.trim();
+    return params;
+  }, [statusFilter, directionFilter]);
   const dashboard = useCcDashboard();
-  const queue = useCcQueue();
+  const queue = useCcQueue(queueParams);
   const stats = dashboard.data;
   const items = queue.data?.items ?? [];
 
@@ -85,16 +95,34 @@ export default function CustomsClearanceHubPage() {
       ) : null}
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
           <CardTitle className="flex items-center gap-2">
             <FileSearch className="h-4 w-4" />
             CC queue
           </CardTitle>
-          <span className="text-xs text-[var(--color-neutral-500)]">
-            {queue.data?.meta?.total != null
-              ? `${queue.data.meta.total} item(s)`
-              : `${items.length} item(s)`}
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <Input
+              className="w-36"
+              placeholder="Status filter"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            />
+            <select
+              className="rounded-md border border-[var(--color-neutral-200)] bg-white px-2 py-1.5 text-sm"
+              value={directionFilter}
+              onChange={(e) => setDirectionFilter(e.target.value)}
+            >
+              <option value="">All directions</option>
+              <option value="IMPORT">IMPORT</option>
+              <option value="EXPORT">EXPORT</option>
+              <option value="TRANSIT">TRANSIT</option>
+            </select>
+            <span className="text-xs text-[var(--color-neutral-500)]">
+              {queue.data?.meta?.total != null
+                ? `${queue.data.meta.total} item(s)`
+                : `${items.length} item(s)`}
+            </span>
+          </div>
         </CardHeader>
         <div className="px-4 pb-4">
           {queue.isLoading ? (

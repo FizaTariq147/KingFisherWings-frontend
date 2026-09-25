@@ -112,6 +112,7 @@ import JobListPage from '../features/jobs/pages/JobListPage'
 import JobCreatePage from '../features/jobs/pages/JobCreatePage'
 import JobDetailPage from '../features/jobs/pages/JobDetailPage'
 import JobEditPage from '../features/jobs/pages/JobEditPage'
+import JobBarcodeScanPage from '../features/jobs/pages/JobBarcodeScanPage'
 import CustomsClearanceHubPage from '../features/customs-clearance/pages/CustomsClearanceHubPage'
 import HsValidatePage from '../features/customs-clearance/pages/HsValidatePage'
 import PortalCcJobsPage from '../features/portal-cc/pages/PortalCcJobsPage'
@@ -466,6 +467,7 @@ export const router = createBrowserRouter([
             ),
             children: [
               { path: '/jobs/new', element: <JobCreatePage /> },
+              { path: '/jobs/barcode-scan', element: <JobBarcodeScanPage /> },
               { path: '/jobs/air-export', element: <JobListPage /> },
               { path: '/jobs/air-export/new', element: <JobCreatePage /> },
               { path: '/jobs/air-export/:id/edit', element: <JobEditPage /> },
@@ -482,6 +484,10 @@ export const router = createBrowserRouter([
               { path: '/jobs/customs-clearance/new', element: <JobCreatePage /> },
               { path: '/jobs/customs-clearance/:id/edit', element: <JobEditPage /> },
               { path: '/jobs/customs-clearance/:id', element: <JobDetailPage /> },
+              { path: '/jobs/road-freight', element: <JobListPage /> },
+              { path: '/jobs/road-freight/new', element: <JobCreatePage /> },
+              { path: '/jobs/road-freight/:id/edit', element: <JobEditPage /> },
+              { path: '/jobs/road-freight/:id', element: <JobDetailPage /> },
             ],
           },
           {

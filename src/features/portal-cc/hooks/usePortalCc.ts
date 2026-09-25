@@ -3,6 +3,7 @@ import { usePortalQueryScope } from '@/features/portal-shared/usePortalQueryScop
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import { isUuid } from '@/lib/isUuid';
 import { portalCcService } from '../services/portalCc.service';
+import type { PortalCcDocumentDto } from '../types/portalCc.types';
 
 export const portalCcKeys = {
   all: (scope: string) => ['portal', scope, 'cc-jobs'] as const,
@@ -42,11 +43,11 @@ export function usePortalCcChecklist(id: string) {
   });
 }
 
-export function usePortalCcUpload(id: string) {
+export function usePortalCcAttachDocument(id: string) {
   const scope = usePortalQueryScope();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (form: FormData) => portalCcService.uploadDocument(id, form),
+    mutationFn: (dto: PortalCcDocumentDto) => portalCcService.attachDocument(id, dto),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: portalCcKeys.detail(scope, id) });
       void queryClient.invalidateQueries({ queryKey: portalCcKeys.checklist(scope, id) });

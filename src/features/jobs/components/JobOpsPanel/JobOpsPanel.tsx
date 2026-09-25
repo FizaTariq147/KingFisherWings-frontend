@@ -7,6 +7,10 @@ import { isNvoccJobType } from '@/features/nvocc/hooks/useNvoccJobs';
 import { CcJobWorkflowPanel } from '@/features/customs-clearance/components/CcJobWorkflowPanel';
 import { isCcJobType } from '@/features/customs-clearance/constants/ccWorkflow';
 import { AirJobWorkflowPanel } from '../AirJobWorkflowPanel';
+import { ModeBookingFormPanel } from '../ModeBookingFormPanel';
+import { RoadLandWorkflowPanel } from '../RoadLandWorkflowPanel';
+import { staffBookingFormModeFromJob } from '../../hooks/useStaffBookingForm';
+import { isRoadOrLandJobType } from '../../hooks/useRoadLandJob';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import { useJobContainers, useJobCutoffs } from '../../hooks/useJobs';
 import type { Job } from '../../types/job.types';
@@ -22,6 +26,8 @@ export function JobOpsPanel({ job }: JobOpsPanelProps) {
   const isAir = job.job_type === 'AIR_EXPORT' || job.job_type === 'AIR_IMPORT';
   const isNvocc = isNvoccJobType(job.job_type);
   const isCc = isCcJobType(job.job_type);
+  const isRoadLand = isRoadOrLandJobType(job.job_type);
+  const staffBookingMode = staffBookingFormModeFromJob(job);
   const { data: cutoffs } = useJobCutoffs(job.id, isSeaFcl);
   const { data: containers = [], refetch: refetchContainers } = useJobContainers(
     job.id,
@@ -68,6 +74,11 @@ export function JobOpsPanel({ job }: JobOpsPanelProps) {
       {error && <p className="text-sm text-[var(--color-danger-600)]">{error}</p>}
       {msg && <p className="text-sm text-[var(--color-success-700)]">{msg}</p>}
 
+      {/* Staff mode booking forms (Sea FCL/LCL, Land, Road Freight, Courier) — live GET/PUT/complete. */}
+      {staffBookingMode ? (
+        <ModeBookingFormPanel jobId={job.id} mode={staffBookingMode} />
+      ) : null}
+
       {isAir && (
         <>
           <AirJobWorkflowPanel jobId={job.id} jobType={job.job_type} />
@@ -90,6 +101,8 @@ export function JobOpsPanel({ job }: JobOpsPanelProps) {
       {isNvocc ? <NvoccJobWorkflowPanel jobId={job.id} /> : null}
 
       {isCc ? <CcJobWorkflowPanel jobId={job.id} /> : null}
+
+      {isRoadLand ? <RoadLandWorkflowPanel job={job} /> : null}
 
       {isSeaFcl && (
         <>

@@ -1,5 +1,6 @@
 import type { Job, JobCharge, JobListParams, JobMilestone, JobNote, AirUldRequest } from '../types/job.types';
 import type { JobStatus, JobType } from '../constants/job.constants';
+import { canonicalizeJobType } from './canonicalizeJobType';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -230,7 +231,7 @@ export function normalizeJob(raw: unknown): Job | null {
   return {
     id: str(r.id),
     job_number: pickString(r, 'job_number', 'jobNumber') || undefined,
-    job_type: pickString(r, 'job_type', 'jobType') as JobType,
+    job_type: canonicalizeJobType(pickString(r, 'job_type', 'jobType'), 'AIR_EXPORT'),
     status: (pickString(r, 'status') || 'ENQUIRY') as JobStatus,
     company_id: pickString(r, 'company_id', 'companyId') || undefined,
     branch_id: pickString(r, 'branch_id', 'branchId') || undefined,
@@ -292,6 +293,12 @@ export function normalizeJob(raw: unknown): Job | null {
     notes: pickString(r, 'notes') || undefined,
     customer_remarks: pickString(r, 'customer_remarks', 'customerRemarks') || undefined,
     tags: Array.isArray(r.tags) ? r.tags.map(String) : undefined,
+    barcode:
+      pickString(r, 'barcode', 'barcode_value', 'barcodeValue', 'barcode_code', 'barcodeCode') ||
+      undefined,
+    barcode_value:
+      pickString(r, 'barcode_value', 'barcodeValue', 'barcode', 'barcode_code', 'barcodeCode') ||
+      undefined,
     etd: schedule.etd,
     eta: schedule.eta,
     created_at: pickString(r, 'created_at', 'createdAt') || undefined,
@@ -364,17 +371,72 @@ export function normalizeJob(raw: unknown): Job | null {
       ? {
           trucker_id: pickString(land, 'trucker_id', 'truckerId') || undefined,
           vehicle_number: pickString(land, 'vehicle_number', 'vehicleNumber') || undefined,
+          vehicle_type: pickString(land, 'vehicle_type', 'vehicleType') || undefined,
           driver_name: pickString(land, 'driver_name', 'driverName') || undefined,
+          driver_license: pickString(land, 'driver_license', 'driverLicense') || undefined,
           origin_city_country:
             pickString(land, 'origin_city_country', 'originCityCountry') || undefined,
           destination_city_country:
             pickString(land, 'destination_city_country', 'destinationCityCountry') || undefined,
           etd: pickString(land, 'etd') || undefined,
           eta: pickString(land, 'eta') || undefined,
+          incoterms: pickString(land, 'incoterms') || undefined,
+          freight_terms: pickString(land, 'freight_terms', 'freightTerms') || undefined,
+          border_origin_country:
+            pickString(land, 'border_origin_country', 'borderOriginCountry') || undefined,
+          border_destination_country:
+            pickString(land, 'border_destination_country', 'borderDestinationCountry') ||
+            undefined,
+          border_declaration_number:
+            pickString(land, 'border_declaration_number', 'borderDeclarationNumber') || undefined,
+          border_hs_code: pickString(land, 'border_hs_code', 'borderHsCode') || undefined,
           border_commodity:
             pickString(land, 'border_commodity', 'borderCommodity', 'commodity') || undefined,
+          border_declared_value: num(land.border_declared_value ?? land.borderDeclaredValue),
+          cross_border_docs_required: bool(
+            land.cross_border_docs_required ?? land.crossBorderDocsRequired,
+          ),
         }
       : undefined,
+    road_freight_details: (() => {
+      const road = asRecord(r.road_freight_details ?? r.roadFreightDetails);
+      if (!road) return undefined;
+      return {
+        trucker_id: pickString(road, 'trucker_id', 'truckerId') || undefined,
+        vehicle_number: pickString(road, 'vehicle_number', 'vehicleNumber') || undefined,
+        vehicle_type: pickString(road, 'vehicle_type', 'vehicleType') || undefined,
+        trailer_number: pickString(road, 'trailer_number', 'trailerNumber') || undefined,
+        driver_name: pickString(road, 'driver_name', 'driverName') || undefined,
+        driver_license: pickString(road, 'driver_license', 'driverLicense') || undefined,
+        origin_city_country:
+          pickString(road, 'origin_city_country', 'originCityCountry') || undefined,
+        destination_city_country:
+          pickString(road, 'destination_city_country', 'destinationCityCountry') || undefined,
+        route_notes: pickString(road, 'route_notes', 'routeNotes') || undefined,
+        etd: pickString(road, 'etd') || undefined,
+        eta: pickString(road, 'eta') || undefined,
+        incoterms: pickString(road, 'incoterms') || undefined,
+        freight_terms: pickString(road, 'freight_terms', 'freightTerms') || undefined,
+        border_origin_country:
+          pickString(road, 'border_origin_country', 'borderOriginCountry') || undefined,
+        border_destination_country:
+          pickString(road, 'border_destination_country', 'borderDestinationCountry') || undefined,
+        border_declaration_number:
+          pickString(road, 'border_declaration_number', 'borderDeclarationNumber') || undefined,
+        border_hs_code: pickString(road, 'border_hs_code', 'borderHsCode') || undefined,
+        border_commodity:
+          pickString(road, 'border_commodity', 'borderCommodity', 'commodity') || undefined,
+        border_declared_value: num(road.border_declared_value ?? road.borderDeclaredValue),
+        cross_border_docs_required: bool(
+          road.cross_border_docs_required ?? road.crossBorderDocsRequired,
+        ),
+      };
+    })(),
+    service_scope: pickString(r, 'service_scope', 'serviceScope') || undefined,
+    origin_door_address:
+      pickString(r, 'origin_door_address', 'originDoorAddress') || undefined,
+    dest_door_address: pickString(r, 'dest_door_address', 'destDoorAddress') || undefined,
+    cargo_category: pickString(r, 'cargo_category', 'cargoCategory') || undefined,
     charges,
     milestones,
     notes_list: notesList,

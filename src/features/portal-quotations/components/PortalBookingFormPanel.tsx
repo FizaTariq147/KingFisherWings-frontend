@@ -13,6 +13,7 @@ import type {
 } from '../types/portalQuotations.types';
 import { portalQuoteShowsBookingForm } from '../utils/portalQuotationStatus';
 import { isAirJobType } from '@/features/jobs/constants/job.constants';
+import { usesModeBookingFormConvertFlow } from '@/features/quotations/utils/quotationStatus';
 import {
   clipComplianceField,
   PORTAL_COMPLIANCE_FORM_LIMITS as L,
@@ -111,6 +112,15 @@ type FormUi = {
   teu_count: string;
   pol: string;
   pod: string;
+  origin_airport_code: string;
+  dest_airport_code: string;
+  service_scope: string;
+  origin_door_address: string;
+  dest_door_address: string;
+  pieces: string;
+  volume_cbm: string;
+  pallet_count: string;
+  chargeable_weight_kg: string;
   gross_weight_kg: string;
   net_weight_kg: string;
   shipper_owned_container: boolean;
@@ -134,6 +144,14 @@ type FormUi = {
   sq_bl_booking_reference: string;
   voyage_ref: string;
   consent_accepted: boolean;
+  pallets: {
+    pallet_type: string;
+    count: string;
+    length_cm: string;
+    width_cm: string;
+    height_cm: string;
+    weight_kg: string;
+  }[];
 };
 
 function emptyParty(): PartyUi {
@@ -154,6 +172,15 @@ function emptyForm(): FormUi {
     teu_count: '',
     pol: '',
     pod: '',
+    origin_airport_code: '',
+    dest_airport_code: '',
+    service_scope: 'DOOR_TO_DOOR',
+    origin_door_address: '',
+    dest_door_address: '',
+    pieces: '',
+    volume_cbm: '',
+    pallet_count: '',
+    chargeable_weight_kg: '',
     gross_weight_kg: '',
     net_weight_kg: '',
     shipper_owned_container: false,
@@ -177,6 +204,16 @@ function emptyForm(): FormUi {
     sq_bl_booking_reference: '',
     voyage_ref: '',
     consent_accepted: false,
+    pallets: [
+      {
+        pallet_type: 'PMC',
+        count: '1',
+        length_cm: '',
+        width_cm: '',
+        height_cm: '',
+        weight_kg: '',
+      },
+    ],
   };
 }
 
@@ -325,7 +362,7 @@ function toPartyDto(
   };
 }
 
-/** Maps UI → UpsertNvoccBookingFormDto / SubmitNvoccComplianceFormDto (OpenAPI). */
+/** Maps UI → UpsertNvoccBookingFormDto (sea) or UpsertAirComplianceBookingFormDto (air). */
 function toDto(form: FormUi, markComplete: boolean, isAir: boolean): PortalBookingFormUpsertDto {
   const numOrUndef = (v: string) => {
     const t = v.trim();
@@ -333,16 +370,16 @@ function toDto(form: FormUi, markComplete: boolean, isAir: boolean): PortalBooki
     const n = Number(t);
     return Number.isFinite(n) ? n : undefined;
   };
-  const teu = isAir ? undefined : numOrUndef(form.teu_count);
-  return {
+  const parties = [
+    toPartyDto('SHIPPER', form.shipper),
+    toPartyDto('CONSIGNEE', form.consignee),
+    toPartyDto('NOTIFY', form.notify, form.consignee),
+  ];
+  const shared = {
     date_of_request: form.date_of_request.trim() || undefined,
     client_booking_no: clipComplianceField(form.client_booking_no, L.client_booking_no),
-    ...(teu != null ? { teu_count: teu } : {}),
-    pol: clipComplianceField(form.pol, L.pol) ?? '',
-    pod: clipComplianceField(form.pod, L.pod) ?? '',
     gross_weight_kg: numOrUndef(form.gross_weight_kg),
     net_weight_kg: numOrUndef(form.net_weight_kg),
-    shipper_owned_container: isAir ? false : form.shipper_owned_container,
     is_dg: form.is_dg,
     commodity: clipComplianceField(form.commodity, L.commodity) ?? '',
     hs_code: clipComplianceField(form.hs_code, L.hs_code),
@@ -364,26 +401,63 @@ function toDto(form: FormUi, markComplete: boolean, isAir: boolean): PortalBooki
     voyage_ref: clipComplianceField(form.voyage_ref, L.voyage_ref),
     consent_accepted: form.consent_accepted,
     mark_complete: markComplete,
-    parties: [
-      toPartyDto('SHIPPER', form.shipper),
-      toPartyDto('CONSIGNEE', form.consignee),
-      toPartyDto('NOTIFY', form.notify, form.consignee),
-    ],
+    parties,
+  };
+
+  if (isAir) {
+    const pallets = form.pallets
+      .map((p) => ({
+        pallet_type: clipComplianceField(p.pallet_type, L.pallet_type) ?? '',
+        count: numOrUndef(p.count) ?? 0,
+        length_cm: numOrUndef(p.length_cm),
+        width_cm: numOrUndef(p.width_cm),
+        height_cm: numOrUndef(p.height_cm),
+        weight_kg: numOrUndef(p.weight_kg),
+      }))
+      .filter((p) => p.pallet_type && p.count >= 1);
+    return {
+      ...shared,
+      service_scope: form.service_scope || undefined,
+      origin_door_address: form.origin_door_address.trim() || undefined,
+      dest_door_address: form.dest_door_address.trim() || undefined,
+      origin_airport_code:
+        clipComplianceField(form.origin_airport_code, L.origin_airport_code) ?? '',
+      dest_airport_code: clipComplianceField(form.dest_airport_code, L.dest_airport_code) ?? '',
+      pieces: numOrUndef(form.pieces),
+      volume_cbm: numOrUndef(form.volume_cbm),
+      pallet_count: numOrUndef(form.pallet_count),
+      chargeable_weight_kg: numOrUndef(form.chargeable_weight_kg),
+      pallets: pallets.length ? pallets : undefined,
+    };
+  }
+
+  const teu = numOrUndef(form.teu_count);
+  return {
+    ...shared,
+    ...(teu != null ? { teu_count: teu } : {}),
+    pol: clipComplianceField(form.pol, L.pol) ?? '',
+    pod: clipComplianceField(form.pod, L.pod) ?? '',
+    shipper_owned_container: form.shipper_owned_container,
+    service_scope: form.service_scope || undefined,
+    origin_door_address: form.origin_door_address.trim() || undefined,
+    dest_door_address: form.dest_door_address.trim() || undefined,
   };
 }
 
 function validateStep(step: StepId, form: FormUi, isAir: boolean): string | null {
   if (step === 'voyage') {
     if (!isAir && !form.teu_count.trim()) return 'Number of TEUs is required (teu_count).';
-    if (!form.pol.trim()) {
-      return isAir
-        ? 'Origin airport / place is required (pol).'
-        : 'POL — Port of Loading is required (pol).';
-    }
-    if (!form.pod.trim()) {
-      return isAir
-        ? 'Destination airport / place is required (pod).'
-        : 'POD — Port of Discharge is required (pod).';
+    if (isAir) {
+      if (!form.origin_airport_code.trim()) {
+        return 'Origin airport code is required (origin_airport_code).';
+      }
+      if (!form.dest_airport_code.trim()) {
+        return 'Destination airport code is required (dest_airport_code).';
+      }
+      if (!form.pieces.trim()) return 'Pieces is required (pieces).';
+    } else {
+      if (!form.pol.trim()) return 'POL — Port of Loading is required (pol).';
+      if (!form.pod.trim()) return 'POD — Port of Discharge is required (pod).';
     }
     if (!form.gross_weight_kg.trim()) return 'Gross weight (kg) is required (gross_weight_kg).';
     if (!form.net_weight_kg.trim()) return 'Net weight (kg) is required (net_weight_kg).';
@@ -495,6 +569,24 @@ export function PortalBookingFormPanel({
       teu_count: data.teu_count != null ? String(data.teu_count) : '',
       pol: String(data.pol ?? quote.origin ?? ''),
       pod: String(data.pod ?? quote.destination ?? ''),
+      origin_airport_code: String(
+        data.origin_airport_code ?? (isAir ? data.pol ?? quote.origin ?? '' : ''),
+      )
+        .toUpperCase()
+        .slice(0, L.origin_airport_code),
+      dest_airport_code: String(
+        data.dest_airport_code ?? (isAir ? data.pod ?? quote.destination ?? '' : ''),
+      )
+        .toUpperCase()
+        .slice(0, L.dest_airport_code),
+      service_scope: String(data.service_scope ?? 'DOOR_TO_DOOR'),
+      origin_door_address: String(data.origin_door_address ?? ''),
+      dest_door_address: String(data.dest_door_address ?? ''),
+      pieces: data.pieces != null ? String(data.pieces) : '',
+      volume_cbm: data.volume_cbm != null ? String(data.volume_cbm) : '',
+      pallet_count: data.pallet_count != null ? String(data.pallet_count) : '',
+      chargeable_weight_kg:
+        data.chargeable_weight_kg != null ? String(data.chargeable_weight_kg) : '',
       gross_weight_kg: data.gross_weight_kg != null ? String(data.gross_weight_kg) : '',
       net_weight_kg: data.net_weight_kg != null ? String(data.net_weight_kg) : '',
       shipper_owned_container: Boolean(data.shipper_owned_container),
@@ -542,6 +634,17 @@ export function PortalBookingFormPanel({
       sq_bl_booking_reference: String(data.sq_bl_booking_reference ?? quote.number ?? ''),
       voyage_ref: String(data.voyage_ref ?? ''),
       consent_accepted: Boolean(data.consent_accepted),
+      pallets:
+        Array.isArray(data.pallets) && data.pallets.length > 0
+          ? data.pallets.map((p) => ({
+              pallet_type: String(p.pallet_type ?? 'PMC'),
+              count: p.count != null ? String(p.count) : '1',
+              length_cm: p.length_cm != null ? String(p.length_cm) : '',
+              width_cm: p.width_cm != null ? String(p.width_cm) : '',
+              height_cm: p.height_cm != null ? String(p.height_cm) : '',
+              weight_kg: p.weight_kg != null ? String(p.weight_kg) : '',
+            }))
+          : base.pallets,
     });
     if (data.mark_complete === true) setSubmitted(true);
   }, [formQuery.data, quote.origin, quote.destination, quote.commodity, quote.number]);
@@ -584,15 +687,29 @@ export function PortalBookingFormPanel({
         jobType: quote.jobType,
       })
       .then(() => {
+        const modeConvert = usesModeBookingFormConvertFlow(quote.jobType);
         const message = complete
-          ? linked
-            ? 'Booking form submitted. Your forwarder can complete Ops and send the invoice.'
-            : isAir
-              ? 'Booking form submitted to your forwarder. They will link it to the air shipment and send the invoice.'
-              : 'Booking form submitted to your forwarder. They will link it to the NVOCC booking and send the invoice.'
+          ? modeConvert
+            ? 'Booking form submitted. Your quotation will convert to a job next.'
+            : linked
+              ? 'Booking form submitted. Your forwarder can complete Ops and send the invoice.'
+              : isAir
+                ? 'Booking form submitted to your forwarder. They will link it to the air shipment and send the invoice.'
+                : 'Booking form submitted to your forwarder. They will link it to the NVOCC booking and send the invoice.'
           : 'Booking form draft saved.';
         setMsg(message);
-        if (complete) setSubmitted(true);
+        if (complete) {
+          setSubmitted(true);
+          try {
+            window.dispatchEvent(
+              new CustomEvent('kfw-customer-booking-form-complete', {
+                detail: { quotationId: quote.id, jobType: quote.jobType },
+              }),
+            );
+          } catch {
+            /* ignore */
+          }
+        }
         onSuccess?.(message);
       })
       .catch((err) => {
@@ -623,17 +740,23 @@ export function PortalBookingFormPanel({
     () => [
       ['date_of_request', form.date_of_request],
       ['client_booking_no', form.client_booking_no || '—'],
-      ...(isAir ? [] : ([['teu_count', form.teu_count]] as [string, string][])),
-      [isAir ? 'pol (origin)' : 'pol', form.pol],
-      [isAir ? 'pod (dest)' : 'pod', form.pod],
+      ...(isAir
+        ? ([
+            ['service_scope', form.service_scope],
+            ['origin_airport_code', form.origin_airport_code],
+            ['dest_airport_code', form.dest_airport_code],
+            ['pieces', form.pieces],
+            ['volume_cbm', form.volume_cbm || '—'],
+            ['pallet_count', form.pallet_count || '—'],
+          ] as [string, string][])
+        : ([
+            ['teu_count', form.teu_count],
+            ['pol', form.pol],
+            ['pod', form.pod],
+            ['shipper_owned_container', form.shipper_owned_container ? 'true' : 'false'],
+          ] as [string, string][])),
       ['gross_weight_kg', form.gross_weight_kg],
       ['net_weight_kg', form.net_weight_kg],
-      ...(isAir
-        ? []
-        : ([['shipper_owned_container', form.shipper_owned_container ? 'true' : 'false']] as [
-            string,
-            string,
-          ][])),
       ['is_dg', form.is_dg ? 'true' : 'false'],
       ['commodity', form.commodity],
       ['hs_code', form.hs_code || '—'],
@@ -779,31 +902,135 @@ export function PortalBookingFormPanel({
                   placeholder="e.g. 2"
                 />
               </label>
-            ) : null}
-            <label className="block sm:col-span-1">
-              <FieldLabel required>
-                {isAir ? 'Origin airport / place (pol)' : 'POL – Port of Loading'}
-              </FieldLabel>
-              <Input
-                className="mt-1"
-                maxLength={L.pol}
-                value={form.pol}
-                onChange={(e) => patch({ pol: e.target.value.slice(0, L.pol) })}
-                placeholder={isAir ? 'e.g. DXB or Dubai' : 'Port of Loading required'}
-              />
-            </label>
-            <label className="block sm:col-span-1">
-              <FieldLabel required>
-                {isAir ? 'Destination airport / place (pod)' : 'POD – Port of Discharge'}
-              </FieldLabel>
-              <Input
-                className="mt-1"
-                maxLength={L.pod}
-                value={form.pod}
-                onChange={(e) => patch({ pod: e.target.value.slice(0, L.pod) })}
-                placeholder={isAir ? 'e.g. LHR or London' : 'Port of Discharge required'}
-              />
-            </label>
+            ) : (
+              <label className="block">
+                <FieldLabel>Service scope</FieldLabel>
+                <select
+                  className="mt-1 h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-2 text-sm"
+                  value={form.service_scope}
+                  onChange={(e) => patch({ service_scope: e.target.value })}
+                >
+                  {['DOOR_TO_DOOR', 'DOOR_TO_PORT', 'PORT_TO_DOOR', 'PORT_TO_PORT'].map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+            {isAir ? (
+              <>
+                <label className="block sm:col-span-1">
+                  <FieldLabel required>Origin airport code</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    maxLength={L.origin_airport_code}
+                    value={form.origin_airport_code}
+                    onChange={(e) =>
+                      patch({
+                        origin_airport_code: e.target.value
+                          .toUpperCase()
+                          .replace(/[^A-Z0-9]/g, '')
+                          .slice(0, L.origin_airport_code),
+                      })
+                    }
+                    placeholder="e.g. DXB"
+                  />
+                </label>
+                <label className="block sm:col-span-1">
+                  <FieldLabel required>Dest airport code</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    maxLength={L.dest_airport_code}
+                    value={form.dest_airport_code}
+                    onChange={(e) =>
+                      patch({
+                        dest_airport_code: e.target.value
+                          .toUpperCase()
+                          .replace(/[^A-Z0-9]/g, '')
+                          .slice(0, L.dest_airport_code),
+                      })
+                    }
+                    placeholder="e.g. RUH"
+                  />
+                </label>
+                <label className="block">
+                  <FieldLabel required>Pieces</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    inputMode="numeric"
+                    value={form.pieces}
+                    onChange={(e) => patch({ pieces: e.target.value })}
+                  />
+                </label>
+                <label className="block">
+                  <FieldLabel>Volume CBM</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    inputMode="decimal"
+                    value={form.volume_cbm}
+                    onChange={(e) => patch({ volume_cbm: e.target.value })}
+                  />
+                </label>
+                <label className="block">
+                  <FieldLabel>Pallet count</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    inputMode="numeric"
+                    value={form.pallet_count}
+                    onChange={(e) => patch({ pallet_count: e.target.value })}
+                  />
+                </label>
+                <label className="block">
+                  <FieldLabel>Chargeable weight (kg)</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    inputMode="decimal"
+                    value={form.chargeable_weight_kg}
+                    onChange={(e) => patch({ chargeable_weight_kg: e.target.value })}
+                  />
+                </label>
+                <label className="block sm:col-span-2">
+                  <FieldLabel>Origin door address</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    value={form.origin_door_address}
+                    onChange={(e) => patch({ origin_door_address: e.target.value })}
+                  />
+                </label>
+                <label className="block sm:col-span-2">
+                  <FieldLabel>Dest door address</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    value={form.dest_door_address}
+                    onChange={(e) => patch({ dest_door_address: e.target.value })}
+                  />
+                </label>
+              </>
+            ) : (
+              <>
+                <label className="block sm:col-span-1">
+                  <FieldLabel required>POL – Port of Loading</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    maxLength={L.pol}
+                    value={form.pol}
+                    onChange={(e) => patch({ pol: e.target.value.slice(0, L.pol) })}
+                    placeholder="Port of Loading required"
+                  />
+                </label>
+                <label className="block sm:col-span-1">
+                  <FieldLabel required>POD – Port of Discharge</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    maxLength={L.pod}
+                    value={form.pod}
+                    onChange={(e) => patch({ pod: e.target.value.slice(0, L.pod) })}
+                    placeholder="Port of Discharge required"
+                  />
+                </label>
+              </>
+            )}
             <label className="block">
               <FieldLabel required>Gross weight (kg)</FieldLabel>
               <Input
@@ -846,6 +1073,116 @@ export function PortalBookingFormPanel({
                 ]}
               />
             </div>
+            {isAir ? (
+              <div className="space-y-2 sm:col-span-2 lg:col-span-3">
+                <FieldLabel>Pallet lines</FieldLabel>
+                {form.pallets.map((line, idx) => (
+                  <div key={idx} className="grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
+                    <Input
+                      label="Type"
+                      maxLength={L.pallet_type}
+                      value={line.pallet_type}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          pallets: prev.pallets.map((p, i) =>
+                            i === idx ? { ...p, pallet_type: e.target.value } : p,
+                          ),
+                        }))
+                      }
+                    />
+                    <Input
+                      label="Count"
+                      inputMode="numeric"
+                      value={line.count}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          pallets: prev.pallets.map((p, i) =>
+                            i === idx ? { ...p, count: e.target.value } : p,
+                          ),
+                        }))
+                      }
+                    />
+                    <Input
+                      label="L cm"
+                      inputMode="decimal"
+                      value={line.length_cm}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          pallets: prev.pallets.map((p, i) =>
+                            i === idx ? { ...p, length_cm: e.target.value } : p,
+                          ),
+                        }))
+                      }
+                    />
+                    <Input
+                      label="W cm"
+                      inputMode="decimal"
+                      value={line.width_cm}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          pallets: prev.pallets.map((p, i) =>
+                            i === idx ? { ...p, width_cm: e.target.value } : p,
+                          ),
+                        }))
+                      }
+                    />
+                    <Input
+                      label="H cm"
+                      inputMode="decimal"
+                      value={line.height_cm}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          pallets: prev.pallets.map((p, i) =>
+                            i === idx ? { ...p, height_cm: e.target.value } : p,
+                          ),
+                        }))
+                      }
+                    />
+                    <Input
+                      label="Weight kg"
+                      inputMode="decimal"
+                      value={line.weight_kg}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          pallets: prev.pallets.map((p, i) =>
+                            i === idx ? { ...p, weight_kg: e.target.value } : p,
+                          ),
+                        }))
+                      }
+                    />
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  onClick={() =>
+                    setForm((prev) => ({
+                      ...prev,
+                      pallets: [
+                        ...prev.pallets,
+                        {
+                          pallet_type: 'PMC',
+                          count: '1',
+                          length_cm: '',
+                          width_cm: '',
+                          height_cm: '',
+                          weight_kg: '',
+                        },
+                      ],
+                    }))
+                  }
+                >
+                  Add pallet line
+                </Button>
+              </div>
+            ) : null}
           </div>
         ) : null}
 

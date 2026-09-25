@@ -28,7 +28,7 @@ function modeBucket(jobType: JobType): 'Air Export' | 'Sea Export' | 'Sea Import
   if (jobType.startsWith('AIR_')) return 'Air Export';
   if (SEA_EXPORT_TYPES.includes(jobType)) return 'Sea Export';
   if (SEA_IMPORT_TYPES.includes(jobType)) return 'Sea Import';
-  if (jobType === 'LAND') return 'Road';
+  if (jobType === 'LAND' || jobType === 'ROAD_FREIGHT') return 'Road';
   return 'Other';
 }
 

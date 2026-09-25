@@ -8,8 +8,10 @@ import { useCcJobActions, useCcQueries } from '../hooks/useCustomsClearance';
 export function CcQueriesPanel({ jobId }: { jobId: string }) {
   const { data: queries = [], isLoading, isError, error, refetch } = useCcQueries(jobId);
   const actions = useCcJobActions(jobId);
-  const [subject, setSubject] = useState('');
-  const [body, setBody] = useState('');
+  const [queryText, setQueryText] = useState('');
+  const [assessedDuty, setAssessedDuty] = useState('');
+  const [assessedTax, setAssessedTax] = useState('');
+  const [dutyCurrency, setDutyCurrency] = useState('AED');
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
@@ -34,29 +36,23 @@ export function CcQueriesPanel({ jobId }: { jobId: string }) {
         </Button>
       </CardHeader>
       <div className="space-y-3 px-4 pb-4">
-        <div className="grid gap-2 sm:grid-cols-2">
-          <Input
-            placeholder="Subject"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-          />
-          <Input placeholder="Body" value={body} onChange={(e) => setBody(e.target.value)} />
-        </div>
+        <textarea
+          className="min-h-[72px] w-full rounded-md border border-[var(--color-neutral-200)] bg-white p-2 text-sm"
+          placeholder="Query text *"
+          value={queryText}
+          onChange={(e) => setQueryText(e.target.value)}
+        />
         <Button
           type="button"
-          disabled={actions.createQuery.isPending || !subject.trim()}
+          disabled={actions.createQuery.isPending || !queryText.trim()}
           onClick={() =>
             void run(
               () =>
                 actions.createQuery.mutateAsync({
-                  subject: subject.trim(),
-                  body: body.trim() || undefined,
+                  query_text: queryText.trim(),
                 }),
               'Query raised.',
-            ).then(() => {
-              setSubject('');
-              setBody('');
-            })
+            ).then(() => setQueryText(''))
           }
         >
           Raise query
@@ -71,60 +67,110 @@ export function CcQueriesPanel({ jobId }: { jobId: string }) {
           {queries.map((q) => (
             <li
               key={q.id}
-              className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 text-sm"
+              className="flex flex-wrap items-start justify-between gap-2 px-3 py-2 text-sm"
             >
-              <div>
-                <p className="font-medium">{q.subject || q.id.slice(0, 8)}</p>
+              <div className="min-w-0 flex-1">
+                <p className="font-medium whitespace-pre-wrap">
+                  {q.query_text || q.id.slice(0, 8)}
+                </p>
                 <p className="text-xs text-[var(--color-neutral-500)]">
                   {[q.status, q.raised_at, q.closed_at && `closed ${q.closed_at}`]
                     .filter(Boolean)
                     .join(' · ')}
                 </p>
-                {q.body ? <p className="mt-1 text-xs">{q.body}</p> : null}
+                {q.response_text ? (
+                  <p className="mt-1 text-xs text-[var(--color-neutral-600)]">
+                    Response: {q.response_text}
+                  </p>
+                ) : null}
+                <Input
+                  className="mt-2 max-w-md"
+                  placeholder="Response text"
+                  id={`cc-q-resp-${q.id}`}
+                  defaultValue={q.response_text ?? ''}
+                />
               </div>
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                disabled={actions.updateQuery.isPending}
-                onClick={() =>
-                  void run(
-                    () =>
-                      actions.updateQuery.mutateAsync({
-                        queryId: q.id,
-                        dto: { response: 'Acknowledged' },
-                      }),
-                    'Query updated.',
-                  )
-                }
-              >
-                Update
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                disabled={actions.closeQuery.isPending || Boolean(q.closed_at)}
-                onClick={() =>
-                  void run(
-                    () => actions.closeQuery.mutateAsync({ queryId: q.id }),
-                    'Query closed.',
-                  )
-                }
-              >
-                Close
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  disabled={actions.updateQuery.isPending}
+                  onClick={() => {
+                    const input = document.getElementById(
+                      `cc-q-resp-${q.id}`,
+                    ) as HTMLInputElement | null;
+                    return void run(
+                      () =>
+                        actions.updateQuery.mutateAsync({
+                          queryId: q.id,
+                          dto: {
+                            response_text: input?.value.trim() || 'Acknowledged',
+                          },
+                        }),
+                      'Query updated.',
+                    );
+                  }}
+                >
+                  Save response
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  disabled={actions.closeQuery.isPending || Boolean(q.closed_at)}
+                  onClick={() =>
+                    void run(
+                      () => actions.closeQuery.mutateAsync({ queryId: q.id }),
+                      'Query closed.',
+                    )
+                  }
+                >
+                  Close
+                </Button>
+              </div>
             </li>
           ))}
           {!isLoading && queries.length === 0 ? (
             <li className="px-3 py-2 text-sm text-[var(--color-neutral-400)]">No queries.</li>
           ) : null}
         </ul>
+
+        <div className="grid gap-2 border-t border-[var(--color-neutral-100)] pt-3 sm:grid-cols-3">
+          <Input
+            type="number"
+            min={0}
+            placeholder="Assessed duty"
+            value={assessedDuty}
+            onChange={(e) => setAssessedDuty(e.target.value)}
+          />
+          <Input
+            type="number"
+            min={0}
+            placeholder="Assessed tax"
+            value={assessedTax}
+            onChange={(e) => setAssessedTax(e.target.value)}
+          />
+          <Input
+            placeholder="Duty currency"
+            value={dutyCurrency}
+            onChange={(e) => setDutyCurrency(e.target.value.toUpperCase())}
+            maxLength={3}
+          />
+        </div>
         <Button
           type="button"
           disabled={actions.stageAssess.isPending}
           onClick={() =>
-            void run(() => actions.stageAssess.mutateAsync({}), 'Assess stage complete.')
+            void run(
+              () =>
+                actions.stageAssess.mutateAsync({
+                  assessed_duty: assessedDuty ? Number(assessedDuty) : undefined,
+                  assessed_tax: assessedTax ? Number(assessedTax) : undefined,
+                  duty_currency: dutyCurrency.trim() || undefined,
+                }),
+              'Assess stage complete.',
+            )
           }
         >
           Stage: assess

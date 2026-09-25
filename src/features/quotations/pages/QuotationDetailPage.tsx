@@ -32,6 +32,7 @@ import { nvoccBookingService } from '@/features/nvocc/services/nvocc.service';
 import { useNvoccBookingForm } from '@/features/nvocc/hooks/useNvocc';
 import { useCustomerPortalBookingForm } from '@/features/portal-admin-inbox/hooks/usePortalAdminInbox';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
+import { readPortalBookingFormDraft } from '@/features/portal-quotations/utils/portalBookingFormStorage';
 import {
   isAwaitingCustomerDecision,
   resolveCustomerFacingQuoteStatus,
@@ -49,6 +50,7 @@ import {
   isQuotationDraftEditable,
   isQuotationLinesEditable,
   usesGatedFreightQuoteFlow,
+  usesModeBookingFormConvertFlow,
 } from '../utils/quotationStatus';
 
 function statusTone(
@@ -117,13 +119,20 @@ export default function QuotationDetailPage() {
   );
 
   const isNvoccQuote = Boolean(quotation && isNvoccQuoteJobType(quotation.job_type));
+  const isModeBookingConvert = Boolean(
+    quotation && usesModeBookingFormConvertFlow(quotation.job_type),
+  );
   const portalBookingQuery = useCustomerPortalBookingForm(
     {
       quotationId: id,
       quoteNumber: quotation?.quotation_number || quotation?.quote_no,
-      jobTypePrefix: 'NVOCC',
+      jobTypePrefix: isNvoccQuote
+        ? 'NVOCC'
+        : isModeBookingConvert
+          ? String(quotation?.job_type ?? '').toUpperCase().split('_')[0]
+          : undefined,
     },
-    isNvoccQuote && Boolean(id),
+    (isNvoccQuote || isModeBookingConvert) && Boolean(id),
   );
   const linkedBookingQuery = useQuery({
     queryKey: [
@@ -164,16 +173,23 @@ export default function QuotationDetailPage() {
       ) ?? coerceQuotationStatus(quotation.status);
 
     const linkedJobId = quotation.job_id || linkedBooking?.job_id;
-    if (linkedJobId && (resolved === 'APPROVED' || resolved === 'WON')) {
+    // Booking-form modes keep APPROVED until /booking-form/complete marks CONVERTED.
+    if (
+      linkedJobId &&
+      (resolved === 'APPROVED' || resolved === 'WON') &&
+      !usesModeBookingFormConvertFlow(quotation.job_type)
+    ) {
       return 'CONVERTED' as const;
     }
     return resolved;
   }, [quotation, negotiationTimeline?.events, linkedBooking?.job_id]);
 
   // Persist APPROVED → CONVERTED once the booking (or quote) has a job.
+  // Skip for mode booking-form flows — convert happens after form /complete.
   useEffect(() => {
     const jobId = quotation?.job_id || linkedBooking?.job_id;
     if (!id || !quotation || !jobId) return;
+    if (usesModeBookingFormConvertFlow(quotation.job_type)) return;
     const apiStatus = coerceQuotationStatus(quotation.api_status ?? quotation.status);
     if (apiStatus === 'CONVERTED' && quotation.job_id === jobId) return;
     if (apiStatus !== 'APPROVED' && apiStatus !== 'WON' && apiStatus !== 'CONVERTED') return;
@@ -194,6 +210,7 @@ export default function QuotationDetailPage() {
     id,
     quotation?.id,
     quotation?.job_id,
+    quotation?.job_type,
     quotation?.api_status,
     quotation?.status,
     linkedBooking?.job_id,
@@ -277,10 +294,10 @@ export default function QuotationDetailPage() {
 
   // Customer Approved → auto job+invoice for **standard** modes only.
   // NVOCC / Air: never auto-convert and never auto-create a job shell.
+  // Booking-form modes: convert only after customer portal booking form is complete.
   useEffect(() => {
     if (!quotation || !id) return;
     if (status !== 'APPROVED') return;
-    // Defense in depth: gate on normalized type and AIR_/NVOCC_ prefixes.
     if (
       usesGatedFreightQuoteFlow(quotation.job_type) ||
       isAirQuoteJobType(quotation.job_type) ||
@@ -288,24 +305,73 @@ export default function QuotationDetailPage() {
     ) {
       return;
     }
+    if (actions.fulfillApproved.isPending || pending) return;
+
+    if (usesModeBookingFormConvertFlow(quotation.job_type)) {
+      if (quotation.job_id) return;
+      const formDone =
+        portalBookingQuery.data?.mark_complete === true ||
+        readPortalBookingFormDraft(id)?.mark_complete === true;
+      if (!formDone) {
+        setActionMessage(
+          'Approved — waiting for the customer to complete the portal booking form before converting to a job.',
+        );
+        return;
+      }
+      if (autoFulfillAttempted.current === id) return;
+      autoFulfillAttempted.current = id;
+      setActionError(null);
+      void actions.fulfillApproved
+        .mutateAsync()
+        .then((result) => {
+          const jobId =
+            result && typeof result === 'object' && 'job_id' in result
+              ? String((result as { job_id?: string }).job_id ?? '')
+              : '';
+          const invoiceId =
+            result && typeof result === 'object' && 'invoice_id' in result
+              ? String((result as { invoice_id?: string }).invoice_id ?? '')
+              : '';
+          if (jobId || invoiceId) {
+            setActionMessage(
+              invoiceId
+                ? 'Customer booking form received — job and draft invoice created.'
+                : 'Customer booking form received — quotation converted to job.',
+            );
+            if (jobId) {
+              navigate(
+                jobDetailPath({
+                  id: String(jobId),
+                  job_type: quotation.job_type,
+                }),
+              );
+            }
+          } else {
+            autoFulfillAttempted.current = null;
+            setActionMessage(
+              'Customer booking form is on file — convert will retry when you refresh.',
+            );
+          }
+          void refetch();
+        })
+        .catch((err) => {
+          autoFulfillAttempted.current = null;
+          setActionError(
+            getErrorMessage(err) ||
+              'Could not convert after customer booking form. Refresh once the form is submitted.',
+          );
+        });
+      return;
+    }
+
     if (quotation.job_id && quotation.invoice_id) return;
     if (autoFulfillAttempted.current === id) return;
-    if (actions.fulfillApproved.isPending || pending) return;
 
     autoFulfillAttempted.current = id;
     setActionError(null);
     void actions.fulfillApproved
       .mutateAsync()
       .then((result) => {
-        // Re-check after mutation in case job_type was corrected mid-flight.
-        if (
-          usesGatedFreightQuoteFlow(quotation.job_type) ||
-          isAirQuoteJobType(quotation.job_type) ||
-          isNvoccQuoteJobType(quotation.job_type)
-        ) {
-          void refetch();
-          return;
-        }
         const jobId =
           result && typeof result === 'object' && 'job_id' in result
             ? String((result as { job_id?: string }).job_id ?? '')
@@ -333,11 +399,27 @@ export default function QuotationDetailPage() {
   }, [
     actions.fulfillApproved,
     id,
+    navigate,
     pending,
+    portalBookingQuery.data?.mark_complete,
     quotation,
     refetch,
     status,
   ]);
+
+  // Same-tab: customer submitted portal booking form → retry convert.
+  useEffect(() => {
+    if (!id || !usesModeBookingFormConvertFlow(quotation?.job_type)) return;
+    const onFormComplete = (ev: Event) => {
+      const detail = (ev as CustomEvent<{ quotationId?: string }>).detail;
+      if (detail?.quotationId && detail.quotationId !== id) return;
+      autoFulfillAttempted.current = null;
+      void refetch();
+      void portalBookingQuery.refetch();
+    };
+    window.addEventListener('kfw-customer-booking-form-complete', onFormComplete);
+    return () => window.removeEventListener('kfw-customer-booking-form-complete', onFormComplete);
+  }, [id, portalBookingQuery, quotation?.job_type, refetch]);
 
   const { customerLabel } = useQuotationResolvedLabels(quotation ?? {
     id: '',
@@ -393,6 +475,15 @@ export default function QuotationDetailPage() {
         // NVOCC/Air: never treat approve as convert (even if backend already linked a job).
         if (jobId && usesGatedFreightQuoteFlow(quotation.job_type)) {
           setActionMessage(successMsg || 'Approved only — continue the gated ops flow.');
+          void refetch();
+          return;
+        }
+        // Booking-form modes: stay APPROVED until customer portal form → convert.
+        if (jobId && usesModeBookingFormConvertFlow(quotation.job_type)) {
+          setActionMessage(
+            successMsg ||
+              'Approved — waiting for the customer portal booking form, then the quotation converts to a job.',
+          );
           void refetch();
           return;
         }
@@ -469,6 +560,23 @@ export default function QuotationDetailPage() {
           {
             label: 'Start air ops job',
             onClick: () => requestConfirm('start-air-ops', quotation),
+            variant: 'primary' as const,
+          },
+        ]
+      : []),
+    ...(usesModeBookingFormConvertFlow(quotation.job_type) &&
+    status === 'CONVERTED' &&
+    quotation.job_id
+      ? [
+          {
+            label: 'Open job',
+            onClick: () =>
+              navigate(
+                jobDetailPath({
+                  id: quotation.job_id!,
+                  job_type: quotation.job_type,
+                }),
+              ),
             variant: 'primary' as const,
           },
         ]
@@ -798,7 +906,9 @@ export default function QuotationDetailPage() {
                   ? isNvoccQuoteJobType(quotation.job_type)
                     ? 'Approved only — no job created. Customer fills booking form in portal, then send invoice on NVOCC Bookings → CRO.'
                     : 'Approved only — no job created. Customer fills booking form in portal, then send invoice on Air Ops (Start air ops job if needed).'
-                  : 'Approved — job and draft customer invoice created.',
+                  : usesModeBookingFormConvertFlow(quotation.job_type)
+                    ? 'Approved only — waiting for the customer to complete the portal booking form, then the quotation converts to a job.'
+                    : 'Approved — job and draft customer invoice created.',
               );
             if (kind === 'mark-lost' && extra?.reason)
               return run(

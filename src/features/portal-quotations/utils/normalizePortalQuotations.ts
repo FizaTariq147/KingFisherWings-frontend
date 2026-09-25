@@ -340,24 +340,37 @@ export function normalizePortalBookingForm(raw: unknown): PortalBookingForm {
     client_booking_no: pickString(data.client_booking_no, data.clientBookingNo) || undefined,
     gross_weight_kg: num(data.gross_weight_kg, data.grossWeightKg),
     net_weight_kg: num(data.net_weight_kg, data.netWeightKg),
+    chargeable_weight_kg: num(data.chargeable_weight_kg, data.chargeableWeightKg),
+    volume_cbm: num(data.volume_cbm, data.volumeCbm),
+    pieces: num(data.pieces),
+    pallet_count: num(data.pallet_count, data.palletCount),
+    pallets: Array.isArray(data.pallets)
+      ? (data.pallets as PortalBookingForm['pallets'])
+      : undefined,
+    service_scope: pickString(data.service_scope, data.serviceScope) || undefined,
+    origin_door_address:
+      pickString(data.origin_door_address, data.originDoorAddress) || undefined,
+    dest_door_address: pickString(data.dest_door_address, data.destDoorAddress) || undefined,
     pol:
       pickString(
         data.pol,
-        data.origin_airport_code,
-        data.originAirportCode,
         data.origin,
       ) || undefined,
     pod:
       pickString(
         data.pod,
-        data.dest_airport_code,
-        data.destAirportCode,
         data.destination,
       ) || undefined,
+    origin_airport_code:
+      pickString(data.origin_airport_code, data.originAirportCode) || undefined,
+    dest_airport_code: pickString(data.dest_airport_code, data.destAirportCode) || undefined,
     shipper_owned_container:
       pickBoolean(data.shipper_owned_container, data.shipperOwnedContainer) ?? undefined,
     is_dg: pickBoolean(data.is_dg, data.isDg) ?? undefined,
     teu_count: num(data.teu_count, data.teuCount),
+    containers: Array.isArray(data.containers)
+      ? (data.containers as PortalBookingForm['containers'])
+      : undefined,
     commodity: pickString(data.commodity) || undefined,
     hs_code: pickString(data.hs_code, data.hsCode) || undefined,
     final_use: pickString(data.final_use, data.finalUse) || undefined,

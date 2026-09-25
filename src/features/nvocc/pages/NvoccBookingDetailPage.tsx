@@ -52,6 +52,9 @@ type BookingFormUiState = {
   gross_weight_kg: string;
   net_weight_kg: string;
   teu_count: string;
+  service_scope: string;
+  origin_door_address: string;
+  dest_door_address: string;
   date_of_request: string;
   booking_agent_line: string;
   agent_requester_name: string;
@@ -78,6 +81,7 @@ type BookingFormUiState = {
   consignee_city: string;
   consignee_country: string;
   notify_name: string;
+  containers: { container_type_id: string; iso_size: string; count: string }[];
 };
 
 function emptyBookingFormUi(): BookingFormUiState {
@@ -91,6 +95,9 @@ function emptyBookingFormUi(): BookingFormUiState {
     gross_weight_kg: '',
     net_weight_kg: '',
     teu_count: '',
+    service_scope: 'PORT_TO_PORT',
+    origin_door_address: '',
+    dest_door_address: '',
     date_of_request: new Date().toISOString().slice(0, 10),
     booking_agent_line: 'KINGFISHER',
     agent_requester_name: '',
@@ -117,6 +124,7 @@ function emptyBookingFormUi(): BookingFormUiState {
     consignee_city: '',
     consignee_country: '',
     notify_name: '',
+    containers: [{ container_type_id: '', iso_size: '', count: '1' }],
   };
 }
 
@@ -410,6 +418,9 @@ export default function NvoccBookingDetailPage() {
               : '',
         net_weight_kg: form?.net_weight_kg != null ? String(form.net_weight_kg) : '',
         teu_count: form?.teu_count != null ? String(form.teu_count) : '',
+        service_scope: String(form?.service_scope ?? 'PORT_TO_PORT'),
+        origin_door_address: String(form?.origin_door_address ?? ''),
+        dest_door_address: String(form?.dest_door_address ?? ''),
         date_of_request:
           String(form?.date_of_request ?? '').slice(0, 10) || new Date().toISOString().slice(0, 10),
         booking_agent_line: String(form?.booking_agent_line ?? 'KINGFISHER'),
@@ -437,9 +448,18 @@ export default function NvoccBookingDetailPage() {
         consignee_city: String(consignee?.city ?? ''),
         consignee_country: String(consignee?.country ?? ''),
         notify_name: String(notify?.full_name ?? ''),
+        containers:
+          Array.isArray(form?.containers) && form.containers.length > 0
+            ? form.containers.map((c) => ({
+                container_type_id: String(c.container_type_id ?? ''),
+                iso_size: String(c.iso_size ?? ''),
+                count: c.count != null ? String(c.count) : '1',
+              }))
+            : emptyBookingFormUi().containers,
       };
       // Keep portal-prefilled values when API form still has empty fields.
       (Object.keys(next) as (keyof BookingFormUiState)[]).forEach((key) => {
+        if (key === 'containers') return;
         if (typeof next[key] === 'string' && typeof prev[key] === 'string') {
           if (!(next[key] as string).trim() && (prev[key] as string).trim()) {
             (next as Record<string, unknown>)[key] = prev[key];
@@ -679,6 +699,17 @@ export default function NvoccBookingDetailPage() {
     if (formState.teu_count.trim()) {
       dto.teu_count = Number(formState.teu_count);
     }
+    dto.service_scope = formState.service_scope || undefined;
+    dto.origin_door_address = formState.origin_door_address.trim() || undefined;
+    dto.dest_door_address = formState.dest_door_address.trim() || undefined;
+    const containers = formState.containers
+      .map((c) => ({
+        container_type_id: c.container_type_id.trim() || undefined,
+        iso_size: c.iso_size.trim() || undefined,
+        count: Number(c.count),
+      }))
+      .filter((c) => Number.isFinite(c.count) && c.count >= 1);
+    if (containers.length) dto.containers = containers;
     if (opts.adminOverride) {
       dto.admin_override = true;
       dto.stage_override_reason =
@@ -1707,6 +1738,8 @@ export default function NvoccBookingDetailPage() {
                         ['commodity', 'Commodity *'],
                         ['hs_code', 'HS code'],
                         ['voyage_ref', 'Voyage ref'],
+                        ['origin_door_address', 'Origin door address'],
+                        ['dest_door_address', 'Dest door address'],
                         ['booking_agent_line', 'Booking agent line'],
                         ['agent_requester_name', 'Agent requester'],
                         ['sq_bl_booking_reference', 'SQ/BL booking ref'],
@@ -1733,6 +1766,24 @@ export default function NvoccBookingDetailPage() {
                         />
                       </label>
                     ))}
+                    <label className="block text-xs font-medium text-gray-600">
+                      Service scope
+                      <select
+                        className="mt-1 h-9 w-full rounded-md border border-gray-200 px-2 text-sm"
+                        value={formState.service_scope}
+                        onChange={(e) =>
+                          setFormState((prev) => ({ ...prev, service_scope: e.target.value }))
+                        }
+                      >
+                        {['DOOR_TO_DOOR', 'DOOR_TO_PORT', 'PORT_TO_DOOR', 'PORT_TO_PORT'].map(
+                          (s) => (
+                            <option key={s} value={s}>
+                              {s}
+                            </option>
+                          ),
+                        )}
+                      </select>
+                    </label>
                     <label className="block text-xs font-medium text-gray-600 sm:col-span-2">
                       Shipper address *
                       <Input
@@ -1763,6 +1814,68 @@ export default function NvoccBookingDetailPage() {
                         }
                       />
                     </label>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-gray-700">Containers (size lines)</p>
+                    {formState.containers.map((line, idx) => (
+                      <div key={idx} className="grid gap-2 sm:grid-cols-3">
+                        <Input
+                          label="ISO size"
+                          placeholder="40HC"
+                          value={line.iso_size}
+                          onChange={(e) =>
+                            setFormState((prev) => ({
+                              ...prev,
+                              containers: prev.containers.map((c, i) =>
+                                i === idx ? { ...c, iso_size: e.target.value } : c,
+                              ),
+                            }))
+                          }
+                        />
+                        <Input
+                          label="Count"
+                          type="number"
+                          min={1}
+                          value={line.count}
+                          onChange={(e) =>
+                            setFormState((prev) => ({
+                              ...prev,
+                              containers: prev.containers.map((c, i) =>
+                                i === idx ? { ...c, count: e.target.value } : c,
+                              ),
+                            }))
+                          }
+                        />
+                        <Input
+                          label="Container type id"
+                          value={line.container_type_id}
+                          onChange={(e) =>
+                            setFormState((prev) => ({
+                              ...prev,
+                              containers: prev.containers.map((c, i) =>
+                                i === idx ? { ...c, container_type_id: e.target.value } : c,
+                              ),
+                            }))
+                          }
+                        />
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      onClick={() =>
+                        setFormState((prev) => ({
+                          ...prev,
+                          containers: [
+                            ...prev.containers,
+                            { container_type_id: '', iso_size: '', count: '1' },
+                          ],
+                        }))
+                      }
+                    >
+                      Add container line
+                    </Button>
                   </div>
                   <div className="flex flex-wrap gap-4 text-xs text-gray-700">
                     <label className="inline-flex items-center gap-2">

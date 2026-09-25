@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
   amountField,
+  hsCode,
   integerField,
   optionalTextUndef,
   optionalUuid,
@@ -103,17 +104,6 @@ function refineJobBusinessRules(
     }
   }
 
-  if (data.hs_code) {
-    const hs = data.hs_code.trim();
-    if (!/^[0-9]{2,10}(\.[0-9]{1,4})?$/.test(hs)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Enter a valid HS code (e.g. 8471.30)',
-        path: ['hs_code'],
-      });
-    }
-  }
-
   if (data.incoterms) {
     const code = data.incoterms.trim().toUpperCase();
     if (!/^[A-Z]{3}$/.test(code)) {
@@ -141,7 +131,7 @@ export const createJobBaseSchema = z.object({
   origin_port_id: optionalUuid(),
   dest_port_id: optionalUuid(),
   commodity: optionalTextUndef({ min: 2, max: 500 }),
-  hs_code: optionalTextUndef({ max: 20 }),
+  hs_code: hsCode(false),
   gross_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
   chargeable_weight: amountField({
     required: false,
@@ -161,6 +151,24 @@ export const createJobBaseSchema = z.object({
   tags: z.array(z.string().trim().min(1).max(50)).optional(),
   etd: optionalTextUndef({ max: 32 }),
   eta: optionalTextUndef({ max: 32 }),
+  service_scope: z
+    .enum(['DOOR_TO_DOOR', 'DOOR_TO_PORT', 'PORT_TO_DOOR', 'PORT_TO_PORT'])
+    .optional(),
+  origin_door_address: optionalTextUndef({ max: 2000 }),
+  dest_door_address: optionalTextUndef({ max: 2000 }),
+  cargo_category: z
+    .enum([
+      'GENERAL',
+      'VEHICLES',
+      'FOOD_PERISHABLE',
+      'PHARMA',
+      'CHEMICALS_DG',
+      'PERSONAL_EFFECTS',
+      'PROJECT_OOG',
+      'LIVESTOCK',
+      'OTHER',
+    ])
+    .optional(),
 });
 
 export const createJobSchema = createJobBaseSchema.superRefine(refineJobBusinessRules);
@@ -213,7 +221,7 @@ export const createJobCargoSchema = z.object({
   container_id: optionalUuid(),
   consignee_id: optionalUuid(),
   commodity: optionalTextUndef({ max: 500 }),
-  hs_code: optionalTextUndef({ max: 20 }),
+  hs_code: hsCode(false),
   description: optionalTextUndef({ max: 2000 }),
   marks_numbers: optionalTextUndef({ max: 500 }),
   packages: integerField({ required: false, min: 0, allowNegative: false }),

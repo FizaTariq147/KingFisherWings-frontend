@@ -11,6 +11,8 @@ export interface WmsSettings {
   valuation_method: WmsValuationMethod;
   default_free_days: number;
   default_storage_rate: number;
+  /** Per-day rate after paid/included days (overdue / NOT_COLLECTED accrual). */
+  default_overdue_rate_per_day?: number;
   default_currency: string;
 }
 
@@ -18,6 +20,7 @@ export interface UpsertWmsSettingsDto {
   valuation_method: WmsValuationMethod;
   default_free_days: number;
   default_storage_rate: number;
+  default_overdue_rate_per_day?: number;
   default_currency: string;
 }
 
@@ -130,6 +133,8 @@ export interface WmsDocument {
 export interface StockOnHandParams {
   warehouse_id?: string;
   item_id?: string;
+  /** IN_STORAGE | NOT_COLLECTED | COLLECTED | WAIVED */
+  storage_status?: string;
 }
 
 export interface StockMovementsParams {
@@ -137,6 +142,7 @@ export interface StockMovementsParams {
   item_id?: string;
   from?: string;
   to?: string;
+  storage_status?: string;
 }
 
 export interface AdjustStockDto {
@@ -165,14 +171,18 @@ export interface CalculateStorageDto {
   period_to: string;
   free_days?: number;
   rate_per_day?: number;
+  /** Extra per-day rate after paid days (overdue formula). */
+  overdue_rate_per_day?: number;
   currency_code?: string;
 }
 
 export interface StorageChargesParams {
   /** Required by GET /wms/storage/charges */
   party_id: string;
-  /** Required by GET /wms/storage/charges — typically OPEN before invoicing */
+  /** Required — typically OPEN before invoicing */
   status: string;
+  /** Required — e.g. STORAGE | OVERDUE */
+  charge_kind: string;
 }
 
 export interface InvoiceStorageDto {

@@ -2,7 +2,13 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import { jobService } from '../services/job.service';
-import type { CreateJobDto, JobListParams, UpdateAirBookingFormDto, UpdateJobDto } from '../types/job.types';
+import type {
+  CreateJobDto,
+  JobListParams,
+  UpdateAirBookingFormDto,
+  UpdateJobDto,
+  UpsertAirComplianceBookingFormDto,
+} from '../types/job.types';
 
 export const jobKeys = {
   all: ['tenant', 'jobs'] as const,
@@ -30,6 +36,7 @@ export const jobKeys = {
   storageCalculation: (id: string, asOf?: string) =>
     [...jobKeys.all, 'storage-calculation', id, asOf ?? ''] as const,
   airBookingForm: (id: string) => [...jobKeys.all, 'air-booking-form', id] as const,
+  airComplianceForm: (id: string) => [...jobKeys.all, 'air-compliance-form', id] as const,
 };
 
 export function useInvalidateJobs() {
@@ -188,6 +195,28 @@ export function useUpdateJobAirBookingForm(id: string) {
     onSuccess: () => {
       invalidate(id);
       void queryClient.invalidateQueries({ queryKey: jobKeys.airBookingForm(id) });
+    },
+  });
+}
+
+export function useJobAirComplianceForm(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.airComplianceForm(id),
+    queryFn: () => jobService.getAirComplianceForm(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+export function useUpdateJobAirComplianceForm(id: string) {
+  const invalidate = useInvalidateJobs();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: UpsertAirComplianceBookingFormDto) =>
+      jobService.putAirComplianceForm(id, dto),
+    onSuccess: () => {
+      invalidate(id);
+      void queryClient.invalidateQueries({ queryKey: jobKeys.airComplianceForm(id) });
     },
   });
 }

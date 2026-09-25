@@ -14,6 +14,7 @@ import { JobMilestonesPanel } from '../components/JobMilestonesPanel';
 import { JobNotesPanel } from '../components/JobNotesPanel';
 import { JobOpsPanel } from '../components/JobOpsPanel';
 import { JobOverviewPanel } from '../components/JobOverviewPanel';
+import { JobBarcodePanel } from '../components/JobBarcodePanel';
 import { JobPnlPanel } from '../components/JobPnlPanel';
 import { JobStuffingPanel } from '../components/JobStuffingPanel';
 import { JobVendorOffersPanel } from '@/features/vendor-job-offers/components/JobVendorOffersPanel';
@@ -30,10 +31,14 @@ import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useJobResolvedLabels } from '../hooks/useJobResolvedLabels';
 import { useJob, useJobHouseJobs } from '../hooks/useJobs';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { jobShouldOpenOpsTab } from '../hooks/useStaffBookingForm';
+import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import {
+  jobDetailPath,
   jobDisplayNumber,
   jobEditable,
   jobRoutePrefix,
+  segmentForJobType,
   segmentFromPath,
 } from '../utils/jobRoute';
 import { isUuid } from '@/lib/isUuid';
@@ -66,6 +71,18 @@ export default function JobDetailPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
 
+  // Keep URL segment aligned with job_type (e.g. converted ROAD_FREIGHT → /jobs/road-freight/:id).
+  useEffect(() => {
+    if (!job?.id || !isUuid(job.id)) return;
+    const expected = segmentForJobType(canonicalizeJobType(job.job_type));
+    const current = segmentFromPath(pathname);
+    if (current === expected) return;
+    const target = jobDetailPath(job);
+    if (target !== pathname) {
+      navigate(target, { replace: true, state: location.state });
+    }
+  }, [job, pathname, navigate, location.state]);
+
   // Surface partial costing failures from create wizard (POST /jobs/:id/charges).
   useEffect(() => {
     const state = location.state as { costingWarnings?: string[] } | null;
@@ -96,15 +113,27 @@ export default function JobDetailPage() {
     const fromQuery = new URLSearchParams(location.search).get('tab');
     if (fromQuery) return fromQuery;
     const state = location.state as { openTab?: string } | null;
-    return state?.openTab || undefined;
-  }, [location.search, location.state]);
+    if (state?.openTab) return state.openTab;
+    // After quote convert: open Ops for modes with staff booking / air forms.
+    if (job && jobShouldOpenOpsTab(job.job_type)) return 'ops';
+    return undefined;
+  }, [location.search, location.state, job]);
 
   const tabs = useMemo(() => {
     if (!job) return [];
     const sea = isSeaFcl(job.job_type);
     const isCc = isCcJobType(job.job_type);
     return [
-      { key: 'overview', label: 'Overview', content: <JobOverviewPanel job={job} /> },
+      {
+        key: 'overview',
+        label: 'Overview',
+        content: (
+          <div className="space-y-4">
+            <JobOverviewPanel job={job} />
+            <JobBarcodePanel job={job} />
+          </div>
+        ),
+      },
       { key: 'ops', label: 'Ops / Mode', content: <JobOpsPanel job={job} /> },
       ...(isCc
         ? [

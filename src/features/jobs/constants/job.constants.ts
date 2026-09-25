@@ -6,6 +6,7 @@ export const JOB_TYPES = [
   'SEA_LCL_EXPORT',
   'SEA_LCL_IMPORT',
   'LAND',
+  'ROAD_FREIGHT',
   'COURIER',
   'CUSTOMS_CLEARANCE',
   'NVOCC_EXPORT',
@@ -22,6 +23,12 @@ export function isAirJobType(jobType?: string | null): boolean {
   return t.startsWith('AIR_') || t === 'COURIER';
 }
 
+/** ROAD_FREIGHT and LAND share CreateJobDto door/scope fields + land-parity ops. */
+export function isRoadOrLandJobType(jobType?: string | null): boolean {
+  const t = (jobType || '').toUpperCase();
+  return t === 'ROAD_FREIGHT' || t === 'LAND';
+}
+
 /**
  * Primary create-job types shown in the UI (matches legacy Create Job wizard).
  * API still accepts LAND / COURIER; those are not in the wizard radio grid.
@@ -34,6 +41,7 @@ export const JOB_TYPE_WIZARD_OPTIONS: JobType[] = [
   'SEA_FCL_IMPORT',
   'SEA_LCL_EXPORT',
   'SEA_LCL_IMPORT',
+  'ROAD_FREIGHT',
   'NVOCC_EXPORT',
   'NVOCC_IMPORT',
   'SERVICE_JOB',
@@ -135,7 +143,12 @@ export type JobDocumentType = (typeof JOB_DOCUMENT_TYPES)[number];
 
 export const DEFAULT_JOB_PAGE_SIZE = 20;
 
-export type JobSegmentKey = 'air-export' | 'sea-export' | 'sea-import' | 'customs-clearance';
+export type JobSegmentKey =
+  | 'air-export'
+  | 'sea-export'
+  | 'sea-import'
+  | 'customs-clearance'
+  | 'road-freight';
 
 export const JOB_SEGMENTS: Record<
   JobSegmentKey,
@@ -175,6 +188,13 @@ export const JOB_SEGMENTS: Record<
     jobTypes: ['CUSTOMS_CLEARANCE'],
     defaultCreateType: 'CUSTOMS_CLEARANCE',
   },
+  'road-freight': {
+    label: 'Road Freight',
+    routePrefix: '/jobs/road-freight',
+    permission: 'menu_jobs_air_export',
+    jobTypes: ['ROAD_FREIGHT', 'LAND', 'COURIER'],
+    defaultCreateType: 'ROAD_FREIGHT',
+  },
 };
 
 /** Display labels aligned with the Create Job wizard UI. */
@@ -186,6 +206,7 @@ export const JOB_TYPE_LABELS: Record<JobType, string> = {
   SEA_LCL_EXPORT: 'LCL EXPORT',
   SEA_LCL_IMPORT: 'LCL IMPORT',
   LAND: 'LAND',
+  ROAD_FREIGHT: 'ROAD FREIGHT',
   COURIER: 'COURIER',
   CUSTOMS_CLEARANCE: 'CUSTOMS CLEARANCE',
   NVOCC_EXPORT: 'NVOCC EXPORT',

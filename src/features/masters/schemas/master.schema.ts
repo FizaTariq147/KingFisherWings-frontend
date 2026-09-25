@@ -213,6 +213,25 @@ export function createMasterSchema(
             (v) => (v === '' || v == null ? undefined : Number(v)),
             field.required ? volume : volume.optional(),
           );
+        } else if (
+          resourceKey === 'air-pallet-types' &&
+          (field.name === 'base_length_m' ||
+            field.name === 'base_width_m' ||
+            field.name === 'height_m' ||
+            field.name === 'usable_volume_m3' ||
+            field.name === 'inside_length_m' ||
+            field.name === 'inside_width_m' ||
+            field.name === 'inside_height_m')
+        ) {
+          const dim = z
+            .number({ error: 'Enter a valid number ≥ 0' })
+            .min(0, 'Enter a valid number ≥ 0')
+            .max(100, 'Value is too large')
+            .refine((n) => decimalsOk(n, 4), V.decimals(4));
+          schema = z.preprocess(
+            (v) => (v === '' || v == null ? undefined : Number(v)),
+            field.required ? dim : dim.optional(),
+          );
         } else if (resourceKey === 'exchange-rates' && field.name === 'rate') {
           const rate = z
             .number({ error: EXCHANGE_RATE_POSITIVE })
@@ -257,7 +276,28 @@ export function createMasterSchema(
         schema = field.required ? requiredUrl() : optionalUrlOrEmpty();
         break;
       default:
-        if (field.name === 'country_code' || field.name === 'flag_country') {
+        if (field.csvToArray) {
+          const toStringArray = (v: unknown): string[] | undefined => {
+            if (v == null || v === '') return undefined;
+            if (Array.isArray(v)) {
+              const arr = v.map(String).map((s) => s.trim()).filter(Boolean);
+              return arr.length ? arr : undefined;
+            }
+            if (typeof v === 'string') {
+              const arr = v
+                .split(/[,]+/)
+                .map((s) => s.trim())
+                .filter(Boolean);
+              return arr.length ? arr : undefined;
+            }
+            return undefined;
+          };
+          const arrSchema = z.array(z.string().min(1));
+          schema = z.preprocess(
+            toStringArray,
+            field.required ? arrSchema.min(1, `${field.label} should not be empty`) : arrSchema.optional(),
+          );
+        } else if (field.name === 'country_code' || field.name === 'flag_country') {
           schema = field.required ? countryCode(true) : countryCode(false);
         } else if (field.name === 'phone' || field.name.endsWith('_phone')) {
           schema = field.required ? requiredPhone() : optionalPhone();
@@ -314,6 +354,8 @@ export function createMasterSchema(
               message:
                 resourceKey === 'warehouses' ? V.warehouseCode : V.uomCode,
             });
+          } else if (resourceKey === 'air-pallet-types' && field.name === 'code') {
+            schema = entityCode({ min: 1, max: 30 });
           } else {
             schema = field.required
               ? entityCode()
@@ -339,6 +381,8 @@ export function createMasterSchema(
           } else if (isPortsResource(resourceKey) && field.name === 'city') {
             schema = optionalName({ min: 2, max: 100 });
           } else if (resourceKey === 'units-of-measure' && field.name === 'name') {
+            schema = requiredName({ min: 2, max: 100 });
+          } else if (resourceKey === 'air-pallet-types' && field.name === 'name') {
             schema = requiredName({ min: 2, max: 100 });
           } else if (resourceKey === 'warehouses' && field.name === 'name') {
             schema = requiredName({ min: 2, max: 200 });

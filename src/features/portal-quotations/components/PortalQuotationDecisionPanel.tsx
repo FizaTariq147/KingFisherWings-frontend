@@ -15,6 +15,7 @@ import {
   portalQuoteStatusMessage,
   portalQuoteTotalAmount,
 } from '../utils/portalQuotationStatus';
+import { usesModeBookingFormConvertFlow } from '@/features/quotations/utils/quotationStatus';
 
 function acceptSuccessMessage(quote: PortalQuotationDetail, isNegotiating: boolean, hasCounter: boolean): string {
   const jt = String(
@@ -29,6 +30,11 @@ function acceptSuccessMessage(quote: PortalQuotationDetail, isNegotiating: boole
     return hasCounter && isNegotiating
       ? 'Approved at the forwarder’s offer. Complete the air booking form below — Ops will finish the booking from your details.'
       : 'Quotation approved. Complete the air booking form below; Ops (admin / sales) will finish booking from your details.';
+  }
+  if (usesModeBookingFormConvertFlow(jt)) {
+    return hasCounter && isNegotiating
+      ? 'Approved at the forwarder’s offer. Complete the booking form below — your quotation converts to a job after you submit it.'
+      : 'Quotation approved. Complete the booking form below — your quotation converts to a job after you submit it.';
   }
   return hasCounter && isNegotiating
     ? 'Quotation approved at the forwarder’s offer (your counter was not applied).'

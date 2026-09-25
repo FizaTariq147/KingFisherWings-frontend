@@ -37,6 +37,10 @@ export default function PortalShipmentDetailPage() {
     isAirExport ||
     isAirImport ||
     String(data?.jobType ?? '').startsWith('AIR_');
+  const isRoadLand =
+    data?.jobType === 'ROAD_FREIGHT' ||
+    data?.jobType === 'LAND' ||
+    String(data?.jobType ?? '').toUpperCase() === 'ROAD_FREIGHT';
   const isNvoccOrSea =
     data?.jobType === 'NVOCC_EXPORT' ||
     data?.jobType === 'NVOCC_IMPORT' ||
@@ -150,6 +154,45 @@ export default function PortalShipmentDetailPage() {
       {data.cargoSummary ? (
         <PortalPanel padded>
           <p className="text-sm text-[var(--color-neutral-700)]">{data.cargoSummary}</p>
+        </PortalPanel>
+      ) : null}
+
+      {isRoadLand ? (
+        <PortalPanel padded>
+          <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">
+            Road freight details
+          </h2>
+          <dl className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              ['Service scope', data.serviceScope],
+              ['Cargo category', data.cargoCategory],
+              ['Incoterms', data.incoterms],
+              ['Vehicle type', data.vehicleType],
+              ['Origin city / country', data.originCityCountry],
+              ['Destination city / country', data.destinationCityCountry],
+              ['Origin door', data.originDoorAddress],
+              ['Dest door', data.destDoorAddress],
+            ].map(([label, value]) =>
+              value ? (
+                <div key={label}>
+                  <dt className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
+                    {label}
+                  </dt>
+                  <dd className="mt-1 text-sm font-medium text-[var(--color-neutral-800)]">
+                    {String(value).replaceAll('_', ' ')}
+                  </dd>
+                </div>
+              ) : null,
+            )}
+          </dl>
+          {!data.serviceScope &&
+          !data.originDoorAddress &&
+          !data.originCityCountry &&
+          !data.vehicleType ? (
+            <p className="mt-2 text-xs text-[var(--color-neutral-500)]">
+              Route and door details will appear once ops fills the road freight job.
+            </p>
+          ) : null}
         </PortalPanel>
       ) : null}
 

@@ -54,13 +54,16 @@ export function JobOverviewPanel({ job }: { job: Job }) {
     job.job_type === 'SEA_LCL_EXPORT' || job.job_type === 'SEA_LCL_IMPORT';
   const isNvocc = isNvoccJobType(job.job_type);
   const isCourier = job.job_type.includes('COURIER');
-  const isLand = job.job_type.includes('LAND') || job.job_type.includes('ROAD');
+  const isLand = job.job_type === 'LAND';
+  const isRoad = job.job_type === 'ROAD_FREIGHT';
 
   const air = job.air_details;
   const seaFcl = job.sea_fcl_details;
   const seaLcl = job.sea_lcl_details;
   const courier = job.courier_details;
   const land = job.land_details;
+  const road = job.road_freight_details;
+  const roadLand = isRoad ? road : isLand ? land : undefined;
 
   const originDisplay = isAir ? labels.originAirportLabel : labels.originLabel;
   const destDisplay = isAir ? labels.destAirportLabel : labels.destinationLabel;
@@ -77,6 +80,12 @@ export function JobOverviewPanel({ job }: { job: Job }) {
         <Row label="ETA" value={formatDate(job.eta) || job.eta} />
         <Row label="Incoterms" value={job.incoterms} />
         <Row label="Tags" value={job.tags?.length ? job.tags.join(', ') : undefined} />
+        <Row
+          label="Barcode"
+          value={
+            job.barcode || job.barcode_value || job.courier_details?.barcode_value || undefined
+          }
+        />
         <Row label="Created" value={formatDate(job.created_at) || job.created_at} />
         <Row label="Updated" value={formatDate(job.updated_at) || job.updated_at} />
       </Section>
@@ -192,18 +201,25 @@ export function JobOverviewPanel({ job }: { job: Job }) {
         </Section>
       )}
 
-      {isLand && (
-        <Section title="Land details">
+      {(isLand || isRoad) && roadLand && (
+        <Section title={isRoad ? 'Road Freight details' : 'Land details'}>
           <Row label="Trucker" value={labels.truckerLabel} />
-          <Row label="Vehicle number" value={land?.vehicle_number} />
-          <Row label="Vehicle type" value={land?.vehicle_type} />
-          <Row label="Driver" value={land?.driver_name} />
-          <Row label="Driver license" value={land?.driver_license} />
-          <Row label="Origin" value={land?.origin_city_country} />
-          <Row label="Destination" value={land?.destination_city_country} />
-          <Row label="ETD" value={formatDate(land?.etd) || land?.etd} />
-          <Row label="ETA" value={formatDate(land?.eta) || land?.eta} />
-          <Row label="Border commodity" value={land?.border_commodity} />
+          <Row label="Vehicle number" value={roadLand.vehicle_number} />
+          <Row label="Vehicle type" value={roadLand.vehicle_type} />
+          {isRoad ? (
+            <Row label="Trailer number" value={job.road_freight_details?.trailer_number} />
+          ) : null}
+          <Row label="Driver" value={roadLand.driver_name} />
+          <Row label="Driver license" value={roadLand.driver_license} />
+          <Row label="Origin" value={roadLand.origin_city_country} />
+          <Row label="Destination" value={roadLand.destination_city_country} />
+          {isRoad ? (
+            <Row label="Route notes" value={job.road_freight_details?.route_notes} />
+          ) : null}
+          <Row label="Service scope" value={job.service_scope} />
+          <Row label="ETD" value={formatDate(roadLand.etd) || roadLand.etd} />
+          <Row label="ETA" value={formatDate(roadLand.eta) || roadLand.eta} />
+          <Row label="Border commodity" value={roadLand.border_commodity} />
         </Section>
       )}
 

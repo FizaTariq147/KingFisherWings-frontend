@@ -396,6 +396,10 @@ export type NvoccBookingForm = Record<string, unknown> & {
   shipper_owned_container?: boolean;
   is_dg?: boolean;
   teu_count?: number;
+  containers?: { container_type_id?: string; iso_size?: string; count: number }[];
+  service_scope?: 'DOOR_TO_DOOR' | 'DOOR_TO_PORT' | 'PORT_TO_DOOR' | 'PORT_TO_PORT' | string;
+  origin_door_address?: string;
+  dest_door_address?: string;
   commodity?: string;
   hs_code?: string;
   final_use?: string;
@@ -427,6 +431,10 @@ export type UpdateNvoccBookingFormDto = {
   shipper_owned_container?: boolean;
   is_dg?: boolean;
   teu_count?: number;
+  containers?: { container_type_id?: string; iso_size?: string; count: number }[];
+  service_scope?: 'DOOR_TO_DOOR' | 'DOOR_TO_PORT' | 'PORT_TO_DOOR' | 'PORT_TO_PORT' | string;
+  origin_door_address?: string;
+  dest_door_address?: string;
   commodity: string;
   hs_code?: string;
   final_use?: string;

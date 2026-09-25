@@ -47,6 +47,11 @@ import {
   type PortalPackageDraft,
 } from '../utils/buildPortalEstimatePackages';
 import { isAirJobType, type PortalPortOption } from '../utils/loadPortalPortOptions';
+
+function isRoadOrLandJobType(jobType?: string | null): boolean {
+  const t = String(jobType ?? '').toUpperCase();
+  return t === 'ROAD_FREIGHT' || t === 'LAND';
+}
 import {
   buildPortalCustomerLines,
   buildPortalEstimateSnapshot,
@@ -160,6 +165,7 @@ export default function PortalBookPage() {
     typeof currencyCode === 'string' && currencyCode.trim() ? currencyCode.trim() : '';
   const jobType = watch('job_type');
   const useAirports = isAirJobType(jobType);
+  const isRoadLand = isRoadOrLandJobType(jobType);
   const originPort = watch('origin_port');
   const destPort = watch('dest_port');
   const formGrossWeight = watch('gross_weight');
@@ -565,21 +571,37 @@ export default function PortalBookPage() {
 
           {wizardStepKey === 'ports' ? (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {isRoadLand ? (
+                <p className="md:col-span-2 text-xs text-[var(--color-neutral-500)]">
+                  Road freight quotes use optional hubs. Add door addresses and route notes under
+                  special requirements when hubs are blank.
+                </p>
+              ) : null}
               <Controller
                 name="origin_port"
                 control={control}
                 render={({ field }) => (
                   <PortalPlaceSelect
                     name="origin_port"
-                    label={useAirports ? 'Origin airport' : 'Origin port'}
-                    required
+                    label={
+                      useAirports
+                        ? 'Origin airport'
+                        : isRoadLand
+                          ? 'Origin hub (optional)'
+                          : 'Origin port'
+                    }
+                    required={!isRoadLand}
                     jobType={jobType}
                     value={typeof field.value === 'string' ? field.value : ''}
                     onChange={field.onChange}
                     onPlacesLoaded={rememberPlaces}
                     excludeId={typeof destPort === 'string' && destPort ? destPort : undefined}
                     placeholder={
-                      useAirports ? 'Search airport e.g. DXB — Dubai' : 'Search port e.g. Jebel Ali'
+                      useAirports
+                        ? 'Search airport e.g. DXB — Dubai'
+                        : isRoadLand
+                          ? 'Optional hub / city'
+                          : 'Search port e.g. Jebel Ali'
                     }
                     error={errors.origin_port?.message}
                   />
@@ -591,19 +613,25 @@ export default function PortalBookPage() {
                 render={({ field }) => (
                   <PortalPlaceSelect
                     name="dest_port"
-                    label={useAirports ? 'Destination airport' : 'Destination port'}
-                    required
+                    label={
+                      useAirports
+                        ? 'Destination airport'
+                        : isRoadLand
+                          ? 'Destination hub (optional)'
+                          : 'Destination port'
+                    }
+                    required={!isRoadLand}
                     jobType={jobType}
                     value={typeof field.value === 'string' ? field.value : ''}
                     onChange={field.onChange}
                     onPlacesLoaded={rememberPlaces}
-                    excludeId={
-                      typeof originPort === 'string' && originPort ? originPort : undefined
-                    }
+                    excludeId={typeof originPort === 'string' && originPort ? originPort : undefined}
                     placeholder={
                       useAirports
-                        ? 'Search airport e.g. LHR — London Heathrow'
-                        : 'Search port e.g. Rotterdam'
+                        ? 'Search airport e.g. RUH — Riyadh'
+                        : isRoadLand
+                          ? 'Optional hub / city'
+                          : 'Search port e.g. Karachi'
                     }
                     error={errors.dest_port?.message}
                   />
@@ -644,10 +672,21 @@ export default function PortalBookPage() {
               <label className="block text-sm md:col-span-2">
                 <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
                   Special requirements
+                  {isRoadLand ? (
+                    <span className="font-normal text-[var(--color-neutral-400)]">
+                      {' '}
+                      (door addresses / route)
+                    </span>
+                  ) : null}
                 </span>
                 <textarea
                   className="min-h-[96px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:border-[var(--color-primary-500)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-500)]"
                   maxLength={2000}
+                  placeholder={
+                    isRoadLand
+                      ? 'e.g. Pickup: JAFZA WH-12, Dubai · Delivery: Ind. Area 2, Riyadh · Via Al Batha · DOOR_TO_DOOR'
+                      : undefined
+                  }
                   {...register('special_requirements')}
                 />
                 {errors.special_requirements && (

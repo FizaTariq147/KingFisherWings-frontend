@@ -103,6 +103,8 @@ export function normalizeWmsSettings(raw: unknown): WmsSettings | null {
     valuation_method: (method === 'LIFO' ? 'LIFO' : 'FIFO') as WmsSettings['valuation_method'],
     default_free_days: num(r.default_free_days ?? r.defaultFreeDays) ?? 0,
     default_storage_rate: num(r.default_storage_rate ?? r.defaultStorageRate) ?? 0,
+    default_overdue_rate_per_day:
+      num(r.default_overdue_rate_per_day ?? r.defaultOverdueRatePerDay) ?? undefined,
     default_currency: pickString(r, 'default_currency', 'defaultCurrency', 'currency_code').toUpperCase() || 'AED',
   };
 }

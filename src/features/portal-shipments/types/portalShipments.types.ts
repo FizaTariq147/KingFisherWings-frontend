@@ -64,6 +64,15 @@ export interface PortalShipmentDetail extends PortalShipmentListItem {
   grossWeight?: number;
   chargeableWeight?: number;
   volumeCbm?: number;
+  /** CreateJobDto / road-land fields when present on shipment payload. */
+  serviceScope?: string;
+  originDoorAddress?: string;
+  destDoorAddress?: string;
+  cargoCategory?: string;
+  incoterms?: string;
+  vehicleType?: string;
+  originCityCountry?: string;
+  destinationCityCountry?: string;
   milestones: PortalMilestone[];
   documents?: PortalShipmentDocument[];
 }

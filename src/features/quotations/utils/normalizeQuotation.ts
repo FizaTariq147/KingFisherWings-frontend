@@ -1,4 +1,5 @@
 import { isUuid } from '@/lib/isUuid';
+import { canonicalizeJobType as canonicalizeSharedJobType } from '@/features/jobs/utils/canonicalizeJobType';
 import {
   JOB_TYPES,
   type JobType,
@@ -6,7 +7,7 @@ import {
 } from '../constants/quotation.constants';
 import type { Quotation, QuotationLine } from '../types/quotation.types';
 import { normalizeNegotiationPricing } from './normalizeQuotationExtended';
-import { coerceQuotationStatus } from './quotationStatus';
+import { coerceQuotationStatus, usesModeBookingFormConvertFlow } from './quotationStatus';
 import { resolveCustomerFacingQuoteStatus } from './customerQuoteDecision';
 import { isRememberedQuotationConverted } from './quotationConvertedMemory';
 
@@ -59,6 +60,20 @@ function normalizeStatus(
     resolveCustomerFacingQuoteStatus(id, value, record, { useMemory: true }) ??
     coerceQuotationStatus(value);
 
+  const jobType =
+    (record && (str(record.job_type) || str(record.jobType))) || undefined;
+  // Booking-form modes stay APPROVED while a job shell exists for the form.
+  if (usesModeBookingFormConvertFlow(jobType)) {
+    if (
+      id &&
+      isRememberedQuotationConverted(id) &&
+      (resolved === 'APPROVED' || resolved === 'WON')
+    ) {
+      return 'CONVERTED';
+    }
+    return resolved;
+  }
+
   const jobId =
     (record && (str(record.job_id) || str(record.jobId))) || undefined;
   if (
@@ -78,46 +93,11 @@ function normalizeStatus(
   return resolved;
 }
 
-function canonicalizeJobTypeToken(value: unknown): string {
-  return String(value ?? '')
-    .trim()
-    .toUpperCase()
-    .replace(/[\s-]+/g, '_');
-}
-
 /** Map API job_type / jobType / mode aliases → canonical JobType. */
 function normalizeJobType(value: unknown): JobType {
-  const raw = canonicalizeJobTypeToken(value);
-  if (!raw) return 'SEA_FCL_EXPORT';
-  if ((JOB_TYPES as readonly string[]).includes(raw)) return raw as JobType;
-
-  const aliases: Record<string, JobType> = {
-    AIR: 'AIR_EXPORT',
-    AIR_EXP: 'AIR_EXPORT',
-    AIR_IMP: 'AIR_IMPORT',
-    NVOCC: 'NVOCC_EXPORT',
-    NVOCC_EXP: 'NVOCC_EXPORT',
-    NVOCC_IMP: 'NVOCC_IMPORT',
-    SEA_EXPORT: 'SEA_FCL_EXPORT',
-    SEA_IMPORT: 'SEA_FCL_IMPORT',
-    SEA_FCL: 'SEA_FCL_EXPORT',
-    SEA_LCL: 'SEA_LCL_EXPORT',
-    FCL_EXPORT: 'SEA_FCL_EXPORT',
-    FCL_IMPORT: 'SEA_FCL_IMPORT',
-    LCL_EXPORT: 'SEA_LCL_EXPORT',
-    LCL_IMPORT: 'SEA_LCL_IMPORT',
-  };
-  if (aliases[raw]) return aliases[raw];
-
-  // Preserve AIR_/NVOCC_ family even if an unexpected suffix arrives (gate must still apply).
-  if (raw.startsWith('AIR_')) {
-    return raw.includes('IMP') ? 'AIR_IMPORT' : 'AIR_EXPORT';
-  }
-  if (raw.startsWith('NVOCC_')) {
-    return raw.includes('IMP') ? 'NVOCC_IMPORT' : 'NVOCC_EXPORT';
-  }
-
-  return 'SEA_FCL_EXPORT';
+  const shared = canonicalizeSharedJobType(value, 'SEA_FCL_EXPORT');
+  if ((JOB_TYPES as readonly string[]).includes(shared)) return shared as JobType;
+  return shared as JobType;
 }
 
 function pickJobType(r: Record<string, unknown>): JobType {

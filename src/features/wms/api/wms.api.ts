@@ -67,3 +67,16 @@ export const WMS_ROUTE_PREFIX = '/warehouse';
 /** Swagger-required status values used by GET /wms/storage/charges (string, no enum in docs). */
 export const WMS_STORAGE_CHARGE_STATUSES = ['OPEN', 'INVOICED', 'CANCELLED'] as const;
 export type WmsStorageChargeStatus = (typeof WMS_STORAGE_CHARGE_STATUSES)[number];
+
+/** charge_kind query on GET /wms/storage/charges (required string). */
+export const WMS_STORAGE_CHARGE_KINDS = ['STORAGE', 'OVERDUE'] as const;
+export type WmsStorageChargeKind = (typeof WMS_STORAGE_CHARGE_KINDS)[number];
+
+/** storage_status on GET /wms/stock/* (NOT_COLLECTED drives overdue accrual). */
+export const WMS_STOCK_STORAGE_STATUSES = [
+  'IN_STORAGE',
+  'NOT_COLLECTED',
+  'COLLECTED',
+  'WAIVED',
+] as const;
+export type WmsStockStorageStatus = (typeof WMS_STOCK_STORAGE_STATUSES)[number];

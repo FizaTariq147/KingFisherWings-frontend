@@ -4,19 +4,18 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import { useCcDetails, useCcJobActions } from '../hooks/useCustomsClearance';
+import type { CcDirection } from '../types/customsClearance.types';
+
+const DIRECTIONS: CcDirection[] = ['IMPORT', 'EXPORT', 'TRANSIT'];
 
 export function CcDetailsPanel({ jobId }: { jobId: string }) {
   const { data, isLoading, isError, error, refetch } = useCcDetails(jobId);
   const actions = useCcJobActions(jobId);
   const [form, setForm] = useState({
-    direction: '',
-    customs_office: '',
-    port_id: '',
-    importer_id: '',
-    exporter_id: '',
-    broker_ref: '',
-    entry_type: '',
-    notes: '',
+    direction: '' as string,
+    cha_party_id: '',
+    border_or_port: '',
+    remarks: '',
   });
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -25,13 +24,9 @@ export function CcDetailsPanel({ jobId }: { jobId: string }) {
     if (!data) return;
     setForm({
       direction: data.direction ?? '',
-      customs_office: data.customs_office ?? '',
-      port_id: data.port_id ?? '',
-      importer_id: data.importer_id ?? '',
-      exporter_id: data.exporter_id ?? '',
-      broker_ref: data.broker_ref ?? '',
-      entry_type: data.entry_type ?? '',
-      notes: data.notes ?? '',
+      cha_party_id: data.cha_party_id ?? '',
+      border_or_port: data.border_or_port ?? '',
+      remarks: data.remarks ?? '',
     });
   }, [data]);
 
@@ -41,13 +36,9 @@ export function CcDetailsPanel({ jobId }: { jobId: string }) {
     try {
       await actions.updateDetails.mutateAsync({
         direction: form.direction || undefined,
-        customs_office: form.customs_office || undefined,
-        port_id: form.port_id || undefined,
-        importer_id: form.importer_id || undefined,
-        exporter_id: form.exporter_id || undefined,
-        broker_ref: form.broker_ref || undefined,
-        entry_type: form.entry_type || undefined,
-        notes: form.notes || undefined,
+        cha_party_id: form.cha_party_id || undefined,
+        border_or_port: form.border_or_port || undefined,
+        remarks: form.remarks || undefined,
       });
       setMsg('CC details saved.');
       await refetch();
@@ -70,27 +61,45 @@ export function CcDetailsPanel({ jobId }: { jobId: string }) {
           <p className="text-sm text-[var(--color-danger-600)]">{getErrorMessage(error)}</p>
         ) : null}
         <div className="grid gap-2 sm:grid-cols-2">
-          {(
-            [
-              ['direction', 'Direction (import/export)'],
-              ['customs_office', 'Customs office'],
-              ['port_id', 'Port id'],
-              ['importer_id', 'Importer id'],
-              ['exporter_id', 'Exporter id'],
-              ['broker_ref', 'Broker ref'],
-              ['entry_type', 'Entry type'],
-              ['notes', 'Notes'],
-            ] as const
-          ).map(([key, label]) => (
-            <label key={key} className="block text-xs text-[var(--color-neutral-500)]">
-              {label}
-              <Input
-                className="mt-1"
-                value={form[key]}
-                onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
-              />
-            </label>
-          ))}
+          <label className="block text-xs text-[var(--color-neutral-500)]">
+            Direction
+            <select
+              className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 py-2 text-sm"
+              value={form.direction}
+              onChange={(e) => setForm((f) => ({ ...f, direction: e.target.value }))}
+            >
+              <option value="">Select…</option>
+              {DIRECTIONS.map((d) => (
+                <option key={d} value={d}>
+                  {d}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-xs text-[var(--color-neutral-500)]">
+            CHA party id
+            <Input
+              className="mt-1"
+              value={form.cha_party_id}
+              onChange={(e) => setForm((f) => ({ ...f, cha_party_id: e.target.value }))}
+            />
+          </label>
+          <label className="block text-xs text-[var(--color-neutral-500)] sm:col-span-2">
+            Border / port
+            <Input
+              className="mt-1"
+              value={form.border_or_port}
+              onChange={(e) => setForm((f) => ({ ...f, border_or_port: e.target.value }))}
+            />
+          </label>
+          <label className="block text-xs text-[var(--color-neutral-500)] sm:col-span-2">
+            Remarks
+            <Input
+              className="mt-1"
+              value={form.remarks}
+              onChange={(e) => setForm((f) => ({ ...f, remarks: e.target.value }))}
+            />
+          </label>
         </div>
         {err ? <p className="text-sm text-[var(--color-danger-600)]">{err}</p> : null}
         {msg ? <p className="text-sm text-[var(--color-success-700)]">{msg}</p> : null}

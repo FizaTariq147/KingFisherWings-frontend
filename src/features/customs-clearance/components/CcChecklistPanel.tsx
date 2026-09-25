@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import { useCcChecklist, useCcJobActions } from '../hooks/useCustomsClearance';
 
@@ -64,27 +65,69 @@ export function CcChecklistPanel({ jobId }: { jobId: string }) {
                   ) : null}
                 </p>
                 <p className="text-xs text-[var(--color-neutral-500)]">
-                  {item.status || (item.completed ? 'done' : 'pending')}
+                  {[
+                    item.received ? 'received' : 'not received',
+                    item.verified ? 'verified' : null,
+                    item.status,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
                 </p>
+                <div className="mt-1 flex flex-wrap gap-1">
+                  <Input
+                    className="max-w-[220px]"
+                    placeholder="Job document UUID"
+                    defaultValue={item.job_document_id ?? ''}
+                    id={`cc-doc-${item.id}`}
+                  />
+                </div>
               </div>
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                disabled={actions.updateChecklistItem.isPending || item.completed}
-                onClick={() =>
-                  void run(
-                    () =>
-                      actions.updateChecklistItem.mutateAsync({
-                        itemId: item.id,
-                        dto: { completed: true, status: 'COMPLETE' },
-                      }),
-                    'Item marked complete.',
-                  )
-                }
-              >
-                Mark done
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  disabled={actions.updateChecklistItem.isPending || item.received}
+                  onClick={() =>
+                    void run(
+                      () =>
+                        actions.updateChecklistItem.mutateAsync({
+                          itemId: item.id,
+                          dto: { received: true },
+                        }),
+                      'Marked received.',
+                    )
+                  }
+                >
+                  Received
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  disabled={actions.updateChecklistItem.isPending || item.verified}
+                  onClick={() => {
+                    const input = document.getElementById(
+                      `cc-doc-${item.id}`,
+                    ) as HTMLInputElement | null;
+                    const jobDocId = input?.value.trim();
+                    return void run(
+                      () =>
+                        actions.updateChecklistItem.mutateAsync({
+                          itemId: item.id,
+                          dto: {
+                            received: true,
+                            verified: true,
+                            job_document_id: jobDocId || undefined,
+                          },
+                        }),
+                      'Marked verified.',
+                    );
+                  }}
+                >
+                  Verify
+                </Button>
+              </div>
             </li>
           ))}
           {!isLoading && items.length === 0 ? (

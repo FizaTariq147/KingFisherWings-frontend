@@ -4,11 +4,13 @@ import { useInvalidateJobs } from '@/features/jobs/hooks/useJobs';
 import { useAuthStore } from '@/store/authStore';
 import { customsClearanceService } from '../services/customsClearance.service';
 import type {
+  AssessCcDto,
   CcStageActionDto,
   ClassifyCcLineDto,
   CreateCcLineDto,
   CreateCcQueryDto,
-  DutyPaymentRequestDto,
+  DutyPaidDto,
+  FileCcEntryDto,
   HsValidateDto,
   LinkFreightDto,
   UpdateCcChecklistItemDto,
@@ -171,7 +173,7 @@ export function useCcJobActions(jobId: string) {
       onSuccess,
     }),
     classifyLine: useMutation({
-      mutationFn: ({ lineId, dto }: { lineId: string; dto?: ClassifyCcLineDto }) =>
+      mutationFn: ({ lineId, dto }: { lineId: string; dto: ClassifyCcLineDto }) =>
         customsClearanceService.classifyLine(jobId, lineId, dto),
       onSuccess,
     }),
@@ -201,7 +203,7 @@ export function useCcJobActions(jobId: string) {
       onSuccess,
     }),
     stageFile: useMutation({
-      mutationFn: (dto?: CcStageActionDto) => customsClearanceService.stageFile(jobId, dto),
+      mutationFn: (dto?: FileCcEntryDto) => customsClearanceService.stageFile(jobId, dto),
       onSuccess,
     }),
     updateFiling: useMutation({
@@ -210,7 +212,7 @@ export function useCcJobActions(jobId: string) {
       onSuccess,
     }),
     stageAssess: useMutation({
-      mutationFn: (dto?: CcStageActionDto) =>
+      mutationFn: (dto?: AssessCcDto) =>
         customsClearanceService.stageAssess(jobId, dto),
       onSuccess,
     }),
@@ -234,12 +236,12 @@ export function useCcJobActions(jobId: string) {
       onSuccess,
     }),
     dutyPaymentRequest: useMutation({
-      mutationFn: (dto?: DutyPaymentRequestDto) =>
+      mutationFn: (dto?: Record<string, unknown>) =>
         customsClearanceService.dutyPaymentRequest(jobId, dto),
       onSuccess,
     }),
     stageDutyPaid: useMutation({
-      mutationFn: (dto?: CcStageActionDto) =>
+      mutationFn: (dto?: DutyPaidDto) =>
         customsClearanceService.stageDutyPaid(jobId, dto),
       onSuccess,
     }),

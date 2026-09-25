@@ -22,13 +22,36 @@ function routeLabel(record: Record<string, unknown>, side: 'origin' | 'dest'): s
     asRecord(record[side]) ||
     asRecord(record[`${side}_port`]) ||
     asRecord(record[side === 'dest' ? 'destination' : 'origin_port']);
-  return (
+  const fromPort =
     pickString(
       record[`${side}_name`],
       record[side === 'dest' ? 'destination' : 'origin'],
       nested?.name,
       nested?.code,
       nested?.city,
+    ) || '';
+  if (fromPort) return fromPort;
+
+  const road =
+    asRecord(record.road_freight_details) ?? asRecord(record.roadFreightDetails) ?? undefined;
+  const land = asRecord(record.land_details) ?? asRecord(record.landDetails) ?? undefined;
+  const details = road ?? land;
+  if (side === 'origin') {
+    return (
+      pickString(
+        record.origin_door_address,
+        record.originDoorAddress,
+        details?.origin_city_country,
+        details?.originCityCountry,
+      ) || ''
+    );
+  }
+  return (
+    pickString(
+      record.dest_door_address,
+      record.destDoorAddress,
+      details?.destination_city_country,
+      details?.destinationCityCountry,
     ) || ''
   );
 }
@@ -200,6 +223,10 @@ export function normalizeShipmentDetail(raw: unknown): PortalShipmentDetail | nu
   const cargo = asRecord(data.cargo) ?? asRecord(data.cargo_summary);
   const milestonesRaw = data.milestones ?? data.timeline;
   const docsRaw = data.documents;
+  const road =
+    asRecord(data.road_freight_details) ?? asRecord(data.roadFreightDetails) ?? undefined;
+  const land = asRecord(data.land_details) ?? asRecord(data.landDetails) ?? undefined;
+  const roadLand = road ?? land;
 
   return {
     ...base,
@@ -214,6 +241,18 @@ export function normalizeShipmentDetail(raw: unknown): PortalShipmentDetail | nu
       cargo?.chargeable_weight,
     ),
     volumeCbm: pickNumber(data.volume_cbm, data.volumeCbm, cargo?.volume_cbm),
+    serviceScope: pickString(data.service_scope, data.serviceScope) || undefined,
+    originDoorAddress:
+      pickString(data.origin_door_address, data.originDoorAddress) || undefined,
+    destDoorAddress: pickString(data.dest_door_address, data.destDoorAddress) || undefined,
+    cargoCategory: pickString(data.cargo_category, data.cargoCategory) || undefined,
+    incoterms: pickString(data.incoterms, roadLand?.incoterms) || undefined,
+    vehicleType: pickString(roadLand?.vehicle_type, roadLand?.vehicleType) || undefined,
+    originCityCountry:
+      pickString(roadLand?.origin_city_country, roadLand?.originCityCountry) || undefined,
+    destinationCityCountry:
+      pickString(roadLand?.destination_city_country, roadLand?.destinationCityCountry) ||
+      undefined,
     milestones: Array.isArray(milestonesRaw)
       ? milestonesRaw.map(normalizeMilestone).filter((m): m is PortalMilestone => Boolean(m))
       : [],

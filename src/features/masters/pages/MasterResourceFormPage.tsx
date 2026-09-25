@@ -400,7 +400,7 @@ function FieldInput({
           : resourceKey === 'branches' && field.name === 'code'
             ? 'Format: COMPANY-BRANCH-PREFIX (e.g. KF-DHO for Dubai Head Office)'
             : resourceKey === 'hs-codes' && field.name === 'hs_code'
-              ? '4–10 digits, optional dots (e.g. 8471.30 or 847130)'
+              ? 'Format: 8517 or 8517.12 (chapter + optional .XX pairs). 8534.0000 → use 8534.00.00'
               : resourceKey === 'hs-codes' &&
                   (field.name === 'import_duty_rate' || field.name === 'export_duty_rate')
                 ? 'Percent from 0 to 100'
@@ -783,6 +783,12 @@ export default function MasterResourceFormPage(props: MasterPageRouteProps = {})
             : typeof raw === 'string' && raw
               ? raw.split(/[,\s]+/).filter(Boolean)
               : [];
+        } else if (field.csvToArray) {
+          next[field.name] = Array.isArray(raw)
+            ? raw.map(String).join(', ')
+            : typeof raw === 'string'
+              ? raw
+              : '';
         } else if (
           (field.name === 'customer_id' || field.name.endsWith('_id')) &&
           (raw == null || raw === '' || (typeof raw === 'string' && !isUuid(raw)))
