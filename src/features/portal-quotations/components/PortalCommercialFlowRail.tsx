@@ -1,14 +1,15 @@
 import { isAirJobType } from '@/features/jobs/constants/job.constants';
+import {
+  canPortalCustomerRespond as canRespondCanonical,
+  isCustomerApprovedStatus,
+  usesModeBookingFormConvertFlow,
+} from '@/features/quotations/utils/quotationStatus';
+import { getCustomerQuoteDecision } from '@/features/quotations/utils/customerQuoteDecision';
 import type { PortalQuotationDetail } from '../types/portalQuotations.types';
 import {
   normalizePortalQuoteStatus,
   portalQuoteShowsBookingForm,
 } from '../utils/portalQuotationStatus';
-import {
-  canPortalCustomerRespond as canRespondCanonical,
-  isCustomerApprovedStatus,
-} from '@/features/quotations/utils/quotationStatus';
-import { getCustomerQuoteDecision } from '@/features/quotations/utils/customerQuoteDecision';
 
 export type PortalCommercialStepId =
   | 'quote-sent'
@@ -23,7 +24,7 @@ type Step = {
   detail?: string;
 };
 
-const STEPS: readonly Step[] = [
+const STEPS_INVOICE: readonly Step[] = [
   {
     id: 'quote-sent',
     label: 'Quote sent',
@@ -50,11 +51,43 @@ const STEPS: readonly Step[] = [
   },
 ] as const;
 
+const STEPS_CONVERT: readonly Step[] = [
+  {
+    id: 'quote-sent',
+    label: 'Quote sent',
+    owner: 'SALES',
+    detail: 'Review charges from your forwarder',
+  },
+  {
+    id: 'customer-accepted',
+    label: 'You accept',
+    owner: 'CUSTOMER',
+    detail: 'Approve the quotation',
+  },
+  {
+    id: 'booking-form',
+    label: 'Booking form',
+    owner: 'CUSTOMER',
+    detail: 'Complete the booking form',
+  },
+  {
+    id: 'invoice-sent',
+    label: 'Job created',
+    owner: 'SYSTEM',
+    detail: 'Quotation converts to a job after you submit',
+  },
+] as const;
+
 export function usesPortalCommercialFlow(jobType?: string): boolean {
   const jt = String(jobType ?? '')
     .toUpperCase()
     .replace(/[\s-]+/g, '_');
-  return isAirJobType(jt) || jt.startsWith('AIR') || jt.startsWith('NVOCC');
+  return (
+    isAirJobType(jt) ||
+    jt.startsWith('AIR') ||
+    jt.startsWith('NVOCC') ||
+    usesModeBookingFormConvertFlow(jt)
+  );
 }
 
 function resolveCurrentStep(
@@ -85,7 +118,7 @@ interface PortalCommercialFlowRailProps {
   formSubmitted?: boolean;
 }
 
-/** Customer-facing shared commercial rail (Air + NVOCC) matching the flowchart. */
+/** Customer-facing shared commercial rail (Air + NVOCC + mode booking convert). */
 export function PortalCommercialFlowRail({
   quote,
   formSubmitted = false,
@@ -97,21 +130,28 @@ export function PortalCommercialFlowRail({
     String(quote.jobType ?? '')
       .toUpperCase()
       .startsWith('AIR');
+  const modeConvert = usesModeBookingFormConvertFlow(quote.jobType);
+  const steps = modeConvert ? STEPS_CONVERT : STEPS_INVOICE;
   const current = resolveCurrentStep(quote, formSubmitted);
-  const currentIdx = STEPS.findIndex((s) => s.id === current);
+  const currentIdx = steps.findIndex((s) => s.id === current);
+
+  const title = isAir
+    ? 'Air freight · Shared commercial'
+    : modeConvert
+      ? 'Booking · Accept → form → job'
+      : 'NVOCC · Shared commercial';
+  const subtitle = modeConvert
+    ? 'Accept → booking form → job'
+    : 'Accept → booking form → invoice';
 
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm font-medium text-[var(--color-neutral-800)]">
-          {isAir ? 'Air freight' : 'NVOCC'} · Shared commercial
-        </p>
-        <p className="text-xs text-[var(--color-neutral-500)]">
-          Accept → booking form → invoice
-        </p>
+        <p className="text-sm font-medium text-[var(--color-neutral-800)]">{title}</p>
+        <p className="text-xs text-[var(--color-neutral-500)]">{subtitle}</p>
       </div>
       <ol className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-        {STEPS.map((step, index) => {
+        {steps.map((step, index) => {
           const completed = currentIdx >= 0 && index < currentIdx;
           const active = step.id === current;
           return (

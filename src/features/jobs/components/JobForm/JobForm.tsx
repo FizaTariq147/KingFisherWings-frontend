@@ -19,6 +19,7 @@ import { QuotationWizardNav } from '@/features/quotations/components/quotation-w
 import {
   JOB_TYPE_LABELS,
   isAirJobType,
+  isRoadOrLandJobType,
   type JobType,
 } from '../../constants/job.constants';
 import { JOB_CREATE_WIZARD_STEPS } from '../../constants/jobWizard.constants';
@@ -129,6 +130,7 @@ export function JobForm({
 
   const selectedJobType = watch('job_type');
   const useAirports = isAirJobType(selectedJobType);
+  const isRoadLand = isRoadOrLandJobType(selectedJobType);
   const { data: containers = [] } = useMasterOptions(
     'container-types',
     MASTER_PATHS['container-types'],
@@ -368,7 +370,13 @@ export function JobForm({
                   render={({ field }) => (
                     <MasterPlaceSelect
                       name="origin_port_id"
-                      label={useAirports ? 'Origin airport' : 'Origin'}
+                      label={
+                        useAirports
+                          ? 'Origin airport'
+                          : isRoadLand
+                            ? 'Origin hub (optional)'
+                            : 'Origin'
+                      }
                       value={field.value ?? ''}
                       onChange={field.onChange}
                       jobType={selectedJobType}
@@ -383,7 +391,13 @@ export function JobForm({
                   render={({ field }) => (
                     <MasterPlaceSelect
                       name="dest_port_id"
-                      label={useAirports ? 'Destination airport' : 'Destination'}
+                      label={
+                        useAirports
+                          ? 'Destination airport'
+                          : isRoadLand
+                            ? 'Destination hub (optional)'
+                            : 'Destination'
+                      }
                       value={field.value ?? ''}
                       onChange={field.onChange}
                       jobType={selectedJobType}
@@ -438,34 +452,38 @@ export function JobForm({
         {step === 2 ? (
           <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
             <h3 className="mb-4 text-sm font-semibold text-[var(--color-neutral-800)]">
-              Planned Container / Consignment
+              {isRoadLand ? 'Road / land consignment' : 'Planned Container / Consignment'}
             </h3>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <Controller
-                name="container_type_id"
-                control={control}
-                render={({ field }) => (
-                  <SearchableSelect
+              {!isRoadLand ? (
+                <>
+                  <Controller
                     name="container_type_id"
-                    label="Container type"
-                    value={field.value ?? ''}
-                    options={containerOpts}
-                    onChange={field.onChange}
-                    error={fieldError('container_type_id')}
+                    control={control}
+                    render={({ field }) => (
+                      <SearchableSelect
+                        name="container_type_id"
+                        label="Container type"
+                        value={field.value ?? ''}
+                        options={containerOpts}
+                        onChange={field.onChange}
+                        error={fieldError('container_type_id')}
+                      />
+                    )}
                   />
-                )}
-              />
-              <Input
-                id="job-container-count"
-                label="No of Container"
-                type="number"
-                step="1"
-                error={fieldError('container_count')}
-                {...register('container_count', {
-                  setValueAs: (v) =>
-                    v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
-                })}
-              />
+                  <Input
+                    id="job-container-count"
+                    label="No of Container"
+                    type="number"
+                    step="1"
+                    error={fieldError('container_count')}
+                    {...register('container_count', {
+                      setValueAs: (v) =>
+                        v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
+                    })}
+                  />
+                </>
+              ) : null}
               <Input
                 id="job-pieces"
                 label="No of Packages / Pieces"
@@ -534,6 +552,74 @@ export function JobForm({
                 error={fieldError('dg_class')}
                 {...register('dg_class')}
               />
+              {isRoadLand ? (
+                <>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+                      Service scope
+                    </label>
+                    <select
+                      className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-2 text-sm"
+                      {...register('service_scope')}
+                    >
+                      <option value="">—</option>
+                      <option value="DOOR_TO_DOOR">DOOR_TO_DOOR</option>
+                      <option value="DOOR_TO_PORT">DOOR_TO_PORT</option>
+                      <option value="PORT_TO_DOOR">PORT_TO_DOOR</option>
+                      <option value="PORT_TO_PORT">PORT_TO_PORT</option>
+                    </select>
+                    <FieldErrorMessage message={fieldError('service_scope')} />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+                      Cargo category
+                    </label>
+                    <select
+                      className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-2 text-sm"
+                      {...register('cargo_category')}
+                    >
+                      <option value="">—</option>
+                      <option value="GENERAL">GENERAL</option>
+                      <option value="VEHICLES">VEHICLES</option>
+                      <option value="FOOD_PERISHABLE">FOOD_PERISHABLE</option>
+                      <option value="PHARMA">PHARMA</option>
+                      <option value="CHEMICALS_DG">CHEMICALS_DG</option>
+                      <option value="PERSONAL_EFFECTS">PERSONAL_EFFECTS</option>
+                      <option value="PROJECT_OOG">PROJECT_OOG</option>
+                      <option value="LIVESTOCK">LIVESTOCK</option>
+                      <option value="OTHER">OTHER</option>
+                    </select>
+                    <FieldErrorMessage message={fieldError('cargo_category')} />
+                  </div>
+                  <Input
+                    id="job-origin-door"
+                    label="Origin door address"
+                    error={fieldError('origin_door_address')}
+                    {...register('origin_door_address')}
+                  />
+                  <Input
+                    id="job-dest-door"
+                    label="Dest door address"
+                    error={fieldError('dest_door_address')}
+                    {...register('dest_door_address')}
+                  />
+                  <Controller
+                    name="billing_party_id"
+                    control={control}
+                    render={({ field }) => (
+                      <SearchableSelect
+                        name="billing_party_id"
+                        label="Billing party (portal owner)"
+                        value={field.value ?? ''}
+                        options={shipperOpts}
+                        onChange={field.onChange}
+                        error={fieldError('billing_party_id')}
+                        placeholder="Defaults to shipper if empty…"
+                      />
+                    )}
+                  />
+                </>
+              ) : null}
             </div>
           </div>
         ) : null}
@@ -592,12 +678,38 @@ export function JobForm({
                 <dd className="font-medium text-[var(--color-neutral-800)]">
                   {[
                     watched.pieces != null ? `${watched.pieces} pcs` : null,
-                    watched.container_count != null ? `${watched.container_count} ctr` : null,
+                    !isRoadLand && watched.container_count != null
+                      ? `${watched.container_count} ctr`
+                      : null,
                   ]
                     .filter(Boolean)
                     .join(' · ') || '—'}
                 </dd>
               </div>
+              {isRoadLand ? (
+                <>
+                  <div>
+                    <dt className="text-xs text-[var(--color-neutral-500)]">Service scope</dt>
+                    <dd className="font-medium text-[var(--color-neutral-800)]">
+                      {watched.service_scope || '—'}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-[var(--color-neutral-500)]">Cargo category</dt>
+                    <dd className="font-medium text-[var(--color-neutral-800)]">
+                      {watched.cargo_category || '—'}
+                    </dd>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <dt className="text-xs text-[var(--color-neutral-500)]">Door addresses</dt>
+                    <dd className="font-medium text-[var(--color-neutral-800)]">
+                      {[watched.origin_door_address, watched.dest_door_address]
+                        .filter(Boolean)
+                        .join(' → ') || '—'}
+                    </dd>
+                  </div>
+                </>
+              ) : null}
               <div>
                 <dt className="text-xs text-[var(--color-neutral-500)]">Weight / volume</dt>
                 <dd className="font-medium text-[var(--color-neutral-800)]">
@@ -771,7 +883,13 @@ export function JobForm({
             render={({ field }) => (
               <MasterPlaceSelect
                 name="origin_port_id"
-                label={useAirports ? 'Origin airport' : 'Origin port'}
+                label={
+                  useAirports
+                    ? 'Origin airport'
+                    : isRoadLand
+                      ? 'Origin hub (optional)'
+                      : 'Origin port'
+                }
                 value={field.value ?? ''}
                 onChange={field.onChange}
                 jobType={selectedJobType}
@@ -786,7 +904,13 @@ export function JobForm({
             render={({ field }) => (
               <MasterPlaceSelect
                 name="dest_port_id"
-                label={useAirports ? 'Destination airport' : 'Destination port'}
+                label={
+                  useAirports
+                    ? 'Destination airport'
+                    : isRoadLand
+                      ? 'Destination hub (optional)'
+                      : 'Destination port'
+                }
                 value={field.value ?? ''}
                 onChange={field.onChange}
                 jobType={selectedJobType}
@@ -795,6 +919,74 @@ export function JobForm({
               />
             )}
           />
+          {isRoadLand ? (
+            <>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+                  Service scope
+                </label>
+                <select
+                  className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-2 text-sm"
+                  {...register('service_scope')}
+                >
+                  <option value="">—</option>
+                  <option value="DOOR_TO_DOOR">DOOR_TO_DOOR</option>
+                  <option value="DOOR_TO_PORT">DOOR_TO_PORT</option>
+                  <option value="PORT_TO_DOOR">PORT_TO_DOOR</option>
+                  <option value="PORT_TO_PORT">PORT_TO_PORT</option>
+                </select>
+                <FieldErrorMessage message={fieldError('service_scope')} />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+                  Cargo category
+                </label>
+                <select
+                  className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-2 text-sm"
+                  {...register('cargo_category')}
+                >
+                  <option value="">—</option>
+                  <option value="GENERAL">GENERAL</option>
+                  <option value="VEHICLES">VEHICLES</option>
+                  <option value="FOOD_PERISHABLE">FOOD_PERISHABLE</option>
+                  <option value="PHARMA">PHARMA</option>
+                  <option value="CHEMICALS_DG">CHEMICALS_DG</option>
+                  <option value="PERSONAL_EFFECTS">PERSONAL_EFFECTS</option>
+                  <option value="PROJECT_OOG">PROJECT_OOG</option>
+                  <option value="LIVESTOCK">LIVESTOCK</option>
+                  <option value="OTHER">OTHER</option>
+                </select>
+                <FieldErrorMessage message={fieldError('cargo_category')} />
+              </div>
+              <Input
+                id="job-origin-door-flat"
+                label="Origin door address"
+                error={fieldError('origin_door_address')}
+                {...register('origin_door_address')}
+              />
+              <Input
+                id="job-dest-door-flat"
+                label="Dest door address"
+                error={fieldError('dest_door_address')}
+                {...register('dest_door_address')}
+              />
+              <Controller
+                name="billing_party_id"
+                control={control}
+                render={({ field }) => (
+                  <SearchableSelect
+                    name="billing_party_id"
+                    label="Billing party (portal owner)"
+                    value={field.value ?? ''}
+                    options={shipperOpts}
+                    onChange={field.onChange}
+                    error={fieldError('billing_party_id')}
+                    placeholder="Defaults to shipper if empty…"
+                  />
+                )}
+              />
+            </>
+          ) : null}
         </div>
       </Card>
 
@@ -878,42 +1070,44 @@ export function JobForm({
         </div>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Container information</CardTitle>
-        </CardHeader>
-        <div className="p-4 pt-0 grid gap-4 sm:grid-cols-2">
-          <Controller
-            name="container_type_id"
-            control={control}
-            render={({ field }) => (
-              <SearchableSelect
-                name="container_type_id"
-                label="Container type"
-                value={field.value ?? ''}
-                options={containerOpts}
-                onChange={field.onChange}
-                error={fieldError('container_type_id')}
-              />
-            )}
-          />
-          <div className="space-y-1">
-            <label htmlFor="job-container-count" className={labelClass}>
-              Container count
-            </label>
-            <Input
-              id="job-container-count"
-              type="number"
-              step="1"
-              error={fieldError('container_count')}
-              {...register('container_count', {
-                setValueAs: (v) =>
-                  v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
-              })}
+      {!isRoadLand ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Container information</CardTitle>
+          </CardHeader>
+          <div className="p-4 pt-0 grid gap-4 sm:grid-cols-2">
+            <Controller
+              name="container_type_id"
+              control={control}
+              render={({ field }) => (
+                <SearchableSelect
+                  name="container_type_id"
+                  label="Container type"
+                  value={field.value ?? ''}
+                  options={containerOpts}
+                  onChange={field.onChange}
+                  error={fieldError('container_type_id')}
+                />
+              )}
             />
+            <div className="space-y-1">
+              <label htmlFor="job-container-count" className={labelClass}>
+                Container count
+              </label>
+              <Input
+                id="job-container-count"
+                type="number"
+                step="1"
+                error={fieldError('container_count')}
+                {...register('container_count', {
+                  setValueAs: (v) =>
+                    v === '' || v == null || Number.isNaN(Number(v)) ? undefined : Number(v),
+                })}
+              />
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      ) : null}
 
       <Card>
         <CardHeader>

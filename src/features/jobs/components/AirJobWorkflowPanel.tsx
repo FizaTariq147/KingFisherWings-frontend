@@ -50,6 +50,8 @@ type AirFormUi = {
   pieces: string;
   gross_weight_kg: string;
   chargeable_weight_kg: string;
+  volume_cbm: string;
+  pallet_count: string;
   flight_number: string;
   flight_date: string;
   origin_airport_code: string;
@@ -71,6 +73,7 @@ type AirFormUi = {
   consignee_city: string;
   consignee_country: string;
   notify_name: string;
+  pallets: { pallet_type: string; count: string; length_cm: string; width_cm: string; height_cm: string; weight_kg: string }[];
 };
 
 function emptyAirForm(): AirFormUi {
@@ -79,6 +82,8 @@ function emptyAirForm(): AirFormUi {
     pieces: '',
     gross_weight_kg: '',
     chargeable_weight_kg: '',
+    volume_cbm: '',
+    pallet_count: '',
     flight_number: '',
     flight_date: '',
     origin_airport_code: '',
@@ -100,6 +105,7 @@ function emptyAirForm(): AirFormUi {
     consignee_city: '',
     consignee_country: '',
     notify_name: '',
+    pallets: [{ pallet_type: 'PMC', count: '1', length_cm: '', width_cm: '', height_cm: '', weight_kg: '' }],
   };
 }
 
@@ -220,6 +226,8 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
       gross_weight_kg: form.gross_weight_kg != null ? String(form.gross_weight_kg) : '',
       chargeable_weight_kg:
         form.chargeable_weight_kg != null ? String(form.chargeable_weight_kg) : '',
+      volume_cbm: form.volume_cbm != null ? String(form.volume_cbm) : '',
+      pallet_count: form.pallet_count != null ? String(form.pallet_count) : '',
       flight_number: String(form.flight_number ?? '').slice(
         0,
         AIR_BOOKING_FORM_LIMITS.flight_number,
@@ -274,6 +282,17 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
         0,
         AIR_BOOKING_FORM_LIMITS.party_full_name,
       ),
+      pallets:
+        Array.isArray(form.pallets) && form.pallets.length > 0
+          ? form.pallets.map((p) => ({
+              pallet_type: String(p.pallet_type ?? 'PMC'),
+              count: p.count != null ? String(p.count) : '1',
+              length_cm: p.length_cm != null ? String(p.length_cm) : '',
+              width_cm: p.width_cm != null ? String(p.width_cm) : '',
+              height_cm: p.height_cm != null ? String(p.height_cm) : '',
+              weight_kg: p.weight_kg != null ? String(p.weight_kg) : '',
+            }))
+          : emptyAirForm().pallets,
     });
     setPortalPrefillApplied(false);
   }, [airBookingQuery.data, markDone, job?.origin_port_code, job?.dest_port_code]);
@@ -485,6 +504,31 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
         }
         dto.chargeable_weight_kg = w;
       }
+      if (bookingForm.volume_cbm.trim()) {
+        const v = Number(bookingForm.volume_cbm);
+        if (!Number.isFinite(v) || v < 0) {
+          throw new Error('Volume CBM must be a number ≥ 0.');
+        }
+        dto.volume_cbm = v;
+      }
+      if (bookingForm.pallet_count.trim()) {
+        const n = Number(bookingForm.pallet_count);
+        if (!Number.isFinite(n) || n < 0) {
+          throw new Error('Pallet count must be a number ≥ 0.');
+        }
+        dto.pallet_count = n;
+      }
+      const pallets = bookingForm.pallets
+        .map((p) => ({
+          pallet_type: p.pallet_type.trim(),
+          count: Number(p.count),
+          length_cm: p.length_cm.trim() ? Number(p.length_cm) : undefined,
+          width_cm: p.width_cm.trim() ? Number(p.width_cm) : undefined,
+          height_cm: p.height_cm.trim() ? Number(p.height_cm) : undefined,
+          weight_kg: p.weight_kg.trim() ? Number(p.weight_kg) : undefined,
+        }))
+        .filter((p) => p.pallet_type && Number.isFinite(p.count) && p.count >= 1);
+      if (pallets.length) dto.pallets = pallets;
       if (bookingForm.customs_value.trim()) {
         const v = Number(bookingForm.customs_value);
         if (!Number.isFinite(v)) {
@@ -693,6 +737,8 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
                     ['pieces', 'Pieces (≥ 1)', undefined, 'number'],
                     ['gross_weight_kg', 'Gross weight kg', undefined, 'number'],
                     ['chargeable_weight_kg', 'Chargeable weight kg', undefined, 'number'],
+                    ['volume_cbm', 'Volume CBM', undefined, 'number'],
+                    ['pallet_count', 'Pallet count', undefined, 'number'],
                     [
                       'flight_number',
                       'Flight number',
@@ -807,6 +853,64 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
                     />
                   </label>
                 ))}
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-gray-700">Pallets (AirPalletLineDto)</p>
+                {bookingForm.pallets.map((line, idx) => (
+                  <div key={idx} className="grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
+                    {(
+                      [
+                        ['pallet_type', 'Type'],
+                        ['count', 'Count'],
+                        ['length_cm', 'L cm'],
+                        ['width_cm', 'W cm'],
+                        ['height_cm', 'H cm'],
+                        ['weight_kg', 'Weight kg'],
+                      ] as const
+                    ).map(([field, label]) => (
+                      <label key={field} className="block text-xs font-medium text-gray-600">
+                        {label}
+                        <Input
+                          className="mt-1"
+                          type={field === 'pallet_type' ? 'text' : 'number'}
+                          maxLength={field === 'pallet_type' ? 30 : undefined}
+                          value={line[field]}
+                          onChange={(e) =>
+                            setBookingForm((prev) => ({
+                              ...prev,
+                              pallets: prev.pallets.map((p, i) =>
+                                i === idx ? { ...p, [field]: e.target.value } : p,
+                              ),
+                            }))
+                          }
+                        />
+                      </label>
+                    ))}
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  onClick={() =>
+                    setBookingForm((prev) => ({
+                      ...prev,
+                      pallets: [
+                        ...prev.pallets,
+                        {
+                          pallet_type: 'PMC',
+                          count: '1',
+                          length_cm: '',
+                          width_cm: '',
+                          height_cm: '',
+                          weight_kg: '',
+                        },
+                      ],
+                    }))
+                  }
+                >
+                  Add pallet line
+                </Button>
               </div>
               <div className="flex flex-wrap gap-4 text-xs text-gray-700">
                 <label className="inline-flex items-center gap-2">

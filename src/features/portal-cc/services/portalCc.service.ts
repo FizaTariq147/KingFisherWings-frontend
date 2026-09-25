@@ -4,6 +4,7 @@ import { PORTAL_CC_API } from '../api/portalCc.api';
 import type {
   PortalCcChecklistItem,
   PortalCcDocument,
+  PortalCcDocumentDto,
   PortalCcJobDetail,
   PortalCcJobListItem,
 } from '../types/portalCc.types';
@@ -65,33 +66,42 @@ export const portalCcService = {
 
   async checklist(id: string): Promise<PortalCcChecklistItem[]> {
     const res = await portalApiClient.get(PORTAL_CC_API.checklist(id));
-    return unwrapList(res.data)
-      .map((row) => {
-        const r = asRecord(row);
-        if (!r) return null;
-        const itemId = str(r.id);
-        if (!itemId) return null;
-        return {
-          id: itemId,
-          label: str(r.label ?? r.name ?? r.description),
-          code: str(r.code),
-          required: r.required === true,
-          completed: r.completed === true || r.is_complete === true,
-          status: str(r.status),
-        } satisfies PortalCcChecklistItem;
-      })
-      .filter((x): x is PortalCcChecklistItem => Boolean(x));
+    const out: PortalCcChecklistItem[] = [];
+    for (const row of unwrapList(res.data)) {
+      const r = asRecord(row);
+      if (!r) continue;
+      const itemId = str(r.id);
+      if (!itemId) continue;
+      out.push({
+        id: itemId,
+        label: str(r.label ?? r.name ?? r.description),
+        code: str(r.code ?? r.doc_code),
+        required: r.required === true,
+        completed:
+          r.completed === true ||
+          r.is_complete === true ||
+          r.verified === true ||
+          r.received === true,
+        received: r.received === true,
+        verified: r.verified === true,
+        status: str(r.status),
+      });
+    }
+    return out;
   },
 
-  async uploadDocument(id: string, form: FormData): Promise<PortalCcDocument> {
-    const res = await portalApiClient.post(PORTAL_CC_API.documents(id), form, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+  async attachDocument(id: string, dto: PortalCcDocumentDto): Promise<PortalCcDocument> {
+    const res = await portalApiClient.post(PORTAL_CC_API.documents(id), {
+      doc_code: dto.doc_code,
+      ...(dto.job_document_id ? { job_document_id: dto.job_document_id } : {}),
     });
     const raw = asRecord(unwrapData(res.data) ?? res.data) ?? {};
     return {
       id: str(raw.id) ?? '',
+      doc_code: str(raw.doc_code ?? raw.docCode) ?? dto.doc_code,
+      job_document_id: str(raw.job_document_id ?? raw.jobDocumentId) ?? dto.job_document_id,
       file_name: str(raw.file_name ?? raw.fileName),
-      document_type: str(raw.document_type ?? raw.documentType),
+      document_type: str(raw.document_type ?? raw.documentType ?? raw.doc_code),
       status: str(raw.status),
     };
   },

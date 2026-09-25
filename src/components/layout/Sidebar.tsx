@@ -24,6 +24,7 @@ import {
   LogOut,
   Loader2,
   Search,
+  ScanBarcode,
   type LucideIcon,
 } from 'lucide-react';
 import { useUIStore } from '@/store/uiStore';
@@ -304,6 +305,19 @@ const OPS_NAV_ITEMS: NavItem[] = [
   { label: 'Sea Export', path: '/jobs/sea-export', Icon: Ship, permission: 'menu_jobs_sea_export' },
   { label: 'Sea Import', path: '/jobs/sea-import', Icon: Ship, permission: 'menu_jobs_sea_import' },
   {
+    label: 'Road Freight',
+    path: '/jobs/road-freight',
+    Icon: Truck,
+    permission: 'menu_jobs_air_export',
+    permissionAny: [
+      'menu_jobs_air_export',
+      'menu_jobs_sea_export',
+      'menu_jobs_sea_import',
+      'menu_documentation',
+    ],
+    activePrefix: '/jobs/road-freight',
+  },
+  {
     label: 'Customs Clearance',
     path: '/customs-clearance',
     Icon: ClipboardCheck,
@@ -319,6 +333,18 @@ const OPS_NAV_ITEMS: NavItem[] = [
   { label: 'NVOCC', path: '/nvocc', Icon: Building2, permission: 'menu_nvocc' },
   { label: 'Documentation', path: '/documentation', Icon: FileText, permission: 'menu_documentation' },
   { label: 'Transport', path: '/operations/transport-requests', Icon: Truck, permission: 'menu_documentation' },
+  {
+    label: 'Barcode scan',
+    path: '/jobs/barcode-scan',
+    Icon: ScanBarcode,
+    permission: 'menu_jobs_air_export',
+    permissionAny: [
+      'menu_jobs_air_export',
+      'menu_jobs_sea_export',
+      'menu_jobs_sea_import',
+      'menu_documentation',
+    ],
+  },
   { label: 'Finance', path: '/finance', Icon: Wallet, permission: 'menu_finance' },
   {
     label: 'Accounts',

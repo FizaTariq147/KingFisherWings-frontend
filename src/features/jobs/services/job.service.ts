@@ -26,9 +26,11 @@ import { jobDashboardQueryParams } from '../types/jobDashboard.types';
 import { JOB_POST_AXIOS_CONFIG } from '../utils/buildJobCreateCandidates';
 import { ensureJobBranchReady } from '../utils/ensureJobBranchReady';
 import { prepareJobPayload } from '../utils/prepareJobPayload';
+import { getErrorMessage } from '../utils/getErrorMessage';
 import type {
   AssignCargoToContainerDto,
   AssignLandTruckerDto,
+  AssignRoadFreightTruckerDto,
   AttachLclHouseDto,
   CalculateCfsStorageDto,
   ConfirmCourierBookingDto,
@@ -45,6 +47,7 @@ import type {
   CreateCustomMilestoneDto,
   CreateCustomsExaminationDto,
   CreateLandPodDto,
+  CreateRoadFreightPodDto,
   CreatePartDeliveryDto,
   CreatePaymentRequestFromJobDto,
   CreateProofOfDeliveryDto,
@@ -65,8 +68,11 @@ import type {
   LinkTranshipmentDto,
   RecordLandBorderCrossingDto,
   RecordLandPickupDto,
+  RecordRoadFreightBorderCrossingDto,
+  RecordRoadFreightPickupDto,
   ReturnContainerDto,
   ScanCourierCheckpointDto,
+  ScanJobBarcodeDto,
   SchedulePreAlertDto,
   SendImportNoticeDto,
   SendPreAlertDto,
@@ -77,6 +83,7 @@ import type {
   SubmitSiDto,
   SubmitVgmDto,
   AirBookingForm,
+  AirComplianceForm,
   AirUldRequest,
   AirWorkflowActionDto,
   CreateAirUldRequestDto,
@@ -94,6 +101,14 @@ import type {
   UpdateJobMilestoneDto,
   UpdateJobNoteDto,
   UpdateLandJobDetailDto,
+  UpdateRoadFreightJobDetailDto,
+  UpsertAirComplianceBookingFormDto,
+  UpsertCourierBookingFormDto,
+  UpsertLandBookingFormDto,
+  UpsertRoadFreightBookingFormDto,
+  UpsertSeaFclBookingFormDto,
+  UpsertSeaLclBookingFormDto,
+  ModeBookingForm,
   UpdateSeaFclJobDetailDto,
   UpdateSeaLclJobDetailDto,
   UpdateStuffingRecordDto,
@@ -206,22 +221,118 @@ async function requestVoid(fn: () => Promise<unknown>): Promise<void> {
   }
 }
 
+function jobSortTime(job: Job): number {
+  const raw = job.updated_at || job.created_at || '';
+  const t = Date.parse(raw);
+  return Number.isFinite(t) ? t : 0;
+}
+
+async function fetchJobListPage(params: JobListParams): Promise<JobListResult> {
+  const res = await withGatewayRetry(() =>
+    axiosInstance.get<unknown>(JOB_API.list, { params: buildListQuery(params) }),
+  );
+  const { items, meta } = unwrapList(res.data);
+  const jobs = await enrichJobsWithDisplayNames(normalizeJobs(items));
+  return {
+    jobs,
+    meta: normalizePaginationMeta(meta, jobs.length, params),
+  };
+}
+
+function asModeBookingForm(raw: unknown): ModeBookingForm {
+  const data = unwrapEntity(raw) ?? raw;
+  if (data && typeof data === 'object' && !Array.isArray(data)) {
+    return data as ModeBookingForm;
+  }
+  return {};
+}
+
+/** GET mode booking form — 404 / “not found” means not created yet; return empty for upsert UX. */
+async function getModeBookingForm(url: string): Promise<ModeBookingForm> {
+  try {
+    const res = await withGatewayRetry(() => axiosInstance.get(url));
+    return asModeBookingForm(res.data);
+  } catch (error) {
+    const status = (error as { response?: { status?: number } })?.response?.status;
+    const msg = getErrorMessage(error).toLowerCase();
+    if (
+      status === 404 ||
+      /booking not found|booking form not found|form not found/.test(msg)
+    ) {
+      return {};
+    }
+    throw formatAxiosError(error);
+  }
+}
+
 export const jobService = {
+  /**
+   * GET /jobs — API accepts a single `job_type` query.
+   * Segment lists pass `job_types` (e.g. ROAD_FREIGHT + LAND); we fan out per type
+   * and merge so converted road jobs are not lost behind other modes on page 1.
+   */
   async list(params: JobListParams = {}): Promise<JobListResult> {
     try {
-      const res = await withGatewayRetry(() =>
-        axiosInstance.get<unknown>(JOB_API.list, { params: buildListQuery(params) }),
-      );
-      const { items, meta } = unwrapList(res.data);
-      let jobs = normalizeJobs(items);
-      if (params.job_types?.length && !params.job_type) {
-        jobs = jobs.filter((j) => params.job_types!.includes(j.job_type));
+      const multiTypes =
+        !params.job_type && params.job_types?.length
+          ? [...new Set(params.job_types)]
+          : null;
+
+      if (multiTypes && multiTypes.length === 1) {
+        return fetchJobListPage({
+          ...params,
+          job_type: multiTypes[0],
+          job_types: undefined,
+        });
       }
-      jobs = await enrichJobsWithDisplayNames(jobs);
-      return {
-        jobs,
-        meta: normalizePaginationMeta(meta, jobs.length, params),
-      };
+
+      if (multiTypes && multiTypes.length > 1) {
+        const page = params.page ?? 1;
+        const limit = params.limit ?? 20;
+        const order = params.order ?? 'desc';
+        // Pull enough rows per type to build the requested page after merge.
+        const perTypeLimit = Math.min(100, Math.max(limit * page, limit));
+
+        const pages = await Promise.all(
+          multiTypes.map((job_type) =>
+            fetchJobListPage({
+              ...params,
+              job_type,
+              job_types: undefined,
+              page: 1,
+              limit: perTypeLimit,
+            }),
+          ),
+        );
+
+        const byId = new Map<string, Job>();
+        for (const pageResult of pages) {
+          for (const job of pageResult.jobs) {
+            if (!byId.has(job.id)) byId.set(job.id, job);
+          }
+        }
+
+        const merged = [...byId.values()].sort((a, b) => {
+          const diff = jobSortTime(a) - jobSortTime(b);
+          return order === 'asc' ? diff : -diff;
+        });
+
+        const total = pages.reduce((sum, p) => sum + (p.meta.total || 0), 0);
+        const start = (page - 1) * limit;
+        const slice = merged.slice(start, start + limit);
+
+        return {
+          jobs: slice,
+          meta: {
+            page,
+            limit,
+            total,
+            totalPages: Math.max(1, Math.ceil(total / limit) || 1),
+          },
+        };
+      }
+
+      return fetchJobListPage(params);
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -258,6 +369,28 @@ export const jobService = {
   async getById(id: string): Promise<Job> {
     assertId(id);
     return request(() => axiosInstance.get(JOB_API.byId(id)), normalizeJob);
+  },
+
+  /** GET /jobs/by-barcode/:code — lookup any job by barcode (no scan event). */
+  async findByBarcode(code: string): Promise<Job> {
+    const trimmed = code.trim();
+    if (!trimmed) throw new Error('Barcode is required.');
+    return request(
+      () => axiosInstance.get(JOB_API.byBarcode(trimmed)),
+      normalizeJob,
+    );
+  },
+
+  /** POST /jobs/scan — record scan event and return job summary. */
+  async scanBarcode(dto: ScanJobBarcodeDto): Promise<Job> {
+    const barcode = dto.barcode?.trim();
+    if (!barcode) throw new Error('Barcode is required.');
+    const body: ScanJobBarcodeDto = {
+      barcode,
+      ...(dto.location?.trim() ? { location: dto.location.trim() } : {}),
+      ...(dto.notes?.trim() ? { notes: dto.notes.trim() } : {}),
+    };
+    return request(() => axiosInstance.post(JOB_API.scan, body), normalizeJob);
   },
 
   async create(dto: CreateJobDto): Promise<Job> {
@@ -376,6 +509,39 @@ export const jobService = {
     }
   },
 
+  async getAirComplianceForm(id: string): Promise<AirComplianceForm> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.airComplianceForm(id)));
+      const data = unwrapEntity(res.data);
+      return (
+        data && typeof data === 'object' && !Array.isArray(data)
+          ? (data as AirComplianceForm)
+          : {}
+      );
+    } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 404) return {};
+      throw formatAxiosError(error);
+    }
+  },
+
+  async putAirComplianceForm(
+    id: string,
+    dto: UpsertAirComplianceBookingFormDto,
+  ): Promise<AirComplianceForm> {
+    assertId(id);
+    const res = await withGatewayRetry(() =>
+      axiosInstance.put(JOB_API.airComplianceForm(id), dto),
+    );
+    const data = unwrapEntity(res.data);
+    return (
+      data && typeof data === 'object' && !Array.isArray(data)
+        ? (data as AirComplianceForm)
+        : {}
+    );
+  },
+
   async airCsTriage(id: string, dto: AirWorkflowActionDto = {}): Promise<unknown> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.airCsTriage(id), dto));
@@ -472,6 +638,36 @@ export const jobService = {
     );
   },
 
+  async getSeaFclBookingForm(id: string): Promise<ModeBookingForm> {
+    assertId(id);
+    return getModeBookingForm(JOB_API.seaFclBookingForm(id));
+  },
+
+  async putSeaFclBookingForm(id: string, dto: UpsertSeaFclBookingFormDto): Promise<ModeBookingForm> {
+    assertId(id);
+    return request(() => axiosInstance.put(JOB_API.seaFclBookingForm(id), dto)) as Promise<ModeBookingForm>;
+  },
+
+  async completeSeaFclBookingForm(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.seaFclBookingFormComplete(id)));
+  },
+
+  async getSeaLclBookingForm(id: string): Promise<ModeBookingForm> {
+    assertId(id);
+    return getModeBookingForm(JOB_API.seaLclBookingForm(id));
+  },
+
+  async putSeaLclBookingForm(id: string, dto: UpsertSeaLclBookingFormDto): Promise<ModeBookingForm> {
+    assertId(id);
+    return request(() => axiosInstance.put(JOB_API.seaLclBookingForm(id), dto)) as Promise<ModeBookingForm>;
+  },
+
+  async completeSeaLclBookingForm(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.seaLclBookingFormComplete(id)));
+  },
+
   async submitLclSi(id: string, dto: SubmitLclSiDto = {}): Promise<Job> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.submitLclSi(id), dto), normalizeJob);
@@ -525,6 +721,26 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.courierScanCheckpoint(id), dto));
   },
 
+  async getCourierBookingForm(id: string): Promise<ModeBookingForm> {
+    assertId(id);
+    return getModeBookingForm(JOB_API.courierBookingForm(id));
+  },
+
+  async putCourierBookingForm(
+    id: string,
+    dto: UpsertCourierBookingFormDto,
+  ): Promise<ModeBookingForm> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.put(JOB_API.courierBookingForm(id), dto),
+    ) as Promise<ModeBookingForm>;
+  },
+
+  async completeCourierBookingForm(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.courierBookingFormComplete(id)));
+  },
+
   async updateLandDetails(id: string, dto: UpdateLandJobDetailDto): Promise<Job> {
     assertId(id);
     return request(
@@ -568,6 +784,103 @@ export const jobService = {
   async createLandPod(id: string, dto: CreateLandPodDto): Promise<unknown> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.landPod(id), dto));
+  },
+
+  async getLandBookingForm(id: string): Promise<ModeBookingForm> {
+    assertId(id);
+    return getModeBookingForm(JOB_API.landBookingForm(id));
+  },
+
+  async putLandBookingForm(id: string, dto: UpsertLandBookingFormDto): Promise<ModeBookingForm> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.put(JOB_API.landBookingForm(id), dto),
+    ) as Promise<ModeBookingForm>;
+  },
+
+  async completeLandBookingForm(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.landBookingFormComplete(id)));
+  },
+
+  async updateRoadFreightDetails(
+    id: string,
+    dto: UpdateRoadFreightJobDetailDto,
+  ): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.patch(JOB_API.roadFreightDetails(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async assignRoadFreightTrucker(
+    id: string,
+    dto: AssignRoadFreightTruckerDto,
+  ): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.roadFreightAssignTrucker(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async recordRoadFreightPickup(
+    id: string,
+    dto: RecordRoadFreightPickupDto = {},
+  ): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.roadFreightPickup(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async recordRoadFreightBorderCrossing(
+    id: string,
+    dto: RecordRoadFreightBorderCrossingDto,
+  ): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.post(JOB_API.roadFreightBorderCrossing(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async upsertRoadFreightCrossBorder(
+    id: string,
+    dto: UpdateRoadFreightJobDetailDto,
+  ): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.patch(JOB_API.roadFreightCrossBorder(id), dto),
+      normalizeJob,
+    );
+  },
+
+  async createRoadFreightPod(id: string, dto: CreateRoadFreightPodDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.roadFreightPod(id), dto));
+  },
+
+  async getRoadFreightBookingForm(id: string): Promise<ModeBookingForm> {
+    assertId(id);
+    return getModeBookingForm(JOB_API.roadFreightBookingForm(id));
+  },
+
+  async putRoadFreightBookingForm(
+    id: string,
+    dto: UpsertRoadFreightBookingFormDto,
+  ): Promise<ModeBookingForm> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.put(JOB_API.roadFreightBookingForm(id), dto),
+    ) as Promise<ModeBookingForm>;
+  },
+
+  async completeRoadFreightBookingForm(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.roadFreightBookingFormComplete(id)));
   },
 
   async getLclConsolidation(id: string): Promise<unknown> {

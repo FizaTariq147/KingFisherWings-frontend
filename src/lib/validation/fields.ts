@@ -8,6 +8,7 @@ import {
   emptyToUndefined,
   isLogicalName,
   isValidLogicalDepartmentName,
+  normalizeHsCode,
   normalizeIsoCountryCode,
   normalizeName,
   toLowerCaseEmail,
@@ -513,13 +514,10 @@ export function awbPrefix(required = false) {
   return z.preprocess(emptyToUndefined, inner.optional());
 }
 
-/** HS code — pattern for HS master (4–10 digits, optional dots; length 4–12). */
+/** HS code — backend pattern `/^\d{4}(\.\d{2}){0,3}$/` (e.g. 8517 or 8517.12). */
 export function hsCode(required = false) {
   const inner = z.preprocess(
-    (v) => {
-      if (typeof v !== 'string') return v;
-      return v.trim().replace(/\s+/g, '');
-    },
+    normalizeHsCode,
     z
       .string({ error: V.hsCode })
       .min(RULES.HS_CODE_MIN_LEN, V.hsCode)

@@ -115,8 +115,10 @@ export function canStaffMarkCustomerDecision(status: string): boolean {
 }
 
 export function canConvertQuotationToJob(status: string, jobType?: string): boolean {
-  // NVOCC / Air follow gated booking-form → send-invoice flows (not instant convert).
+  // NVOCC / Air: gated booking-form → invoice (no Convert button).
   if (usesGatedFreightQuoteFlow(jobType)) return false;
+  // Sea/Land/Road/Courier: customer portal booking form first — no manual Convert.
+  if (usesModeBookingFormConvertFlow(jobType)) return false;
   return coerceQuotationStatus(status) === 'APPROVED';
 }
 
@@ -140,6 +142,40 @@ export function usesGatedFreightQuoteFlow(jobType?: string): boolean {
 }
 
 /**
+ * Sea FCL/LCL, Land, Road Freight, Courier: approve creates a job shell for
+ * `/jobs/:id/.../booking-form`; quotation stays APPROVED until staff completes
+ * the booking form (then CONVERTED + draft invoice).
+ */
+export function usesModeBookingFormConvertFlow(jobType?: string): boolean {
+  const jt = String(jobType ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  if (!jt) return false;
+  if (
+    jt === 'SEA_FCL' ||
+    jt === 'SEA_LCL' ||
+    jt === 'LAND' ||
+    jt === 'LAND_TRANSPORT' ||
+    jt === 'LAND_FREIGHT' ||
+    jt === 'ROAD' ||
+    jt === 'ROAD_FREIGHT' ||
+    jt === 'ROAD_TRANSPORT' ||
+    jt === 'COURIER'
+  ) {
+    return true;
+  }
+  if (jt.startsWith('SEA_FCL_') || jt.startsWith('SEA_LCL_')) return true;
+  if (jt.startsWith('ROAD_')) return true;
+  return false;
+}
+
+/** True when customer approve must not run convert-to-job + draft invoice. */
+export function skipsAutoConvertOnApprove(jobType?: string): boolean {
+  return usesGatedFreightQuoteFlow(jobType) || usesModeBookingFormConvertFlow(jobType);
+}
+
+/**
  * Air ops APIs need a job id. Staff may create a shell **manually** after approve
  * (never auto). Use before air booking-form / send-invoice on the job.
  */
@@ -153,6 +189,22 @@ export function canStartAirOpsJobFromQuote(
     .toUpperCase()
     .replace(/\s+/g, '_');
   return jt.startsWith('AIR_') && coerceQuotationStatus(status) === 'APPROVED' && !jobId;
+}
+
+/**
+ * Booking-form modes: if approve did not create a shell, staff can start one
+ * explicitly (rare — prefer waiting for the customer portal booking form).
+ */
+export function canStartBookingOpsJobFromQuote(
+  status: string,
+  jobType?: string,
+  jobId?: string | null,
+): boolean {
+  return (
+    usesModeBookingFormConvertFlow(jobType) &&
+    coerceQuotationStatus(status) === 'APPROVED' &&
+    !jobId
+  );
 }
 
 export function isCustomerApprovedStatus(status: string): boolean {

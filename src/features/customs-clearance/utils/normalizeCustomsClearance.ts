@@ -128,13 +128,11 @@ export function normalizeCcDetails(raw: unknown, jobId?: string): CcDetails {
   return {
     job_id: str(r.job_id) ?? jobId ?? '',
     direction: str(r.direction ?? r.cc_direction),
-    customs_office: str(r.customs_office ?? r.customsOffice),
-    port_id: str(r.port_id ?? r.portId),
-    importer_id: str(r.importer_id ?? r.importerId),
-    exporter_id: str(r.exporter_id ?? r.exporterId),
-    broker_ref: str(r.broker_ref ?? r.brokerRef),
-    entry_type: str(r.entry_type ?? r.entryType),
-    notes: str(r.notes),
+    cha_party_id: str(r.cha_party_id ?? r.chaPartyId ?? r.broker_party_id),
+    border_or_port: str(
+      r.border_or_port ?? r.borderOrPort ?? r.customs_office ?? r.port_name ?? r.port_id,
+    ),
+    remarks: str(r.remarks ?? r.notes),
     raw: r,
   };
 }
@@ -171,11 +169,11 @@ export function normalizeCcLine(raw: unknown): CcLine | null {
     hs_code: str(r.hs_code ?? r.hsCode),
     quantity: num(r.quantity),
     unit: str(r.unit),
-    unit_value: num(r.unit_value ?? r.unitValue ?? r.value),
+    value_amount: num(r.value_amount ?? r.valueAmount ?? r.unit_value ?? r.value),
     currency_code: str(r.currency_code ?? r.currencyCode),
     country_of_origin: str(r.country_of_origin ?? r.countryOfOrigin),
     classified: bool(r.classified ?? r.is_classified),
-    notes: str(r.notes),
+    permit_notes: str(r.permit_notes ?? r.permitNotes ?? r.notes),
     raw: r,
   };
 }
@@ -191,16 +189,22 @@ export function normalizeCcChecklistItem(raw: unknown): CcChecklistItem | null {
   if (!r) return null;
   const id = idOf(r);
   if (!id) return null;
+  const received = bool(r.received ?? r.is_received);
+  const verified = bool(r.verified ?? r.is_verified);
+  const completed =
+    bool(r.completed ?? r.is_complete ?? r.done) ??
+    (verified === true || received === true ? verified || received : undefined);
   return {
     id,
     job_id: str(r.job_id),
-    code: str(r.code ?? r.item_code),
+    code: str(r.code ?? r.item_code ?? r.doc_code),
     label: str(r.label ?? r.name ?? r.title ?? r.description),
     required: bool(r.required ?? r.is_required),
     status: str(r.status),
-    completed: bool(r.completed ?? r.is_complete ?? r.done),
-    document_id: str(r.document_id ?? r.documentId),
-    notes: str(r.notes),
+    received,
+    verified,
+    completed,
+    job_document_id: str(r.job_document_id ?? r.jobDocumentId ?? r.document_id),
     raw: r,
   };
 }
@@ -215,11 +219,13 @@ export function normalizeCcFiling(raw: unknown, jobId?: string): CcFiling {
   const r = asRecord(unwrapEntity(raw)) ?? asRecord(raw) ?? {};
   return {
     job_id: str(r.job_id) ?? jobId,
-    filing_type: str(r.filing_type ?? r.filingType ?? r.entry_type),
+    entry_type: str(r.entry_type ?? r.entryType ?? r.filing_type),
     entry_number: str(r.entry_number ?? r.entryNumber ?? r.boe_number),
-    filed_at: str(r.filed_at ?? r.filedAt),
-    customs_office: str(r.customs_office),
-    notes: str(r.notes),
+    shipping_bill_number: str(r.shipping_bill_number ?? r.shippingBillNumber),
+    filing_date: str(r.filing_date ?? r.filingDate ?? r.filed_at),
+    assessed_duty: num(r.assessed_duty ?? r.assessedDuty),
+    assessed_tax: num(r.assessed_tax ?? r.assessedTax),
+    duty_currency: str(r.duty_currency ?? r.dutyCurrency ?? r.currency_code),
     raw: r,
   };
 }
@@ -232,12 +238,11 @@ export function normalizeCcQuery(raw: unknown): CcQuery | null {
   return {
     id,
     job_id: str(r.job_id),
-    subject: str(r.subject ?? r.title),
-    body: str(r.body ?? r.message ?? r.description),
+    query_text: str(r.query_text ?? r.queryText ?? r.subject ?? r.body ?? r.message),
+    response_text: str(r.response_text ?? r.responseText ?? r.response ?? r.reply),
     status: str(r.status),
     raised_at: str(r.raised_at ?? r.created_at),
     closed_at: str(r.closed_at ?? r.closedAt),
-    response: str(r.response ?? r.reply),
     raw: r,
   };
 }
@@ -282,14 +287,16 @@ export function normalizeCcLinkFreight(raw: unknown, jobId?: string): CcLinkFrei
 
 export function normalizeCcDeclaration(raw: unknown, jobId?: string): CcDeclaration {
   const r = asRecord(unwrapEntity(raw)) ?? asRecord(raw) ?? {};
-  const payload = asRecord(r.payload ?? r.declaration ?? r) ?? {};
+  const declaration =
+    asRecord(r.declaration) ?? asRecord(r.payload) ?? (Object.keys(r).length ? r : {});
   const errorsRaw = r.validation_errors ?? r.validationErrors ?? r.errors;
   const validation_errors = Array.isArray(errorsRaw)
     ? errorsRaw.map((e) => String(e))
     : undefined;
   return {
     job_id: str(r.job_id) ?? jobId,
-    payload,
+    declaration,
+    payload: declaration,
     validated: bool(r.validated ?? r.is_valid),
     submitted_locally: bool(r.submitted_locally ?? r.submittedLocally),
     validation_errors,

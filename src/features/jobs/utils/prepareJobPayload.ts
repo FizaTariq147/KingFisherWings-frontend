@@ -31,6 +31,10 @@ export const JOB_FORM_DEFAULTS: CreateJobDto = {
   tags: [],
   etd: '',
   eta: '',
+  service_scope: undefined,
+  origin_door_address: '',
+  dest_door_address: '',
+  cargo_category: undefined,
 };
 
 const UUID_OPTIONAL_KEYS = [
@@ -130,6 +134,12 @@ export function prepareJobPayload(
     delete payload.dg_class;
   }
 
+  const jobType = String(payload.job_type ?? '').toUpperCase();
+  if (jobType === 'ROAD_FREIGHT' || jobType === 'LAND') {
+    delete payload.container_type_id;
+    delete payload.container_count;
+  }
+
   // Do not auto-inject billing_party_id — some tenants 500 when it duplicates shipper FK context.
 
   return omitEmpty(payload);
@@ -185,6 +195,10 @@ export function prepareMinimalJobCreatePayload(
     'eta',
     'notes',
     'customer_remarks',
+    'service_scope',
+    'origin_door_address',
+    'dest_door_address',
+    'cargo_category',
   ] as const;
   const out: Record<string, unknown> = {};
   for (const key of keep) {
@@ -235,5 +249,9 @@ export function jobToFormValues(job: Job) {
     tags: job.tags ?? [],
     etd: job.etd ?? '',
     eta: job.eta ?? '',
+    service_scope: job.service_scope ?? undefined,
+    origin_door_address: job.origin_door_address ?? '',
+    dest_door_address: job.dest_door_address ?? '',
+    cargo_category: job.cargo_category ?? undefined,
   };
 }

@@ -13,9 +13,9 @@ export function CcFinancePanel({ jobId }: { jobId: string }) {
   const financial = useCcFinancialSummary(jobId);
   const link = useCcLinkFreight(jobId);
   const actions = useCcJobActions(jobId);
-  const [amount, setAmount] = useState('');
-  const [currency, setCurrency] = useState('AED');
   const [freightId, setFreightId] = useState('');
+  const [paidByClient, setPaidByClient] = useState(false);
+  const [dutyNotes, setDutyNotes] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
@@ -89,28 +89,25 @@ export function CcFinancePanel({ jobId }: { jobId: string }) {
             </dl>
           )}
           <div className="grid gap-2 sm:grid-cols-3">
+            <label className="flex items-center gap-2 text-sm sm:col-span-3">
+              <input
+                type="checkbox"
+                checked={paidByClient}
+                onChange={(e) => setPaidByClient(e.target.checked)}
+              />
+              Paid by client
+            </label>
             <Input
-              placeholder="Duty amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
-            <Input
-              placeholder="Currency"
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
+              className="sm:col-span-2"
+              placeholder="Duty paid notes"
+              value={dutyNotes}
+              onChange={(e) => setDutyNotes(e.target.value)}
             />
             <Button
               type="button"
               disabled={actions.dutyPaymentRequest.isPending}
               onClick={() =>
-                void run(
-                  () =>
-                    actions.dutyPaymentRequest.mutateAsync({
-                      amount: amount ? Number(amount) : undefined,
-                      currency_code: currency || undefined,
-                    }),
-                  'Duty payment requested.',
-                )
+                void run(() => actions.dutyPaymentRequest.mutateAsync({}), 'Duty payment requested.')
               }
             >
               Duty payment request
@@ -120,7 +117,14 @@ export function CcFinancePanel({ jobId }: { jobId: string }) {
             type="button"
             disabled={actions.stageDutyPaid.isPending}
             onClick={() =>
-              void run(() => actions.stageDutyPaid.mutateAsync({}), 'Duty marked paid.')
+              void run(
+                () =>
+                  actions.stageDutyPaid.mutateAsync({
+                    paid_by_client: paidByClient,
+                    notes: dutyNotes.trim() || undefined,
+                  }),
+                'Duty marked paid.',
+              )
             }
           >
             Stage: duty paid

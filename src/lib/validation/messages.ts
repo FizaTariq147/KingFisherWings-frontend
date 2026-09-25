@@ -31,7 +31,7 @@ export const V = {
   imoNumber: 'IMO number must be exactly 7 digits',
   swiftBic: 'SWIFT/BIC must be 8 or 11 characters (e.g. BOMLAEAD)',
   awbPrefix: 'AWB prefix must be exactly 3 digits',
-  hsCode: 'Enter a valid HS code (4–10 digits, optional dots; e.g. 8471.30)',
+  hsCode: 'HS code must look like 8517 or 8517.12 (pairs of digits after the chapter)',
   hsDutyRate: 'Duty rate must be between 0 and 100',
   dgClass: 'Enter a valid DG class (1–9, optional subclass e.g. 3 or 2.1)',
   hsProhibitedRestricted:
@@ -142,8 +142,8 @@ export const RULES = {
   IMO: /^\d{7}$/,
   SWIFT_BIC: /^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$/,
   AWB_PREFIX: /^\d{3}$/,
-  /** HS: 4–10 digits, optional dotted groups (e.g. 8471.30 or 847130). Stored length 4–12. */
-  HS_CODE: /^\d{4}([.\s]?\d{2}){0,3}$/,
+  /** HS: matches backend `/^\d{4}(\.\d{2}){0,3}$/` (e.g. 8517, 8517.12, 8517.12.34). */
+  HS_CODE: /^\d{4}(\.\d{2}){0,3}$/,
   HS_CODE_MIN_LEN: 4,
   HS_CODE_MAX_LEN: 12,
   /** IMDG/ICAO class 1–9 with optional subclass (e.g. 3, 2.1, Class 8). */

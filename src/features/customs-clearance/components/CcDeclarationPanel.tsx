@@ -9,15 +9,18 @@ export function CcDeclarationPanel({ jobId }: { jobId: string }) {
   const { data, isLoading, isError, error, refetch } = useCcDeclaration(jobId);
   const actions = useCcJobActions(jobId);
   const [jsonText, setJsonText] = useState('{}');
+  const [entryType, setEntryType] = useState('BOE');
   const [entryNumber, setEntryNumber] = useState('');
-  const [filingType, setFilingType] = useState('BOE');
+  const [shippingBill, setShippingBill] = useState('');
+  const [filingDate, setFilingDate] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!data?.payload) return;
+    const payload = data?.declaration ?? data?.payload;
+    if (!payload) return;
     try {
-      setJsonText(JSON.stringify(data.payload, null, 2));
+      setJsonText(JSON.stringify(payload, null, 2));
     } catch {
       setJsonText('{}');
     }
@@ -67,13 +70,13 @@ export function CcDeclarationPanel({ jobId }: { jobId: string }) {
               disabled={actions.putDeclaration.isPending}
               onClick={() =>
                 void run(async () => {
-                  let payload: Record<string, unknown> = {};
+                  let declaration: Record<string, unknown> = {};
                   try {
-                    payload = JSON.parse(jsonText) as Record<string, unknown>;
+                    declaration = JSON.parse(jsonText) as Record<string, unknown>;
                   } catch {
                     throw new Error('Declaration JSON is invalid.');
                   }
-                  await actions.putDeclaration.mutateAsync(payload);
+                  await actions.putDeclaration.mutateAsync({ declaration });
                 }, 'Declaration saved.')
               }
             >
@@ -116,14 +119,25 @@ export function CcDeclarationPanel({ jobId }: { jobId: string }) {
         <div className="space-y-3 px-4 pb-4">
           <div className="grid gap-2 sm:grid-cols-2">
             <Input
-              placeholder="Filing type (BOE / SB)"
-              value={filingType}
-              onChange={(e) => setFilingType(e.target.value)}
+              placeholder="Entry type (BOE / SB)"
+              value={entryType}
+              onChange={(e) => setEntryType(e.target.value)}
             />
             <Input
               placeholder="Entry number"
               value={entryNumber}
               onChange={(e) => setEntryNumber(e.target.value)}
+            />
+            <Input
+              placeholder="Shipping bill number"
+              value={shippingBill}
+              onChange={(e) => setShippingBill(e.target.value)}
+            />
+            <Input
+              type="date"
+              placeholder="Filing date"
+              value={filingDate}
+              onChange={(e) => setFilingDate(e.target.value)}
             />
           </div>
           <div className="flex flex-wrap gap-2">
@@ -134,8 +148,10 @@ export function CcDeclarationPanel({ jobId }: { jobId: string }) {
                 void run(
                   () =>
                     actions.updateFiling.mutateAsync({
-                      filing_type: filingType || undefined,
+                      entry_type: entryType || undefined,
                       entry_number: entryNumber || undefined,
+                      shipping_bill_number: shippingBill || undefined,
+                      filing_date: filingDate || undefined,
                     }),
                   'Filing saved.',
                 )
@@ -146,7 +162,18 @@ export function CcDeclarationPanel({ jobId }: { jobId: string }) {
             <Button
               type="button"
               disabled={actions.stageFile.isPending}
-              onClick={() => void run(() => actions.stageFile.mutateAsync({}), 'File stage done.')}
+              onClick={() =>
+                void run(
+                  () =>
+                    actions.stageFile.mutateAsync({
+                      entry_type: entryType || undefined,
+                      entry_number: entryNumber || undefined,
+                      shipping_bill_number: shippingBill || undefined,
+                      filing_date: filingDate || undefined,
+                    }),
+                  'File stage done.',
+                )
+              }
             >
               Stage: file
             </Button>

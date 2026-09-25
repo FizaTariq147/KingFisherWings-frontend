@@ -5,7 +5,7 @@ import { Modal } from '@/components/ui/Modal';
 import { LOST_REASONS, type LostReason } from '../../constants/quotation.constants';
 import type { QuotationConfirmKind } from '../../hooks/useQuotationConfirmState';
 import { quotationDisplayNumber } from '../../utils/normalizeQuotation';
-import { usesGatedFreightQuoteFlow } from '../../utils/quotationStatus';
+import { usesGatedFreightQuoteFlow, usesModeBookingFormConvertFlow } from '../../utils/quotationStatus';
 import type { Quotation } from '../../types/quotation.types';
 import { isNvoccQuoteJobType } from '@/features/nvocc/constants/seaExportWorkflow';
 
@@ -39,6 +39,9 @@ const CONFIG: Record<
       }
       if (usesGatedFreightQuoteFlow(jt)) {
         return `${label} will be marked customer-approved only — no automatic job. Next: customer completes the portal booking form, then you send invoice (Start air ops job only if a job shell is needed for Ops APIs).`;
+      }
+      if (usesModeBookingFormConvertFlow(jt)) {
+        return `${label} will be marked customer-approved only — no job yet. Next: customer completes the portal booking form; then the quotation converts to a job automatically.`;
       }
       return `${label} will be marked customer-approved, then a job and draft customer invoice are created automatically.`;
     },

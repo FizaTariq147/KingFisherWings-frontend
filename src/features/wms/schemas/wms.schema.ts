@@ -100,6 +100,12 @@ export const upsertWmsSettingsSchema = z.object({
   valuation_method: valuationMethod,
   default_free_days: amountField({ required: true, min: 0, max: 3650, maxDecimals: 0 }),
   default_storage_rate: amountField({ required: true, min: 0, max: 1_000_000, maxDecimals: 4 }),
+  default_overdue_rate_per_day: amountField({
+    required: false,
+    min: 0,
+    max: 1_000_000,
+    maxDecimals: 4,
+  }),
   default_currency: currencyCode(true),
 });
 
@@ -222,6 +228,7 @@ export const calculateStorageSchema = z
     period_to: requiredDate,
     free_days: amountField({ required: false, min: 0, max: 3650, maxDecimals: 0 }),
     rate_per_day: amountField({ required: false, min: 0, max: 1_000_000, maxDecimals: 4 }),
+    overdue_rate_per_day: amountField({ required: false, min: 0, max: 1_000_000, maxDecimals: 4 }),
     currency_code: currencyCode(false),
   })
   .superRefine((data, ctx) => {

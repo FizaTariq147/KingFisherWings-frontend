@@ -417,6 +417,7 @@ export const wmsService = {
     const query: Record<string, string> = {
       party_id: params.party_id,
       status: params.status,
+      charge_kind: params.charge_kind,
     };
     const res = await withGatewayRetry(() =>
       axiosInstance.get(WMS_API.storageCharges, { params: query }),

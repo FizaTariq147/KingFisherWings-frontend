@@ -41,21 +41,27 @@ const optionalPieces = amountField({
   allowNegative: false,
 });
 
-/** Trimmed port / location text (UUID or free-text name). */
-const requiredPortField = z.preprocess(
-  (v) => (typeof v === 'string' ? v.trim() : v),
-  z
-    .string({ required_error: 'This field is required' })
-    .min(2, 'Enter at least 2 characters')
-    .max(200, 'Must be at most 200 characters'),
+/** Trimmed port / location text (UUID or free-text name). Optional at schema level; required for non-road in refine. */
+const portField = z.preprocess(
+  (v) => {
+    if (v == null) return '';
+    if (typeof v === 'string') return v.trim();
+    return v;
+  },
+  z.string().max(200, 'Must be at most 200 characters'),
 );
+
+function isRoadOrLandQuoteJob(jobType?: string | null): boolean {
+  const t = String(jobType ?? '').toUpperCase();
+  return t === 'ROAD_FREIGHT' || t === 'LAND';
+}
 
 export const portalBookQuoteSchema = z
   .object({
     job_type: jobTypeSchema,
     currency_code: currencyCode(true),
-    origin_port: requiredPortField,
-    dest_port: requiredPortField,
+    origin_port: portField,
+    dest_port: portField,
     commodity: optionalTextUndef({ min: 2, max: 200 }),
     gross_weight: optionalWeight,
     chargeable_weight: optionalWeight,
@@ -65,14 +71,62 @@ export const portalBookQuoteSchema = z
     valid_until: optionalDate,
   })
   .superRefine((data, ctx) => {
-    const origin = data.origin_port.trim().toLowerCase();
-    const dest = data.dest_port.trim().toLowerCase();
+    const roadLand = isRoadOrLandQuoteJob(data.job_type);
+    const originRaw = data.origin_port ?? '';
+    const destRaw = data.dest_port ?? '';
+
+    if (!roadLand) {
+      if (originRaw.length < 2) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['origin_port'],
+          message: 'This field is required',
+        });
+      }
+      if (destRaw.length < 2) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['dest_port'],
+          message: 'This field is required',
+        });
+      }
+    } else {
+      if (originRaw && originRaw.length < 2) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['origin_port'],
+          message: 'Enter at least 2 characters',
+        });
+      }
+      if (destRaw && destRaw.length < 2) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['dest_port'],
+          message: 'Enter at least 2 characters',
+        });
+      }
+    }
+
+    const origin = originRaw.toLowerCase();
+    const dest = destRaw.toLowerCase();
     if (origin && dest && origin === dest) {
       ctx.addIssue({
         code: 'custom',
         path: ['dest_port'],
         message: 'Destination must differ from origin',
       });
+    }
+
+    if (roadLand && !originRaw && !destRaw) {
+      const special = data.special_requirements?.trim() ?? '';
+      if (special.length < 8) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['special_requirements'],
+          message:
+            'For road freight, add origin/destination hubs or describe door addresses in special requirements',
+        });
+      }
     }
 
     if (data.valid_until) {

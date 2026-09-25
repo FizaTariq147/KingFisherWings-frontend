@@ -122,7 +122,8 @@ export function useJobResolvedLabels(job: Job) {
   const vesselId = job.sea_fcl_details?.vessel_id || job.sea_lcl_details?.vessel_id;
   const containerTypeId = job.container_type_id;
   const branchId = job.branch_id;
-  const truckerId = job.land_details?.trucker_id;
+  const truckerId =
+    job.road_freight_details?.trucker_id || job.land_details?.trucker_id;
   const courierVendorId = job.courier_details?.courier_vendor_id;
 
   const { data: shipperParty, isLoading: shipperLoading } = useParty(

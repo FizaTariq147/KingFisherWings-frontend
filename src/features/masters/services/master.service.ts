@@ -11,6 +11,7 @@ import type {
 } from '../types/master.types';
 import { normalizeMasterRecord, normalizeMasterRecords } from '../utils/normalizeMasterRecord';
 import { prepareMasterPayload } from '../utils/prepareMasterPayload';
+import { AIR_PALLET_TYPE_SEED_DEFAULTS } from '../constants/airPalletTypeDefaults';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -225,7 +226,10 @@ function buildListQuery(params: MasterListParams): Record<string, string | numbe
   return query;
 }
 
-function formatAxiosError(error: unknown, context?: { basePath?: string }): Error {
+function formatAxiosError(
+  error: unknown,
+  context?: { basePath?: string; operation?: 'seed-defaults' | 'create' | 'update' | 'delete' },
+): Error {
   if (!error || typeof error !== 'object') return new Error('Request failed.');
   const axiosErr = error as {
     response?: {
@@ -253,7 +257,7 @@ function formatAxiosError(error: unknown, context?: { basePath?: string }): Erro
     return new Error(detail);
   }
 
-    if (status === 500) {
+  if (status === 500) {
     const bodyPreview =
       data == null
         ? ''
@@ -267,6 +271,7 @@ function formatAxiosError(error: unknown, context?: { basePath?: string }): Erro
     const isPorts = /\/masters\/ports\/?$/.test(base) || base.includes('/masters/ports/');
     const isAirports =
       /\/masters\/airports\/?$/.test(base) || base.includes('/masters/airports/');
+    const isAirPalletTypes = base.includes('/masters/air-pallet-types');
     if (isHoliday) {
       return new Error(
         'Holidays create failed with HTTP 500 from the API (no useful error body). ' +
@@ -295,6 +300,18 @@ function formatAxiosError(error: unknown, context?: { basePath?: string }): Erro
     if (isAirports) {
       return new Error(
         `Airports API returned HTTP 500. ${bodyPreview || 'Try Refresh / Sync again; if it persists, check Render logs for AirportsController.'}`,
+      );
+    }
+    if (isAirPalletTypes && context?.operation === 'seed-defaults') {
+      return new Error(
+        `Air pallet types seed-defaults returned HTTP 500. ${bodyPreview || 'Internal server error'}. ` +
+          'Check Render logs for AirPalletTypesController_seedDefaults (missing seed file or Prisma mismatch).',
+      );
+    }
+    if (isAirPalletTypes) {
+      return new Error(
+        `Air pallet types API returned HTTP 500. ${bodyPreview || 'Internal server error'}. ` +
+          'Body matches CreateAirPalletTypeDto — if Swagger also 500s, the backend must be fixed.',
       );
     }
     return new Error(
@@ -786,11 +803,9 @@ export const masterService = {
   },
 
   /**
-   * POST /masters/ports|airports/seed-defaults — insert world catalog for this tenant.
-   * Response shape (observed): { success, type, catalog_size, inserted } (no nested data).
-   * catalog_size = size of the seed file; inserted = rows actually written this run.
-   * Note: live API currently no-ops (inserted=0) if the tenant has any rows, including
-   * soft-deleted — force/replace body/query are accepted but ignored unless backend adds support.
+   * POST /masters/{resource}/seed-defaults
+   * For air-pallet-types: if the seed endpoint 500s, fall back to POSTing CreateAirPalletTypeDto
+   * rows from the local catalog (skips codes that already exist).
    */
   async seedDefaults(
     basePath: string,
@@ -803,13 +818,13 @@ export const masterService = {
     total: number;
     message?: string;
     raw: Record<string, unknown>;
+    usedClientFallback?: boolean;
   }> {
-    try {
-      const path = `${basePath.replace(/\/$/, '')}/seed-defaults`;
-      const res = await withGatewayRetry(() =>
-        axiosInstance.post<unknown>(path, body, { params: query }),
-      );
-      const envelope = asRecord(res.data) ?? {};
+    const path = `${basePath.replace(/\/$/, '')}/seed-defaults`;
+    const isAirPalletTypes = basePath.includes('/masters/air-pallet-types');
+
+    const parseSeedResponse = (resData: unknown) => {
+      const envelope = asRecord(resData) ?? {};
       const nested = asRecord(envelope.data);
       const src = nested ?? envelope;
       const inserted = Number(src.inserted ?? src.created ?? src.added ?? 0) || 0;
@@ -830,9 +845,107 @@ export const masterService = {
         message,
         raw: src,
       };
+    };
+
+    try {
+      // Prefer no JSON body first — empty `{}` has 500'd on some Nest seed handlers.
+      const attempts: Array<Record<string, unknown> | undefined> = [undefined, body];
+      let lastError: unknown;
+      for (const attemptBody of attempts) {
+        try {
+          const res = await withGatewayRetry(() =>
+            axiosInstance.post<unknown>(
+              path,
+              attemptBody,
+              Object.keys(query).length ? { params: query } : undefined,
+            ),
+          );
+          return parseSeedResponse(res.data);
+        } catch (error) {
+          lastError = error;
+          if (!isHttpStatus(error, 500) && !isHttpStatus(error, 400)) throw error;
+        }
+      }
+      throw lastError;
     } catch (error) {
-      throw formatAxiosError(error, { basePath });
+      if (isAirPalletTypes && (isHttpStatus(error, 500) || isHttpStatus(error, 404))) {
+        try {
+          const fallback = await this.seedAirPalletTypesClientFallback(basePath);
+          return fallback;
+        } catch (fallbackErr) {
+          throw formatAxiosError(fallbackErr, {
+            basePath,
+            operation: 'seed-defaults',
+          });
+        }
+      }
+      throw formatAxiosError(error, {
+        basePath,
+        operation: 'seed-defaults',
+      });
     }
+  },
+
+  /** Client-side seed when POST …/air-pallet-types/seed-defaults is broken (500). */
+  async seedAirPalletTypesClientFallback(basePath: string): Promise<{
+    inserted: number;
+    skipped: number;
+    catalogSize: number;
+    total: number;
+    message?: string;
+    raw: Record<string, unknown>;
+    usedClientFallback: boolean;
+  }> {
+    const existing = await this.listAll(basePath, { order: 'asc' }, 100);
+    const existingCodes = new Set(
+      existing.items
+        .map((row) => String(row.code ?? '').trim().toUpperCase())
+        .filter(Boolean),
+    );
+
+    let inserted = 0;
+    let skipped = 0;
+    const errors: string[] = [];
+
+    for (const row of AIR_PALLET_TYPE_SEED_DEFAULTS) {
+      const code = row.code.trim().toUpperCase();
+      if (existingCodes.has(code)) {
+        skipped += 1;
+        continue;
+      }
+      try {
+        await this.create(basePath, { ...row, code });
+        existingCodes.add(code);
+        inserted += 1;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'create failed';
+        if (/already|exist|duplicate|409|unique/i.test(msg)) {
+          skipped += 1;
+          existingCodes.add(code);
+        } else {
+          errors.push(`${code}: ${msg}`);
+        }
+      }
+    }
+
+    if (inserted === 0 && errors.length > 0) {
+      throw new Error(
+        `Air pallet types seed-defaults API returned 500, and client fallback also failed. ${errors.slice(0, 3).join(' · ')}`,
+      );
+    }
+
+    return {
+      inserted,
+      skipped,
+      catalogSize: AIR_PALLET_TYPE_SEED_DEFAULTS.length,
+      total: AIR_PALLET_TYPE_SEED_DEFAULTS.length,
+      message:
+        inserted > 0
+          ? `Seeded ${inserted} air pallet type(s) via client fallback (API seed-defaults returned 500).`
+          : `No new air pallet types inserted (skipped=${skipped}). API seed-defaults still returns 500 — fix backend.`,
+      raw: { inserted, skipped, errors, source: 'client-fallback' },
+      usedClientFallback: true,
+    };
   },
 
   async getLatestExchangeRate(currencyId: string): Promise<MasterRecord | null> {

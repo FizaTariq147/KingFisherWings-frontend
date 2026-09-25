@@ -3,6 +3,7 @@ import {
   coerceQuotationStatus,
   isCustomerApprovedStatus,
   isCustomerDisapprovedStatus,
+  usesModeBookingFormConvertFlow,
 } from '@/features/quotations/utils/quotationStatus';
 import { getCustomerQuoteDecision } from '@/features/quotations/utils/customerQuoteDecision';
 import type { PortalQuotationDetail, PortalQuotationListItem } from '../types/portalQuotations.types';
@@ -29,7 +30,7 @@ export function applyPortalCustomerDecisionStatus(
   return { ...detail, status: 'APPROVED' };
 }
 
-/** True when the customer has approved — unlocks the portal booking form (NVOCC + Air). */
+/** True when the customer has approved — unlocks the portal booking form. */
 export function portalQuoteShowsBookingForm(
   quote?: PortalQuotationListItem | PortalQuotationDetail | null,
 ): boolean {
@@ -42,7 +43,10 @@ export function portalQuoteShowsBookingForm(
   )
     .toUpperCase()
     .replace(/[\s-]+/g, '_');
-  const gated = jt.startsWith('NVOCC') || jt.startsWith('AIR');
+  const gated =
+    jt.startsWith('NVOCC') ||
+    jt.startsWith('AIR') ||
+    usesModeBookingFormConvertFlow(jt);
   if (!gated) return false;
 
   const raw = String(quote.status ?? '')
@@ -137,7 +141,7 @@ export function portalQuoteStatusMessage(
   if (isCustomerApprovedStatus(s) || s === 'CONVERTED' || s === 'ACCEPTED') {
     const detail = quote as PortalQuotationDetail | undefined;
     const jt = String(detail?.jobType ?? detail?.raw?.job_type ?? '').toUpperCase();
-    if (jt.startsWith('AIR') || jt.startsWith('NVOCC')) {
+    if (jt.startsWith('AIR') || jt.startsWith('NVOCC') || usesModeBookingFormConvertFlow(jt)) {
       return 'You approved this quotation. Complete the booking form below next.';
     }
     return 'You approved this quotation.';

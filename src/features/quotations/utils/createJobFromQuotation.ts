@@ -1,4 +1,5 @@
 import type { CreateJobDto } from '@/features/jobs/types/job.types';
+import { canonicalizeJobType } from '@/features/jobs/utils/canonicalizeJobType';
 import { ensureJobBranchReady } from '@/features/jobs/utils/ensureJobBranchReady';
 import { isUuid } from '@/lib/isUuid';
 import { resolveSessionCompanyIdAsync } from '@/lib/resolveSessionCompanyId';
@@ -17,14 +18,19 @@ export async function quotationToCreateJobDto(quotation: Quotation): Promise<Cre
     branchId = await ensureJobBranchReady(companyId || undefined);
   }
 
+  const jobType = canonicalizeJobType(quotation.job_type, 'AIR_EXPORT');
+  const isRoadLand = jobType === 'ROAD_FREIGHT' || jobType === 'LAND';
+  const remarks = String(quotation.remarks ?? '').trim();
+
   return {
-    job_type: quotation.job_type,
+    job_type: jobType,
     shipper_id: quotation.customer_id,
     company_id: companyId,
     branch_id: branchId,
     department_id: quotation.department_id ?? '',
     salesperson_id: quotation.salesperson_id ?? '',
-    ...(quotation.job_type === 'SERVICE_JOB'
+    billing_party_id: quotation.customer_id || undefined,
+    ...(jobType === 'SERVICE_JOB'
       ? {}
       : {
           origin_port_id: quotation.origin_port_id ?? '',
@@ -35,13 +41,17 @@ export async function quotationToCreateJobDto(quotation: Quotation): Promise<Cre
           chargeable_weight: quotation.chargeable_weight,
           volume_cbm: quotation.volume_cbm,
           pieces: quotation.pieces,
-          container_type_id: quotation.container_type_id ?? '',
-          container_count: quotation.container_count,
+          ...(isRoadLand
+            ? {}
+            : {
+                container_type_id: quotation.container_type_id ?? '',
+                container_count: quotation.container_count,
+              }),
           incoterms: quotation.incoterm ?? '',
           is_dg: quotation.is_dg ?? false,
           dg_class: quotation.dg_class ?? '',
         }),
     notes: quotation.internal_notes ?? '',
-    customer_remarks: quotation.remarks ?? '',
+    customer_remarks: remarks,
   };
 }

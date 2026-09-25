@@ -237,10 +237,9 @@ export type PortalBookingFormParty = {
 };
 
 /**
- * Customer + Ops booking form — field names match UpsertNvoccBookingFormDto /
- * SubmitNvoccComplianceFormDto (OpenAPI).
- * NVOCC: /portal/bookings/:id/compliance-form*
- * Air:   /portal/shipments/:id/compliance-form* (same body schema)
+ * Customer + Ops booking form.
+ * NVOCC: UpsertNvoccBookingFormDto — /portal/bookings/:id/compliance-form*
+ * Air:   UpsertAirComplianceBookingFormDto — /portal/shipments/:id/compliance-form*
  */
 export type PortalBookingForm = {
   id?: string;
@@ -251,13 +250,32 @@ export type PortalBookingForm = {
   client_booking_no?: string;
   gross_weight_kg?: number;
   net_weight_kg?: number;
-  /** Port of loading (sea) or origin airport/place (air) — maxLength 100 */
+  chargeable_weight_kg?: number;
+  volume_cbm?: number;
+  pieces?: number;
+  pallet_count?: number;
+  pallets?: {
+    pallet_type: string;
+    count: number;
+    length_cm?: number;
+    width_cm?: number;
+    height_cm?: number;
+    weight_kg?: number;
+  }[];
+  service_scope?: 'DOOR_TO_DOOR' | 'DOOR_TO_PORT' | 'PORT_TO_DOOR' | 'PORT_TO_PORT' | string;
+  origin_door_address?: string;
+  dest_door_address?: string;
+  /** Port of loading (sea) — maxLength 100 */
   pol?: string;
-  /** Port of discharge (sea) or dest airport/place (air) — maxLength 100 */
+  /** Port of discharge (sea) — maxLength 100 */
   pod?: string;
+  /** Air compliance DTO airports (maxLength 10) */
+  origin_airport_code?: string;
+  dest_airport_code?: string;
   shipper_owned_container?: boolean;
   is_dg?: boolean;
   teu_count?: number;
+  containers?: { container_type_id?: string; iso_size?: string; count: number }[];
   commodity?: string;
   hs_code?: string;
   final_use?: string;
@@ -277,18 +295,32 @@ export type PortalBookingForm = {
   parties?: PortalBookingFormParty[];
 };
 
-/** PUT/submit body — UpsertNvoccBookingFormDto / SubmitNvoccComplianceFormDto. */
+/**
+ * PUT/submit body — NVOCC UpsertNvoccBookingFormDto or Air UpsertAirComplianceBookingFormDto.
+ * Air payloads should send airport codes (not pol/pod) plus pieces/CBM/pallets/service_scope.
+ */
 export type PortalBookingFormUpsertDto = {
   date_of_request?: string;
   voyage_ref?: string;
   client_booking_no?: string;
   gross_weight_kg?: number;
   net_weight_kg?: number;
+  chargeable_weight_kg?: number;
+  volume_cbm?: number;
+  pieces?: number;
+  pallet_count?: number;
+  pallets?: PortalBookingForm['pallets'];
+  service_scope?: PortalBookingForm['service_scope'];
+  origin_door_address?: string;
+  dest_door_address?: string;
   pol?: string;
   pod?: string;
+  origin_airport_code?: string;
+  dest_airport_code?: string;
   shipper_owned_container?: boolean;
   is_dg?: boolean;
   teu_count?: number;
+  containers?: PortalBookingForm['containers'];
   commodity?: string;
   hs_code?: string;
   final_use?: string;

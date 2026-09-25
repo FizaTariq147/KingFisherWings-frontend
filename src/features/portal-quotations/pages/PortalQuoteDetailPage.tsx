@@ -30,6 +30,7 @@ import {
   portalQuoteShowsBookingForm,
   portalQuoteTotalAmount,
 } from '../utils/portalQuotationStatus';
+import { usesModeBookingFormConvertFlow } from '@/features/quotations/utils/quotationStatus';
 
 export default function PortalQuoteDetailPage() {
   const { id = '' } = useParams();
@@ -100,6 +101,7 @@ export default function PortalQuoteDetailPage() {
   const showDownload = canTryPdf && !pdfUnavailable;
   const total = portalQuoteTotalAmount(data);
   const gatedCommercial = usesPortalCommercialFlow(data.jobType);
+  const modeConvert = usesModeBookingFormConvertFlow(data.jobType);
   const canRespond = canPortalCustomerRespondToQuote(data.status, data);
   const showBookingForm = portalQuoteShowsBookingForm(data);
   const isAir = String(data.jobType ?? '')
@@ -256,11 +258,15 @@ export default function PortalQuoteDetailPage() {
 
       {gatedCommercial && formSubmitted ? (
         <PortalPanel padded className="border-sky-200 bg-sky-50/60">
-          <h2 className="text-sm font-semibold text-sky-900">Next: Invoice (INVOICE_SENT)</h2>
+          <h2 className="text-sm font-semibold text-sky-900">
+            {modeConvert ? 'Next: Job created' : 'Next: Invoice (INVOICE_SENT)'}
+          </h2>
           <p className="mt-1 text-sm text-sky-800">
-            Booking form is complete (BOOKING_FORM_COMPLETE). Your forwarder will send the invoice
-            next
-            {isAir ? ', then AIR_EXPORT or AIR_IMPORT operations begin.' : '.'}
+            {modeConvert
+              ? 'Booking form is complete. Your forwarder will convert this quotation to a job.'
+              : `Booking form is complete (BOOKING_FORM_COMPLETE). Your forwarder will send the invoice next${
+                  isAir ? ', then AIR_EXPORT or AIR_IMPORT operations begin.' : '.'
+                }`}
           </p>
         </PortalPanel>
       ) : null}

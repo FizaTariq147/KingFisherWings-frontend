@@ -11,6 +11,8 @@ export type CcStageId =
   | 'invoice'
   | 'close';
 
+export type CcDirection = 'IMPORT' | 'EXPORT' | 'TRANSIT';
+
 export interface CcDashboardStats {
   total?: number;
   open?: number;
@@ -40,23 +42,22 @@ export interface CcQueueResult {
   meta?: { page?: number; limit?: number; total?: number };
 }
 
+/** Matches UpsertCcDetailsDto + response shape. */
 export interface CcDetails {
   job_id: string;
-  direction?: string;
-  customs_office?: string;
-  port_id?: string;
-  importer_id?: string;
-  exporter_id?: string;
-  broker_ref?: string;
-  entry_type?: string;
-  notes?: string;
+  direction?: CcDirection | string;
+  cha_party_id?: string;
+  border_or_port?: string;
+  remarks?: string;
   raw?: Record<string, unknown>;
 }
 
-export type UpdateCcDetailsDto = Partial<
-  Omit<CcDetails, 'job_id' | 'raw'>
-> &
-  Record<string, unknown>;
+export type UpdateCcDetailsDto = {
+  direction?: CcDirection | string;
+  cha_party_id?: string;
+  border_or_port?: string;
+  remarks?: string;
+} & Record<string, unknown>;
 
 export interface CcStatus {
   job_id: string;
@@ -75,6 +76,7 @@ export interface CcStatus {
   raw?: Record<string, unknown>;
 }
 
+/** Cargo line — CreateCcCargoLineDto / UpdateCcCargoLineDto. */
 export interface CcLine {
   id: string;
   job_id?: string;
@@ -82,30 +84,31 @@ export interface CcLine {
   hs_code?: string;
   quantity?: number;
   unit?: string;
-  unit_value?: number;
+  value_amount?: number;
   currency_code?: string;
   country_of_origin?: string;
   classified?: boolean;
-  notes?: string;
+  permit_notes?: string;
   raw?: Record<string, unknown>;
 }
 
 export type CreateCcLineDto = {
-  description?: string;
+  description: string;
   hs_code?: string;
+  country_of_origin?: string;
   quantity?: number;
   unit?: string;
-  unit_value?: number;
+  value_amount?: number;
   currency_code?: string;
-  country_of_origin?: string;
-  notes?: string;
 } & Record<string, unknown>;
 
-export type UpdateCcLineDto = Partial<CreateCcLineDto>;
+export type UpdateCcLineDto = Partial<CreateCcLineDto> & {
+  description?: string;
+};
 
 export type ClassifyCcLineDto = {
-  hs_code?: string;
-  notes?: string;
+  hs_code: string;
+  permit_notes?: string;
 } & Record<string, unknown>;
 
 export interface CcChecklistItem {
@@ -115,52 +118,86 @@ export interface CcChecklistItem {
   label?: string;
   required?: boolean;
   status?: string;
+  received?: boolean;
+  verified?: boolean;
   completed?: boolean;
-  document_id?: string;
-  notes?: string;
+  job_document_id?: string;
   raw?: Record<string, unknown>;
 }
 
+/** PatchCcChecklistItemDto */
 export type UpdateCcChecklistItemDto = {
-  status?: string;
-  completed?: boolean;
-  document_id?: string;
-  notes?: string;
+  received?: boolean;
+  verified?: boolean;
+  job_document_id?: string;
 } & Record<string, unknown>;
 
+/** PatchCcFilingDto / FileCcEntryDto fields. */
 export interface CcFiling {
   job_id?: string;
-  filing_type?: string;
+  entry_type?: string;
   entry_number?: string;
-  filed_at?: string;
-  customs_office?: string;
-  notes?: string;
+  shipping_bill_number?: string;
+  filing_date?: string;
+  assessed_duty?: number;
+  assessed_tax?: number;
+  duty_currency?: string;
   raw?: Record<string, unknown>;
 }
 
-export type UpdateCcFilingDto = Partial<Omit<CcFiling, 'job_id' | 'raw'>> &
-  Record<string, unknown>;
+export type UpdateCcFilingDto = {
+  entry_type?: string;
+  entry_number?: string;
+  shipping_bill_number?: string;
+  filing_date?: string;
+  assessed_duty?: number;
+  assessed_tax?: number;
+  duty_currency?: string;
+} & Record<string, unknown>;
+
+export type FileCcEntryDto = {
+  admin_override?: boolean;
+  stage_override_reason?: string;
+  entry_type?: string;
+  entry_number?: string;
+  shipping_bill_number?: string;
+  filing_date?: string;
+} & Record<string, unknown>;
+
+export type AssessCcDto = {
+  admin_override?: boolean;
+  stage_override_reason?: string;
+  assessed_duty?: number;
+  assessed_tax?: number;
+  duty_currency?: string;
+} & Record<string, unknown>;
+
+export type DutyPaidDto = {
+  admin_override?: boolean;
+  stage_override_reason?: string;
+  paid_by_client?: boolean;
+  notes?: string;
+} & Record<string, unknown>;
 
 export interface CcQuery {
   id: string;
   job_id?: string;
-  subject?: string;
-  body?: string;
+  query_text?: string;
+  response_text?: string;
   status?: string;
   raised_at?: string;
   closed_at?: string;
-  response?: string;
   raw?: Record<string, unknown>;
 }
 
+/** CreateCcQueryDto */
 export type CreateCcQueryDto = {
-  subject?: string;
-  body?: string;
+  query_text: string;
 } & Record<string, unknown>;
 
-export type UpdateCcQueryDto = Partial<CreateCcQueryDto> & {
-  status?: string;
-  response?: string;
+/** PatchCcQueryDto */
+export type UpdateCcQueryDto = {
+  response_text?: string;
 } & Record<string, unknown>;
 
 export interface CcFinancialSummary {
@@ -174,12 +211,6 @@ export interface CcFinancialSummary {
   invoice_id?: string;
   raw?: Record<string, unknown>;
 }
-
-export type DutyPaymentRequestDto = {
-  amount?: number;
-  currency_code?: string;
-  notes?: string;
-} & Record<string, unknown>;
 
 export interface CcLinkFreight {
   job_id?: string;
@@ -195,6 +226,7 @@ export type LinkFreightDto = {
 
 export interface CcDeclaration {
   job_id?: string;
+  declaration?: Record<string, unknown>;
   payload?: Record<string, unknown>;
   validated?: boolean;
   submitted_locally?: boolean;
@@ -202,9 +234,16 @@ export interface CcDeclaration {
   raw?: Record<string, unknown>;
 }
 
-export type UpsertCcDeclarationDto = Record<string, unknown>;
+/** UpsertCcDeclarationDto — body must wrap payload as `declaration`. */
+export type UpsertCcDeclarationDto = {
+  declaration: Record<string, unknown>;
+} & Record<string, unknown>;
 
-export type CcStageActionDto = Record<string, unknown>;
+/** CcWorkflowOverrideDto — shared by most stage POSTs. */
+export type CcStageActionDto = {
+  admin_override?: boolean;
+  stage_override_reason?: string;
+} & Record<string, unknown>;
 
 export interface HsValidateResult {
   hs_code?: string;
@@ -220,3 +259,6 @@ export interface HsValidateResult {
 export type HsValidateDto = {
   hs_code: string;
 } & Record<string, unknown>;
+
+/** @deprecated use DutyPaidDto — kept for call-site aliases */
+export type DutyPaymentRequestDto = Record<string, unknown>;

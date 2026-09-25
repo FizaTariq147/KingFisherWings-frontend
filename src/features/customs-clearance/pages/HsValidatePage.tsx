@@ -47,7 +47,8 @@ export default function HsValidatePage() {
         </CardHeader>
         <div className="space-y-3 px-4 pb-4">
           <Input
-            placeholder="HS code"
+            placeholder="8517.12"
+            hint="Use 8517 or 8517.12 (pairs after chapter). 8534.0000 → 8534.00.00"
             value={hsCode}
             onChange={(e) => setHsCode(e.target.value)}
           />

@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useInlineValidation } from '@/lib/validation';
-import { WMS_ROUTE_PREFIX, WMS_STORAGE_CHARGE_STATUSES } from '../api/wms.api';
+import { WMS_ROUTE_PREFIX, WMS_STORAGE_CHARGE_KINDS, WMS_STORAGE_CHARGE_STATUSES } from '../api/wms.api';
 import { WmsCurrencyField } from '../components/WmsCurrencyField';
 import { WmsPageHeader } from '../components/WmsPageHeader';
 import {
@@ -42,9 +42,11 @@ export default function WmsStoragePage() {
   const [periodTo, setPeriodTo] = useState('');
   const [freeDays, setFreeDays] = useState('');
   const [ratePerDay, setRatePerDay] = useState('');
+  const [overdueRatePerDay, setOverdueRatePerDay] = useState('');
   const [currencyCode, setCurrencyCode] = useState('AED');
   const [chargePartyId, setChargePartyId] = useState('');
   const [chargeStatus, setChargeStatus] = useState<string>('OPEN');
+  const [chargeKind, setChargeKind] = useState<string>('STORAGE');
   const [calcResult, setCalcResult] = useState<unknown>(null);
   const [selectedChargeIds, setSelectedChargeIds] = useState<string[]>([]);
   const [success, setSuccess] = useState<string | null>(null);
@@ -52,8 +54,12 @@ export default function WmsStoragePage() {
   const chargesParams = {
     party_id: chargePartyId.trim(),
     status: chargeStatus.trim(),
+    charge_kind: chargeKind.trim(),
   };
-  const chargesEnabled = isUuid(chargesParams.party_id) && Boolean(chargesParams.status);
+  const chargesEnabled =
+    isUuid(chargesParams.party_id) &&
+    Boolean(chargesParams.status) &&
+    Boolean(chargesParams.charge_kind);
   const chargesQuery = useWmsStorageCharges(chargesParams, chargesEnabled);
 
   const partyRequiredOptions = partyOptions.map((o) =>
@@ -68,6 +74,7 @@ export default function WmsStoragePage() {
       period_to: string;
       free_days: string;
       rate_per_day: string;
+      overdue_rate_per_day: string;
       currency_code: string;
     }> = {},
   ) => ({
@@ -77,6 +84,7 @@ export default function WmsStoragePage() {
     period_to: patch.period_to ?? periodTo,
     free_days: patch.free_days ?? freeDays,
     rate_per_day: patch.rate_per_day ?? ratePerDay,
+    overdue_rate_per_day: patch.overdue_rate_per_day ?? overdueRatePerDay,
     currency_code: patch.currency_code ?? currencyCode,
   });
 
@@ -87,6 +95,7 @@ export default function WmsStoragePage() {
     setPeriodTo('');
     setFreeDays('');
     setRatePerDay('');
+    setOverdueRatePerDay('');
     setCurrencyCode('AED');
     setCalcResult(null);
     calcValidation.clearErrors();
@@ -239,6 +248,30 @@ export default function WmsStoragePage() {
                   calcValidation.validatePath(calculateStorageSchema, calcValues(), 'rate_per_day')
                 }
               />
+              <Input
+                label="Overdue rate per day"
+                type="number"
+                min={0}
+                step="0.01"
+                hint="Extra rate after free/paid days (NOT_COLLECTED accrual)"
+                value={overdueRatePerDay}
+                error={calcValidation.fieldError('overdue_rate_per_day')}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setOverdueRatePerDay(next);
+                  calcValidation.revalidate(
+                    calculateStorageSchema,
+                    calcValues({ overdue_rate_per_day: next }),
+                  );
+                }}
+                onBlur={() =>
+                  calcValidation.validatePath(
+                    calculateStorageSchema,
+                    calcValues(),
+                    'overdue_rate_per_day',
+                  )
+                }
+              />
               <WmsFormSpan2>
                 <WmsCurrencyField
                   label="Currency"
@@ -287,7 +320,7 @@ export default function WmsStoragePage() {
         </CardHeader>
 
         <div className="space-y-4 p-4 pt-0">
-          <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
+          <div className="grid max-w-3xl gap-4 sm:grid-cols-3">
             <WmsSelect
               label="Party"
               value={chargePartyId}
@@ -308,11 +341,21 @@ export default function WmsStoragePage() {
               options={WMS_STORAGE_CHARGE_STATUSES.map((s) => ({ value: s, label: s }))}
               required
             />
+            <WmsSelect
+              label="Charge kind"
+              value={chargeKind}
+              onChange={(v) => {
+                setChargeKind(v);
+                setSelectedChargeIds([]);
+              }}
+              options={WMS_STORAGE_CHARGE_KINDS.map((s) => ({ value: s, label: s }))}
+              required
+            />
           </div>
 
           {!chargesEnabled ? (
             <p className="text-sm text-[var(--color-neutral-400)]">
-              Select a party and status to load charges.
+              Select party, status, and charge kind (STORAGE / OVERDUE) to load charges.
             </p>
           ) : chargesQuery.isLoading ? (
             <p className="text-sm text-[var(--color-neutral-400)]">Loading charges…</p>

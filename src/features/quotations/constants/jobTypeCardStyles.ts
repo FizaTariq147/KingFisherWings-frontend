@@ -11,6 +11,7 @@ export const JOB_TYPE_CARD_LABELS: Record<JobType, string> = {
   SEA_LCL_EXPORT: 'LCL Export',
   SEA_LCL_IMPORT: 'LCL Import',
   LAND: 'Land',
+  ROAD_FREIGHT: 'Road Freight',
   COURIER: 'Courier',
   CUSTOMS_CLEARANCE: 'Customs Clearance',
   NVOCC_EXPORT: 'NVOCC Export',
@@ -81,6 +82,11 @@ export const JOB_TYPE_CARD_STYLES: Record<JobType, JobTypeCardStyle> = {
     icon: Truck,
     circleClass: 'bg-violet-500',
     hoverClass: 'hover:bg-violet-50 hover:border-violet-300',
+  },
+  ROAD_FREIGHT: {
+    icon: Truck,
+    circleClass: 'bg-orange-600',
+    hoverClass: 'hover:bg-orange-50 hover:border-orange-300',
   },
   COURIER: {
     icon: Truck,

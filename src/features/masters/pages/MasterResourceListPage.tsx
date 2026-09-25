@@ -268,9 +268,21 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
     try {
       const result = await mutations.seedDefaults.mutateAsync({});
       await fetchFreshList(1);
+      const via =
+        result.usedClientFallback === true
+          ? ' (via client fallback — API seed-defaults returned 500)'
+          : '';
       setSeedMessage(
-        `Seed defaults complete — inserted=${result.inserted}, catalog_size=${result.catalogSize}.`,
+        (result.message?.trim() ||
+          `Seed defaults complete — inserted=${result.inserted}, catalog_size=${result.catalogSize}.`) +
+          via,
       );
+      if (result.usedClientFallback && result.inserted === 0) {
+        setActionError(
+          'API POST /masters/air-pallet-types/seed-defaults still returns 500. ' +
+            'Client fallback found nothing new to insert. Fix the seed handler on Render, or create types manually.',
+        );
+      }
     } catch (err) {
       setSeedMessage(null);
       setActionError(err instanceof Error ? err.message : 'Failed to seed defaults.');

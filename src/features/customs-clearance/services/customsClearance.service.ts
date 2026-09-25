@@ -1,9 +1,11 @@
 import { axiosInstance } from '@/lib/axios';
 import { extractAxiosErrorDetail } from '@/lib/extractAxiosErrorDetail';
 import { isUuid } from '@/lib/isUuid';
+import { normalizeHsCode } from '@/lib/validation';
 import { withGatewayRetry } from '@/lib/wakeApi';
 import { CUSTOMS_CLEARANCE_API } from '../api/customsClearance.api';
 import type {
+  AssessCcDto,
   CcChecklistItem,
   CcDashboardStats,
   CcDeclaration,
@@ -19,7 +21,8 @@ import type {
   ClassifyCcLineDto,
   CreateCcLineDto,
   CreateCcQueryDto,
-  DutyPaymentRequestDto,
+  DutyPaidDto,
+  FileCcEntryDto,
   HsValidateDto,
   HsValidateResult,
   LinkFreightDto,
@@ -100,6 +103,15 @@ async function deleteRaw(url: string): Promise<unknown> {
   return res.data;
 }
 
+function withNormalizedHsCode<T extends { hs_code?: string }>(dto: T): T {
+  if (dto.hs_code == null || dto.hs_code === '') return dto;
+  const normalized = normalizeHsCode(dto.hs_code);
+  return {
+    ...dto,
+    hs_code: typeof normalized === 'string' ? normalized : dto.hs_code,
+  };
+}
+
 export const customsClearanceService = {
   async dashboard(params: Record<string, unknown> = {}): Promise<CcDashboardStats> {
     try {
@@ -168,7 +180,9 @@ export const customsClearanceService = {
   async createLine(jobId: string, dto: CreateCcLineDto): Promise<CcLine> {
     assertJobId(jobId);
     try {
-      const line = normalizeCcLine(unwrapEntity(await postRaw(CUSTOMS_CLEARANCE_API.lines(jobId), dto)));
+      const line = normalizeCcLine(
+        unwrapEntity(await postRaw(CUSTOMS_CLEARANCE_API.lines(jobId), withNormalizedHsCode(dto))),
+      );
       if (!line) throw new Error('Line created but not returned.');
       return line;
     } catch (error) {
@@ -181,7 +195,9 @@ export const customsClearanceService = {
     if (!isUuid(lineId)) throw new Error('Invalid line id.');
     try {
       const line = normalizeCcLine(
-        unwrapEntity(await patchRaw(CUSTOMS_CLEARANCE_API.lineById(jobId, lineId), dto)),
+        unwrapEntity(
+          await patchRaw(CUSTOMS_CLEARANCE_API.lineById(jobId, lineId), withNormalizedHsCode(dto)),
+        ),
       );
       if (!line) throw new Error('Line update returned no data.');
       return line;
@@ -203,13 +219,18 @@ export const customsClearanceService = {
   async classifyLine(
     jobId: string,
     lineId: string,
-    dto: ClassifyCcLineDto = {},
+    dto: ClassifyCcLineDto,
   ): Promise<CcLine> {
     assertJobId(jobId);
     if (!isUuid(lineId)) throw new Error('Invalid line id.');
+    const hs = String(dto.hs_code ?? '').trim();
+    if (!hs) throw new Error('HS code is required to classify a line.');
+    const normalized = withNormalizedHsCode({ ...dto, hs_code: hs });
     try {
       const line = normalizeCcLine(
-        unwrapEntity(await postRaw(CUSTOMS_CLEARANCE_API.classifyLine(jobId, lineId), dto)),
+        unwrapEntity(
+          await postRaw(CUSTOMS_CLEARANCE_API.classifyLine(jobId, lineId), normalized),
+        ),
       );
       if (!line) throw new Error('Classify returned no line.');
       return line;
@@ -278,7 +299,7 @@ export const customsClearanceService = {
     }
   },
 
-  async stageFile(jobId: string, dto: CcStageActionDto = {}): Promise<CcStatus> {
+  async stageFile(jobId: string, dto: FileCcEntryDto = {}): Promise<CcStatus> {
     assertJobId(jobId);
     try {
       return normalizeCcStatus(await postRaw(CUSTOMS_CLEARANCE_API.stageFile(jobId), dto), jobId);
@@ -296,7 +317,7 @@ export const customsClearanceService = {
     }
   },
 
-  async stageAssess(jobId: string, dto: CcStageActionDto = {}): Promise<CcStatus> {
+  async stageAssess(jobId: string, dto: AssessCcDto = {}): Promise<CcStatus> {
     assertJobId(jobId);
     try {
       return normalizeCcStatus(
@@ -368,7 +389,7 @@ export const customsClearanceService = {
 
   async dutyPaymentRequest(
     jobId: string,
-    dto: DutyPaymentRequestDto = {},
+    dto: Record<string, unknown> = {},
   ): Promise<Record<string, unknown>> {
     assertJobId(jobId);
     try {
@@ -382,7 +403,7 @@ export const customsClearanceService = {
     }
   },
 
-  async stageDutyPaid(jobId: string, dto: CcStageActionDto = {}): Promise<CcStatus> {
+  async stageDutyPaid(jobId: string, dto: DutyPaidDto = {}): Promise<CcStatus> {
     assertJobId(jobId);
     try {
       return normalizeCcStatus(
@@ -497,8 +518,12 @@ export const customsClearanceService = {
   async putDeclaration(jobId: string, dto: UpsertCcDeclarationDto): Promise<CcDeclaration> {
     assertJobId(jobId);
     try {
+      const body =
+        dto.declaration && typeof dto.declaration === 'object'
+          ? { declaration: dto.declaration }
+          : { declaration: dto as Record<string, unknown> };
       return normalizeCcDeclaration(
-        await putRaw(CUSTOMS_CLEARANCE_API.declaration(jobId), dto),
+        await putRaw(CUSTOMS_CLEARANCE_API.declaration(jobId), body),
         jobId,
       );
     } catch (error) {
@@ -551,8 +576,10 @@ export const customsClearanceService = {
 
   async validateHsCode(dto: HsValidateDto): Promise<HsValidateResult> {
     try {
+      const payload = withNormalizedHsCode({ hs_code: String(dto.hs_code ?? '').trim() });
+      if (!payload.hs_code) throw new Error('HS code is required.');
       return normalizeHsValidate(
-        await postRaw(CUSTOMS_CLEARANCE_API.hsValidate, { hs_code: dto.hs_code }),
+        await postRaw(CUSTOMS_CLEARANCE_API.hsValidate, payload),
       );
     } catch (error) {
       throw formatError(error);

@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useInlineValidation } from '@/lib/validation';
-import { WMS_ROUTE_PREFIX } from '../api/wms.api';
+import { WMS_ROUTE_PREFIX, WMS_STOCK_STORAGE_STATUSES } from '../api/wms.api';
 import { WmsPageHeader } from '../components/WmsPageHeader';
 import { WmsStockTable } from '../components/WmsStockTable';
 import {
@@ -54,12 +54,14 @@ export default function WmsStockPage() {
   const [tab, setTab] = useState<StockTab>('on-hand');
   const [warehouseId, setWarehouseId] = useState('');
   const [itemId, setItemId] = useState('');
+  const [storageStatus, setStorageStatus] = useState('');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
 
   const filterParams = {
     warehouse_id: isUuid(warehouseId) ? warehouseId : undefined,
     item_id: isUuid(itemId) ? itemId : undefined,
+    storage_status: storageStatus || undefined,
   };
   const movementParams = {
     ...filterParams,
@@ -131,6 +133,18 @@ export default function WmsStockPage() {
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <WarehouseFilter warehouseId={warehouseId} setWarehouseId={setWarehouseId} />
             <ItemFilter itemId={itemId} setItemId={setItemId} />
+            <WmsSelect
+              label="Storage status"
+              value={storageStatus}
+              onChange={setStorageStatus}
+              options={[
+                { value: '', label: 'All statuses' },
+                ...WMS_STOCK_STORAGE_STATUSES.map((s) => ({
+                  value: s,
+                  label: s === 'NOT_COLLECTED' ? 'NOT_COLLECTED (overdue)' : s,
+                })),
+              ]}
+            />
             {tab === 'movements' ? (
               <>
                 <Input label="From" type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />

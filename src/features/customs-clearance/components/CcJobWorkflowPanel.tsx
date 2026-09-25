@@ -12,7 +12,7 @@ import {
   statusToCcStage,
   type CcStageId,
 } from '../constants/ccWorkflow';
-import { useCcJobActions, useCcStatus } from '../hooks/useCustomsClearance';
+import { useCcJobActions, useCcLinkFreight, useCcStatus } from '../hooks/useCustomsClearance';
 
 interface CcJobWorkflowPanelProps {
   jobId: string;
@@ -20,6 +20,7 @@ interface CcJobWorkflowPanelProps {
 
 export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
   const statusQuery = useCcStatus(jobId);
+  const linkFreight = useCcLinkFreight(jobId);
   const actions = useCcJobActions(jobId);
   const exams = useJobCustomsExaminations(jobId, true);
   const jobMutations = useJobSubresourceMutations(jobId);
@@ -235,7 +236,10 @@ export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
                 type="button"
                 disabled={actions.stageDutyPaid.isPending}
                 onClick={() =>
-                  void run(() => actions.stageDutyPaid.mutateAsync({}), 'Duty marked paid.')
+                  void run(
+                    () => actions.stageDutyPaid.mutateAsync({ paid_by_client: false }),
+                    'Duty marked paid.',
+                  )
                 }
               >
                 Stage: duty paid
@@ -328,36 +332,50 @@ export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
         <CardHeader>
           <CardTitle>Link freight job</CardTitle>
         </CardHeader>
-        <div className="flex flex-wrap gap-2 px-4 pb-4">
-          <Input
-            className="min-w-[220px] flex-1"
-            placeholder="Freight job UUID"
-            value={freightJobId}
-            onChange={(e) => setFreightJobId(e.target.value)}
-          />
-          <Button
-            type="button"
-            disabled={actions.linkFreight.isPending || !freightJobId.trim()}
-            onClick={() =>
-              void run(
-                () =>
-                  actions.linkFreight.mutateAsync({ freight_job_id: freightJobId.trim() }),
-                'Freight job linked.',
-              )
-            }
-          >
-            Link freight
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={actions.unlinkFreight.isPending}
-            onClick={() =>
-              void run(() => actions.unlinkFreight.mutateAsync(), 'Freight link removed.')
-            }
-          >
-            Unlink
-          </Button>
+        <div className="space-y-2 px-4 pb-4">
+          {linkFreight.data?.freight_job_id ? (
+            <p className="text-sm text-[var(--color-neutral-600)]">
+              Linked: <span className="font-mono">{linkFreight.data.freight_job_id}</span>
+            </p>
+          ) : (
+            <p className="text-sm text-[var(--color-neutral-400)]">No freight job linked.</p>
+          )}
+          <div className="flex flex-wrap gap-2">
+            <Input
+              className="min-w-[220px] flex-1"
+              placeholder="Freight job UUID"
+              value={freightJobId}
+              onChange={(e) => setFreightJobId(e.target.value)}
+            />
+            <Button
+              type="button"
+              disabled={actions.linkFreight.isPending || !freightJobId.trim()}
+              onClick={() =>
+                void run(
+                  () =>
+                    actions.linkFreight.mutateAsync({ freight_job_id: freightJobId.trim() }),
+                  'Freight job linked.',
+                ).then(() => {
+                  void linkFreight.refetch();
+                  setFreightJobId('');
+                })
+              }
+            >
+              Link freight
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={actions.unlinkFreight.isPending || !linkFreight.data?.freight_job_id}
+              onClick={() =>
+                void run(() => actions.unlinkFreight.mutateAsync(), 'Freight link removed.').then(
+                  () => void linkFreight.refetch(),
+                )
+              }
+            >
+              Unlink
+            </Button>
+          </div>
         </div>
       </Card>
     </div>

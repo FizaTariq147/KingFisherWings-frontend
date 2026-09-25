@@ -5,6 +5,28 @@ export function trimString(value: unknown): unknown {
   return value.trim();
 }
 
+/**
+ * Normalize HS codes to backend form: `8517` or `8517.12` / `8517.12.34` / `8517.12.34.56`
+ * (`/^\d{4}(\.\d{2}){0,3}$/`). Accepts undotted digits or malformed dots like `8534.0000`.
+ */
+export function normalizeHsCode(value: unknown): unknown {
+  if (typeof value !== 'string') return value;
+  const trimmed = value.trim().replace(/\s+/g, '');
+  if (!trimmed) return trimmed;
+  if (/^\d{4}(\.\d{2}){0,3}$/.test(trimmed)) return trimmed;
+
+  const digits = trimmed.replace(/\D/g, '');
+  if (digits.length < 4 || digits.length > 10 || digits.length % 2 !== 0) {
+    return trimmed;
+  }
+
+  let out = digits.slice(0, 4);
+  for (let i = 4; i < digits.length; i += 2) {
+    out += `.${digits.slice(i, i + 2)}`;
+  }
+  return out;
+}
+
 /** Empty / whitespace-only strings → undefined (for optional fields). */
 export function emptyToUndefined(value: unknown): unknown {
   if (value === '' || value == null) return undefined;

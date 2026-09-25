@@ -429,6 +429,96 @@ async function createJobFallbackFromQuotation(quotation: Quotation): Promise<Quo
   );
 }
 
+/** Link job_id on quotation without flipping status to CONVERTED. */
+async function linkQuotationJobShell(
+  quotationId: string,
+  jobId: string,
+  current: Quotation,
+): Promise<Quotation> {
+  if (current.job_id === jobId) return current;
+
+  const { coerceQuotationStatus } = await import('../utils/quotationStatus');
+  const bodies: Record<string, unknown>[] = [{ job_id: jobId }, { jobId }];
+  for (const body of bodies) {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch<unknown>(QUOTATION_API.byId(quotationId), body),
+      );
+      const updated = normalizeQuotation(unwrapEntity(res.data));
+      if (updated) {
+        // Prefer keeping customer-APPROVED until booking-form /complete.
+        const stayApproved = coerceQuotationStatus(current.status) === 'APPROVED';
+        return {
+          ...updated,
+          job_id: updated.job_id || jobId,
+          status: stayApproved ? 'APPROVED' : updated.status,
+        };
+      }
+    } catch {
+      /* try next body shape */
+    }
+  }
+
+  return {
+    ...current,
+    job_id: jobId,
+    status: coerceQuotationStatus(current.status) === 'APPROVED' ? 'APPROVED' : current.status,
+  };
+}
+
+/**
+ * Create ops job for mode booking-form APIs; leave quotation APPROVED
+ * (CONVERTED happens on booking-form /complete).
+ */
+async function createBookingOpsJobShellFromQuotation(
+  quotation: Quotation,
+): Promise<Quotation> {
+  if (quotation.job_id && isUuid(quotation.job_id)) return quotation;
+
+  const { jobService } = await import('@/features/jobs/services/job.service');
+  const job = await jobService.create(await quotationToCreateJobDto(quotation));
+  try {
+    await jobService.ensureChargesFromQuotation(job.id, quotation);
+  } catch {
+    /* non-fatal */
+  }
+  return linkQuotationJobShell(quotation.id, job.id, quotation);
+}
+
+/** True when the customer has submitted the portal booking form for this quote. */
+async function isCustomerPortalBookingFormComplete(
+  quotation: Pick<Quotation, 'id' | 'job_id' | 'job_type' | 'quotation_number' | 'quote_no'>,
+): Promise<boolean> {
+  try {
+    const { readPortalBookingFormDraft } = await import(
+      '@/features/portal-quotations/utils/portalBookingFormStorage'
+    );
+    const draft = readPortalBookingFormDraft(quotation.id);
+    if (draft?.mark_complete === true) return true;
+  } catch {
+    /* ignore */
+  }
+
+  try {
+    const { portalAdminInboxService } = await import(
+      '@/features/portal-admin-inbox/services/portalAdminInbox.service'
+    );
+    const payload = await portalAdminInboxService.findCustomerPortalBookingForm({
+      quotationId: quotation.id,
+      quoteNumber: quotation.quotation_number || quotation.quote_no,
+      jobId: quotation.job_id,
+      jobTypePrefix: String(quotation.job_type ?? '')
+        .toUpperCase()
+        .split('_')[0],
+    });
+    if (payload?.mark_complete === true) return true;
+  } catch {
+    /* ignore */
+  }
+
+  return false;
+}
+
 async function withSessionCompany<T extends { company_id?: string }>(dto: T): Promise<T> {
   if (dto.company_id && isUuid(dto.company_id)) return dto;
   const companyId = await resolveSessionCompanyIdAsync();
@@ -816,9 +906,15 @@ export const quotationService = {
     try {
       await postAction(QUOTATION_API.markWon(id));
       const quotation = await this.getById(id);
-      const { usesGatedFreightQuoteFlow } = await import('../utils/quotationStatus');
+      const { usesGatedFreightQuoteFlow, usesModeBookingFormConvertFlow } = await import(
+        '../utils/quotationStatus'
+      );
       // NVOCC / Air: APPROVED only — never auto convert-to-job / never auto-create job shell.
       if (usesGatedFreightQuoteFlow(quotation.job_type)) {
+        return quotation;
+      }
+      // Sea/Land/Road/Courier: APPROVED only — customer fills portal booking form, then convert.
+      if (usesModeBookingFormConvertFlow(quotation.job_type)) {
         return quotation;
       }
       return await this.convertToJob(id);
@@ -831,17 +927,41 @@ export const quotationService = {
    * When portal already set APPROVED, staff ERP auto-creates job + draft invoice
    * for **standard** modes only.
    * NVOCC / Air: no-op (gated booking-form → send-invoice → convert on booking/job).
+   * Booking-form modes: convert only after the customer portal booking form is complete.
    */
   async fulfillApprovedQuotation(id: string): Promise<ConvertToJobResult | Quotation> {
     assertId(id);
     const quotation = await this.getById(id);
-    const { canConvertQuotationToJob, coerceQuotationStatus, usesGatedFreightQuoteFlow } =
-      await import('../utils/quotationStatus');
+    const {
+      canConvertQuotationToJob,
+      coerceQuotationStatus,
+      usesGatedFreightQuoteFlow,
+      usesModeBookingFormConvertFlow,
+    } = await import('../utils/quotationStatus');
     const status = coerceQuotationStatus(quotation.status);
 
     // Hard stop: never convert / never draft-invoice for gated freight quotes.
     if (usesGatedFreightQuoteFlow(quotation.job_type)) {
       return quotation;
+    }
+
+    // Sea/Land/Road/Courier: wait for customer portal booking form, then convert.
+    if (usesModeBookingFormConvertFlow(quotation.job_type)) {
+      if (status === 'CONVERTED' || (quotation.job_id && isUuid(quotation.job_id))) {
+        if (quotation.job_id && !quotation.invoice_id) {
+          try {
+            const invoiceId = await ensureDraftInvoiceForJob(quotation.job_id);
+            return invoiceId ? { ...quotation, invoice_id: invoiceId } : quotation;
+          } catch {
+            return quotation;
+          }
+        }
+        return quotation;
+      }
+      if (status !== 'APPROVED') return quotation;
+      const formDone = await isCustomerPortalBookingFormComplete(quotation);
+      if (!formDone) return quotation;
+      return this.convertToJob(id, { afterCustomerBookingForm: true });
     }
 
     if (quotation.job_id || status === 'CONVERTED') {
@@ -859,6 +979,113 @@ export const quotationService = {
       return quotation;
     }
     return this.convertToJob(id);
+  },
+
+  /**
+   * After the customer completes the portal booking form (Sea/Land/Road/Courier),
+   * convert the quotation to a job + draft invoice.
+   */
+  async convertAfterCustomerBookingForm(id: string): Promise<ConvertToJobResult | Quotation> {
+    assertId(id);
+    const quotation = await this.getById(id);
+    const { coerceQuotationStatus, usesModeBookingFormConvertFlow } = await import(
+      '../utils/quotationStatus'
+    );
+    if (!usesModeBookingFormConvertFlow(quotation.job_type)) {
+      throw new Error(
+        'convertAfterCustomerBookingForm is only for Sea/Land/Road Freight/Courier quotes.',
+      );
+    }
+    const status = coerceQuotationStatus(quotation.status);
+    if (status === 'CONVERTED' || (quotation.job_id && isUuid(quotation.job_id))) {
+      return quotation;
+    }
+    if (status !== 'APPROVED') {
+      throw new Error(
+        `Quotation must be customer-approved before convert (current status: ${quotation.status}).`,
+      );
+    }
+    const formDone = await isCustomerPortalBookingFormComplete(quotation);
+    if (!formDone) {
+      throw new Error(
+        'Customer portal booking form is not complete yet — convert runs after the customer submits it.',
+      );
+    }
+    return this.convertToJob(id, { afterCustomerBookingForm: true });
+  },
+
+  /**
+   * @deprecated Prefer convertAfterCustomerBookingForm — customer fills the portal form.
+   * Kept for job-id lookups after Ops mirrors customer data onto staff booking-form APIs.
+   */
+  async convertAfterBookingFormComplete(jobId: string): Promise<Quotation | null> {
+    if (!jobId || !isUuid(jobId)) return null;
+    const linked = await this.findLinkedToJob(jobId);
+    if (!linked) return null;
+
+    const { coerceQuotationStatus, usesModeBookingFormConvertFlow } = await import(
+      '../utils/quotationStatus'
+    );
+    if (!usesModeBookingFormConvertFlow(linked.job_type)) return linked;
+
+    const status = coerceQuotationStatus(linked.status);
+    if (status === 'CONVERTED' && linked.job_id === jobId) {
+      if (!linked.invoice_id) {
+        try {
+          const invoiceId = await ensureDraftInvoiceForJob(jobId);
+          return invoiceId ? { ...linked, invoice_id: invoiceId } : linked;
+        } catch {
+          return linked;
+        }
+      }
+      return linked;
+    }
+
+    // Only convert if the customer portal form is already complete.
+    const formDone = await isCustomerPortalBookingFormComplete(linked);
+    if (!formDone) return linked;
+
+    const converted = await this.convertToJob(linked.id, { afterCustomerBookingForm: true });
+    return converted;
+  },
+
+  /**
+   * Sea/Land/Road/Courier — optional staff action if a job shell is needed before convert.
+   * Prefer waiting for the customer portal booking form, then convert.
+   */
+  async createBookingOpsJobShell(id: string): Promise<Quotation> {
+    assertId(id);
+    const quotation = await this.getById(id);
+    const { coerceQuotationStatus, usesModeBookingFormConvertFlow } = await import(
+      '../utils/quotationStatus'
+    );
+    if (!usesModeBookingFormConvertFlow(quotation.job_type)) {
+      throw new Error(
+        'createBookingOpsJobShell is only for Sea/Land/Road Freight/Courier quotes.',
+      );
+    }
+    if (quotation.job_id && isUuid(quotation.job_id)) return quotation;
+    if (coerceQuotationStatus(quotation.status) !== 'APPROVED') {
+      throw new Error(
+        `Quotation must be customer-approved before starting booking ops (current status: ${quotation.status}).`,
+      );
+    }
+    const companyId =
+      quotation.company_id && isUuid(quotation.company_id)
+        ? quotation.company_id
+        : await resolveSessionCompanyIdAsync();
+    if (!companyId || !isUuid(companyId)) {
+      throw new Error(
+        'This quotation has no Company. Save a company on the quotation, then continue.',
+      );
+    }
+    await ensureJobNumberFormatReady();
+    const branchId = await ensureJobBranchReady(companyId);
+    return createBookingOpsJobShellFromQuotation({
+      ...quotation,
+      company_id: companyId,
+      branch_id: branchId,
+    });
   },
 
   /**
@@ -921,15 +1148,33 @@ export const quotationService = {
     }
   },
 
-  async convertToJob(id: string): Promise<ConvertToJobResult> {
+  async convertToJob(
+    id: string,
+    opts?: { afterCustomerBookingForm?: boolean },
+  ): Promise<ConvertToJobResult> {
     assertId(id);
     let quotation: Quotation | undefined;
     try {
       quotation = await this.getById(id);
-      const { canConvertQuotationToJob, usesGatedFreightQuoteFlow } = await import(
-        '../utils/quotationStatus'
-      );
-      if (!canConvertQuotationToJob(quotation.status, quotation.job_type)) {
+      const {
+        canConvertQuotationToJob,
+        coerceQuotationStatus,
+        usesGatedFreightQuoteFlow,
+        usesModeBookingFormConvertFlow,
+      } = await import('../utils/quotationStatus');
+
+      if (usesModeBookingFormConvertFlow(quotation.job_type)) {
+        if (!opts?.afterCustomerBookingForm) {
+          throw new Error(
+            `Customer fills the portal booking form first — quotation converts after they submit it (current status: ${quotation.status}).`,
+          );
+        }
+        if (coerceQuotationStatus(quotation.status) !== 'APPROVED') {
+          throw new Error(
+            `Quotation must be customer-approved before convert (current status: ${quotation.status}).`,
+          );
+        }
+      } else if (!canConvertQuotationToJob(quotation.status, quotation.job_type)) {
         throw new Error(
           usesGatedFreightQuoteFlow(quotation.job_type)
             ? `NVOCC/Air quotes do not convert here — continue Booking form → Send invoice on the gated flow (current status: ${quotation.status}).`

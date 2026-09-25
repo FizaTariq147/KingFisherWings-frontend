@@ -29,6 +29,7 @@ export default function WmsSettingsPage() {
   const [valuationMethod, setValuationMethod] = useState<WmsValuationMethod>('FIFO');
   const [defaultFreeDays, setDefaultFreeDays] = useState('0');
   const [defaultStorageRate, setDefaultStorageRate] = useState('0');
+  const [defaultOverdueRate, setDefaultOverdueRate] = useState('');
   const [defaultCurrency, setDefaultCurrency] = useState('AED');
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -37,6 +38,9 @@ export default function WmsSettingsPage() {
     setValuationMethod(data.valuation_method);
     setDefaultFreeDays(String(data.default_free_days));
     setDefaultStorageRate(String(data.default_storage_rate));
+    setDefaultOverdueRate(
+      data.default_overdue_rate_per_day != null ? String(data.default_overdue_rate_per_day) : '',
+    );
     setDefaultCurrency(data.default_currency);
   }, [data]);
 
@@ -45,12 +49,15 @@ export default function WmsSettingsPage() {
       valuation_method: WmsValuationMethod;
       default_free_days: string;
       default_storage_rate: string;
+      default_overdue_rate_per_day: string;
       default_currency: string;
     }> = {},
   ) => ({
     valuation_method: patch.valuation_method ?? valuationMethod,
     default_free_days: patch.default_free_days ?? defaultFreeDays,
     default_storage_rate: patch.default_storage_rate ?? defaultStorageRate,
+    default_overdue_rate_per_day:
+      patch.default_overdue_rate_per_day ?? defaultOverdueRate,
     default_currency: patch.default_currency ?? defaultCurrency,
   });
 
@@ -73,7 +80,7 @@ export default function WmsSettingsPage() {
       <WmsPageHeader
         backTo={WMS_ROUTE_PREFIX}
         title="WMS Settings"
-        description="Default valuation, free days, storage rate, and currency."
+        description="Default valuation, free days, storage rate, overdue rate, and currency."
         actions={
           <Button type="button" variant="secondary" onClick={() => refetch()} disabled={isFetching}>
             <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
@@ -140,6 +147,30 @@ export default function WmsSettingsPage() {
                 }}
                 onBlur={() =>
                   validatePath(upsertWmsSettingsSchema, values(), 'default_storage_rate')
+                }
+              />
+              <Input
+                label="Default overdue rate (per day)"
+                type="number"
+                min={0}
+                step="0.01"
+                hint="Charged after paid/included days — used for NOT_COLLECTED accrual"
+                value={defaultOverdueRate}
+                error={fieldError('default_overdue_rate_per_day')}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setDefaultOverdueRate(next);
+                  revalidate(
+                    upsertWmsSettingsSchema,
+                    values({ default_overdue_rate_per_day: next }),
+                  );
+                }}
+                onBlur={() =>
+                  validatePath(
+                    upsertWmsSettingsSchema,
+                    values(),
+                    'default_overdue_rate_per_day',
+                  )
                 }
               />
               <WmsCurrencyField

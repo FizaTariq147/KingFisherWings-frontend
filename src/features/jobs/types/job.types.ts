@@ -77,11 +77,24 @@ export interface AirBookingFormParty {
   other_details?: string;
 }
 
+/** Air pallet line — AirPalletLineDto (booking + compliance). */
+export interface AirPalletLineDto {
+  pallet_type: string;
+  count: number;
+  length_cm?: number;
+  width_cm?: number;
+  height_cm?: number;
+  weight_kg?: number;
+}
+
 export type AirBookingForm = Record<string, unknown> & {
   air_pallet_type_id?: string;
   pieces?: number;
   gross_weight_kg?: number;
   chargeable_weight_kg?: number;
+  volume_cbm?: number;
+  pallet_count?: number;
+  pallets?: AirPalletLineDto[];
   commodity?: string;
   special_handling?: string;
   notes?: string;
@@ -107,6 +120,9 @@ export type UpdateAirBookingFormDto = {
   pieces?: number;
   gross_weight_kg?: number;
   chargeable_weight_kg?: number;
+  volume_cbm?: number;
+  pallet_count?: number;
+  pallets?: AirPalletLineDto[];
   /** maxLength 500 */
   commodity?: string;
   special_handling?: string;
@@ -130,6 +146,53 @@ export type UpdateAirBookingFormDto = {
   parties?: AirBookingFormParty[];
   mark_complete?: boolean;
 };
+
+/**
+ * Staff GET/PUT /jobs/:id/air/compliance-form
+ * Portal GET/PUT /portal/shipments/:id/compliance-form
+ * — UpsertAirComplianceBookingFormDto / SubmitAirComplianceFormDto
+ */
+export type AirCompliancePartyDto = AirBookingFormParty;
+
+export type UpsertAirComplianceBookingFormDto = {
+  date_of_request?: string;
+  voyage_ref?: string;
+  client_booking_no?: string;
+  service_scope?: JobServiceScope | string;
+  origin_door_address?: string;
+  dest_door_address?: string;
+  origin_airport_code?: string;
+  dest_airport_code?: string;
+  pieces?: number;
+  gross_weight_kg?: number;
+  net_weight_kg?: number;
+  chargeable_weight_kg?: number;
+  volume_cbm?: number;
+  pallet_count?: number;
+  pallets?: AirPalletLineDto[];
+  is_dg?: boolean;
+  commodity?: string;
+  hs_code?: string;
+  final_use?: string;
+  activity_sector?: 'CIVILIAN' | 'MILITARY' | 'NUCLEAR' | string;
+  insurance_details?: string;
+  lc_bank_details?: string;
+  attach_commercial_invoice?: boolean;
+  attach_correspondence?: boolean;
+  attach_cod_form?: boolean;
+  attach_licence?: boolean;
+  booking_agent_line?: string;
+  agent_requester_name?: string;
+  sq_bl_booking_reference?: string;
+  request_details?: string;
+  parties?: AirCompliancePartyDto[];
+  mark_complete?: boolean;
+  consent_accepted?: boolean;
+  admin_override?: boolean;
+  stage_override_reason?: string;
+};
+
+export type AirComplianceForm = Record<string, unknown> & UpsertAirComplianceBookingFormDto;
 
 /** POST /jobs/:id/air/send-invoice — MarkAirInvoiceSentDto */
 export type MarkAirInvoiceSentDto = {
@@ -290,6 +353,122 @@ export interface JobLandDetail {
   cross_border_docs_required?: boolean;
 }
 
+/** Matches Swagger UpdateRoadFreightJobDetailDto / nested road_freight_details. */
+export interface JobRoadFreightDetail extends JobLandDetail {
+  trailer_number?: string;
+  route_notes?: string;
+}
+
+export type JobServiceScope =
+  | 'DOOR_TO_DOOR'
+  | 'DOOR_TO_PORT'
+  | 'PORT_TO_DOOR'
+  | 'PORT_TO_PORT';
+
+export type JobCargoCategory =
+  | 'GENERAL'
+  | 'VEHICLES'
+  | 'FOOD_PERISHABLE'
+  | 'PHARMA'
+  | 'CHEMICALS_DG'
+  | 'PERSONAL_EFFECTS'
+  | 'PROJECT_OOG'
+  | 'LIVESTOCK'
+  | 'OTHER';
+
+/** Mode booking form party — BookingFormPartyDto. */
+export type BookingFormPartyKind =
+  | 'SHIPPER'
+  | 'CONSIGNEE'
+  | 'NOTIFY'
+  | 'BILLING'
+  | 'AGENT';
+
+export type BookingFormEntityKind = 'COMPANY' | 'INDIVIDUAL';
+
+export interface BookingFormPartyDto {
+  party_kind: BookingFormPartyKind | string;
+  full_name?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  entity_kind?: BookingFormEntityKind | string;
+  other_details?: string;
+}
+
+/** Sea FCL containers line — ContainerSizeLineDto. */
+export interface ContainerSizeLineDto {
+  container_type_id?: string;
+  iso_size?: string;
+  count: number;
+}
+
+/**
+ * Shared staff mode booking form — Upsert{SeaFcl|SeaLcl|Land|RoadFreight|Courier}BookingFormDto.
+ * Mode-specific fields are optional and ignored by other modes.
+ */
+export type ModeBookingForm = Record<string, unknown> & {
+  date_of_request?: string;
+  client_booking_no?: string;
+  voyage_ref?: string;
+  service_scope?: JobServiceScope | string;
+  origin_door_address?: string;
+  dest_door_address?: string;
+  commodity?: string;
+  hs_code?: string;
+  cargo_category?: JobCargoCategory | string;
+  is_dg?: boolean;
+  dg_class?: string;
+  gross_weight_kg?: number;
+  net_weight_kg?: number;
+  volume_cbm?: number;
+  pieces?: number;
+  insurance_details?: string;
+  request_details?: string;
+  attach_commercial_invoice?: boolean;
+  attach_packing_list?: boolean;
+  attach_bl_awb_copy?: boolean;
+  attach_carnet?: boolean;
+  attach_vehicle_title?: boolean;
+  attach_msds?: boolean;
+  attach_dangerous_goods_declaration?: boolean;
+  attach_health_veterinary?: boolean;
+  attach_fda_moh?: boolean;
+  parties?: BookingFormPartyDto[];
+  mark_complete?: boolean;
+  consent_accepted?: boolean;
+  etd?: string;
+  eta?: string;
+  incoterms?: string;
+  freight_terms?: string;
+  /** Sea FCL / LCL */
+  pol?: string;
+  pod?: string;
+  shipper_owned_container?: boolean;
+  teu_count?: number;
+  containers?: ContainerSizeLineDto[];
+  cfs_warehouse?: string;
+  /** Land / Road / Courier */
+  origin_city_country?: string;
+  dest_city_country?: string;
+  vehicle_type?: string;
+  border_crossing?: string;
+  tracking_number?: string;
+};
+
+export type UpsertSeaFclBookingFormDto = ModeBookingForm;
+export type UpsertSeaLclBookingFormDto = ModeBookingForm;
+export type UpsertLandBookingFormDto = ModeBookingForm;
+export type UpsertRoadFreightBookingFormDto = ModeBookingForm;
+export type UpsertCourierBookingFormDto = ModeBookingForm;
+
+export type StaffBookingFormMode =
+  | 'SEA_FCL'
+  | 'SEA_LCL'
+  | 'LAND'
+  | 'ROAD_FREIGHT'
+  | 'COURIER';
+
 export interface JobCharge {
   id: string;
   charge_code_id: string;
@@ -443,6 +622,9 @@ export interface Job {
   notes?: string;
   customer_remarks?: string;
   tags?: string[];
+  /** Universal job barcode (CODE128 value used on labels / scans). */
+  barcode?: string;
+  barcode_value?: string;
   etd?: string;
   eta?: string;
   created_at?: string;
@@ -452,6 +634,11 @@ export interface Job {
   sea_lcl_details?: JobSeaLclDetail;
   courier_details?: JobCourierDetail;
   land_details?: JobLandDetail;
+  road_freight_details?: JobRoadFreightDetail;
+  service_scope?: JobServiceScope | string;
+  origin_door_address?: string;
+  dest_door_address?: string;
+  cargo_category?: JobCargoCategory | string;
   charges?: JobCharge[];
   milestones?: JobMilestone[];
   notes_list?: JobNote[];
@@ -512,6 +699,43 @@ export type UpdateSeaFclJobDetailDto = Partial<JobSeaFclDetail>;
 export type UpdateSeaLclJobDetailDto = Partial<JobSeaLclDetail>;
 export type UpdateCourierJobDetailDto = Partial<JobCourierDetail>;
 export type UpdateLandJobDetailDto = Partial<JobLandDetail>;
+export type UpdateRoadFreightJobDetailDto = Partial<JobRoadFreightDetail>;
+
+export interface AssignLandTruckerDto {
+  trucker_id: string;
+  vehicle_number?: string;
+  vehicle_type?: 'TRUCK' | 'TRAILER' | 'VAN' | string;
+  driver_name?: string;
+  driver_license?: string;
+}
+
+export interface AssignRoadFreightTruckerDto extends AssignLandTruckerDto {
+  trailer_number?: string;
+}
+
+export interface RecordLandPickupDto {
+  picked_up_at?: string;
+}
+
+export type RecordRoadFreightPickupDto = RecordLandPickupDto;
+
+export interface RecordLandBorderCrossingDto {
+  border_declaration_number?: string;
+  crossed_at?: string;
+  milestone?: 'AT_BORDER' | 'CUSTOMS_CLEARED_BORDER' | string;
+}
+
+export type RecordRoadFreightBorderCrossingDto = RecordLandBorderCrossingDto;
+
+export interface CreateLandPodDto {
+  actual_delivery_date: string;
+  delivered_by?: string;
+  received_by?: string;
+  signature_image_path?: string;
+  remarks?: string;
+}
+
+export type CreateRoadFreightPodDto = CreateLandPodDto;
 
 export interface CreateJobContainerDto {
   container_type_id: string;
@@ -613,33 +837,14 @@ export interface ScanCourierCheckpointDto {
   notes?: string;
 }
 
+/** POST /jobs/scan — ScanJobBarcodeDto */
+export interface ScanJobBarcodeDto {
+  barcode: string;
+  location?: string;
+  notes?: string;
+}
+
 export interface CreateCourierPodDto {
-  actual_delivery_date?: string;
-  delivered_by?: string;
-  received_by?: string;
-  signature_image_path?: string;
-  remarks?: string;
-}
-
-export interface AssignLandTruckerDto {
-  trucker_id?: string;
-  vehicle_number?: string;
-  vehicle_type?: string;
-  driver_name?: string;
-  driver_license?: string;
-}
-
-export interface RecordLandPickupDto {
-  picked_up_at?: string;
-}
-
-export interface RecordLandBorderCrossingDto {
-  border_declaration_number?: string;
-  crossed_at?: string;
-  milestone?: string;
-}
-
-export interface CreateLandPodDto {
   actual_delivery_date?: string;
   delivered_by?: string;
   received_by?: string;
