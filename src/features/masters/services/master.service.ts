@@ -1,5 +1,6 @@
 import { axiosInstance } from '@/lib/axios';
 import type { ApiEnvelope } from '@/lib/apiEnvelope';
+import { clampApiListLimit } from '@/lib/apiListLimit';
 import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
 import { exchangeRateLatest, masterById } from '../api/masterPaths';
@@ -211,7 +212,7 @@ function normalizeMeta(raw: unknown, fallbackTotal: number): PaginationMeta {
 function buildListQuery(params: MasterListParams): Record<string, string | number | boolean> {
   const query: Record<string, string | number | boolean> = {
     page: params.page ?? 1,
-    limit: params.limit ?? 20,
+    limit: clampApiListLimit(params.limit, 20),
   };
   const searchKey = params.searchQueryKey || 'search';
   if (params.search?.trim()) query[searchKey] = params.search.trim();
@@ -652,7 +653,7 @@ export const masterService = {
     params: Omit<MasterListParams, 'page' | 'limit'> = {},
     pageLimit = 50,
   ): Promise<MasterListResult> {
-    let requestedLimit = Math.min(Math.max(1, pageLimit), 100);
+    let requestedLimit = clampApiListLimit(pageLimit, 50);
     const all: MasterRecord[] = [];
     let page = 1;
     let reportedTotal: number | null = null;

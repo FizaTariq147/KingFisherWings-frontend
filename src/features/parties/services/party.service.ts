@@ -1,5 +1,6 @@
 import { axiosInstance } from '@/lib/axios';
 import type { ApiEnvelope } from '@/lib/apiEnvelope';
+import { clampApiListLimit } from '@/lib/apiListLimit';
 import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
 import { postShareEmail, type ShareEmailDto, type ShareEmailResult } from '@/features/shared/share-email';
@@ -116,7 +117,7 @@ function assertPartyId(id?: string): asserts id is string {
 }
 
 function buildListQuery(params: PartyListParams): Record<string, string | number> {
-  const limit = Math.min(Math.max(Number(params.limit ?? 20) || 20, 1), 100);
+  const limit = clampApiListLimit(params.limit, 20);
   const query: Record<string, string | number> = {
     page: Math.max(Number(params.page ?? 1) || 1, 1),
     limit,

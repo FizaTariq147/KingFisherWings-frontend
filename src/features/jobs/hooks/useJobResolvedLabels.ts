@@ -75,7 +75,7 @@ function resolvePartyName(
 export function useJobResolvedLabels(job: Job) {
   const { data: partiesResult } = useParties({
     page: 1,
-    limit: 500,
+    limit: 100,
     order: 'asc',
   });
 

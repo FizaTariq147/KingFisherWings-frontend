@@ -142,9 +142,9 @@ export function usesGatedFreightQuoteFlow(jobType?: string): boolean {
 }
 
 /**
- * Sea FCL/LCL, Land, Road Freight, Courier: approve creates a job shell for
- * `/jobs/:id/.../booking-form`; quotation stays APPROVED until staff completes
- * the booking form (then CONVERTED + draft invoice).
+ * Sea FCL/LCL, Land, Road Freight, Courier: customer approve keeps quotation APPROVED
+ * (no job yet). Convert runs after the customer completes the portal booking form;
+ * staff mode booking form then loads those customer fields from the portal submission.
  */
 export function usesModeBookingFormConvertFlow(jobType?: string): boolean {
   const jt = String(jobType ?? '')

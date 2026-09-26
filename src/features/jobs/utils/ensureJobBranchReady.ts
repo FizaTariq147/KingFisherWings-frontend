@@ -18,7 +18,7 @@ export async function fetchFirstBranchId(companyId?: string): Promise<string | u
     try {
       const result = await masterService.list(MASTER_PATHS.branches, {
         page: 1,
-        limit: 200,
+        limit: 100,
         order: 'asc',
         ...(activeOnly ? { is_active: true } : {}),
       });

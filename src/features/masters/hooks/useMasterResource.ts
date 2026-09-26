@@ -76,23 +76,19 @@ export function useMasterOptions(
     queryFn: async () => {
       if (includeInactive) {
         return (
-          await masterService.list(basePath, {
-            page: 1,
-            limit: 500,
+          await masterService.listAll(basePath, {
             order: 'asc',
           })
         ).items;
       }
       // Prefer active rows; if none, fall back to any so dependent selects are usable.
-      // Ports/airports: backend orders by name and may auto-seed the world catalog.
-      const active = await masterService.list(basePath, {
-        page: 1,
-        limit: 500,
+      // Page through API max limit (100) so dropdowns still get the full catalog.
+      const active = await masterService.listAll(basePath, {
         is_active: true,
         order: 'asc',
       });
       if (active.items.length > 0) return active.items;
-      const all = await masterService.list(basePath, { page: 1, limit: 500, order: 'asc' });
+      const all = await masterService.listAll(basePath, { order: 'asc' });
       return all.items;
     },
     enabled: enabled && Boolean(accessToken && basePath),
@@ -111,7 +107,7 @@ function useDebouncedValue(value: string, delayMs: number): string {
 
 /**
  * World ports/airports typeahead for quote & job dropdowns.
- * GET /masters/ports|airports with search=, limit≤500, order=asc (name).
+ * GET /masters/ports|airports with search=, limit≤100, order=asc (name).
  */
 export function useMasterPlaceOptions(
   kind: 'ports' | 'airports',
@@ -130,7 +126,7 @@ export function useMasterPlaceOptions(
     queryFn: async () => {
       const active = await masterService.list(basePath, {
         page: 1,
-        limit: 500,
+        limit: 100,
         search: q || undefined,
         is_active: true,
         order: 'asc',
@@ -139,7 +135,7 @@ export function useMasterPlaceOptions(
       return (
         await masterService.list(basePath, {
           page: 1,
-          limit: 500,
+          limit: 100,
           search: q || undefined,
           order: 'asc',
         })

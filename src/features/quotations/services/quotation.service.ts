@@ -1,5 +1,6 @@
 import { axiosInstance } from '@/lib/axios';
 import type { ApiEnvelope } from '@/lib/apiEnvelope';
+import { clampApiListLimit } from '@/lib/apiListLimit';
 import { isUuid } from '@/lib/isUuid';
 import { resolveSessionCompanyIdAsync } from '@/lib/resolveSessionCompanyId';
 import { wakeApi, withGatewayRetry } from '@/lib/wakeApi';
@@ -221,7 +222,7 @@ function buildListQuery(
 ): Record<string, string | number> {
   const query: Record<string, string | number> = {
     page: params.page ?? 1,
-    limit: params.limit ?? 20,
+    limit: clampApiListLimit(params.limit, 20),
     order: params.order ?? 'desc',
   };
   const copyKeys = [

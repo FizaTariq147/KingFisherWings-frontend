@@ -45,7 +45,7 @@ async function buildPartyNameMap(ids: string[]): Promise<Map<string, string>> {
   };
 
   try {
-    const result = await partyService.list({ page: 1, limit: 500, order: 'asc' });
+    const result = await partyService.list({ page: 1, limit: 100, order: 'asc' });
     for (const party of result.parties) {
       const id = String(party.id ?? '');
       if (!wanted.has(id)) continue;

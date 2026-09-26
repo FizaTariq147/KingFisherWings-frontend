@@ -118,7 +118,7 @@ async function fetchLookup(
   const res = await portalApiClient.get<unknown>(path, {
     params: {
       page: 1,
-      limit: 500,
+      limit: 100,
       is_active: true,
       order: 'asc',
       search: search?.trim() || undefined,

@@ -1,4 +1,5 @@
 import { axiosInstance } from '@/lib/axios';
+import { clampApiListLimit } from '@/lib/apiListLimit';
 import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
@@ -45,27 +46,16 @@ function assertId(id: string, label = 'id'): void {
 }
 
 async function tryListMasterWarehouses(): Promise<WmsWarehouseSummary[]> {
-  const listParams = [
-    { page: 1, limit: 500, is_active: true, order: 'asc' as const },
-    { page: 1, limit: 500, order: 'asc' as const },
-    { page: 1, limit: 50, order: 'asc' as const },
-  ];
-
-  for (const params of listParams) {
-    try {
-      const res = await withGatewayRetry(() =>
-        axiosInstance.get(MASTER_PATHS.warehouses, { params }),
-      );
-      const fromResponse = normalizeWmsWarehouses(res.data);
-      if (fromResponse.length) return fromResponse;
-
-      const fromItems = normalizeWmsWarehouses(
-        (await masterService.list(MASTER_PATHS.warehouses, params)).items,
-      );
-      if (fromItems.length) return fromItems;
-    } catch {
-      // Try next query shape or fall through to other sources.
-    }
+  try {
+    const active = await masterService.listAll(
+      MASTER_PATHS.warehouses,
+      { is_active: true, order: 'asc' },
+      100,
+    );
+    const fromActive = normalizeWmsWarehouses(active.items);
+    if (fromActive.length) return fromActive;
+  } catch {
+    /* fall through */
   }
 
   try {
@@ -126,7 +116,7 @@ async function tryFetchWarehouseById(id: string): Promise<WmsWarehouseSummary | 
 }
 
 function buildItemQuery(params: WmsItemListParams): Record<string, string | number | boolean> {
-  const limit = Math.min(Math.max(Number(params.limit ?? 20) || 20, 1), 100);
+  const limit = clampApiListLimit(params.limit, 20);
   const query: Record<string, string | number | boolean> = {
     page: Math.max(Number(params.page ?? 1) || 1, 1),
     limit,

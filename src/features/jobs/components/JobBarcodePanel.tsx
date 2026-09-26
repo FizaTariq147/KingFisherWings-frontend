@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { useJobActions } from '../hooks/useJobActions';
+import { useJobResolvedLabels } from '../hooks/useJobResolvedLabels';
 import type { Job } from '../types/job.types';
+import { downloadJobBarcodePdf } from '../utils/downloadJobBarcodePdf';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import {
   jobBarcodeLabelTitle,
@@ -11,16 +13,18 @@ import {
 } from '../utils/resolveJobBarcode';
 import {
   Code128Barcode,
-  downloadCode128Png,
   printCode128Label,
+  renderCode128PngBytes,
 } from './Code128Barcode';
 
-/** Job-detail barcode: render CODE128 in-browser + optional server PDF queue. */
+/** Job-detail barcode: CODE128 + formatted PDF matching quotation / invoice. */
 export function JobBarcodePanel({ job }: { job: Job }) {
   const actions = useJobActions(job.id);
+  const labels = useJobResolvedLabels(job);
   const svgHostRef = useRef<HTMLDivElement>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [pdfPending, setPdfPending] = useState(false);
   const code = resolveJobBarcodeValue(job);
   const title = jobBarcodeLabelTitle(job);
 
@@ -42,16 +46,41 @@ export function JobBarcodePanel({ job }: { job: Job }) {
   const downloadPng = async () => {
     setErr(null);
     setMsg(null);
-    const svg = svgHostRef.current?.querySelector('svg');
-    if (!svg) {
-      setErr('Barcode not ready yet.');
+    if (!code) {
+      setErr('No scannable barcode value.');
       return;
     }
     try {
-      await downloadCode128Png(svg, `barcode-${title.replace(/[^\w.-]+/g, '_')}`);
-      setMsg('PNG downloaded.');
+      const bytes = await renderCode128PngBytes(code, { displayValue: true });
+      const blob = new Blob([bytes], { type: 'image/png' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `barcode-${title.replace(/[^\w.-]+/g, '_')}.png`;
+      a.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 30_000);
+      setMsg('Scannable PNG downloaded.');
     } catch (e) {
       setErr(getErrorMessage(e));
+    }
+  };
+
+  const downloadPdf = async (openPreview: boolean) => {
+    setErr(null);
+    setMsg(null);
+    setPdfPending(true);
+    try {
+      await downloadJobBarcodePdf({
+        job,
+        labels,
+        svg: svgHostRef.current?.querySelector('svg'),
+        openPreview,
+      });
+      setMsg(openPreview ? 'Sticker preview opened.' : 'Sticker PDF downloaded (100×50 mm).');
+    } catch (e) {
+      setErr(getErrorMessage(e) || 'Could not generate barcode PDF.');
+    } finally {
+      setPdfPending(false);
     }
   };
 
@@ -64,6 +93,10 @@ export function JobBarcodePanel({ job }: { job: Job }) {
         </Link>
       </CardHeader>
       <div className="space-y-3 px-4 pb-4">
+        <p className="text-xs text-[var(--color-neutral-500)]">
+          Print-and-paste sticker (100×50&nbsp;mm). CODE128 is print-grade (black bars, quiet
+          zone) so gate scanners can read it.
+        </p>
         <div
           ref={svgHostRef}
           className="flex justify-center rounded-md border border-[var(--color-neutral-200)] bg-white p-4"
@@ -74,16 +107,42 @@ export function JobBarcodePanel({ job }: { job: Job }) {
         <div className="flex flex-wrap gap-2">
           <Button
             type="button"
+            disabled={pdfPending}
+            onClick={() => void downloadPdf(false)}
+          >
+            {pdfPending ? 'Building sticker…' : 'Download sticker PDF'}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={pdfPending}
+            onClick={() => void downloadPdf(true)}
+          >
+            Preview sticker
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
             onClick={() =>
               printCode128Label({
                 value: code,
                 title,
                 subtitle: job.job_type,
                 svg: svgHostRef.current?.querySelector('svg'),
+                lines: [
+                  labels.shipperLabel || job.shipper_name || '',
+                  [
+                    job.pieces != null ? `Pcs ${job.pieces}` : '',
+                    job.gross_weight != null ? `Wt ${job.gross_weight} kg` : '',
+                    job.volume_cbm != null ? `CBM ${job.volume_cbm}` : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' · '),
+                ].filter(Boolean),
               })
             }
           >
-            Print label
+            Print sticker
           </Button>
           <Button type="button" variant="secondary" onClick={() => void downloadPng()}>
             Download PNG

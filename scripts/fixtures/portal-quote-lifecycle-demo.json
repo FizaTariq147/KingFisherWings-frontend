@@ -1,0 +1,398 @@
+{
+  "meta": {
+    "title": "Customer portal quote → booking lifecycle demo data",
+    "purpose": "Test every customer-booked quotation job type and each commercial gate through convert / Ops handoff.",
+    "seedCommand": "npm run seed:portal-quotes",
+    "env": [
+      "API_BASE_URL (optional)",
+      "E2E_TENANT_SLUG",
+      "E2E_STAFF_EMAIL",
+      "E2E_STAFF_PASSWORD",
+      "E2E_PORTAL_EMAIL",
+      "E2E_PORTAL_PASSWORD"
+    ],
+    "uiPaths": {
+      "portalBook": "/portal/book",
+      "portalQuotes": "/portal/quotes",
+      "portalQuoteDetail": "/portal/quotes/:id",
+      "staffQuotes": "/quotations",
+      "staffQuoteDetail": "/quotations/:id",
+      "staffJobs": "/jobs/:id",
+      "nvoccBookings": "/nvocc/bookings",
+      "portalAdminInbox": "/portal-admin/inbox"
+    }
+  },
+  "lifecycleStages": [
+    {
+      "stage": "requested",
+      "status": "DRAFT | SUBMITTED",
+      "actor": "Customer",
+      "action": "POST /portal/quotations/request",
+      "whatToTest": "Quote appears in staff inbox / quotations list; portal shows pending."
+    },
+    {
+      "stage": "sent",
+      "status": "SENT | CUSTOMER_REVIEW",
+      "actor": "Staff",
+      "action": "submit → approve → send (+ optional lines / apply-tariff)",
+      "whatToTest": "Customer can Accept / Reject / Counter in portal."
+    },
+    {
+      "stage": "approved",
+      "status": "APPROVED",
+      "actor": "Customer",
+      "action": "POST /portal/quotations/:id/accept",
+      "whatToTest": "Booking form unlocks; no job yet for gated / mode-form flows."
+    },
+    {
+      "stage": "booking_form_complete",
+      "status": "APPROVED (+ BOOKING_FORM_COMPLETE signal)",
+      "actor": "Customer",
+      "action": "Portal booking form Mark complete (compliance API or portal message payload)",
+      "whatToTest": "Sea/Land/Road/Courier auto-convert; Air/NVOCC stay approved for Ops invoice gate."
+    },
+    {
+      "stage": "converted",
+      "status": "CONVERTED",
+      "actor": "System / Staff",
+      "action": "POST /quotations/:id/convert-to-job (mode booking-form family)",
+      "whatToTest": "Job shell + draft invoice path; barcode / Ops panels."
+    },
+    {
+      "stage": "rejected",
+      "status": "REJECTED",
+      "actor": "Customer",
+      "action": "POST /portal/quotations/:id/reject",
+      "whatToTest": "Terminal closed; no booking form."
+    }
+  ],
+  "flowFamilies": {
+    "mode_booking_form_convert": {
+      "jobTypes": [
+        "SEA_FCL_EXPORT",
+        "SEA_FCL_IMPORT",
+        "SEA_LCL_EXPORT",
+        "SEA_LCL_IMPORT",
+        "LAND",
+        "ROAD_FREIGHT",
+        "COURIER"
+      ],
+      "afterCustomerAccept": "Wait for portal booking form → convert to job"
+    },
+    "gated_air_nvocc": {
+      "jobTypes": ["AIR_EXPORT", "AIR_IMPORT", "NVOCC_EXPORT", "NVOCC_IMPORT"],
+      "afterCustomerAccept": "Portal booking form → Ops send-invoice (Air job shell / NVOCC booking); no auto convert on approve"
+    },
+    "other_portal": {
+      "jobTypes": ["CUSTOMS_CLEARANCE", "SERVICE_JOB", "WAREHOUSE"],
+      "afterCustomerAccept": "Standard commercial accept; exercise portal book + staff send"
+    }
+  },
+  "requestPayloadsByJobType": {
+    "AIR_EXPORT": {
+      "job_type": "AIR_EXPORT",
+      "currency_code": "USD",
+      "commodity": "DEMO Air export electronics",
+      "gross_weight": 120,
+      "chargeable_weight": 150,
+      "volume_cbm": 1.2,
+      "pieces": 4,
+      "special_requirements": "DEMO lifecycle — air export",
+      "packages": [
+        {
+          "length_cm": 60,
+          "width_cm": 40,
+          "height_cm": 40,
+          "gross_weight_kg": 30,
+          "pieces": 1
+        }
+      ]
+    },
+    "AIR_IMPORT": {
+      "job_type": "AIR_IMPORT",
+      "currency_code": "USD",
+      "commodity": "DEMO Air import samples",
+      "gross_weight": 85,
+      "chargeable_weight": 100,
+      "volume_cbm": 0.8,
+      "pieces": 2,
+      "special_requirements": "DEMO lifecycle — air import"
+    },
+    "SEA_FCL_EXPORT": {
+      "job_type": "SEA_FCL_EXPORT",
+      "currency_code": "USD",
+      "commodity": "DEMO FCL export general cargo",
+      "gross_weight": 18000,
+      "volume_cbm": 28,
+      "pieces": 1,
+      "container_count": 1,
+      "special_requirements": "DEMO lifecycle — sea FCL export"
+    },
+    "SEA_FCL_IMPORT": {
+      "job_type": "SEA_FCL_IMPORT",
+      "currency_code": "USD",
+      "commodity": "DEMO FCL import machinery parts",
+      "gross_weight": 22000,
+      "volume_cbm": 30,
+      "pieces": 1,
+      "container_count": 1,
+      "special_requirements": "DEMO lifecycle — sea FCL import"
+    },
+    "SEA_LCL_EXPORT": {
+      "job_type": "SEA_LCL_EXPORT",
+      "currency_code": "USD",
+      "commodity": "DEMO LCL export cartons",
+      "gross_weight": 2400,
+      "volume_cbm": 6.5,
+      "pieces": 40,
+      "special_requirements": "DEMO lifecycle — sea LCL export"
+    },
+    "SEA_LCL_IMPORT": {
+      "job_type": "SEA_LCL_IMPORT",
+      "currency_code": "USD",
+      "commodity": "DEMO LCL import textiles",
+      "gross_weight": 1800,
+      "volume_cbm": 5.2,
+      "pieces": 28,
+      "special_requirements": "DEMO lifecycle — sea LCL import"
+    },
+    "LAND": {
+      "job_type": "LAND",
+      "currency_code": "AED",
+      "commodity": "DEMO Land cross-border pallets",
+      "gross_weight": 3500,
+      "volume_cbm": 12,
+      "pieces": 8,
+      "special_requirements": "DEMO lifecycle — land"
+    },
+    "ROAD_FREIGHT": {
+      "job_type": "ROAD_FREIGHT",
+      "currency_code": "AED",
+      "commodity": "DEMO Road freight FTLs",
+      "gross_weight": 8000,
+      "volume_cbm": 18,
+      "pieces": 1,
+      "special_requirements": "DEMO lifecycle — road freight"
+    },
+    "COURIER": {
+      "job_type": "COURIER",
+      "currency_code": "USD",
+      "commodity": "DEMO Courier documents + samples",
+      "gross_weight": 12,
+      "volume_cbm": 0.05,
+      "pieces": 3,
+      "special_requirements": "DEMO lifecycle — courier"
+    },
+    "NVOCC_EXPORT": {
+      "job_type": "NVOCC_EXPORT",
+      "currency_code": "USD",
+      "commodity": "DEMO NVOCC export FCL",
+      "gross_weight": 19000,
+      "volume_cbm": 26,
+      "pieces": 1,
+      "container_count": 1,
+      "special_requirements": "DEMO lifecycle — NVOCC export"
+    },
+    "NVOCC_IMPORT": {
+      "job_type": "NVOCC_IMPORT",
+      "currency_code": "USD",
+      "commodity": "DEMO NVOCC import FCL",
+      "gross_weight": 21000,
+      "volume_cbm": 27,
+      "pieces": 1,
+      "container_count": 1,
+      "special_requirements": "DEMO lifecycle — NVOCC import"
+    },
+    "CUSTOMS_CLEARANCE": {
+      "job_type": "CUSTOMS_CLEARANCE",
+      "currency_code": "AED",
+      "commodity": "DEMO Customs clearance only",
+      "gross_weight": 500,
+      "pieces": 10,
+      "special_requirements": "DEMO lifecycle — customs clearance"
+    },
+    "SERVICE_JOB": {
+      "job_type": "SERVICE_JOB",
+      "currency_code": "AED",
+      "commodity": "DEMO Service job consultancy",
+      "special_requirements": "DEMO lifecycle — service job"
+    },
+    "WAREHOUSE": {
+      "job_type": "WAREHOUSE",
+      "currency_code": "AED",
+      "commodity": "DEMO Warehouse storage week",
+      "gross_weight": 4000,
+      "volume_cbm": 20,
+      "pieces": 16,
+      "special_requirements": "DEMO lifecycle — warehouse"
+    }
+  },
+  "bookingFormComplete": {
+    "date_of_request": "USE_TODAY",
+    "voyage_ref": "DEMO-VOY-001",
+    "client_booking_no": "CUST-BK-DEMO-001",
+    "gross_weight_kg": 18000,
+    "net_weight_kg": 16500,
+    "chargeable_weight_kg": 18000,
+    "volume_cbm": 28,
+    "pieces": 1,
+    "pallet_count": 0,
+    "service_scope": "PORT_TO_PORT",
+    "pol": "AEJEA",
+    "pod": "INNSA",
+    "origin_airport_code": "DXB",
+    "dest_airport_code": "LHR",
+    "shipper_owned_container": false,
+    "is_dg": false,
+    "teu_count": 1,
+    "commodity": "DEMO General cargo — booking form complete",
+    "hs_code": "847130",
+    "final_use": "Resale",
+    "activity_sector": "CIVILIAN",
+    "insurance_details": "CIF covered by shipper",
+    "lc_bank_details": "N/A — open account",
+    "attach_commercial_invoice": true,
+    "attach_correspondence": true,
+    "attach_cod_form": false,
+    "attach_licence": false,
+    "booking_agent_line": "KingFisher Wings Demo Agent",
+    "agent_requester_name": "Demo Customer User",
+    "sq_bl_booking_reference": "SQ-DEMO-001",
+    "request_details": "Seeded customer booking form for lifecycle QA.",
+    "consent_accepted": true,
+    "mark_complete": true,
+    "parties": [
+      {
+        "party_kind": "SHIPPER",
+        "full_name": "Demo Shipper Trading LLC",
+        "address": "Warehouse 12, Jebel Ali Free Zone",
+        "city": "Dubai",
+        "country": "AE",
+        "entity_kind": "COMPANY",
+        "other_details": "email: shipper-demo@example.com"
+      },
+      {
+        "party_kind": "CONSIGNEE",
+        "full_name": "Demo Consignee Imports Ltd",
+        "address": "12 Industrial Estate",
+        "city": "Mumbai",
+        "country": "IN",
+        "entity_kind": "COMPANY",
+        "other_details": "email: consignee-demo@example.com"
+      },
+      {
+        "party_kind": "NOTIFY",
+        "full_name": "Demo Notify Party",
+        "address": "Same as consignee",
+        "city": "Mumbai",
+        "country": "IN",
+        "entity_kind": "COMPANY"
+      }
+    ]
+  },
+  "manualUiChecklist": [
+    "Portal Book: create one enquiry per job type card using requestPayloadsByJobType.",
+    "Staff Quotations: open DEMO quotes, add/apply lines if empty, Submit → Internally approve → Send.",
+    "Portal Quotes: Accept a SENT quote → confirm booking form appears.",
+    "Portal: complete 8-step booking form with Mark complete.",
+    "Sea/Land/Road/Courier: confirm quotation becomes CONVERTED and job opens.",
+    "Air/NVOCC: confirm stays APPROVED; Ops continues booking-form → send-invoice.",
+    "Reject path: Accept is disabled after Reject; status REJECTED on both UIs.",
+    "Barcode: open converted job → Barcode panel / scan page → PDF label."
+  ],
+  "seedPlan": [
+    {
+      "key": "gate-requested",
+      "jobType": "SEA_FCL_EXPORT",
+      "stage": "requested",
+      "note": "Customer enquiry only"
+    },
+    {
+      "key": "gate-sent",
+      "jobType": "SEA_FCL_EXPORT",
+      "stage": "sent",
+      "note": "Ready for customer Accept/Reject"
+    },
+    {
+      "key": "gate-approved",
+      "jobType": "SEA_FCL_EXPORT",
+      "stage": "approved",
+      "note": "Awaiting portal booking form"
+    },
+    {
+      "key": "gate-form-done",
+      "jobType": "SEA_FCL_EXPORT",
+      "stage": "booking_form_complete",
+      "note": "Form submitted; convert may follow"
+    },
+    {
+      "key": "gate-converted",
+      "jobType": "SEA_FCL_EXPORT",
+      "stage": "converted",
+      "note": "Full mode-form convert path"
+    },
+    {
+      "key": "gate-rejected",
+      "jobType": "SEA_FCL_EXPORT",
+      "stage": "rejected",
+      "note": "Customer reject after send"
+    },
+    {
+      "key": "full-sea-fcl-import",
+      "jobType": "SEA_FCL_IMPORT",
+      "stage": "converted"
+    },
+    {
+      "key": "full-sea-lcl-export",
+      "jobType": "SEA_LCL_EXPORT",
+      "stage": "converted"
+    },
+    {
+      "key": "full-sea-lcl-import",
+      "jobType": "SEA_LCL_IMPORT",
+      "stage": "converted"
+    },
+    { "key": "full-land", "jobType": "LAND", "stage": "converted" },
+    {
+      "key": "full-road",
+      "jobType": "ROAD_FREIGHT",
+      "stage": "converted"
+    },
+    { "key": "full-courier", "jobType": "COURIER", "stage": "converted" },
+    {
+      "key": "air-export-form",
+      "jobType": "AIR_EXPORT",
+      "stage": "booking_form_complete"
+    },
+    {
+      "key": "air-import-sent",
+      "jobType": "AIR_IMPORT",
+      "stage": "sent"
+    },
+    {
+      "key": "nvocc-export-form",
+      "jobType": "NVOCC_EXPORT",
+      "stage": "booking_form_complete"
+    },
+    {
+      "key": "nvocc-import-approved",
+      "jobType": "NVOCC_IMPORT",
+      "stage": "approved"
+    },
+    {
+      "key": "cc-sent",
+      "jobType": "CUSTOMS_CLEARANCE",
+      "stage": "sent"
+    },
+    {
+      "key": "service-sent",
+      "jobType": "SERVICE_JOB",
+      "stage": "sent"
+    },
+    {
+      "key": "warehouse-approved",
+      "jobType": "WAREHOUSE",
+      "stage": "approved"
+    }
+  ]
+}
