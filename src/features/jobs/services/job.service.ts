@@ -1,4 +1,5 @@
 import { axiosInstance } from '@/lib/axios';
+import { clampApiListLimit } from '@/lib/apiListLimit';
 import { isUuid } from '@/lib/isUuid';
 import { resolveSessionCompanyIdAsync } from '@/lib/resolveSessionCompanyId';
 import { withGatewayRetry } from '@/lib/wakeApi';
@@ -27,6 +28,7 @@ import { JOB_POST_AXIOS_CONFIG } from '../utils/buildJobCreateCandidates';
 import { ensureJobBranchReady } from '../utils/ensureJobBranchReady';
 import { prepareJobPayload } from '../utils/prepareJobPayload';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { normalizeCode128Value } from '../utils/scannableBarcode';
 import type {
   AssignCargoToContainerDto,
   AssignLandTruckerDto,
@@ -168,7 +170,7 @@ function assertId(id: string): void {
 function buildListQuery(params: JobListParams): Record<string, string | number | boolean> {
   const query: Record<string, string | number | boolean> = {
     page: params.page ?? 1,
-    limit: params.limit ?? 20,
+    limit: clampApiListLimit(params.limit, 20),
     order: params.order ?? 'desc',
   };
   if (params.search?.trim()) query.search = params.search.trim();
@@ -242,7 +244,21 @@ async function fetchJobListPage(params: JobListParams): Promise<JobListResult> {
 function asModeBookingForm(raw: unknown): ModeBookingForm {
   const data = unwrapEntity(raw) ?? raw;
   if (data && typeof data === 'object' && !Array.isArray(data)) {
-    return data as ModeBookingForm;
+    const record = data as Record<string, unknown>;
+    const markComplete =
+      record.mark_complete === true ||
+      record.markComplete === true ||
+      String(record.status ?? '')
+        .toUpperCase()
+        .includes('COMPLETE');
+    return {
+      ...(data as ModeBookingForm),
+      mark_complete: markComplete || Boolean((data as ModeBookingForm).mark_complete),
+      consent_accepted:
+        record.consent_accepted === true ||
+        record.consentAccepted === true ||
+        Boolean((data as ModeBookingForm).consent_accepted),
+    };
   }
   return {};
 }
@@ -288,10 +304,10 @@ export const jobService = {
 
       if (multiTypes && multiTypes.length > 1) {
         const page = params.page ?? 1;
-        const limit = params.limit ?? 20;
+        const limit = clampApiListLimit(params.limit, 20);
         const order = params.order ?? 'desc';
-        // Pull enough rows per type to build the requested page after merge.
-        const perTypeLimit = Math.min(100, Math.max(limit * page, limit));
+        // Pull enough rows per type to build the requested page after merge (API max 100).
+        const perTypeLimit = clampApiListLimit(Math.max(limit * page, limit), 100);
 
         const pages = await Promise.all(
           multiTypes.map((job_type) =>
@@ -373,7 +389,7 @@ export const jobService = {
 
   /** GET /jobs/by-barcode/:code — lookup any job by barcode (no scan event). */
   async findByBarcode(code: string): Promise<Job> {
-    const trimmed = code.trim();
+    const trimmed = normalizeCode128Value(code);
     if (!trimmed) throw new Error('Barcode is required.');
     return request(
       () => axiosInstance.get(JOB_API.byBarcode(trimmed)),
@@ -383,7 +399,7 @@ export const jobService = {
 
   /** POST /jobs/scan — record scan event and return job summary. */
   async scanBarcode(dto: ScanJobBarcodeDto): Promise<Job> {
-    const barcode = dto.barcode?.trim();
+    const barcode = normalizeCode128Value(dto.barcode ?? '');
     if (!barcode) throw new Error('Barcode is required.');
     const body: ScanJobBarcodeDto = {
       barcode,

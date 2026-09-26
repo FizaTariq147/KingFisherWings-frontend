@@ -9,10 +9,9 @@ export async function loadWmsCurrencyOptions(): Promise<CurrencyOption[]> {
     byCode.set(opt.value, opt);
   }
   try {
-    const res = await masterService.list(MASTER_PATHS.currencies, {
-      page: 1,
-      limit: 500,
+    const res = await masterService.listAll(MASTER_PATHS.currencies, {
       is_active: true,
+      order: 'asc',
     });
     for (const item of res.items) {
       const code = String(item.code ?? '')

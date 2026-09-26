@@ -17,6 +17,8 @@
     "test:api": "node scripts/api-matrix-test.mjs",
     "audit:nvocc-air-portal": "node scripts/audit-nvocc-air-portal-coverage.mjs",
     "seed:documentation": "node scripts/seed-documentation-test-data.mjs",
+    "seed:portal-quotes": "node scripts/seed-portal-quote-lifecycle-demo.mjs",
+    "seed:warehouse-video": "node scripts/seed-warehouse-video-demo.mjs",
     "test:integration": "node scripts/api-matrix-test.mjs && playwright test --project=setup --project=chromium --project=authenticated",
     "test:integration-report": "node scripts/integration-automation-report.mjs",
     "doctor": "npx react-doctor@latest",

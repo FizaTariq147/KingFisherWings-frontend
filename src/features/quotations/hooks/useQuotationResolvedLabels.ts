@@ -47,7 +47,7 @@ export function useQuotationResolvedLabels(q: Quotation) {
   const { data: ports = [] } = useMasterOptions('ports', MASTER_PATHS.ports, true);
   const { data: customersResult } = useParties({
     page: 1,
-    limit: 500,
+    limit: 100,
     party_type: 'CUSTOMER',
     order: 'asc',
   });

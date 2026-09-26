@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -25,6 +26,7 @@ import {
 import { useJobAirBookingForm, useJob, useUpdateJobAirBookingForm } from '../hooks/useJobs';
 import { useCustomerPortalBookingForm } from '@/features/portal-admin-inbox/hooks/usePortalAdminInbox';
 import type { PortalBookingFormMessagePayload } from '@/features/portal-quotations/utils/portalBookingFormStorage';
+import { quotationService } from '@/features/quotations/services/quotation.service';
 import {
   AIR_COMMERCIAL_ACTION_ORDER,
   AIR_COMMERCIAL_STAGES,
@@ -128,17 +130,34 @@ function applyPortalPayloadToAirForm(
   return {
     ...prev,
     commodity: pick(prev.commodity, payload.commodity),
-    // Compliance form uses pol/pod (city names). Air booking needs IATA codes ≤10 — only copy when valid.
+    // Prefer air DTO airport codes; fall back to pol/pod only when they look like IATA.
     origin_airport_code: pick(
       prev.origin_airport_code,
-      normalizeAirportCode(payload.pol) || undefined,
+      normalizeAirportCode(payload.origin_airport_code) ||
+        normalizeAirportCode(payload.pol) ||
+        undefined,
     ),
     dest_airport_code: pick(
       prev.dest_airport_code,
-      normalizeAirportCode(payload.pod) || undefined,
+      normalizeAirportCode(payload.dest_airport_code) ||
+        normalizeAirportCode(payload.pod) ||
+        undefined,
     ),
     notes: pick(prev.notes, payload.request_details),
     is_dg: overwrite || !prev.is_dg ? Boolean(payload.is_dg) : prev.is_dg,
+    pieces: pick(prev.pieces, payload.pieces != null ? String(payload.pieces) : undefined),
+    gross_weight_kg: pick(
+      prev.gross_weight_kg,
+      payload.gross_weight_kg != null ? String(payload.gross_weight_kg) : undefined,
+    ),
+    chargeable_weight_kg: pick(
+      prev.chargeable_weight_kg,
+      payload.chargeable_weight_kg != null ? String(payload.chargeable_weight_kg) : undefined,
+    ),
+    volume_cbm: pick(
+      prev.volume_cbm,
+      payload.volume_cbm != null ? String(payload.volume_cbm) : undefined,
+    ),
     shipper_name: pick(prev.shipper_name, shipper?.full_name),
     shipper_city: pick(prev.shipper_city, shipper?.city),
     shipper_country: pick(prev.shipper_country, shipper?.country),
@@ -196,8 +215,21 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
   const airBookingQuery = useJobAirBookingForm(jobId, isExport || isImport);
   const updateAirBooking = useUpdateJobAirBookingForm(jobId);
   const { done, markDone, isDone } = useAirWorkflowProgress(jobId ? `job:${jobId}` : '');
+  const linkedQuoteQuery = useQuery({
+    queryKey: ['quotations', 'linked-to-job', jobId, 'air'],
+    queryFn: () => quotationService.findLinkedToJob(jobId),
+    enabled: Boolean(jobId) && (isExport || isImport),
+    staleTime: 60_000,
+    retry: 1,
+  });
   const portalBookingQuery = useCustomerPortalBookingForm(
-    { jobId, jobTypePrefix: 'AIR' },
+    {
+      jobId,
+      quotationId: linkedQuoteQuery.data?.id,
+      quoteNumber:
+        linkedQuoteQuery.data?.quotation_number || linkedQuoteQuery.data?.quote_no,
+      jobTypePrefix: 'AIR',
+    },
     isExport || isImport,
   );
 

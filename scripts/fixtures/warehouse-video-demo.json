@@ -1,0 +1,292 @@
+{
+  "meta": {
+    "title": "Warehouse full workflow — video demo dummy data",
+    "purpose": "Shareable end-to-end warehouse story: sticker → customer gives driver → gatekeeper scan → GRN/GDO → invoices.",
+    "seedCommand": "npm run seed:warehouse-video",
+    "filmDate": "2026-09-26",
+    "currency": "AED",
+    "uiPaths": {
+      "warehouseHub": "/warehouse",
+      "barcodeScan": "/jobs/barcode-scan",
+      "jobNew": "/jobs/new",
+      "jobDetail": "/jobs/air-export/:id",
+      "jobInvoicesTab": "/jobs/air-export/:id?tab=invoices",
+      "grnList": "/warehouse/grns",
+      "grnNew": "/warehouse/grns/new",
+      "gdoList": "/warehouse/gdos",
+      "gdoNew": "/warehouse/gdos/new",
+      "storage": "/warehouse/storage",
+      "stock": "/warehouse/stock",
+      "items": "/warehouse/items",
+      "invoices": "/invoices",
+      "invoiceDetail": "/invoices/:id",
+      "portalInvoices": "/portal/invoices"
+    }
+  },
+  "videoStoryboard": [
+    {
+      "shot": 1,
+      "title": "Customer booking / warehouse job",
+      "who": "Sales / CS",
+      "route": "/jobs/new → job type WAREHOUSE",
+      "sayOnCamera": "Customer Al Maha Trading books carton storage at Jebel Ali warehouse.",
+      "show": ["Job number", "Shipper", "48 pieces", "18.5 CBM", "commodity"]
+    },
+    {
+      "shot": 2,
+      "title": "Sticker / barcode label",
+      "who": "Ops",
+      "route": "Job Overview → JobBarcodePanel",
+      "sayOnCamera": "We print the warehouse sticker — CODE128 barcode the driver must carry.",
+      "actions": [
+        "Download barcode PDF",
+        "Preview / Print label",
+        "Show barcode value on sticker"
+      ],
+      "show": ["Barcode strip", "Job number", "Shipper name", "Pieces / weight"]
+    },
+    {
+      "shot": 3,
+      "title": "What customer gives the driver",
+      "who": "Customer → Driver (physical handoff)",
+      "route": "Show printed sticker + handoff card (print from fixture)",
+      "sayOnCamera": "Customer hands the driver: printed sticker, job reference, and gate instructions.",
+      "handOffPack": [
+        "Printed barcode sticker / PDF",
+        "Job reference KF-WH-DEMO-001",
+        "Driver name + plate on gate card",
+        "Warehouse gate: JAFZA Gate 3 — inbound dock B"
+      ]
+    },
+    {
+      "shot": 4,
+      "title": "Gatekeeper check-in",
+      "who": "Warehouse gatekeeper",
+      "route": "/jobs/barcode-scan",
+      "sayOnCamera": "Gatekeeper scans the sticker, confirms job details, and records gate location.",
+      "actions": [
+        "Paste / scan barcode",
+        "Lookup job",
+        "Optional Scan with location + notes (driver + plate)"
+      ],
+      "show": ["Full job card after scan", "Barcode PDF preview if needed"]
+    },
+    {
+      "shot": 5,
+      "title": "Inbound GRN (gate-in stock)",
+      "who": "Warehouse clerk",
+      "route": "/warehouse/grns/new → detail → Post",
+      "sayOnCamera": "We book stock in with GRN linked to the same job, then Post for gate-in.",
+      "actions": ["Create GRN", "Post GRN", "Download gate-pass PDF if available"]
+    },
+    {
+      "shot": 6,
+      "title": "Storage charges → invoice",
+      "who": "Finance / Warehouse",
+      "route": "/warehouse/storage OR job Invoices tab → /invoices/:id",
+      "sayOnCamera": "After free days, storage is calculated and the customer invoice is raised.",
+      "actions": [
+        "Calculate storage",
+        "Create draft invoice",
+        "Open invoice detail / PDF"
+      ]
+    },
+    {
+      "shot": 7,
+      "title": "Customer sees invoice",
+      "who": "Customer (portal) or staff finance",
+      "route": "/portal/invoices OR /invoices/:id",
+      "sayOnCamera": "Customer opens the portal and reviews the warehouse storage invoice.",
+      "show": ["Invoice number", "Party", "Amount AED", "Linked job"]
+    },
+    {
+      "shot": 8,
+      "title": "Outbound GDO (driver collects)",
+      "who": "Gatekeeper / warehouse",
+      "route": "/warehouse/gdos/new → Post",
+      "sayOnCamera": "When the customer collects, we gate-out with GDO and hand the exit pass.",
+      "actions": ["Create GDO", "Post GDO", "Optional gate-pass PDF"]
+    }
+  ],
+  "cast": {
+    "customer": {
+      "company": "Al Maha Trading LLC",
+      "contact": "Fatima Al Hashimi",
+      "email": "fatima.hashimi@almaha-demo.example",
+      "phone": "+971 50 123 4567",
+      "address": "Office 210, Jebel Ali Free Zone, Dubai, UAE"
+    },
+    "driver": {
+      "full_name": "Hassan Al Mazrouei",
+      "mobile": "+971 55 987 6543",
+      "emirates_id": "784-1990-1234567-1",
+      "vehicle_plate": "D-48291",
+      "trailer_plate": "T-109",
+      "vehicle_type": "Curtain-side truck"
+    },
+    "gatekeeper": {
+      "full_name": "Omar Gate Lead",
+      "post": "JAFZA Gate 3 — inbound dock B",
+      "shift": "06:00–14:00"
+    },
+    "warehouseClerk": {
+      "full_name": "Sara Warehouse Ops",
+      "desk": "WMS inbound desk"
+    }
+  },
+  "masters": {
+    "warehouse": {
+      "code": "JAFZA-WH-01",
+      "name": "KingFisher Jebel Ali Bonded Warehouse",
+      "address": "Plot WH-12, Jebel Ali Free Zone, Dubai"
+    },
+    "item": {
+      "code": "SKU-ELEC-CARTON",
+      "name": "Electronics Carton Mix",
+      "description": "Mixed consumer electronics cartons for bonded storage",
+      "uom_code": "CTN",
+      "low_stock_threshold": 10,
+      "is_active": true
+    }
+  },
+  "job": {
+    "job_type": "WAREHOUSE",
+    "demo_job_number_hint": "KF-WH-DEMO-001",
+    "barcode_hint": "Use job_number or barcode field as CODE128 value on sticker",
+    "commodity": "Consumer electronics — carton storage",
+    "hs_code": "847130",
+    "gross_weight": 4200,
+    "volume_cbm": 18.5,
+    "pieces": 48,
+    "currency_code": "AED",
+    "customer_remarks": "Hold 7 free days then storage accrual. Driver will present sticker at Gate 3.",
+    "notes": "VIDEO DEMO — Al Maha Trading warehouse storage · do not delete",
+    "incoterms": "DAP"
+  },
+  "sticker": {
+    "label_title": "Warehouse job barcode sticker",
+    "barcode_symbology": "CODE128",
+    "barcode_value": "KF-WH-DEMO-001",
+    "print_size": "Shipping-label strip (short barcode)",
+    "fields_on_label": [
+      "Job number",
+      "Barcode",
+      "Shipper: Al Maha Trading LLC",
+      "Pieces: 48",
+      "Gross kg: 4200",
+      "CBM: 18.5",
+      "Commodity"
+    ],
+    "ui": "Job Overview → Download barcode PDF / Print"
+  },
+  "driverHandoffCard": {
+    "title": "Driver gate card (give with sticker)",
+    "lines": [
+      "Job: KF-WH-DEMO-001",
+      "Customer: Al Maha Trading LLC",
+      "Driver: Hassan Al Mazrouei",
+      "Plate: D-48291 · Trailer: T-109",
+      "Gate: JAFZA Gate 3 — inbound dock B",
+      "Present barcode sticker to gatekeeper",
+      "Cargo: 48 CTN electronics · 18.5 CBM · 4200 kg"
+    ]
+  },
+  "gatekeeperScan": {
+    "lookup": {
+      "method": "GET",
+      "path": "/jobs/by-barcode/KF-WH-DEMO-001"
+    },
+    "scan": {
+      "method": "POST",
+      "path": "/jobs/scan",
+      "body": {
+        "barcode": "KF-WH-DEMO-001",
+        "location": "JAFZA Gate 3 — inbound dock B",
+        "notes": "Driver Hassan Al Mazrouei · plate D-48291 · trailer T-109 · VIDEO DEMO gate-in"
+      }
+    },
+    "ui": "/jobs/barcode-scan"
+  },
+  "asn": {
+    "optional": true,
+    "expected_at": "2026-09-26",
+    "remarks": "VIDEO DEMO ASN — Al Maha electronics cartons",
+    "lines": [
+      {
+        "item_code": "SKU-ELEC-CARTON",
+        "quantity": 48,
+        "cbm": 18.5,
+        "remarks": "48 sealed cartons"
+      }
+    ]
+  },
+  "grn": {
+    "received_at": "2026-09-26T08:30:00.000Z",
+    "remarks": "Gate-in · driver Hassan Al Mazrouei · plate D-48291 · sticker KF-WH-DEMO-001",
+    "lines": [
+      {
+        "item_code": "SKU-ELEC-CARTON",
+        "quantity": 48,
+        "cbm": 18.5,
+        "unit_cost": 12.5,
+        "batch_code": "BATCH-DXB-0926",
+        "remarks": "48 cartons sealed · VIDEO DEMO"
+      }
+    ],
+    "afterCreate": "Open GRN detail → Post → download gate-pass PDF if shown"
+  },
+  "storageInvoice": {
+    "period_from": "2026-09-26",
+    "period_to": "2026-10-10",
+    "free_days": 7,
+    "rate_per_day": 85,
+    "overdue_rate_per_day": 120,
+    "currency_code": "AED",
+    "ui": "/warehouse/storage",
+    "expected_story": "7 free days; charge from day 8; create draft invoice from calculated charges"
+  },
+  "invoiceDemo": {
+    "currency_code": "AED",
+    "sample_lines": [
+      {
+        "description": "Warehouse storage — Al Maha electronics (post free days)",
+        "quantity": 7,
+        "unit_price": 85,
+        "unit": "DAY"
+      },
+      {
+        "description": "Inbound handling / gate-in",
+        "quantity": 1,
+        "unit_price": 250,
+        "unit": "SHPT"
+      }
+    ],
+    "customerViews": [
+      "/invoices/:id (staff)",
+      "/portal/invoices/:id (customer portal)"
+    ]
+  },
+  "gdo": {
+    "delivered_at": "2026-10-10T14:00:00.000Z",
+    "remarks": "Gate-out · POD signed by driver Hassan · plate D-48291 · full release",
+    "lines": [
+      {
+        "item_code": "SKU-ELEC-CARTON",
+        "quantity": 48,
+        "remarks": "Full release · VIDEO DEMO"
+      }
+    ],
+    "afterCreate": "Open GDO detail → Post → download gate-pass PDF if shown"
+  },
+  "manualUiChecklist": [
+    "Create or open WAREHOUSE job with Al Maha / demo commodity (or run seed).",
+    "Job Overview: download/print barcode sticker PDF — film the sticker clearly.",
+    "Print or show driverHandoffCard lines next to sticker (customer → driver).",
+    "Open /jobs/barcode-scan — paste KF-WH-DEMO-001 (or real job barcode) — show job details.",
+    "Scan with location JAFZA Gate 3 and driver notes.",
+    "Create GRN linked to job + warehouse + item → Post.",
+    "Calculate storage on /warehouse/storage → raise invoice → open /invoices/:id.",
+    "Optional: customer portal /portal/invoices.",
+    "Create GDO → Post for exit handoff."
+  ]
+}
