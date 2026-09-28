@@ -128,7 +128,7 @@ export default function WmsAsnCreatePage() {
         backTo={`${WMS_ROUTE_PREFIX}/asns`}
         backLabel="ASN"
         title="New ASN"
-        description="Advance shipment notice for expected inbound stock."
+        description="Set party + job so Mark unloaded can auto-create GRN and notify the portal."
       />
 
       <form className="space-y-4" onSubmit={handleSubmit} noValidate>
@@ -164,6 +164,7 @@ export default function WmsAsnCreatePage() {
               }}
               onBlur={() => validatePath(createAsnSchema, toPayload(), 'party_id')}
               options={partyOptions}
+              required
               disabled={partiesLoading}
               error={fieldError('party_id')}
             />
@@ -176,6 +177,7 @@ export default function WmsAsnCreatePage() {
               }}
               onBlur={() => validatePath(createAsnSchema, toPayload(), 'job_id')}
               options={jobOptions}
+              required
               disabled={jobsLoading}
               error={fieldError('job_id')}
             />

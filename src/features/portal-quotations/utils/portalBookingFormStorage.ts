@@ -66,6 +66,26 @@ function pickFormFields(src: Partial<PortalBookingForm> | PortalBookingFormUpser
     consent_accepted: src.consent_accepted,
     mark_complete: Boolean(src.mark_complete),
     parties: src.parties,
+    warehouse_id: src.warehouse_id,
+    warehouse_name: src.warehouse_name,
+    expected_inbound_at: src.expected_inbound_at,
+    expected_outbound_at: src.expected_outbound_at,
+    storage_days_requested: src.storage_days_requested,
+    bonded: src.bonded,
+    temperature_controlled: src.temperature_controlled,
+    handling_instructions: src.handling_instructions,
+    freight_job_id: src.freight_job_id,
+    cargo_category: src.cargo_category,
+    dg_class: src.dg_class,
+    attach_packing_list: src.attach_packing_list,
+    attach_bl_awb_copy: src.attach_bl_awb_copy,
+    attach_carnet: src.attach_carnet,
+    attach_vehicle_title: src.attach_vehicle_title,
+    attach_msds: src.attach_msds,
+    attach_dangerous_goods_declaration: src.attach_dangerous_goods_declaration,
+    attach_health_veterinary: src.attach_health_veterinary,
+    attach_fda_moh: src.attach_fda_moh,
+    stock_lines: src.stock_lines,
   };
 }
 
@@ -133,6 +153,11 @@ export function formatBookingFormMessageBody(opts: {
   dto: PortalBookingFormUpsertDto;
 }): string {
   const { quotationId, quoteNumber, jobType, dto } = opts;
+  const isWarehouse =
+    String(jobType ?? '')
+      .trim()
+      .toUpperCase()
+      .replace(/[\s-]+/g, '_') === 'WAREHOUSE';
   const shipper = dto.parties.find((p) => p.party_kind === 'SHIPPER');
   const consignee = dto.parties.find((p) => p.party_kind === 'CONSIGNEE');
   const notify = dto.parties.find((p) => p.party_kind === 'NOTIFY');
@@ -149,7 +174,9 @@ export function formatBookingFormMessageBody(opts: {
   const payload = buildPortalBookingFormMessagePayload(opts);
 
   return [
-    'CUSTOMER BOOKING FORM (UpsertNvoccBookingFormDto)',
+    isWarehouse
+      ? 'CUSTOMER BOOKING FORM (UpsertWarehouseBookingFormDto — portal draft / messages; no portal warehouse booking-form API yet)'
+      : 'CUSTOMER BOOKING FORM (UpsertNvoccBookingFormDto)',
     `Quote: ${quoteNumber || quotationId}`,
     `Quotation ID: ${quotationId}`,
     `Job type: ${jobType || '—'}`,
@@ -159,8 +186,21 @@ export function formatBookingFormMessageBody(opts: {
     `date_of_request: ${dto.date_of_request || '—'}`,
     `client_booking_no: ${dto.client_booking_no || '—'}`,
     `teu_count: ${dto.teu_count ?? '—'}`,
-    `pol: ${dto.pol}`,
-    `pod: ${dto.pod}`,
+    `pol: ${dto.pol ?? '—'}`,
+    `pod: ${dto.pod ?? '—'}`,
+    `origin_door_address: ${dto.origin_door_address || '—'}`,
+    `dest_door_address: ${dto.dest_door_address || '—'}`,
+    `warehouse_name: ${dto.warehouse_name || '—'}`,
+    `warehouse_id: ${dto.warehouse_id || '—'}`,
+    `expected_inbound_at: ${dto.expected_inbound_at || '—'}`,
+    `expected_outbound_at: ${dto.expected_outbound_at || '—'}`,
+    `storage_days_requested: ${dto.storage_days_requested ?? '—'}`,
+    `bonded: ${dto.bonded ? 'Yes' : 'No'}`,
+    `temperature_controlled: ${dto.temperature_controlled ? 'Yes' : 'No'}`,
+    `cargo_category: ${dto.cargo_category || '—'}`,
+    `dg_class: ${dto.dg_class || '—'}`,
+    `pieces: ${dto.pieces ?? '—'}`,
+    `volume_cbm: ${dto.volume_cbm ?? '—'}`,
     `gross_weight_kg: ${dto.gross_weight_kg ?? '—'}`,
     `net_weight_kg: ${dto.net_weight_kg ?? '—'}`,
     `shipper_owned_container: ${dto.shipper_owned_container ? 'Yes' : 'No'}`,
@@ -173,6 +213,12 @@ export function formatBookingFormMessageBody(opts: {
     `booking_agent_line: ${dto.booking_agent_line || '—'}`,
     `agent_requester_name: ${dto.agent_requester_name || '—'}`,
     `sq_bl_booking_reference: ${dto.sq_bl_booking_reference || '—'}`,
+    `handling_instructions: ${dto.handling_instructions || '—'}`,
+    `stock_lines: ${dto.stock_lines?.length ? JSON.stringify(dto.stock_lines) : '—'}`,
+    `attach_packing_list: ${dto.attach_packing_list ? 'Yes' : 'No'}`,
+    `attach_bl_awb_copy: ${dto.attach_bl_awb_copy ? 'Yes' : 'No'}`,
+    `attach_msds: ${dto.attach_msds ? 'Yes' : 'No'}`,
+    `attach_dangerous_goods_declaration: ${dto.attach_dangerous_goods_declaration ? 'Yes' : 'No'}`,
     '',
     partyBlock('Shipper', shipper),
     '',
@@ -184,7 +230,7 @@ export function formatBookingFormMessageBody(opts: {
     `consent_accepted: ${dto.consent_accepted ? 'Yes' : 'No'}`,
     '',
     'Customer filled this form in the portal after quote approval.',
-    'Ops: quotation converts to a job after this submission (Sea/Land/Road/Courier), or load into staff booking-form / NVOCC send-invoice for gated modes.',
+    'Ops: quotation converts to a job after this submission (Sea/Land/Road/Courier/Warehouse/Customs), or load into staff booking-form / NVOCC send-invoice for gated modes.',
     '',
     PORTAL_BOOKING_FORM_JSON_START,
     JSON.stringify(payload),

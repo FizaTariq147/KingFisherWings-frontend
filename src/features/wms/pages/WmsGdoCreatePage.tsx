@@ -127,7 +127,7 @@ export default function WmsGdoCreatePage() {
         backTo={`${WMS_ROUTE_PREFIX}/gdos`}
         backLabel="GDO"
         title="New GDO"
-        description="Goods dispatch order (GDN) — consume stock FIFO/LIFO."
+        description="Party + job required — Post dispatches stock and sends GDN to portal."
       />
 
       <form className="space-y-4" onSubmit={handleSubmit} noValidate>
@@ -163,6 +163,7 @@ export default function WmsGdoCreatePage() {
               }}
               onBlur={() => validatePath(createGdoSchema, toPayload(), 'party_id')}
               options={partyOptions}
+              required
               disabled={partiesLoading}
               error={fieldError('party_id')}
             />
@@ -175,6 +176,7 @@ export default function WmsGdoCreatePage() {
               }}
               onBlur={() => validatePath(createGdoSchema, toPayload(), 'job_id')}
               options={jobOptions}
+              required
               disabled={jobsLoading}
               error={fieldError('job_id')}
             />

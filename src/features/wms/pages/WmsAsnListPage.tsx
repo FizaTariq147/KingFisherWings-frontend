@@ -17,7 +17,7 @@ export default function WmsAsnListPage() {
       <WmsPageHeader
         backTo={WMS_ROUTE_PREFIX}
         title="WMS ASN"
-        description="Advance shipment notices — expected inbound stock."
+        description="Yard flow: Confirm → Picked → Unloading → Unloaded (auto GRN + customer email/portal)."
         actions={
           <>
             <Button type="button" variant="secondary" onClick={() => refetch()} disabled={isFetching}>

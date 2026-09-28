@@ -111,7 +111,7 @@ export const upsertWmsSettingsSchema = z.object({
 
 /** Static shape used when UOM master options are not loaded yet. */
 export const createWmsItemSchema = z.object({
-  code: entityCode({ min: 2, max: 40 }),
+  code: entityCode({ min: 1, max: 40 }),
   name: wmsItemName,
   description: optionalItemDescription,
   uom_code: entityCode({ min: 1, max: 20, message: V.uomCode }),
@@ -122,7 +122,7 @@ export const createWmsItemSchema = z.object({
 /** Prefer this when UOM options from Masters are available. */
 export function createWmsItemSchemaWithUoms(allowedUomCodes: readonly string[]) {
   return z.object({
-    code: entityCode({ min: 2, max: 40 }),
+    code: entityCode({ min: 1, max: 40 }),
     name: wmsItemName,
     description: optionalItemDescription,
     uom_code: masterSelect({
@@ -141,7 +141,7 @@ export function createWmsItemSchemaWithUoms(allowedUomCodes: readonly string[]) 
 }
 
 export const updateWmsItemSchema = createWmsItemSchema.partial().extend({
-  code: entityCode({ min: 2, max: 40 }).optional(),
+  code: entityCode({ min: 1, max: 40 }).optional(),
   name: wmsItemName.optional(),
 });
 
@@ -154,8 +154,9 @@ const asnLineSchema = z.object({
 
 export const createAsnSchema = z.object({
   warehouse_id: requiredUuid('Select a warehouse'),
-  party_id: optionalUuid(),
-  job_id: optionalUuid(),
+  /** Required so Mark unloaded can auto-create GRN + email portal. */
+  party_id: requiredUuid('Select a party (required for unload / portal GRN)'),
+  job_id: requiredUuid('Select a job (required for unload / portal GRN)'),
   expected_at: optionalDateTime,
   remarks: optionalTextUndef({ max: 1000 }),
   lines: z.array(asnLineSchema).min(1, 'Add at least one line'),
@@ -172,7 +173,8 @@ const grnLineSchema = z.object({
 
 export const createGrnSchema = z.object({
   warehouse_id: requiredUuid('Select a warehouse'),
-  party_id: optionalUuid(),
+  /** Required so Post can stamp lots used by storage calculate. */
+  party_id: requiredUuid('Select a party (required for storage lots)'),
   job_id: optionalUuid(),
   asn_id: optionalUuid(),
   received_at: optionalDateTime,
@@ -188,8 +190,9 @@ const gdoLineSchema = z.object({
 
 export const createGdoSchema = z.object({
   warehouse_id: requiredUuid('Select a warehouse'),
-  party_id: optionalUuid(),
-  job_id: optionalUuid(),
+  /** Required so Post can email GDN + attach JobDocument on the job. */
+  party_id: requiredUuid('Select a party (required for GDN / portal)'),
+  job_id: requiredUuid('Select a job (required for GDN / portal)'),
   delivered_at: optionalDateTime,
   remarks: optionalTextUndef({ max: 1000 }),
   lines: z.array(gdoLineSchema).min(1, 'Add at least one line'),

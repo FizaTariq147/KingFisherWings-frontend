@@ -110,6 +110,8 @@ import type {
   UpsertRoadFreightBookingFormDto,
   UpsertSeaFclBookingFormDto,
   UpsertSeaLclBookingFormDto,
+  UpsertWarehouseBookingFormDto,
+  UpsertCustomsClearanceBookingFormDto,
   ModeBookingForm,
   UpdateSeaFclJobDetailDto,
   UpdateSeaLclJobDetailDto,
@@ -897,6 +899,46 @@ export const jobService = {
   async completeRoadFreightBookingForm(id: string): Promise<unknown> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.roadFreightBookingFormComplete(id)));
+  },
+
+  async getWarehouseBookingForm(id: string): Promise<ModeBookingForm> {
+    assertId(id);
+    return getModeBookingForm(JOB_API.warehouseBookingForm(id));
+  },
+
+  async putWarehouseBookingForm(
+    id: string,
+    dto: UpsertWarehouseBookingFormDto,
+  ): Promise<ModeBookingForm> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.put(JOB_API.warehouseBookingForm(id), dto),
+    ) as Promise<ModeBookingForm>;
+  },
+
+  async completeWarehouseBookingForm(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.warehouseBookingFormComplete(id)));
+  },
+
+  async getCustomsClearanceBookingForm(id: string): Promise<ModeBookingForm> {
+    assertId(id);
+    return getModeBookingForm(JOB_API.customsClearanceBookingForm(id));
+  },
+
+  async putCustomsClearanceBookingForm(
+    id: string,
+    dto: UpsertCustomsClearanceBookingFormDto,
+  ): Promise<ModeBookingForm> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.put(JOB_API.customsClearanceBookingForm(id), dto),
+    ) as Promise<ModeBookingForm>;
+  },
+
+  async completeCustomsClearanceBookingForm(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.customsClearanceBookingFormComplete(id)));
   },
 
   async getLclConsolidation(id: string): Promise<unknown> {

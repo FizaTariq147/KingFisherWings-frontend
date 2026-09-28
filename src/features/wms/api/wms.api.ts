@@ -10,6 +10,8 @@
  * GET/POST   /wms/asns
  * GET        /wms/asns/{id}
  * POST       /wms/asns/{id}/confirm|cancel
+ * POST       /wms/asns/{id}/mark-picked|mark-unloading|mark-unloaded
+ * POST       /wms/asns/{id}/resend-grn
  * GET/POST   /wms/grns
  * GET        /wms/grns/{id}
  * GET        /wms/grns/{id}/pdf
@@ -17,15 +19,16 @@
  * GET/POST   /wms/gdos
  * GET        /wms/gdos/{id}
  * GET        /wms/gdos/{id}/pdf
- * POST       /wms/gdos/{id}/post|cancel
- * GET        /wms/warehouses (optional future — not in current Swagger; use /masters/warehouses)
+ * POST       /wms/gdos/{id}/post|cancel|resend-gdn
+ * GET        /wms/ops-board
+ * (no GET /wms/warehouses — use GET /masters/warehouses)
  * GET        /wms/stock/on-hand|movements|low-stock|lot-aging
  * POST       /wms/stock/adjust
  * GET/POST   /wms/transfers
  * GET        /wms/transfers/{id}
  * POST       /wms/transfers/{id}/post
  * POST       /wms/storage/calculate|invoice
- * GET        /wms/storage/charges (query: party_id*, status*)
+ * GET        /wms/storage/charges (query: party_id*, status*, charge_kind*) — live API currently 500; FE avoids
  *
  * Related (masters, not under /wms): GET/POST/PATCH/DELETE /masters/warehouses
  */
@@ -37,6 +40,10 @@ export const WMS_API = {
   asn: (id: string) => `/wms/asns/${id}`,
   asnConfirm: (id: string) => `/wms/asns/${id}/confirm`,
   asnCancel: (id: string) => `/wms/asns/${id}/cancel`,
+  asnMarkPicked: (id: string) => `/wms/asns/${id}/mark-picked`,
+  asnMarkUnloading: (id: string) => `/wms/asns/${id}/mark-unloading`,
+  asnMarkUnloaded: (id: string) => `/wms/asns/${id}/mark-unloaded`,
+  asnResendGrn: (id: string) => `/wms/asns/${id}/resend-grn`,
   grns: '/wms/grns',
   grn: (id: string) => `/wms/grns/${id}`,
   grnPdf: (id: string) => `/wms/grns/${id}/pdf`,
@@ -47,8 +54,8 @@ export const WMS_API = {
   gdoPdf: (id: string) => `/wms/gdos/${id}/pdf`,
   gdoPost: (id: string) => `/wms/gdos/${id}/post`,
   gdoCancel: (id: string) => `/wms/gdos/${id}/cancel`,
-  /** Registered master warehouses for GRN/GDO/ASN (scoped for warehouse staff). */
-  warehouses: '/wms/warehouses',
+  gdoResendGdn: (id: string) => `/wms/gdos/${id}/resend-gdn`,
+  opsBoard: '/wms/ops-board',
   stockOnHand: '/wms/stock/on-hand',
   stockMovements: '/wms/stock/movements',
   stockLowStock: '/wms/stock/low-stock',

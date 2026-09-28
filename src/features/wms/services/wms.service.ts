@@ -21,6 +21,7 @@ import type {
   UpsertWmsSettingsDto,
   WmsItemListParams,
   WmsItemListResult,
+  WmsOpsBoard,
   WmsSettings,
   WmsWarehouseSummary,
 } from '../types/wms.types';
@@ -33,6 +34,7 @@ import {
   normalizeWmsItem,
   mergeWarehouseSummaries,
   normalizeWmsItems,
+  normalizeWmsOpsBoard,
   normalizeWmsSettings,
   normalizeWmsWarehouses,
   warehouseSummaryFromRecord,
@@ -64,45 +66,6 @@ async function tryListMasterWarehouses(): Promise<WmsWarehouseSummary[]> {
   } catch {
     return [];
   }
-}
-
-function warehousesFromStockRows(rows: WmsStockRow[]): WmsWarehouseSummary[] {
-  const out: WmsWarehouseSummary[] = [];
-  const seen = new Set<string>();
-  for (const row of rows) {
-    const id = String(row.warehouse_id ?? '').trim();
-    if (!id || !isUuid(id) || seen.has(id)) continue;
-    seen.add(id);
-    out.push({
-      id,
-      name: row.warehouse_name || undefined,
-    });
-  }
-  return out;
-}
-
-function warehousesFromDocuments(docs: WmsDocument[]): WmsWarehouseSummary[] {
-  const out: WmsWarehouseSummary[] = [];
-  const seen = new Set<string>();
-
-  const push = (row: WmsWarehouseSummary | null | undefined) => {
-    if (!row?.id || !isUuid(row.id) || seen.has(row.id)) return;
-    seen.add(row.id);
-    out.push(row);
-  };
-
-  for (const doc of docs) {
-    const raw = doc as Record<string, unknown>;
-    push(warehouseSummaryFromRecord(raw.warehouse ?? raw.Warehouse));
-    push(warehouseSummaryFromRecord(raw.from_warehouse ?? raw.fromWarehouse));
-    push(warehouseSummaryFromRecord(raw.to_warehouse ?? raw.toWarehouse));
-
-    const id = String(doc.warehouse_id ?? '').trim();
-    if (id && isUuid(id)) {
-      push({ id });
-    }
-  }
-  return out;
 }
 
 async function tryFetchWarehouseById(id: string): Promise<WmsWarehouseSummary | null> {
@@ -149,40 +112,13 @@ async function requestList(raw: unknown): Promise<unknown[]> {
 export const wmsService = {
   /**
    * Registered master warehouses for WMS forms.
-   * Merges every source the current user can read (never throws on 403/404).
-   * Primary catalog: GET /masters/warehouses (Swagger — no /wms/warehouses route yet).
+   * Primary catalog: GET /masters/warehouses (Swagger — there is no /wms/warehouses route).
+   * Avoid probing stock/ASN/GRN/GDO on every form open — those calls toast 500s from the
+   * axios interceptor even when failures are ignored here.
    */
   async listWarehouses(preferredId?: string): Promise<WmsWarehouseSummary[]> {
     try {
-      const groups: WmsWarehouseSummary[][] = [];
-
-      groups.push(await tryListMasterWarehouses());
-
-      try {
-        const res = await withGatewayRetry(() => axiosInstance.get(WMS_API.warehouses));
-        groups.push(normalizeWmsWarehouses(res.data));
-      } catch {
-        // Optional future WMS-scoped warehouse list (not in current Swagger).
-      }
-
-      try {
-        groups.push(warehousesFromStockRows(await this.stockOnHand({})));
-      } catch {
-        // Stock may be empty or forbidden — continue.
-      }
-
-      for (const listFn of [
-        () => this.listGrns(),
-        () => this.listGdos(),
-        () => this.listAsns(),
-        () => this.listTransfers(),
-      ] as const) {
-        try {
-          groups.push(warehousesFromDocuments(await listFn()));
-        } catch {
-          // Ignore per-source failures.
-        }
-      }
+      const groups: WmsWarehouseSummary[][] = [await tryListMasterWarehouses()];
 
       if (preferredId && isUuid(preferredId)) {
         const byId = await tryFetchWarehouseById(preferredId);
@@ -271,6 +207,45 @@ export const wmsService = {
     return request(() => axiosInstance.post(WMS_API.asnCancel(id)), normalizeWmsDocument) as Promise<WmsDocument>;
   },
 
+  /** POST /wms/asns/{id}/mark-picked — cargo collected / en route. */
+  async markAsnPicked(id: string): Promise<WmsDocument> {
+    assertId(id, 'ASN id');
+    return request(
+      () => axiosInstance.post(WMS_API.asnMarkPicked(id)),
+      normalizeWmsDocument,
+    ) as Promise<WmsDocument>;
+  },
+
+  /** POST /wms/asns/{id}/mark-unloading — arrived, unload in progress. */
+  async markAsnUnloading(id: string): Promise<WmsDocument> {
+    assertId(id, 'ASN id');
+    return request(
+      () => axiosInstance.post(WMS_API.asnMarkUnloading(id)),
+      normalizeWmsDocument,
+    ) as Promise<WmsDocument>;
+  },
+
+  /**
+   * POST /wms/asns/{id}/mark-unloaded — requires party_id + job_id on the ASN.
+   * Auto-creates/posts GRN, emails party + portal, attaches JobDocument GRN.
+   */
+  async markAsnUnloaded(id: string): Promise<WmsDocument> {
+    assertId(id, 'ASN id');
+    return request(
+      () => axiosInstance.post(WMS_API.asnMarkUnloaded(id)),
+      normalizeWmsDocument,
+    ) as Promise<WmsDocument>;
+  },
+
+  /** POST /wms/asns/{id}/resend-grn — resend GRN email + republish portal document. */
+  async resendAsnGrn(id: string): Promise<WmsDocument> {
+    assertId(id, 'ASN id');
+    return request(
+      () => axiosInstance.post(WMS_API.asnResendGrn(id)),
+      normalizeWmsDocument,
+    ) as Promise<WmsDocument>;
+  },
+
   async listGrns(): Promise<WmsDocument[]> {
     const res = await withGatewayRetry(() => axiosInstance.get(WMS_API.grns));
     return normalizeWmsDocuments(await requestList(res.data));
@@ -330,6 +305,20 @@ export const wmsService = {
   async cancelGdo(id: string): Promise<WmsDocument> {
     assertId(id, 'GDO id');
     return request(() => axiosInstance.post(WMS_API.gdoCancel(id)), normalizeWmsDocument) as Promise<WmsDocument>;
+  },
+
+  /** POST /wms/gdos/{id}/resend-gdn — resend GDN email + republish portal document. */
+  async resendGdoGdn(id: string): Promise<WmsDocument> {
+    assertId(id, 'GDO id');
+    return request(
+      () => axiosInstance.post(WMS_API.gdoResendGdn(id)),
+      normalizeWmsDocument,
+    ) as Promise<WmsDocument>;
+  },
+
+  /** GET /wms/ops-board — ASN yard, GDO dispatch, OVERDUE / OVER_BILL labels. */
+  async getOpsBoard(): Promise<WmsOpsBoard> {
+    return request(() => axiosInstance.get(WMS_API.opsBoard), normalizeWmsOpsBoard) as Promise<WmsOpsBoard>;
   },
 
   /** GET /wms/gdos/{id}/pdf — on-demand GDO/GDN (Goods Dispatch) PDF. */
@@ -400,22 +389,77 @@ export const wmsService = {
   },
 
   async calculateStorage(dto: CalculateStorageDto): Promise<unknown> {
-    return request(() => axiosInstance.post(WMS_API.storageCalculate, dto));
+    const body: CalculateStorageDto = {
+      warehouse_id: dto.warehouse_id,
+      party_id: dto.party_id,
+      period_from: dto.period_from,
+      period_to: dto.period_to,
+    };
+    if (dto.free_days != null && Number.isFinite(dto.free_days)) {
+      body.free_days = dto.free_days;
+    }
+    if (dto.rate_per_day != null && Number.isFinite(dto.rate_per_day)) {
+      body.rate_per_day = dto.rate_per_day;
+    }
+    if (dto.overdue_rate_per_day != null && Number.isFinite(dto.overdue_rate_per_day)) {
+      body.overdue_rate_per_day = dto.overdue_rate_per_day;
+    }
+    if (dto.currency_code?.trim()) {
+      body.currency_code = dto.currency_code.trim().toUpperCase();
+    }
+    try {
+      return await request(() =>
+        axiosInstance.post(WMS_API.storageCalculate, body, {
+          // Form shows inline error; avoid duplicate global toast on known failures.
+          skipErrorToast: true,
+        }),
+      );
+    } catch (error) {
+      const msg = getErrorMessage(error);
+      if (/500|internal server error/i.test(msg)) {
+        throw new Error(
+          `${msg} — Storage calculate needs posted GRN lots with party_id for this warehouse in the period. Finish ASN unload (auto GRN) first, then retry.`,
+        );
+      }
+      throw error instanceof Error ? error : new Error(msg);
+    }
   },
 
+  /**
+   * GET /wms/storage/charges — currently returns HTTP 500 on live backend.
+   * Soft-fails (no toast) so callers can fall back to POST /wms/storage/calculate results.
+   */
   async listStorageCharges(params: StorageChargesParams): Promise<unknown[]> {
     const query: Record<string, string> = {
       party_id: params.party_id,
       status: params.status,
       charge_kind: params.charge_kind,
     };
-    const res = await withGatewayRetry(() =>
-      axiosInstance.get(WMS_API.storageCharges, { params: query }),
-    );
-    return requestList(res.data);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(WMS_API.storageCharges, {
+          params: query,
+          skipErrorToast: true,
+        }),
+      );
+      return requestList(res.data);
+    } catch (error) {
+      const msg = getErrorMessage(error);
+      if (/500|internal server error/i.test(msg)) {
+        throw new Error(
+          'Storage charges list is unavailable (server error). Use Calculate to create OPEN charges, then invoice from that result.',
+        );
+      }
+      throw error instanceof Error ? error : new Error(msg);
+    }
   },
 
   async invoiceStorage(dto: InvoiceStorageDto): Promise<unknown> {
-    return request(() => axiosInstance.post(WMS_API.storageInvoice, dto));
+    return request(() =>
+      axiosInstance.post(WMS_API.storageInvoice, dto, {
+        // Page shows inline form error; avoid duplicate global toast on expected 4xx.
+        skipErrorToast: true,
+      }),
+    );
   },
 };

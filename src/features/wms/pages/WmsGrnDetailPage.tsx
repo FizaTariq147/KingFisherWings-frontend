@@ -51,7 +51,9 @@ export default function WmsGrnDetailPage() {
   });
 
   const status = (doc?.status ?? '').toLowerCase();
-  const canPost = Boolean(doc) && !status.includes('post') && !status.includes('cancel');
+  const hasParty = Boolean(doc?.party_id && isUuid(doc.party_id));
+  const canPost =
+    Boolean(doc) && !status.includes('post') && !status.includes('cancel') && hasParty;
   const canCancel = Boolean(doc) && !status.includes('cancel');
 
   const refresh = () => {
@@ -66,7 +68,7 @@ export default function WmsGrnDetailPage() {
         backTo={`${WMS_ROUTE_PREFIX}/grns`}
         backLabel="GRN"
         title={doc ? displayDocNumber(doc) : 'GRN detail'}
-        description={doc?.status ? undefined : 'Goods received note'}
+        description="Preferred inbound: ASN Mark unloaded (auto GRN). Manual Post here is legacy (ASN → RECEIVED)."
         actions={
           doc ? (
             <>
@@ -75,14 +77,19 @@ export default function WmsGrnDetailPage() {
                 Refresh
               </Button>
               {pdfButton}
-              {canPost ? (
+              {Boolean(doc) && !status.includes('post') && !status.includes('cancel') ? (
                 <Button
                   type="button"
                   onClick={() => post.mutate(undefined, { onSuccess: refresh })}
-                  disabled={post.isPending}
+                  disabled={post.isPending || !canPost}
+                  title={
+                    hasParty
+                      ? 'Post inbound stock to lots'
+                      : 'party_id is required before post (lots need party for storage calculate)'
+                  }
                 >
                   <Check className="h-4 w-4" />
-                  Post
+                  {post.isPending ? 'Posting…' : 'Post'}
                 </Button>
               ) : null}
               {canCancel ? (
@@ -121,6 +128,12 @@ export default function WmsGrnDetailPage() {
               <WmsDetailField label="Warehouse" value={warehouseLabel} />
               <WmsDetailField label="ASN" value={String(doc.asn_id ?? '—')} />
               <WmsDetailField label="Party" value={partyLabel || doc.party_id || '—'} />
+              {!hasParty ? (
+                <p className="mt-1 text-xs text-[var(--color-danger-600)]">
+                  Missing party_id — Post is blocked. Storage calculate needs lots stamped with a
+                  party (recreate GRN with party, or use ASN Mark unloaded).
+                </p>
+              ) : null}
               <WmsDetailField label="Job" value={doc.job_id ?? '—'} />
               <WmsDetailField label="Remarks" value={doc.remarks ?? '—'} />
               <WmsDetailField

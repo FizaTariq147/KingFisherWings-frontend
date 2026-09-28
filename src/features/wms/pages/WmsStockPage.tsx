@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -20,6 +20,7 @@ import {
 } from '../hooks/useWms';
 import {
   useWmsItemOptions,
+  useWmsPartyOptions,
   useWmsWarehouseOptions,
   WmsSelect,
 } from '../components/WmsFormHelpers';
@@ -32,6 +33,7 @@ import {
 } from '../components/WmsFormLayout';
 import { adjustStockSchema, createTransferSchema } from '../schemas/wms.schema';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import type { WmsStockRow } from '../types/wms.types';
 
 type StockTab =
   | 'on-hand'
@@ -50,6 +52,34 @@ const TABS: Array<{ id: StockTab; label: string }> = [
   { id: 'transfers', label: 'Transfers' },
 ];
 
+function buildLabelMap(options: Array<{ value: string; label: string }>): Map<string, string> {
+  const map = new Map<string, string>();
+  for (const opt of options) {
+    if (opt.value) map.set(opt.value, opt.label);
+  }
+  return map;
+}
+
+function formatDateTime(value: unknown): string {
+  const s = String(value ?? '').trim();
+  if (!s) return '—';
+  const d = new Date(s);
+  if (Number.isNaN(d.getTime())) return s.slice(0, 16);
+  return d.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function partyDisplay(row: WmsStockRow, partyLabels: Map<string, string>): string {
+  if (row.party_name?.trim()) return row.party_name.trim();
+  if (row.party_id && partyLabels.has(row.party_id)) return partyLabels.get(row.party_id)!;
+  return '—';
+}
+
 export default function WmsStockPage() {
   const [tab, setTab] = useState<StockTab>('on-hand');
   const [warehouseId, setWarehouseId] = useState('');
@@ -57,6 +87,14 @@ export default function WmsStockPage() {
   const [storageStatus, setStorageStatus] = useState('');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
+
+  const { options: warehouseOptions } = useWmsWarehouseOptions();
+  const { options: itemOptions } = useWmsItemOptions();
+  const { options: partyOptions } = useWmsPartyOptions();
+
+  const warehouseLabels = useMemo(() => buildLabelMap(warehouseOptions), [warehouseOptions]);
+  const itemLabels = useMemo(() => buildLabelMap(itemOptions), [itemOptions]);
+  const partyLabels = useMemo(() => buildLabelMap(partyOptions), [partyOptions]);
 
   const filterParams = {
     warehouse_id: isUuid(warehouseId) ? warehouseId : undefined,
@@ -90,6 +128,61 @@ export default function WmsStockPage() {
     activeQuery?.refetch();
     if (tab === 'transfers') transfersQuery.refetch();
   };
+
+  const extraColumns =
+    tab === 'lot-aging'
+      ? [
+          {
+            key: 'party',
+            label: 'Party',
+            render: (r: WmsStockRow) => partyDisplay(r, partyLabels),
+          },
+          {
+            key: 'storage_status',
+            label: 'Status',
+            render: (r: WmsStockRow) => String(r.storage_status ?? '—'),
+          },
+          {
+            key: 'received_at',
+            label: 'Received',
+            render: (r: WmsStockRow) => formatDateTime(r.received_at),
+          },
+          {
+            key: 'batch_code',
+            label: 'Batch',
+            render: (r: WmsStockRow) => String(r.batch_code ?? '—'),
+          },
+          {
+            key: 'age_days',
+            label: 'Age (days)',
+            render: (r: WmsStockRow) =>
+              r.age_days != null ? String(r.age_days) : String(r.days ?? '—'),
+          },
+        ]
+      : tab === 'movements'
+        ? [
+            {
+              key: 'movement_type',
+              label: 'Type',
+              render: (r: WmsStockRow) => String(r.movement_type ?? r.type ?? '—'),
+            },
+            {
+              key: 'created_at',
+              label: 'When',
+              render: (r: WmsStockRow) =>
+                formatDateTime(r.created_at ?? r.received_at ?? r.moved_at),
+            },
+          ]
+        : tab === 'low-stock'
+          ? [
+              {
+                key: 'low_stock_threshold',
+                label: 'Threshold',
+                render: (r: WmsStockRow) =>
+                  String(r.low_stock_threshold ?? r.lowStockThreshold ?? '—'),
+              },
+            ]
+          : [];
 
   return (
     <div className="space-y-4">
@@ -127,7 +220,7 @@ export default function WmsStockPage() {
       {tab === 'adjust' ? (
         <AdjustStockPanel />
       ) : tab === 'transfers' ? (
-        <TransfersPanel />
+        <TransfersPanel warehouseLabels={warehouseLabels} itemLabels={itemLabels} />
       ) : (
         <Card className="space-y-4 p-4">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -147,14 +240,26 @@ export default function WmsStockPage() {
             />
             {tab === 'movements' ? (
               <>
-                <Input label="From" type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
-                <Input label="To" type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+                <Input
+                  label="From"
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
+                <Input
+                  label="To"
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                />
               </>
             ) : null}
           </div>
 
           {activeQuery?.isError ? (
-            <p className="text-sm text-[var(--color-danger-600)]">{getErrorMessage(activeQuery.error)}</p>
+            <p className="text-sm text-[var(--color-danger-600)]">
+              {getErrorMessage(activeQuery.error)}
+            </p>
           ) : (
             <WmsStockTable
               rows={
@@ -167,13 +272,10 @@ export default function WmsStockPage() {
                       : (agingQuery.data ?? [])
               }
               isLoading={activeQuery?.isLoading}
-              extraColumns={
-                tab === 'lot-aging'
-                  ? [{ key: 'age_days', label: 'Age (days)', render: (r) => String(r.age_days ?? r.days ?? '—') }]
-                  : tab === 'movements'
-                    ? [{ key: 'movement_type', label: 'Type', render: (r) => String(r.movement_type ?? r.type ?? '—') }]
-                    : []
-              }
+              warehouseLabels={warehouseLabels}
+              itemLabels={itemLabels}
+              partyLabels={partyLabels}
+              extraColumns={extraColumns}
             />
           )}
         </Card>
@@ -340,7 +442,13 @@ function AdjustStockPanel() {
   );
 }
 
-function TransfersPanel() {
+function TransfersPanel({
+  warehouseLabels,
+  itemLabels,
+}: {
+  warehouseLabels: Map<string, string>;
+  itemLabels: Map<string, string>;
+}) {
   const { data: transfers = [], isLoading, refetch, isFetching } = useWmsTransfers();
   const createMutation = useCreateWmsTransfer();
   const postMutation = usePostWmsTransfer();
@@ -397,6 +505,17 @@ function TransfersPanel() {
     } catch (err) {
       setFormError(getErrorMessage(err));
     }
+  };
+
+  const resolveWh = (id: unknown) => {
+    const s = String(id ?? '').trim();
+    if (!s) return '—';
+    return warehouseLabels.get(s) || s;
+  };
+  const resolveItem = (id: unknown) => {
+    const s = String(id ?? '').trim();
+    if (!s) return '—';
+    return itemLabels.get(s) || s;
   };
 
   return (
@@ -494,25 +613,46 @@ function TransfersPanel() {
           ) : !transfers.length ? (
             <p className="text-sm text-[var(--color-neutral-400)]">No transfers.</p>
           ) : (
-            transfers.map((t) => (
-              <div
-                key={t.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded border p-3 text-sm"
-              >
-                <div>
-                  <p className="font-medium">{t.document_number ?? t.id.slice(0, 8)}</p>
-                  <p className="text-xs text-[var(--color-neutral-500)]">Status: {t.status ?? '—'}</p>
-                </div>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  disabled={postMutation.isPending || (t.status ?? '').toLowerCase().includes('post')}
-                  onClick={() => postMutation.mutate(t.id, { onSuccess: () => refetch() })}
+            transfers.map((t) => {
+              const fromId = t.from_warehouse_id ?? t.fromWarehouseId;
+              const toId = t.to_warehouse_id ?? t.toWarehouseId;
+              const lines = Array.isArray(t.lines) ? t.lines : [];
+              const firstLine = lines[0] as Record<string, unknown> | undefined;
+              const lineItemId = firstLine
+                ? String(firstLine.item_id ?? firstLine.itemId ?? '')
+                : '';
+              const lineQty = firstLine
+                ? String(firstLine.quantity ?? firstLine.qty ?? '')
+                : '';
+              return (
+                <div
+                  key={t.id}
+                  className="flex flex-wrap items-center justify-between gap-2 rounded border p-3 text-sm"
                 >
-                  Post
-                </Button>
-              </div>
-            ))
+                  <div>
+                    <p className="font-medium">{t.document_number ?? `Transfer ${t.id.slice(0, 8)}`}</p>
+                    <p className="text-xs text-[var(--color-neutral-500)]">
+                      {resolveWh(fromId)} → {resolveWh(toId)}
+                      {lineItemId ? ` · ${resolveItem(lineItemId)}` : ''}
+                      {lineQty ? ` × ${lineQty}` : ''}
+                    </p>
+                    <p className="text-xs text-[var(--color-neutral-500)]">
+                      Status: {t.status ?? '—'}
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    disabled={
+                      postMutation.isPending || (t.status ?? '').toLowerCase().includes('post')
+                    }
+                    onClick={() => postMutation.mutate(t.id, { onSuccess: () => refetch() })}
+                  >
+                    Post
+                  </Button>
+                </div>
+              );
+            })
           )}
         </div>
       </Card>

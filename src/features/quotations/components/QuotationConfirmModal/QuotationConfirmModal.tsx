@@ -41,7 +41,7 @@ const CONFIG: Record<
         return `${label} will be marked customer-approved only — no automatic job. Next: customer completes the portal booking form, then you send invoice (Start air ops job only if a job shell is needed for Ops APIs).`;
       }
       if (usesModeBookingFormConvertFlow(jt)) {
-        return `${label} will be marked customer-approved only — no job yet. Next: customer completes the portal booking form; then the quotation converts to a job automatically.`;
+        return `${label} will be marked customer-approved only — no job yet. Next: customer completes the portal booking form (or staff completes Ops booking form); then the quotation converts to a job.`;
       }
       return `${label} will be marked customer-approved, then a job and draft customer invoice are created automatically.`;
     },
