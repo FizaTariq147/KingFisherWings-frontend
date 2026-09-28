@@ -56,6 +56,15 @@ function isRoadOrLandQuoteJob(jobType?: string | null): boolean {
   return t === 'ROAD_FREIGHT' || t === 'LAND';
 }
 
+/** PortalQuotationRequestDto has WAREHOUSE but no warehouse_* fields — route hubs are optional like road. */
+function isWarehouseQuoteJob(jobType?: string | null): boolean {
+  return String(jobType ?? '').toUpperCase().replace(/[\s-]+/g, '_') === 'WAREHOUSE';
+}
+
+function isOptionalRouteQuoteJob(jobType?: string | null): boolean {
+  return isRoadOrLandQuoteJob(jobType) || isWarehouseQuoteJob(jobType);
+}
+
 export const portalBookQuoteSchema = z
   .object({
     job_type: jobTypeSchema,
@@ -71,11 +80,12 @@ export const portalBookQuoteSchema = z
     valid_until: optionalDate,
   })
   .superRefine((data, ctx) => {
-    const roadLand = isRoadOrLandQuoteJob(data.job_type);
+    const optionalRoute = isOptionalRouteQuoteJob(data.job_type);
+    const warehouse = isWarehouseQuoteJob(data.job_type);
     const originRaw = data.origin_port ?? '';
     const destRaw = data.dest_port ?? '';
 
-    if (!roadLand) {
+    if (!optionalRoute) {
       if (originRaw.length < 2) {
         ctx.addIssue({
           code: 'custom',
@@ -113,18 +123,21 @@ export const portalBookQuoteSchema = z
       ctx.addIssue({
         code: 'custom',
         path: ['dest_port'],
-        message: 'Destination must differ from origin',
+        message: warehouse
+          ? 'Warehouse location must differ from pickup'
+          : 'Destination must differ from origin',
       });
     }
 
-    if (roadLand && !originRaw && !destRaw) {
+    if (optionalRoute && !originRaw && !destRaw) {
       const special = data.special_requirements?.trim() ?? '';
       if (special.length < 8) {
         ctx.addIssue({
           code: 'custom',
           path: ['special_requirements'],
-          message:
-            'For road freight, add origin/destination hubs or describe door addresses in special requirements',
+          message: warehouse
+            ? 'For warehouse quotes, add pickup → warehouse locations or describe storage needs in special requirements'
+            : 'For road freight, add origin/destination hubs or describe door addresses in special requirements',
         });
       }
     }

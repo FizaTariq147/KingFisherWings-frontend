@@ -1,6 +1,6 @@
 export type WmsValuationMethod = 'FIFO' | 'LIFO';
 
-/** Master warehouse row for WMS form dropdowns (from GET /wms/warehouses or /masters/warehouses). */
+/** Master warehouse row for WMS form dropdowns (from GET /masters/warehouses). */
 export interface WmsWarehouseSummary {
   id: string;
   code?: string;
@@ -93,7 +93,8 @@ export interface GrnLineDto {
 
 export interface CreateGrnDto {
   warehouse_id: string;
-  party_id?: string;
+  /** Required by FE so posted lots carry party for storage calculate. */
+  party_id: string;
   job_id?: string;
   asn_id?: string;
   received_at?: string;
@@ -121,8 +122,12 @@ export interface WmsDocument {
   document_number?: string;
   status?: string;
   warehouse_id?: string;
+  warehouse_code?: string;
+  warehouse_name?: string;
   party_id?: string;
+  party_name?: string;
   job_id?: string;
+  job_number?: string;
   remarks?: string;
   created_at?: string;
   updated_at?: string;
@@ -192,11 +197,48 @@ export interface InvoiceStorageDto {
 export interface WmsStockRow {
   id?: string;
   warehouse_id?: string;
+  warehouse_code?: string;
   warehouse_name?: string;
   item_id?: string;
   item_code?: string;
   item_name?: string;
+  party_id?: string;
+  party_name?: string;
+  job_id?: string;
+  job_number?: string;
   quantity?: number;
   uom_code?: string;
+  movement_type?: string;
+  storage_status?: string;
+  received_at?: string;
+  age_days?: number;
+  batch_code?: string;
   [key: string]: unknown;
+}
+
+/** Row on GET /wms/ops-board (shape varies; keep flexible). */
+export interface WmsOpsBoardRow {
+  id?: string;
+  document_number?: string;
+  status?: string;
+  label?: string;
+  party_id?: string;
+  party_name?: string;
+  job_id?: string;
+  job_number?: string;
+  warehouse_id?: string;
+  warehouse_name?: string;
+  item_id?: string;
+  item_code?: string;
+  item_name?: string;
+  customer_send_status?: string;
+  [key: string]: unknown;
+}
+
+export interface WmsOpsBoard {
+  inbound_asns: WmsOpsBoardRow[];
+  outbound_gdos: WmsOpsBoardRow[];
+  overdue_lots: WmsOpsBoardRow[];
+  over_bill_lots: WmsOpsBoardRow[];
+  raw: Record<string, unknown>;
 }

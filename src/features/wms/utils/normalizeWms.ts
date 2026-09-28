@@ -3,6 +3,8 @@ import type {
   WmsDocument,
   WmsItem,
   WmsItemListParams,
+  WmsOpsBoard,
+  WmsOpsBoardRow,
   WmsPaginationMeta,
   WmsSettings,
   WmsStockRow,
@@ -35,7 +37,10 @@ function bool(value: unknown, fallback = false): boolean {
 function pickString(record: Record<string, unknown>, ...keys: string[]): string {
   for (const key of keys) {
     const v = record[key];
-    if (v != null && String(v).trim()) return String(v).trim();
+    // Skip nested objects/arrays — callers use nestedName for those.
+    if (v == null || typeof v === 'object') continue;
+    const s = String(v).trim();
+    if (s) return s;
   }
   return '';
 }
@@ -132,19 +137,63 @@ export function normalizeWmsItems(items: unknown[]): WmsItem[] {
 export function normalizeWmsDocument(raw: unknown): WmsDocument | null {
   const r = asRecord(unwrapEntity(raw));
   if (!r || !r.id) return null;
+
   const linesRaw = r.lines ?? r.line_items ?? r.lineItems;
+  const warehouseNested = asRecord(r.warehouse ?? r.Warehouse);
+  const partyNested = asRecord(r.party ?? r.Party);
+  const jobNested = asRecord(r.job ?? r.Job);
+
+  const warehouse_id =
+    pickString(r, 'warehouse_id', 'warehouseId') ||
+    nestedName(warehouseNested, 'id') ||
+    undefined;
+  const party_id =
+    pickString(r, 'party_id', 'partyId') || nestedName(partyNested, 'id') || undefined;
+  const job_id = pickString(r, 'job_id', 'jobId') || nestedName(jobNested, 'id') || undefined;
+
   return {
+    ...r,
     id: str(r.id),
-    document_number: pickString(r, 'document_number', 'documentNumber', 'asn_number', 'grn_number', 'gdo_number', 'transfer_number') || undefined,
+    document_number:
+      pickString(
+        r,
+        'document_number',
+        'documentNumber',
+        'asn_number',
+        'asnNumber',
+        'grn_number',
+        'grnNumber',
+        'gdo_number',
+        'gdoNumber',
+        'gdn_number',
+        'gdnNumber',
+        'transfer_number',
+        'transferNumber',
+      ) || undefined,
     status: pickString(r, 'status') || undefined,
-    warehouse_id: pickString(r, 'warehouse_id', 'warehouseId') || undefined,
-    party_id: pickString(r, 'party_id', 'partyId') || undefined,
-    job_id: pickString(r, 'job_id', 'jobId') || undefined,
+    warehouse_id,
+    warehouse_code:
+      pickString(r, 'warehouse_code', 'warehouseCode') ||
+      nestedName(warehouseNested, 'code') ||
+      undefined,
+    warehouse_name:
+      pickString(r, 'warehouse_name', 'warehouseName') ||
+      nestedName(warehouseNested, 'name', 'label') ||
+      undefined,
+    party_id,
+    party_name:
+      pickString(r, 'party_name', 'partyName') ||
+      nestedName(partyNested, 'name', 'short_name', 'shortName', 'code') ||
+      undefined,
+    job_id,
+    job_number:
+      pickString(r, 'job_number', 'jobNumber') ||
+      nestedName(jobNested, 'job_number', 'jobNumber', 'number') ||
+      undefined,
     remarks: pickString(r, 'remarks') || undefined,
     created_at: pickString(r, 'created_at', 'createdAt') || undefined,
     updated_at: pickString(r, 'updated_at', 'updatedAt') || undefined,
     lines: Array.isArray(linesRaw) ? linesRaw : undefined,
-    ...r,
   };
 }
 
@@ -156,16 +205,91 @@ export function normalizeStockRows(items: unknown[]): WmsStockRow[] {
   return items.map((raw) => {
     const r = asRecord(raw);
     if (!r) return {};
+
+    const itemNested = asRecord(r.item ?? r.Item);
+    const warehouseNested = asRecord(r.warehouse ?? r.Warehouse);
+    const partyNested = asRecord(r.party ?? r.Party);
+    const jobNested = asRecord(r.job ?? r.Job);
+
+    const item_id =
+      pickString(r, 'item_id', 'itemId') || nestedName(itemNested, 'id') || undefined;
+    const warehouse_id =
+      pickString(r, 'warehouse_id', 'warehouseId') ||
+      nestedName(warehouseNested, 'id') ||
+      undefined;
+    const party_id =
+      pickString(r, 'party_id', 'partyId') || nestedName(partyNested, 'id') || undefined;
+    const job_id = pickString(r, 'job_id', 'jobId') || nestedName(jobNested, 'id') || undefined;
+
+    const item_code =
+      pickString(r, 'item_code', 'itemCode', 'sku') ||
+      nestedName(itemNested, 'code', 'sku') ||
+      // low-stock returns the item record itself
+      (itemNested ? '' : pickString(r, 'code')) ||
+      undefined;
+    const item_name =
+      pickString(r, 'item_name', 'itemName') ||
+      nestedName(itemNested, 'name') ||
+      (itemNested ? '' : pickString(r, 'name')) ||
+      undefined;
+    const warehouse_code =
+      pickString(r, 'warehouse_code', 'warehouseCode') ||
+      nestedName(warehouseNested, 'code') ||
+      undefined;
+    const warehouse_name =
+      pickString(r, 'warehouse_name', 'warehouseName') ||
+      nestedName(warehouseNested, 'name', 'label') ||
+      undefined;
+    const party_name =
+      pickString(r, 'party_name', 'partyName') ||
+      nestedName(partyNested, 'name', 'short_name', 'shortName', 'code') ||
+      undefined;
+    const job_number =
+      pickString(r, 'job_number', 'jobNumber') ||
+      nestedName(jobNested, 'job_number', 'jobNumber', 'number') ||
+      undefined;
+
+    const quantity = num(
+      r.quantity ??
+        r.qty_remaining ??
+        r.qtyRemaining ??
+        r.on_hand ??
+        r.onHand ??
+        r.qty ??
+        r.value,
+    );
+    const uom_code =
+      pickString(r, 'uom_code', 'uomCode') || nestedName(itemNested, 'uom_code', 'uomCode') || undefined;
+
+    const movement_type =
+      pickString(r, 'movement_type', 'movementType', 'type', 'reason') || undefined;
+    const storage_status =
+      pickString(r, 'storage_status', 'storageStatus') || undefined;
+    const received_at =
+      pickString(r, 'received_at', 'receivedAt', 'created_at', 'createdAt') || undefined;
+    const age_days = num(r.age_days ?? r.ageDays ?? r.days ?? r.age);
+    const batch_code = pickString(r, 'batch_code', 'batchCode') || undefined;
+
     return {
-      id: pickString(r, 'id', 'lot_id', 'lotId') || undefined,
-      warehouse_id: pickString(r, 'warehouse_id', 'warehouseId') || undefined,
-      warehouse_name: pickString(r, 'warehouse_name', 'warehouseName', 'warehouse') || undefined,
-      item_id: pickString(r, 'item_id', 'itemId') || undefined,
-      item_code: pickString(r, 'item_code', 'itemCode', 'code') || undefined,
-      item_name: pickString(r, 'item_name', 'itemName', 'name') || undefined,
-      quantity: num(r.quantity ?? r.on_hand ?? r.onHand ?? r.qty),
-      uom_code: pickString(r, 'uom_code', 'uomCode') || undefined,
       ...r,
+      id: pickString(r, 'id', 'lot_id', 'lotId') || undefined,
+      warehouse_id,
+      warehouse_code,
+      warehouse_name,
+      item_id,
+      item_code,
+      item_name,
+      party_id,
+      party_name,
+      job_id,
+      job_number,
+      quantity,
+      uom_code,
+      movement_type,
+      storage_status,
+      received_at,
+      age_days,
+      batch_code,
     };
   });
 }
@@ -228,4 +352,87 @@ export function normalizeWmsWarehouses(raw: unknown): WmsWarehouseSummary[] {
   }
 
   return out.sort((a, b) => wmsWarehouseLabel(a).localeCompare(wmsWarehouseLabel(b)));
+}
+
+function nestedName(raw: unknown, ...keys: string[]): string {
+  const r = asRecord(raw);
+  if (!r) return '';
+  return pickString(r, ...keys);
+}
+
+function normalizeOpsBoardRows(raw: unknown): WmsOpsBoardRow[] {
+  const { items } = unwrapList(raw);
+  const out: WmsOpsBoardRow[] = [];
+  for (const row of items) {
+    const r = asRecord(row);
+    if (!r) continue;
+    const partyNested = r.party ?? r.Party;
+    const jobNested = r.job ?? r.Job;
+    const warehouseNested = r.warehouse ?? r.Warehouse;
+    const itemNested = r.item ?? r.Item;
+    out.push({
+      ...r,
+      id: pickString(r, 'id') || undefined,
+      document_number:
+        pickString(r, 'document_number', 'documentNumber', 'number', 'code', 'asn_number', 'gdo_number') ||
+        undefined,
+      status: pickString(r, 'status') || undefined,
+      label: pickString(r, 'label', 'storage_label', 'storageLabel', 'lot_label') || undefined,
+      party_id: pickString(r, 'party_id', 'partyId') || nestedName(partyNested, 'id') || undefined,
+      party_name:
+        pickString(r, 'party_name', 'partyName', 'customer_name', 'customerName') ||
+        nestedName(partyNested, 'name', 'short_name', 'shortName', 'party_name') ||
+        undefined,
+      job_id: pickString(r, 'job_id', 'jobId') || nestedName(jobNested, 'id') || undefined,
+      job_number:
+        pickString(r, 'job_number', 'jobNumber') ||
+        nestedName(jobNested, 'job_number', 'jobNumber', 'number') ||
+        undefined,
+      warehouse_id:
+        pickString(r, 'warehouse_id', 'warehouseId') || nestedName(warehouseNested, 'id') || undefined,
+      warehouse_name:
+        pickString(r, 'warehouse_name', 'warehouseName') ||
+        nestedName(warehouseNested, 'name', 'code', 'label') ||
+        undefined,
+      item_id: pickString(r, 'item_id', 'itemId') || nestedName(itemNested, 'id') || undefined,
+      item_code:
+        pickString(r, 'item_code', 'itemCode', 'sku') ||
+        nestedName(itemNested, 'code', 'sku') ||
+        undefined,
+      item_name:
+        pickString(r, 'item_name', 'itemName') || nestedName(itemNested, 'name', 'label') || undefined,
+      customer_send_status:
+        pickString(r, 'customer_send_status', 'customerSendStatus', 'send_status', 'email_status') ||
+        undefined,
+    });
+  }
+  return out;
+}
+
+function pickBoardList(record: Record<string, unknown>, ...keys: string[]): unknown {
+  for (const key of keys) {
+    if (key in record) return record[key];
+  }
+  return undefined;
+}
+
+/** Normalize GET /wms/ops-board — inbound ASNs, outbound GDOs, OVERDUE / OVER_BILL lots. */
+export function normalizeWmsOpsBoard(raw: unknown): WmsOpsBoard {
+  const unwrapped = unwrapEntity(raw);
+  const r = asRecord(unwrapped) ?? {};
+  return {
+    inbound_asns: normalizeOpsBoardRows(
+      pickBoardList(r, 'inbound_asns', 'inboundAsns', 'asns', 'inbound'),
+    ),
+    outbound_gdos: normalizeOpsBoardRows(
+      pickBoardList(r, 'outbound_gdos', 'outboundGdos', 'gdos', 'outbound', 'dispatched'),
+    ),
+    overdue_lots: normalizeOpsBoardRows(
+      pickBoardList(r, 'overdue_lots', 'overdueLots', 'overdue', 'OVERDUE'),
+    ),
+    over_bill_lots: normalizeOpsBoardRows(
+      pickBoardList(r, 'over_bill_lots', 'overBillLots', 'over_bill', 'OVER_BILL', 'overbill'),
+    ),
+    raw: r,
+  };
 }

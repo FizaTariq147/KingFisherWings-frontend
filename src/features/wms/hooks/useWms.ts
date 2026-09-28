@@ -31,6 +31,7 @@ export const wmsKeys = {
   grn: (id: string) => [...wmsKeys.all, 'grn', id] as const,
   gdos: () => [...wmsKeys.all, 'gdos'] as const,
   gdo: (id: string) => [...wmsKeys.all, 'gdo', id] as const,
+  opsBoard: () => [...wmsKeys.all, 'ops-board'] as const,
   stockOnHand: (params: StockOnHandParams) => [...wmsKeys.all, 'stock-on-hand', params] as const,
   stockMovements: (params: StockMovementsParams) =>
     [...wmsKeys.all, 'stock-movements', params] as const,
@@ -158,6 +159,22 @@ export function useWmsAsnActions(id: string) {
       mutationFn: () => wmsService.confirmAsn(id),
       onSuccess: () => invalidate(),
     }),
+    markPicked: useMutation({
+      mutationFn: () => wmsService.markAsnPicked(id),
+      onSuccess: () => invalidate(),
+    }),
+    markUnloading: useMutation({
+      mutationFn: () => wmsService.markAsnUnloading(id),
+      onSuccess: () => invalidate(),
+    }),
+    markUnloaded: useMutation({
+      mutationFn: () => wmsService.markAsnUnloaded(id),
+      onSuccess: () => invalidate(),
+    }),
+    resendGrn: useMutation({
+      mutationFn: () => wmsService.resendAsnGrn(id),
+      onSuccess: () => invalidate(),
+    }),
     cancel: useMutation({
       mutationFn: () => wmsService.cancelAsn(id),
       onSuccess: () => invalidate(),
@@ -236,11 +253,24 @@ export function useWmsGdoActions(id: string) {
       mutationFn: () => wmsService.postGdo(id),
       onSuccess: () => invalidate(),
     }),
+    resendGdn: useMutation({
+      mutationFn: () => wmsService.resendGdoGdn(id),
+      onSuccess: () => invalidate(),
+    }),
     cancel: useMutation({
       mutationFn: () => wmsService.cancelGdo(id),
       onSuccess: () => invalidate(),
     }),
   };
+}
+
+export function useWmsOpsBoard() {
+  return useQuery({
+    queryKey: wmsKeys.opsBoard(),
+    queryFn: () => wmsService.getOpsBoard(),
+    enabled: useWmsEnabled(),
+    staleTime: 15_000,
+  });
 }
 
 export function useWmsStockOnHand(params: StockOnHandParams, enabled = true) {
@@ -326,6 +356,8 @@ export function useWmsStorageCharges(params: StorageChargesParams, enabled = tru
     queryFn: () => wmsService.listStorageCharges(params),
     enabled: useWmsEnabled(enabled) && isUuid(params.party_id) && Boolean(params.status?.trim()),
     staleTime: 30_000,
+    /** Live GET /wms/storage/charges currently 500s — do not hammer retries. */
+    retry: false,
   });
 }
 

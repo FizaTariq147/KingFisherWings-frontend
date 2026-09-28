@@ -293,6 +293,33 @@ export type PortalBookingForm = {
   consent_accepted?: boolean;
   mark_complete?: boolean;
   parties?: PortalBookingFormParty[];
+  /** Warehouse extras (UpsertWarehouseBookingFormDto) — synced to staff /jobs/:id/warehouse/booking-form */
+  warehouse_id?: string;
+  warehouse_name?: string;
+  expected_inbound_at?: string;
+  expected_outbound_at?: string;
+  storage_days_requested?: number;
+  bonded?: boolean;
+  temperature_controlled?: boolean;
+  handling_instructions?: string;
+  freight_job_id?: string;
+  cargo_category?: string;
+  dg_class?: string;
+  attach_packing_list?: boolean;
+  attach_bl_awb_copy?: boolean;
+  attach_carnet?: boolean;
+  attach_vehicle_title?: boolean;
+  attach_msds?: boolean;
+  attach_dangerous_goods_declaration?: boolean;
+  attach_health_veterinary?: boolean;
+  attach_fda_moh?: boolean;
+  stock_lines?: {
+    sku_code?: string;
+    description?: string;
+    quantity?: number;
+    unit?: string;
+    cbm?: number;
+  }[];
 };
 
 /**
@@ -338,5 +365,25 @@ export type PortalBookingFormUpsertDto = {
   parties: PortalBookingFormParty[];
   mark_complete?: boolean;
   consent_accepted?: boolean;
+  warehouse_id?: string;
+  warehouse_name?: string;
+  expected_inbound_at?: string;
+  expected_outbound_at?: string;
+  storage_days_requested?: number;
+  bonded?: boolean;
+  temperature_controlled?: boolean;
+  handling_instructions?: string;
+  freight_job_id?: string;
+  cargo_category?: string;
+  dg_class?: string;
+  attach_packing_list?: boolean;
+  attach_bl_awb_copy?: boolean;
+  attach_carnet?: boolean;
+  attach_vehicle_title?: boolean;
+  attach_msds?: boolean;
+  attach_dangerous_goods_declaration?: boolean;
+  attach_health_veterinary?: boolean;
+  attach_fda_moh?: boolean;
+  stock_lines?: PortalBookingForm['stock_lines'];
 };
 

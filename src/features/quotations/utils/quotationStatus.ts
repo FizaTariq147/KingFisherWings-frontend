@@ -142,9 +142,11 @@ export function usesGatedFreightQuoteFlow(jobType?: string): boolean {
 }
 
 /**
- * Sea FCL/LCL, Land, Road Freight, Courier: customer approve keeps quotation APPROVED
- * (no job yet). Convert runs after the customer completes the portal booking form;
- * staff mode booking form then loads those customer fields from the portal submission.
+ * Sea FCL/LCL, Land, Road Freight, Courier, Warehouse, Customs Clearance: customer approve
+ * keeps quotation APPROVED (no job yet). Convert runs after the booking form is completed
+ * (customer portal submit and/or staff POST …/booking-form/complete). Staff mode booking
+ * forms then load customer portal fields. Warehouse ops continue in WMS (ASN/GRN/GDO).
+ * Air / NVOCC stay on the gated invoice flow (usesGatedFreightQuoteFlow).
  */
 export function usesModeBookingFormConvertFlow(jobType?: string): boolean {
   const jt = String(jobType ?? '')
@@ -161,12 +163,19 @@ export function usesModeBookingFormConvertFlow(jobType?: string): boolean {
     jt === 'ROAD' ||
     jt === 'ROAD_FREIGHT' ||
     jt === 'ROAD_TRANSPORT' ||
-    jt === 'COURIER'
+    jt === 'COURIER' ||
+    jt === 'WAREHOUSE' ||
+    jt === 'CUSTOMS_CLEARANCE' ||
+    jt === 'CUSTOMS' ||
+    jt === 'CC'
   ) {
     return true;
   }
   if (jt.startsWith('SEA_FCL_') || jt.startsWith('SEA_LCL_')) return true;
   if (jt.startsWith('ROAD_')) return true;
+  if (jt.startsWith('WAREHOUSE_')) return true;
+  if (jt.startsWith('COURIER_')) return true;
+  if (jt.startsWith('CUSTOMS_') || jt.startsWith('LAND_')) return true;
   return false;
 }
 

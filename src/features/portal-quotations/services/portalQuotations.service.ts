@@ -36,6 +36,7 @@ import {
 } from '../utils/portalBookingFormStorage';
 import { portalMessagesService } from '@/features/portal-messages/services/portalMessages.service';
 import { isUuid } from '@/lib/isUuid';
+import { usesModeBookingFormConvertFlow } from '@/features/quotations/utils/quotationStatus';
 import {
   normalizePortalEstimate,
   normalizePortalServiceCatalog,
@@ -47,6 +48,29 @@ import { portalDetailToQuotationPdfModel } from '../utils/portalDetailToQuotatio
 import { rememberCustomerQuoteDecision } from '@/features/quotations/utils/customerQuoteDecision';
 import { normalizeNegotiationTimeline } from '@/features/quotations/utils/normalizeQuotationExtended';
 import type { NegotiationTimeline } from '@/features/quotations/types/quotationExtended.types';
+
+/**
+ * After portal booking form mark_complete: ask backend to convert quote → job.
+ * Soft-fails if the portal convert route is not deployed yet (staff list/detail still convert).
+ */
+async function tryConvertQuotationAfterBookingForm(opts: {
+  quotationId: string;
+  jobType?: string;
+}): Promise<boolean> {
+  if (!usesModeBookingFormConvertFlow(opts.jobType)) return false;
+  if (!opts.quotationId || !isUuid(opts.quotationId)) return false;
+  try {
+    await portalApiClient.post(PORTAL_QUOTATIONS_API.convertToJob(opts.quotationId), {});
+    return true;
+  } catch {
+    try {
+      await portalApiClient.post(`/quotations/${opts.quotationId}/convert-to-job`, {});
+      return true;
+    } catch {
+      return false;
+    }
+  }
+}
 import type { ApiPeriodQuery } from '@/lib/apiPeriod';
 import { periodQueryParams } from '@/lib/apiPeriod';
 import { asRecord, pickString, unwrapData } from '@/features/portal-shared/normalize';
@@ -386,7 +410,8 @@ export const portalQuotationsService = {
    * Customer compliance booking form (8-step) — shared commercial gate.
    * NVOCC: GET/PUT /portal/bookings/{id}/compliance-form (+ submit)
    * Air:   GET/PUT /portal/shipments/{id}/compliance-form (+ submit)
-   * Same UpsertNvoccBookingFormDto body per OpenAPI.
+   * Warehouse: no portal booking-form path in live OpenAPI — local draft + /portal/messages only
+   *            (staff PUT /jobs/{id}/warehouse/booking-form after convert).
    */
   async getBookingForm(opts: {
     quotationId: string;
@@ -396,6 +421,18 @@ export const portalQuotationsService = {
     quoteNumber?: string;
     jobType?: string;
   }): Promise<PortalBookingForm> {
+    const jt = String(opts.jobType ?? '')
+      .trim()
+      .toUpperCase()
+      .replace(/[\s-]+/g, '_');
+    if (jt === 'WAREHOUSE') {
+      return (
+        readPortalBookingFormDraft(opts.quotationId) ?? {
+          quotation_id: opts.quotationId,
+          mark_complete: false,
+        }
+      );
+    }
     const target = resolveComplianceTarget(opts);
     if (!target) {
       return (
@@ -468,23 +505,10 @@ export const portalQuotationsService = {
     },
     dto: PortalBookingFormUpsertDto,
   ): Promise<PortalBookingForm> {
-    let target = resolveComplianceTarget(opts);
-
-    // Refresh quote once to discover booking / shipment id before messages fallback.
-    if (!target) {
-      try {
-        const fresh = await this.getById(opts.quotationId);
-        target = resolveComplianceTarget({
-          bookingId: fresh.bookingId ?? opts.bookingId,
-          jobId: fresh.jobId ?? opts.jobId,
-          quotationId: opts.quotationId,
-          isAir: opts.isAir,
-          jobType: opts.jobType ?? fresh.jobType,
-        });
-      } catch {
-        /* continue */
-      }
-    }
+    const jt = String(opts.jobType ?? '')
+      .trim()
+      .toUpperCase()
+      .replace(/[\s-]+/g, '_');
 
     const saveViaMessages = async (): Promise<PortalBookingForm> => {
       const quoteLabel = opts.quoteNumber?.trim() || opts.quotationId.slice(0, 8);
@@ -503,11 +527,42 @@ export const portalQuotationsService = {
         body,
         job_id: opts.jobId && isUuid(opts.jobId) ? opts.jobId : undefined,
       });
-      return writePortalBookingFormDraft(opts.quotationId, dto, {
+      const draft = writePortalBookingFormDraft(opts.quotationId, dto, {
         quoteNumber: opts.quoteNumber,
         jobType: opts.jobType,
       });
+      if (dto.mark_complete) {
+        await tryConvertQuotationAfterBookingForm({
+          quotationId: opts.quotationId,
+          jobType: opts.jobType,
+        });
+      }
+      return draft;
     };
+
+    // Live OpenAPI has no /portal/.../warehouse/booking-form — keep full
+    // UpsertWarehouseBookingFormDto on draft + messages for staff sync.
+    if (jt === 'WAREHOUSE') {
+      return saveViaMessages();
+    }
+
+    let target = resolveComplianceTarget(opts);
+
+    // Refresh quote once to discover booking / shipment id before messages fallback.
+    if (!target) {
+      try {
+        const fresh = await this.getById(opts.quotationId);
+        target = resolveComplianceTarget({
+          bookingId: fresh.bookingId ?? opts.bookingId,
+          jobId: fresh.jobId ?? opts.jobId,
+          quotationId: opts.quotationId,
+          isAir: opts.isAir,
+          jobType: opts.jobType ?? fresh.jobType,
+        });
+      } catch {
+        /* continue */
+      }
+    }
 
     if (!target) {
       return saveViaMessages();
@@ -515,22 +570,43 @@ export const portalQuotationsService = {
 
     const paths = compliancePaths(target.kind);
     try {
+      // Portal compliance DTOs do not include UpsertWarehouseBookingFormDto fields —
+      // keep them on local draft / inbox message only.
+      const {
+        warehouse_id: _warehouseId,
+        warehouse_name: _warehouseName,
+        expected_inbound_at: _expectedInboundAt,
+        expected_outbound_at: _expectedOutboundAt,
+        storage_days_requested: _storageDaysRequested,
+        bonded: _bonded,
+        temperature_controlled: _temperatureControlled,
+        handling_instructions: _handlingInstructions,
+        freight_job_id: _freightJobId,
+        stock_lines: _stockLines,
+        ...complianceDto
+      } = dto;
+
       if (dto.mark_complete) {
         const submitBody = {
-          ...dto,
+          ...complianceDto,
           consent_accepted: Boolean(dto.consent_accepted),
           mark_complete: true,
         };
         await portalApiClient.post(paths.submit(target.id), submitBody);
-        return writePortalBookingFormDraft(
+        const draft = writePortalBookingFormDraft(
           opts.quotationId,
           { ...dto, mark_complete: true },
           { quoteNumber: opts.quoteNumber, jobType: opts.jobType },
         );
+        await tryConvertQuotationAfterBookingForm({
+          quotationId: opts.quotationId,
+          jobType: opts.jobType,
+        });
+        return draft;
       }
 
       await portalApiClient.put(paths.form(target.id), {
-        ...dto,
+        ...complianceDto,
         mark_complete: false,
       });
       return writePortalBookingFormDraft(

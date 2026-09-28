@@ -9,6 +9,9 @@ const SILENT_PATH_SNIPPETS = [
   '/vendor/auth/refresh',
   '/super-admin/auth/refresh',
   '/auth/me',
+  // Live API: route missing (404) or consistently 500 — callers soft-fail / use calculate.
+  '/wms/warehouses',
+  '/wms/storage/charges',
 ] as const;
 
 function isSilentUrl(url?: string): boolean {
@@ -35,7 +38,10 @@ export function notifyAxiosError(error: unknown, opts?: { title?: string }): voi
     const axiosErr = error as AxiosError & { status?: number };
     if (isCancel(axiosErr)) return;
 
-    const url = axiosErr.config?.url;
+    const cfg = axiosErr.config as (AxiosError['config'] & { skipErrorToast?: boolean }) | undefined;
+    if (cfg?.skipErrorToast) return;
+
+    const url = cfg?.url;
     if (isSilentUrl(url)) return;
 
     const status =

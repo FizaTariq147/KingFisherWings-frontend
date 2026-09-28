@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useInlineValidation } from '@/lib/validation';
-import { WMS_ROUTE_PREFIX, WMS_STORAGE_CHARGE_KINDS, WMS_STORAGE_CHARGE_STATUSES } from '../api/wms.api';
+import { WMS_ROUTE_PREFIX } from '../api/wms.api';
 import { WmsCurrencyField } from '../components/WmsCurrencyField';
 import { WmsPageHeader } from '../components/WmsPageHeader';
 import {
@@ -20,13 +20,71 @@ import {
   WmsFormGrid,
   WmsFormSpan2,
 } from '../components/WmsFormLayout';
-import {
-  useCalculateWmsStorage,
-  useInvoiceWmsStorage,
-  useWmsStorageCharges,
-} from '../hooks/useWms';
+import { useCalculateWmsStorage, useInvoiceWmsStorage } from '../hooks/useWms';
 import { calculateStorageSchema, invoiceStorageSchema } from '../schemas/wms.schema';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { unwrapList } from '../utils/normalizeWms';
+
+function chargesFromCalculateResult(result: unknown): Array<Record<string, unknown>> {
+  const { items } = unwrapList(result);
+  return items.filter((row): row is Record<string, unknown> => {
+    if (!row || typeof row !== 'object' || Array.isArray(row)) return false;
+    return isUuid(String((row as Record<string, unknown>).id ?? ''));
+  });
+}
+
+function pickStr(row: Record<string, unknown>, ...keys: string[]): string {
+  for (const key of keys) {
+    const v = row[key];
+    if (v == null) continue;
+    const s = String(v).trim();
+    if (s) return s;
+  }
+  return '';
+}
+
+function pickNum(row: Record<string, unknown>, ...keys: string[]): number | null {
+  for (const key of keys) {
+    const v = row[key];
+    if (v == null || v === '') continue;
+    const n = typeof v === 'number' ? v : Number(String(v).replace(/,/g, ''));
+    if (Number.isFinite(n)) return n;
+  }
+  return null;
+}
+
+function formatDate(value: string): string {
+  if (!value) return '—';
+  const d = value.slice(0, 10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : value;
+}
+
+function formatAmount(value: number | null, currency: string): string {
+  if (value == null) return '—';
+  const code = currency || 'AED';
+  try {
+    return new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: code,
+      maximumFractionDigits: 2,
+    }).format(value);
+  } catch {
+    return `${value.toFixed(2)} ${code}`;
+  }
+}
+
+function shortId(id: string): string {
+  if (!id) return '—';
+  return id.length > 12 ? `${id.slice(0, 8)}…` : id;
+}
+
+function labelFromOptions(
+  options: Array<{ value: string; label: string }>,
+  id: string,
+): string {
+  if (!id) return '—';
+  return options.find((o) => o.value === id)?.label || shortId(id);
+}
 
 export default function WmsStoragePage() {
   const { options: warehouseOptions } = useWmsWarehouseOptions();
@@ -44,23 +102,10 @@ export default function WmsStoragePage() {
   const [ratePerDay, setRatePerDay] = useState('');
   const [overdueRatePerDay, setOverdueRatePerDay] = useState('');
   const [currencyCode, setCurrencyCode] = useState('AED');
-  const [chargePartyId, setChargePartyId] = useState('');
-  const [chargeStatus, setChargeStatus] = useState<string>('OPEN');
-  const [chargeKind, setChargeKind] = useState<string>('STORAGE');
-  const [calcResult, setCalcResult] = useState<unknown>(null);
+  const [didCalculate, setDidCalculate] = useState(false);
+  const [openCharges, setOpenCharges] = useState<Array<Record<string, unknown>>>([]);
   const [selectedChargeIds, setSelectedChargeIds] = useState<string[]>([]);
   const [success, setSuccess] = useState<string | null>(null);
-
-  const chargesParams = {
-    party_id: chargePartyId.trim(),
-    status: chargeStatus.trim(),
-    charge_kind: chargeKind.trim(),
-  };
-  const chargesEnabled =
-    isUuid(chargesParams.party_id) &&
-    Boolean(chargesParams.status) &&
-    Boolean(chargesParams.charge_kind);
-  const chargesQuery = useWmsStorageCharges(chargesParams, chargesEnabled);
 
   const partyRequiredOptions = partyOptions.map((o) =>
     o.value === '' ? { ...o, label: 'Select party…' } : o,
@@ -97,22 +142,34 @@ export default function WmsStoragePage() {
     setRatePerDay('');
     setOverdueRatePerDay('');
     setCurrencyCode('AED');
-    setCalcResult(null);
+    setDidCalculate(false);
+    setOpenCharges([]);
+    setSelectedChargeIds([]);
+    setSuccess(null);
     calcValidation.clearErrors();
+    invoiceValidation.clearErrors();
   };
 
   const handleCalculate = async (e: React.FormEvent) => {
     e.preventDefault();
     calcValidation.clearErrors();
-    setCalcResult(null);
+    invoiceValidation.clearErrors();
+    setSuccess(null);
+    setDidCalculate(false);
+    setOpenCharges([]);
+    setSelectedChargeIds([]);
     const parsed = calcValidation.validate(calculateStorageSchema, calcValues());
     if (!parsed) return;
     try {
       const result = await calculateMutation.mutateAsync(parsed);
-      setCalcResult(result);
-      setChargePartyId(parsed.party_id);
-      setChargeStatus('OPEN');
-      setSelectedChargeIds([]);
+      const charges = chargesFromCalculateResult(result);
+      setOpenCharges(charges);
+      setDidCalculate(true);
+      if (!charges.length) {
+        calcValidation.setFormError(
+          'No billable lots for this party/warehouse/period. On Stock → Lot aging, Party must match (not null). If the GRN has a party but lots show null, backend did not stamp party_id on post/unload — existing lots cannot be fixed from this page.',
+        );
+      }
     } catch (err) {
       calcValidation.setFormError(getErrorMessage(err));
     }
@@ -127,15 +184,13 @@ export default function WmsStoragePage() {
     if (!parsed) return;
     try {
       await invoiceMutation.mutateAsync(parsed);
-      setSuccess('Draft invoice created.');
+      setSuccess('Draft invoice created. Post it under Finance → Invoices for the customer portal.');
+      setOpenCharges((prev) => prev.filter((c) => !selectedChargeIds.includes(String(c.id))));
       setSelectedChargeIds([]);
-      void chargesQuery.refetch();
     } catch (err) {
       invoiceValidation.setFormError(getErrorMessage(err));
     }
   };
-
-  const charges = (chargesQuery.data ?? []) as Array<Record<string, unknown>>;
 
   const toggleCharge = (id: string) => {
     const next = selectedChargeIds.includes(id)
@@ -145,6 +200,31 @@ export default function WmsStoragePage() {
     invoiceValidation.revalidate(invoiceStorageSchema, { charge_ids: next });
   };
 
+  const selectAll = () => {
+    const ids = openCharges.map((c) => String(c.id)).filter(Boolean);
+    setSelectedChargeIds(ids);
+    invoiceValidation.revalidate(invoiceStorageSchema, { charge_ids: ids });
+  };
+
+  const clearSelection = () => {
+    setSelectedChargeIds([]);
+    invoiceValidation.revalidate(invoiceStorageSchema, { charge_ids: [] });
+  };
+
+  const totalSelected = useMemo(() => {
+    let sum = 0;
+    let currency = currencyCode || 'AED';
+    for (const charge of openCharges) {
+      const id = String(charge.id ?? '');
+      if (!selectedChargeIds.includes(id)) continue;
+      const amount = pickNum(charge, 'amount', 'total_amount', 'totalAmount');
+      if (amount != null) sum += amount;
+      const ccy = pickStr(charge, 'currency_code', 'currencyCode');
+      if (ccy) currency = ccy;
+    }
+    return { sum, currency };
+  }, [openCharges, selectedChargeIds, currencyCode]);
+
   return (
     <div className="space-y-4">
       <WmsPageHeader
@@ -153,7 +233,16 @@ export default function WmsStoragePage() {
         description="Calculate storage charges and create draft invoices."
       />
 
-      <div className="mx-auto max-w-3xl space-y-4">
+      <div className="mx-auto max-w-5xl space-y-4">
+        <p className="rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2 text-xs text-[var(--color-neutral-600)]">
+          Needs posted inbound stock whose lots have a <strong>party</strong> (see{' '}
+          <Link className="underline" to={`${WMS_ROUTE_PREFIX}/stock`}>
+            Stock → Lot aging
+          </Link>
+          ). Demo rates: free days <code>7</code>, rate <code>85</code>, overdue <code>120</code>{' '}
+          AED for <code>2026-09-26</code>–<code>2026-10-10</code>.
+        </p>
+
         <form className="space-y-4" onSubmit={handleCalculate} noValidate>
           <WmsFormAlert message={calcValidation.formError} />
 
@@ -293,119 +382,163 @@ export default function WmsStoragePage() {
           />
         </form>
 
-        {calcResult ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>Calculation result</CardTitle>
-            </CardHeader>
-            <pre className="overflow-x-auto p-4 pt-0 text-xs">
-              {JSON.stringify(calcResult, null, 2)}
-            </pre>
-          </Card>
-        ) : null}
-      </div>
+        <Card>
+          <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
+            <CardTitle>
+              {didCalculate
+                ? `Calculation result (${openCharges.length})`
+                : 'Calculation result'}
+            </CardTitle>
+            {openCharges.length ? (
+              <div className="flex gap-2">
+                <Button type="button" variant="secondary" onClick={selectAll}>
+                  Select all
+                </Button>
+                <Button type="button" variant="secondary" onClick={clearSelection}>
+                  Clear
+                </Button>
+              </div>
+            ) : null}
+          </CardHeader>
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between gap-2">
-          <CardTitle>Storage charges</CardTitle>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => void chargesQuery.refetch()}
-            disabled={!chargesEnabled || chargesQuery.isFetching}
-          >
-            <RefreshCw className={`h-4 w-4 ${chargesQuery.isFetching ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-        </CardHeader>
-
-        <div className="space-y-4 p-4 pt-0">
-          <div className="grid max-w-3xl gap-4 sm:grid-cols-3">
-            <WmsSelect
-              label="Party"
-              value={chargePartyId}
-              onChange={(v) => {
-                setChargePartyId(v);
-                setSelectedChargeIds([]);
-              }}
-              options={partyRequiredOptions}
-              required
-            />
-            <WmsSelect
-              label="Status"
-              value={chargeStatus}
-              onChange={(v) => {
-                setChargeStatus(v);
-                setSelectedChargeIds([]);
-              }}
-              options={WMS_STORAGE_CHARGE_STATUSES.map((s) => ({ value: s, label: s }))}
-              required
-            />
-            <WmsSelect
-              label="Charge kind"
-              value={chargeKind}
-              onChange={(v) => {
-                setChargeKind(v);
-                setSelectedChargeIds([]);
-              }}
-              options={WMS_STORAGE_CHARGE_KINDS.map((s) => ({ value: s, label: s }))}
-              required
-            />
-          </div>
-
-          {!chargesEnabled ? (
-            <p className="text-sm text-[var(--color-neutral-400)]">
-              Select party, status, and charge kind (STORAGE / OVERDUE) to load charges.
-            </p>
-          ) : chargesQuery.isLoading ? (
-            <p className="text-sm text-[var(--color-neutral-400)]">Loading charges…</p>
-          ) : chargesQuery.isError ? (
-            <p className="text-sm text-[var(--color-danger-600)]">
-              {getErrorMessage(chargesQuery.error)}
-            </p>
-          ) : !charges.length ? (
-            <p className="text-sm text-[var(--color-neutral-400)]">No storage charges.</p>
-          ) : (
-            <div className="space-y-2">
-              {charges.map((charge, idx) => {
-                const id = String(charge.id ?? idx);
-                return (
-                  <label
-                    key={id}
-                    className="flex cursor-pointer items-start gap-3 rounded border p-3 text-sm hover:bg-[var(--color-neutral-50)]"
+          <div className="space-y-4 p-4 pt-0">
+            {!didCalculate ? (
+              <p className="text-sm text-[var(--color-neutral-400)]">
+                Run Calculate to see OPEN storage charges here.
+              </p>
+            ) : !openCharges.length ? (
+              <div className="space-y-2 text-sm text-[var(--color-neutral-500)]">
+                <p>No OPEN charges for this selection.</p>
+                <p>
+                  <Link
+                    to={`${WMS_ROUTE_PREFIX}/stock`}
+                    className="font-medium text-[var(--color-primary-700)] underline-offset-2 hover:underline"
                   >
-                    <input
-                      type="checkbox"
-                      checked={selectedChargeIds.includes(id)}
-                      onChange={() => toggleCharge(id)}
-                      className="mt-1"
-                      disabled={chargeStatus !== 'OPEN'}
-                    />
-                    <pre className="flex-1 overflow-x-auto text-xs">{JSON.stringify(charge, null, 2)}</pre>
-                  </label>
-                );
-              })}
+                    Open Stock → Lot aging
+                  </Link>{' '}
+                  and confirm Party is set (not null).
+                </p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto rounded-md border border-[var(--color-neutral-200)]">
+                <table className="min-w-full text-left text-sm">
+                  <thead className="bg-[var(--color-neutral-50)] text-xs uppercase tracking-wide text-[var(--color-neutral-500)]">
+                    <tr>
+                      <th className="px-3 py-2 font-medium"> </th>
+                      <th className="px-3 py-2 font-medium">Kind</th>
+                      <th className="px-3 py-2 font-medium">Status</th>
+                      <th className="px-3 py-2 font-medium">Period</th>
+                      <th className="px-3 py-2 font-medium">Days</th>
+                      <th className="px-3 py-2 font-medium">Qty</th>
+                      <th className="px-3 py-2 font-medium">Rate/day</th>
+                      <th className="px-3 py-2 font-medium">Amount</th>
+                      <th className="px-3 py-2 font-medium">Lot</th>
+                      <th className="px-3 py-2 font-medium">Party</th>
+                      <th className="px-3 py-2 font-medium">Warehouse</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {openCharges.map((charge, idx) => {
+                      const id = String(charge.id ?? idx);
+                      const kind = pickStr(charge, 'charge_kind', 'chargeKind') || '—';
+                      const status = pickStr(charge, 'status') || '—';
+                      const from = formatDate(pickStr(charge, 'period_from', 'periodFrom'));
+                      const to = formatDate(pickStr(charge, 'period_to', 'periodTo'));
+                      const free = pickNum(charge, 'free_days', 'freeDays');
+                      const chargeable = pickNum(charge, 'chargeable_days', 'chargeableDays');
+                      const extra = pickNum(charge, 'extra_days', 'extraDays');
+                      const qty = pickNum(charge, 'quantity', 'qty');
+                      const rate = pickNum(charge, 'rate_per_day', 'ratePerDay');
+                      const overdueRate = pickNum(
+                        charge,
+                        'overdue_rate_per_day',
+                        'overdueRatePerDay',
+                      );
+                      const amount = pickNum(charge, 'amount', 'total_amount', 'totalAmount');
+                      const ccy =
+                        pickStr(charge, 'currency_code', 'currencyCode') || currencyCode || 'AED';
+                      const lotId = pickStr(charge, 'lot_id', 'lotId');
+                      const rowParty = pickStr(charge, 'party_id', 'partyId') || partyId;
+                      const rowWh =
+                        pickStr(charge, 'warehouse_id', 'warehouseId') || warehouseId;
+                      const daysLabel = [
+                        free != null ? `free ${free}` : null,
+                        chargeable != null ? `bill ${chargeable}` : null,
+                        extra != null && extra > 0 ? `extra ${extra}` : null,
+                      ]
+                        .filter(Boolean)
+                        .join(' · ');
+
+                      return (
+                        <tr
+                          key={id}
+                          className="border-t border-[var(--color-neutral-100)] hover:bg-[var(--color-neutral-50)]"
+                        >
+                          <td className="px-3 py-2 align-middle">
+                            <input
+                              type="checkbox"
+                              checked={selectedChargeIds.includes(id)}
+                              onChange={() => toggleCharge(id)}
+                              aria-label={`Select charge ${shortId(id)}`}
+                            />
+                          </td>
+                          <td className="px-3 py-2 font-medium">{kind}</td>
+                          <td className="px-3 py-2">{status}</td>
+                          <td className="px-3 py-2 whitespace-nowrap">
+                            {from} → {to}
+                          </td>
+                          <td className="px-3 py-2 whitespace-nowrap">{daysLabel || '—'}</td>
+                          <td className="px-3 py-2">{qty != null ? String(qty) : '—'}</td>
+                          <td className="px-3 py-2 whitespace-nowrap">
+                            {rate != null ? formatAmount(rate, ccy) : '—'}
+                            {overdueRate != null ? (
+                              <span className="block text-xs text-[var(--color-neutral-500)]">
+                                overdue {formatAmount(overdueRate, ccy)}
+                              </span>
+                            ) : null}
+                          </td>
+                          <td className="px-3 py-2 font-medium whitespace-nowrap">
+                            {formatAmount(amount, ccy)}
+                          </td>
+                          <td className="px-3 py-2 font-mono text-xs" title={lotId}>
+                            {shortId(lotId)}
+                          </td>
+                          <td className="px-3 py-2" title={rowParty}>
+                            {labelFromOptions(partyOptions, rowParty)}
+                          </td>
+                          <td className="px-3 py-2" title={rowWh}>
+                            {labelFromOptions(warehouseOptions, rowWh)}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {success ? <p className="text-sm text-[var(--color-success-600)]">{success}</p> : null}
+            <WmsFormAlert
+              message={invoiceValidation.formError || invoiceValidation.fieldError('charge_ids')}
+            />
+
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-[var(--color-neutral-600)]">
+                {selectedChargeIds.length
+                  ? `Selected ${selectedChargeIds.length} · ${formatAmount(totalSelected.sum, totalSelected.currency)}`
+                  : 'Select charges to invoice'}
+              </p>
+              <Button
+                type="button"
+                onClick={handleInvoice}
+                disabled={invoiceMutation.isPending || !selectedChargeIds.length}
+              >
+                {invoiceMutation.isPending ? 'Saving…' : 'Invoice selected'}
+              </Button>
             </div>
-          )}
-
-          {success ? <p className="text-sm text-[var(--color-success-600)]">{success}</p> : null}
-          <WmsFormAlert
-            message={invoiceValidation.formError || invoiceValidation.fieldError('charge_ids')}
-          />
-
-          <div className="flex justify-end">
-            <Button
-              type="button"
-              onClick={handleInvoice}
-              disabled={
-                invoiceMutation.isPending || !selectedChargeIds.length || chargeStatus !== 'OPEN'
-              }
-            >
-              {invoiceMutation.isPending ? 'Saving…' : 'Invoice selected'}
-            </Button>
           </div>
-        </div>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }

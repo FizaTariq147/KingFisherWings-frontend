@@ -31,18 +31,36 @@ type StepId =
 
 type StepMeta = { id: StepId; label: string; eyebrow: string; title: string; blurb: string };
 
-/** Step copy — sea vs air; payload remains UpsertNvoccBookingFormDto / SubmitNvoccComplianceFormDto. */
-function getSteps(isAir: boolean): StepMeta[] {
+/** Step copy — air / sea / warehouse; payload stays the shared booking-form DTO. */
+function getSteps(kind: 'air' | 'sea' | 'warehouse'): StepMeta[] {
+  const voyage =
+    kind === 'air'
+      ? {
+          id: 'voyage' as const,
+          label: 'FLIGHT',
+          eyebrow: 'ROUTE & CARGO DETAIL',
+          title: 'Air Booking Overview',
+          blurb: 'Origin/destination airports, weights, and DG status for this air booking request.',
+        }
+      : kind === 'warehouse'
+        ? {
+            id: 'voyage' as const,
+            label: 'STORAGE',
+            eyebrow: 'WAREHOUSE & CARGO DETAIL',
+            title: 'Warehouse Booking Overview',
+            blurb:
+              'Pickup and warehouse locations, pieces, weights, and DG status for this storage booking.',
+          }
+        : {
+            id: 'voyage' as const,
+            label: 'VOYAGE',
+            eyebrow: 'VOYAGE & CARGO DETAIL',
+            title: 'Booking & Shipment Overview',
+            blurb: 'Basic voyage, weight and container details for this booking request.',
+          };
+
   return [
-    {
-      id: 'voyage',
-      label: isAir ? 'FLIGHT' : 'VOYAGE',
-      eyebrow: isAir ? 'ROUTE & CARGO DETAIL' : 'VOYAGE & CARGO DETAIL',
-      title: isAir ? 'Air Booking Overview' : 'Booking & Shipment Overview',
-      blurb: isAir
-        ? 'Origin/destination airports, weights, and DG status for this air booking request.'
-        : 'Basic voyage, weight and container details for this booking request.',
-    },
+    voyage,
     {
       id: 'shipper',
       label: 'SHIPPER',
@@ -83,9 +101,12 @@ function getSteps(isAir: boolean): StepMeta[] {
       label: 'AGENT',
       eyebrow: 'BOOKING AGENT',
       title: 'Agent & References',
-      blurb: isAir
-        ? 'Booking agent line, requester, and flight / booking references.'
-        : 'Booking agent line, requester, and voyage / SQ-BL references.',
+      blurb:
+        kind === 'air'
+          ? 'Booking agent line, requester, and flight / booking references.'
+          : kind === 'warehouse'
+            ? 'Booking agent line, requester, and warehouse booking references.'
+            : 'Booking agent line, requester, and voyage / SQ-BL references.',
     },
     {
       id: 'review',
@@ -95,6 +116,23 @@ function getSteps(isAir: boolean): StepMeta[] {
       blurb: 'Review your details, accept consent, then submit to your forwarder.',
     },
   ];
+}
+
+function normalizePortalJobTypeToken(jobType?: string | null, rawJobType?: unknown): string {
+  return String(jobType ?? rawJobType ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+}
+
+function portalBookingFormKind(
+  jobType?: string | null,
+  rawJobType?: unknown,
+): 'air' | 'sea' | 'warehouse' {
+  const jt = normalizePortalJobTypeToken(jobType, rawJobType);
+  if (jt === 'WAREHOUSE') return 'warehouse';
+  if (jt.startsWith('AIR') || isAirJobType(jt)) return 'air';
+  return 'sea';
 }
 
 type PartyUi = {
@@ -144,6 +182,30 @@ type FormUi = {
   sq_bl_booking_reference: string;
   voyage_ref: string;
   consent_accepted: boolean;
+  warehouse_name: string;
+  expected_inbound_at: string;
+  expected_outbound_at: string;
+  storage_days_requested: string;
+  bonded: boolean;
+  temperature_controlled: boolean;
+  handling_instructions: string;
+  cargo_category: string;
+  dg_class: string;
+  attach_packing_list: boolean;
+  attach_bl_awb_copy: boolean;
+  attach_carnet: boolean;
+  attach_vehicle_title: boolean;
+  attach_msds: boolean;
+  attach_dangerous_goods_declaration: boolean;
+  attach_health_veterinary: boolean;
+  attach_fda_moh: boolean;
+  stock_lines: {
+    sku_code: string;
+    description: string;
+    quantity: string;
+    unit: string;
+    cbm: string;
+  }[];
   pallets: {
     pallet_type: string;
     count: string;
@@ -204,6 +266,24 @@ function emptyForm(): FormUi {
     sq_bl_booking_reference: '',
     voyage_ref: '',
     consent_accepted: false,
+    warehouse_name: '',
+    expected_inbound_at: '',
+    expected_outbound_at: '',
+    storage_days_requested: '',
+    bonded: false,
+    temperature_controlled: false,
+    handling_instructions: '',
+    cargo_category: 'GENERAL',
+    dg_class: '',
+    attach_packing_list: false,
+    attach_bl_awb_copy: false,
+    attach_carnet: false,
+    attach_vehicle_title: false,
+    attach_msds: false,
+    attach_dangerous_goods_declaration: false,
+    attach_health_veterinary: false,
+    attach_fda_moh: false,
+    stock_lines: [{ sku_code: '', description: '', quantity: '', unit: 'CTN', cbm: '' }],
     pallets: [
       {
         pallet_type: 'PMC',
@@ -362,8 +442,13 @@ function toPartyDto(
   };
 }
 
-/** Maps UI → UpsertNvoccBookingFormDto (sea) or UpsertAirComplianceBookingFormDto (air). */
-function toDto(form: FormUi, markComplete: boolean, isAir: boolean): PortalBookingFormUpsertDto {
+/** Maps UI → UpsertNvoccBookingFormDto (sea) / UpsertAirComplianceBookingFormDto (air) /
+ * warehouse fields aligned to UpsertWarehouseBookingFormDto (draft + staff sync). */
+function toDto(
+  form: FormUi,
+  markComplete: boolean,
+  kind: 'air' | 'sea' | 'warehouse',
+): PortalBookingFormUpsertDto {
   const numOrUndef = (v: string) => {
     const t = v.trim();
     if (!t) return undefined;
@@ -404,7 +489,7 @@ function toDto(form: FormUi, markComplete: boolean, isAir: boolean): PortalBooki
     parties,
   };
 
-  if (isAir) {
+  if (kind === 'air') {
     const pallets = form.pallets
       .map((p) => ({
         pallet_type: clipComplianceField(p.pallet_type, L.pallet_type) ?? '',
@@ -431,6 +516,74 @@ function toDto(form: FormUi, markComplete: boolean, isAir: boolean): PortalBooki
     };
   }
 
+  if (kind === 'warehouse') {
+    const pickup =
+      form.origin_door_address.trim() || form.pol.trim() || undefined;
+    const warehouseName =
+      form.warehouse_name.trim() || form.pod.trim() || form.dest_door_address.trim();
+    const stock_lines = form.stock_lines
+      .map((line) => ({
+        sku_code: line.sku_code.trim() || undefined,
+        description: line.description.trim() || undefined,
+        quantity: numOrUndef(line.quantity),
+        unit: line.unit.trim() || undefined,
+        cbm: numOrUndef(line.cbm),
+      }))
+      .filter(
+        (line) =>
+          Boolean(line.sku_code) ||
+          Boolean(line.description) ||
+          (line.quantity != null && line.quantity > 0),
+      );
+    return {
+      date_of_request: form.date_of_request.trim() || undefined,
+      client_booking_no: clipComplianceField(form.client_booking_no, L.client_booking_no),
+      voyage_ref: clipComplianceField(form.voyage_ref, L.voyage_ref),
+      commodity: clipComplianceField(form.commodity, L.commodity) ?? '',
+      hs_code: clipComplianceField(form.hs_code, L.hs_code),
+      cargo_category: form.cargo_category || undefined,
+      is_dg: form.is_dg,
+      dg_class: form.is_dg ? form.dg_class.trim() || undefined : undefined,
+      gross_weight_kg: numOrUndef(form.gross_weight_kg),
+      net_weight_kg: numOrUndef(form.net_weight_kg),
+      pieces: numOrUndef(form.pieces),
+      volume_cbm: numOrUndef(form.volume_cbm),
+      insurance_details: form.insurance_details.trim() || undefined,
+      request_details: form.request_details.trim() || undefined,
+      origin_door_address: pickup,
+      dest_door_address: form.dest_door_address.trim() || warehouseName || undefined,
+      // Compliance / message fallback only — UpsertWarehouseBookingFormDto has no pol/pod.
+      pol: clipComplianceField(pickup ?? '', L.pol) ?? '',
+      pod: clipComplianceField(warehouseName || form.pod, L.pod) ?? '',
+      warehouse_name: warehouseName || undefined,
+      expected_inbound_at: form.expected_inbound_at || undefined,
+      expected_outbound_at: form.expected_outbound_at || undefined,
+      storage_days_requested: numOrUndef(form.storage_days_requested),
+      bonded: form.bonded,
+      temperature_controlled: form.temperature_controlled,
+      handling_instructions: form.handling_instructions.trim() || undefined,
+      stock_lines: stock_lines.length ? stock_lines : undefined,
+      attach_commercial_invoice: form.attach_commercial_invoice,
+      attach_packing_list: form.attach_packing_list,
+      attach_bl_awb_copy: form.attach_bl_awb_copy,
+      attach_carnet: form.attach_carnet,
+      attach_vehicle_title: form.attach_vehicle_title,
+      attach_msds: form.attach_msds,
+      attach_dangerous_goods_declaration: form.attach_dangerous_goods_declaration,
+      attach_health_veterinary: form.attach_health_veterinary,
+      attach_fda_moh: form.attach_fda_moh,
+      booking_agent_line: clipComplianceField(form.booking_agent_line, L.booking_agent_line),
+      agent_requester_name: clipComplianceField(form.agent_requester_name, L.agent_requester_name),
+      sq_bl_booking_reference: clipComplianceField(
+        form.sq_bl_booking_reference,
+        L.sq_bl_booking_reference,
+      ),
+      consent_accepted: form.consent_accepted,
+      mark_complete: markComplete,
+      parties,
+    };
+  }
+
   const teu = numOrUndef(form.teu_count);
   return {
     ...shared,
@@ -444,15 +597,29 @@ function toDto(form: FormUi, markComplete: boolean, isAir: boolean): PortalBooki
   };
 }
 
-function validateStep(step: StepId, form: FormUi, isAir: boolean): string | null {
+function validateStep(
+  step: StepId,
+  form: FormUi,
+  kind: 'air' | 'sea' | 'warehouse',
+): string | null {
   if (step === 'voyage') {
-    if (!isAir && !form.teu_count.trim()) return 'Number of TEUs is required (teu_count).';
-    if (isAir) {
+    if (kind === 'sea' && !form.teu_count.trim()) {
+      return 'Number of TEUs is required (teu_count).';
+    }
+    if (kind === 'air') {
       if (!form.origin_airport_code.trim()) {
         return 'Origin airport code is required (origin_airport_code).';
       }
       if (!form.dest_airport_code.trim()) {
         return 'Destination airport code is required (dest_airport_code).';
+      }
+      if (!form.pieces.trim()) return 'Pieces is required (pieces).';
+    } else if (kind === 'warehouse') {
+      if (!form.origin_door_address.trim() && !form.pol.trim()) {
+        return 'Pickup / origin address is required (origin_door_address).';
+      }
+      if (!form.warehouse_name.trim() && !form.pod.trim()) {
+        return 'Warehouse name is required (warehouse_name).';
       }
       if (!form.pieces.trim()) return 'Pieces is required (pieces).';
     } else {
@@ -488,10 +655,11 @@ interface PortalBookingFormPanelProps {
 }
 
 /**
- * Customer 8-step compliance booking form after CUSTOMER_ACCEPTED (shared commercial).
+ * Customer 8-step booking form after CUSTOMER_ACCEPTED.
  * NVOCC: GET/PUT/POST /portal/bookings/{id}/compliance-form*
  * Air:   GET/PUT/POST /portal/shipments/{id}/compliance-form* (+ accept)
- * Same UpsertNvoccBookingFormDto fields per OpenAPI.
+ * Warehouse: draft + /portal/messages (no portal warehouse booking-form in live OpenAPI);
+ *            fields align to UpsertWarehouseBookingFormDto for staff /jobs/:id/warehouse/booking-form.
  */
 export function PortalBookingFormPanel({
   quote,
@@ -499,11 +667,12 @@ export function PortalBookingFormPanel({
   onFormCompleteChange,
 }: PortalBookingFormPanelProps) {
   const enabled = portalQuoteShowsBookingForm(quote);
-  const isAir =
-    isAirJobType(quote.jobType) ||
-    String(quote.jobType ?? quote.raw?.job_type ?? '')
-      .toUpperCase()
-      .startsWith('AIR');
+  const formKind = portalBookingFormKind(
+    quote.jobType,
+    (quote.raw as { job_type?: string } | undefined)?.job_type,
+  );
+  const isAir = formKind === 'air';
+  const isWarehouse = formKind === 'warehouse';
   const bookingId =
     quote.bookingId ||
     String(
@@ -538,7 +707,7 @@ export function PortalBookingFormPanel({
   const [submitted, setSubmitted] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const steps = useMemo(() => getSteps(isAir), [isAir]);
+  const steps = useMemo(() => getSteps(formKind), [formKind]);
   const step = steps[stepIndex] ?? steps[0];
 
   useEffect(() => {
@@ -580,7 +749,9 @@ export function PortalBookingFormPanel({
         .toUpperCase()
         .slice(0, L.dest_airport_code),
       service_scope: String(data.service_scope ?? 'DOOR_TO_DOOR'),
-      origin_door_address: String(data.origin_door_address ?? ''),
+      origin_door_address: String(
+        data.origin_door_address ?? (isWarehouse ? data.pol ?? quote.origin ?? '' : ''),
+      ),
       dest_door_address: String(data.dest_door_address ?? ''),
       pieces: data.pieces != null ? String(data.pieces) : '',
       volume_cbm: data.volume_cbm != null ? String(data.volume_cbm) : '',
@@ -634,6 +805,36 @@ export function PortalBookingFormPanel({
       sq_bl_booking_reference: String(data.sq_bl_booking_reference ?? quote.number ?? ''),
       voyage_ref: String(data.voyage_ref ?? ''),
       consent_accepted: Boolean(data.consent_accepted),
+      warehouse_name: String(
+        data.warehouse_name ?? (isWarehouse ? data.pod ?? quote.destination ?? '' : ''),
+      ),
+      expected_inbound_at: String(data.expected_inbound_at ?? '').slice(0, 16),
+      expected_outbound_at: String(data.expected_outbound_at ?? '').slice(0, 16),
+      storage_days_requested:
+        data.storage_days_requested != null ? String(data.storage_days_requested) : '',
+      bonded: Boolean(data.bonded),
+      temperature_controlled: Boolean(data.temperature_controlled),
+      handling_instructions: String(data.handling_instructions ?? ''),
+      cargo_category: String(data.cargo_category ?? 'GENERAL') || 'GENERAL',
+      dg_class: String(data.dg_class ?? ''),
+      attach_packing_list: Boolean(data.attach_packing_list),
+      attach_bl_awb_copy: Boolean(data.attach_bl_awb_copy),
+      attach_carnet: Boolean(data.attach_carnet),
+      attach_vehicle_title: Boolean(data.attach_vehicle_title),
+      attach_msds: Boolean(data.attach_msds),
+      attach_dangerous_goods_declaration: Boolean(data.attach_dangerous_goods_declaration),
+      attach_health_veterinary: Boolean(data.attach_health_veterinary),
+      attach_fda_moh: Boolean(data.attach_fda_moh),
+      stock_lines:
+        Array.isArray(data.stock_lines) && data.stock_lines.length > 0
+          ? data.stock_lines.map((line) => ({
+              sku_code: String(line.sku_code ?? ''),
+              description: String(line.description ?? ''),
+              quantity: line.quantity != null ? String(line.quantity) : '',
+              unit: String(line.unit ?? 'PCS'),
+              cbm: line.cbm != null ? String(line.cbm) : '',
+            }))
+          : base.stock_lines,
       pallets:
         Array.isArray(data.pallets) && data.pallets.length > 0
           ? data.pallets.map((p) => ({
@@ -647,7 +848,15 @@ export function PortalBookingFormPanel({
           : base.pallets,
     });
     if (data.mark_complete === true) setSubmitted(true);
-  }, [formQuery.data, quote.origin, quote.destination, quote.commodity, quote.number]);
+  }, [
+    formQuery.data,
+    quote.origin,
+    quote.destination,
+    quote.commodity,
+    quote.number,
+    isAir,
+    isWarehouse,
+  ]);
 
   useEffect(() => {
     const complete = submitted || formQuery.data?.mark_complete === true;
@@ -661,7 +870,7 @@ export function PortalBookingFormPanel({
     setMsg(null);
     if (complete) {
       for (const s of steps) {
-        const err = validateStep(s.id, form, isAir);
+        const err = validateStep(s.id, form, formKind);
         if (err) {
           setError(err);
           setStepIndex(steps.findIndex((x) => x.id === s.id));
@@ -669,13 +878,13 @@ export function PortalBookingFormPanel({
         }
       }
     } else {
-      const err = validateStep('voyage', form, isAir);
+      const err = validateStep('voyage', form, formKind);
       if (err) {
         setError(err);
         return;
       }
     }
-    const dto = toDto(form, complete, isAir);
+    const dto = toDto(form, complete, formKind);
     const linked = isAir ? Boolean(jobId) : Boolean(bookingId);
     void saveForm
       .mutateAsync({
@@ -690,7 +899,7 @@ export function PortalBookingFormPanel({
         const modeConvert = usesModeBookingFormConvertFlow(quote.jobType);
         const message = complete
           ? modeConvert
-            ? 'Booking form submitted. Your quotation will convert to a job next.'
+            ? 'Booking form submitted — quotation converts to a job.'
             : linked
               ? 'Booking form submitted. Your forwarder can complete Ops and send the invoice.'
               : isAir
@@ -719,7 +928,7 @@ export function PortalBookingFormPanel({
 
   const goNext = () => {
     setError(null);
-    const err = validateStep(step.id, form, isAir);
+    const err = validateStep(step.id, form, formKind);
     if (err) {
       setError(err);
       return;
@@ -749,12 +958,26 @@ export function PortalBookingFormPanel({
             ['volume_cbm', form.volume_cbm || '—'],
             ['pallet_count', form.pallet_count || '—'],
           ] as [string, string][])
-        : ([
-            ['teu_count', form.teu_count],
-            ['pol', form.pol],
-            ['pod', form.pod],
-            ['shipper_owned_container', form.shipper_owned_container ? 'true' : 'false'],
-          ] as [string, string][])),
+        : isWarehouse
+          ? ([
+              ['pieces', form.pieces],
+              ['volume_cbm', form.volume_cbm || '—'],
+              ['origin_door_address', form.origin_door_address || form.pol || '—'],
+              ['warehouse_name', form.warehouse_name || form.pod || '—'],
+              ['dest_door_address', form.dest_door_address || '—'],
+              ['expected_inbound_at', form.expected_inbound_at || '—'],
+              ['expected_outbound_at', form.expected_outbound_at || '—'],
+              ['storage_days_requested', form.storage_days_requested || '—'],
+              ['bonded', form.bonded ? 'true' : 'false'],
+              ['temperature_controlled', form.temperature_controlled ? 'true' : 'false'],
+              ['service_scope', form.service_scope || '—'],
+            ] as [string, string][])
+          : ([
+              ['teu_count', form.teu_count],
+              ['pol', form.pol],
+              ['pod', form.pod],
+              ['shipper_owned_container', form.shipper_owned_container ? 'true' : 'false'],
+            ] as [string, string][])),
       ['gross_weight_kg', form.gross_weight_kg],
       ['net_weight_kg', form.net_weight_kg],
       ['is_dg', form.is_dg ? 'true' : 'false'],
@@ -764,11 +987,18 @@ export function PortalBookingFormPanel({
       ['SHIPPER', form.shipper.full_name],
       ['CONSIGNEE', form.consignee.full_name],
       ['NOTIFY', form.notify.full_name || '(same as consignee)'],
-      [isAir ? 'voyage_ref (flight)' : 'voyage_ref', form.voyage_ref || '—'],
+      [
+        isAir
+          ? 'voyage_ref (flight)'
+          : isWarehouse
+            ? 'voyage_ref (booking / storage)'
+            : 'voyage_ref',
+        form.voyage_ref || '—',
+      ],
       ['booking_agent_line', form.booking_agent_line],
       ['sq_bl_booking_reference', form.sq_bl_booking_reference || '—'],
     ],
-    [form, isAir],
+    [form, isAir, isWarehouse],
   );
 
   if (!enabled) return null;
@@ -781,8 +1011,13 @@ export function PortalBookingFormPanel({
             Booking form submitted (BOOKING_FORM_COMPLETE)
           </h2>
           <p className="mt-1 text-sm text-emerald-800">
-            Thanks — next your forwarder sends the invoice (INVOICE_SENT)
-            {isAir ? ', then air export or import ops begin.' : '.'}
+            {usesModeBookingFormConvertFlow(quote.jobType)
+              ? isWarehouse
+                ? 'Thanks — your quotation converts to a job. Warehouse ops (ASN / GRN / GDO) continue on the staff side.'
+                : 'Thanks — your quotation converts to a job.'
+              : isAir
+                ? 'Thanks — next your forwarder sends the invoice (INVOICE_SENT), then air export or import ops begin.'
+                : 'Thanks — next your forwarder sends the invoice (INVOICE_SENT).'}
           </p>
         </PortalPanel>
       </div>
@@ -891,7 +1126,7 @@ export function PortalBookingFormPanel({
                 placeholder="Assigned by agent"
               />
             </label>
-            {!isAir ? (
+            {!isAir && !isWarehouse ? (
               <label className="block">
                 <FieldLabel required>Number of TEUs</FieldLabel>
                 <Input
@@ -902,7 +1137,7 @@ export function PortalBookingFormPanel({
                   placeholder="e.g. 2"
                 />
               </label>
-            ) : (
+            ) : isAir ? (
               <label className="block">
                 <FieldLabel>Service scope</FieldLabel>
                 <select
@@ -916,6 +1151,17 @@ export function PortalBookingFormPanel({
                     </option>
                   ))}
                 </select>
+              </label>
+            ) : (
+              <label className="block">
+                <FieldLabel required>Pieces</FieldLabel>
+                <Input
+                  className="mt-1"
+                  inputMode="numeric"
+                  value={form.pieces}
+                  onChange={(e) => patch({ pieces: e.target.value })}
+                  placeholder="e.g. 48"
+                />
               </label>
             )}
             {isAir ? (
@@ -1007,6 +1253,206 @@ export function PortalBookingFormPanel({
                   />
                 </label>
               </>
+            ) : isWarehouse ? (
+              <>
+                <label className="block sm:col-span-1">
+                  <FieldLabel required>Pickup / origin address</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    value={form.origin_door_address}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      patch({
+                        origin_door_address: v,
+                        pol: v.slice(0, L.pol),
+                      });
+                    }}
+                    placeholder="e.g. Customer warehouse / factory — Jebel Ali"
+                  />
+                </label>
+                <label className="block sm:col-span-1">
+                  <FieldLabel required>Warehouse name</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    maxLength={200}
+                    value={form.warehouse_name}
+                    onChange={(e) => {
+                      const v = e.target.value.slice(0, 200);
+                      patch({
+                        warehouse_name: v,
+                        pod: v.slice(0, L.pod),
+                        dest_door_address: form.dest_door_address.trim() || v,
+                      });
+                    }}
+                    placeholder="e.g. JAFZA Free Zone Warehouse"
+                  />
+                </label>
+                <label className="block sm:col-span-2">
+                  <FieldLabel>Delivery / collection address</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    value={form.dest_door_address}
+                    onChange={(e) => patch({ dest_door_address: e.target.value })}
+                    placeholder="Optional — where cargo is collected after storage"
+                  />
+                </label>
+                <label className="block">
+                  <FieldLabel>Volume CBM</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    inputMode="decimal"
+                    value={form.volume_cbm}
+                    onChange={(e) => patch({ volume_cbm: e.target.value })}
+                  />
+                </label>
+                <label className="block">
+                  <FieldLabel>Expected inbound</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    type="datetime-local"
+                    value={form.expected_inbound_at}
+                    onChange={(e) => patch({ expected_inbound_at: e.target.value })}
+                  />
+                </label>
+                <label className="block">
+                  <FieldLabel>Expected outbound</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    type="datetime-local"
+                    value={form.expected_outbound_at}
+                    onChange={(e) => patch({ expected_outbound_at: e.target.value })}
+                  />
+                </label>
+                <label className="block">
+                  <FieldLabel>Storage days requested</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    inputMode="numeric"
+                    value={form.storage_days_requested}
+                    onChange={(e) => patch({ storage_days_requested: e.target.value })}
+                  />
+                </label>
+                <div className="sm:col-span-2 lg:col-span-3 flex flex-wrap gap-4 text-sm">
+                  <label className="inline-flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={form.bonded}
+                      onChange={(e) => patch({ bonded: e.target.checked })}
+                    />
+                    Bonded storage
+                  </label>
+                  <label className="inline-flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={form.temperature_controlled}
+                      onChange={(e) => patch({ temperature_controlled: e.target.checked })}
+                    />
+                    Temperature controlled
+                  </label>
+                </div>
+                <label className="block sm:col-span-2 lg:col-span-3">
+                  <FieldLabel>Handling instructions</FieldLabel>
+                  <textarea
+                    className="mt-1 min-h-[72px] w-full rounded-md border border-[var(--color-neutral-200)] px-2 py-1 text-sm"
+                    value={form.handling_instructions}
+                    onChange={(e) => patch({ handling_instructions: e.target.value })}
+                  />
+                </label>
+                <div className="sm:col-span-2 lg:col-span-3 space-y-2">
+                  <FieldLabel>Stock lines (SKU)</FieldLabel>
+                  {form.stock_lines.map((line, idx) => (
+                    <div key={idx} className="grid gap-2 sm:grid-cols-5">
+                      <Input
+                        placeholder="SKU"
+                        maxLength={40}
+                        value={line.sku_code}
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            stock_lines: prev.stock_lines.map((l, i) =>
+                              i === idx ? { ...l, sku_code: e.target.value } : l,
+                            ),
+                          }))
+                        }
+                      />
+                      <Input
+                        placeholder="Description"
+                        maxLength={500}
+                        value={line.description}
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            stock_lines: prev.stock_lines.map((l, i) =>
+                              i === idx ? { ...l, description: e.target.value } : l,
+                            ),
+                          }))
+                        }
+                      />
+                      <Input
+                        placeholder="Qty"
+                        inputMode="numeric"
+                        value={line.quantity}
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            stock_lines: prev.stock_lines.map((l, i) =>
+                              i === idx ? { ...l, quantity: e.target.value } : l,
+                            ),
+                          }))
+                        }
+                      />
+                      <Input
+                        placeholder="Unit"
+                        maxLength={20}
+                        value={line.unit}
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            stock_lines: prev.stock_lines.map((l, i) =>
+                              i === idx ? { ...l, unit: e.target.value } : l,
+                            ),
+                          }))
+                        }
+                      />
+                      <Input
+                        placeholder="CBM"
+                        inputMode="decimal"
+                        value={line.cbm}
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            stock_lines: prev.stock_lines.map((l, i) =>
+                              i === idx ? { ...l, cbm: e.target.value } : l,
+                            ),
+                          }))
+                        }
+                      />
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() =>
+                      setForm((prev) => ({
+                        ...prev,
+                        stock_lines: [
+                          ...prev.stock_lines,
+                          {
+                            sku_code: '',
+                            description: '',
+                            quantity: '',
+                            unit: 'CTN',
+                            cbm: '',
+                          },
+                        ],
+                      }))
+                    }
+                  >
+                    Add stock line
+                  </Button>
+                </div>
+              </>
             ) : (
               <>
                 <label className="block sm:col-span-1">
@@ -1049,7 +1495,7 @@ export function PortalBookingFormPanel({
                 onChange={(e) => patch({ net_weight_kg: e.target.value })}
               />
             </label>
-            {!isAir ? (
+            {!isAir && !isWarehouse ? (
               <div className="sm:col-span-2 lg:col-span-3">
                 <FieldLabel required>Shipper&apos;s owned container (SOC)?</FieldLabel>
                 <ChoiceToggle
@@ -1073,6 +1519,18 @@ export function PortalBookingFormPanel({
                 ]}
               />
             </div>
+            {isWarehouse && form.is_dg ? (
+              <label className="block sm:col-span-1">
+                <FieldLabel>DG class</FieldLabel>
+                <Input
+                  className="mt-1"
+                  maxLength={20}
+                  value={form.dg_class}
+                  onChange={(e) => patch({ dg_class: e.target.value })}
+                  placeholder="e.g. 9"
+                />
+              </label>
+            ) : null}
             {isAir ? (
               <div className="space-y-2 sm:col-span-2 lg:col-span-3">
                 <FieldLabel>Pallet lines</FieldLabel>
@@ -1241,32 +1699,61 @@ export function PortalBookingFormPanel({
                 onChange={(e) => patch({ hs_code: e.target.value.slice(0, L.hs_code) })}
               />
             </label>
-            <label className="block">
-              <FieldLabel>Final use</FieldLabel>
-              <Input
-                className="mt-1"
-                maxLength={L.final_use}
-                value={form.final_use}
-                onChange={(e) => patch({ final_use: e.target.value.slice(0, L.final_use) })}
-              />
-            </label>
-            <label className="block">
-              <FieldLabel>Activity sector</FieldLabel>
-              <select
-                className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 py-2 text-sm"
-                value={form.activity_sector}
-                onChange={(e) =>
-                  patch({
-                    activity_sector: e.target.value as FormUi['activity_sector'],
-                  })
-                }
-              >
-                <option value="">—</option>
-                <option value="CIVILIAN">CIVILIAN</option>
-                <option value="MILITARY">MILITARY</option>
-                <option value="NUCLEAR">NUCLEAR</option>
-              </select>
-            </label>
+            {isWarehouse ? (
+              <label className="block">
+                <FieldLabel>Cargo category</FieldLabel>
+                <select
+                  className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 py-2 text-sm"
+                  value={form.cargo_category}
+                  onChange={(e) => patch({ cargo_category: e.target.value })}
+                >
+                  {[
+                    'GENERAL',
+                    'VEHICLES',
+                    'FOOD_PERISHABLE',
+                    'PHARMA',
+                    'CHEMICALS_DG',
+                    'PERSONAL_EFFECTS',
+                    'PROJECT_OOG',
+                    'LIVESTOCK',
+                    'OTHER',
+                  ].map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : (
+              <>
+                <label className="block">
+                  <FieldLabel>Final use</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    maxLength={L.final_use}
+                    value={form.final_use}
+                    onChange={(e) => patch({ final_use: e.target.value.slice(0, L.final_use) })}
+                  />
+                </label>
+                <label className="block">
+                  <FieldLabel>Activity sector</FieldLabel>
+                  <select
+                    className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 py-2 text-sm"
+                    value={form.activity_sector}
+                    onChange={(e) =>
+                      patch({
+                        activity_sector: e.target.value as FormUi['activity_sector'],
+                      })
+                    }
+                  >
+                    <option value="">—</option>
+                    <option value="CIVILIAN">CIVILIAN</option>
+                    <option value="MILITARY">MILITARY</option>
+                    <option value="NUCLEAR">NUCLEAR</option>
+                  </select>
+                </label>
+              </>
+            )}
             <label className="block sm:col-span-2">
               <FieldLabel>Insurance details</FieldLabel>
               <Input
@@ -1275,14 +1762,16 @@ export function PortalBookingFormPanel({
                 onChange={(e) => patch({ insurance_details: e.target.value })}
               />
             </label>
-            <label className="block sm:col-span-2">
-              <FieldLabel>LC bank details</FieldLabel>
-              <Input
-                className="mt-1"
-                value={form.lc_bank_details}
-                onChange={(e) => patch({ lc_bank_details: e.target.value })}
-              />
-            </label>
+            {!isWarehouse ? (
+              <label className="block sm:col-span-2">
+                <FieldLabel>LC bank details</FieldLabel>
+                <Input
+                  className="mt-1"
+                  value={form.lc_bank_details}
+                  onChange={(e) => patch({ lc_bank_details: e.target.value })}
+                />
+              </label>
+            ) : null}
             <label className="block sm:col-span-2">
               <FieldLabel>Request details</FieldLabel>
               <Input
@@ -1296,13 +1785,24 @@ export function PortalBookingFormPanel({
 
         {step.id === 'documents' ? (
           <div className="grid gap-2 sm:grid-cols-2">
-            {(
-              [
-                ['attach_commercial_invoice', 'Commercial invoice'],
-                ['attach_correspondence', 'Correspondence'],
-                ['attach_cod_form', 'COD form'],
-                ['attach_licence', 'Licence'],
-              ] as const
+            {(isWarehouse
+              ? ([
+                  ['attach_commercial_invoice', 'Commercial invoice'],
+                  ['attach_packing_list', 'Packing list'],
+                  ['attach_bl_awb_copy', 'BL / AWB copy'],
+                  ['attach_carnet', 'Carnet'],
+                  ['attach_vehicle_title', 'Vehicle title'],
+                  ['attach_msds', 'MSDS'],
+                  ['attach_dangerous_goods_declaration', 'DG declaration'],
+                  ['attach_health_veterinary', 'Health / veterinary'],
+                  ['attach_fda_moh', 'FDA / MOH'],
+                ] as const)
+              : ([
+                  ['attach_commercial_invoice', 'Commercial invoice'],
+                  ['attach_correspondence', 'Correspondence'],
+                  ['attach_cod_form', 'COD form'],
+                  ['attach_licence', 'Licence'],
+                ] as const)
             ).map(([key, label]) => (
               <label
                 key={key}
@@ -1310,7 +1810,7 @@ export function PortalBookingFormPanel({
               >
                 <input
                   type="checkbox"
-                  checked={form[key]}
+                  checked={Boolean(form[key])}
                   onChange={(e) => patch({ [key]: e.target.checked })}
                 />
                 {label}
@@ -1347,7 +1847,13 @@ export function PortalBookingFormPanel({
               />
             </label>
             <label className="block">
-              <FieldLabel>{isAir ? 'Flight / booking ref (voyage_ref)' : 'Voyage ref'}</FieldLabel>
+              <FieldLabel>
+                {isAir
+                  ? 'Flight / booking ref (voyage_ref)'
+                  : isWarehouse
+                    ? 'Booking / storage ref (voyage_ref)'
+                    : 'Voyage ref'}
+              </FieldLabel>
               <Input
                 className="mt-1"
                 maxLength={L.voyage_ref}

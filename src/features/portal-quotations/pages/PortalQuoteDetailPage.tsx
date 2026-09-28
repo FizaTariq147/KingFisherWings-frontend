@@ -263,7 +263,7 @@ export default function PortalQuoteDetailPage() {
           </h2>
           <p className="mt-1 text-sm text-sky-800">
             {modeConvert
-              ? 'Booking form is complete. Your forwarder will convert this quotation to a job.'
+              ? 'Booking form is complete. Your quotation converts to a job (Sea / Land / Road / Courier / Warehouse / Customs). Refresh if the job number is not listed yet.'
               : `Booking form is complete (BOOKING_FORM_COMPLETE). Your forwarder will send the invoice next${
                   isAir ? ', then AIR_EXPORT or AIR_IMPORT operations begin.' : '.'
                 }`}

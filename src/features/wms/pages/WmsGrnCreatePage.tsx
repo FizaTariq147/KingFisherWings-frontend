@@ -130,13 +130,17 @@ export default function WmsGrnCreatePage() {
 
   const cancel = () => navigate(`${WMS_ROUTE_PREFIX}/grns`);
 
+  const partyRequiredOptions = partyOptions.map((o) =>
+    o.value === '' ? { ...o, label: 'Select party…' } : o,
+  );
+
   return (
     <div className="mx-auto max-w-3xl space-y-4">
       <WmsPageHeader
         backTo={`${WMS_ROUTE_PREFIX}/grns`}
         backLabel="GRN"
         title="New GRN"
-        description="Goods received note — post inbound stock to lots."
+        description="Prefer ASN Mark unloaded. Manual GRN must include party so posted lots can be billed in Storage."
       />
 
       <form className="space-y-4" onSubmit={handleSubmit} noValidate>
@@ -171,7 +175,8 @@ export default function WmsGrnCreatePage() {
                 revalidate(createGrnSchema, toPayload({ party_id: v }));
               }}
               onBlur={() => validatePath(createGrnSchema, toPayload(), 'party_id')}
-              options={partyOptions}
+              options={partyRequiredOptions}
+              required
               disabled={partiesLoading}
               error={fieldError('party_id')}
             />

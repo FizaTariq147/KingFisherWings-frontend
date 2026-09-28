@@ -209,6 +209,7 @@ import WmsItemDetailPage from '../features/wms/pages/WmsItemDetailPage'
 import WmsAsnListPage from '../features/wms/pages/WmsAsnListPage'
 import WmsAsnCreatePage from '../features/wms/pages/WmsAsnCreatePage'
 import WmsAsnDetailPage from '../features/wms/pages/WmsAsnDetailPage'
+import WmsOpsBoardPage from '../features/wms/pages/WmsOpsBoardPage'
 import WmsGrnListPage from '../features/wms/pages/WmsGrnListPage'
 import WmsGrnCreatePage from '../features/wms/pages/WmsGrnCreatePage'
 import WmsGrnDetailPage from '../features/wms/pages/WmsGrnDetailPage'
@@ -639,6 +640,7 @@ export const router = createBrowserRouter([
             element: <ProtectedRoute requireMatrixModule="wms" />,
             children: [
               { path: '/warehouse', element: <WarehouseMenuPage /> },
+              { path: '/warehouse/ops-board', element: <WmsOpsBoardPage /> },
               { path: '/warehouse/settings', element: <WmsSettingsPage /> },
               { path: '/warehouse/items', element: <WmsItemsListPage /> },
               { path: '/warehouse/items/new', element: <WmsItemFormPage /> },

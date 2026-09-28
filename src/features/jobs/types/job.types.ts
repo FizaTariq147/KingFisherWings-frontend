@@ -403,8 +403,18 @@ export interface ContainerSizeLineDto {
   count: number;
 }
 
+/** Warehouse booking stock line — WhStockLineInputDto. */
+export interface WhStockLineInputDto {
+  sku_code?: string;
+  description?: string;
+  quantity?: number;
+  unit?: string;
+  cbm?: number;
+}
+
 /**
- * Shared staff mode booking form — Upsert{SeaFcl|SeaLcl|Land|RoadFreight|Courier}BookingFormDto.
+ * Shared staff mode booking form —
+ * Upsert{SeaFcl|SeaLcl|Land|RoadFreight|Courier|Warehouse|CustomsClearance}BookingFormDto.
  * Mode-specific fields are optional and ignored by other modes.
  */
 export type ModeBookingForm = Record<string, unknown> & {
@@ -454,6 +464,31 @@ export type ModeBookingForm = Record<string, unknown> & {
   vehicle_type?: string;
   border_crossing?: string;
   tracking_number?: string;
+  /** Warehouse — UpsertWarehouseBookingFormDto */
+  warehouse_id?: string;
+  warehouse_name?: string;
+  expected_inbound_at?: string;
+  expected_outbound_at?: string;
+  storage_days_requested?: number;
+  bonded?: boolean;
+  temperature_controlled?: boolean;
+  handling_instructions?: string;
+  freight_job_id?: string;
+  stock_lines?: WhStockLineInputDto[];
+  /** Customs Clearance — UpsertCustomsClearanceBookingFormDto */
+  direction?: 'IMPORT' | 'EXPORT' | 'TRANSIT' | string;
+  border_or_port?: string;
+  entry_type?: string;
+  declaration_type?: string;
+  port_of_entry?: string;
+  port_of_exit?: string;
+  country_of_origin?: string;
+  country_of_destination?: string;
+  invoice_value_amount?: number;
+  invoice_currency?: string;
+  attach_coo?: boolean;
+  attach_poa?: boolean;
+  attach_permit?: boolean;
 };
 
 export type UpsertSeaFclBookingFormDto = ModeBookingForm;
@@ -461,13 +496,17 @@ export type UpsertSeaLclBookingFormDto = ModeBookingForm;
 export type UpsertLandBookingFormDto = ModeBookingForm;
 export type UpsertRoadFreightBookingFormDto = ModeBookingForm;
 export type UpsertCourierBookingFormDto = ModeBookingForm;
+export type UpsertWarehouseBookingFormDto = ModeBookingForm;
+export type UpsertCustomsClearanceBookingFormDto = ModeBookingForm;
 
 export type StaffBookingFormMode =
   | 'SEA_FCL'
   | 'SEA_LCL'
   | 'LAND'
   | 'ROAD_FREIGHT'
-  | 'COURIER';
+  | 'COURIER'
+  | 'WAREHOUSE'
+  | 'CUSTOMS_CLEARANCE';
 
 export interface JobCharge {
   id: string;

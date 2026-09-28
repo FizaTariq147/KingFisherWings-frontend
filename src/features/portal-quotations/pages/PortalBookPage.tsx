@@ -52,6 +52,10 @@ function isRoadOrLandJobType(jobType?: string | null): boolean {
   const t = String(jobType ?? '').toUpperCase();
   return t === 'ROAD_FREIGHT' || t === 'LAND';
 }
+
+function isWarehouseJobType(jobType?: string | null): boolean {
+  return String(jobType ?? '').toUpperCase().replace(/[\s-]+/g, '_') === 'WAREHOUSE';
+}
 import {
   buildPortalCustomerLines,
   buildPortalEstimateSnapshot,
@@ -166,6 +170,8 @@ export default function PortalBookPage() {
   const jobType = watch('job_type');
   const useAirports = isAirJobType(jobType);
   const isRoadLand = isRoadOrLandJobType(jobType);
+  const isWarehouse = isWarehouseJobType(jobType);
+  const optionalRoute = isRoadLand || isWarehouse;
   const originPort = watch('origin_port');
   const destPort = watch('dest_port');
   const formGrossWeight = watch('gross_weight');
@@ -577,6 +583,14 @@ export default function PortalBookPage() {
                   special requirements when hubs are blank.
                 </p>
               ) : null}
+              {isWarehouse ? (
+                <p className="md:col-span-2 text-xs text-[var(--color-neutral-500)]">
+                  Warehouse quotes use optional pickup → warehouse locations (PortalQuotationRequestDto
+                  has no warehouse_id). Put bonded / temp-control / storage days in special
+                  requirements — full UpsertWarehouseBookingFormDto fields are collected after
+                  acceptance.
+                </p>
+              ) : null}
               <Controller
                 name="origin_port"
                 control={control}
@@ -586,11 +600,13 @@ export default function PortalBookPage() {
                     label={
                       useAirports
                         ? 'Origin airport'
-                        : isRoadLand
-                          ? 'Origin hub (optional)'
-                          : 'Origin port'
+                        : isWarehouse
+                          ? 'Pickup / origin location (optional)'
+                          : isRoadLand
+                            ? 'Origin hub (optional)'
+                            : 'Origin port'
                     }
-                    required={!isRoadLand}
+                    required={!optionalRoute}
                     jobType={jobType}
                     value={typeof field.value === 'string' ? field.value : ''}
                     onChange={field.onChange}
@@ -599,9 +615,11 @@ export default function PortalBookPage() {
                     placeholder={
                       useAirports
                         ? 'Search airport e.g. DXB — Dubai'
-                        : isRoadLand
-                          ? 'Optional hub / city'
-                          : 'Search port e.g. Jebel Ali'
+                        : isWarehouse
+                          ? 'Optional city / hub / free-text pickup'
+                          : isRoadLand
+                            ? 'Optional hub / city'
+                            : 'Search port e.g. Jebel Ali'
                     }
                     error={errors.origin_port?.message}
                   />
@@ -616,11 +634,13 @@ export default function PortalBookPage() {
                     label={
                       useAirports
                         ? 'Destination airport'
-                        : isRoadLand
-                          ? 'Destination hub (optional)'
-                          : 'Destination port'
+                        : isWarehouse
+                          ? 'Warehouse location (optional)'
+                          : isRoadLand
+                            ? 'Destination hub (optional)'
+                            : 'Destination port'
                     }
-                    required={!isRoadLand}
+                    required={!optionalRoute}
                     jobType={jobType}
                     value={typeof field.value === 'string' ? field.value : ''}
                     onChange={field.onChange}
@@ -629,9 +649,11 @@ export default function PortalBookPage() {
                     placeholder={
                       useAirports
                         ? 'Search airport e.g. RUH — Riyadh'
-                        : isRoadLand
-                          ? 'Optional hub / city'
-                          : 'Search port e.g. Karachi'
+                        : isWarehouse
+                          ? 'Optional warehouse / city name'
+                          : isRoadLand
+                            ? 'Optional hub / city'
+                            : 'Search port e.g. Karachi'
                     }
                     error={errors.dest_port?.message}
                   />
@@ -678,14 +700,22 @@ export default function PortalBookPage() {
                       (door addresses / route)
                     </span>
                   ) : null}
+                  {isWarehouse ? (
+                    <span className="font-normal text-[var(--color-neutral-400)]">
+                      {' '}
+                      (storage / bonded / handling)
+                    </span>
+                  ) : null}
                 </span>
                 <textarea
                   className="min-h-[96px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:border-[var(--color-primary-500)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-500)]"
                   maxLength={2000}
                   placeholder={
-                    isRoadLand
-                      ? 'e.g. Pickup: JAFZA WH-12, Dubai · Delivery: Ind. Area 2, Riyadh · Via Al Batha · DOOR_TO_DOOR'
-                      : undefined
+                    isWarehouse
+                      ? 'e.g. Pickup: Factory JAFZA · Warehouse: CFS A · Bonded · Temp-controlled · ~14 storage days'
+                      : isRoadLand
+                        ? 'e.g. Pickup: JAFZA WH-12, Dubai · Delivery: Ind. Area 2, Riyadh · Via Al Batha · DOOR_TO_DOOR'
+                        : undefined
                   }
                   {...register('special_requirements')}
                 />
@@ -701,7 +731,7 @@ export default function PortalBookPage() {
           {wizardStepKey === 'consignment' ? (
             <div className="space-y-4">
               <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">
-                Planned Container / Consignment
+                {isWarehouse ? 'Cargo / storage consignment' : 'Planned Container / Consignment'}
               </h3>
               <div className="space-y-3 rounded-md border border-[var(--color-neutral-200)] p-3">
                 <div>

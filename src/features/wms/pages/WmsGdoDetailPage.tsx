@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
-import { Check, RefreshCw, X } from 'lucide-react';
+import { Check, Mail, RefreshCw, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { isUuid } from '@/lib/isUuid';
@@ -31,7 +31,7 @@ export default function WmsGdoDetailPage() {
   const { id = '' } = useParams();
   const queryClient = useQueryClient();
   const { data: doc, isLoading, isError, error, refetch, isFetching } = useWmsGdo(id);
-  const { post, cancel } = useWmsGdoActions(id);
+  const { post, resendGdn, cancel } = useWmsGdoActions(id);
   const warehouseLabel = useWmsWarehouseLabel(doc?.warehouse_id);
   const partyId = doc?.party_id && isUuid(doc.party_id) ? doc.party_id : '';
   const { data: party } = useParty(partyId);
@@ -60,16 +60,24 @@ export default function WmsGdoDetailPage() {
   });
 
   const status = (doc?.status ?? '').toLowerCase();
-  const canPost = Boolean(doc) && !status.includes('post') && !status.includes('cancel');
-  const canCancel = Boolean(doc) && !status.includes('cancel');
+  const isPosted =
+    status.includes('post') || status.includes('dispatch') || status.includes('gdn');
+  const canPost = Boolean(doc) && !isPosted && !status.includes('cancel');
+  const canResendGdn = Boolean(doc) && isPosted;
+  const canCancel = Boolean(doc) && !isPosted && !status.includes('cancel');
 
-  const actionError = post.isError || cancel.isError ? getErrorMessage(post.error ?? cancel.error) : null;
+  const actionError =
+    post.isError || resendGdn.isError || cancel.isError
+      ? getErrorMessage(post.error ?? resendGdn.error ?? cancel.error)
+      : null;
   const actionErrorDisplay = actionError ? humanizeStockError(actionError, itemLabelById) : null;
   const isInsufficientStock = Boolean(actionError?.toLowerCase().includes('insufficient stock'));
+  const actionPending = post.isPending || resendGdn.isPending || cancel.isPending;
 
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: wmsKeys.gdo(id) });
     void queryClient.invalidateQueries({ queryKey: wmsKeys.gdos() });
+    void queryClient.invalidateQueries({ queryKey: wmsKeys.opsBoard() });
     void refetch();
   };
 
@@ -79,7 +87,7 @@ export default function WmsGdoDetailPage() {
         backTo={`${WMS_ROUTE_PREFIX}/gdos`}
         backLabel="GDO"
         title={doc ? displayDocNumber(doc) : 'GDO detail'}
-        description={doc?.status ? undefined : 'Goods dispatch order'}
+        description="Post = DISPATCHED · sends GDN email + portal JobDocument"
         actions={
           doc ? (
             <>
@@ -92,10 +100,21 @@ export default function WmsGdoDetailPage() {
                 <Button
                   type="button"
                   onClick={() => post.mutate(undefined, { onSuccess: refresh })}
-                  disabled={post.isPending}
+                  disabled={actionPending}
                 >
                   <Check className="h-4 w-4" />
-                  Post
+                  Post (dispatch + GDN)
+                </Button>
+              ) : null}
+              {canResendGdn ? (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => resendGdn.mutate(undefined, { onSuccess: refresh })}
+                  disabled={actionPending}
+                >
+                  <Mail className="h-4 w-4" />
+                  Resend GDN
                 </Button>
               ) : null}
               {canCancel ? (
@@ -103,7 +122,7 @@ export default function WmsGdoDetailPage() {
                   type="button"
                   variant="secondary"
                   onClick={() => cancel.mutate(undefined, { onSuccess: refresh })}
-                  disabled={cancel.isPending}
+                  disabled={actionPending}
                 >
                   <X className="h-4 w-4" />
                   Cancel

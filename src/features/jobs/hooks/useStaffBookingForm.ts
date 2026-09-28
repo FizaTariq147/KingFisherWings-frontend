@@ -7,7 +7,8 @@ import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import { jobKeys, useInvalidateJobs } from './useJobs';
 
 /**
- * Staff mode booking forms under /jobs/:id/{sea-fcl|sea-lcl|land|road-freight|courier}/booking-form.
+ * Staff mode booking forms under
+ * /jobs/:id/{sea-fcl|sea-lcl|land|road-freight|courier|warehouse|customs-clearance}/booking-form.
  * (Air uses /air-booking-form + /air/compliance-form; NVOCC uses /nvocc/bookings/:id/booking-form.)
  */
 export function staffBookingFormModeFromJob(
@@ -19,6 +20,8 @@ export function staffBookingFormModeFromJob(
   if (t === 'LAND') return 'LAND';
   if (t === 'ROAD_FREIGHT') return 'ROAD_FREIGHT';
   if (t === 'COURIER') return 'COURIER';
+  if (t === 'WAREHOUSE') return 'WAREHOUSE';
+  if (t === 'CUSTOMS_CLEARANCE') return 'CUSTOMS_CLEARANCE';
   return null;
 }
 
@@ -32,7 +35,9 @@ export function jobShouldOpenOpsTab(jobType?: string | null): boolean {
   const t = canonicalizeJobType(jobType ?? '');
   if (jobHasStaffModeBookingForm(t)) return true;
   if (t === 'AIR_EXPORT' || t === 'AIR_IMPORT') return true;
-  if (t === 'ROAD_FREIGHT' || t === 'LAND') return true;
+  if (t === 'ROAD_FREIGHT' || t === 'LAND' || t === 'WAREHOUSE' || t === 'CUSTOMS_CLEARANCE') {
+    return true;
+  }
   return false;
 }
 
@@ -48,6 +53,10 @@ export function staffBookingFormApiLabel(mode: StaffBookingFormMode): string {
       return '/jobs/:id/road-freight/booking-form';
     case 'COURIER':
       return '/jobs/:id/courier/booking-form';
+    case 'WAREHOUSE':
+      return '/jobs/:id/warehouse/booking-form';
+    case 'CUSTOMS_CLEARANCE':
+      return '/jobs/:id/customs-clearance/booking-form';
   }
 }
 
@@ -66,6 +75,10 @@ async function getBookingForm(mode: StaffBookingFormMode, jobId: string) {
       return jobService.getRoadFreightBookingForm(jobId);
     case 'COURIER':
       return jobService.getCourierBookingForm(jobId);
+    case 'WAREHOUSE':
+      return jobService.getWarehouseBookingForm(jobId);
+    case 'CUSTOMS_CLEARANCE':
+      return jobService.getCustomsClearanceBookingForm(jobId);
   }
 }
 
@@ -85,6 +98,10 @@ async function putBookingForm(
       return jobService.putRoadFreightBookingForm(jobId, dto);
     case 'COURIER':
       return jobService.putCourierBookingForm(jobId, dto);
+    case 'WAREHOUSE':
+      return jobService.putWarehouseBookingForm(jobId, dto);
+    case 'CUSTOMS_CLEARANCE':
+      return jobService.putCustomsClearanceBookingForm(jobId, dto);
   }
 }
 
@@ -100,6 +117,34 @@ async function completeBookingForm(mode: StaffBookingFormMode, jobId: string) {
       return jobService.completeRoadFreightBookingForm(jobId);
     case 'COURIER':
       return jobService.completeCourierBookingForm(jobId);
+    case 'WAREHOUSE':
+      return jobService.completeWarehouseBookingForm(jobId);
+    case 'CUSTOMS_CLEARANCE':
+      return jobService.completeCustomsClearanceBookingForm(jobId);
+  }
+}
+
+/**
+ * POST …/booking-form/complete, then quote→job convert when the linked quotation
+ * is still APPROVED (Sea/Land/Road/Courier/Warehouse/Customs).
+ */
+export async function completeStaffBookingFormAndConvert(
+  mode: StaffBookingFormMode,
+  jobId: string,
+): Promise<{ completed: boolean; converted: boolean }> {
+  await completeBookingForm(mode, jobId);
+  try {
+    const { quotationService } = await import(
+      '@/features/quotations/services/quotation.service'
+    );
+    const linked = await quotationService.convertAfterBookingFormComplete(jobId, {
+      staffFormJustCompleted: true,
+    });
+    const converted = String(linked?.status ?? '').toUpperCase() === 'CONVERTED';
+    return { completed: true, converted };
+  } catch {
+    // Complete succeeded; convert may retry from quotation detail / refresh.
+    return { completed: true, converted: false };
   }
 }
 
@@ -126,7 +171,7 @@ export function useStaffBookingFormActions(jobId: string, mode: StaffBookingForm
       onSuccess: refresh,
     }),
     complete: useMutation({
-      mutationFn: () => completeBookingForm(mode, jobId),
+      mutationFn: () => completeStaffBookingFormAndConvert(mode, jobId),
       onSuccess: refresh,
     }),
   };

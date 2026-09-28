@@ -6,11 +6,20 @@ import {
   PackageMinus,
   Boxes,
   Calculator,
+  LayoutDashboard,
 } from 'lucide-react';
 import type { MenuTile } from '@/features/customers/types/menu.types';
 import { WMS_ROUTE_PREFIX } from '../api/wms.api';
 
 export const wmsMenu: MenuTile[] = [
+  {
+    id: 'wms-ops-board',
+    title: 'WMS Ops Board',
+    description: 'ASN yard, GDO dispatch, OVERDUE / OVER_BILL lots, customer send flags.',
+    icon: LayoutDashboard,
+    iconColor: 'bg-indigo-500',
+    path: `${WMS_ROUTE_PREFIX}/ops-board`,
+  },
   {
     id: 'wms-settings',
     title: 'WMS Settings',
@@ -30,7 +39,7 @@ export const wmsMenu: MenuTile[] = [
   {
     id: 'wms-asn',
     title: 'WMS ASN',
-    description: 'Advance shipment notices for expected inbound stock.',
+    description: 'Yard flow: confirm → picked → unloading → unloaded (auto GRN).',
     icon: ClipboardList,
     iconColor: 'bg-sky-500',
     path: `${WMS_ROUTE_PREFIX}/asns`,
@@ -46,7 +55,7 @@ export const wmsMenu: MenuTile[] = [
   {
     id: 'wms-gdo',
     title: 'WMS GDO',
-    description: 'Goods dispatch orders to consume stock FIFO or LIFO.',
+    description: 'Dispatch orders — post sends GDN to customer portal.',
     icon: PackageMinus,
     iconColor: 'bg-orange-500',
     path: `${WMS_ROUTE_PREFIX}/gdos`,

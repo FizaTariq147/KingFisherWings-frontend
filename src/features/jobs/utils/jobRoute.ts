@@ -24,6 +24,7 @@ export function segmentForJobType(jobType: JobType | string): JobSegmentKey {
     if (seg.jobTypes.includes(normalized)) return key;
   }
   if (normalized === 'CUSTOMS_CLEARANCE') return 'customs-clearance';
+  if (normalized === 'WAREHOUSE') return 'road-freight';
   if (normalized === 'ROAD_FREIGHT' || normalized === 'LAND' || normalized === 'COURIER') {
     return 'road-freight';
   }

@@ -1,7 +1,6 @@
-import type { ModeBookingForm } from '../types/job.types';
+import type { Job, ModeBookingForm, StaffBookingFormMode, WhStockLineInputDto } from '../types/job.types';
 import type { PortalBookingFormMessagePayload } from '@/features/portal-quotations/utils/portalBookingFormStorage';
 import { staffBookingFormModeFromJob } from '../hooks/useStaffBookingForm';
-import type { StaffBookingFormMode } from '../types/job.types';
 
 /** True when the job booking-form API has no meaningful customer data yet. */
 export function modeBookingFormIsEmpty(raw: unknown): boolean {
@@ -14,11 +13,24 @@ export function modeBookingFormIsEmpty(raw: unknown): boolean {
       typeof p === 'object' &&
       String((p as { full_name?: string }).full_name ?? '').trim(),
   );
-  const hasRoute = Boolean(String(r.pol ?? '').trim() || String(r.pod ?? '').trim());
+  const hasRoute = Boolean(
+    String(r.pol ?? '').trim() ||
+      String(r.pod ?? '').trim() ||
+      String(r.warehouse_name ?? '').trim() ||
+      String(r.warehouse_id ?? '').trim(),
+  );
   const hasCommodity = Boolean(String(r.commodity ?? '').trim());
   const hasBookingNo = Boolean(String(r.client_booking_no ?? '').trim());
   const hasWeight = r.gross_weight_kg != null && Number(r.gross_weight_kg) > 0;
-  return !(hasParty || hasRoute || hasCommodity || hasBookingNo || hasWeight);
+  const stockLines = Array.isArray(r.stock_lines) ? r.stock_lines : [];
+  const hasStock = stockLines.some(
+    (line) =>
+      line &&
+      typeof line === 'object' &&
+      (String((line as WhStockLineInputDto).sku_code ?? '').trim() ||
+        Number((line as WhStockLineInputDto).quantity) > 0),
+  );
+  return !(hasParty || hasRoute || hasCommodity || hasBookingNo || hasWeight || hasStock);
 }
 
 /**
@@ -48,16 +60,39 @@ export function portalPayloadToModeBookingFormDto(
       count: c.count,
     }));
 
+  const stock_lines: WhStockLineInputDto[] = (payload.stock_lines ?? [])
+    .filter(
+      (line) =>
+        line &&
+        (String(line.sku_code ?? '').trim() ||
+          String(line.description ?? '').trim() ||
+          Number(line.quantity) > 0),
+    )
+    .map((line) => ({
+      sku_code: line.sku_code?.trim() || undefined,
+      description: line.description?.trim() || undefined,
+      quantity: line.quantity,
+      unit: line.unit?.trim() || undefined,
+      cbm: line.cbm,
+    }));
+
+  const warehouseName =
+    payload.warehouse_name?.trim() || payload.pod?.trim() || undefined;
+  const pickupOrigin =
+    payload.origin_door_address?.trim() || payload.pol?.trim() || undefined;
+
   const dto: ModeBookingForm = {
     date_of_request: payload.date_of_request?.slice(0, 10) || undefined,
     client_booking_no: payload.client_booking_no?.trim() || undefined,
     voyage_ref: payload.voyage_ref?.trim() || undefined,
     service_scope: payload.service_scope || undefined,
-    origin_door_address: payload.origin_door_address?.trim() || undefined,
-    dest_door_address: payload.dest_door_address?.trim() || undefined,
+    origin_door_address: pickupOrigin,
+    dest_door_address: payload.dest_door_address?.trim() || warehouseName,
     commodity: payload.commodity?.trim() || undefined,
     hs_code: payload.hs_code?.trim() || undefined,
+    cargo_category: payload.cargo_category?.trim() || undefined,
     is_dg: Boolean(payload.is_dg),
+    dg_class: payload.dg_class?.trim() || undefined,
     gross_weight_kg: payload.gross_weight_kg,
     net_weight_kg: payload.net_weight_kg,
     volume_cbm: payload.volume_cbm,
@@ -65,10 +100,25 @@ export function portalPayloadToModeBookingFormDto(
     insurance_details: payload.insurance_details?.trim() || undefined,
     request_details: payload.request_details?.trim() || undefined,
     attach_commercial_invoice: Boolean(payload.attach_commercial_invoice),
-    pol: payload.pol?.trim() || undefined,
-    pod: payload.pod?.trim() || undefined,
-    shipper_owned_container: Boolean(payload.shipper_owned_container),
-    teu_count: payload.teu_count,
+    attach_packing_list: Boolean(payload.attach_packing_list),
+    attach_bl_awb_copy: Boolean(payload.attach_bl_awb_copy),
+    attach_carnet: Boolean(payload.attach_carnet),
+    attach_vehicle_title: Boolean(payload.attach_vehicle_title),
+    attach_msds: Boolean(payload.attach_msds),
+    attach_dangerous_goods_declaration: Boolean(
+      payload.attach_dangerous_goods_declaration,
+    ),
+    attach_health_veterinary: Boolean(payload.attach_health_veterinary),
+    attach_fda_moh: Boolean(payload.attach_fda_moh),
+    warehouse_id: payload.warehouse_id?.trim() || undefined,
+    warehouse_name: warehouseName,
+    expected_inbound_at: payload.expected_inbound_at || undefined,
+    expected_outbound_at: payload.expected_outbound_at || undefined,
+    storage_days_requested: payload.storage_days_requested,
+    bonded: payload.bonded === true,
+    temperature_controlled: payload.temperature_controlled === true,
+    handling_instructions: payload.handling_instructions?.trim() || undefined,
+    freight_job_id: payload.freight_job_id?.trim() || undefined,
     // Staff Ops still reviews — do not mark the job form complete from the portal alone.
     mark_complete: false,
     consent_accepted: Boolean(payload.consent_accepted),
@@ -76,12 +126,27 @@ export function portalPayloadToModeBookingFormDto(
 
   if (parties.length) dto.parties = parties;
   if (containers.length) dto.containers = containers;
+  if (stock_lines.length) dto.stock_lines = stock_lines;
+
+  // Sea modes only: keep pol/pod from portal. Warehouse has no pol/pod on staff DTO.
+  const jt = String(payload.jobType ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  if (jt !== 'WAREHOUSE') {
+    if (payload.pol?.trim()) dto.pol = payload.pol.trim();
+    if (payload.pod?.trim()) dto.pod = payload.pod.trim();
+    dto.shipper_owned_container = Boolean(payload.shipper_owned_container);
+    dto.teu_count = payload.teu_count;
+  }
 
   // Land / road / courier: map POL/POD text into city/country fields when present.
-  const originCity = payload.origin_door_address?.trim() || payload.pol?.trim();
-  const destCity = payload.dest_door_address?.trim() || payload.pod?.trim();
-  if (originCity) dto.origin_city_country = originCity;
-  if (destCity) dto.dest_city_country = destCity;
+  if (jt !== 'WAREHOUSE') {
+    const originCity = payload.origin_door_address?.trim() || payload.pol?.trim();
+    const destCity = payload.dest_door_address?.trim() || payload.pod?.trim();
+    if (originCity) dto.origin_city_country = originCity;
+    if (destCity) dto.dest_city_country = destCity;
+  }
 
   return dto;
 }
@@ -99,7 +164,9 @@ export async function syncCustomerPortalBookingFormOntoJob(opts: {
   const { jobId, jobType, quotationId, quoteNumber } = opts;
   if (!jobId || !quotationId) return { synced: false };
 
-  const mode = staffBookingFormModeFromJob({ job_type: String(jobType ?? '') });
+  const mode = staffBookingFormModeFromJob({
+    job_type: String(jobType ?? '') as Job['job_type'],
+  });
   if (!mode) return { synced: false };
 
   const { jobService } = await import('../services/job.service');
@@ -164,6 +231,10 @@ async function getModeBookingForm(
       return jobService.getRoadFreightBookingForm(jobId);
     case 'COURIER':
       return jobService.getCourierBookingForm(jobId);
+    case 'WAREHOUSE':
+      return jobService.getWarehouseBookingForm(jobId);
+    case 'CUSTOMS_CLEARANCE':
+      return jobService.getCustomsClearanceBookingForm(jobId);
   }
 }
 
@@ -184,5 +255,9 @@ async function putModeBookingForm(
       return jobService.putRoadFreightBookingForm(jobId, dto);
     case 'COURIER':
       return jobService.putCourierBookingForm(jobId, dto);
+    case 'WAREHOUSE':
+      return jobService.putWarehouseBookingForm(jobId, dto);
+    case 'CUSTOMS_CLEARANCE':
+      return jobService.putCustomsClearanceBookingForm(jobId, dto);
   }
 }

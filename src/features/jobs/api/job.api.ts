@@ -81,6 +81,15 @@ export const JOB_API = {
   roadFreightBookingFormComplete: (id: string) =>
     `/jobs/${id}/road-freight/booking-form/complete`,
 
+  warehouseBookingForm: (id: string) => `/jobs/${id}/warehouse/booking-form`,
+  warehouseBookingFormComplete: (id: string) =>
+    `/jobs/${id}/warehouse/booking-form/complete`,
+
+  customsClearanceBookingForm: (id: string) =>
+    `/jobs/${id}/customs-clearance/booking-form`,
+  customsClearanceBookingFormComplete: (id: string) =>
+    `/jobs/${id}/customs-clearance/booking-form/complete`,
+
   lclConsolidation: (id: string) => `/jobs/${id}/lcl-consolidation`,
   lclAttachHouse: (id: string) => `/jobs/${id}/lcl/attach-house`,
   lclDetachHouse: (id: string, houseJobId: string) =>

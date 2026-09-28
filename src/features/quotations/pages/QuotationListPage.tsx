@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, Plus, RefreshCw, TimerReset } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -64,6 +64,31 @@ export default function QuotationListPage() {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuotations(listParams);
   const quotations = data?.quotations ?? [];
   const meta = data?.meta;
+  const pendingConvertTried = useRef(false);
+
+  // Booking-form modes: when portal form is already complete, convert APPROVED → job.
+  useEffect(() => {
+    if (pendingConvertTried.current) return;
+    pendingConvertTried.current = true;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { quotationService } = await import('../services/quotation.service');
+        const result = await quotationService.convertPendingAfterBookingForms();
+        if (!cancelled && result.converted > 0) {
+          setActionMessage(
+            `Converted ${result.converted} quotation(s) to job after booking form complete.`,
+          );
+          void refetch();
+        }
+      } catch {
+        /* non-fatal */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [refetch]);
 
   const runAction = async (q: Quotation, action: () => Promise<unknown>) => {
     setActionError(null);
