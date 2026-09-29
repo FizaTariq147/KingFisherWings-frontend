@@ -160,6 +160,10 @@ export function QuotationForm({
 
   const watched = watch();
   const useAirports = isAirJobType(watched.job_type);
+  const isWarehouse =
+    String(watched.job_type ?? '')
+      .toUpperCase()
+      .replace(/[\s-]+/g, '_') === 'WAREHOUSE';
   const { data: containers = [] } = useMasterOptions(
     'container-types',
     MASTER_PATHS['container-types'],
@@ -335,7 +339,13 @@ export function QuotationForm({
         render={({ field }) => (
           <MasterPlaceSelect
             name="origin_port_id"
-            label={useAirports ? 'Origin airport' : 'Origin'}
+            label={
+              useAirports
+                ? 'Origin airport'
+                : isWarehouse
+                  ? 'Pickup / origin location'
+                  : 'Origin'
+            }
             value={field.value ?? ''}
             onChange={field.onChange}
             jobType={watched.job_type}
@@ -350,7 +360,13 @@ export function QuotationForm({
         render={({ field }) => (
           <MasterPlaceSelect
             name="dest_port_id"
-            label={useAirports ? 'Destination airport' : 'Destination'}
+            label={
+              useAirports
+                ? 'Destination airport'
+                : isWarehouse
+                  ? 'Warehouse location'
+                  : 'Destination'
+            }
             value={field.value ?? ''}
             onChange={field.onChange}
             jobType={watched.job_type}
@@ -359,6 +375,13 @@ export function QuotationForm({
           />
         )}
       />
+      {isWarehouse ? (
+        <p className="md:col-span-2 text-xs text-[var(--color-neutral-500)]">
+          CreateQuotationDto has no warehouse_id — use pickup → warehouse places (or leave blank)
+          and put bonded / storage days in special requirements. Full UpsertWarehouseBookingFormDto
+          fields are on the warehouse booking form after approve.
+        </p>
+      ) : null}
     </>
   );
 

@@ -86,6 +86,21 @@ function pickFormFields(src: Partial<PortalBookingForm> | PortalBookingFormUpser
     attach_health_veterinary: src.attach_health_veterinary,
     attach_fda_moh: src.attach_fda_moh,
     stock_lines: src.stock_lines,
+    direction: src.direction,
+    border_or_port: src.border_or_port,
+    entry_type: src.entry_type,
+    declaration_type: src.declaration_type,
+    port_of_entry: src.port_of_entry,
+    port_of_exit: src.port_of_exit,
+    country_of_origin: src.country_of_origin,
+    country_of_destination: src.country_of_destination,
+    incoterms: src.incoterms,
+    invoice_value_amount: src.invoice_value_amount,
+    invoice_currency: src.invoice_currency,
+    attach_coo: src.attach_coo,
+    attach_poa: src.attach_poa,
+    attach_permit: src.attach_permit,
+    cargo_lines: src.cargo_lines,
   };
 }
 

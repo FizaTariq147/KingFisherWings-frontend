@@ -8,7 +8,6 @@ import {
 } from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
 import type { PaymentProof, UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
 import { normalizePaymentProof, normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
-import { invoicePdfBranding } from '@/features/files/utils/pdfBranding';
 import { formatPdfFilename, stripPdfExtension } from '@/features/files/utils/pdfFilename';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import {
@@ -16,6 +15,7 @@ import {
   fetchPortalBlob,
   resolvePortalDownloadUrl,
 } from '@/features/portal-shared/downloadPortalBlob';
+import { applyPortalInvoicePdfChrome } from '@/features/portal-shared/applyPortalInvoicePdfChrome';
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
 import { asRecord, pickString, unwrapData } from '@/features/portal-shared/normalize';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
@@ -92,20 +92,26 @@ function sleep(ms: number): Promise<void> {
   });
 }
 
+/** API PDF body + invoice header/footer (same chrome as admin). */
+async function wrapApiPdf(
+  blob: Blob,
+  fileName: string,
+): Promise<{ blob: Blob; fileName: string } | null> {
+  if (!(await blobLooksLikePdf(blob))) return null;
+  return { blob: await applyPortalInvoicePdfChrome(blob), fileName };
+}
+
 async function tryFetchFromPdfUrl(
   pdfUrl: string | undefined,
   filename: string,
-  branding: ReturnType<typeof invoicePdfBranding>,
 ): Promise<{ blob: Blob; fileName: string } | null> {
   const url = pdfUrl?.trim();
   if (!url) return null;
   try {
     const result = await fetchPortalBlob(resolvePortalDownloadUrl(url), filename, {
       accept: PDF_ACCEPT,
-      branding,
     });
-    if (!(await blobLooksLikePdf(result.blob))) return null;
-    return { blob: result.blob, fileName: result.filename };
+    return wrapApiPdf(result.blob, result.filename);
   } catch {
     return null;
   }
@@ -115,7 +121,6 @@ async function tryFetchFromPdfUrl(
 async function tryFetchFromPdfMetadata(
   id: string,
   filename: string,
-  branding: ReturnType<typeof invoicePdfBranding>,
 ): Promise<{ blob: Blob; fileName: string } | null> {
   try {
     const res = await portalApiClient.get(PORTAL_INVOICES_API.pdf(id), {
@@ -125,7 +130,7 @@ async function tryFetchFromPdfMetadata(
     const data = asRecord(unwrapData(res.data)) ?? root;
     const url = pickPortalInvoicePdfUrl(data) || pickString(root.pdf_url, root.customer_pdf_url);
     if (!url) return null;
-    return tryFetchFromPdfUrl(url, filename, branding);
+    return tryFetchFromPdfUrl(url, filename);
   } catch {
     return null;
   }
@@ -194,7 +199,6 @@ export const portalInvoicesService = {
   ): Promise<{ blob: Blob; fileName: string }> {
     const ref = stripPdfExtension(invoiceNumber) || 'invoice';
     const filename = formatPdfFilename(ref, 'invoice');
-    const branding = invoicePdfBranding(ref);
 
     let detail: PortalInvoiceDetail | undefined;
     try {
@@ -203,7 +207,7 @@ export const portalInvoicesService = {
       /* continue with dedicated PDF routes */
     }
 
-    // Prefer KingFisher tax-invoice client layout (same visual as staff ERP / vendor portal).
+    // Prefer KingFisher tax-invoice client layout (same visual as staff ERP).
     if (detail) {
       try {
         const user = usePortalAuthStore.getState().user;
@@ -249,7 +253,7 @@ export const portalInvoicesService = {
       }
     }
 
-    const fromUrl = await tryFetchFromPdfUrl(detail?.pdfUrl, filename, branding);
+    const fromUrl = await tryFetchFromPdfUrl(detail?.pdfUrl, filename);
     if (fromUrl) return fromUrl;
 
     let lastError: unknown;
@@ -259,28 +263,29 @@ export const portalInvoicesService = {
       try {
         const result = await fetchPortalBlob(PORTAL_INVOICES_API.pdf(id), filename, {
           accept: PDF_ACCEPT,
-          branding,
         });
-        if (await blobLooksLikePdf(result.blob)) {
-          return { blob: result.blob, fileName: result.filename };
-        }
-        throw new PortalApiError('Download was expected to be a PDF but the server returned a non-PDF response.', 400);
+        const wrapped = await wrapApiPdf(result.blob, result.filename);
+        if (wrapped) return wrapped;
+        throw new PortalApiError(
+          'Download was expected to be a PDF but the server returned a non-PDF response.',
+          400,
+        );
       } catch (primaryErr) {
         lastError = primaryErr;
         const status = primaryErr instanceof PortalApiError ? primaryErr.status : 0;
         if (status === 403) throw friendlyInvoicePdfError(primaryErr);
 
-        const fromMeta = await tryFetchFromPdfMetadata(id, filename, branding);
+        const fromMeta = await tryFetchFromPdfMetadata(id, filename);
         if (fromMeta) return fromMeta;
 
         try {
-          const result = await fetchPortalBlob(PORTAL_DOCUMENTS_API.downloadInvoice(id), filename, {
-            accept: PDF_ACCEPT,
-            branding,
-          });
-          if (await blobLooksLikePdf(result.blob)) {
-            return { blob: result.blob, fileName: result.filename };
-          }
+          const result = await fetchPortalBlob(
+            PORTAL_DOCUMENTS_API.downloadInvoice(id),
+            filename,
+            { accept: PDF_ACCEPT },
+          );
+          const wrapped = await wrapApiPdf(result.blob, result.filename);
+          if (wrapped) return wrapped;
           throw new PortalApiError(
             'Download was expected to be a PDF but the server returned a non-PDF response.',
             400,
@@ -290,7 +295,6 @@ export const portalInvoicesService = {
           const fallbackStatus =
             fallbackErr instanceof PortalApiError ? fallbackErr.status : 0;
           if (fallbackStatus === 403) throw friendlyInvoicePdfError(fallbackErr);
-          // Retry on 404/5xx/transient — PDF may still be writing after staff generate.
           if (
             fallbackStatus !== 404 &&
             fallbackStatus < 500 &&

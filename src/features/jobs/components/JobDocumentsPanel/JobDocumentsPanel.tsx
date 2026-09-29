@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { StoredFileLink } from '@/features/files/components/StoredFileLink';
-import { useFileDownload } from '@/features/files/hooks/useFileDownload';
+import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
+import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { NvoccJobDocumentsPanel } from '@/features/nvocc/components/NvoccJobDocumentsPanel';
 import { isNvoccJobType } from '@/features/nvocc/hooks/useNvoccJobs';
 import { CcEntryPackCard } from '@/features/customs-clearance/components/CcEntryPackCard';
@@ -11,9 +12,12 @@ import { Input } from '@/components/ui/Input';
 import { JOB_DOCUMENT_TYPES } from '../../constants/job.constants';
 import { useJobActions } from '../../hooks/useJobActions';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
-import { useJobDocumentGenerationStatus, useJobDocuments } from '../../hooks/useJobs';
+import { useJob, useJobDocumentGenerationStatus, useJobDocuments } from '../../hooks/useJobs';
 import { JobDocumentGenerationStatusCard } from '../JobDocumentGenerationStatusCard';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import { resolveJobDocumentPdfMeta } from '../../utils/jobDocumentPdfMeta';
+import { prepareJobDocumentDisplayPdf } from '../../utils/prepareJobDocumentDisplayPdf';
+import { jobDisplayNumber } from '../../utils/jobRoute';
 import { resolveJobDocumentFileUrl } from '../../utils/resolveJobDocumentFileUrl';
 import { resolveSessionTenantIdFromAuth } from '@/lib/tenantFromAuth';
 import { useAuthStore } from '@/store/authStore';
@@ -85,8 +89,12 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
   if (isNvoccJobType(jobType)) {
     return <NvoccJobDocumentsPanel jobId={jobId} />;
   }
+  return <StaffJobDocumentsPanel jobId={jobId} jobType={jobType} />;
+}
 
+function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
   const isAirImport = jobType === 'AIR_IMPORT';
+  const { data: job } = useJob(jobId);
   const { data: documents = [], refetch } = useJobDocuments(jobId);
   const accessToken = useAuthStore((s) => s.accessToken);
   const user = useAuthStore((s) => s.user);
@@ -108,7 +116,12 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
   const [importNoticeEmail, setImportNoticeEmail] = useState('');
   const [importNoticeCc, setImportNoticeCc] = useState('');
   const [importNoticeMsg, setImportNoticeMsg] = useState('');
-  const fileDownload = useFileDownload();
+
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
+  const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
+  const [pdfReadyName, setPdfReadyName] = useState('document.pdf');
+  const [pdfReadyTitle, setPdfReadyTitle] = useState('Document PDF ready');
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
     setError(null);
@@ -122,11 +135,57 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
     }
   };
 
-  const generate = async (fn: (typeof GENERATORS)[number]['fn']) => {
-    await run(async () => {
+  const openKingFisherPdf = async (
+    documentKey: string,
+    documentLabel?: string,
+    fileUrl?: string | null,
+    waitForUrl = false,
+  ) => {
+    setError(null);
+    setPdfBusy(true);
+    setPdfReadyBlob(null);
+    const meta = resolveJobDocumentPdfMeta(documentKey, documentLabel);
+    const file = formatPdfFilename(
+      `${meta.documentTitle}-${job ? jobDisplayNumber(job) : jobId}`,
+      meta.documentTitle.toLowerCase().replace(/\s+/g, '-'),
+    );
+    setPdfReadyName(file);
+    setPdfReadyTitle(`${meta.documentTitle} PDF ready`);
+    setPdfReadyOpen(true);
+    try {
+      const blob = await prepareJobDocumentDisplayPdf({
+        jobId,
+        tenantId,
+        fileUrl,
+        waitForUrl,
+      });
+      setPdfReadyBlob(blob);
+      setMessage(`${meta.documentTitle} PDF ready (API body + invoice header/footer).`);
+    } catch (err) {
+      setPdfReadyOpen(false);
+      setError(getErrorMessage(err));
+    } finally {
+      setPdfBusy(false);
+    }
+  };
+
+  const generate = async (
+    fn: (typeof GENERATORS)[number]['fn'],
+    key: string,
+    label: string,
+  ) => {
+    setError(null);
+    setMessage(null);
+    try {
       await actions[fn].mutateAsync({});
       setPoll(true);
-    }, 'Document generation queued.');
+      setMessage('Document generation queued.');
+      refetch();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
+    // Always open KingFisher invoice-chrome PDF for the user-facing document UI.
+    await openKingFisherPdf(key, label, null, true);
   };
 
   return (
@@ -153,8 +212,9 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                 s3_key?: string;
                 status?: string;
                 is_finalized?: boolean;
+                reference_number?: string;
               };
-              const fileUrl = resolveJobDocumentFileUrl(d, tenantId);
+              const storedUrl = resolveJobDocumentFileUrl(d, tenantId);
               return (
                 <div
                   key={d.id}
@@ -168,27 +228,43 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {fileUrl && (
-                      <>
-                        <StoredFileLink
-                          url={fileUrl}
-                          label="View"
-                          displayName={d.file_name}
-                          className="text-sm text-[var(--color-primary-600)] underline"
-                        />
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="secondary"
-                          disabled={fileDownload.isPending}
-                          onClick={() =>
-                            void fileDownload.downloadStoredFile(fileUrl, d.file_name)
-                          }
-                        >
-                          Download
-                        </Button>
-                      </>
-                    )}
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={pdfBusy}
+                      onClick={() =>
+                        void openKingFisherPdf(
+                          d.document_type || 'DOCUMENT',
+                          d.file_name || d.document_type,
+                          storedUrl,
+                        )
+                      }
+                    >
+                      {pdfBusy ? 'Building…' : 'View PDF'}
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      disabled={pdfBusy}
+                      onClick={() =>
+                        void openKingFisherPdf(
+                          d.document_type || 'DOCUMENT',
+                          d.file_name || d.document_type,
+                          storedUrl,
+                        )
+                      }
+                    >
+                      Download PDF
+                    </Button>
+                    {storedUrl ? (
+                      <StoredFileLink
+                        url={storedUrl}
+                        label="Stored file"
+                        displayName={d.file_name}
+                        className="text-sm text-[var(--color-neutral-500)] underline"
+                      />
+                    ) : null}
                     {!d.is_finalized && (
                       <>
                         <Button
@@ -458,6 +534,9 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
         <CardHeader>
           <CardTitle>Generate PDF</CardTitle>
         </CardHeader>
+        <p className="px-4 text-xs text-[var(--color-neutral-500)] -mt-2 mb-2">
+          Applies invoice header/footer only. Document content is the PDF returned by the API.
+        </p>
         <div className="px-4 pb-4 flex flex-wrap gap-2">
           {GENERATORS.map((g) => (
             <Button
@@ -465,7 +544,8 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
               type="button"
               variant="secondary"
               size="sm"
-              onClick={() => generate(g.fn)}
+              disabled={pdfBusy}
+              onClick={() => void generate(g.fn, g.key, g.label)}
             >
               {g.label}
             </Button>
@@ -476,6 +556,19 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
       {poll && genStatus != null && (
         <JobDocumentGenerationStatusCard status={genStatus} polling />
       )}
+
+      <PdfReadyModal
+        open={pdfReadyOpen}
+        onClose={() => {
+          setPdfReadyOpen(false);
+          setPdfReadyBlob(null);
+        }}
+        blob={pdfReadyBlob}
+        title={pdfReadyTitle}
+        fileName={pdfReadyName}
+        skipBranding
+        description="API-generated PDF with invoice header and footer applied. Inner layout is unchanged."
+      />
     </div>
   );
 }

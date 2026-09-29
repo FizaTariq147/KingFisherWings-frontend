@@ -3,6 +3,7 @@ import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
 import { fetchPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
+import { applyPortalInvoicePdfChrome } from '@/features/portal-shared/applyPortalInvoicePdfChrome';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import { generateQuotationPdf } from '@/features/quotations/utils/generateQuotationPdf';
 import { PORTAL_BOOKINGS_API, PORTAL_QUOTATIONS_API } from '../api/portalQuotations.api';
@@ -374,7 +375,10 @@ export const portalQuotationsService = {
             accept: 'application/pdf, application/octet-stream, */*',
           });
           if (await blobLooksLikePdf(result.blob)) {
-            return { blob: result.blob, fileName: result.filename };
+            return {
+              blob: await applyPortalInvoicePdfChrome(result.blob),
+              fileName: result.filename,
+            };
           }
         }
       } catch {
@@ -391,7 +395,10 @@ export const portalQuotationsService = {
             400,
           );
         }
-        return { blob: result.blob, fileName: result.filename };
+        return {
+          blob: await applyPortalInvoicePdfChrome(result.blob),
+          fileName: result.filename,
+        };
       } catch (err) {
         if (clientErr instanceof Error && clientErr.message) {
           throw new PortalApiError(clientErr.message, 400);

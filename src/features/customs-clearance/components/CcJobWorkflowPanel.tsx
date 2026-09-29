@@ -7,15 +7,23 @@ import { useJobSubresourceMutations } from '@/features/jobs/hooks/useJobSubresou
 import { useJobCustomsExaminations } from '@/features/jobs/hooks/useJobs';
 import { CcFlowRail } from './CcFlowRail';
 import {
-  CC_STAGE_ACTION_ORDER,
-  firstOpenCcStage,
+  canRunCcStageAction,
+  CC_STAGE_RESULT_STATUS,
+  inferCcApiStatusFromTimestamps,
+  railDoneFromApiStatus,
+  resolveCcApiStatus,
   statusToCcStage,
   type CcStageId,
 } from '../constants/ccWorkflow';
 import { useCcJobActions, useCcLinkFreight, useCcStatus } from '../hooks/useCustomsClearance';
+import type { CcStatus } from '../types/customsClearance.types';
 
 interface CcJobWorkflowPanelProps {
   jobId: string;
+}
+
+function isCcStatus(value: unknown): value is CcStatus {
+  return Boolean(value && typeof value === 'object' && 'job_id' in (value as object));
 }
 
 export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
@@ -28,92 +36,70 @@ export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
   const [actionError, setActionError] = useState<string | null>(null);
   const [examNotes, setExamNotes] = useState('');
   const [freightJobId, setFreightJobId] = useState('');
+  /** Optimistic override from last successful stage response until refetch settles. */
+  const [statusOverride, setStatusOverride] = useState<CcStatus | null>(null);
 
+  const live = statusOverride ?? statusQuery.data;
+  const apiStatus = resolveCcApiStatus(
+    live?.stage,
+    live?.status,
+    inferCcApiStatusFromTimestamps(live),
+  );
+  const currentStage: CcStageId = statusToCcStage(apiStatus);
   const derived = useMemo(() => {
-    const map: Partial<Record<CcStageId, boolean>> = {};
-    const st = statusQuery.data;
-    if (!st) return map;
-    if (st.opened_at) map.open = true;
-    if (st.docs_complete_at) {
-      map.open = true;
-      map.docs = true;
-    }
-    if (st.classified_at) {
-      map.open = true;
-      map.docs = true;
-      map.classify = true;
-    }
-    if (st.filed_at) {
-      map.open = true;
-      map.docs = true;
-      map.classify = true;
-      map.file = true;
-    }
-    if (st.assessed_at) {
-      map.open = true;
-      map.docs = true;
-      map.classify = true;
-      map.file = true;
-      map.assess = true;
-    }
-    if (st.duty_paid_at) {
-      map.open = true;
-      map.docs = true;
-      map.classify = true;
-      map.file = true;
-      map.assess = true;
-      map.duty = true;
-      map.exam = true;
-    }
-    if (st.cleared_at) {
-      map.open = true;
-      map.docs = true;
-      map.classify = true;
-      map.file = true;
-      map.assess = true;
-      map.duty = true;
-      map.exam = true;
-      map.clear = true;
-    }
-    if (st.released_at) {
-      Object.assign(map, {
-        open: true,
-        docs: true,
-        classify: true,
-        file: true,
-        assess: true,
-        duty: true,
-        exam: true,
-        clear: true,
-        release: true,
-      });
-    }
-    if (st.invoice_ready_at) {
-      Object.assign(map, {
-        open: true,
-        docs: true,
-        classify: true,
-        file: true,
-        assess: true,
-        duty: true,
-        exam: true,
-        clear: true,
-        release: true,
-        invoice: true,
-      });
-    }
-    if (st.closed_at) {
-      for (const id of CC_STAGE_ACTION_ORDER) map[id] = true;
-    }
+    const map = railDoneFromApiStatus(apiStatus);
     if ((exams.data?.length ?? 0) > 0) map.exam = true;
     return map;
-  }, [statusQuery.data, exams.data]);
+  }, [apiStatus, exams.data]);
 
-  const currentStage = firstOpenCcStage(CC_STAGE_ACTION_ORDER, (id) => Boolean(derived[id]), {
-    ...derived,
-    [statusToCcStage(statusQuery.data?.stage ?? statusQuery.data?.status)]:
-      derived[statusToCcStage(statusQuery.data?.stage ?? statusQuery.data?.status)],
-  });
+  const runStage = async (
+    stageId: CcStageId,
+    fn: () => Promise<unknown>,
+    success: string,
+  ) => {
+    setActionError(null);
+    setMessage(null);
+    try {
+      // Re-read latest status so we never POST a stage the API has already passed.
+      const fresh = await statusQuery.refetch();
+      const freshStatus = resolveCcApiStatus(
+        fresh.data?.stage,
+        fresh.data?.status,
+        inferCcApiStatusFromTimestamps(fresh.data),
+      );
+      setStatusOverride(null);
+      if (!canRunCcStageAction(freshStatus, stageId)) {
+        const next = statusToCcStage(freshStatus);
+        setMessage(
+          `Already at ${freshStatus || 'current status'} — next step is ${next}.`,
+        );
+        return;
+      }
+      const result = await fn();
+      if (isCcStatus(result)) {
+        setStatusOverride(result);
+      }
+      setMessage(success);
+      await statusQuery.refetch();
+      setStatusOverride(null);
+    } catch (err) {
+      const detail = getErrorMessage(err);
+      if (/not forward/i.test(detail)) {
+        const fresh = await statusQuery.refetch();
+        const resolved = resolveCcApiStatus(
+          fresh.data?.stage,
+          fresh.data?.status,
+          inferCcApiStatusFromTimestamps(fresh.data),
+        );
+        setStatusOverride(null);
+        setActionError(
+          `${detail} Current API status: ${resolved || 'unknown'}. Next: ${statusToCcStage(resolved)}.`,
+        );
+        return;
+      }
+      setActionError(detail);
+    }
+  };
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
     setActionError(null);
@@ -127,6 +113,10 @@ export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
     }
   };
 
+  const stageLabel = CC_STAGE_RESULT_STATUS[currentStage]
+    ? `${currentStage} → ${CC_STAGE_RESULT_STATUS[currentStage]}`
+    : currentStage;
+
   return (
     <div className="space-y-4">
       <Card>
@@ -136,17 +126,26 @@ export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
         <div className="space-y-3 px-4 pb-4">
           <CcFlowRail current={currentStage} done={derived} />
           <p className="text-sm text-[var(--color-neutral-500)]">
-            Happy path: open → docs → classify → file → assess → duty → exam (optional) → clear →
-            release → invoice → close. Use the CC tabs for lines, checklist, declaration, and
-            queries.
+            Driven by live <code className="text-[10px]">GET /jobs/:id/cc/status</code>. Stages
+            only move forward; completed actions are not re-posted.
           </p>
           {statusQuery.isLoading ? (
             <p className="text-xs text-[var(--color-neutral-400)]">Loading CC status…</p>
           ) : null}
-          {statusQuery.data?.stage || statusQuery.data?.status ? (
+          {apiStatus ? (
             <p className="text-xs text-[var(--color-neutral-500)]">
-              API stage/status:{' '}
-              <strong>{statusQuery.data.stage || statusQuery.data.status}</strong>
+              API status: <strong>{apiStatus}</strong> · next action:{' '}
+              <strong>{stageLabel}</strong>
+            </p>
+          ) : (
+            <p className="text-xs text-[var(--color-neutral-500)]">
+              No status yet · next action: <strong>{currentStage}</strong>
+            </p>
+          )}
+          {apiStatus === 'QUERY' ? (
+            <p className="rounded-md border border-[var(--color-warning-200)] bg-[var(--color-warning-50)] px-3 py-2 text-sm text-[var(--color-neutral-800)]">
+              Status is <strong>QUERY</strong>. Close all open queries (Queries tab), then run
+              assess.
             </p>
           ) : null}
           {actionError ? (
@@ -163,21 +162,25 @@ export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
           <CardTitle>Now: {currentStage}</CardTitle>
         </CardHeader>
         <div className="flex flex-wrap gap-2 px-4 pb-4">
-          {currentStage === 'open' ? (
+          {currentStage === 'open' && canRunCcStageAction(apiStatus, 'open') ? (
             <Button
               type="button"
               disabled={actions.open.isPending}
-              onClick={() => void run(() => actions.open.mutateAsync({}), 'CC opened.')}
+              onClick={() =>
+                void runStage('open', () => actions.open.mutateAsync({}), 'CC opened.')
+              }
             >
               Open CC
             </Button>
           ) : null}
-          {currentStage === 'docs' ? (
+
+          {currentStage === 'docs' && canRunCcStageAction(apiStatus, 'docs') ? (
             <Button
               type="button"
               disabled={actions.stageDocsComplete.isPending}
               onClick={() =>
-                void run(
+                void runStage(
+                  'docs',
                   () => actions.stageDocsComplete.mutateAsync({}),
                   'Docs marked complete.',
                 )
@@ -186,38 +189,52 @@ export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
               Stage: docs complete
             </Button>
           ) : null}
-          {currentStage === 'classify' ? (
+
+          {currentStage === 'classify' && canRunCcStageAction(apiStatus, 'classify') ? (
             <Button
               type="button"
               disabled={actions.stageClassify.isPending}
               onClick={() =>
-                void run(() => actions.stageClassify.mutateAsync({}), 'Classify stage done.')
+                void runStage(
+                  'classify',
+                  () => actions.stageClassify.mutateAsync({}),
+                  'Classify stage done.',
+                )
               }
             >
               Stage: classify
             </Button>
           ) : null}
-          {currentStage === 'file' ? (
+
+          {currentStage === 'file' && canRunCcStageAction(apiStatus, 'file') ? (
             <Button
               type="button"
               disabled={actions.stageFile.isPending}
-              onClick={() => void run(() => actions.stageFile.mutateAsync({}), 'Filed.')}
+              onClick={() =>
+                void runStage('file', () => actions.stageFile.mutateAsync({}), 'Filed.')
+              }
             >
               Stage: file
             </Button>
           ) : null}
-          {currentStage === 'assess' ? (
+
+          {currentStage === 'assess' && canRunCcStageAction(apiStatus, 'assess') ? (
             <Button
               type="button"
               disabled={actions.stageAssess.isPending}
               onClick={() =>
-                void run(() => actions.stageAssess.mutateAsync({}), 'Assessment recorded.')
+                void runStage(
+                  'assess',
+                  () => actions.stageAssess.mutateAsync({}),
+                  'Assessment recorded.',
+                )
               }
             >
               Stage: assess
             </Button>
           ) : null}
-          {currentStage === 'duty' ? (
+
+          {currentStage === 'duty' && canRunCcStageAction(apiStatus, 'duty') ? (
             <>
               <Button
                 type="button"
@@ -236,7 +253,8 @@ export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
                 type="button"
                 disabled={actions.stageDutyPaid.isPending}
                 onClick={() =>
-                  void run(
+                  void runStage(
+                    'duty',
                     () => actions.stageDutyPaid.mutateAsync({ paid_by_client: false }),
                     'Duty marked paid.',
                   )
@@ -246,6 +264,7 @@ export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
               </Button>
             </>
           ) : null}
+
           {currentStage === 'exam' ? (
             <>
               <Input
@@ -270,44 +289,59 @@ export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
               >
                 Record exam (optional)
               </Button>
-              <Button
-                type="button"
-                disabled={actions.stageClear.isPending}
-                onClick={() =>
-                  void run(
-                    () => actions.stageClear.mutateAsync({}),
-                    'Cleared (exam skipped).',
-                  )
-                }
-              >
-                Skip exam → Clear
-              </Button>
+              {canRunCcStageAction(apiStatus, 'clear') ? (
+                <Button
+                  type="button"
+                  disabled={actions.stageClear.isPending}
+                  onClick={() =>
+                    void runStage(
+                      'clear',
+                      () => actions.stageClear.mutateAsync({}),
+                      'Cleared (exam skipped).',
+                    )
+                  }
+                >
+                  Skip exam → Clear
+                </Button>
+              ) : null}
             </>
           ) : null}
-          {currentStage === 'clear' ? (
+
+          {currentStage === 'clear' && canRunCcStageAction(apiStatus, 'clear') ? (
             <Button
               type="button"
               disabled={actions.stageClear.isPending}
-              onClick={() => void run(() => actions.stageClear.mutateAsync({}), 'Cleared.')}
+              onClick={() =>
+                void runStage('clear', () => actions.stageClear.mutateAsync({}), 'Cleared.')
+              }
             >
               Stage: clear
             </Button>
           ) : null}
-          {currentStage === 'release' ? (
+
+          {currentStage === 'release' && canRunCcStageAction(apiStatus, 'release') ? (
             <Button
               type="button"
               disabled={actions.stageRelease.isPending}
-              onClick={() => void run(() => actions.stageRelease.mutateAsync({}), 'Released.')}
+              onClick={() =>
+                void runStage(
+                  'release',
+                  () => actions.stageRelease.mutateAsync({}),
+                  'Released.',
+                )
+              }
             >
               Stage: release
             </Button>
           ) : null}
-          {currentStage === 'invoice' ? (
+
+          {currentStage === 'invoice' && canRunCcStageAction(apiStatus, 'invoice') ? (
             <Button
               type="button"
               disabled={actions.stageInvoiceReady.isPending}
               onClick={() =>
-                void run(
+                void runStage(
+                  'invoice',
                   () => actions.stageInvoiceReady.mutateAsync({}),
                   'Invoice ready — use Invoices tab to create from job.',
                 )
@@ -316,14 +350,21 @@ export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
               Stage: invoice ready
             </Button>
           ) : null}
-          {currentStage === 'close' ? (
+
+          {currentStage === 'close' && canRunCcStageAction(apiStatus, 'close') ? (
             <Button
               type="button"
               disabled={actions.stageClose.isPending}
-              onClick={() => void run(() => actions.stageClose.mutateAsync({}), 'CC closed.')}
+              onClick={() =>
+                void runStage('close', () => actions.stageClose.mutateAsync({}), 'CC closed.')
+              }
             >
               Stage: close
             </Button>
+          ) : null}
+
+          {currentStage === 'close' && !canRunCcStageAction(apiStatus, 'close') ? (
+            <p className="text-sm text-[var(--color-success-700)]">CC workflow complete.</p>
           ) : null}
         </div>
       </Card>

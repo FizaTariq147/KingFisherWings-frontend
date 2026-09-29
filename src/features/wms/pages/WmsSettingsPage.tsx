@@ -102,7 +102,7 @@ export default function WmsSettingsPage() {
             </p>
           ) : null}
 
-          <WmsFormCard title="Defaults">
+          <WmsFormCard title="Defaults" eyebrow="WMS settings">
             <WmsFormGrid>
               <WmsSelect
                 label="Valuation method"

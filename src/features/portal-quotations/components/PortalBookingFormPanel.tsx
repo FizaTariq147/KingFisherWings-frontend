@@ -24,6 +24,7 @@ type StepId =
   | 'shipper'
   | 'consignee'
   | 'notify'
+  | 'billing'
   | 'commodity'
   | 'documents'
   | 'agent'
@@ -82,6 +83,17 @@ function getSteps(kind: 'air' | 'sea' | 'warehouse'): StepMeta[] {
       title: 'Notify Party',
       blurb: 'Who should be notified about this shipment (or same as consignee).',
     },
+    ...(kind === 'warehouse'
+      ? [
+          {
+            id: 'billing' as const,
+            label: 'BILLING',
+            eyebrow: 'BILLING PARTY',
+            title: 'Billing Party',
+            blurb: 'Party billed for storage (BookingFormPartyDto party_kind=BILLING).',
+          },
+        ]
+      : []),
     {
       id: 'commodity',
       label: 'COMMODITY',
@@ -166,6 +178,8 @@ type FormUi = {
   shipper: PartyUi;
   consignee: PartyUi;
   notify: PartyUi;
+  billing: PartyUi;
+  agentParty: PartyUi;
   commodity: string;
   hs_code: string;
   final_use: string;
@@ -250,6 +264,8 @@ function emptyForm(): FormUi {
     shipper: emptyParty(),
     consignee: emptyParty(),
     notify: emptyParty(),
+    billing: emptyParty(),
+    agentParty: emptyParty(),
     commodity: '',
     hs_code: '',
     final_use: '',
@@ -420,7 +436,7 @@ function PartyFields({
 }
 
 function toPartyDto(
-  kind: 'SHIPPER' | 'CONSIGNEE' | 'NOTIFY',
+  kind: 'SHIPPER' | 'CONSIGNEE' | 'NOTIFY' | 'BILLING' | 'AGENT',
   party: PartyUi,
   fallback?: PartyUi,
 ): PortalBookingFormUpsertDto['parties'][number] {
@@ -430,7 +446,7 @@ function toPartyDto(
     (kind === 'NOTIFY' ? 'Same as consignee' : '');
   return {
     party_kind: kind,
-    full_name: fullName,
+    full_name: fullName || '',
     address: party.address.trim() || fallback?.address.trim() || undefined,
     city: clipComplianceField(party.city, L.party_city) ||
       clipComplianceField(fallback?.city, L.party_city),
@@ -460,6 +476,21 @@ function toDto(
     toPartyDto('CONSIGNEE', form.consignee),
     toPartyDto('NOTIFY', form.notify, form.consignee),
   ];
+  if (kind === 'warehouse') {
+    if (form.billing.full_name.trim() || form.billing.address.trim()) {
+      parties.push(toPartyDto('BILLING', form.billing, form.consignee));
+    }
+    if (form.agentParty.full_name.trim() || form.booking_agent_line.trim()) {
+      const agent = form.agentParty.full_name.trim()
+        ? form.agentParty
+        : {
+            ...emptyParty(),
+            full_name: form.booking_agent_line.trim() || form.agent_requester_name.trim(),
+            other_details: form.agent_requester_name.trim(),
+          };
+      parties.push(toPartyDto('AGENT', agent));
+    }
+  }
   const shared = {
     date_of_request: form.date_of_request.trim() || undefined,
     client_booking_no: clipComplianceField(form.client_booking_no, L.client_booking_no),
@@ -539,6 +570,7 @@ function toDto(
       date_of_request: form.date_of_request.trim() || undefined,
       client_booking_no: clipComplianceField(form.client_booking_no, L.client_booking_no),
       voyage_ref: clipComplianceField(form.voyage_ref, L.voyage_ref),
+      service_scope: form.service_scope || undefined,
       commodity: clipComplianceField(form.commodity, L.commodity) ?? '',
       hs_code: clipComplianceField(form.hs_code, L.hs_code),
       cargo_category: form.cargo_category || undefined,
@@ -730,7 +762,17 @@ export function PortalBookingFormPanel({
     const shipper = parties.find((p) => p.party_kind === 'SHIPPER');
     const consignee = parties.find((p) => p.party_kind === 'CONSIGNEE');
     const notify = parties.find((p) => p.party_kind === 'NOTIFY');
+    const billing = parties.find((p) => p.party_kind === 'BILLING');
+    const agentPartyRow = parties.find((p) => p.party_kind === 'AGENT');
     const sector = String(data.activity_sector ?? '').toUpperCase();
+    const mapParty = (p: (typeof parties)[number] | undefined): PartyUi => ({
+      full_name: String(p?.full_name ?? ''),
+      address: String(p?.address ?? ''),
+      city: String(p?.city ?? ''),
+      country: String(p?.country ?? ''),
+      entity_kind: p?.entity_kind === 'INDIVIDUAL' ? 'INDIVIDUAL' : 'COMPANY',
+      other_details: String(p?.other_details ?? ''),
+    });
     setForm({
       ...base,
       date_of_request: String(data.date_of_request ?? '').slice(0, 10) || base.date_of_request,
@@ -762,30 +804,11 @@ export function PortalBookingFormPanel({
       net_weight_kg: data.net_weight_kg != null ? String(data.net_weight_kg) : '',
       shipper_owned_container: Boolean(data.shipper_owned_container),
       is_dg: Boolean(data.is_dg),
-      shipper: {
-        full_name: String(shipper?.full_name ?? ''),
-        address: String(shipper?.address ?? ''),
-        city: String(shipper?.city ?? ''),
-        country: String(shipper?.country ?? ''),
-        entity_kind: shipper?.entity_kind === 'INDIVIDUAL' ? 'INDIVIDUAL' : 'COMPANY',
-        other_details: String(shipper?.other_details ?? ''),
-      },
-      consignee: {
-        full_name: String(consignee?.full_name ?? ''),
-        address: String(consignee?.address ?? ''),
-        city: String(consignee?.city ?? ''),
-        country: String(consignee?.country ?? ''),
-        entity_kind: consignee?.entity_kind === 'INDIVIDUAL' ? 'INDIVIDUAL' : 'COMPANY',
-        other_details: String(consignee?.other_details ?? ''),
-      },
-      notify: {
-        full_name: String(notify?.full_name ?? ''),
-        address: String(notify?.address ?? ''),
-        city: String(notify?.city ?? ''),
-        country: String(notify?.country ?? ''),
-        entity_kind: notify?.entity_kind === 'INDIVIDUAL' ? 'INDIVIDUAL' : 'COMPANY',
-        other_details: String(notify?.other_details ?? ''),
-      },
+      shipper: mapParty(shipper),
+      consignee: mapParty(consignee),
+      notify: mapParty(notify),
+      billing: mapParty(billing),
+      agentParty: mapParty(agentPartyRow),
       commodity: String(data.commodity ?? quote.commodity ?? ''),
       hs_code: String(data.hs_code ?? ''),
       final_use: String(data.final_use ?? ''),
@@ -1153,16 +1176,32 @@ export function PortalBookingFormPanel({
                 </select>
               </label>
             ) : (
-              <label className="block">
-                <FieldLabel required>Pieces</FieldLabel>
-                <Input
-                  className="mt-1"
-                  inputMode="numeric"
-                  value={form.pieces}
-                  onChange={(e) => patch({ pieces: e.target.value })}
-                  placeholder="e.g. 48"
-                />
-              </label>
+              <>
+                <label className="block">
+                  <FieldLabel required>Pieces</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    inputMode="numeric"
+                    value={form.pieces}
+                    onChange={(e) => patch({ pieces: e.target.value })}
+                    placeholder="e.g. 48"
+                  />
+                </label>
+                <label className="block">
+                  <FieldLabel>Service scope</FieldLabel>
+                  <select
+                    className="mt-1 h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-2 text-sm"
+                    value={form.service_scope}
+                    onChange={(e) => patch({ service_scope: e.target.value })}
+                  >
+                    {['DOOR_TO_DOOR', 'DOOR_TO_PORT', 'PORT_TO_DOOR', 'PORT_TO_PORT'].map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </>
             )}
             {isAir ? (
               <>
@@ -1679,6 +1718,31 @@ export function PortalBookingFormPanel({
           </div>
         ) : null}
 
+        {step.id === 'billing' ? (
+          <div className="space-y-3">
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() =>
+                patch({
+                  billing: {
+                    ...form.consignee,
+                    full_name: form.consignee.full_name || 'Same as consignee',
+                  },
+                })
+              }
+            >
+              Same as consignee
+            </Button>
+            <PartyFields
+              party={form.billing}
+              onChange={(billing) => patch({ billing })}
+              nameRequired={false}
+            />
+          </div>
+        ) : null}
+
         {step.id === 'commodity' ? (
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block sm:col-span-2">
@@ -1820,6 +1884,43 @@ export function PortalBookingFormPanel({
         ) : null}
 
         {step.id === 'agent' ? (
+          isWarehouse ? (
+            <div className="space-y-4">
+              <PartyFields
+                party={form.agentParty}
+                onChange={(agentParty) =>
+                  patch({
+                    agentParty,
+                    booking_agent_line: agentParty.full_name || form.booking_agent_line,
+                    agent_requester_name:
+                      agentParty.other_details || form.agent_requester_name,
+                  })
+                }
+                nameRequired={false}
+              />
+              <label className="block">
+                <FieldLabel>Booking / storage ref (voyage_ref)</FieldLabel>
+                <Input
+                  className="mt-1"
+                  maxLength={L.voyage_ref}
+                  value={form.voyage_ref}
+                  onChange={(e) => patch({ voyage_ref: e.target.value.slice(0, L.voyage_ref) })}
+                  placeholder="e.g. WH-BK-2026-0048"
+                />
+              </label>
+              <label className="block">
+                <FieldLabel>Client booking no</FieldLabel>
+                <Input
+                  className="mt-1"
+                  maxLength={L.client_booking_no}
+                  value={form.client_booking_no}
+                  onChange={(e) =>
+                    patch({ client_booking_no: e.target.value.slice(0, L.client_booking_no) })
+                  }
+                />
+              </label>
+            </div>
+          ) : (
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block">
               <FieldLabel>Booking agent line</FieldLabel>
@@ -1850,9 +1951,7 @@ export function PortalBookingFormPanel({
               <FieldLabel>
                 {isAir
                   ? 'Flight / booking ref (voyage_ref)'
-                  : isWarehouse
-                    ? 'Booking / storage ref (voyage_ref)'
-                    : 'Voyage ref'}
+                  : 'Voyage ref'}
               </FieldLabel>
               <Input
                 className="mt-1"
@@ -1878,6 +1977,7 @@ export function PortalBookingFormPanel({
               />
             </label>
           </div>
+          )
         ) : null}
 
         {step.id === 'review' ? (

@@ -152,18 +152,17 @@ async function savePdfBlob(
       400,
     );
   }
-  try {
-    await triggerBrandedPdfDownload(blob, filename, {
-      filename,
-      branding: branding ?? {
-        documentNumber: stripPdfExtension(filename),
-        title: stripPdfExtension(filename),
-      },
-    });
-  } catch {
-    // Branding overlay must never block a valid invoice PDF download.
-    triggerBlobDownload(blob, filename);
+  // Only stamp when caller opts in. Default branding would overwrite invoice/quotation
+  // chrome that already matches admin (self-contained generateInvoicePdf).
+  if (branding) {
+    try {
+      await triggerBrandedPdfDownload(blob, filename, { filename, branding });
+      return;
+    } catch {
+      /* fall through to plain download */
+    }
   }
+  triggerBlobDownload(blob, filename);
 }
 
 export type DownloadPortalBlobOptions = {

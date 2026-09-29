@@ -135,7 +135,7 @@ export default function WmsGrnCreatePage() {
   );
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
+    <div className="mx-auto max-w-3xl space-y-5">
       <WmsPageHeader
         backTo={`${WMS_ROUTE_PREFIX}/grns`}
         backLabel="GRN"
@@ -146,7 +146,7 @@ export default function WmsGrnCreatePage() {
       <form className="space-y-4" onSubmit={handleSubmit} noValidate>
         <WmsFormAlert message={formError} />
 
-        <WmsFormCard title="Document">
+        <WmsFormCard title="Document" eyebrow="GRN details">
           <WmsWarehousesEmptyHint
             selectableCount={warehouseCount}
             isLoading={warehousesLoading}
@@ -234,6 +234,7 @@ export default function WmsGrnCreatePage() {
 
         <WmsFormCard
           title="Lines"
+          eyebrow="GRN cargo lines"
           headerAction={
             <Button
               type="button"

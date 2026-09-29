@@ -303,40 +303,41 @@ export async function generateAccountStatementPdf(
       y: y - 5,
       width: contentW + 4,
       height: 16,
-      color: rgb(0.93, 0.95, 0.97),
+      color: ACCENT,
     });
     const headerY = y;
+    const headerColor = rgb(1, 1, 1);
     page.drawText('Date', {
       x: col.dateX,
       y: headerY,
       size: FONT_SIZE,
       font: boldFont,
-      color: MUTED,
+      color: headerColor,
     });
     page.drawText('Type', {
       x: col.typeX,
       y: headerY,
       size: FONT_SIZE,
       font: boldFont,
-      color: MUTED,
+      color: headerColor,
     });
     page.drawText(truncateToWidth(boldFont, 'Reference', FONT_SIZE, col.referenceW), {
       x: col.referenceX,
       y: headerY,
       size: FONT_SIZE,
       font: boldFont,
-      color: MUTED,
+      color: headerColor,
     });
     page.drawText(truncateToWidth(boldFont, 'Description', FONT_SIZE, col.descriptionW), {
       x: col.descriptionX,
       y: headerY,
       size: FONT_SIZE,
       font: boldFont,
-      color: MUTED,
+      color: headerColor,
     });
-    drawRight(page, 'Debit', col.debitRight, headerY, FONT_SIZE, boldFont, MUTED);
-    drawRight(page, 'Credit', col.creditRight, headerY, FONT_SIZE, boldFont, MUTED);
-    drawRight(page, 'Balance', col.balanceRight, headerY, FONT_SIZE, boldFont, MUTED);
+    drawRight(page, 'Debit', col.debitRight, headerY, FONT_SIZE, boldFont, headerColor);
+    drawRight(page, 'Credit', col.creditRight, headerY, FONT_SIZE, boldFont, headerColor);
+    drawRight(page, 'Balance', col.balanceRight, headerY, FONT_SIZE, boldFont, headerColor);
     y -= 18;
   };
 

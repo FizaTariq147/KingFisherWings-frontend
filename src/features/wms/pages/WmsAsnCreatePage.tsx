@@ -123,7 +123,7 @@ export default function WmsAsnCreatePage() {
   const cancel = () => navigate(`${WMS_ROUTE_PREFIX}/asns`);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
+    <div className="mx-auto max-w-3xl space-y-5">
       <WmsPageHeader
         backTo={`${WMS_ROUTE_PREFIX}/asns`}
         backLabel="ASN"
@@ -134,7 +134,7 @@ export default function WmsAsnCreatePage() {
       <form className="space-y-4" onSubmit={handleSubmit} noValidate>
         <WmsFormAlert message={formError} />
 
-        <WmsFormCard title="Document">
+        <WmsFormCard title="Document" eyebrow="ASN details">
           <WmsWarehousesEmptyHint
             selectableCount={warehouseCount}
             isLoading={warehousesLoading}
@@ -211,6 +211,7 @@ export default function WmsAsnCreatePage() {
 
         <WmsFormCard
           title="Lines"
+          eyebrow="ASN cargo lines"
           headerAction={
             <Button
               type="button"

@@ -1,4 +1,4 @@
-import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
+import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage, type PDFImage } from 'pdf-lib';
 import logoAsset from '@/assets/logo.png';
 import { safePdfText } from '@/features/files/utils/sanitizePdfText';
 import type { PdfBrandingOptions } from '@/features/files/utils/pdfBranding';
@@ -16,6 +16,7 @@ export type WmsDocumentPdfCompany = {
   address?: string;
   footerTel?: string;
   footerEmails?: string;
+  tagline?: string;
 };
 
 export type WmsDocumentPdfOptions = {
@@ -42,20 +43,24 @@ type TableRow = {
   remarks: string;
 };
 
+/** A4 — matches invoice PDF page geometry. */
 const PAGE_W = 595.28;
 const PAGE_H = 841.89;
-const MARGIN_X = 28;
-const MARGIN_BOTTOM = 56;
+const MARGIN = 32;
+const CONTENT_W = PAGE_W - MARGIN * 2;
+const FOOTER_RESERVE = 62;
 
-const OLIVE = rgb(0.545, 0.58, 0.404); // ~#8B9467
-const ORANGE = rgb(0.957, 0.447, 0.078); // #F47214
-const DARK = rgb(0.22, 0.22, 0.22);
-const TEXT = rgb(0.08, 0.08, 0.08);
-const MUTED = rgb(0.35, 0.35, 0.35);
-const RULE = rgb(0.55, 0.55, 0.55);
-const FOOTER_BLUE = rgb(0.55, 0.72, 0.9);
+/** Same palette as `generateInvoicePdf`. */
+const NAVY = rgb(0.039, 0.161, 0.259);
+const ORANGE = rgb(0.957, 0.447, 0.078);
+const TEXT = rgb(0.102, 0.118, 0.141);
+const MUTED = rgb(0.45, 0.48, 0.52);
+const LABEL = rgb(0.5, 0.53, 0.56);
+const RULE = rgb(0.82, 0.84, 0.86);
+const PANEL_BG = rgb(0.965, 0.968, 0.973);
+const PANEL_BORDER = rgb(0.88, 0.895, 0.91);
 const WHITE = rgb(1, 1, 1);
-const LIGHT_GRAY = rgb(0.92, 0.92, 0.92);
+const ROW_ALT = rgb(0.988, 0.99, 0.992);
 
 const NOTES = [
   'Once the truck exits the warehouse premises, we are no longer responsible for the goods.',
@@ -64,16 +69,17 @@ const NOTES = [
   'We will not entertain any claims regarding the count or condition of goods after they have left the warehouse.',
 ];
 
+/** Column widths sum to CONTENT_W (531.28). */
 const COLS: { key: keyof TableRow; label: string; width: number }[] = [
-  { key: 'no', label: 'No.', width: 22 },
-  { key: 'driver', label: "Driver's Name", width: 72 },
-  { key: 'truck', label: 'Truck/trailer numbers', width: 58 },
-  { key: 'commodity', label: 'Commodity', width: 58 },
-  { key: 'container', label: 'Container Number', width: 62 },
-  { key: 'eid', label: 'EID NO / DRI LIC NO', width: 72 },
-  { key: 'timeIn', label: 'TIME IN', width: 42 },
-  { key: 'timeOut', label: 'TIME OUT', width: 42 },
-  { key: 'remarks', label: 'REMARKS', width: 111 },
+  { key: 'no', label: '#', width: 22 },
+  { key: 'driver', label: "DRIVER", width: 70 },
+  { key: 'truck', label: 'TRUCK / TRAILER', width: 56 },
+  { key: 'commodity', label: 'COMMODITY', width: 54 },
+  { key: 'container', label: 'CONTAINER', width: 60 },
+  { key: 'eid', label: 'EID / LIC', width: 68 },
+  { key: 'timeIn', label: 'IN', width: 40 },
+  { key: 'timeOut', label: 'OUT', width: 40 },
+  { key: 'remarks', label: 'REMARKS', width: 121.28 },
 ];
 
 function pick(record: Record<string, unknown>, ...keys: string[]): string {
@@ -88,10 +94,23 @@ function formatDate(value: string | undefined): string {
   if (!value) return '';
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return safePdfText(value);
-  const dd = String(d.getDate()).padStart(2, '0');
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const yyyy = d.getFullYear();
-  return `${dd}-${mm}-${yyyy}`;
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function measure(font: PDFFont, text: string, size: number): number {
+  try {
+    return font.widthOfTextAtSize(safePdfText(text) || ' ', size);
+  } catch {
+    return 0;
+  }
+}
+
+function fit(font: PDFFont, text: string, size: number, maxW: number): string {
+  const t = safePdfText(text) || '—';
+  if (measure(font, t, size) <= maxW) return t;
+  let s = t;
+  while (s.length > 1 && measure(font, `${s}…`, size) > maxW) s = s.slice(0, -1);
+  return `${s}…`;
 }
 
 function wrapText(text: string, font: PDFFont, size: number, maxWidth: number): string[] {
@@ -121,8 +140,151 @@ function drawText(
   size: number,
   font: PDFFont,
   color = TEXT,
-) {
-  page.drawText(safePdfText(text), { x, y, size, font, color });
+): void {
+  const t = safePdfText(text);
+  if (!t) return;
+  page.drawText(t, { x, y, size, font, color });
+}
+
+function drawRight(
+  page: PDFPage,
+  text: string,
+  xRight: number,
+  y: number,
+  size: number,
+  font: PDFFont,
+  color = TEXT,
+): void {
+  const t = safePdfText(text);
+  if (!t) return;
+  page.drawText(t, { x: xRight - measure(font, t, size), y, size, font, color });
+}
+
+function drawRoundedRect(
+  page: PDFPage,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number,
+  opts: { color?: ReturnType<typeof rgb> },
+): void {
+  const radius = Math.min(r, h / 2, w / 2);
+  page.drawRectangle({
+    x: x + radius,
+    y,
+    width: w - radius * 2,
+    height: h,
+    color: opts.color,
+  });
+  page.drawRectangle({
+    x,
+    y: y + radius,
+    width: w,
+    height: h - radius * 2,
+    color: opts.color,
+  });
+  page.drawCircle({ x: x + radius, y: y + radius, size: radius, color: opts.color });
+  page.drawCircle({ x: x + w - radius, y: y + radius, size: radius, color: opts.color });
+  page.drawCircle({ x: x + radius, y: y + h - radius, size: radius, color: opts.color });
+  page.drawCircle({ x: x + w - radius, y: y + h - radius, size: radius, color: opts.color });
+}
+
+function sectionTitle(page: PDFPage, title: string, x: number, y: number, fontBold: PDFFont): void {
+  page.drawRectangle({ x, y: y - 1, width: 2.8, height: 9, color: ORANGE });
+  drawText(page, title, x + 8, y, 8, fontBold, NAVY);
+}
+
+function drawPanel(page: PDFPage, x: number, yBottom: number, w: number, h: number): void {
+  page.drawRectangle({
+    x,
+    y: yBottom,
+    width: w,
+    height: h,
+    color: PANEL_BG,
+    borderColor: PANEL_BORDER,
+    borderWidth: 0.6,
+  });
+}
+
+function labeledValue(
+  page: PDFPage,
+  label: string,
+  value: string,
+  x: number,
+  y: number,
+  labelW: number,
+  valueMaxW: number,
+  font: PDFFont,
+  fontBold: PDFFont,
+): void {
+  drawText(page, `${label}:`, x, y, 7.5, font, LABEL);
+  drawText(page, fit(fontBold, value || '—', 8, valueMaxW), x + labelW, y, 8, fontBold, TEXT);
+}
+
+function drawMiniIcon(
+  page: PDFPage,
+  kind: 'phone' | 'mail' | 'web',
+  x: number,
+  y: number,
+): void {
+  page.drawCircle({ x: x + 4, y: y + 3, size: 4.2, color: NAVY });
+  page.drawCircle({
+    x: x + 4,
+    y: y + 3,
+    size: 2.2,
+    color: kind === 'phone' ? ORANGE : WHITE,
+  });
+}
+
+function drawTopAccent(page: PDFPage): void {
+  page.drawRectangle({ x: 0, y: PAGE_H - 6, width: PAGE_W * 0.7, height: 6, color: NAVY });
+  page.drawRectangle({
+    x: PAGE_W * 0.7,
+    y: PAGE_H - 6,
+    width: PAGE_W * 0.3,
+    height: 6,
+    color: ORANGE,
+  });
+}
+
+function drawPageFooter(
+  page: PDFPage,
+  font: PDFFont,
+  fontBold: PDFFont,
+  phone: string,
+  email: string,
+  website: string,
+): void {
+  const top = 48;
+  page.drawLine({
+    start: { x: MARGIN, y: top + 16 },
+    end: { x: PAGE_W - MARGIN, y: top + 16 },
+    thickness: 0.6,
+    color: RULE,
+  });
+
+  const colW = CONTENT_W / 3;
+  const items: Array<{ label: string; value: string; kind: 'phone' | 'mail' | 'web' }> = [
+    { label: 'CALL US ANYTIME', value: phone, kind: 'phone' },
+    { label: 'MAIL TO US', value: email, kind: 'mail' },
+    { label: 'WEBSITE', value: website, kind: 'web' },
+  ];
+  items.forEach((item, i) => {
+    const x = MARGIN + i * colW;
+    drawText(page, item.label, x + 14, top + 4, 5.5, fontBold, LABEL);
+    drawMiniIcon(page, item.kind, x, top - 10);
+    drawText(page, fit(font, item.value, 7.5, colW - 20), x + 14, top - 8, 7.5, font, TEXT);
+  });
+
+  page.drawRectangle({ x: 0, y: 0, width: PAGE_W, height: 8, color: NAVY });
+  page.drawRectangle({
+    x: PAGE_W * 0.78,
+    y: 0,
+    width: PAGE_W * 0.22,
+    height: 8,
+    color: ORANGE,
+  });
 }
 
 function lineItemLabel(
@@ -218,7 +380,6 @@ function buildRows(
     };
   });
 
-  // Keep at least 3 rows like the sample template.
   while (rows.length < 3) {
     rows.push({
       no: String(rows.length + 1),
@@ -236,7 +397,7 @@ function buildRows(
 }
 
 function resolveMeta(options: WmsDocumentPdfOptions) {
-  const { kind, doc, partyLabel, personName, warehouseLabel, company } = options;
+  const { kind, doc, partyLabel, personName, warehouseLabel, company, jobLabel } = options;
   const rec = doc as Record<string, unknown>;
   const nestedParty =
     rec.party && typeof rec.party === 'object'
@@ -287,23 +448,27 @@ function resolveMeta(options: WmsDocumentPdfOptions) {
       'created_at',
     ) || doc.created_at;
 
+  const job =
+    jobLabel ||
+    pick(rec, 'job_number', 'jobNumber', 'job_ref', 'job_code', 'reference') ||
+    '';
+
   return {
     person: safePdfText(person || '—'),
     date: formatDate(dateRaw) || '—',
     customer: safePdfText(customer || '—'),
-    companyName: safePdfText(company?.name || 'KingFisher Logistic'),
+    job: safePdfText(job || '—'),
+    warehouse: safePdfText(warehouseLabel || pick(rec, 'warehouse_name', 'warehouse') || '—'),
+    docNumber: safePdfText(displayDocNumber(doc) || '—'),
+    companyName: safePdfText(company?.name || 'KINGFISHER WINGS GROUP').toUpperCase(),
+    tagline: safePdfText(
+      company?.tagline || 'FREIGHT - LOGISTICS - GENERAL TRADING',
+    ).toUpperCase(),
     phone: safePdfText(company?.phone || '+971 55 5355 286'),
     email: safePdfText(company?.email || 'info@kingfisherwingsgroup.com'),
     website: safePdfText(company?.website || 'www.kingfisherwingsgroup.com'),
     address: safePdfText(
-      company?.address ||
-        'Office, Dubai, United Arab Emirates',
-    ),
-    footerTel: safePdfText(company?.footerTel || company?.phone || '+971 55 5355 286'),
-    footerEmails: safePdfText(
-      company?.footerEmails ||
-        company?.email ||
-        'info@kingfisherwingsgroup.com',
+      company?.address || 'Office, Dubai, United Arab Emirates',
     ),
   };
 }
@@ -311,253 +476,48 @@ function resolveMeta(options: WmsDocumentPdfOptions) {
 async function embedLogo(
   doc: PDFDocument,
   logoUrl?: string,
-): Promise<{
-  image: Awaited<ReturnType<PDFDocument['embedPng']>> | null;
-  width: number;
-  height: number;
-}> {
-  try {
-    const candidates = [
-      logoUrl,
-      typeof logoAsset === 'string' ? logoAsset : undefined,
-      '/kingfisher-logo.png',
-    ].filter(Boolean) as string[];
+): Promise<{ image: PDFImage | null; width: number; height: number }> {
+  const candidates = [
+    logoUrl,
+    typeof logoAsset === 'string' ? logoAsset : undefined,
+    '/kingfisher-logo.png',
+    typeof window !== 'undefined'
+      ? new URL('/kingfisher-logo.png', window.location.origin).href
+      : undefined,
+  ].filter(Boolean) as string[];
 
-    for (const raw of candidates) {
-      try {
-        const url = /^https?:|^data:|^blob:/i.test(raw)
+  for (const raw of candidates) {
+    try {
+      const url =
+        raw.startsWith('data:') || /^https?:\/\//i.test(raw) || raw.startsWith('blob:')
           ? raw
           : new URL(raw, window.location.origin).href;
-        const res = await fetch(url);
-        if (!res.ok) continue;
-        const bytes = await res.arrayBuffer();
-        const image = raw.toLowerCase().includes('.jpg') || raw.toLowerCase().includes('.jpeg')
-          ? await doc.embedJpg(bytes)
-          : await doc.embedPng(bytes);
-        const maxH = 42;
-        const scale = maxH / image.height;
-        return { image, width: image.width * scale, height: maxH };
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const bytes = await res.arrayBuffer();
+      let image: PDFImage;
+      try {
+        image = await doc.embedPng(bytes);
       } catch {
-        /* try next */
+        image = await doc.embedJpg(bytes);
       }
+      const maxH = 48;
+      const scale = maxH / image.height;
+      return { image, width: image.width * scale, height: maxH };
+    } catch {
+      /* try next */
     }
-  } catch {
-    /* ignore */
   }
   return { image: null, width: 0, height: 0 };
-}
-
-function drawHeader(
-  page: PDFPage,
-  font: PDFFont,
-  fontBold: PDFFont,
-  logo: { image: Awaited<ReturnType<PDFDocument['embedPng']>> | null; width: number; height: number },
-  meta: ReturnType<typeof resolveMeta>,
-  yTop: number,
-): number {
-  let y = yTop;
-
-  if (logo.image) {
-    page.drawImage(logo.image, {
-      x: MARGIN_X,
-      y: y - logo.height,
-      width: logo.width,
-      height: logo.height,
-    });
-  } else {
-    drawText(page, meta.companyName, MARGIN_X, y - 18, 11, fontBold, DARK);
-  }
-
-  // Contact block top-right with orange accent bullets
-  const contactX = PAGE_W - MARGIN_X - 168;
-  const contacts = [
-    { label: meta.phone },
-    { label: meta.email },
-    { label: meta.website },
-  ];
-  let cy = y - 10;
-  for (const c of contacts) {
-    page.drawCircle({
-      x: contactX,
-      y: cy + 2,
-      size: 3.2,
-      color: ORANGE,
-    });
-    drawText(page, c.label, contactX + 8, cy, 7.5, font, MUTED);
-    cy -= 12;
-  }
-
-  // Brand bars under logo (grey + orange like sample)
-  const barY = y - Math.max(logo.height, 40) - 10;
-  page.drawRectangle({
-    x: MARGIN_X,
-    y: barY,
-    width: PAGE_W - MARGIN_X * 2 - 120,
-    height: 3.5,
-    color: DARK,
-  });
-  page.drawRectangle({
-    x: PAGE_W - MARGIN_X - 110,
-    y: barY,
-    width: 110,
-    height: 3.5,
-    color: ORANGE,
-  });
-
-  return barY - 16;
-}
-
-function drawInfoBoxes(
-  page: PDFPage,
-  font: PDFFont,
-  fontBold: PDFFont,
-  kind: WmsPdfKind,
-  meta: ReturnType<typeof resolveMeta>,
-  yTop: number,
-): number {
-  const gap = 8;
-  const boxW = (PAGE_W - MARGIN_X * 2 - gap * 2) / 3;
-  const headerH = 16;
-  const bodyH = 42;
-  const boxes = [
-    { title: 'PERSON NAME', value: meta.person },
-    {
-      title: kind === 'grn' ? 'GOODS RECEIVED DATE' : 'DISPATCHED DATE',
-      value: meta.date,
-    },
-    { title: 'COSTUMER', value: meta.customer },
-  ];
-
-  boxes.forEach((box, i) => {
-    const x = MARGIN_X + i * (boxW + gap);
-    page.drawRectangle({
-      x,
-      y: yTop - headerH,
-      width: boxW,
-      height: headerH,
-      color: OLIVE,
-      borderColor: RULE,
-      borderWidth: 0.6,
-    });
-    const titleW = fontBold.widthOfTextAtSize(box.title, 8);
-    drawText(
-      page,
-      box.title,
-      x + (boxW - titleW) / 2,
-      yTop - headerH + 5,
-      8,
-      fontBold,
-      WHITE,
-    );
-
-    page.drawRectangle({
-      x,
-      y: yTop - headerH - bodyH,
-      width: boxW,
-      height: bodyH,
-      borderColor: RULE,
-      borderWidth: 0.6,
-      color: WHITE,
-    });
-
-    const lines = wrapText(box.value, font, 8, boxW - 10);
-    let ly = yTop - headerH - 14;
-    for (const line of lines.slice(0, 3)) {
-      drawText(page, line, x + 5, ly, 8, font, TEXT);
-      ly -= 11;
-    }
-  });
-
-  return yTop - headerH - bodyH - 14;
 }
 
 function measureRowHeight(row: TableRow, font: PDFFont, size: number): number {
   let maxLines = 1;
   for (const col of COLS) {
-    const lines = wrapText(row[col.key], font, size, col.width - 4);
-    maxLines = Math.max(maxLines, lines.length);
+    const lines = wrapText(row[col.key], font, size, col.width - 6);
+    maxLines = Math.max(maxLines, Math.min(lines.length, 3));
   }
   return Math.max(22, maxLines * 10 + 8);
-}
-
-function drawTable(
-  page: PDFPage,
-  font: PDFFont,
-  fontBold: PDFFont,
-  rows: TableRow[],
-  yTop: number,
-  onNeedPage: () => { page: PDFPage; y: number },
-): { page: PDFPage; y: number } {
-  let pageRef = page;
-  let y = yTop;
-  const tableW = COLS.reduce((s, c) => s + c.width, 0);
-  const headerH = 28;
-
-  const drawHeaderRow = () => {
-    let x = MARGIN_X;
-    pageRef.drawRectangle({
-      x: MARGIN_X,
-      y: y - headerH,
-      width: tableW,
-      height: headerH,
-      color: LIGHT_GRAY,
-      borderColor: RULE,
-      borderWidth: 0.7,
-    });
-    for (const col of COLS) {
-      pageRef.drawRectangle({
-        x,
-        y: y - headerH,
-        width: col.width,
-        height: headerH,
-        borderColor: RULE,
-        borderWidth: 0.5,
-      });
-      const labelLines = wrapText(col.label, fontBold, 6.5, col.width - 4);
-      let ly = y - 10;
-      for (const line of labelLines.slice(0, 3)) {
-        const lw = fontBold.widthOfTextAtSize(line, 6.5);
-        drawText(pageRef, line, x + (col.width - lw) / 2, ly, 6.5, fontBold, TEXT);
-        ly -= 8;
-      }
-      x += col.width;
-    }
-    y -= headerH;
-  };
-
-  drawHeaderRow();
-
-  for (const row of rows) {
-    const rowH = measureRowHeight(row, font, 7);
-    if (y - rowH < MARGIN_BOTTOM + 120) {
-      const next = onNeedPage();
-      pageRef = next.page;
-      y = next.y;
-      drawHeaderRow();
-    }
-
-    let x = MARGIN_X;
-    for (const col of COLS) {
-      pageRef.drawRectangle({
-        x,
-        y: y - rowH,
-        width: col.width,
-        height: rowH,
-        borderColor: RULE,
-        borderWidth: 0.5,
-      });
-      const cellLines = wrapText(row[col.key], font, 7, col.width - 4);
-      let ly = y - 11;
-      for (const line of cellLines) {
-        drawText(pageRef, line, x + 2, ly, 7, font, TEXT);
-        ly -= 9;
-      }
-      x += col.width;
-    }
-    y -= rowH;
-  }
-
-  return { page: pageRef, y };
 }
 
 function drawNotes(
@@ -567,57 +527,33 @@ function drawNotes(
   yTop: number,
   kind: WmsPdfKind,
 ): number {
-  let y = yTop - 6;
-  drawText(page, 'NOTES:', MARGIN_X, y, 9, fontBold, TEXT);
-  // underline
-  page.drawLine({
-    start: { x: MARGIN_X, y: y - 2 },
-    end: { x: MARGIN_X + 42, y: y - 2 },
-    thickness: 0.8,
-    color: TEXT,
-  });
-  y -= 14;
+  const notesH = 118;
+  drawPanel(page, MARGIN, yTop - notesH, CONTENT_W, notesH);
+  sectionTitle(page, 'NOTES / REMARKS', MARGIN + 10, yTop - 13, fontBold);
 
+  let y = yTop - 28;
   NOTES.forEach((note, i) => {
     const prefix = `${i + 1}. `;
-    const lines = wrapText(note, font, 7.5, PAGE_W - MARGIN_X * 2 - 14);
+    const lines = wrapText(note, font, 7, CONTENT_W - 28);
     lines.forEach((line, li) => {
       drawText(
         page,
         li === 0 ? `${prefix}${line}` : `   ${line}`,
-        MARGIN_X,
+        MARGIN + 10,
         y,
-        7.5,
+        7,
         font,
-        MUTED,
+        TEXT,
       );
-      y -= 11;
+      y -= 10;
     });
   });
 
   if (kind === 'grn') {
-    drawText(page, 'NOTE: SYSTEM GENERATED', MARGIN_X, y - 2, 7, fontBold, MUTED);
-    y -= 12;
+    drawText(page, 'NOTE: SYSTEM GENERATED', MARGIN + 10, yTop - notesH + 8, 6.5, fontBold, MUTED);
   }
 
-  return y;
-}
-
-function drawFooter(
-  page: PDFPage,
-  font: PDFFont,
-  meta: ReturnType<typeof resolveMeta>,
-) {
-  const lines = [
-    `ADDRESS: ${meta.address}`,
-    `TEL NO: ${meta.footerTel}    EMAIL: ${meta.footerEmails}`,
-  ];
-  let y = 36;
-  for (const line of [...lines].reverse()) {
-    const w = font.widthOfTextAtSize(line, 6.5);
-    drawText(page, line, (PAGE_W - w) / 2, y, 6.5, font, FOOTER_BLUE);
-    y += 10;
-  }
+  return yTop - notesH - 10;
 }
 
 export function wmsDocumentPdfBranding(
@@ -627,21 +563,20 @@ export function wmsDocumentPdfBranding(
 ): PdfBrandingOptions {
   const documentType = kind === 'grn' ? 'GOODS RECEIVED NOTE' : 'GOODS DISPATCH ORDER';
   return {
-    companyName: 'KingFisher Logistic',
-    subtitle: 'KingFisher Tech Gold',
+    companyName: 'KingFisher Wings Group',
+    subtitle: 'Freight · Logistics · General Trading',
     documentType,
     documentNumber,
     title: documentNumber,
     documentDate,
-    footerLine: 'KingFisher Logistic — Warehouse Document',
+    footerLine: 'KingFisher Wings Group — Warehouse Document',
     logoUrl: typeof logoAsset === 'string' ? logoAsset : '/kingfisher-logo.png',
   };
 }
 
 /**
- * GRN / GDO PDF matching the warehouse gate-pass layout
- * (logo + contact header, olive info boxes, 9-column driver/truck table, notes, footer).
- * All fields are populated from the live WMS document + optional labels/branding.
+ * GRN / GDO PDF — same KingFisher chrome as the tax invoice
+ * (navy/orange bars, logo header, panels, navy table, contact footer).
  */
 export async function generateWmsDocumentPdf(options: WmsDocumentPdfOptions): Promise<Blob> {
   const pdf = await PDFDocument.create();
@@ -651,44 +586,215 @@ export async function generateWmsDocumentPdf(options: WmsDocumentPdfOptions): Pr
   const meta = resolveMeta(options);
   const rows = buildRows(options.doc, options.itemLabelById);
 
-  let page = pdf.addPage([PAGE_W, PAGE_H]);
-  let y = PAGE_H - 28;
+  const documentTitle = options.kind === 'grn' ? 'GRN' : 'GDO';
+  const documentSubtitle =
+    options.kind === 'grn'
+      ? 'GOODS RECEIVED NOTE / WAREHOUSE GATE PASS'
+      : 'GOODS DISPATCH ORDER / WAREHOUSE GATE PASS';
+  const copyLabel = 'ORIGINAL';
 
-  const newPage = () => {
-    drawFooter(page, font, meta);
+  let page = pdf.addPage([PAGE_W, PAGE_H]);
+  let y = PAGE_H;
+
+  const ensureSpace = (need: number) => {
+    if (y - need >= FOOTER_RESERVE + 8) return false;
+    drawPageFooter(page, font, fontBold, meta.phone, meta.email, meta.website);
     page = pdf.addPage([PAGE_W, PAGE_H]);
-    y = PAGE_H - 28;
-    return { page, y };
+    page.drawRectangle({ x: 0, y: PAGE_H - 4, width: PAGE_W * 0.72, height: 4, color: NAVY });
+    page.drawRectangle({
+      x: PAGE_W * 0.72,
+      y: PAGE_H - 4,
+      width: PAGE_W * 0.28,
+      height: 4,
+      color: ORANGE,
+    });
+    y = PAGE_H - 20;
+    return true;
   };
 
-  y = drawHeader(page, font, fontBold, logo, meta, y);
-  y = drawInfoBoxes(page, font, fontBold, options.kind, meta, y);
+  // ——— Top accent bar ———
+  drawTopAccent(page);
+  y = PAGE_H - 20;
 
-  const tableResult = drawTable(page, font, fontBold, rows, y, () => newPage());
-  page = tableResult.page;
-  y = tableResult.y - 8;
-
-  if (y < MARGIN_BOTTOM + 110) {
-    const n = newPage();
-    page = n.page;
-    y = n.y;
+  // ——— Header (invoice parity) ———
+  if (logo.image) {
+    page.drawImage(logo.image, {
+      x: MARGIN,
+      y: y - logo.height,
+      width: logo.width,
+      height: logo.height,
+    });
+  } else {
+    drawText(page, 'KingFisher', MARGIN, y - 14, 13, fontBold, NAVY);
+    drawText(page, 'WINGS GROUP', MARGIN, y - 28, 9, fontBold, ORANGE);
   }
+
+  let rightY = y - 8;
+  drawRight(page, meta.companyName, PAGE_W - MARGIN, rightY, 10.5, fontBold, NAVY);
+  rightY -= 11;
+  drawRight(page, meta.tagline, PAGE_W - MARGIN, rightY, 6.5, fontBold, ORANGE);
+  rightY -= 13;
+  const phoneW = measure(font, meta.phone, 7.5);
+  drawMiniIcon(page, 'phone', PAGE_W - MARGIN - phoneW - 14, rightY - 1);
+  drawRight(page, meta.phone, PAGE_W - MARGIN, rightY, 7.5, font, MUTED);
+  rightY -= 12;
+  const emailW = measure(font, meta.email, 7.5);
+  drawMiniIcon(page, 'mail', PAGE_W - MARGIN - emailW - 14, rightY - 1);
+  drawRight(page, meta.email, PAGE_W - MARGIN, rightY, 7.5, font, MUTED);
+
+  y = Math.min(y - (logo.height || 40), rightY) - 16;
+
+  // ——— Title + ORIGINAL badge ———
+  drawText(page, documentTitle, MARGIN, y, 24, fontBold, NAVY);
+
+  const badgeH = 15;
+  const badgePad = 14;
+  const badgeW = Math.max(58, measure(fontBold, copyLabel, 7.5) + badgePad);
+  const badgeX = PAGE_W - MARGIN - badgeW;
+  const badgeY = y - 2;
+  drawRoundedRect(page, badgeX, badgeY, badgeW, badgeH, 7.5, { color: NAVY });
+  drawText(
+    page,
+    copyLabel,
+    badgeX + (badgeW - measure(fontBold, copyLabel, 7.5)) / 2,
+    badgeY + 4.5,
+    7.5,
+    fontBold,
+    WHITE,
+  );
+
+  y -= 13;
+  drawText(page, documentSubtitle, MARGIN, y, 7.5, font, MUTED);
+  y -= 10;
+  page.drawLine({
+    start: { x: MARGIN, y },
+    end: { x: PAGE_W - MARGIN, y },
+    thickness: 1,
+    color: NAVY,
+  });
+  y -= 14;
+
+  // ——— Party | Document details panels ———
+  const gap = 10;
+  const colW = (CONTENT_W - gap) / 2;
+  const infoH = 86;
+  drawPanel(page, MARGIN, y - infoH, colW, infoH);
+  drawPanel(page, MARGIN + colW + gap, y - infoH, colW, infoH);
+
+  let leftY = y - 13;
+  sectionTitle(page, 'PARTY / CUSTOMER', MARGIN + 10, leftY, fontBold);
+  leftY -= 15;
+  const billRows: Array<[string, string]> = [
+    ['Client', meta.customer],
+    ['Attn', meta.person],
+    ['Warehouse', meta.warehouse],
+    ['Address', meta.address],
+  ];
+  for (const [label, value] of billRows) {
+    labeledValue(page, label, value, MARGIN + 10, leftY, 52, colW - 68, font, fontBold);
+    leftY -= 13;
+  }
+
+  let detY = y - 13;
+  const detX = MARGIN + colW + gap;
+  sectionTitle(
+    page,
+    options.kind === 'grn' ? 'GRN DETAILS' : 'GDO DETAILS',
+    detX + 10,
+    detY,
+    fontBold,
+  );
+  detY -= 14;
+  const detailRows: Array<[string, string]> = [
+    [options.kind === 'grn' ? 'GRN No.' : 'GDO No.', meta.docNumber],
+    [options.kind === 'grn' ? 'Received Date' : 'Dispatch Date', meta.date],
+    ['Job / Ref No.', meta.job],
+    ['Prepared By', meta.person],
+    ['Document', documentTitle],
+  ];
+  for (const [label, value] of detailRows) {
+    labeledValue(page, label, value, detX + 10, detY, 78, colW - 98, font, fontBold);
+    detY -= 12;
+  }
+  y -= infoH + 14;
+
+  // ——— Gate-pass lines table ———
+  const headerH = 22;
+
+  const drawTableHeader = () => {
+    page.drawRectangle({
+      x: MARGIN,
+      y: y - headerH,
+      width: CONTENT_W,
+      height: headerH,
+      color: NAVY,
+    });
+    let x = MARGIN;
+    const hy = y - 14;
+    for (const col of COLS) {
+      drawText(
+        page,
+        fit(fontBold, col.label, 6.5, col.width - 4),
+        x + 3,
+        hy,
+        6.5,
+        fontBold,
+        WHITE,
+      );
+      x += col.width;
+    }
+    y -= headerH;
+  };
+
+  drawTableHeader();
+
+  rows.forEach((row, index) => {
+    const rowH = measureRowHeight(row, font, 7);
+    if (ensureSpace(rowH + headerH + 10)) {
+      drawTableHeader();
+    }
+
+    if (index % 2 === 1) {
+      page.drawRectangle({
+        x: MARGIN,
+        y: y - rowH,
+        width: CONTENT_W,
+        height: rowH,
+        color: ROW_ALT,
+      });
+    }
+
+    let x = MARGIN;
+    for (const col of COLS) {
+      const cellLines = wrapText(row[col.key] || '—', font, 7, col.width - 6).slice(0, 3);
+      let ly = y - 11;
+      for (const line of cellLines) {
+        drawText(page, line, x + 3, ly, 7, font, TEXT);
+        ly -= 9;
+      }
+      x += col.width;
+    }
+    y -= rowH;
+    page.drawLine({
+      start: { x: MARGIN, y },
+      end: { x: PAGE_W - MARGIN, y },
+      thickness: 0.45,
+      color: RULE,
+    });
+  });
+
+  page.drawLine({
+    start: { x: MARGIN, y },
+    end: { x: PAGE_W - MARGIN, y },
+    thickness: 1.2,
+    color: NAVY,
+  });
+  y -= 14;
+
+  ensureSpace(130);
   y = drawNotes(page, font, fontBold, y, options.kind);
-  drawFooter(page, font, meta);
 
-  // Document number watermark-style small tag top-left under margin (dynamic)
-  const docNo = safePdfText(displayDocNumber(options.doc));
-  if (docNo) {
-    drawText(
-      page,
-      `${options.kind === 'grn' ? 'GRN' : 'GDO'} ${docNo}`,
-      MARGIN_X,
-      PAGE_H - 16,
-      6.5,
-      font,
-      MUTED,
-    );
-  }
+  drawPageFooter(page, font, fontBold, meta.phone, meta.email, meta.website);
 
   const bytes = await pdf.save();
   return new Blob([new Uint8Array(bytes)], { type: 'application/pdf' });

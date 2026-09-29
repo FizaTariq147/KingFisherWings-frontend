@@ -108,7 +108,7 @@ export default function WmsItemFormPage() {
   const cancelTo = isEdit ? `${WMS_ROUTE_PREFIX}/items/${id}` : `${WMS_ROUTE_PREFIX}/items`;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
+    <div className="mx-auto max-w-3xl space-y-5">
       <WmsPageHeader
         backTo={cancelTo}
         backLabel={isEdit ? 'Item detail' : 'Items'}
@@ -122,7 +122,7 @@ export default function WmsItemFormPage() {
         <form className="space-y-4" onSubmit={handleSubmit} noValidate>
           <WmsFormAlert message={formError} />
 
-          <WmsFormCard title="Item details">
+          <WmsFormCard title="Item details" eyebrow="WMS item">
             <WmsFormGrid>
               <Input
                 label="Code"

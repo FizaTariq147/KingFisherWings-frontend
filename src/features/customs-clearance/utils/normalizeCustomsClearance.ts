@@ -139,10 +139,22 @@ export function normalizeCcDetails(raw: unknown, jobId?: string): CcDetails {
 
 export function normalizeCcStatus(raw: unknown, jobId?: string): CcStatus {
   const r = asRecord(unwrapEntity(raw)) ?? asRecord(raw) ?? {};
+  const stage = str(
+    r.stage ??
+      r.cc_stage ??
+      r.current_stage ??
+      r.workflow_stage ??
+      r.workflow_status ??
+      r.cc_status ??
+      r.state,
+  );
+  const status = str(
+    r.status ?? r.cc_status ?? r.workflow_status ?? r.state ?? r.stage,
+  );
   return {
     job_id: str(r.job_id) ?? jobId ?? '',
-    stage: str(r.stage ?? r.cc_stage ?? r.current_stage),
-    status: str(r.status),
+    stage,
+    status,
     opened_at: str(r.opened_at ?? r.openedAt),
     docs_complete_at: str(r.docs_complete_at ?? r.docsCompleteAt),
     classified_at: str(r.classified_at ?? r.classifiedAt),

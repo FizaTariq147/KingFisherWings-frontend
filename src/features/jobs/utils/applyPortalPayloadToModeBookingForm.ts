@@ -30,7 +30,20 @@ export function modeBookingFormIsEmpty(raw: unknown): boolean {
       (String((line as WhStockLineInputDto).sku_code ?? '').trim() ||
         Number((line as WhStockLineInputDto).quantity) > 0),
   );
-  return !(hasParty || hasRoute || hasCommodity || hasBookingNo || hasWeight || hasStock);
+  const hasCustoms = Boolean(
+    String(r.border_or_port ?? '').trim() ||
+      String(r.invoice_currency ?? '').trim() ||
+      (r.invoice_value_amount != null && Number(r.invoice_value_amount) > 0),
+  );
+  return !(
+    hasParty ||
+    hasRoute ||
+    hasCommodity ||
+    hasBookingNo ||
+    hasWeight ||
+    hasStock ||
+    hasCustoms
+  );
 }
 
 /**
@@ -39,6 +52,7 @@ export function modeBookingFormIsEmpty(raw: unknown): boolean {
  */
 export function portalPayloadToModeBookingFormDto(
   payload: PortalBookingFormMessagePayload,
+  opts?: { jobTypeOverride?: string | null },
 ): ModeBookingForm {
   const parties = (payload.parties ?? [])
     .filter((p) => p && (p.full_name?.trim() || p.address?.trim() || p.city?.trim()))
@@ -81,11 +95,21 @@ export function portalPayloadToModeBookingFormDto(
   const pickupOrigin =
     payload.origin_door_address?.trim() || payload.pol?.trim() || undefined;
 
+  const jt = String(opts?.jobTypeOverride ?? payload.jobType ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  const isCustoms = jt === 'CUSTOMS_CLEARANCE' || jt.includes('CUSTOMS');
+  const isWarehouse = jt === 'WAREHOUSE';
+  const isLandish =
+    jt === 'LAND' || jt === 'ROAD_FREIGHT' || jt === 'COURIER' || jt.startsWith('ROAD');
+  const isSea =
+    jt.includes('SEA') || jt.includes('FCL') || jt.includes('LCL') || jt.includes('NVOCC');
+
   const dto: ModeBookingForm = {
     date_of_request: payload.date_of_request?.slice(0, 10) || undefined,
     client_booking_no: payload.client_booking_no?.trim() || undefined,
     voyage_ref: payload.voyage_ref?.trim() || undefined,
-    service_scope: payload.service_scope || undefined,
     origin_door_address: pickupOrigin,
     dest_door_address: payload.dest_door_address?.trim() || warehouseName,
     commodity: payload.commodity?.trim() || undefined,
@@ -110,42 +134,83 @@ export function portalPayloadToModeBookingFormDto(
     ),
     attach_health_veterinary: Boolean(payload.attach_health_veterinary),
     attach_fda_moh: Boolean(payload.attach_fda_moh),
-    warehouse_id: payload.warehouse_id?.trim() || undefined,
-    warehouse_name: warehouseName,
-    expected_inbound_at: payload.expected_inbound_at || undefined,
-    expected_outbound_at: payload.expected_outbound_at || undefined,
-    storage_days_requested: payload.storage_days_requested,
-    bonded: payload.bonded === true,
-    temperature_controlled: payload.temperature_controlled === true,
-    handling_instructions: payload.handling_instructions?.trim() || undefined,
-    freight_job_id: payload.freight_job_id?.trim() || undefined,
     // Staff Ops still reviews — do not mark the job form complete from the portal alone.
     mark_complete: false,
     consent_accepted: Boolean(payload.consent_accepted),
   };
 
-  if (parties.length) dto.parties = parties;
-  if (containers.length) dto.containers = containers;
-  if (stock_lines.length) dto.stock_lines = stock_lines;
-
-  // Sea modes only: keep pol/pod from portal. Warehouse has no pol/pod on staff DTO.
-  const jt = String(payload.jobType ?? '')
-    .trim()
-    .toUpperCase()
-    .replace(/[\s-]+/g, '_');
-  if (jt !== 'WAREHOUSE') {
-    if (payload.pol?.trim()) dto.pol = payload.pol.trim();
-    if (payload.pod?.trim()) dto.pod = payload.pod.trim();
-    dto.shipper_owned_container = Boolean(payload.shipper_owned_container);
-    dto.teu_count = payload.teu_count;
+  if (isWarehouse) {
+    dto.warehouse_id = payload.warehouse_id?.trim() || undefined;
+    dto.warehouse_name = warehouseName;
+    dto.expected_inbound_at = payload.expected_inbound_at || undefined;
+    dto.expected_outbound_at = payload.expected_outbound_at || undefined;
+    dto.storage_days_requested = payload.storage_days_requested;
+    dto.bonded = payload.bonded === true;
+    dto.temperature_controlled = payload.temperature_controlled === true;
+    dto.handling_instructions = payload.handling_instructions?.trim() || undefined;
+    dto.freight_job_id = payload.freight_job_id?.trim() || undefined;
+    dto.dest_door_address = payload.dest_door_address?.trim() || warehouseName;
+  } else {
+    dto.service_scope = payload.service_scope || undefined;
   }
 
-  // Land / road / courier: map POL/POD text into city/country fields when present.
-  if (jt !== 'WAREHOUSE') {
-    const originCity = payload.origin_door_address?.trim() || payload.pol?.trim();
-    const destCity = payload.dest_door_address?.trim() || payload.pod?.trim();
-    if (originCity) dto.origin_city_country = originCity;
-    if (destCity) dto.dest_city_country = destCity;
+  // Customs-only fields — never send on sea/land/warehouse booking DTOs.
+  if (isCustoms) {
+    dto.attach_coo = Boolean(payload.attach_coo);
+    dto.attach_poa = Boolean(payload.attach_poa);
+    dto.attach_permit = Boolean(payload.attach_permit);
+    dto.direction = payload.direction?.trim() || undefined;
+    dto.border_or_port = payload.border_or_port?.trim() || undefined;
+    dto.entry_type = payload.entry_type?.trim() || undefined;
+    dto.declaration_type = payload.declaration_type?.trim() || undefined;
+    dto.port_of_entry = payload.port_of_entry?.trim() || undefined;
+    dto.port_of_exit = payload.port_of_exit?.trim() || undefined;
+    dto.country_of_origin = payload.country_of_origin?.trim() || undefined;
+    dto.country_of_destination = payload.country_of_destination?.trim() || undefined;
+    dto.incoterms = payload.incoterms?.trim() || undefined;
+    dto.invoice_value_amount = payload.invoice_value_amount;
+    dto.invoice_currency = payload.invoice_currency?.trim() || undefined;
+  }
+
+  if (parties.length) dto.parties = parties;
+
+  // Mode-aware mapping — only attach fields the staff Upsert* DTO accepts.
+  if (isWarehouse) {
+    if (stock_lines.length) dto.stock_lines = stock_lines;
+  } else if (isCustoms) {
+    const cargo_lines = (payload.cargo_lines ?? [])
+      .filter(
+        (line) =>
+          line &&
+          (String(line.description ?? '').trim() ||
+            String(line.hs_code ?? '').trim() ||
+            Number(line.quantity) > 0 ||
+            Number(line.value_amount) > 0),
+      )
+      .map((line) => ({
+        description: line.description?.trim() || undefined,
+        hs_code: line.hs_code?.trim() || undefined,
+        country_of_origin: line.country_of_origin?.trim() || undefined,
+        quantity: line.quantity,
+        unit: line.unit?.trim() || undefined,
+        value_amount: line.value_amount,
+        currency_code: line.currency_code?.trim() || undefined,
+      }));
+    if (cargo_lines.length) dto.cargo_lines = cargo_lines;
+  } else {
+    if (containers.length) dto.containers = containers;
+    if (isSea || !isLandish) {
+      if (payload.pol?.trim()) dto.pol = payload.pol.trim();
+      if (payload.pod?.trim()) dto.pod = payload.pod.trim();
+      dto.shipper_owned_container = Boolean(payload.shipper_owned_container);
+      dto.teu_count = payload.teu_count;
+    }
+    if (isLandish || (!isSea && !isCustoms)) {
+      const originCity = payload.origin_door_address?.trim() || payload.pol?.trim();
+      const destCity = payload.dest_door_address?.trim() || payload.pod?.trim();
+      if (originCity) dto.origin_city_country = originCity;
+      if (destCity) dto.dest_city_country = destCity;
+    }
   }
 
   return dto;

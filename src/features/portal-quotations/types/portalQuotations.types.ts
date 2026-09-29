@@ -224,9 +224,9 @@ export interface PortalQuotationDetail extends PortalQuotationListItem {
   }>;
 }
 
-/** Portal / Ops booking party — matches NvoccBookingFormPartyDto. */
+/** Portal / Ops booking party — BookingFormPartyDto (warehouse) / NvoccBookingFormPartyDto. */
 export type PortalBookingFormParty = {
-  party_kind: 'SHIPPER' | 'CONSIGNEE' | 'NOTIFY';
+  party_kind: 'SHIPPER' | 'CONSIGNEE' | 'NOTIFY' | 'BILLING' | 'AGENT';
   full_name: string;
   address?: string;
   city?: string;
@@ -320,6 +320,30 @@ export type PortalBookingForm = {
     unit?: string;
     cbm?: number;
   }[];
+  /** Customs clearance — UpsertCustomsClearanceBookingFormDto */
+  direction?: 'IMPORT' | 'EXPORT' | 'TRANSIT' | string;
+  border_or_port?: string;
+  entry_type?: string;
+  declaration_type?: string;
+  port_of_entry?: string;
+  port_of_exit?: string;
+  country_of_origin?: string;
+  country_of_destination?: string;
+  incoterms?: string;
+  invoice_value_amount?: number;
+  invoice_currency?: string;
+  attach_coo?: boolean;
+  attach_poa?: boolean;
+  attach_permit?: boolean;
+  cargo_lines?: {
+    description?: string;
+    hs_code?: string;
+    country_of_origin?: string;
+    quantity?: number;
+    unit?: string;
+    value_amount?: number;
+    currency_code?: string;
+  }[];
 };
 
 /**
@@ -385,5 +409,20 @@ export type PortalBookingFormUpsertDto = {
   attach_health_veterinary?: boolean;
   attach_fda_moh?: boolean;
   stock_lines?: PortalBookingForm['stock_lines'];
+  direction?: PortalBookingForm['direction'];
+  border_or_port?: string;
+  entry_type?: string;
+  declaration_type?: string;
+  port_of_entry?: string;
+  port_of_exit?: string;
+  country_of_origin?: string;
+  country_of_destination?: string;
+  incoterms?: string;
+  invoice_value_amount?: number;
+  invoice_currency?: string;
+  attach_coo?: boolean;
+  attach_poa?: boolean;
+  attach_permit?: boolean;
+  cargo_lines?: PortalBookingForm['cargo_lines'];
 };
 
