@@ -377,11 +377,20 @@ export const customsClearanceService = {
     assertJobId(jobId);
     if (!isUuid(queryId)) throw new Error('Invalid query id.');
     try {
-      const q = normalizeCcQuery(
-        unwrapEntity(await postRaw(CUSTOMS_CLEARANCE_API.queryClose(jobId, queryId), dto)),
+      const hasBody = Object.keys(dto).length > 0;
+      const raw = await postRaw(
+        CUSTOMS_CLEARANCE_API.queryClose(jobId, queryId),
+        hasBody ? dto : undefined,
       );
-      if (!q) throw new Error('Close query returned no data.');
-      return q;
+      const q = normalizeCcQuery(unwrapEntity(raw)) ?? normalizeCcQuery(raw);
+      // Some backends return 201 with an empty body after close.
+      if (q) return q;
+      return {
+        id: queryId,
+        job_id: jobId,
+        status: 'CLOSED',
+        closed_at: new Date().toISOString(),
+      };
     } catch (error) {
       throw formatError(error);
     }

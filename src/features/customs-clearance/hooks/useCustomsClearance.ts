@@ -144,7 +144,20 @@ export function useCcJobActions(jobId: string) {
   const invalidate = useInvalidateCc(jobId);
   const queryClient = useQueryClient();
 
-  const onSuccess = () => {
+  const onSuccess = (data?: unknown) => {
+    if (
+      data &&
+      typeof data === 'object' &&
+      'job_id' in data &&
+      ('stage' in data ||
+        'status' in data ||
+        'opened_at' in data ||
+        'released_at' in data ||
+        'duty_paid_at' in data ||
+        'closed_at' in data)
+    ) {
+      queryClient.setQueryData(ccKeys.status(jobId), data);
+    }
     invalidate();
     void queryClient.invalidateQueries({ queryKey: ccKeys.status(jobId) });
   };

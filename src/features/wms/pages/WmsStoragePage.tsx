@@ -246,7 +246,7 @@ export default function WmsStoragePage() {
         <form className="space-y-4" onSubmit={handleCalculate} noValidate>
           <WmsFormAlert message={calcValidation.formError} />
 
-          <WmsFormCard title="Calculate storage">
+          <WmsFormCard title="Calculate storage" eyebrow="Storage billing">
             <WmsFormGrid>
               <WmsSelect
                 label="Warehouse"

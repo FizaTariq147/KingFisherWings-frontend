@@ -24,6 +24,7 @@
 export const DOCUMENT_PDF_PRESERVE = {
   quotationClient: 'src/features/quotations/utils/generateQuotationPdf.ts',
   invoiceClient: 'src/features/invoices/utils/generateInvoicePdf.ts',
+  wmsClient: 'src/features/wms/utils/generateWmsDocumentPdf.ts',
   quotationApi: 'POST /quotations/:id/pdf',
   invoiceApi: 'POST /invoices/:id/pdf',
   catalogClientLayoutFallback: 'src/features/reports/utils/generateCatalogLayoutPdf.ts',

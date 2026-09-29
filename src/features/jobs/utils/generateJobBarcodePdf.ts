@@ -9,7 +9,9 @@ export const STICKER_W = 283.46;
 export const STICKER_H = 141.73;
 const PAD = 8;
 
+/** Match invoice PDF chrome accents. */
 const NAVY = rgb(0.039, 0.161, 0.259);
+const ORANGE = rgb(0.957, 0.447, 0.078);
 const TEXT = rgb(0.102, 0.118, 0.141);
 const MUTED = rgb(0.4, 0.43, 0.47);
 const RULE = rgb(0.82, 0.84, 0.86);
@@ -81,13 +83,29 @@ export async function generateJobBarcodePdf(model: JobBarcodePdfModel): Promise<
   const contentW = STICKER_W - PAD * 2;
   let y = STICKER_H - PAD - 2;
 
-  // White background (label stock)
+  // White background (label stock) — accent bars drawn after
   page.drawRectangle({
     x: 0,
     y: 0,
     width: STICKER_W,
     height: STICKER_H,
     color: WHITE,
+  });
+
+  // Invoice-style navy / orange top accent
+  page.drawRectangle({
+    x: 0,
+    y: STICKER_H - 4,
+    width: STICKER_W * 0.7,
+    height: 4,
+    color: NAVY,
+  });
+  page.drawRectangle({
+    x: STICKER_W * 0.7,
+    y: STICKER_H - 4,
+    width: STICKER_W * 0.3,
+    height: 4,
+    color: ORANGE,
   });
 
   // Thin border for cut guide
@@ -99,6 +117,24 @@ export async function generateJobBarcodePdf(model: JobBarcodePdfModel): Promise<
     borderColor: RULE,
     borderWidth: 0.6,
   });
+
+  // Bottom accent (invoice footer echo)
+  page.drawRectangle({
+    x: 0,
+    y: 0,
+    width: STICKER_W * 0.78,
+    height: 3,
+    color: NAVY,
+  });
+  page.drawRectangle({
+    x: STICKER_W * 0.78,
+    y: 0,
+    width: STICKER_W * 0.22,
+    height: 3,
+    color: ORANGE,
+  });
+
+  y = STICKER_H - PAD - 6;
 
   const jobNo = safePdfText(model.jobNumber) || '—';
   const jobType = safePdfText(model.jobType) || '';

@@ -1,11 +1,12 @@
 import { portalApiClient, PortalApiError } from '@/lib/portalApiClient';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
-import { invoicePdfBranding } from '@/features/files/utils/pdfBranding';
 import { formatPdfFilename, stripPdfExtension } from '@/features/files/utils/pdfFilename';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { generateInvoicePdf } from '@/features/invoices/utils/generateInvoicePdf';
 import { portalInvoiceToPdfModel } from '@/features/invoices/utils/invoiceToPdfModel';
-import { downloadPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
+import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
+import { applyPortalInvoicePdfChrome } from '@/features/portal-shared/applyPortalInvoicePdfChrome';
+import { fetchPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
 import { safeDownloadFilename } from '@/features/portal-shared/normalize';
 import { PORTAL_CREDIT_NOTES_API, PORTAL_DEBIT_NOTES_API } from '../api/portalCreditNotes.api';
 import type {
@@ -56,15 +57,13 @@ function linesSubtotal(detail: PortalCreditNoteDetail): number {
   }, 0);
 }
 
-async function tryDownloadFromPdfUrl(
-  url: string | undefined,
-  filename: string,
-  branding: ReturnType<typeof invoicePdfBranding>,
-): Promise<boolean> {
+async function tryDownloadFromPdfUrl(url: string | undefined, filename: string): Promise<boolean> {
   const trimmed = String(url || '').trim();
   if (!trimmed) return false;
   try {
-    await downloadPortalBlob(trimmed, filename, { accept: PDF_ACCEPT, branding });
+    const result = await fetchPortalBlob(trimmed, filename, { accept: PDF_ACCEPT });
+    if (!(await blobLooksLikePdf(result.blob))) return false;
+    triggerBlobDownload(await applyPortalInvoicePdfChrome(result.blob), result.filename);
     return true;
   } catch {
     return false;
@@ -79,12 +78,14 @@ export const portalCreditNotesService = {
     const res = await portalApiClient.get(apiFor(kind).list, { params });
     return normalizeCreditNoteList(res.data, params, kind);
   },
+
   async getById(id: string, kind: PortalNoteKind = 'credit'): Promise<PortalCreditNoteDetail> {
     const res = await portalApiClient.get(apiFor(kind).detail(id));
     const detail = normalizeCreditNoteDetail(res.data, kind);
-    if (!detail) throw new Error(kind === 'debit' ? 'Debit note not found.' : 'Credit note not found.');
+    if (!detail) throw new Error(`${kind === 'debit' ? 'Debit' : 'Credit'} note not found.`);
     return detail;
   },
+
   async downloadPdf(
     id: string,
     kind: PortalNoteKind = 'credit',
@@ -94,10 +95,6 @@ export const portalCreditNotesService = {
     const fallbackBase = kind === 'debit' ? 'debit-note' : 'credit-note';
     const ref = stripPdfExtension(fallbackName || fallbackBase) || fallbackBase;
     const filename = formatPdfFilename(ref, fallbackBase);
-    const branding = {
-      ...invoicePdfBranding(ref),
-      documentType: labels.documentType,
-    };
 
     let detail: PortalCreditNoteDetail | undefined;
     try {
@@ -106,8 +103,7 @@ export const portalCreditNotesService = {
       /* continue with dedicated PDF routes */
     }
 
-    // Prefer client KingFisher layout (same visual family as portal invoices).
-    // Do NOT call /portal/documents/invoices/:id — that expects an invoice id and returns "Document not found".
+    // Prefer client KingFisher layout (same as admin / portal invoices).
     if (detail) {
       try {
         const user = usePortalAuthStore.getState().user;
@@ -150,16 +146,22 @@ export const portalCreditNotesService = {
       }
     }
 
-    if (await tryDownloadFromPdfUrl(detail?.pdfUrl, filename, branding)) return;
+    if (await tryDownloadFromPdfUrl(detail?.pdfUrl, filename)) return;
 
-    // Swagger portal debit notes are list+detail only; credit may have /pdf.
     if (kind === 'credit') {
       try {
-        await downloadPortalBlob(
+        const result = await fetchPortalBlob(
           PORTAL_CREDIT_NOTES_API.pdf(id),
           safeDownloadFilename(filename, filename),
-          { accept: PDF_ACCEPT, branding },
+          { accept: PDF_ACCEPT },
         );
+        if (!(await blobLooksLikePdf(result.blob))) {
+          throw new PortalApiError(
+            'Download was expected to be a PDF but the server returned a non-PDF response.',
+            400,
+          );
+        }
+        triggerBlobDownload(await applyPortalInvoicePdfChrome(result.blob), result.filename);
         return;
       } catch (err) {
         const message =
@@ -175,8 +177,6 @@ export const portalCreditNotesService = {
       }
     }
 
-    throw new Error(
-      'Debit note PDF could not be generated from note details.',
-    );
+    throw new Error('Debit note PDF could not be generated from note details.');
   },
 };

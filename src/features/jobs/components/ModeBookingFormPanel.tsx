@@ -28,6 +28,7 @@ import { useJobs } from '../hooks/useJobs';
 import type {
   BookingFormPartyDto,
   BookingFormPartyKind,
+  CcCargoLineInputDto,
   ContainerSizeLineDto,
   JobCargoCategory,
   JobServiceScope,
@@ -110,7 +111,7 @@ const PARTY_KINDS: BookingFormPartyKind[] = [
   'AGENT',
 ];
 
-const ATTACH_FLAGS: { key: keyof ModeBookingForm; label: string }[] = [
+const ATTACH_FLAGS_COMMON: { key: keyof ModeBookingForm; label: string }[] = [
   { key: 'attach_commercial_invoice', label: 'Commercial invoice' },
   { key: 'attach_packing_list', label: 'Packing list' },
   { key: 'attach_bl_awb_copy', label: 'BL / AWB copy' },
@@ -121,6 +122,21 @@ const ATTACH_FLAGS: { key: keyof ModeBookingForm; label: string }[] = [
   { key: 'attach_health_veterinary', label: 'Health / veterinary' },
   { key: 'attach_fda_moh', label: 'FDA / MOH' },
 ];
+
+/** Customs Clearance only — not on sea/land/warehouse booking DTOs. */
+const ATTACH_FLAGS_CUSTOMS: { key: keyof ModeBookingForm; label: string }[] = [
+  { key: 'attach_coo', label: 'Certificate of Origin (COO)' },
+  { key: 'attach_poa', label: 'Power of Attorney / CHA (POA)' },
+  { key: 'attach_permit', label: 'Permits / licenses' },
+];
+
+const ATTACH_FLAGS_ALL = [...ATTACH_FLAGS_COMMON, ...ATTACH_FLAGS_CUSTOMS];
+
+function attachFlagsForMode(mode: StaffBookingFormMode) {
+  return mode === 'CUSTOMS_CLEARANCE' ? ATTACH_FLAGS_ALL : ATTACH_FLAGS_COMMON;
+}
+
+const CC_DIRECTIONS = ['IMPORT', 'EXPORT', 'TRANSIT'] as const;
 
 type PartyUi = {
   party_kind: BookingFormPartyKind;
@@ -181,6 +197,26 @@ type FormUi = {
     quantity: string;
     unit: string;
     cbm: string;
+  }[];
+  /** Customs clearance */
+  direction: string;
+  border_or_port: string;
+  entry_type: string;
+  declaration_type: string;
+  port_of_entry: string;
+  port_of_exit: string;
+  country_of_origin: string;
+  country_of_destination: string;
+  invoice_value_amount: string;
+  invoice_currency: string;
+  cargo_lines: {
+    description: string;
+    hs_code: string;
+    country_of_origin: string;
+    quantity: string;
+    unit: string;
+    value_amount: string;
+    currency_code: string;
   }[];
   parties: PartyUi[];
   containers: { container_type_id: string; iso_size: string; count: string }[];
@@ -244,9 +280,30 @@ function emptyForm(): FormUi {
     handling_instructions: '',
     freight_job_id: '',
     stock_lines: [{ sku_code: '', description: '', quantity: '', unit: 'CTN', cbm: '' }],
+    direction: 'IMPORT',
+    border_or_port: '',
+    entry_type: '',
+    declaration_type: '',
+    port_of_entry: '',
+    port_of_exit: '',
+    country_of_origin: '',
+    country_of_destination: '',
+    invoice_value_amount: '',
+    invoice_currency: '',
+    cargo_lines: [
+      {
+        description: '',
+        hs_code: '',
+        country_of_origin: '',
+        quantity: '',
+        unit: 'PCS',
+        value_amount: '',
+        currency_code: 'USD',
+      },
+    ],
     parties: PARTY_KINDS.map(emptyParty),
     containers: [{ container_type_id: '', iso_size: '', count: '1' }],
-    attaches: Object.fromEntries(ATTACH_FLAGS.map((a) => [a.key, false])),
+    attaches: Object.fromEntries(ATTACH_FLAGS_ALL.map((a) => [a.key, false])),
   };
 }
 
@@ -321,8 +378,22 @@ function hydrateForm(raw: unknown): FormUi {
         }))
       : base.stock_lines;
 
+  const cargoRaw = Array.isArray(r.cargo_lines) ? (r.cargo_lines as CcCargoLineInputDto[]) : [];
+  const cargo_lines =
+    cargoRaw.length > 0
+      ? cargoRaw.map((line) => ({
+          description: str(line.description),
+          hs_code: str(line.hs_code),
+          country_of_origin: str(line.country_of_origin),
+          quantity: numStr(line.quantity),
+          unit: str(line.unit) || 'PCS',
+          value_amount: numStr(line.value_amount),
+          currency_code: str(line.currency_code) || 'USD',
+        }))
+      : base.cargo_lines;
+
   const attaches = { ...base.attaches };
-  for (const a of ATTACH_FLAGS) {
+  for (const a of ATTACH_FLAGS_ALL) {
     if (typeof r[a.key] === 'boolean') attaches[a.key] = r[a.key] as boolean;
   }
 
@@ -371,6 +442,17 @@ function hydrateForm(raw: unknown): FormUi {
     handling_instructions: str(r.handling_instructions),
     freight_job_id: str(r.freight_job_id),
     stock_lines,
+    direction: str(r.direction) || base.direction,
+    border_or_port: str(r.border_or_port),
+    entry_type: str(r.entry_type),
+    declaration_type: str(r.declaration_type),
+    port_of_entry: str(r.port_of_entry),
+    port_of_exit: str(r.port_of_exit),
+    country_of_origin: str(r.country_of_origin),
+    country_of_destination: str(r.country_of_destination),
+    invoice_value_amount: numStr(r.invoice_value_amount),
+    invoice_currency: str(r.invoice_currency),
+    cargo_lines,
     parties,
     containers,
     attaches,
@@ -425,7 +507,7 @@ function toDto(form: FormUi, mode: StaffBookingFormMode): ModeBookingForm {
     dto.eta = form.eta || undefined;
   }
 
-  for (const a of ATTACH_FLAGS) {
+  for (const a of attachFlagsForMode(mode)) {
     dto[a.key] = form.attaches[a.key] === true;
   }
 
@@ -491,7 +573,51 @@ function toDto(form: FormUi, mode: StaffBookingFormMode): ModeBookingForm {
     if (stock_lines.length) dto.stock_lines = stock_lines;
   }
 
+  if (mode === 'CUSTOMS_CLEARANCE') {
+    dto.direction = form.direction || undefined;
+    dto.border_or_port = form.border_or_port.trim() || undefined;
+    dto.entry_type = form.entry_type.trim() || undefined;
+    dto.declaration_type = form.declaration_type.trim() || undefined;
+    dto.port_of_entry = form.port_of_entry.trim() || undefined;
+    dto.port_of_exit = form.port_of_exit.trim() || undefined;
+    dto.country_of_origin = form.country_of_origin.trim().toUpperCase() || undefined;
+    dto.country_of_destination =
+      form.country_of_destination.trim().toUpperCase() || undefined;
+    dto.incoterms = form.incoterms.trim() || undefined;
+    dto.invoice_value_amount = parseNum(form.invoice_value_amount);
+    dto.invoice_currency = form.invoice_currency.trim().toUpperCase() || undefined;
+    dto.freight_job_id = form.freight_job_id.trim() || undefined;
+    const cargo_lines: CcCargoLineInputDto[] = form.cargo_lines
+      .map((line) => ({
+        description: line.description.trim() || undefined,
+        hs_code: line.hs_code.trim() || undefined,
+        country_of_origin: line.country_of_origin.trim().toUpperCase() || undefined,
+        quantity: parseNum(line.quantity),
+        unit: line.unit.trim() || undefined,
+        value_amount: parseNum(line.value_amount),
+        currency_code: line.currency_code.trim().toUpperCase() || undefined,
+      }))
+      .filter(
+        (line) =>
+          Boolean(line.description) ||
+          Boolean(line.hs_code) ||
+          (line.quantity != null && line.quantity > 0) ||
+          (line.value_amount != null && line.value_amount > 0),
+      );
+    if (cargo_lines.length) dto.cargo_lines = cargo_lines;
+  }
+
   return dto;
+}
+
+function missingCustomsCompleteFields(form: FormUi): string[] {
+  const missing: string[] = [];
+  if (!form.border_or_port.trim()) missing.push('border / port');
+  if (parseNum(form.invoice_value_amount) == null) missing.push('invoice value');
+  if (!form.invoice_currency.trim()) missing.push('invoice currency');
+  if (!form.attaches.attach_packing_list) missing.push('packing list attached');
+  if (!form.attaches.attach_poa) missing.push('POA / CHA attached');
+  return missing;
 }
 
 function mergeFormUiPreferExisting(base: FormUi, fromPortal: FormUi, overwrite: boolean): FormUi {
@@ -582,13 +708,44 @@ function mergeFormUiPreferExisting(base: FormUi, fromPortal: FormUi, overwrite: 
         ))
         ? fromPortal.stock_lines
         : base.stock_lines,
+    direction: pick(base.direction, fromPortal.direction) || base.direction,
+    border_or_port: pick(base.border_or_port, fromPortal.border_or_port),
+    entry_type: pick(base.entry_type, fromPortal.entry_type),
+    declaration_type: pick(base.declaration_type, fromPortal.declaration_type),
+    port_of_entry: pick(base.port_of_entry, fromPortal.port_of_entry),
+    port_of_exit: pick(base.port_of_exit, fromPortal.port_of_exit),
+    country_of_origin: pick(base.country_of_origin, fromPortal.country_of_origin),
+    country_of_destination: pick(
+      base.country_of_destination,
+      fromPortal.country_of_destination,
+    ),
+    invoice_value_amount: pick(base.invoice_value_amount, fromPortal.invoice_value_amount),
+    invoice_currency: pick(base.invoice_currency, fromPortal.invoice_currency),
+    cargo_lines:
+      overwrite ||
+      (!base.cargo_lines.some(
+        (l) =>
+          l.description.trim() ||
+          l.hs_code.trim() ||
+          Number(l.quantity) > 0 ||
+          Number(l.value_amount) > 0,
+      ) &&
+        fromPortal.cargo_lines.some(
+          (l) =>
+            l.description.trim() ||
+            l.hs_code.trim() ||
+            Number(l.quantity) > 0 ||
+            Number(l.value_amount) > 0,
+        ))
+        ? fromPortal.cargo_lines
+        : base.cargo_lines,
     parties,
     containers:
       overwrite || (!baseHasContainers && portalHasContainers)
         ? fromPortal.containers
         : base.containers,
     attaches: Object.fromEntries(
-      ATTACH_FLAGS.map((a) => [
+      ATTACH_FLAGS_ALL.map((a) => [
         a.key,
         pickBool(Boolean(base.attaches[a.key]), Boolean(fromPortal.attaches[a.key])),
       ]),
@@ -599,9 +756,13 @@ function mergeFormUiPreferExisting(base: FormUi, fromPortal: FormUi, overwrite: 
 function applyPortalPayloadToFormUi(
   prev: FormUi,
   payload: PortalBookingFormMessagePayload,
-  opts?: { overwrite?: boolean },
+  opts?: { overwrite?: boolean; jobTypeOverride?: string | null },
 ): FormUi {
-  const fromPortal = hydrateForm(portalPayloadToModeBookingFormDto(payload));
+  const fromPortal = hydrateForm(
+    portalPayloadToModeBookingFormDto(payload, {
+      jobTypeOverride: opts?.jobTypeOverride ?? payload.jobType,
+    }),
+  );
   return mergeFormUiPreferExisting(prev, fromPortal, Boolean(opts?.overwrite));
 }
 
@@ -615,9 +776,11 @@ const modeTitle: Record<StaffBookingFormMode, string> = {
   CUSTOMS_CLEARANCE: 'Customs clearance booking form',
 };
 
-const fieldClass =
-  'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-2 text-sm disabled:cursor-not-allowed disabled:bg-[var(--color-neutral-50)]';
-const labelClass = 'flex flex-col gap-1 text-xs text-[var(--color-neutral-600)]';
+/** Portal booking form field chrome (visual only). */
+const portalFieldClass =
+  'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm text-[var(--color-neutral-800)] focus:border-[var(--color-primary-500)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-500)] disabled:cursor-not-allowed disabled:bg-[var(--color-neutral-50)]';
+const portalLabelClass =
+  'flex flex-col gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-600)]';
 
 export function ModeBookingFormPanel({
   jobId,
@@ -640,7 +803,7 @@ export function ModeBookingFormPanel({
   );
   const { data: jobsList } = useJobs(
     { page: 1, limit: 100 },
-    { enabled: mode === 'WAREHOUSE' },
+    { enabled: mode === 'WAREHOUSE' || mode === 'CUSTOMS_CLEARANCE' },
   );
   const freightJobOptions = useMemo(() => {
     const jobs = jobsList?.jobs ?? [];
@@ -660,9 +823,8 @@ export function ModeBookingFormPanel({
     retry: 1,
   });
   const linkedQuote = linkedQuoteQuery.data;
-  const jobTypePrefix = String(linkedQuote?.job_type ?? mode)
-    .toUpperCase()
-    .split('_')[0];
+  const linkedJobType = String(linkedQuote?.job_type ?? mode).toUpperCase();
+  const jobTypePrefix = linkedJobType.split('_')[0];
 
   const portalBookingQuery = useCustomerPortalBookingForm(
     {
@@ -688,6 +850,31 @@ export function ModeBookingFormPanel({
   const isSea = mode === 'SEA_FCL' || mode === 'SEA_LCL';
   const isLandish = mode === 'LAND' || mode === 'ROAD_FREIGHT' || mode === 'COURIER';
   const isWarehouse = mode === 'WAREHOUSE';
+  const isCustoms = mode === 'CUSTOMS_CLEARANCE';
+  /** Match customer portal booking form visual chrome for every job type. */
+  const selectClass = portalFieldClass;
+  const labelCls = portalLabelClass;
+  const sectionCardClass =
+    'rounded-[20px] border-[var(--color-neutral-100)] shadow-[0_10px_30px_rgba(10,41,66,0.05)]';
+  const sectionHeaderClass = 'border-b-0 pb-1 mb-2';
+  const sectionTitleClass =
+    'text-base font-semibold tracking-tight text-[var(--color-neutral-900)]';
+  const sectionPad = 'p-5 pt-0';
+
+  const resolvePortalPayload = (payload: PortalBookingFormMessagePayload) => ({
+    ...payload,
+    jobType: payload.jobType || linkedQuote?.job_type || String(mode),
+  });
+
+  const applyPortal = (
+    prev: FormUi,
+    payload: PortalBookingFormMessagePayload,
+    overwrite: boolean,
+  ) =>
+    applyPortalPayloadToFormUi(prev, resolvePortalPayload(payload), {
+      overwrite,
+      jobTypeOverride: linkedQuote?.job_type || mode,
+    });
 
   useEffect(() => {
     if (query.data == null) return;
@@ -711,9 +898,7 @@ export function ModeBookingFormPanel({
       setPortalPrefillApplied(true);
       return;
     }
-    setForm((prev) =>
-      applyPortalPayloadToFormUi(prev, payload, { overwrite: panelMode === 'create' }),
-    );
+    setForm((prev) => applyPortal(prev, payload, panelMode === 'create'));
     setPortalPrefillApplied(true);
     setMsg(
       `Customer portal booking loaded (quote ${
@@ -727,6 +912,35 @@ export function ModeBookingFormPanel({
     query.data,
     query.isLoading,
     query.isFetching,
+    linkedQuote?.job_type,
+    mode,
+  ]);
+
+  /** When portal form exists and staff form is empty, open create already prefilled. */
+  useEffect(() => {
+    if (panelMode !== 'list') return;
+    if (hasSavedForm) return;
+    if (query.isLoading || query.isFetching) return;
+    if (!portalBookingQuery.data) return;
+    if (portalPrefillApplied) return;
+    setForm(applyPortal(emptyForm(), portalBookingQuery.data, true));
+    setPortalPrefillApplied(true);
+    setPanelMode('create');
+    setMsg(
+      `Customer portal booking auto-loaded (quote ${
+        portalBookingQuery.data.quoteNumber ||
+        portalBookingQuery.data.quotationId.slice(0, 8)
+      }). Review, then Save.`,
+    );
+  }, [
+    panelMode,
+    hasSavedForm,
+    query.isLoading,
+    query.isFetching,
+    portalBookingQuery.data,
+    portalPrefillApplied,
+    linkedQuote?.job_type,
+    mode,
   ]);
 
   const patch = (partial: Partial<FormUi>) => {
@@ -762,8 +976,19 @@ export function ModeBookingFormPanel({
   const openCreate = () => {
     setErr(null);
     setMsg(null);
-    setForm(emptyForm());
-    setPortalPrefillApplied(false);
+    const payload = portalBookingQuery.data;
+    if (payload) {
+      setForm(applyPortal(emptyForm(), payload, true));
+      setPortalPrefillApplied(true);
+      setMsg(
+        `Customer portal booking loaded (quote ${
+          payload.quoteNumber || payload.quotationId.slice(0, 8)
+        }). Review, then click Save.`,
+      );
+    } else {
+      setForm(emptyForm());
+      setPortalPrefillApplied(false);
+    }
     setPanelMode('create');
   };
 
@@ -795,7 +1020,7 @@ export function ModeBookingFormPanel({
       setErr('No customer portal booking form found for this job / quotation yet.');
       return;
     }
-    setForm((prev) => applyPortalPayloadToFormUi(prev, payload, { overwrite: true }));
+    setForm((prev) => applyPortal(prev, payload, true));
     setMsg(
       `Reloaded from customer portal (quote ${
         payload.quoteNumber || payload.quotationId.slice(0, 8)
@@ -812,6 +1037,7 @@ export function ModeBookingFormPanel({
           parties: [],
           containers: [],
           stock_lines: [],
+          cargo_lines: [],
           commodity: '',
           client_booking_no: '',
           voyage_ref: '',
@@ -824,6 +1050,17 @@ export function ModeBookingFormPanel({
           handling_instructions: '',
           freight_job_id: '',
           request_details: '',
+          border_or_port: '',
+          invoice_value_amount: undefined,
+          invoice_currency: '',
+          direction: undefined,
+          entry_type: '',
+          declaration_type: '',
+          port_of_entry: '',
+          port_of_exit: '',
+          country_of_origin: '',
+          country_of_destination: '',
+          attach_packing_list: false,
         });
         setForm(emptyForm());
         setForceCompleted(false);
@@ -868,12 +1105,12 @@ export function ModeBookingFormPanel({
         </div>
 
         {portalBookingQuery.data && !hasSavedForm ? (
-          <div className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-900">
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-900">
             Customer portal booking is available
             {portalBookingQuery.data.quoteNumber
               ? ` (${portalBookingQuery.data.quoteNumber})`
               : ''}
-            . Click <strong>Add booking form</strong> to load it, then Save.
+            . Opening the form will auto-fill those values — review, then Save.
           </div>
         ) : null}
 
@@ -982,18 +1219,22 @@ export function ModeBookingFormPanel({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--color-secondary)]">
+            {modeTitle[mode]}
+          </p>
+          <h3 className="mt-1 text-xl font-semibold tracking-tight text-[var(--color-neutral-900)]">
             {panelMode === 'view'
               ? `View · ${modeTitle[mode]}`
               : panelMode === 'create'
                 ? `Add · ${modeTitle[mode]}`
                 : `Edit · ${modeTitle[mode]}`}
           </h3>
-          <p className="text-xs text-[var(--color-neutral-400)]">
-            Same layout style as job forms · Save stores via PUT
+          <p className="mt-1 text-sm text-[var(--color-neutral-500)]">
+            Same look as the customer portal booking form · fields follow live API for{' '}
+            <code className="text-[10px]">{staffBookingFormApiLabel(mode)}</code>
           </p>
         </div>
         <Button type="button" variant="secondary" onClick={backToList} className="w-full sm:w-auto">
@@ -1002,7 +1243,7 @@ export function ModeBookingFormPanel({
       </div>
 
       {portalBookingQuery.data && !readOnly ? (
-        <div className="flex flex-wrap items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-900">
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50/80 px-3 py-2 text-xs text-emerald-900">
           <span>
             Customer booking form on file
             {portalBookingQuery.data.quoteNumber
@@ -1018,11 +1259,14 @@ export function ModeBookingFormPanel({
       {err ? <p className="text-sm text-[var(--color-danger-600)]">{err}</p> : null}
       {msg ? <p className="text-sm text-[var(--color-success-700)]">{msg}</p> : null}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Basic information</CardTitle>
+      <div className="space-y-5 overflow-hidden rounded-[20px] border border-[var(--color-neutral-100)] bg-[var(--color-neutral-50)]/40 p-4 sm:p-5">
+        <div className="-mx-4 -mt-4 mb-1 h-[3px] bg-gradient-to-r from-[var(--color-secondary)] via-[var(--color-secondary)] to-[var(--color-primary)] sm:-mx-5 sm:-mt-5" />
+
+      <Card className={sectionCardClass} padding="none">
+        <CardHeader className={sectionHeaderClass}>
+          <CardTitle className={sectionTitleClass}>Basic information</CardTitle>
         </CardHeader>
-        <div className="grid gap-4 p-4 pt-0 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={`grid gap-4 ${sectionPad} sm:grid-cols-2 lg:grid-cols-3`}>
           <Input
             label="Date of request"
             type="date"
@@ -1045,10 +1289,10 @@ export function ModeBookingFormPanel({
             onChange={(e) => patch({ voyage_ref: e.target.value })}
           />
           {!isWarehouse ? (
-            <label className={labelClass}>
+            <label className={labelCls}>
               Service scope
               <select
-                className={fieldClass}
+                className={selectClass}
                 disabled={readOnly}
                 value={form.service_scope}
                 onChange={(e) => patch({ service_scope: e.target.value })}
@@ -1061,10 +1305,10 @@ export function ModeBookingFormPanel({
               </select>
             </label>
           ) : null}
-          <label className={labelClass}>
+          <label className={labelCls}>
             Cargo category
             <select
-              className={fieldClass}
+              className={selectClass}
               disabled={readOnly}
               value={form.cargo_category}
               onChange={(e) => patch({ cargo_category: e.target.value })}
@@ -1111,11 +1355,11 @@ export function ModeBookingFormPanel({
         </div>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Cargo &amp; weights</CardTitle>
+      <Card className={sectionCardClass} padding="none">
+        <CardHeader className={sectionHeaderClass}>
+          <CardTitle className={sectionTitleClass}>Cargo &amp; weights</CardTitle>
         </CardHeader>
-        <div className="grid gap-4 p-4 pt-0 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={`grid gap-4 ${sectionPad} sm:grid-cols-2 lg:grid-cols-3`}>
           <Input
             label="Gross weight kg"
             type="number"
@@ -1175,7 +1419,7 @@ export function ModeBookingFormPanel({
               onChange={(e) => patch({ dg_class: e.target.value })}
             />
           ) : null}
-          <label className={`${labelClass} sm:col-span-2`}>
+          <label className={`${labelCls} sm:col-span-2`}>
             Insurance details
             <textarea
               disabled={readOnly}
@@ -1184,7 +1428,7 @@ export function ModeBookingFormPanel({
               onChange={(e) => patch({ insurance_details: e.target.value })}
             />
           </label>
-          <label className={`${labelClass} sm:col-span-2`}>
+          <label className={`${labelCls} sm:col-span-2`}>
             Request details
             <textarea
               disabled={readOnly}
@@ -1197,9 +1441,9 @@ export function ModeBookingFormPanel({
       </Card>
 
       {isSea ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Shipment route</CardTitle>
+        <Card className={sectionCardClass} padding="none">
+          <CardHeader className={sectionHeaderClass}>
+            <CardTitle className={sectionTitleClass}>Shipment route</CardTitle>
           </CardHeader>
           <div className="grid gap-4 p-4 pt-0 sm:grid-cols-2 lg:grid-cols-3">
             <Input
@@ -1223,10 +1467,10 @@ export function ModeBookingFormPanel({
               value={form.incoterms}
               onChange={(e) => patch({ incoterms: e.target.value })}
             />
-            <label className={labelClass}>
+            <label className={labelCls}>
               Freight terms
               <select
-                className={fieldClass}
+                className={selectClass}
                 disabled={readOnly}
                 value={form.freight_terms}
                 onChange={(e) => patch({ freight_terms: e.target.value })}
@@ -1273,17 +1517,17 @@ export function ModeBookingFormPanel({
       ) : null}
 
       {mode === 'SEA_FCL' ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Containers</CardTitle>
+        <Card className={sectionCardClass} padding="none">
+          <CardHeader className={sectionHeaderClass}>
+            <CardTitle className={sectionTitleClass}>Containers</CardTitle>
           </CardHeader>
           <div className="space-y-3 p-4 pt-0">
             {form.containers.map((line, idx) => (
               <div key={idx} className="grid gap-2 sm:grid-cols-4">
-                <label className={labelClass}>
+                <label className={labelCls}>
                   Container type
                   <select
-                    className={fieldClass}
+                    className={selectClass}
                     disabled={readOnly}
                     value={line.container_type_id}
                     onChange={(e) =>
@@ -1380,9 +1624,9 @@ export function ModeBookingFormPanel({
       ) : null}
 
       {isLandish ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Land / road / courier</CardTitle>
+        <Card className={sectionCardClass} padding="none">
+          <CardHeader className={sectionHeaderClass}>
+            <CardTitle className={sectionTitleClass}>Land / road / courier</CardTitle>
           </CardHeader>
           <div className="grid gap-4 p-4 pt-0 sm:grid-cols-2 lg:grid-cols-3">
             <Input
@@ -1401,10 +1645,10 @@ export function ModeBookingFormPanel({
             />
             {mode === 'LAND' || mode === 'ROAD_FREIGHT' ? (
               <>
-                <label className={labelClass}>
+                <label className={labelCls}>
                   Vehicle type
                   <select
-                    className={fieldClass}
+                    className={selectClass}
                     disabled={readOnly}
                     value={form.vehicle_type}
                     onChange={(e) => patch({ vehicle_type: e.target.value })}
@@ -1449,15 +1693,15 @@ export function ModeBookingFormPanel({
       ) : null}
 
       {isWarehouse ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Warehouse storage</CardTitle>
+        <Card className={sectionCardClass} padding="none">
+          <CardHeader className={sectionHeaderClass}>
+            <CardTitle className={sectionTitleClass}>Warehouse storage</CardTitle>
           </CardHeader>
-          <div className="grid gap-4 p-4 pt-0 sm:grid-cols-2 lg:grid-cols-3">
-            <label className={labelClass}>
+          <div className={`grid gap-4 ${sectionPad} sm:grid-cols-2 lg:grid-cols-3`}>
+            <label className={labelCls}>
               Warehouse
               <select
-                className={fieldClass}
+                className={selectClass}
                 disabled={readOnly}
                 value={form.warehouse_id}
                 onChange={(e) => {
@@ -1519,10 +1763,10 @@ export function ModeBookingFormPanel({
               value={form.storage_days_requested}
               onChange={(e) => patch({ storage_days_requested: e.target.value })}
             />
-            <label className={labelClass}>
+            <label className={labelCls}>
               Linked freight job
               <select
-                className={fieldClass}
+                className={selectClass}
                 disabled={readOnly}
                 value={form.freight_job_id}
                 onChange={(e) => patch({ freight_job_id: e.target.value })}
@@ -1559,7 +1803,7 @@ export function ModeBookingFormPanel({
               />
               Temperature controlled
             </label>
-            <label className={`${labelClass} sm:col-span-2 lg:col-span-3`}>
+            <label className={`${labelCls} sm:col-span-2 lg:col-span-3`}>
               Handling instructions
               <textarea
                 disabled={readOnly}
@@ -1573,9 +1817,9 @@ export function ModeBookingFormPanel({
       ) : null}
 
       {isWarehouse ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Stock lines</CardTitle>
+        <Card className={sectionCardClass} padding="none">
+          <CardHeader className={sectionHeaderClass}>
+            <CardTitle className={sectionTitleClass}>Stock lines</CardTitle>
           </CardHeader>
           <div className="space-y-3 p-4 pt-0">
             {form.stock_lines.map((line, idx) => (
@@ -1694,11 +1938,306 @@ export function ModeBookingFormPanel({
         </Card>
       ) : null}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Parties</CardTitle>
+      {isCustoms ? (
+        <Card className={sectionCardClass} padding="none">
+          <CardHeader className={sectionHeaderClass}>
+            <CardTitle className={sectionTitleClass}>Customs clearance</CardTitle>
+          </CardHeader>
+          <div className={`grid gap-4 ${sectionPad} sm:grid-cols-2 lg:grid-cols-3`}>
+            <label className={labelCls}>
+              Direction <span className="text-[var(--color-danger-600)]">*</span>
+              <select
+                className={selectClass}
+                disabled={readOnly}
+                value={form.direction}
+                onChange={(e) => patch({ direction: e.target.value })}
+              >
+                {CC_DIRECTIONS.map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <Input
+              label="Border / port *"
+              maxLength={200}
+              disabled={readOnly}
+              value={form.border_or_port}
+              onChange={(e) => patch({ border_or_port: e.target.value })}
+              placeholder="e.g. Jebel Ali Port / Terminal 1"
+            />
+            <Input
+              label="Entry type"
+              maxLength={20}
+              disabled={readOnly}
+              value={form.entry_type}
+              onChange={(e) => patch({ entry_type: e.target.value })}
+              placeholder="e.g. BOE"
+            />
+            <Input
+              label="Declaration type"
+              maxLength={50}
+              disabled={readOnly}
+              value={form.declaration_type}
+              onChange={(e) => patch({ declaration_type: e.target.value })}
+              placeholder="e.g. Home consumption"
+            />
+            <Input
+              label="Port of entry"
+              maxLength={100}
+              disabled={readOnly}
+              value={form.port_of_entry}
+              onChange={(e) => patch({ port_of_entry: e.target.value })}
+            />
+            <Input
+              label="Port of exit"
+              maxLength={100}
+              disabled={readOnly}
+              value={form.port_of_exit}
+              onChange={(e) => patch({ port_of_exit: e.target.value })}
+            />
+            <Input
+              label="Country of origin"
+              maxLength={2}
+              disabled={readOnly}
+              value={form.country_of_origin}
+              onChange={(e) => patch({ country_of_origin: e.target.value.toUpperCase() })}
+              placeholder="CN"
+            />
+            <Input
+              label="Country of destination"
+              maxLength={2}
+              disabled={readOnly}
+              value={form.country_of_destination}
+              onChange={(e) =>
+                patch({ country_of_destination: e.target.value.toUpperCase() })
+              }
+              placeholder="AE"
+            />
+            <Input
+              label="Incoterms"
+              maxLength={10}
+              disabled={readOnly}
+              value={form.incoterms}
+              onChange={(e) => patch({ incoterms: e.target.value })}
+              placeholder="CIF"
+            />
+            <Input
+              label="Invoice value *"
+              type="number"
+              min={0}
+              disabled={readOnly}
+              value={form.invoice_value_amount}
+              onChange={(e) => patch({ invoice_value_amount: e.target.value })}
+            />
+            <Input
+              label="Invoice currency *"
+              maxLength={3}
+              disabled={readOnly}
+              value={form.invoice_currency}
+              onChange={(e) =>
+                patch({ invoice_currency: e.target.value.toUpperCase() })
+              }
+              placeholder="USD"
+            />
+            <label className={labelCls}>
+              Linked freight job
+              <select
+                className={selectClass}
+                disabled={readOnly}
+                value={form.freight_job_id}
+                onChange={(e) => patch({ freight_job_id: e.target.value })}
+              >
+                <option value="">None</option>
+                {form.freight_job_id &&
+                !freightJobOptions.some((j) => j.id === form.freight_job_id) ? (
+                  <option value={form.freight_job_id}>
+                    {form.freight_job_id.slice(0, 8)}…
+                  </option>
+                ) : null}
+                {freightJobOptions.map((j) => (
+                  <option key={j.id} value={j.id}>
+                    {j.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p className="text-xs text-[var(--color-neutral-500)] sm:col-span-2 lg:col-span-3">
+              To complete: check <strong>Packing list</strong> and{' '}
+              <strong>Power of Attorney / CHA (POA)</strong> under Attachments.
+            </p>
+          </div>
+        </Card>
+      ) : null}
+
+      {isCustoms ? (
+        <Card className={sectionCardClass} padding="none">
+          <CardHeader className={sectionHeaderClass}>
+            <CardTitle className={sectionTitleClass}>Cargo lines</CardTitle>
+          </CardHeader>
+          <div className={`space-y-3 ${sectionPad}`}>
+            {form.cargo_lines.map((line, idx) => (
+              <div key={idx} className="grid gap-2 sm:grid-cols-4 lg:grid-cols-7">
+                <Input
+                  label="Description"
+                  maxLength={500}
+                  disabled={readOnly}
+                  value={line.description}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      cargo_lines: prev.cargo_lines.map((l, i) =>
+                        i === idx ? { ...l, description: e.target.value } : l,
+                      ),
+                    }))
+                  }
+                />
+                <Input
+                  label="HS code"
+                  maxLength={20}
+                  disabled={readOnly}
+                  value={line.hs_code}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      cargo_lines: prev.cargo_lines.map((l, i) =>
+                        i === idx ? { ...l, hs_code: e.target.value } : l,
+                      ),
+                    }))
+                  }
+                />
+                <Input
+                  label="Origin"
+                  maxLength={2}
+                  disabled={readOnly}
+                  value={line.country_of_origin}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      cargo_lines: prev.cargo_lines.map((l, i) =>
+                        i === idx
+                          ? { ...l, country_of_origin: e.target.value.toUpperCase() }
+                          : l,
+                      ),
+                    }))
+                  }
+                />
+                <Input
+                  label="Qty"
+                  type="number"
+                  min={0}
+                  disabled={readOnly}
+                  value={line.quantity}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      cargo_lines: prev.cargo_lines.map((l, i) =>
+                        i === idx ? { ...l, quantity: e.target.value } : l,
+                      ),
+                    }))
+                  }
+                />
+                <Input
+                  label="Unit"
+                  maxLength={20}
+                  disabled={readOnly}
+                  value={line.unit}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      cargo_lines: prev.cargo_lines.map((l, i) =>
+                        i === idx ? { ...l, unit: e.target.value } : l,
+                      ),
+                    }))
+                  }
+                />
+                <Input
+                  label="Value"
+                  type="number"
+                  min={0}
+                  disabled={readOnly}
+                  value={line.value_amount}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      cargo_lines: prev.cargo_lines.map((l, i) =>
+                        i === idx ? { ...l, value_amount: e.target.value } : l,
+                      ),
+                    }))
+                  }
+                />
+                <div className="flex items-end gap-2">
+                  <Input
+                    label="Currency"
+                    maxLength={3}
+                    disabled={readOnly}
+                    value={line.currency_code}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        cargo_lines: prev.cargo_lines.map((l, i) =>
+                          i === idx
+                            ? { ...l, currency_code: e.target.value.toUpperCase() }
+                            : l,
+                        ),
+                      }))
+                    }
+                  />
+                  {!readOnly ? (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      disabled={form.cargo_lines.length <= 1}
+                      onClick={() =>
+                        setForm((prev) => ({
+                          ...prev,
+                          cargo_lines: prev.cargo_lines.filter((_, i) => i !== idx),
+                        }))
+                      }
+                    >
+                      Remove
+                    </Button>
+                  ) : null}
+                </div>
+              </div>
+            ))}
+            {!readOnly ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                onClick={() =>
+                  setForm((prev) => ({
+                    ...prev,
+                    cargo_lines: [
+                      ...prev.cargo_lines,
+                      {
+                        description: '',
+                        hs_code: '',
+                        country_of_origin: '',
+                        quantity: '',
+                        unit: 'PCS',
+                        value_amount: '',
+                        currency_code: form.invoice_currency || 'USD',
+                      },
+                    ],
+                  }))
+                }
+              >
+                Add cargo line
+              </Button>
+            ) : null}
+          </div>
+        </Card>
+      ) : null}
+
+      <Card className={sectionCardClass} padding="none">
+        <CardHeader className={sectionHeaderClass}>
+          <CardTitle className={sectionTitleClass}>Parties</CardTitle>
         </CardHeader>
-        <div className="space-y-3 p-4 pt-0">
+        <div className={`space-y-3 ${sectionPad}`}>
           {form.parties.map((p) => (
             <div
               key={p.party_kind}
@@ -1728,7 +2267,7 @@ export function ModeBookingFormPanel({
                 value={p.country}
                 onChange={(e) => patchParty(p.party_kind, { country: e.target.value })}
               />
-              <label className={`${labelClass} sm:col-span-2`}>
+              <label className={`${labelCls} sm:col-span-2`}>
                 Address
                 <textarea
                   disabled={readOnly}
@@ -1737,10 +2276,10 @@ export function ModeBookingFormPanel({
                   onChange={(e) => patchParty(p.party_kind, { address: e.target.value })}
                 />
               </label>
-              <label className={labelClass}>
+              <label className={labelCls}>
                 Entity kind
                 <select
-                  className={fieldClass}
+                  className={selectClass}
                   disabled={readOnly}
                   value={p.entity_kind}
                   onChange={(e) =>
@@ -1765,13 +2304,13 @@ export function ModeBookingFormPanel({
         </div>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Attachments &amp; consent</CardTitle>
+      <Card className={sectionCardClass} padding="none">
+        <CardHeader className={sectionHeaderClass}>
+          <CardTitle className={sectionTitleClass}>Attachments &amp; consent</CardTitle>
         </CardHeader>
-        <div className="space-y-4 p-4 pt-0">
+        <div className={`space-y-4 ${sectionPad}`}>
           <div className="flex flex-wrap gap-3 text-sm">
-            {ATTACH_FLAGS.map((a) => (
+            {attachFlagsForMode(mode).map((a) => (
               <label key={a.key} className="inline-flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -1825,6 +2364,16 @@ export function ModeBookingFormPanel({
                 setMsg(null);
                 return;
               }
+              if (isCustoms && form.mark_complete) {
+                const missing = missingCustomsCompleteFields(form);
+                if (missing.length) {
+                  setErr(
+                    `Customs clearance form incomplete: ${missing.join(', ')}.`,
+                  );
+                  setMsg(null);
+                  return;
+                }
+              }
               void run(
                 async () => {
                   const result = await save.mutateAsync(toDto(form, mode));
@@ -1858,6 +2407,16 @@ export function ModeBookingFormPanel({
                 );
                 setMsg(null);
                 return;
+              }
+              if (isCustoms) {
+                const missing = missingCustomsCompleteFields(form);
+                if (missing.length) {
+                  setErr(
+                    `Customs clearance form incomplete: ${missing.join(', ')}.`,
+                  );
+                  setMsg(null);
+                  return;
+                }
               }
               void run(
                 async () => {
@@ -1899,6 +2458,7 @@ export function ModeBookingFormPanel({
           </Button>
         </div>
       )}
+      </div>
     </div>
   );
 }

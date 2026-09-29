@@ -310,10 +310,13 @@ export function WmsSelect({
 }: WmsSelectProps) {
   const fieldId = id || label.toLowerCase().replace(/\s+/g, '-');
   return (
-    <div className="flex flex-col gap-1">
-      <label htmlFor={fieldId} className="text-xs font-medium text-[var(--color-neutral-500)]">
+    <div className="flex flex-col gap-1.5">
+      <label
+        htmlFor={fieldId}
+        className="block text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-600)]"
+      >
         {label}
-        {required ? <span className="text-[var(--color-danger-500)]"> *</span> : null}
+        {required ? <span className="text-[var(--color-danger-600)]"> *</span> : null}
       </label>
       <select
         id={fieldId}

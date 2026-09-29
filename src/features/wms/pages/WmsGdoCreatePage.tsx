@@ -122,7 +122,7 @@ export default function WmsGdoCreatePage() {
   const cancel = () => navigate(`${WMS_ROUTE_PREFIX}/gdos`);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
+    <div className="mx-auto max-w-3xl space-y-5">
       <WmsPageHeader
         backTo={`${WMS_ROUTE_PREFIX}/gdos`}
         backLabel="GDO"
@@ -133,7 +133,7 @@ export default function WmsGdoCreatePage() {
       <form className="space-y-4" onSubmit={handleSubmit} noValidate>
         <WmsFormAlert message={formError} />
 
-        <WmsFormCard title="Document">
+        <WmsFormCard title="Document" eyebrow="GDO details">
           <WmsWarehousesEmptyHint
             selectableCount={warehouseCount}
             isLoading={warehousesLoading}
@@ -210,6 +210,7 @@ export default function WmsGdoCreatePage() {
 
         <WmsFormCard
           title="Lines"
+          eyebrow="GDO cargo lines"
           headerAction={
             <Button
               type="button"

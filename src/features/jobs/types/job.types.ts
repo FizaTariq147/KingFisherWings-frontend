@@ -486,10 +486,22 @@ export type ModeBookingForm = Record<string, unknown> & {
   country_of_destination?: string;
   invoice_value_amount?: number;
   invoice_currency?: string;
+  cargo_lines?: CcCargoLineInputDto[];
   attach_coo?: boolean;
   attach_poa?: boolean;
   attach_permit?: boolean;
 };
+
+/** Customs booking cargo line — CcCargoLineInputDto. */
+export interface CcCargoLineInputDto {
+  description?: string;
+  hs_code?: string;
+  country_of_origin?: string;
+  quantity?: number;
+  unit?: string;
+  value_amount?: number;
+  currency_code?: string;
+}
 
 export type UpsertSeaFclBookingFormDto = ModeBookingForm;
 export type UpsertSeaLclBookingFormDto = ModeBookingForm;

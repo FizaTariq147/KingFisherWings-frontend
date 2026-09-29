@@ -27,7 +27,7 @@ type UseWmsDocumentPdfArgs = {
 
 /**
  * Calls GET /wms/grns|gdos/{id}/pdf (API behaviour preserved).
- * User-facing file uses the warehouse gate-pass GRN/GDO layout (dynamic data).
+ * User-facing file uses invoice-matched KingFisher chrome + live GRN/GDO data.
  */
 export function useWmsDocumentPdf({
   kind,
@@ -112,8 +112,8 @@ export function useWmsDocumentPdf({
       skipBranding
       description={
         fromApi
-          ? 'Warehouse GRN/GDO layout with live document data (WMS PDF API verified). Preview or download.'
-          : 'Warehouse GRN/GDO layout with live document data. Preview or download.'
+          ? 'Invoice-style KingFisher PDF with live GRN/GDO data (WMS PDF API verified). Preview or download.'
+          : 'Invoice-style KingFisher PDF with live GRN/GDO data. Preview or download.'
       }
     />
   );
