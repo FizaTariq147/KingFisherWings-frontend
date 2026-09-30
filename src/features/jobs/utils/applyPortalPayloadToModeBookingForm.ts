@@ -204,12 +204,39 @@ export function portalPayloadToModeBookingFormDto(
       if (payload.pod?.trim()) dto.pod = payload.pod.trim();
       dto.shipper_owned_container = Boolean(payload.shipper_owned_container);
       dto.teu_count = payload.teu_count;
+      if (payload.etd) dto.etd = payload.etd;
+      if (payload.eta) dto.eta = payload.eta;
+      if (payload.incoterms?.trim()) dto.incoterms = payload.incoterms.trim();
+      if (payload.freight_terms?.trim()) dto.freight_terms = payload.freight_terms.trim();
+      if (jt.includes('LCL') && payload.cfs_warehouse?.trim()) {
+        dto.cfs_warehouse = payload.cfs_warehouse.trim();
+      }
     }
     if (isLandish || (!isSea && !isCustoms)) {
-      const originCity = payload.origin_door_address?.trim() || payload.pol?.trim();
-      const destCity = payload.dest_door_address?.trim() || payload.pod?.trim();
+      const originCity =
+        payload.origin_city_country?.trim() ||
+        payload.origin_door_address?.trim() ||
+        payload.pol?.trim();
+      const destCity =
+        payload.dest_city_country?.trim() ||
+        payload.dest_door_address?.trim() ||
+        payload.pod?.trim();
       if (originCity) dto.origin_city_country = originCity;
       if (destCity) dto.dest_city_country = destCity;
+      if (payload.vehicle_type?.trim()) dto.vehicle_type = payload.vehicle_type.trim();
+      if (payload.incoterms?.trim()) dto.incoterms = payload.incoterms.trim();
+      if (payload.etd) dto.etd = payload.etd;
+      if (payload.eta) dto.eta = payload.eta;
+      if (jt === 'ROAD_FREIGHT' || jt.startsWith('ROAD')) {
+        if (payload.border_crossing?.trim()) {
+          dto.border_crossing = payload.border_crossing.trim();
+        }
+      }
+      if (jt === 'COURIER' || jt.startsWith('COURIER')) {
+        if (payload.tracking_number?.trim()) {
+          dto.tracking_number = payload.tracking_number.trim();
+        }
+      }
     }
   }
 
@@ -269,8 +296,11 @@ export async function syncCustomerPortalBookingFormOntoJob(opts: {
 
   if (!payload) return { synced: false };
 
-  // Skip overwrite if Ops already saved meaningful data on the job form.
+  // Skip overwrite if Ops already saved meaningful data — never downgrade a completed form.
   const existing = await getModeBookingForm(mode, jobId, jobService);
+  if (existing?.mark_complete === true) {
+    return { synced: false, mode };
+  }
   if (!modeBookingFormIsEmpty(existing)) {
     return { synced: false, mode };
   }

@@ -1,24 +1,30 @@
+import { API_MAX_LENGTH } from '@/lib/api/apiSchema.generated';
+
+const NVOCC = API_MAX_LENGTH.UpsertNvoccBookingFormDto;
+const AIR = API_MAX_LENGTH.UpsertAirComplianceBookingFormDto;
+const PARTY = API_MAX_LENGTH.NvoccBookingFormPartyDto;
+
 /**
  * Field limits from OpenAPI UpsertNvoccBookingFormDto / NvoccBookingFormPartyDto /
- * SubmitNvoccComplianceFormDto (portal bookings + portal shipments compliance-form).
+ * UpsertAirComplianceBookingFormDto (portal bookings + portal shipments compliance-form).
  */
 export const PORTAL_COMPLIANCE_FORM_LIMITS = {
-  voyage_ref: 50,
-  client_booking_no: 50,
-  pol: 100,
-  pod: 100,
-  origin_airport_code: 10,
-  dest_airport_code: 10,
-  commodity: 500,
-  hs_code: 20,
-  final_use: 200,
-  booking_agent_line: 100,
-  agent_requester_name: 200,
-  sq_bl_booking_reference: 200,
-  party_full_name: 300,
-  party_city: 100,
-  party_country: 100,
-  pallet_type: 30,
+  voyage_ref: NVOCC.voyage_ref,
+  client_booking_no: NVOCC.client_booking_no,
+  pol: NVOCC.pol,
+  pod: NVOCC.pod,
+  origin_airport_code: AIR.origin_airport_code,
+  dest_airport_code: AIR.dest_airport_code,
+  commodity: NVOCC.commodity,
+  hs_code: NVOCC.hs_code,
+  final_use: NVOCC.final_use,
+  booking_agent_line: NVOCC.booking_agent_line,
+  agent_requester_name: NVOCC.agent_requester_name,
+  sq_bl_booking_reference: NVOCC.sq_bl_booking_reference,
+  party_full_name: PARTY.full_name,
+  party_city: PARTY.city,
+  party_country: PARTY.country,
+  pallet_type: API_MAX_LENGTH.AirPalletLineDto.pallet_type,
 } as const;
 
 export function clipComplianceField(

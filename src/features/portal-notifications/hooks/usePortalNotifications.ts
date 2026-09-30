@@ -32,7 +32,8 @@ export function usePortalNotificationUnreadCount() {
     queryKey: portalNotificationKeys.unread(scope),
     queryFn: () => portalNotificationsService.unreadCount(),
     enabled: Boolean(accessToken) && scope !== 'anon',
-    staleTime: 0,
+    staleTime: 30_000,
+    placeholderData: keepPreviousData,
     refetchInterval: 60_000,
   });
 

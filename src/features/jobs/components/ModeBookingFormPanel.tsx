@@ -14,8 +14,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table';
+import { API_DEFAULTS, API_ENUMS, API_MAX_LENGTH } from '@/lib/api/apiSchema.generated';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import {
+  baseCurrencyCode,
+  MasterCodeDatalist,
+  useMasterCodeOptions,
+} from '@/features/masters/hooks/useMasterCodeOptions';
 import { useCustomerPortalBookingForm } from '@/features/portal-admin-inbox/hooks/usePortalAdminInbox';
 import type { PortalBookingFormMessagePayload } from '@/features/portal-quotations/utils/portalBookingFormStorage';
 import { quotationService } from '@/features/quotations/services/quotation.service';
@@ -81,35 +87,22 @@ function ActionIconButton({
   );
 }
 
-const SERVICE_SCOPES: JobServiceScope[] = [
-  'DOOR_TO_DOOR',
-  'DOOR_TO_PORT',
-  'PORT_TO_DOOR',
-  'PORT_TO_PORT',
-];
+// Option lists come from the OpenAPI spec — regenerate with `npm run gen:api-schema`.
+const SERVICE_SCOPES: readonly JobServiceScope[] = API_ENUMS.UpsertSeaFclBookingFormDto.service_scope;
+const CARGO_CATEGORIES: readonly JobCargoCategory[] = API_ENUMS.UpsertSeaFclBookingFormDto.cargo_category;
+// Booking-form DTOs type these as free strings; the job-detail DTOs carry the enums.
+const FREIGHT_TERMS = API_ENUMS.UpdateSeaFclJobDetailDto.freight_terms;
+const VEHICLE_TYPES = API_ENUMS.UpdateLandJobDetailDto.vehicle_type;
+const PARTY_KINDS: readonly BookingFormPartyKind[] = API_ENUMS.BookingFormPartyDto.party_kind;
+const ENTITY_KINDS = API_ENUMS.BookingFormPartyDto.entity_kind;
+type EntityKind = (typeof ENTITY_KINDS)[number];
 
-const CARGO_CATEGORIES: JobCargoCategory[] = [
-  'GENERAL',
-  'VEHICLES',
-  'FOOD_PERISHABLE',
-  'PHARMA',
-  'CHEMICALS_DG',
-  'PERSONAL_EFFECTS',
-  'PROJECT_OOG',
-  'LIVESTOCK',
-  'OTHER',
-];
+const UNIT_LIST_ID = 'kfw-booking-uom-options';
+const CURRENCY_LIST_ID = 'kfw-booking-currency-options';
 
-const FREIGHT_TERMS = ['Prepaid', 'Collect', 'Third Party'] as const;
-const VEHICLE_TYPES = ['TRUCK', 'TRAILER', 'VAN'] as const;
-
-const PARTY_KINDS: BookingFormPartyKind[] = [
-  'SHIPPER',
-  'CONSIGNEE',
-  'NOTIFY',
-  'BILLING',
-  'AGENT',
-];
+function asEntityKind(v: unknown): EntityKind | '' {
+  return (ENTITY_KINDS as readonly unknown[]).includes(v) ? (v as EntityKind) : '';
+}
 
 const ATTACH_FLAGS_COMMON: { key: keyof ModeBookingForm; label: string }[] = [
   { key: 'attach_commercial_invoice', label: 'Commercial invoice' },
@@ -136,7 +129,7 @@ function attachFlagsForMode(mode: StaffBookingFormMode) {
   return mode === 'CUSTOMS_CLEARANCE' ? ATTACH_FLAGS_ALL : ATTACH_FLAGS_COMMON;
 }
 
-const CC_DIRECTIONS = ['IMPORT', 'EXPORT', 'TRANSIT'] as const;
+const CC_DIRECTIONS = API_ENUMS.UpsertCustomsClearanceBookingFormDto.direction;
 
 type PartyUi = {
   party_kind: BookingFormPartyKind;
@@ -144,7 +137,7 @@ type PartyUi = {
   address: string;
   city: string;
   country: string;
-  entity_kind: 'COMPANY' | 'INDIVIDUAL' | '';
+  entity_kind: EntityKind | '';
   other_details: string;
 };
 
@@ -240,12 +233,12 @@ function emptyForm(): FormUi {
     date_of_request: '',
     client_booking_no: '',
     voyage_ref: '',
-    service_scope: 'DOOR_TO_DOOR',
+    service_scope: SERVICE_SCOPES[0],
     origin_door_address: '',
     dest_door_address: '',
     commodity: '',
     hs_code: '',
-    cargo_category: 'GENERAL',
+    cargo_category: CARGO_CATEGORIES[0],
     is_dg: false,
     dg_class: '',
     gross_weight_kg: '',
@@ -279,8 +272,8 @@ function emptyForm(): FormUi {
     temperature_controlled: false,
     handling_instructions: '',
     freight_job_id: '',
-    stock_lines: [{ sku_code: '', description: '', quantity: '', unit: 'CTN', cbm: '' }],
-    direction: 'IMPORT',
+    stock_lines: [{ sku_code: '', description: '', quantity: '', unit: '', cbm: '' }],
+    direction: API_DEFAULTS.UpsertCustomsClearanceBookingFormDto.direction,
     border_or_port: '',
     entry_type: '',
     declaration_type: '',
@@ -296,9 +289,9 @@ function emptyForm(): FormUi {
         hs_code: '',
         country_of_origin: '',
         quantity: '',
-        unit: 'PCS',
+        unit: '',
         value_amount: '',
-        currency_code: 'USD',
+        currency_code: '',
       },
     ],
     parties: PARTY_KINDS.map(emptyParty),
@@ -339,10 +332,7 @@ function hydrateForm(raw: unknown): FormUi {
   const parties: PartyUi[] = PARTY_KINDS.map((kind) => {
     const found = partiesRaw.find((p) => p.party_kind === kind);
     if (!found) return emptyParty(kind);
-    const entity: PartyUi['entity_kind'] =
-      found.entity_kind === 'COMPANY' || found.entity_kind === 'INDIVIDUAL'
-        ? found.entity_kind
-        : '';
+    const entity = asEntityKind(found.entity_kind);
     return {
       party_kind: kind,
       full_name: str(found.full_name),
@@ -373,7 +363,7 @@ function hydrateForm(raw: unknown): FormUi {
           sku_code: str(line.sku_code),
           description: str(line.description),
           quantity: numStr(line.quantity),
-          unit: str(line.unit) || 'CTN',
+          unit: str(line.unit),
           cbm: numStr(line.cbm),
         }))
       : base.stock_lines;
@@ -386,9 +376,9 @@ function hydrateForm(raw: unknown): FormUi {
           hs_code: str(line.hs_code),
           country_of_origin: str(line.country_of_origin),
           quantity: numStr(line.quantity),
-          unit: str(line.unit) || 'PCS',
+          unit: str(line.unit),
           value_amount: numStr(line.value_amount),
-          currency_code: str(line.currency_code) || 'USD',
+          currency_code: str(line.currency_code),
         }))
       : base.cargo_lines;
 
@@ -595,7 +585,10 @@ function toDto(form: FormUi, mode: StaffBookingFormMode): ModeBookingForm {
         quantity: parseNum(line.quantity),
         unit: line.unit.trim() || undefined,
         value_amount: parseNum(line.value_amount),
-        currency_code: line.currency_code.trim().toUpperCase() || undefined,
+        currency_code:
+          line.currency_code.trim().toUpperCase() ||
+          form.invoice_currency.trim().toUpperCase() ||
+          undefined,
       }))
       .filter(
         (line) =>
@@ -620,6 +613,18 @@ function missingCustomsCompleteFields(form: FormUi): string[] {
   return missing;
 }
 
+/** Client-side mirror of backend `mark_complete` checks — avoids a bare 400. */
+function incompleteFormMessage(form: FormUi, mode: StaffBookingFormMode): string | null {
+  if (mode === 'CUSTOMS_CLEARANCE') {
+    const missing = missingCustomsCompleteFields(form);
+    return missing.length ? `Customs clearance form incomplete: ${missing.join(', ')}.` : null;
+  }
+  if (mode === 'SEA_LCL' && !form.cfs_warehouse.trim()) {
+    return 'Sea LCL booking form incomplete: CFS warehouse is required to mark the form complete.';
+  }
+  return null;
+}
+
 function mergeFormUiPreferExisting(base: FormUi, fromPortal: FormUi, overwrite: boolean): FormUi {
   const pick = (current: string, next: string) => {
     const n = (next ?? '').trim();
@@ -634,8 +639,7 @@ function mergeFormUiPreferExisting(base: FormUi, fromPortal: FormUi, overwrite: 
     const cur = base.parties.find((p) => p.party_kind === kind) ?? emptyParty(kind);
     const nxt = fromPortal.parties.find((p) => p.party_kind === kind) ?? emptyParty(kind);
     const entityRaw = overwrite || !cur.entity_kind ? nxt.entity_kind : cur.entity_kind;
-    const entity_kind: PartyUi['entity_kind'] =
-      entityRaw === 'COMPANY' || entityRaw === 'INDIVIDUAL' ? entityRaw : '';
+    const entity_kind = asEntityKind(entityRaw);
     return {
       party_kind: kind,
       full_name: pick(cur.full_name, nxt.full_name),
@@ -674,6 +678,10 @@ function mergeFormUiPreferExisting(base: FormUi, fromPortal: FormUi, overwrite: 
     insurance_details: pick(base.insurance_details, fromPortal.insurance_details),
     request_details: pick(base.request_details, fromPortal.request_details),
     consent_accepted: pickBool(base.consent_accepted, fromPortal.consent_accepted),
+    etd: pick(base.etd, fromPortal.etd),
+    eta: pick(base.eta, fromPortal.eta),
+    incoterms: pick(base.incoterms, fromPortal.incoterms),
+    freight_terms: pick(base.freight_terms, fromPortal.freight_terms),
     pol: pick(base.pol, fromPortal.pol),
     pod: pick(base.pod, fromPortal.pod),
     shipper_owned_container: pickBool(
@@ -681,8 +689,12 @@ function mergeFormUiPreferExisting(base: FormUi, fromPortal: FormUi, overwrite: 
       fromPortal.shipper_owned_container,
     ),
     teu_count: pick(base.teu_count, fromPortal.teu_count),
+    cfs_warehouse: pick(base.cfs_warehouse, fromPortal.cfs_warehouse),
     origin_city_country: pick(base.origin_city_country, fromPortal.origin_city_country),
     dest_city_country: pick(base.dest_city_country, fromPortal.dest_city_country),
+    vehicle_type: pick(base.vehicle_type, fromPortal.vehicle_type),
+    border_crossing: pick(base.border_crossing, fromPortal.border_crossing),
+    tracking_number: pick(base.tracking_number, fromPortal.tracking_number),
     warehouse_id: pick(base.warehouse_id, fromPortal.warehouse_id),
     warehouse_name: pick(base.warehouse_name, fromPortal.warehouse_name),
     expected_inbound_at: pick(base.expected_inbound_at, fromPortal.expected_inbound_at),
@@ -799,8 +811,14 @@ export function ModeBookingFormPanel({
   const { data: warehouseMasters = [] } = useMasterOptions(
     'warehouses',
     MASTER_PATHS.warehouses,
-    mode === 'WAREHOUSE',
+    mode === 'WAREHOUSE' || mode === 'SEA_LCL',
   );
+  const unitOptions = useMasterCodeOptions(
+    'units-of-measure',
+    mode === 'WAREHOUSE' || mode === 'CUSTOMS_CLEARANCE',
+  );
+  const currencyOptions = useMasterCodeOptions('currencies', mode === 'CUSTOMS_CLEARANCE');
+  const baseCurrency = baseCurrencyCode(currencyOptions);
   const { data: jobsList } = useJobs(
     { page: 1, limit: 100 },
     { enabled: mode === 'WAREHOUSE' || mode === 'CUSTOMS_CLEARANCE' },
@@ -885,8 +903,14 @@ export function ModeBookingFormPanel({
 
   useEffect(() => {
     const savedForm = query.data as ModeBookingForm | undefined;
-    if (savedForm?.mark_complete === true) setForceCompleted(true);
-    if (!hasSavedForm) setForceCompleted(false);
+    if (savedForm?.mark_complete === true) {
+      setForceCompleted(true);
+      return;
+    }
+    // Only clear Completed when the form is deleted / truly empty — not during refetch.
+    if (!hasSavedForm && query.data != null && modeBookingFormIsEmpty(query.data)) {
+      setForceCompleted(false);
+    }
   }, [query.data, hasSavedForm]);
 
   useEffect(() => {
@@ -940,6 +964,47 @@ export function ModeBookingFormPanel({
     portalBookingQuery.data,
     portalPrefillApplied,
     linkedQuote?.job_type,
+    mode,
+  ]);
+
+  /** Push portal payload onto empty staff booking-form API (idempotent). */
+  useEffect(() => {
+    if (!jobId || !linkedQuote?.id) return;
+    if (query.isLoading || query.isFetching) return;
+    if (hasSavedForm) return;
+    if (!portalBookingQuery.data?.mark_complete) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { syncCustomerPortalBookingFormOntoJob } = await import(
+          '../utils/applyPortalPayloadToModeBookingForm'
+        );
+        const result = await syncCustomerPortalBookingFormOntoJob({
+          jobId,
+          jobType: linkedQuote.job_type || mode,
+          quotationId: linkedQuote.id,
+          quoteNumber: linkedQuote.quotation_number || linkedQuote.quote_no,
+        });
+        if (!cancelled && result.synced) {
+          void query.refetch();
+        }
+      } catch {
+        /* UI prefill still works without API sync */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    jobId,
+    linkedQuote?.id,
+    linkedQuote?.job_type,
+    linkedQuote?.quotation_number,
+    linkedQuote?.quote_no,
+    hasSavedForm,
+    query.isLoading,
+    query.isFetching,
+    portalBookingQuery.data?.mark_complete,
     mode,
   ]);
 
@@ -1276,14 +1341,14 @@ export function ModeBookingFormPanel({
           />
           <Input
             label="Client booking no"
-            maxLength={50}
+            maxLength={API_MAX_LENGTH.UpsertSeaFclBookingFormDto.client_booking_no}
             disabled={readOnly}
             value={form.client_booking_no}
             onChange={(e) => patch({ client_booking_no: e.target.value })}
           />
           <Input
             label={isWarehouse ? 'Booking / storage ref' : 'Voyage / trip ref'}
-            maxLength={50}
+            maxLength={API_MAX_LENGTH.UpsertSeaFclBookingFormDto.voyage_ref}
             disabled={readOnly}
             value={form.voyage_ref}
             onChange={(e) => patch({ voyage_ref: e.target.value })}
@@ -1322,14 +1387,14 @@ export function ModeBookingFormPanel({
           </label>
           <Input
             label="Commodity"
-            maxLength={500}
+            maxLength={API_MAX_LENGTH.UpsertSeaFclBookingFormDto.commodity}
             disabled={readOnly}
             value={form.commodity}
             onChange={(e) => patch({ commodity: e.target.value })}
           />
           <Input
             label="HS code"
-            maxLength={20}
+            maxLength={API_MAX_LENGTH.UpsertSeaFclBookingFormDto.hs_code}
             disabled={readOnly}
             value={form.hs_code}
             onChange={(e) => patch({ hs_code: e.target.value })}
@@ -1413,7 +1478,7 @@ export function ModeBookingFormPanel({
           {form.is_dg ? (
             <Input
               label="DG class"
-              maxLength={20}
+              maxLength={API_MAX_LENGTH.UpsertSeaFclBookingFormDto.dg_class}
               disabled={readOnly}
               value={form.dg_class}
               onChange={(e) => patch({ dg_class: e.target.value })}
@@ -1448,21 +1513,21 @@ export function ModeBookingFormPanel({
           <div className="grid gap-4 p-4 pt-0 sm:grid-cols-2 lg:grid-cols-3">
             <Input
               label="POL"
-              maxLength={100}
+              maxLength={API_MAX_LENGTH.UpsertSeaFclBookingFormDto.pol}
               disabled={readOnly}
               value={form.pol}
               onChange={(e) => patch({ pol: e.target.value })}
             />
             <Input
               label="POD"
-              maxLength={100}
+              maxLength={API_MAX_LENGTH.UpsertSeaFclBookingFormDto.pod}
               disabled={readOnly}
               value={form.pod}
               onChange={(e) => patch({ pod: e.target.value })}
             />
             <Input
               label="Incoterms"
-              maxLength={10}
+              maxLength={API_MAX_LENGTH.UpsertSeaFclBookingFormDto.incoterms}
               disabled={readOnly}
               value={form.incoterms}
               onChange={(e) => patch({ incoterms: e.target.value })}
@@ -1485,12 +1550,21 @@ export function ModeBookingFormPanel({
             </label>
             {mode === 'SEA_LCL' ? (
               <Input
-                label="CFS warehouse"
-                maxLength={200}
+                label="CFS warehouse *"
+                maxLength={API_MAX_LENGTH.UpsertSeaLclBookingFormDto.cfs_warehouse}
                 disabled={readOnly}
+                list="kfw-cfs-warehouse-options"
                 value={form.cfs_warehouse}
                 onChange={(e) => patch({ cfs_warehouse: e.target.value })}
               />
+            ) : null}
+            {mode === 'SEA_LCL' ? (
+              <datalist id="kfw-cfs-warehouse-options">
+                {warehouseMasters.map((w) => {
+                  const name = String(w.name ?? '').trim();
+                  return name ? <option key={String(w.id ?? name)} value={name} /> : null;
+                })}
+              </datalist>
             ) : null}
             {mode === 'SEA_FCL' ? (
               <>
@@ -1553,7 +1627,7 @@ export function ModeBookingFormPanel({
                 </label>
                 <Input
                   label="ISO size"
-                  maxLength={30}
+                  maxLength={API_MAX_LENGTH.ContainerSizeLineDto.iso_size}
                   disabled={readOnly}
                   placeholder="40HC"
                   value={line.iso_size}
@@ -1631,14 +1705,14 @@ export function ModeBookingFormPanel({
           <div className="grid gap-4 p-4 pt-0 sm:grid-cols-2 lg:grid-cols-3">
             <Input
               label="Origin city / country"
-              maxLength={200}
+              maxLength={API_MAX_LENGTH.UpsertLandBookingFormDto.origin_city_country}
               disabled={readOnly}
               value={form.origin_city_country}
               onChange={(e) => patch({ origin_city_country: e.target.value })}
             />
             <Input
               label="Dest city / country"
-              maxLength={200}
+              maxLength={API_MAX_LENGTH.UpsertLandBookingFormDto.dest_city_country}
               disabled={readOnly}
               value={form.dest_city_country}
               onChange={(e) => patch({ dest_city_country: e.target.value })}
@@ -1663,7 +1737,7 @@ export function ModeBookingFormPanel({
                 </label>
                 <Input
                   label="Incoterms"
-                  maxLength={10}
+                  maxLength={API_MAX_LENGTH.UpsertSeaFclBookingFormDto.incoterms}
                   disabled={readOnly}
                   value={form.incoterms}
                   onChange={(e) => patch({ incoterms: e.target.value })}
@@ -1673,7 +1747,7 @@ export function ModeBookingFormPanel({
             {mode === 'ROAD_FREIGHT' ? (
               <Input
                 label="Border crossing"
-                maxLength={200}
+                maxLength={API_MAX_LENGTH.UpsertRoadFreightBookingFormDto.border_crossing}
                 disabled={readOnly}
                 value={form.border_crossing}
                 onChange={(e) => patch({ border_crossing: e.target.value })}
@@ -1682,7 +1756,7 @@ export function ModeBookingFormPanel({
             {mode === 'COURIER' ? (
               <Input
                 label="Tracking number"
-                maxLength={100}
+                maxLength={API_MAX_LENGTH.UpsertCourierBookingFormDto.tracking_number}
                 disabled={readOnly}
                 value={form.tracking_number}
                 onChange={(e) => patch({ tracking_number: e.target.value })}
@@ -1735,12 +1809,13 @@ export function ModeBookingFormPanel({
             </label>
             <Input
               label="Warehouse name"
-              maxLength={200}
+              maxLength={API_MAX_LENGTH.UpsertWarehouseBookingFormDto.warehouse_name}
               disabled={readOnly}
               value={form.warehouse_name}
               onChange={(e) => patch({ warehouse_name: e.target.value })}
               placeholder="e.g. JAFZA Free Zone Warehouse"
             />
+            <MasterCodeDatalist id={UNIT_LIST_ID} options={unitOptions} />
             <Input
               label="Expected inbound"
               type="datetime-local"
@@ -1826,7 +1901,7 @@ export function ModeBookingFormPanel({
               <div key={idx} className="grid gap-2 sm:grid-cols-5">
                 <Input
                   label="SKU code"
-                  maxLength={40}
+                  maxLength={API_MAX_LENGTH.WhStockLineInputDto.sku_code}
                   disabled={readOnly}
                   value={line.sku_code}
                   onChange={(e) =>
@@ -1840,7 +1915,7 @@ export function ModeBookingFormPanel({
                 />
                 <Input
                   label="Description"
-                  maxLength={500}
+                  maxLength={API_MAX_LENGTH.WhStockLineInputDto.description}
                   disabled={readOnly}
                   value={line.description}
                   onChange={(e) =>
@@ -1869,7 +1944,8 @@ export function ModeBookingFormPanel({
                 />
                 <Input
                   label="Unit"
-                  maxLength={20}
+                  maxLength={API_MAX_LENGTH.WhStockLineInputDto.unit}
+                  list={UNIT_LIST_ID}
                   disabled={readOnly}
                   value={line.unit}
                   onChange={(e) =>
@@ -1926,7 +2002,7 @@ export function ModeBookingFormPanel({
                     ...prev,
                     stock_lines: [
                       ...prev.stock_lines,
-                      { sku_code: '', description: '', quantity: '', unit: 'CTN', cbm: '' },
+                      { sku_code: '', description: '', quantity: '', unit: '', cbm: '' },
                     ],
                   }))
                 }
@@ -1961,7 +2037,7 @@ export function ModeBookingFormPanel({
             </label>
             <Input
               label="Border / port *"
-              maxLength={200}
+              maxLength={API_MAX_LENGTH.UpsertCustomsClearanceBookingFormDto.border_or_port}
               disabled={readOnly}
               value={form.border_or_port}
               onChange={(e) => patch({ border_or_port: e.target.value })}
@@ -1969,7 +2045,7 @@ export function ModeBookingFormPanel({
             />
             <Input
               label="Entry type"
-              maxLength={20}
+              maxLength={API_MAX_LENGTH.UpsertCustomsClearanceBookingFormDto.entry_type}
               disabled={readOnly}
               value={form.entry_type}
               onChange={(e) => patch({ entry_type: e.target.value })}
@@ -1977,7 +2053,7 @@ export function ModeBookingFormPanel({
             />
             <Input
               label="Declaration type"
-              maxLength={50}
+              maxLength={API_MAX_LENGTH.UpsertCustomsClearanceBookingFormDto.declaration_type}
               disabled={readOnly}
               value={form.declaration_type}
               onChange={(e) => patch({ declaration_type: e.target.value })}
@@ -1985,21 +2061,21 @@ export function ModeBookingFormPanel({
             />
             <Input
               label="Port of entry"
-              maxLength={100}
+              maxLength={API_MAX_LENGTH.UpsertCustomsClearanceBookingFormDto.port_of_entry}
               disabled={readOnly}
               value={form.port_of_entry}
               onChange={(e) => patch({ port_of_entry: e.target.value })}
             />
             <Input
               label="Port of exit"
-              maxLength={100}
+              maxLength={API_MAX_LENGTH.UpsertCustomsClearanceBookingFormDto.port_of_exit}
               disabled={readOnly}
               value={form.port_of_exit}
               onChange={(e) => patch({ port_of_exit: e.target.value })}
             />
             <Input
               label="Country of origin"
-              maxLength={2}
+              maxLength={API_MAX_LENGTH.UpsertCustomsClearanceBookingFormDto.country_of_origin}
               disabled={readOnly}
               value={form.country_of_origin}
               onChange={(e) => patch({ country_of_origin: e.target.value.toUpperCase() })}
@@ -2007,7 +2083,7 @@ export function ModeBookingFormPanel({
             />
             <Input
               label="Country of destination"
-              maxLength={2}
+              maxLength={API_MAX_LENGTH.UpsertCustomsClearanceBookingFormDto.country_of_destination}
               disabled={readOnly}
               value={form.country_of_destination}
               onChange={(e) =>
@@ -2017,7 +2093,7 @@ export function ModeBookingFormPanel({
             />
             <Input
               label="Incoterms"
-              maxLength={10}
+              maxLength={API_MAX_LENGTH.UpsertSeaFclBookingFormDto.incoterms}
               disabled={readOnly}
               value={form.incoterms}
               onChange={(e) => patch({ incoterms: e.target.value })}
@@ -2033,14 +2109,17 @@ export function ModeBookingFormPanel({
             />
             <Input
               label="Invoice currency *"
-              maxLength={3}
+              maxLength={API_MAX_LENGTH.UpsertCustomsClearanceBookingFormDto.invoice_currency}
               disabled={readOnly}
+              list={CURRENCY_LIST_ID}
               value={form.invoice_currency}
               onChange={(e) =>
                 patch({ invoice_currency: e.target.value.toUpperCase() })
               }
-              placeholder="USD"
+              placeholder={baseCurrency}
             />
+            <MasterCodeDatalist id={CURRENCY_LIST_ID} options={currencyOptions} />
+            <MasterCodeDatalist id={UNIT_LIST_ID} options={unitOptions} />
             <label className={labelCls}>
               Linked freight job
               <select
@@ -2081,7 +2160,7 @@ export function ModeBookingFormPanel({
               <div key={idx} className="grid gap-2 sm:grid-cols-4 lg:grid-cols-7">
                 <Input
                   label="Description"
-                  maxLength={500}
+                  maxLength={API_MAX_LENGTH.CcCargoLineInputDto.description}
                   disabled={readOnly}
                   value={line.description}
                   onChange={(e) =>
@@ -2095,7 +2174,7 @@ export function ModeBookingFormPanel({
                 />
                 <Input
                   label="HS code"
-                  maxLength={20}
+                  maxLength={API_MAX_LENGTH.CcCargoLineInputDto.hs_code}
                   disabled={readOnly}
                   value={line.hs_code}
                   onChange={(e) =>
@@ -2109,7 +2188,7 @@ export function ModeBookingFormPanel({
                 />
                 <Input
                   label="Origin"
-                  maxLength={2}
+                  maxLength={API_MAX_LENGTH.CcCargoLineInputDto.country_of_origin}
                   disabled={readOnly}
                   value={line.country_of_origin}
                   onChange={(e) =>
@@ -2140,7 +2219,8 @@ export function ModeBookingFormPanel({
                 />
                 <Input
                   label="Unit"
-                  maxLength={20}
+                  maxLength={API_MAX_LENGTH.CcCargoLineInputDto.unit}
+                  list={UNIT_LIST_ID}
                   disabled={readOnly}
                   value={line.unit}
                   onChange={(e) =>
@@ -2170,8 +2250,10 @@ export function ModeBookingFormPanel({
                 <div className="flex items-end gap-2">
                   <Input
                     label="Currency"
-                    maxLength={3}
+                    maxLength={API_MAX_LENGTH.CcCargoLineInputDto.currency_code}
                     disabled={readOnly}
+                    list={CURRENCY_LIST_ID}
+                    placeholder={form.invoice_currency || baseCurrency}
                     value={line.currency_code}
                     onChange={(e) =>
                       setForm((prev) => ({
@@ -2218,9 +2300,9 @@ export function ModeBookingFormPanel({
                         hs_code: '',
                         country_of_origin: '',
                         quantity: '',
-                        unit: 'PCS',
+                        unit: '',
                         value_amount: '',
-                        currency_code: form.invoice_currency || 'USD',
+                        currency_code: form.invoice_currency || baseCurrency,
                       },
                     ],
                   }))
@@ -2248,21 +2330,21 @@ export function ModeBookingFormPanel({
               </p>
               <Input
                 label="Full name"
-                maxLength={300}
+                maxLength={API_MAX_LENGTH.BookingFormPartyDto.full_name}
                 disabled={readOnly}
                 value={p.full_name}
                 onChange={(e) => patchParty(p.party_kind, { full_name: e.target.value })}
               />
               <Input
                 label="City"
-                maxLength={100}
+                maxLength={API_MAX_LENGTH.BookingFormPartyDto.city}
                 disabled={readOnly}
                 value={p.city}
                 onChange={(e) => patchParty(p.party_kind, { city: e.target.value })}
               />
               <Input
                 label="Country"
-                maxLength={100}
+                maxLength={API_MAX_LENGTH.BookingFormPartyDto.country}
                 disabled={readOnly}
                 value={p.country}
                 onChange={(e) => patchParty(p.party_kind, { country: e.target.value })}
@@ -2289,8 +2371,11 @@ export function ModeBookingFormPanel({
                   }
                 >
                   <option value="">—</option>
-                  <option value="COMPANY">COMPANY</option>
-                  <option value="INDIVIDUAL">INDIVIDUAL</option>
+                  {ENTITY_KINDS.map((k) => (
+                    <option key={k} value={k}>
+                      {k}
+                    </option>
+                  ))}
                 </select>
               </label>
               <Input
@@ -2364,15 +2449,11 @@ export function ModeBookingFormPanel({
                 setMsg(null);
                 return;
               }
-              if (isCustoms && form.mark_complete) {
-                const missing = missingCustomsCompleteFields(form);
-                if (missing.length) {
-                  setErr(
-                    `Customs clearance form incomplete: ${missing.join(', ')}.`,
-                  );
-                  setMsg(null);
-                  return;
-                }
+              const incomplete = form.mark_complete ? incompleteFormMessage(form, mode) : null;
+              if (incomplete) {
+                setErr(incomplete);
+                setMsg(null);
+                return;
               }
               void run(
                 async () => {
@@ -2380,6 +2461,7 @@ export function ModeBookingFormPanel({
                   if (form.mark_complete || (result as ModeBookingForm)?.mark_complete) {
                     const convertResult = await complete.mutateAsync();
                     setForceCompleted(true);
+                    setForm((prev) => ({ ...prev, mark_complete: true }));
                     if (convertResult.converted) {
                       return 'Booking form completed — quotation converted to job.';
                     }
@@ -2408,15 +2490,11 @@ export function ModeBookingFormPanel({
                 setMsg(null);
                 return;
               }
-              if (isCustoms) {
-                const missing = missingCustomsCompleteFields(form);
-                if (missing.length) {
-                  setErr(
-                    `Customs clearance form incomplete: ${missing.join(', ')}.`,
-                  );
-                  setMsg(null);
-                  return;
-                }
+              const incomplete = incompleteFormMessage(form, mode);
+              if (incomplete) {
+                setErr(incomplete);
+                setMsg(null);
+                return;
               }
               void run(
                 async () => {

@@ -92,39 +92,131 @@ export const portalAdminInboxService = {
   /**
    * Find the latest customer portal booking-form submission (via portal message JSON payload).
    * Used so Ops admin/sales can prefill the Operations booking form.
+   *
+   * Air/NVOCC customers often submit before job_id is stamped on the message — we resolve the
+   * linked quotation from the job first, then match by quotationId / quoteNumber / jobId.
    */
   async findCustomerPortalBookingForm(filter: {
     jobId?: string;
     quotationId?: string;
     quoteNumber?: string;
-    /** When no id match, prefer latest completed payload with this job-type prefix (AIR / NVOCC). */
     jobTypePrefix?: string;
+    jobNumber?: string;
   }): Promise<import('@/features/portal-quotations/utils/portalBookingFormStorage').PortalBookingFormMessagePayload | null> {
     const {
       parsePortalBookingFormMessagePayload,
       portalBookingFormPayloadMatches,
     } = await import('@/features/portal-quotations/utils/portalBookingFormStorage');
 
-    const list = await this.listMessages({ page: 1, limit: 50 });
+    let quotationId = filter.quotationId?.trim() || '';
+    let quoteNumber = filter.quoteNumber?.trim() || '';
+    const jobId = filter.jobId?.trim() || '';
+    const jobNumber = filter.jobNumber?.trim() || '';
+
+    // Resolve quote from job so air submissions (quotationId-only payloads) can match.
+    if (jobId && (!quotationId || !quoteNumber)) {
+      try {
+        const { quotationService } = await import(
+          '@/features/quotations/services/quotation.service'
+        );
+        const linked = await quotationService.findLinkedToJob(jobId, {
+          quotationId: quotationId || undefined,
+          jobNumber: jobNumber || undefined,
+        });
+        if (linked) {
+          quotationId = quotationId || linked.id;
+          quoteNumber =
+            quoteNumber ||
+            linked.quotation_number ||
+            linked.quote_no ||
+            '';
+        }
+      } catch {
+        /* continue with raw filter */
+      }
+    }
+
+    const resolvedFilter = {
+      jobId: jobId || undefined,
+      quotationId: quotationId || undefined,
+      quoteNumber: quoteNumber || undefined,
+    };
+
+    const list = await this.listMessages({ page: 1, limit: 100 });
     type Payload = import('@/features/portal-quotations/utils/portalBookingFormStorage').PortalBookingFormMessagePayload;
     const scored: Array<{ score: number; at: string; payload: Payload }> = [];
-    const prefix = (filter.jobTypePrefix || '').toUpperCase();
 
     for (const msg of list.items) {
       const payload = parsePortalBookingFormMessagePayload(msg.body);
       if (!payload) continue;
       const at = msg.createdAt || payload.submittedAt || '';
-      if (portalBookingFormPayloadMatches(payload, filter)) {
+
+      if (portalBookingFormPayloadMatches(payload, resolvedFilter)) {
         scored.push({ score: 100, at, payload });
         continue;
       }
-      if (prefix && (payload.jobType || '').toUpperCase().startsWith(prefix) && payload.mark_complete) {
-        scored.push({ score: 10, at, payload });
+
+      // Subject often embeds quote number: "[Customer booking form] Q-123 — …"
+      if (quoteNumber) {
+        const subj = String(msg.subject ?? '').toUpperCase();
+        if (subj.includes(quoteNumber.toUpperCase()) && payload.mark_complete) {
+          scored.push({ score: 80, at, payload });
+        }
+      }
+    }
+
+    // Soft verify: completed payloads whose quotation points at this job (covers air
+    // submissions that only stamped quotationId, not jobId, on the message).
+    const softCandidates = list.items
+      .map((msg) => {
+        const payload = parsePortalBookingFormMessagePayload(msg.body);
+        if (!payload?.mark_complete || !payload.quotationId) return null;
+        if (
+          filter.jobTypePrefix &&
+          !String(payload.jobType ?? '')
+            .toUpperCase()
+            .startsWith(filter.jobTypePrefix.toUpperCase())
+        ) {
+          return null;
+        }
+        return { msg, payload };
+      })
+      .filter(Boolean)
+      .slice(0, 15) as Array<{
+      msg: (typeof list.items)[number];
+      payload: Payload;
+    }>;
+
+    if (jobId && softCandidates.length && !scored.some((s) => s.score >= 90)) {
+      for (const { msg, payload } of softCandidates) {
+        if (scored.some((s) => s.payload.quotationId === payload.quotationId && s.score >= 90)) {
+          continue;
+        }
+        try {
+          const { quotationService } = await import(
+            '@/features/quotations/services/quotation.service'
+          );
+          const q = await quotationService.getById(payload.quotationId);
+          if (q.job_id === jobId) {
+            scored.push({
+              score: 90,
+              at: msg.createdAt || payload.submittedAt || '',
+              payload: { ...payload, jobId },
+            });
+            break;
+          }
+        } catch {
+          /* skip */
+        }
       }
     }
 
     if (!scored.length) return null;
     scored.sort((a, b) => b.score - a.score || String(b.at).localeCompare(String(a.at)));
-    return scored[0]?.payload ?? null;
+    const best = scored[0]?.payload ?? null;
+    if (best && jobId && !best.jobId) {
+      return { ...best, jobId };
+    }
+    return best;
   },
 };

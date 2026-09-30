@@ -62,6 +62,10 @@ const quotationHeaderObject = z.object({
   gross_weight: optionalNonNegNumber,
   chargeable_weight: optionalNonNegNumber,
   volume_cbm: optionalNonNegNumber,
+  length_m: optionalNonNegNumber,
+  width_m: optionalNonNegNumber,
+  height_m: optionalNonNegNumber,
+  packages: optionalNonNegNumber,
   pieces: optionalNonNegNumber,
   container_count: optionalNonNegNumber,
   container_type_id: optionalUuid(),
@@ -78,6 +82,7 @@ const quotationHeaderObject = z.object({
   exchange_rate: optionalNonNegNumber,
   discount_percent: optionalPercent,
   discount_amount: optionalNonNegNumber,
+  source: optionalTextUndef({ max: 100 }),
 });
 
 function refineQuotationHeader(

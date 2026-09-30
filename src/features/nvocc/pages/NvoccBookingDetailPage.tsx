@@ -41,6 +41,27 @@ import type {
   NvoccBookingFormParty,
   UpdateNvoccBookingFormDto,
 } from '@/features/nvocc/types/nvocc.types';
+import {
+  baseCurrencyCode,
+  useMasterCodeOptions,
+} from '@/features/masters/hooks/useMasterCodeOptions';
+import { useOrganizationProfile } from '@/features/organization/hooks/useOrganizationProfile';
+import { API_ENUMS, API_MAX_LENGTH } from '@/lib/api/apiSchema.generated';
+
+// Option lists / limits come from the OpenAPI spec — regenerate with `npm run gen:api-schema`.
+const NVOCC_SERVICE_SCOPES = API_ENUMS.UpsertNvoccBookingFormDto.service_scope;
+const NVOCC_SECTORS = API_ENUMS.UpsertNvoccBookingFormDto.activity_sector;
+const NVOCC_FORM_MAX = API_MAX_LENGTH.UpsertNvoccBookingFormDto;
+const NVOCC_PARTY_MAX = API_MAX_LENGTH.NvoccBookingFormPartyDto;
+
+/** Schema maxLength for a form key; flat shipper_/consignee_/notify_ keys map to the party DTO. */
+function nvoccFieldMaxLength(key: string): number | undefined {
+  if (key in NVOCC_FORM_MAX) return NVOCC_FORM_MAX[key as keyof typeof NVOCC_FORM_MAX];
+  if (key.endsWith('_name')) return NVOCC_PARTY_MAX.full_name;
+  if (key.endsWith('_city')) return NVOCC_PARTY_MAX.city;
+  if (key.endsWith('_country')) return NVOCC_PARTY_MAX.country;
+  return undefined;
+}
 
 type BookingFormUiState = {
   pol: string;
@@ -95,11 +116,12 @@ function emptyBookingFormUi(): BookingFormUiState {
     gross_weight_kg: '',
     net_weight_kg: '',
     teu_count: '',
-    service_scope: 'PORT_TO_PORT',
+    // NVOCC default lane type; `satisfies` fails the build if the schema drops it.
+    service_scope: 'PORT_TO_PORT' satisfies (typeof NVOCC_SERVICE_SCOPES)[number],
     origin_door_address: '',
     dest_door_address: '',
     date_of_request: new Date().toISOString().slice(0, 10),
-    booking_agent_line: 'KINGFISHER',
+    booking_agent_line: '',
     agent_requester_name: '',
     sq_bl_booking_reference: '',
     final_use: '',
@@ -200,6 +222,22 @@ function applyPortalPayloadToNvoccForm(
     consignee_city: pick(prev.consignee_city, consignee?.city),
     consignee_country: pick(prev.consignee_country, consignee?.country),
     notify_name: pick(prev.notify_name, notify?.full_name),
+    containers: (() => {
+      const fromPortal = (payload.containers ?? [])
+        .filter((c) => c && (c.container_type_id || c.iso_size || (c.count ?? 0) >= 1))
+        .map((c) => ({
+          container_type_id: c.container_type_id || '',
+          iso_size: c.iso_size || '',
+          count: c.count != null ? String(c.count) : '1',
+        }));
+      if (!fromPortal.length) return prev.containers;
+      const prevHas =
+        prev.containers.some(
+          (c) => c.container_type_id.trim() || c.iso_size.trim() || Number(c.count) > 1,
+        );
+      if (overwrite || !prevHas) return fromPortal;
+      return prev.containers;
+    })(),
   };
 }
 
@@ -313,6 +351,11 @@ export default function NvoccBookingDetailPage() {
   const query = useNvoccBooking(id);
   const actions = useNvoccBookingActions(id);
   const bookingFormQuery = useNvoccBookingForm(id, Boolean(query.data));
+  const { data: organization } = useOrganizationProfile();
+  const defaultAgentLine = (organization?.display_name || organization?.name || '')
+    .trim()
+    .slice(0, NVOCC_FORM_MAX.booking_agent_line);
+  const baseCurrency = baseCurrencyCode(useMasterCodeOptions('currencies'));
   const updateBookingForm = useUpdateNvoccBookingForm(id);
   const booking = query.data;
   const { done, markDone, isDone } = useSeaExportProgress(id ? `booking:${id}` : '');
@@ -423,7 +466,7 @@ export default function NvoccBookingDetailPage() {
         dest_door_address: String(form?.dest_door_address ?? ''),
         date_of_request:
           String(form?.date_of_request ?? '').slice(0, 10) || new Date().toISOString().slice(0, 10),
-        booking_agent_line: String(form?.booking_agent_line ?? 'KINGFISHER'),
+        booking_agent_line: String(form?.booking_agent_line ?? ''),
         agent_requester_name: String(form?.agent_requester_name ?? ''),
         sq_bl_booking_reference: String(form?.sq_bl_booking_reference ?? ''),
         final_use: String(form?.final_use ?? ''),
@@ -638,30 +681,38 @@ export default function NvoccBookingDetailPage() {
     if (!consigneeName || !consigneeAddress) {
       throw new Error('CONSIGNEE requires full name and address.');
     }
+    // Keep entity_kind / other_details from the saved form (this page does not edit them).
+    const savedParty = (kind: NvoccBookingFormParty['party_kind']) => {
+      const p = bookingFormQuery.data?.parties?.find((x) => x.party_kind === kind);
+      return {
+        entity_kind: p?.entity_kind || undefined,
+        other_details: p?.other_details || undefined,
+      };
+    };
     const parties: NvoccBookingFormParty[] = [
       {
+        ...savedParty('SHIPPER'),
         party_kind: 'SHIPPER',
         full_name: shipperName,
         address: shipperAddress,
         city: formState.shipper_city.trim() || undefined,
         country: formState.shipper_country.trim() || undefined,
-        entity_kind: 'COMPANY',
       },
       {
+        ...savedParty('CONSIGNEE'),
         party_kind: 'CONSIGNEE',
         full_name: consigneeName,
         address: consigneeAddress,
         city: formState.consignee_city.trim() || undefined,
         country: formState.consignee_country.trim() || undefined,
-        entity_kind: 'COMPANY',
       },
       {
+        ...savedParty('NOTIFY'),
         party_kind: 'NOTIFY',
-        full_name: formState.notify_name.trim() || consigneeName || 'Same as consignee',
+        full_name: formState.notify_name.trim() || consigneeName,
         address: consigneeAddress,
         city: formState.consignee_city.trim() || undefined,
         country: formState.consignee_country.trim() || undefined,
-        entity_kind: 'COMPANY',
       },
     ];
     const dto: UpdateNvoccBookingFormDto = {
@@ -676,7 +727,7 @@ export default function NvoccBookingDetailPage() {
       voyage_ref: formState.voyage_ref.trim() || undefined,
       client_booking_no: formState.client_booking_no.trim() || undefined,
       hs_code: formState.hs_code.trim() || undefined,
-      booking_agent_line: formState.booking_agent_line.trim() || undefined,
+      booking_agent_line: formState.booking_agent_line.trim() || defaultAgentLine || undefined,
       agent_requester_name: formState.agent_requester_name.trim() || undefined,
       sq_bl_booking_reference: formState.sq_bl_booking_reference.trim() || undefined,
       final_use: formState.final_use.trim() || undefined,
@@ -1097,11 +1148,20 @@ export default function NvoccBookingDetailPage() {
             },
           ];
 
+    // Quote currency, else tenant base currency (currencies master `is_base`).
+    const currencyCode = (quotation?.currency_code || baseCurrency).trim().toUpperCase();
+    if (!currencyCode) {
+      setWorkflowError(
+        'Cannot create the invoice: the quotation has no currency and no base currency is set in Masters → Currencies.',
+      );
+      return undefined;
+    }
+
     try {
       const created = await invoiceService.create({
         party_id: partyId,
         job_id: jobId,
-        currency_code: (quotation?.currency_code || 'AED').trim().toUpperCase().slice(0, 3) || 'AED',
+        currency_code: currencyCode,
         exchange_rate: undefined,
         vat_rate: undefined,
         remarks: quotation?.quotation_number
@@ -1744,7 +1804,6 @@ export default function NvoccBookingDetailPage() {
                         ['agent_requester_name', 'Agent requester'],
                         ['sq_bl_booking_reference', 'SQ/BL booking ref'],
                         ['final_use', 'Final use'],
-                        ['activity_sector', 'Activity sector'],
                         ['shipper_name', 'Shipper name *'],
                         ['shipper_city', 'Shipper city'],
                         ['shipper_country', 'Shipper country'],
@@ -1759,6 +1818,7 @@ export default function NvoccBookingDetailPage() {
                         <Input
                           className="mt-1"
                           type={key === 'date_of_request' ? 'date' : 'text'}
+                          maxLength={nvoccFieldMaxLength(key)}
                           value={formState[key]}
                           onChange={(e) =>
                             setFormState((prev) => ({ ...prev, [key]: e.target.value }))
@@ -1775,13 +1835,37 @@ export default function NvoccBookingDetailPage() {
                           setFormState((prev) => ({ ...prev, service_scope: e.target.value }))
                         }
                       >
-                        {['DOOR_TO_DOOR', 'DOOR_TO_PORT', 'PORT_TO_DOOR', 'PORT_TO_PORT'].map(
+                        {NVOCC_SERVICE_SCOPES.map(
                           (s) => (
                             <option key={s} value={s}>
                               {s}
                             </option>
                           ),
                         )}
+                      </select>
+                    </label>
+                    <label className="block text-xs font-medium text-gray-600">
+                      Activity sector
+                      <select
+                        className="mt-1 h-9 w-full rounded-md border border-gray-200 px-2 text-sm"
+                        value={formState.activity_sector}
+                        onChange={(e) =>
+                          setFormState((prev) => ({ ...prev, activity_sector: e.target.value }))
+                        }
+                      >
+                        <option value="">—</option>
+                        {/* Keep a legacy free-text value visible until staff pick a valid one. */}
+                        {formState.activity_sector &&
+                        !(NVOCC_SECTORS as readonly string[]).includes(formState.activity_sector) ? (
+                          <option value={formState.activity_sector}>
+                            {formState.activity_sector} (invalid)
+                          </option>
+                        ) : null}
+                        {NVOCC_SECTORS.map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
                       </select>
                     </label>
                     <label className="block text-xs font-medium text-gray-600 sm:col-span-2">

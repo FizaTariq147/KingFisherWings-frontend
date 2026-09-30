@@ -49,12 +49,22 @@ import {
 import { isAirJobType, type PortalPortOption } from '../utils/loadPortalPortOptions';
 
 function isRoadOrLandJobType(jobType?: string | null): boolean {
-  const t = String(jobType ?? '').toUpperCase();
-  return t === 'ROAD_FREIGHT' || t === 'LAND';
+  const t = String(jobType ?? '').toUpperCase().replace(/[\s-]+/g, '_');
+  return t === 'ROAD_FREIGHT' || t === 'LAND' || t.startsWith('ROAD') || t.startsWith('LAND');
 }
 
 function isWarehouseJobType(jobType?: string | null): boolean {
   return String(jobType ?? '').toUpperCase().replace(/[\s-]+/g, '_') === 'WAREHOUSE';
+}
+
+function isCourierOrCustomsJobType(jobType?: string | null): boolean {
+  const t = String(jobType ?? '').toUpperCase().replace(/[\s-]+/g, '_');
+  return (
+    t === 'COURIER' ||
+    t.startsWith('COURIER') ||
+    t === 'CUSTOMS_CLEARANCE' ||
+    t.startsWith('CUSTOMS')
+  );
 }
 import {
   buildPortalCustomerLines,
@@ -171,7 +181,7 @@ export default function PortalBookPage() {
   const useAirports = isAirJobType(jobType);
   const isRoadLand = isRoadOrLandJobType(jobType);
   const isWarehouse = isWarehouseJobType(jobType);
-  const optionalRoute = isRoadLand || isWarehouse;
+  const optionalRoute = isRoadLand || isWarehouse || isCourierOrCustomsJobType(jobType);
   const originPort = watch('origin_port');
   const destPort = watch('dest_port');
   const formGrossWeight = watch('gross_weight');

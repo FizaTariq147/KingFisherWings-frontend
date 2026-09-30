@@ -19,6 +19,10 @@ export function quotationToFormValues(q: Quotation): CreateQuotationFormValues {
     gross_weight: q.gross_weight,
     chargeable_weight: q.chargeable_weight,
     volume_cbm: q.volume_cbm,
+    length_m: q.length_m,
+    width_m: q.width_m,
+    height_m: q.height_m,
+    packages: q.packages,
     pieces: q.pieces,
     container_count: q.container_count,
     container_type_id: q.container_type_id || undefined,
@@ -39,6 +43,7 @@ export function quotationToFormValues(q: Quotation): CreateQuotationFormValues {
     exchange_rate: q.exchange_rate ?? 1,
     discount_percent: q.discount_percent,
     discount_amount: q.discount_amount,
+    source: q.pricing_source || undefined,
   };
 }
 

@@ -6,10 +6,53 @@ import {
   usesModeBookingFormConvertFlow,
 } from '@/features/quotations/utils/quotationStatus';
 import { getCustomerQuoteDecision } from '@/features/quotations/utils/customerQuoteDecision';
+import { asRecord, pickString } from '@/features/portal-shared/normalize';
 import type { PortalQuotationDetail, PortalQuotationListItem } from '../types/portalQuotations.types';
 
 export function normalizePortalQuoteStatus(status?: string): string {
   return coerceQuotationStatus(status || 'DRAFT');
+}
+
+/** True when shared commercial gate has reached INVOICE_SENT (or a portal invoice exists). */
+export function portalQuoteIndicatesInvoiceSent(
+  quote?: PortalQuotationDetail | null,
+  opts?: { hasLinkedInvoice?: boolean; shipmentStatus?: string | null },
+): boolean {
+  if (!quote) return false;
+  if (opts?.hasLinkedInvoice) return true;
+
+  const shipment = String(opts?.shipmentStatus ?? '')
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  if (shipment.includes('INVOICE_SENT')) return true;
+
+  const raw = asRecord(quote.raw) ?? {};
+  const invoiceId = pickString(
+    raw.invoice_id,
+    raw.invoiceId,
+    raw.last_invoice_id,
+    raw.lastInvoiceId,
+    (quote as PortalQuotationDetail & { invoiceId?: string }).invoiceId,
+  );
+  if (invoiceId) return true;
+
+  const stage = pickString(
+    raw.commercial_stage,
+    raw.commercialStage,
+    raw.workflow_stage,
+    raw.workflowStage,
+    raw.stage,
+    raw.gate_status,
+    raw.gateStatus,
+    raw.job_status,
+    raw.jobStatus,
+    quote.status,
+  )
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  if (stage.includes('INVOICE_SENT')) return true;
+
+  return false;
 }
 
 /**

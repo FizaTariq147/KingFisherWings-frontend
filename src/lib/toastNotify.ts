@@ -1,6 +1,7 @@
 import type { AxiosError } from 'axios';
 import { extractAxiosErrorDetail } from '@/lib/extractAxiosErrorDetail';
 import { toast } from '@/store/toastStore';
+import { useAuthStore } from '@/store/authStore';
 
 const SILENT_PATH_SNIPPETS = [
   '/health',
@@ -9,6 +10,10 @@ const SILENT_PATH_SNIPPETS = [
   '/vendor/auth/refresh',
   '/super-admin/auth/refresh',
   '/auth/me',
+  // Background unread polls — badge updates quietly; failures must not spam toasts.
+  '/notifications/unread-count',
+  '/portal/notifications/unread-count',
+  '/vendor/notifications/unread-count',
   // Live API: route missing (404) or consistently 500 — callers soft-fail / use calculate.
   '/wms/warehouses',
   '/wms/storage/charges',
@@ -18,6 +23,12 @@ function isSilentUrl(url?: string): boolean {
   if (!url) return false;
   const lower = url.toLowerCase();
   return SILENT_PATH_SNIPPETS.some((snippet) => lower.includes(snippet));
+}
+
+/** Soft-fail job-type ACL probes (e.g. ROAD_FREIGHT list) — callers recover via unfiltered list. */
+function isSoftJobTypeAccessDenied(message: string, status?: number): boolean {
+  if (status !== 403 && status !== 401) return false;
+  return /do not have access to .+ jobs/i.test(message);
 }
 
 function isCancel(error: AxiosError): boolean {
@@ -55,6 +66,11 @@ export function notifyAxiosError(error: unknown, opts?: { title?: string }): voi
         ? (error as Error).message.trim()
         : extractAxiosErrorDetail(error);
 
+    if (isSoftJobTypeAccessDenied(String(message ?? ''), status)) return;
+
+    // Session refresh / idle modal already owns UX — don't toast every 401.
+    if (status === 401 && useAuthStore.getState().sessionExpired) return;
+
     const title =
       opts?.title ??
       (status && status >= 500
@@ -67,7 +83,7 @@ export function notifyAxiosError(error: unknown, opts?: { title?: string }): voi
               ? 'Session'
               : 'Request failed');
 
-    toast.error(message, { title, dedupeMs: 3000 });
+    toast.error(message, { title, dedupeMs: status === 401 || status === 403 ? 8000 : 5000 });
   } catch {
     /* never break request pipeline */
   }

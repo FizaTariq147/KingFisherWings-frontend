@@ -221,6 +221,10 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     gross_weight: num(r.gross_weight),
     chargeable_weight: num(r.chargeable_weight),
     volume_cbm: num(r.volume_cbm),
+    length_m: num(r.length_m ?? r.lengthM),
+    width_m: num(r.width_m ?? r.widthM),
+    height_m: num(r.height_m ?? r.heightM),
+    packages: num(r.packages),
     pieces: num(r.pieces),
     container_count: num(r.container_count),
     container_type_id: str(r.container_type_id),
@@ -279,7 +283,16 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     lost_notes: str(r.lost_notes),
     parent_quotation_id: str(r.parent_quotation_id),
     revision_number: num(r.revision_number),
-    job_id: str(r.job_id) ?? str(r.jobId),
+    job_id: str(r.job_id) ?? str(r.jobId) ?? str(r.converted_job_id) ?? str(r.convertedJobId),
+    job_number:
+      str(r.job_number) ??
+      str(r.jobNumber) ??
+      str(r.converted_job_number) ??
+      str(r.convertedJobNumber) ??
+      str(asRecord(r.job)?.job_number) ??
+      str(asRecord(r.job)?.jobNumber) ??
+      str(asRecord(r.converted_job)?.job_number) ??
+      str(asRecord(r.converted_job)?.number),
     booking_id:
       str(r.booking_id) ??
       str(r.bookingId) ??

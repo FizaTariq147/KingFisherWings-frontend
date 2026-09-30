@@ -52,7 +52,9 @@ import type { NegotiationTimeline } from '@/features/quotations/types/quotationE
 
 /**
  * After portal booking form mark_complete: ask backend to convert quote → job.
- * Soft-fails if the portal convert route is not deployed yet (staff list/detail still convert).
+ * Only the portal convert route — never call staff `/quotations/:id/convert-to-job`
+ * with a portal token (returns "You do not have access to ROAD_FREIGHT jobs — Forbidden").
+ * Staff QuotationList/Detail still convert via fulfillApproved / convertPendingAfterBookingForms.
  */
 async function tryConvertQuotationAfterBookingForm(opts: {
   quotationId: string;
@@ -64,12 +66,7 @@ async function tryConvertQuotationAfterBookingForm(opts: {
     await portalApiClient.post(PORTAL_QUOTATIONS_API.convertToJob(opts.quotationId), {});
     return true;
   } catch {
-    try {
-      await portalApiClient.post(`/quotations/${opts.quotationId}/convert-to-job`, {});
-      return true;
-    } catch {
-      return false;
-    }
+    return false;
   }
 }
 import type { ApiPeriodQuery } from '@/lib/apiPeriod';
@@ -600,15 +597,75 @@ export const portalQuotationsService = {
           mark_complete: true,
         };
         await portalApiClient.post(paths.submit(target.id), submitBody);
+
+        // Prefer linked job id on the quote so admin inbox can match by jobId.
+        let mirrorJobId = opts.jobId;
+        let mirrorQuoteNumber = opts.quoteNumber;
+        let mirrorJobType = opts.jobType;
+        try {
+          const fresh = await this.getById(opts.quotationId);
+          mirrorJobId = fresh.jobId || opts.jobId || (target.kind === 'shipment' ? target.id : undefined);
+          mirrorQuoteNumber = fresh.number || opts.quoteNumber;
+          mirrorJobType = fresh.jobType || opts.jobType;
+        } catch {
+          if (target.kind === 'shipment') mirrorJobId = mirrorJobId || target.id;
+        }
+
+        // Always mirror to portal messages so admin inbox can prefill staff forms
+        // cross-browser (compliance API alone is not readable from ERP inbox).
+        try {
+          const quoteLabel =
+            mirrorQuoteNumber?.trim() || opts.quotationId.slice(0, 8);
+          const subject =
+            `[Customer booking form] ${quoteLabel} — ready for BOOKING_FORM_COMPLETE`.slice(
+              0,
+              200,
+            );
+          const body = formatBookingFormMessageBody({
+            quotationId: opts.quotationId,
+            quoteNumber: mirrorQuoteNumber,
+            jobType: mirrorJobType,
+            jobId: mirrorJobId,
+            dto: { ...dto, mark_complete: true },
+          });
+          await portalMessagesService.create({
+            subject,
+            body,
+            job_id: mirrorJobId && isUuid(mirrorJobId) ? mirrorJobId : undefined,
+          });
+        } catch {
+          /* inbox mirror is best-effort — compliance submit already succeeded */
+        }
         const draft = writePortalBookingFormDraft(
           opts.quotationId,
           { ...dto, mark_complete: true },
-          { quoteNumber: opts.quoteNumber, jobType: opts.jobType },
+          { quoteNumber: mirrorQuoteNumber, jobType: mirrorJobType },
         );
         await tryConvertQuotationAfterBookingForm({
           quotationId: opts.quotationId,
-          jobType: opts.jobType,
+          jobType: mirrorJobType,
         });
+        // After convert, re-mirror with job_id if it was missing earlier.
+        try {
+          const after = await this.getById(opts.quotationId);
+          const jobIdAfter = after.jobId?.trim();
+          if (jobIdAfter && isUuid(jobIdAfter) && jobIdAfter !== mirrorJobId) {
+            const quoteLabel = after.number || mirrorQuoteNumber || opts.quotationId.slice(0, 8);
+            await portalMessagesService.create({
+              subject: `[Customer booking form] ${quoteLabel} — linked job`.slice(0, 200),
+              body: formatBookingFormMessageBody({
+                quotationId: opts.quotationId,
+                quoteNumber: after.number || mirrorQuoteNumber,
+                jobType: after.jobType || mirrorJobType,
+                jobId: jobIdAfter,
+                dto: { ...dto, mark_complete: true },
+              }),
+              job_id: jobIdAfter,
+            });
+          }
+        } catch {
+          /* optional second mirror */
+        }
         return draft;
       }
 

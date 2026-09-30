@@ -108,6 +108,7 @@ export function useCustomerPortalBookingForm(
     quotationId?: string;
     quoteNumber?: string;
     jobTypePrefix?: string;
+    jobNumber?: string;
   },
   enabled = true,
 ) {
@@ -115,7 +116,8 @@ export function useCustomerPortalBookingForm(
   const quotationId = filter.quotationId?.trim() || '';
   const quoteNumber = filter.quoteNumber?.trim() || '';
   const jobTypePrefix = filter.jobTypePrefix?.trim().toUpperCase() || '';
-  const hasFilter = Boolean(jobId || quotationId || quoteNumber || jobTypePrefix);
+  const jobNumber = filter.jobNumber?.trim() || '';
+  const hasFilter = Boolean(jobId || quotationId || quoteNumber || jobTypePrefix || jobNumber);
   return useQuery({
     queryKey: [
       ...portalAdminInboxKeys.all,
@@ -124,6 +126,7 @@ export function useCustomerPortalBookingForm(
       quotationId || 'no-quote',
       quoteNumber || 'no-number',
       jobTypePrefix || 'any-type',
+      jobNumber || 'no-job-number',
     ] as const,
     queryFn: () =>
       portalAdminInboxService.findCustomerPortalBookingForm({
@@ -131,10 +134,11 @@ export function useCustomerPortalBookingForm(
         quotationId: quotationId || undefined,
         quoteNumber: quoteNumber || undefined,
         jobTypePrefix: jobTypePrefix || undefined,
+        jobNumber: jobNumber || undefined,
       }),
     enabled: enabled && hasFilter,
-    staleTime: 60_000,
-    refetchOnWindowFocus: false,
-    retry: false,
+    staleTime: 30_000,
+    refetchOnWindowFocus: true,
+    retry: 1,
   });
 }

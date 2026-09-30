@@ -52,8 +52,8 @@ const portField = z.preprocess(
 );
 
 function isRoadOrLandQuoteJob(jobType?: string | null): boolean {
-  const t = String(jobType ?? '').toUpperCase();
-  return t === 'ROAD_FREIGHT' || t === 'LAND';
+  const t = String(jobType ?? '').toUpperCase().replace(/[\s-]+/g, '_');
+  return t === 'ROAD_FREIGHT' || t === 'LAND' || t.startsWith('ROAD') || t.startsWith('LAND');
 }
 
 /** PortalQuotationRequestDto has WAREHOUSE but no warehouse_* fields — route hubs are optional like road. */
@@ -61,8 +61,17 @@ function isWarehouseQuoteJob(jobType?: string | null): boolean {
   return String(jobType ?? '').toUpperCase().replace(/[\s-]+/g, '_') === 'WAREHOUSE';
 }
 
+function isCourierOrCustomsQuoteJob(jobType?: string | null): boolean {
+  const t = String(jobType ?? '').toUpperCase().replace(/[\s-]+/g, '_');
+  return t === 'COURIER' || t.startsWith('COURIER') || t === 'CUSTOMS_CLEARANCE' || t.startsWith('CUSTOMS');
+}
+
 function isOptionalRouteQuoteJob(jobType?: string | null): boolean {
-  return isRoadOrLandQuoteJob(jobType) || isWarehouseQuoteJob(jobType);
+  return (
+    isRoadOrLandQuoteJob(jobType) ||
+    isWarehouseQuoteJob(jobType) ||
+    isCourierOrCustomsQuoteJob(jobType)
+  );
 }
 
 export const portalBookQuoteSchema = z

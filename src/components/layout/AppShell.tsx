@@ -50,7 +50,11 @@ export function AppShell({ title }: { title: string }) {
     <div className="flex h-[100dvh] bg-[var(--color-neutral-50)] overflow-hidden">
       <AppMotionStyles />
       {!isSuperAdminArea ? (
-        <NotificationToastWatcher unreadCount={unread.data ?? 0} title="Admin notification" />
+        <NotificationToastWatcher
+          unreadCount={unread.isFetched ? (unread.data ?? 0) : undefined}
+          title="Admin notification"
+          storageKey="admin"
+        />
       ) : null}
       <div className="hidden md:flex shrink-0">
         <Sidebar />
