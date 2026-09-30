@@ -23,6 +23,7 @@ export function PortalShell() {
   const [mobileNavRef] = usePortalAutoAnimate();
   const unreadQuery = usePortalNotificationUnreadCount();
   const unreadCount = unreadQuery.data ?? 0;
+  const unreadReady = unreadQuery.isFetched ? unreadCount : undefined;
   const logoutStore = usePortalAuthStore((s) => s.logout);
   const { companyName, portalLabel } = usePortalBrand();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -62,7 +63,11 @@ export function PortalShell() {
   return (
     <div className="portal-shell flex min-h-screen bg-[#F4F7F9]">
       <style>{portalAnimationStyles}</style>
-      <NotificationToastWatcher unreadCount={unreadCount} title="Customer portal" />
+      <NotificationToastWatcher
+        unreadCount={unreadReady}
+        title="Customer portal"
+        storageKey="portal"
+      />
 
       <PortalSidebar
         onLogout={() => void handleLogout()}

@@ -29,6 +29,7 @@ import { ensureJobBranchReady } from '../utils/ensureJobBranchReady';
 import { prepareJobPayload } from '../utils/prepareJobPayload';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { normalizeCode128Value } from '../utils/scannableBarcode';
+import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import type {
   AssignCargoToContainerDto,
   AssignLandTruckerDto,
@@ -177,7 +178,13 @@ function buildListQuery(params: JobListParams): Record<string, string | number |
   };
   if (params.search?.trim()) query.search = params.search.trim();
   if (params.status) query.status = params.status;
-  if (params.job_type) query.job_type = params.job_type;
+  // Never send job_type=ROAD_FREIGHT — backend ACL returns 403 for many roles.
+  if (
+    params.job_type &&
+    canonicalizeJobType(String(params.job_type)) !== 'ROAD_FREIGHT'
+  ) {
+    query.job_type = params.job_type;
+  }
   if (params.shipper_id) query.shipper_id = params.shipper_id;
   if (params.salesperson_id) query.salesperson_id = params.salesperson_id;
   if (params.branch_id) query.branch_id = params.branch_id;
@@ -231,9 +238,15 @@ function jobSortTime(job: Job): number {
   return Number.isFinite(t) ? t : 0;
 }
 
-async function fetchJobListPage(params: JobListParams): Promise<JobListResult> {
+async function fetchJobListPage(
+  params: JobListParams,
+  opts?: { skipErrorToast?: boolean },
+): Promise<JobListResult> {
   const res = await withGatewayRetry(() =>
-    axiosInstance.get<unknown>(JOB_API.list, { params: buildListQuery(params) }),
+    axiosInstance.get<unknown>(JOB_API.list, {
+      params: buildListQuery(params),
+      ...(opts?.skipErrorToast ? { skipErrorToast: true } : {}),
+    }),
   );
   const { items, meta } = unwrapList(res.data);
   const jobs = await enrichJobsWithDisplayNames(normalizeJobs(items));
@@ -243,16 +256,44 @@ async function fetchJobListPage(params: JobListParams): Promise<JobListResult> {
   };
 }
 
+/** Soft ACL config — suppresses toast while callers fall back (e.g. ROAD → LAND). */
+const SOFT_ACL_AXIOS = { skipErrorToast: true } as const;
+
+/**
+ * Run a ROAD_FREIGHT request; on job-type ACL 403, retry with the LAND parity fn.
+ */
+async function withRoadLandAclFallback<T>(
+  roadFn: () => Promise<T>,
+  landFn: () => Promise<T>,
+): Promise<T> {
+  try {
+    return await roadFn();
+  } catch (error) {
+    if (!isJobTypeAccessError(error)) throw error;
+    return landFn();
+  }
+}
+
 function asModeBookingForm(raw: unknown): ModeBookingForm {
   const data = unwrapEntity(raw) ?? raw;
   if (data && typeof data === 'object' && !Array.isArray(data)) {
     const record = data as Record<string, unknown>;
+    const statusToken = String(
+      record.status ?? record.form_status ?? record.formStatus ?? record.state ?? '',
+    )
+      .trim()
+      .toUpperCase()
+      .replace(/[\s-]+/g, '_');
     const markComplete =
       record.mark_complete === true ||
       record.markComplete === true ||
-      String(record.status ?? '')
-        .toUpperCase()
-        .includes('COMPLETE');
+      record.completed === true ||
+      record.is_complete === true ||
+      record.isComplete === true ||
+      statusToken === 'COMPLETED' ||
+      statusToken === 'COMPLETE' ||
+      statusToken === 'BOOKING_FORM_COMPLETE' ||
+      statusToken.includes('COMPLETE');
     return {
       ...(data as ModeBookingForm),
       mark_complete: markComplete || Boolean((data as ModeBookingForm).mark_complete),
@@ -265,10 +306,23 @@ function asModeBookingForm(raw: unknown): ModeBookingForm {
   return {};
 }
 
+async function putModeBookingFormRequest(
+  url: string,
+  dto: Record<string, unknown>,
+): Promise<ModeBookingForm> {
+  const res = await withGatewayRetry(() => axiosInstance.put(url, dto));
+  return asModeBookingForm(res.data);
+}
+
 /** GET mode booking form — 404 / “not found” means not created yet; return empty for upsert UX. */
-async function getModeBookingForm(url: string): Promise<ModeBookingForm> {
+async function getModeBookingForm(
+  url: string,
+  opts?: { skipErrorToast?: boolean },
+): Promise<ModeBookingForm> {
   try {
-    const res = await withGatewayRetry(() => axiosInstance.get(url));
+    const res = await withGatewayRetry(() =>
+      axiosInstance.get(url, opts?.skipErrorToast ? SOFT_ACL_AXIOS : undefined),
+    );
     return asModeBookingForm(res.data);
   } catch (error) {
     const status = (error as { response?: { status?: number } })?.response?.status;
@@ -279,8 +333,277 @@ async function getModeBookingForm(url: string): Promise<ModeBookingForm> {
     ) {
       return {};
     }
+    // Preserve axios shape so ROAD → LAND ACL fallback can detect 403.
+    if (isJobTypeAccessError(error)) throw error;
     throw formatAxiosError(error);
   }
+}
+
+function isJobTypeAccessError(error: unknown): boolean {
+  const status = (error as { response?: { status?: number } })?.response?.status;
+  const msg = getErrorMessage(error).toLowerCase();
+  return (
+    status === 403 ||
+    status === 401 ||
+    /do not have access|forbidden|missing required permission/i.test(msg)
+  );
+}
+
+function emptyJobListResult(limit: number): JobListResult {
+  return {
+    jobs: [],
+    meta: { page: 1, limit, total: 0, totalPages: 1 },
+  };
+}
+
+/**
+ * Backend job-type ACL often blocks GET /jobs?job_type=ROAD_FREIGHT (and may strip
+ * ROAD_FREIGHT from unfiltered lists). Converted quotes still expose job_id and/or
+ * job_number (portal shows JOB-RF-*) — resolve those into Job rows for admin lists.
+ */
+async function findJobByRef(ref: string): Promise<Job | null> {
+  const token = String(ref ?? '').trim();
+  if (!token) return null;
+
+  if (isUuid(token)) {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<unknown>(JOB_API.byId(token), SOFT_ACL_AXIOS),
+      );
+      return normalizeJob(res.data);
+    } catch {
+      /* try search / barcode below */
+    }
+  }
+
+  try {
+    const listed = await fetchJobListPage(
+      {
+        search: token,
+        page: 1,
+        limit: 20,
+        order: 'desc',
+      },
+      { skipErrorToast: true },
+    );
+    const upper = token.toUpperCase();
+    const exact =
+      listed.jobs.find(
+        (j) =>
+          String(j.job_number ?? '')
+            .trim()
+            .toUpperCase() === upper || j.id === token,
+      ) ?? listed.jobs[0];
+    if (exact) return exact;
+  } catch {
+    /* continue */
+  }
+
+  try {
+    const res = await withGatewayRetry(() =>
+      axiosInstance.get<unknown>(JOB_API.byBarcode(token), SOFT_ACL_AXIOS),
+    );
+    return normalizeJob(res.data);
+  } catch {
+    return null;
+  }
+}
+
+async function hydrateJobsFromConvertedQuotes(
+  existing: Job[],
+  typesToHydrate: Array<NonNullable<JobListParams['job_type']>>,
+): Promise<Job[]> {
+  if (!typesToHydrate.length) return existing;
+  const byId = new Map(existing.map((j) => [j.id, j]));
+  const byNumber = new Map(
+    existing
+      .filter((j) => j.job_number?.trim())
+      .map((j) => [String(j.job_number).trim().toUpperCase(), j] as const),
+  );
+  const wanted = new Set(typesToHydrate.map((t) => canonicalizeJobType(String(t))));
+
+  const remember = (job: Job, forceType?: Job['job_type']) => {
+    const next =
+      forceType && job.job_type !== forceType ? { ...job, job_type: forceType } : job;
+    byId.set(next.id, next);
+    const num = String(next.job_number ?? '')
+      .trim()
+      .toUpperCase();
+    if (num) byNumber.set(num, next);
+  };
+
+  try {
+    const { quotationService } = await import(
+      '@/features/quotations/services/quotation.service'
+    );
+
+    type QuoteRow = {
+      id: string;
+      job_id?: string;
+      job_number?: string;
+      job_type?: string;
+      quotation_number?: string;
+      quote_no?: string;
+      customer_id?: string;
+      customer_name?: string;
+      company_id?: string;
+      branch_id?: string;
+      commodity?: string;
+      created_at?: string;
+      updated_at?: string;
+      status?: string;
+    };
+
+    const quoteBatches = await Promise.all(
+      typesToHydrate.map(async (job_type) => {
+        const pages = await Promise.allSettled([
+          quotationService.list({
+            page: 1,
+            limit: 100,
+            job_type: job_type as never,
+            order: 'desc',
+          }),
+          quotationService.list({
+            page: 1,
+            limit: 100,
+            job_type: job_type as never,
+            status: 'CONVERTED',
+            order: 'desc',
+          }),
+          quotationService.list({
+            page: 1,
+            limit: 100,
+            job_type: job_type as never,
+            status: 'APPROVED',
+            order: 'desc',
+          }),
+        ]);
+        const out: QuoteRow[] = [];
+        for (const p of pages) {
+          if (p.status !== 'fulfilled') continue;
+          for (const q of p.value.quotations) out.push(q);
+        }
+        return out;
+      }),
+    );
+
+    try {
+      const converted = await quotationService.list({
+        page: 1,
+        limit: 100,
+        status: 'CONVERTED',
+        order: 'desc',
+      });
+      quoteBatches.push(converted.quotations);
+    } catch {
+      /* ignore */
+    }
+
+    const seenQuote = new Set<string>();
+    for (const batch of quoteBatches) {
+      for (const q of batch) {
+        if (seenQuote.has(q.id)) continue;
+        seenQuote.add(q.id);
+
+        let qType = canonicalizeJobType(q.job_type);
+        if (!wanted.has(qType)) continue;
+
+        let jobId = String(q.job_id ?? '').trim();
+        let jobNumber = String(q.job_number ?? '').trim();
+
+        // List payloads often omit converted_job_number — detail has what portal shows.
+        const statusTok = String(q.status ?? '')
+          .trim()
+          .toUpperCase();
+        if (
+          !jobId &&
+          !jobNumber &&
+          (statusTok === 'CONVERTED' || statusTok === 'APPROVED' || statusTok === 'WON')
+        ) {
+          try {
+            const detail = await quotationService.getById(q.id);
+            jobId = String(detail.job_id ?? '').trim();
+            jobNumber = String(detail.job_number ?? '').trim();
+            qType = canonicalizeJobType(detail.job_type || q.job_type);
+            if (!wanted.has(qType)) continue;
+          } catch {
+            continue;
+          }
+        }
+        if (!jobId && !jobNumber) continue;
+
+        const alreadyById = Boolean(jobId && byId.has(jobId));
+        const alreadyByNumber = Boolean(
+          jobNumber && byNumber.has(jobNumber.toUpperCase()),
+        );
+        if (alreadyById || alreadyByNumber) {
+          const existingJob =
+            (jobId && byId.get(jobId)) ||
+            (jobNumber ? byNumber.get(jobNumber.toUpperCase()) : undefined);
+          if (
+            existingJob &&
+            qType === 'ROAD_FREIGHT' &&
+            existingJob.job_type !== 'ROAD_FREIGHT'
+          ) {
+            remember(existingJob, 'ROAD_FREIGHT');
+          }
+          continue;
+        }
+
+        const refs = [jobId, jobNumber].filter(Boolean);
+        let found: Job | null = null;
+        for (const ref of refs) {
+          found = await findJobByRef(ref);
+          if (found) break;
+        }
+
+        if (found) {
+          remember(found, qType === 'ROAD_FREIGHT' ? 'ROAD_FREIGHT' : undefined);
+        }
+      }
+    }
+  } catch {
+    /* non-fatal */
+  }
+
+  return [...byId.values()];
+}
+
+/** Unfiltered GET /jobs then keep only the requested types (canonicalized). */
+async function fetchJobsFilteredByTypes(
+  params: JobListParams,
+  types: Array<NonNullable<JobListParams['job_type']>>,
+): Promise<JobListResult> {
+  const page = params.page ?? 1;
+  const limit = clampApiListLimit(params.limit, 20);
+  const order = params.order ?? 'desc';
+  const pull = clampApiListLimit(Math.max(limit * page * Math.max(types.length, 1), limit), 100);
+  const unfiltered = await fetchJobListPage({
+    ...params,
+    job_type: undefined,
+    job_types: undefined,
+    page: 1,
+    limit: pull,
+  });
+  const allowed = new Set(types.map((t) => canonicalizeJobType(String(t))));
+  const filtered = unfiltered.jobs.filter((j) =>
+    allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
+  );
+  const merged = [...filtered].sort((a, b) => {
+    const diff = jobSortTime(a) - jobSortTime(b);
+    return order === 'asc' ? diff : -diff;
+  });
+  const start = (page - 1) * limit;
+  const slice = merged.slice(start, start + limit);
+  return {
+    jobs: slice,
+    meta: {
+      page,
+      limit,
+      total: merged.length,
+      totalPages: Math.max(1, Math.ceil(merged.length / limit) || 1),
+    },
+  };
 }
 
 export const jobService = {
@@ -288,40 +611,146 @@ export const jobService = {
    * GET /jobs — API accepts a single `job_type` query.
    * Segment lists pass `job_types` (e.g. ROAD_FREIGHT + LAND); we fan out per type
    * and merge so converted road jobs are not lost behind other modes on page 1.
+   * Soft-failed types (403 ROAD_FREIGHT ACL) are recovered via unfiltered list + filter.
    */
   async list(params: JobListParams = {}): Promise<JobListResult> {
     try {
-      const multiTypes =
-        !params.job_type && params.job_types?.length
-          ? [...new Set(params.job_types)]
-          : null;
+      // Never send job_type=ROAD_FREIGHT — backend ACL returns 403 for many roles.
+      // Recover ROAD jobs via unfiltered list + quotation hydrate instead.
+      const requestedType = params.job_type
+        ? canonicalizeJobType(String(params.job_type))
+        : undefined;
+      const safeParams: JobListParams =
+        requestedType === 'ROAD_FREIGHT'
+          ? { ...params, job_type: undefined }
+          : params;
+
+      const multiTypesRaw =
+        !safeParams.job_type && safeParams.job_types?.length
+          ? [...new Set(safeParams.job_types)]
+          : requestedType === 'ROAD_FREIGHT'
+            ? (['ROAD_FREIGHT'] as JobListParams['job_types'])
+            : null;
+      const multiTypes = multiTypesRaw
+        ? multiTypesRaw.filter((t) => canonicalizeJobType(String(t)) !== 'ROAD_FREIGHT')
+        : null;
+      const wantsRoadFreight =
+        requestedType === 'ROAD_FREIGHT' ||
+        Boolean(
+          params.job_types?.some((t) => canonicalizeJobType(String(t)) === 'ROAD_FREIGHT'),
+        );
+
+      const paginate = (jobs: Job[]): JobListResult => {
+        const page = params.page ?? 1;
+        const limit = clampApiListLimit(params.limit, 20);
+        const order = params.order ?? 'desc';
+        const merged = [...jobs].sort((a, b) => {
+          const diff = jobSortTime(a) - jobSortTime(b);
+          return order === 'asc' ? diff : -diff;
+        });
+        const start = (page - 1) * limit;
+        const slice = merged.slice(start, start + limit);
+        return {
+          jobs: slice,
+          meta: {
+            page,
+            limit,
+            total: merged.length,
+            totalPages: Math.max(1, Math.ceil(merged.length / limit) || 1),
+          },
+        };
+      };
+
+      const hydrateTypes = (
+        types: Array<NonNullable<JobListParams['job_type']>>,
+      ): Array<NonNullable<JobListParams['job_type']>> => {
+        const set = new Set(types.map((t) => canonicalizeJobType(String(t))));
+        if (wantsRoadFreight) set.add('ROAD_FREIGHT');
+        return [...set];
+      };
+
+      if (multiTypes && multiTypes.length === 0 && wantsRoadFreight) {
+        // Only ROAD_FREIGHT requested — never call typed ROAD endpoint.
+        let result = emptyJobListResult(clampApiListLimit(params.limit, 20));
+        try {
+          result = await fetchJobsFilteredByTypes(safeParams, ['ROAD_FREIGHT']);
+        } catch {
+          /* empty */
+        }
+        const hydrated = await hydrateJobsFromConvertedQuotes(result.jobs, ['ROAD_FREIGHT']);
+        return paginate(hydrated);
+      }
 
       if (multiTypes && multiTypes.length === 1) {
-        return fetchJobListPage({
-          ...params,
-          job_type: multiTypes[0],
-          job_types: undefined,
-        });
+        let result: JobListResult;
+        try {
+          result = await fetchJobListPage(
+            {
+              ...safeParams,
+              job_type: multiTypes[0],
+              job_types: undefined,
+            },
+            { skipErrorToast: true },
+          );
+        } catch (err) {
+          if (isJobTypeAccessError(err)) {
+            try {
+              result = await fetchJobsFilteredByTypes(safeParams, hydrateTypes(multiTypes));
+            } catch {
+              result = emptyJobListResult(clampApiListLimit(params.limit, 20));
+            }
+          } else {
+            throw err;
+          }
+        }
+        const hydrated = await hydrateJobsFromConvertedQuotes(
+          result.jobs,
+          hydrateTypes(multiTypes),
+        );
+        const allowed = new Set(hydrateTypes(multiTypes).map(String));
+        return paginate(
+          hydrated.filter((j) => allowed.has(canonicalizeJobType(String(j.job_type ?? '')))),
+        );
       }
 
       if (multiTypes && multiTypes.length > 1) {
         const page = params.page ?? 1;
         const limit = clampApiListLimit(params.limit, 20);
-        const order = params.order ?? 'desc';
-        // Pull enough rows per type to build the requested page after merge (API max 100).
         const perTypeLimit = clampApiListLimit(Math.max(limit * page, limit), 100);
 
-        const pages = await Promise.all(
-          multiTypes.map((job_type) =>
-            fetchJobListPage({
-              ...params,
-              job_type,
-              job_types: undefined,
-              page: 1,
-              limit: perTypeLimit,
-            }),
-          ),
-        );
+        const fetchTypePage = async (
+          job_type: NonNullable<JobListParams['job_type']>,
+        ): Promise<JobListResult> => {
+          try {
+            return await fetchJobListPage(
+              {
+                ...safeParams,
+                job_type,
+                job_types: undefined,
+                page: 1,
+                limit: perTypeLimit,
+              },
+              { skipErrorToast: true },
+            );
+          } catch (err) {
+            if (isJobTypeAccessError(err)) {
+              return emptyJobListResult(perTypeLimit);
+            }
+            throw err;
+          }
+        };
+
+        const pages = await Promise.all(multiTypes.map((job_type) => fetchTypePage(job_type)));
+
+        try {
+          const recovered = await fetchJobsFilteredByTypes(
+            safeParams,
+            hydrateTypes(multiTypes),
+          );
+          pages.push(recovered);
+        } catch {
+          /* keep typed pages */
+        }
 
         const byId = new Map<string, Job>();
         for (const pageResult of pages) {
@@ -330,28 +759,78 @@ export const jobService = {
           }
         }
 
-        const merged = [...byId.values()].sort((a, b) => {
-          const diff = jobSortTime(a) - jobSortTime(b);
-          return order === 'asc' ? diff : -diff;
-        });
+        const allowed = new Set(hydrateTypes(multiTypes).map((t) => String(t)));
+        let merged = [...byId.values()].filter((j) =>
+          allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
+        );
 
-        const total = pages.reduce((sum, p) => sum + (p.meta.total || 0), 0);
-        const start = (page - 1) * limit;
-        const slice = merged.slice(start, start + limit);
+        merged = await hydrateJobsFromConvertedQuotes(merged, hydrateTypes(multiTypes));
+        merged = merged.filter((j) =>
+          allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
+        );
 
-        return {
-          jobs: slice,
-          meta: {
-            page,
-            limit,
-            total,
-            totalPages: Math.max(1, Math.ceil(total / limit) || 1),
-          },
-        };
+        return paginate(merged);
       }
 
-      return fetchJobListPage(params);
+      const base = await fetchJobListPage(safeParams, { skipErrorToast: wantsRoadFreight });
+      if (wantsRoadFreight || !safeParams.job_type) {
+        const hydrated = await hydrateJobsFromConvertedQuotes(base.jobs, ['ROAD_FREIGHT']);
+        if (requestedType === 'ROAD_FREIGHT') {
+          return paginate(
+            hydrated.filter(
+              (j) => canonicalizeJobType(String(j.job_type ?? '')) === 'ROAD_FREIGHT',
+            ),
+          );
+        }
+        if (!safeParams.job_type && hydrated.length !== base.jobs.length) {
+          const byId = new Map(base.jobs.map((j) => [j.id, j]));
+          for (const j of hydrated) {
+            if (!byId.has(j.id)) byId.set(j.id, j);
+          }
+          return paginate([...byId.values()]);
+        }
+      }
+
+      return base;
     } catch (error) {
+      if (isJobTypeAccessError(error)) {
+        // Last resort: never surface ROAD_FREIGHT ACL as a hard list failure.
+        try {
+          const recovered = await fetchJobsFilteredByTypes(
+            { ...params, job_type: undefined },
+            params.job_types?.length
+              ? params.job_types
+              : (['ROAD_FREIGHT', 'LAND', 'COURIER'] as JobListParams['job_types'])!,
+          );
+          const hydrated = await hydrateJobsFromConvertedQuotes(
+            recovered.jobs,
+            (params.job_types?.length
+              ? params.job_types
+              : ['ROAD_FREIGHT', 'LAND', 'COURIER']) as Array<
+              NonNullable<JobListParams['job_type']>
+            >,
+          );
+          const page = params.page ?? 1;
+          const limit = clampApiListLimit(params.limit, 20);
+          const order = params.order ?? 'desc';
+          const merged = [...hydrated].sort((a, b) => {
+            const diff = jobSortTime(a) - jobSortTime(b);
+            return order === 'asc' ? diff : -diff;
+          });
+          const start = (page - 1) * limit;
+          return {
+            jobs: merged.slice(start, start + limit),
+            meta: {
+              page,
+              limit,
+              total: merged.length,
+              totalPages: Math.max(1, Math.ceil(merged.length / limit) || 1),
+            },
+          };
+        } catch {
+          return emptyJobListResult(clampApiListLimit(params.limit, 20));
+        }
+      }
       throw formatAxiosError(error);
     }
   },
@@ -663,7 +1142,7 @@ export const jobService = {
 
   async putSeaFclBookingForm(id: string, dto: UpsertSeaFclBookingFormDto): Promise<ModeBookingForm> {
     assertId(id);
-    return request(() => axiosInstance.put(JOB_API.seaFclBookingForm(id), dto)) as Promise<ModeBookingForm>;
+    return putModeBookingFormRequest(JOB_API.seaFclBookingForm(id), dto as Record<string, unknown>);
   },
 
   async completeSeaFclBookingForm(id: string): Promise<unknown> {
@@ -678,7 +1157,7 @@ export const jobService = {
 
   async putSeaLclBookingForm(id: string, dto: UpsertSeaLclBookingFormDto): Promise<ModeBookingForm> {
     assertId(id);
-    return request(() => axiosInstance.put(JOB_API.seaLclBookingForm(id), dto)) as Promise<ModeBookingForm>;
+    return putModeBookingFormRequest(JOB_API.seaLclBookingForm(id), dto as Record<string, unknown>);
   },
 
   async completeSeaLclBookingForm(id: string): Promise<unknown> {
@@ -749,9 +1228,7 @@ export const jobService = {
     dto: UpsertCourierBookingFormDto,
   ): Promise<ModeBookingForm> {
     assertId(id);
-    return request(() =>
-      axiosInstance.put(JOB_API.courierBookingForm(id), dto),
-    ) as Promise<ModeBookingForm>;
+    return putModeBookingFormRequest(JOB_API.courierBookingForm(id), dto as Record<string, unknown>);
   },
 
   async completeCourierBookingForm(id: string): Promise<unknown> {
@@ -811,9 +1288,7 @@ export const jobService = {
 
   async putLandBookingForm(id: string, dto: UpsertLandBookingFormDto): Promise<ModeBookingForm> {
     assertId(id);
-    return request(() =>
-      axiosInstance.put(JOB_API.landBookingForm(id), dto),
-    ) as Promise<ModeBookingForm>;
+    return putModeBookingFormRequest(JOB_API.landBookingForm(id), dto as Record<string, unknown>);
   },
 
   async completeLandBookingForm(id: string): Promise<unknown> {
@@ -826,9 +1301,13 @@ export const jobService = {
     dto: UpdateRoadFreightJobDetailDto,
   ): Promise<Job> {
     assertId(id);
-    return request(
-      () => axiosInstance.patch(JOB_API.roadFreightDetails(id), dto),
-      normalizeJob,
+    return withRoadLandAclFallback(
+      () =>
+        request(
+          () => axiosInstance.patch(JOB_API.roadFreightDetails(id), dto, SOFT_ACL_AXIOS),
+          normalizeJob,
+        ),
+      () => this.updateLandDetails(id, dto as UpdateLandJobDetailDto),
     );
   },
 
@@ -837,9 +1316,14 @@ export const jobService = {
     dto: AssignRoadFreightTruckerDto,
   ): Promise<Job> {
     assertId(id);
-    return request(
-      () => axiosInstance.post(JOB_API.roadFreightAssignTrucker(id), dto),
-      normalizeJob,
+    return withRoadLandAclFallback(
+      () =>
+        request(
+          () =>
+            axiosInstance.post(JOB_API.roadFreightAssignTrucker(id), dto, SOFT_ACL_AXIOS),
+          normalizeJob,
+        ),
+      () => this.assignLandTrucker(id, dto as AssignLandTruckerDto),
     );
   },
 
@@ -848,9 +1332,13 @@ export const jobService = {
     dto: RecordRoadFreightPickupDto = {},
   ): Promise<Job> {
     assertId(id);
-    return request(
-      () => axiosInstance.post(JOB_API.roadFreightPickup(id), dto),
-      normalizeJob,
+    return withRoadLandAclFallback(
+      () =>
+        request(
+          () => axiosInstance.post(JOB_API.roadFreightPickup(id), dto, SOFT_ACL_AXIOS),
+          normalizeJob,
+        ),
+      () => this.recordLandPickup(id, dto),
     );
   },
 
@@ -859,9 +1347,14 @@ export const jobService = {
     dto: RecordRoadFreightBorderCrossingDto,
   ): Promise<Job> {
     assertId(id);
-    return request(
-      () => axiosInstance.post(JOB_API.roadFreightBorderCrossing(id), dto),
-      normalizeJob,
+    return withRoadLandAclFallback(
+      () =>
+        request(
+          () =>
+            axiosInstance.post(JOB_API.roadFreightBorderCrossing(id), dto, SOFT_ACL_AXIOS),
+          normalizeJob,
+        ),
+      () => this.recordLandBorderCrossing(id, dto),
     );
   },
 
@@ -870,20 +1363,33 @@ export const jobService = {
     dto: UpdateRoadFreightJobDetailDto,
   ): Promise<Job> {
     assertId(id);
-    return request(
-      () => axiosInstance.patch(JOB_API.roadFreightCrossBorder(id), dto),
-      normalizeJob,
+    return withRoadLandAclFallback(
+      () =>
+        request(
+          () =>
+            axiosInstance.patch(JOB_API.roadFreightCrossBorder(id), dto, SOFT_ACL_AXIOS),
+          normalizeJob,
+        ),
+      () => this.upsertLandCrossBorder(id, dto as UpdateLandJobDetailDto),
     );
   },
 
   async createRoadFreightPod(id: string, dto: CreateRoadFreightPodDto): Promise<unknown> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.roadFreightPod(id), dto));
+    return withRoadLandAclFallback(
+      () =>
+        request(() => axiosInstance.post(JOB_API.roadFreightPod(id), dto, SOFT_ACL_AXIOS)),
+      () => this.createLandPod(id, dto as CreateLandPodDto),
+    );
   },
 
   async getRoadFreightBookingForm(id: string): Promise<ModeBookingForm> {
     assertId(id);
-    return getModeBookingForm(JOB_API.roadFreightBookingForm(id));
+    return withRoadLandAclFallback(
+      () =>
+        getModeBookingForm(JOB_API.roadFreightBookingForm(id), { skipErrorToast: true }),
+      () => this.getLandBookingForm(id),
+    );
   },
 
   async putRoadFreightBookingForm(
@@ -891,14 +1397,35 @@ export const jobService = {
     dto: UpsertRoadFreightBookingFormDto,
   ): Promise<ModeBookingForm> {
     assertId(id);
-    return request(() =>
-      axiosInstance.put(JOB_API.roadFreightBookingForm(id), dto),
-    ) as Promise<ModeBookingForm>;
+    return withRoadLandAclFallback(
+      async () => {
+        try {
+          const res = await withGatewayRetry(() =>
+            axiosInstance.put(JOB_API.roadFreightBookingForm(id), dto, SOFT_ACL_AXIOS),
+          );
+          return asModeBookingForm(res.data);
+        } catch (error) {
+          if (isJobTypeAccessError(error)) throw error;
+          throw formatAxiosError(error);
+        }
+      },
+      () => this.putLandBookingForm(id, dto as UpsertLandBookingFormDto),
+    );
   },
 
   async completeRoadFreightBookingForm(id: string): Promise<unknown> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.roadFreightBookingFormComplete(id)));
+    return withRoadLandAclFallback(
+      () =>
+        request(() =>
+          axiosInstance.post(
+            JOB_API.roadFreightBookingFormComplete(id),
+            {},
+            SOFT_ACL_AXIOS,
+          ),
+        ),
+      () => this.completeLandBookingForm(id),
+    );
   },
 
   async getWarehouseBookingForm(id: string): Promise<ModeBookingForm> {
@@ -911,9 +1438,10 @@ export const jobService = {
     dto: UpsertWarehouseBookingFormDto,
   ): Promise<ModeBookingForm> {
     assertId(id);
-    return request(() =>
-      axiosInstance.put(JOB_API.warehouseBookingForm(id), dto),
-    ) as Promise<ModeBookingForm>;
+    return putModeBookingFormRequest(
+      JOB_API.warehouseBookingForm(id),
+      dto as Record<string, unknown>,
+    );
   },
 
   async completeWarehouseBookingForm(id: string): Promise<unknown> {
@@ -931,9 +1459,10 @@ export const jobService = {
     dto: UpsertCustomsClearanceBookingFormDto,
   ): Promise<ModeBookingForm> {
     assertId(id);
-    return request(() =>
-      axiosInstance.put(JOB_API.customsClearanceBookingForm(id), dto),
-    ) as Promise<ModeBookingForm>;
+    return putModeBookingFormRequest(
+      JOB_API.customsClearanceBookingForm(id),
+      dto as Record<string, unknown>,
+    );
   },
 
   async completeCustomsClearanceBookingForm(id: string): Promise<unknown> {

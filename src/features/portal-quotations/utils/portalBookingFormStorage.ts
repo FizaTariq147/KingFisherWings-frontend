@@ -101,6 +101,15 @@ function pickFormFields(src: Partial<PortalBookingForm> | PortalBookingFormUpser
     attach_poa: src.attach_poa,
     attach_permit: src.attach_permit,
     cargo_lines: src.cargo_lines,
+    origin_city_country: src.origin_city_country,
+    dest_city_country: src.dest_city_country,
+    vehicle_type: src.vehicle_type,
+    border_crossing: src.border_crossing,
+    tracking_number: src.tracking_number,
+    etd: src.etd,
+    eta: src.eta,
+    freight_terms: src.freight_terms,
+    cfs_warehouse: src.cfs_warehouse,
   };
 }
 

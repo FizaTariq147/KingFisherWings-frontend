@@ -14,7 +14,9 @@ export const portalNotificationsService = {
     return normalizePortalNotificationList(res.data, params);
   },
   async unreadCount(): Promise<number> {
-    const res = await portalApiClient.get(PORTAL_NOTIFICATIONS_API.unreadCount);
+    const res = await portalApiClient.get(PORTAL_NOTIFICATIONS_API.unreadCount, {
+      skipErrorToast: true,
+    });
     return normalizeUnreadCount(res.data);
   },
   async markRead(id: string): Promise<void> {

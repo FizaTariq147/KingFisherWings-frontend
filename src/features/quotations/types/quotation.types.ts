@@ -101,6 +101,10 @@ export interface Quotation {
   gross_weight?: number;
   chargeable_weight?: number;
   volume_cbm?: number;
+  length_m?: number;
+  width_m?: number;
+  height_m?: number;
+  packages?: number;
   pieces?: number;
   container_count?: number;
   container_type_id?: string;
@@ -143,6 +147,8 @@ export interface Quotation {
   parent_quotation_id?: string;
   revision_number?: number;
   job_id?: string;
+  /** Human job number when converted (e.g. JOB-RF-2026-00163) — from converted_job_number / job_number. */
+  job_number?: string;
   /** Linked NVOCC booking when quote continues into sea booking gates. */
   booking_id?: string;
   /** Draft customer invoice created on convert / customer approve. */

@@ -160,19 +160,40 @@ export function useStaffBookingForm(jobId: string, mode: StaffBookingFormMode, e
 export function useStaffBookingFormActions(jobId: string, mode: StaffBookingFormMode) {
   const invalidate = useInvalidateJobs();
   const queryClient = useQueryClient();
+  const key = bookingKey(mode, jobId);
   const refresh = () => {
     invalidate(jobId);
-    void queryClient.invalidateQueries({ queryKey: bookingKey(mode, jobId) });
+    void queryClient.invalidateQueries({ queryKey: key });
   };
 
   return {
     save: useMutation({
       mutationFn: (dto: ModeBookingForm) => putBookingForm(mode, jobId, dto),
-      onSuccess: refresh,
+      onSuccess: (saved) => {
+        if (saved && typeof saved === 'object') {
+          queryClient.setQueryData(key, (prev: ModeBookingForm | undefined) => ({
+            ...(prev ?? {}),
+            ...saved,
+            mark_complete:
+              saved.mark_complete === true || prev?.mark_complete === true || false,
+          }));
+        }
+        refresh();
+      },
     }),
     complete: useMutation({
       mutationFn: () => completeStaffBookingFormAndConvert(mode, jobId),
-      onSuccess: refresh,
+      onSuccess: async () => {
+        invalidate(jobId);
+        await queryClient.invalidateQueries({ queryKey: key });
+        // GET may lag or omit mark_complete — keep UI Status = Completed after admin complete.
+        queryClient.setQueryData(key, (prev: ModeBookingForm | undefined) => ({
+          ...(prev ?? {}),
+          mark_complete: true,
+          consent_accepted: prev?.consent_accepted !== false,
+          status: 'COMPLETED',
+        }));
+      },
     }),
   };
 }

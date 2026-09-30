@@ -17,6 +17,10 @@ import {
   clipAirField,
   normalizeAirportCode,
 } from '../utils/airBookingFormLimits';
+import {
+  MasterCodeDatalist,
+  useMasterCodeOptions,
+} from '@/features/masters/hooks/useMasterCodeOptions';
 import { useAirJobWorkflow } from '../hooks/useAirJobWorkflow';
 import {
   firstOpenAirStage,
@@ -41,6 +45,8 @@ import type {
   MarkAirInvoiceSentDto,
   UpdateAirBookingFormDto,
 } from '../types/job.types';
+
+const AIR_PALLET_LIST_ID = 'kfw-air-booking-pallet-types';
 
 interface AirJobWorkflowPanelProps {
   jobId: string;
@@ -94,7 +100,7 @@ function emptyAirForm(): AirFormUi {
     special_handling: '',
     notes: '',
     is_dg: false,
-    mark_complete: true,
+    mark_complete: false,
     arrival_flight_number: '',
     mawb_from_origin: '',
     agent_at_origin: '',
@@ -107,7 +113,7 @@ function emptyAirForm(): AirFormUi {
     consignee_city: '',
     consignee_country: '',
     notify_name: '',
-    pallets: [{ pallet_type: 'PMC', count: '1', length_cm: '', width_cm: '', height_cm: '', weight_kg: '' }],
+    pallets: [{ pallet_type: '', count: '1', length_cm: '', width_cm: '', height_cm: '', weight_kg: '' }],
   };
 }
 
@@ -127,10 +133,28 @@ function applyPortalPayloadToAirForm(
   const shipper = parties.find((p) => p.party_kind === 'SHIPPER');
   const consignee = parties.find((p) => p.party_kind === 'CONSIGNEE');
   const notify = parties.find((p) => p.party_kind === 'NOTIFY');
+
+  const portalPallets = (payload.pallets ?? [])
+    .filter((p) => p && (String(p.pallet_type ?? '').trim() || Number(p.count) > 0))
+    .map((p) => ({
+      pallet_type: String(p.pallet_type ?? ''),
+      count: p.count != null ? String(p.count) : '',
+      length_cm: p.length_cm != null ? String(p.length_cm) : '',
+      width_cm: p.width_cm != null ? String(p.width_cm) : '',
+      height_cm: p.height_cm != null ? String(p.height_cm) : '',
+      weight_kg: p.weight_kg != null ? String(p.weight_kg) : '',
+    }));
+
+  const usePortalPallets =
+    portalPallets.length > 0 &&
+    (overwrite ||
+      !prev.pallets.some(
+        (p) => p.pallet_type.trim() || Number(p.count) > 1 || p.weight_kg.trim(),
+      ));
+
   return {
     ...prev,
     commodity: pick(prev.commodity, payload.commodity),
-    // Prefer air DTO airport codes; fall back to pol/pod only when they look like IATA.
     origin_airport_code: pick(
       prev.origin_airport_code,
       normalizeAirportCode(payload.origin_airport_code) ||
@@ -143,7 +167,13 @@ function applyPortalPayloadToAirForm(
         normalizeAirportCode(payload.pod) ||
         undefined,
     ),
-    notes: pick(prev.notes, payload.request_details),
+    notes: pick(prev.notes, payload.request_details || payload.insurance_details),
+    special_handling: pick(
+      prev.special_handling,
+      [payload.dg_class, payload.hs_code ? `HS ${payload.hs_code}` : '']
+        .filter(Boolean)
+        .join(' · ') || undefined,
+    ),
     is_dg: overwrite || !prev.is_dg ? Boolean(payload.is_dg) : prev.is_dg,
     pieces: pick(prev.pieces, payload.pieces != null ? String(payload.pieces) : undefined),
     gross_weight_kg: pick(
@@ -152,19 +182,34 @@ function applyPortalPayloadToAirForm(
     ),
     chargeable_weight_kg: pick(
       prev.chargeable_weight_kg,
-      payload.chargeable_weight_kg != null ? String(payload.chargeable_weight_kg) : undefined,
+      payload.chargeable_weight_kg != null
+        ? String(payload.chargeable_weight_kg)
+        : undefined,
     ),
     volume_cbm: pick(
       prev.volume_cbm,
       payload.volume_cbm != null ? String(payload.volume_cbm) : undefined,
     ),
+    pallet_count: pick(
+      prev.pallet_count,
+      payload.pallet_count != null
+        ? String(payload.pallet_count)
+        : portalPallets.length
+          ? String(portalPallets.reduce((n, p) => n + (Number(p.count) || 0), 0) || portalPallets.length)
+          : undefined,
+    ),
+    delivery_address: pick(
+      prev.delivery_address,
+      payload.dest_door_address || payload.origin_door_address,
+    ),
     shipper_name: pick(prev.shipper_name, shipper?.full_name),
-    shipper_city: pick(prev.shipper_city, shipper?.city),
+    shipper_city: pick(prev.shipper_city, shipper?.city || shipper?.address),
     shipper_country: pick(prev.shipper_country, shipper?.country),
     consignee_name: pick(prev.consignee_name, consignee?.full_name),
-    consignee_city: pick(prev.consignee_city, consignee?.city),
+    consignee_city: pick(prev.consignee_city, consignee?.city || consignee?.address),
     consignee_country: pick(prev.consignee_country, consignee?.country),
     notify_name: pick(prev.notify_name, notify?.full_name),
+    pallets: usePortalPallets ? portalPallets : prev.pallets,
   };
 }
 
@@ -213,13 +258,26 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
   const actions = useAirJobWorkflow(jobId);
   const { data: job } = useJob(jobId);
   const airBookingQuery = useJobAirBookingForm(jobId, isExport || isImport);
+  const palletTypeOptions = useMasterCodeOptions('air-pallet-types', isExport || isImport);
   const updateAirBooking = useUpdateJobAirBookingForm(jobId);
   const { done, markDone, isDone } = useAirWorkflowProgress(jobId ? `job:${jobId}` : '');
   const linkedQuoteQuery = useQuery({
-    queryKey: ['quotations', 'linked-to-job', jobId, 'air'],
-    queryFn: () => quotationService.findLinkedToJob(jobId),
+    queryKey: [
+      'quotations',
+      'linked-to-job',
+      jobId,
+      'air',
+      job?.job_number ?? '',
+      jobType,
+    ],
+    queryFn: () =>
+      quotationService.findLinkedToJob(jobId, {
+        jobNumber: job?.job_number,
+        jobType,
+        customerId: job?.shipper_id || job?.billing_party_id,
+      }),
     enabled: Boolean(jobId) && (isExport || isImport),
-    staleTime: 60_000,
+    staleTime: 30_000,
     retry: 1,
   });
   const portalBookingQuery = useCustomerPortalBookingForm(
@@ -229,6 +287,7 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
       quoteNumber:
         linkedQuoteQuery.data?.quotation_number || linkedQuoteQuery.data?.quote_no,
       jobTypePrefix: 'AIR',
+      jobNumber: job?.job_number,
     },
     isExport || isImport,
   );
@@ -317,7 +376,7 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
       pallets:
         Array.isArray(form.pallets) && form.pallets.length > 0
           ? form.pallets.map((p) => ({
-              pallet_type: String(p.pallet_type ?? 'PMC'),
+              pallet_type: String(p.pallet_type ?? ''),
               count: p.count != null ? String(p.count) : '1',
               length_cm: p.length_cm != null ? String(p.length_cm) : '',
               width_cm: p.width_cm != null ? String(p.width_cm) : '',
@@ -455,35 +514,44 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
         }
       }
 
+      // Merge onto saved parties so address / entity_kind / other_details the
+      // customer entered are kept (this panel only edits name, city, country).
+      const savedParty = (kind: AirBookingFormParty['party_kind']) => {
+        const p = airBookingQuery.data?.parties?.find((x) => x.party_kind === kind);
+        return {
+          address: p?.address || undefined,
+          entity_kind: p?.entity_kind || undefined,
+          other_details: p?.other_details || undefined,
+        };
+      };
       const parties: AirBookingFormParty[] = [
         {
+          ...savedParty('SHIPPER'),
           party_kind: 'SHIPPER',
-          full_name: shipperName || 'Shipper TBD',
+          full_name: shipperName || undefined,
           city: clipAirField(bookingForm.shipper_city, AIR_BOOKING_FORM_LIMITS.party_city),
           country: clipAirField(
             bookingForm.shipper_country,
             AIR_BOOKING_FORM_LIMITS.party_country,
           ),
-          entity_kind: 'COMPANY',
         },
         {
+          ...savedParty('CONSIGNEE'),
           party_kind: 'CONSIGNEE',
-          full_name: consigneeName || 'Consignee TBD',
+          full_name: consigneeName || undefined,
           city: clipAirField(bookingForm.consignee_city, AIR_BOOKING_FORM_LIMITS.party_city),
           country: clipAirField(
             bookingForm.consignee_country,
             AIR_BOOKING_FORM_LIMITS.party_country,
           ),
-          entity_kind: 'COMPANY',
         },
         {
+          ...savedParty('NOTIFY'),
           party_kind: 'NOTIFY',
-          full_name: (
-            bookingForm.notify_name.trim() ||
-            consigneeName ||
-            'Same as consignee'
-          ).slice(0, AIR_BOOKING_FORM_LIMITS.party_full_name),
-          entity_kind: 'COMPANY',
+          full_name: clipAirField(
+            bookingForm.notify_name.trim() || consigneeName,
+            AIR_BOOKING_FORM_LIMITS.party_full_name,
+          ),
         },
       ];
 
@@ -871,7 +939,7 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
                           key === 'origin_airport_code' ||
                           key === 'dest_airport_code'
                         ) {
-                          next = next.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
+                          next = next.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, maxLen);
                         } else if (typeof maxLen === 'number') {
                           next = next.slice(0, maxLen);
                         }
@@ -905,7 +973,8 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
                         <Input
                           className="mt-1"
                           type={field === 'pallet_type' ? 'text' : 'number'}
-                          maxLength={field === 'pallet_type' ? 30 : undefined}
+                          maxLength={field === 'pallet_type' ? AIR_BOOKING_FORM_LIMITS.pallet_type : undefined}
+                          list={field === 'pallet_type' ? AIR_PALLET_LIST_ID : undefined}
                           value={line[field]}
                           onChange={(e) =>
                             setBookingForm((prev) => ({
@@ -930,7 +999,7 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
                       pallets: [
                         ...prev.pallets,
                         {
-                          pallet_type: 'PMC',
+                          pallet_type: '',
                           count: '1',
                           length_cm: '',
                           width_cm: '',
@@ -943,6 +1012,7 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
                 >
                   Add pallet line
                 </Button>
+                <MasterCodeDatalist id={AIR_PALLET_LIST_ID} options={palletTypeOptions} />
               </div>
               <div className="flex flex-wrap gap-4 text-xs text-gray-700">
                 <label className="inline-flex items-center gap-2">

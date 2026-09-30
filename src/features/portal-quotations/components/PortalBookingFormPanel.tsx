@@ -18,6 +18,25 @@ import {
   clipComplianceField,
   PORTAL_COMPLIANCE_FORM_LIMITS as L,
 } from '../utils/portalComplianceFormLimits';
+import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
+import { API_ENUMS, API_MAX_LENGTH } from '@/lib/api/apiSchema.generated';
+
+// Option lists come from the OpenAPI spec — regenerate with `npm run gen:api-schema`.
+const SERVICE_SCOPES = API_ENUMS.UpsertNvoccBookingFormDto.service_scope;
+const SECTORS = API_ENUMS.UpsertNvoccBookingFormDto.activity_sector;
+const ENTITY_KINDS = API_ENUMS.NvoccBookingFormPartyDto.entity_kind;
+const CARGO_CATEGORIES = API_ENUMS.UpsertWarehouseBookingFormDto.cargo_category;
+
+type EntityKind = (typeof ENTITY_KINDS)[number];
+type Sector = (typeof SECTORS)[number];
+
+function asEntityKind(v: unknown): EntityKind {
+  return (ENTITY_KINDS as readonly unknown[]).includes(v) ? (v as EntityKind) : ENTITY_KINDS[0];
+}
+
+function asSector(v: unknown): Sector | '' {
+  return (SECTORS as readonly unknown[]).includes(v) ? (v as Sector) : '';
+}
 
 type StepId =
   | 'voyage'
@@ -32,8 +51,20 @@ type StepId =
 
 type StepMeta = { id: StepId; label: string; eyebrow: string; title: string; blurb: string };
 
-/** Step copy — air / sea / warehouse; payload stays the shared booking-form DTO. */
-function getSteps(kind: 'air' | 'sea' | 'warehouse'): StepMeta[] {
+type PortalBookingFormKind =
+  | 'air'
+  | 'sea'
+  | 'warehouse'
+  | 'road'
+  | 'land'
+  | 'courier'
+  | 'customs';
+
+const VEHICLE_TYPES = API_ENUMS.UpdateLandJobDetailDto.vehicle_type;
+const CC_DIRECTIONS = API_ENUMS.UpsertCustomsClearanceBookingFormDto.direction;
+
+/** Step copy — dynamic per job type (matches Upsert*BookingFormDto modes). */
+function getSteps(kind: PortalBookingFormKind): StepMeta[] {
   const voyage =
     kind === 'air'
       ? {
@@ -52,13 +83,35 @@ function getSteps(kind: 'air' | 'sea' | 'warehouse'): StepMeta[] {
             blurb:
               'Pickup and warehouse locations, pieces, weights, and DG status for this storage booking.',
           }
-        : {
-            id: 'voyage' as const,
-            label: 'VOYAGE',
-            eyebrow: 'VOYAGE & CARGO DETAIL',
-            title: 'Booking & Shipment Overview',
-            blurb: 'Basic voyage, weight and container details for this booking request.',
-          };
+        : kind === 'customs'
+          ? {
+              id: 'voyage' as const,
+              label: 'CLEARANCE',
+              eyebrow: 'CUSTOMS & CARGO DETAIL',
+              title: 'Customs Clearance Overview',
+              blurb: 'Direction, border/port, invoice value, and cargo details for clearance.',
+            }
+          : kind === 'road' || kind === 'land' || kind === 'courier'
+            ? {
+                id: 'voyage' as const,
+                label: kind === 'courier' ? 'PARCEL' : 'ROUTE',
+                eyebrow: 'DOOR / CITY & CARGO DETAIL',
+                title:
+                  kind === 'road'
+                    ? 'Road Freight Booking Overview'
+                    : kind === 'land'
+                      ? 'Land Transport Booking Overview'
+                      : 'Courier Booking Overview',
+                blurb:
+                  'Origin/destination cities, door addresses, vehicle or tracking, and cargo weights.',
+              }
+            : {
+                id: 'voyage' as const,
+                label: 'VOYAGE',
+                eyebrow: 'VOYAGE & CARGO DETAIL',
+                title: 'Booking & Shipment Overview',
+                blurb: 'Basic voyage, weight and container details for this booking request.',
+              };
 
   return [
     voyage,
@@ -140,11 +193,19 @@ function normalizePortalJobTypeToken(jobType?: string | null, rawJobType?: unkno
 function portalBookingFormKind(
   jobType?: string | null,
   rawJobType?: unknown,
-): 'air' | 'sea' | 'warehouse' {
+): PortalBookingFormKind {
   const jt = normalizePortalJobTypeToken(jobType, rawJobType);
-  if (jt === 'WAREHOUSE') return 'warehouse';
+  if (jt === 'WAREHOUSE' || jt.startsWith('WAREHOUSE_')) return 'warehouse';
+  if (jt === 'CUSTOMS_CLEARANCE' || jt.startsWith('CUSTOMS')) return 'customs';
+  if (jt === 'ROAD_FREIGHT' || jt.startsWith('ROAD')) return 'road';
+  if (jt === 'LAND' || jt.startsWith('LAND')) return 'land';
+  if (jt === 'COURIER' || jt.startsWith('COURIER')) return 'courier';
   if (jt.startsWith('AIR') || isAirJobType(jt)) return 'air';
   return 'sea';
+}
+
+function isLandishKind(kind: PortalBookingFormKind): boolean {
+  return kind === 'road' || kind === 'land' || kind === 'courier';
 }
 
 type PartyUi = {
@@ -152,7 +213,7 @@ type PartyUi = {
   address: string;
   city: string;
   country: string;
-  entity_kind: 'COMPANY' | 'INDIVIDUAL';
+  entity_kind: EntityKind;
   other_details: string;
 };
 
@@ -183,7 +244,7 @@ type FormUi = {
   commodity: string;
   hs_code: string;
   final_use: string;
-  activity_sector: '' | 'CIVILIAN' | 'MILITARY' | 'NUCLEAR';
+  activity_sector: Sector | '';
   insurance_details: string;
   lc_bank_details: string;
   request_details: string;
@@ -228,6 +289,24 @@ type FormUi = {
     height_cm: string;
     weight_kg: string;
   }[];
+  origin_city_country: string;
+  dest_city_country: string;
+  vehicle_type: string;
+  border_crossing: string;
+  tracking_number: string;
+  etd: string;
+  eta: string;
+  incoterms: string;
+  direction: string;
+  border_or_port: string;
+  entry_type: string;
+  declaration_type: string;
+  port_of_entry: string;
+  port_of_exit: string;
+  country_of_origin: string;
+  country_of_destination: string;
+  invoice_value_amount: string;
+  invoice_currency: string;
 };
 
 function emptyParty(): PartyUi {
@@ -236,7 +315,7 @@ function emptyParty(): PartyUi {
     address: '',
     city: '',
     country: '',
-    entity_kind: 'COMPANY',
+    entity_kind: ENTITY_KINDS[0],
     other_details: '',
   };
 }
@@ -250,7 +329,7 @@ function emptyForm(): FormUi {
     pod: '',
     origin_airport_code: '',
     dest_airport_code: '',
-    service_scope: 'DOOR_TO_DOOR',
+    service_scope: SERVICE_SCOPES[0],
     origin_door_address: '',
     dest_door_address: '',
     pieces: '',
@@ -277,7 +356,7 @@ function emptyForm(): FormUi {
     attach_correspondence: false,
     attach_cod_form: false,
     attach_licence: false,
-    booking_agent_line: 'KINGFISHER',
+    booking_agent_line: '',
     agent_requester_name: '',
     sq_bl_booking_reference: '',
     voyage_ref: '',
@@ -289,7 +368,7 @@ function emptyForm(): FormUi {
     bonded: false,
     temperature_controlled: false,
     handling_instructions: '',
-    cargo_category: 'GENERAL',
+    cargo_category: CARGO_CATEGORIES[0],
     dg_class: '',
     attach_packing_list: false,
     attach_bl_awb_copy: false,
@@ -299,10 +378,10 @@ function emptyForm(): FormUi {
     attach_dangerous_goods_declaration: false,
     attach_health_veterinary: false,
     attach_fda_moh: false,
-    stock_lines: [{ sku_code: '', description: '', quantity: '', unit: 'CTN', cbm: '' }],
+    stock_lines: [{ sku_code: '', description: '', quantity: '', unit: '', cbm: '' }],
     pallets: [
       {
-        pallet_type: 'PMC',
+        pallet_type: '',
         count: '1',
         length_cm: '',
         width_cm: '',
@@ -310,6 +389,24 @@ function emptyForm(): FormUi {
         weight_kg: '',
       },
     ],
+    origin_city_country: '',
+    dest_city_country: '',
+    vehicle_type: '',
+    border_crossing: '',
+    tracking_number: '',
+    etd: '',
+    eta: '',
+    incoterms: '',
+    direction: CC_DIRECTIONS[0] ?? 'IMPORT',
+    border_or_port: '',
+    entry_type: '',
+    declaration_type: '',
+    port_of_entry: '',
+    port_of_exit: '',
+    country_of_origin: '',
+    country_of_destination: '',
+    invoice_value_amount: '',
+    invoice_currency: 'USD',
   };
 }
 
@@ -415,11 +512,14 @@ function PartyFields({
           className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 py-2 text-sm"
           value={party.entity_kind}
           onChange={(e) =>
-            patch({ entity_kind: e.target.value === 'INDIVIDUAL' ? 'INDIVIDUAL' : 'COMPANY' })
+            patch({ entity_kind: asEntityKind(e.target.value) })
           }
         >
-          <option value="COMPANY">COMPANY</option>
-          <option value="INDIVIDUAL">INDIVIDUAL</option>
+          {ENTITY_KINDS.map((k) => (
+            <option key={k} value={k}>
+              {k}
+            </option>
+          ))}
         </select>
       </label>
       <label className="block">
@@ -463,7 +563,7 @@ function toPartyDto(
 function toDto(
   form: FormUi,
   markComplete: boolean,
-  kind: 'air' | 'sea' | 'warehouse',
+  kind: PortalBookingFormKind,
 ): PortalBookingFormUpsertDto {
   const numOrUndef = (v: string) => {
     const t = v.trim();
@@ -616,6 +716,71 @@ function toDto(
     };
   }
 
+  if (isLandishKind(kind) || kind === 'customs') {
+    const originCity =
+      form.origin_city_country.trim() ||
+      form.origin_door_address.trim() ||
+      form.pol.trim();
+    const destCity =
+      form.dest_city_country.trim() ||
+      form.dest_door_address.trim() ||
+      form.pod.trim();
+    const baseLand = {
+      ...shared,
+      service_scope: form.service_scope || undefined,
+      origin_door_address: form.origin_door_address.trim() || undefined,
+      dest_door_address: form.dest_door_address.trim() || undefined,
+      pieces: numOrUndef(form.pieces),
+      volume_cbm: numOrUndef(form.volume_cbm),
+      cargo_category: form.cargo_category || undefined,
+      dg_class: form.is_dg ? form.dg_class.trim() || undefined : undefined,
+      attach_packing_list: form.attach_packing_list,
+      attach_bl_awb_copy: form.attach_bl_awb_copy,
+      attach_carnet: form.attach_carnet,
+      attach_vehicle_title: form.attach_vehicle_title,
+      attach_msds: form.attach_msds,
+      attach_dangerous_goods_declaration: form.attach_dangerous_goods_declaration,
+      attach_health_veterinary: form.attach_health_veterinary,
+      attach_fda_moh: form.attach_fda_moh,
+      // Keep pol/pod mirrors for inbox/display when cities fill route hubs.
+      pol: clipComplianceField(originCity, L.pol) ?? '',
+      pod: clipComplianceField(destCity, L.pod) ?? '',
+      origin_city_country: originCity || undefined,
+      dest_city_country: destCity || undefined,
+      etd: form.etd || undefined,
+      eta: form.eta || undefined,
+      incoterms: form.incoterms.trim() || undefined,
+    };
+    if (kind === 'customs') {
+      return {
+        ...baseLand,
+        direction: form.direction || undefined,
+        border_or_port: form.border_or_port.trim() || undefined,
+        entry_type: form.entry_type.trim() || undefined,
+        declaration_type: form.declaration_type.trim() || undefined,
+        port_of_entry: form.port_of_entry.trim() || undefined,
+        port_of_exit: form.port_of_exit.trim() || undefined,
+        country_of_origin: form.country_of_origin.trim().toUpperCase() || undefined,
+        country_of_destination: form.country_of_destination.trim().toUpperCase() || undefined,
+        invoice_value_amount: numOrUndef(form.invoice_value_amount),
+        invoice_currency: form.invoice_currency.trim().toUpperCase() || undefined,
+      };
+    }
+    if (kind === 'courier') {
+      return {
+        ...baseLand,
+        tracking_number: form.tracking_number.trim() || undefined,
+      };
+    }
+    return {
+      ...baseLand,
+      vehicle_type: form.vehicle_type || undefined,
+      ...(kind === 'road'
+        ? { border_crossing: form.border_crossing.trim() || undefined }
+        : {}),
+    };
+  }
+
   const teu = numOrUndef(form.teu_count);
   return {
     ...shared,
@@ -632,7 +797,7 @@ function toDto(
 function validateStep(
   step: StepId,
   form: FormUi,
-  kind: 'air' | 'sea' | 'warehouse',
+  kind: PortalBookingFormKind,
 ): string | null {
   if (step === 'voyage') {
     if (kind === 'sea' && !form.teu_count.trim()) {
@@ -652,6 +817,20 @@ function validateStep(
       }
       if (!form.warehouse_name.trim() && !form.pod.trim()) {
         return 'Warehouse name is required (warehouse_name).';
+      }
+      if (!form.pieces.trim()) return 'Pieces is required (pieces).';
+    } else if (isLandishKind(kind)) {
+      const origin =
+        form.origin_city_country.trim() || form.origin_door_address.trim() || form.pol.trim();
+      const dest =
+        form.dest_city_country.trim() || form.dest_door_address.trim() || form.pod.trim();
+      if (!origin) return 'Origin city / country is required (origin_city_country).';
+      if (!dest) return 'Destination city / country is required (dest_city_country).';
+      if (!form.pieces.trim()) return 'Pieces is required (pieces).';
+    } else if (kind === 'customs') {
+      if (!form.direction.trim()) return 'Direction is required (direction).';
+      if (!form.border_or_port.trim() && !form.port_of_entry.trim()) {
+        return 'Border / port of entry is required.';
       }
       if (!form.pieces.trim()) return 'Pieces is required (pieces).';
     } else {
@@ -684,6 +863,8 @@ interface PortalBookingFormPanelProps {
   quote: PortalQuotationDetail;
   onSuccess?: (message: string) => void;
   onFormCompleteChange?: (complete: boolean) => void;
+  /** When forwarder already posted INVOICE_SENT / portal invoice exists. */
+  invoiceAlreadySent?: boolean;
 }
 
 /**
@@ -697,6 +878,7 @@ export function PortalBookingFormPanel({
   quote,
   onSuccess,
   onFormCompleteChange,
+  invoiceAlreadySent = false,
 }: PortalBookingFormPanelProps) {
   const enabled = portalQuoteShowsBookingForm(quote);
   const formKind = portalBookingFormKind(
@@ -705,6 +887,9 @@ export function PortalBookingFormPanel({
   );
   const isAir = formKind === 'air';
   const isWarehouse = formKind === 'warehouse';
+  const isLandish = isLandishKind(formKind);
+  const isCustoms = formKind === 'customs';
+  const isSea = formKind === 'sea';
   const bookingId =
     quote.bookingId ||
     String(
@@ -733,6 +918,9 @@ export function PortalBookingFormPanel({
   });
   const saveForm = useUpdatePortalQuotationBookingForm(quote.id);
   const [form, setForm] = useState<FormUi>(emptyForm);
+  // Forwarder (tenant) name — default agent line, replacing the old hardcoded value.
+  const tenantName = usePortalAuthStore((s) => s.user?.tenantName);
+  const tenantAgentLine = (tenantName ?? '').trim().slice(0, L.booking_agent_line);
   const [stepIndex, setStepIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -754,6 +942,7 @@ export function PortalBookingFormPanel({
     base.pod = quote.destination || '';
     base.commodity = quote.commodity || '';
     base.sq_bl_booking_reference = quote.number || '';
+    base.booking_agent_line = tenantAgentLine;
     if (!data) {
       setForm(base);
       return;
@@ -770,7 +959,7 @@ export function PortalBookingFormPanel({
       address: String(p?.address ?? ''),
       city: String(p?.city ?? ''),
       country: String(p?.country ?? ''),
-      entity_kind: p?.entity_kind === 'INDIVIDUAL' ? 'INDIVIDUAL' : 'COMPANY',
+      entity_kind: asEntityKind(p?.entity_kind),
       other_details: String(p?.other_details ?? ''),
     });
     setForm({
@@ -790,7 +979,7 @@ export function PortalBookingFormPanel({
       )
         .toUpperCase()
         .slice(0, L.dest_airport_code),
-      service_scope: String(data.service_scope ?? 'DOOR_TO_DOOR'),
+      service_scope: String(data.service_scope ?? base.service_scope),
       origin_door_address: String(
         data.origin_door_address ?? (isWarehouse ? data.pol ?? quote.origin ?? '' : ''),
       ),
@@ -812,10 +1001,7 @@ export function PortalBookingFormPanel({
       commodity: String(data.commodity ?? quote.commodity ?? ''),
       hs_code: String(data.hs_code ?? ''),
       final_use: String(data.final_use ?? ''),
-      activity_sector:
-        sector === 'CIVILIAN' || sector === 'MILITARY' || sector === 'NUCLEAR'
-          ? sector
-          : '',
+      activity_sector: asSector(sector),
       insurance_details: String(data.insurance_details ?? ''),
       lc_bank_details: String(data.lc_bank_details ?? ''),
       request_details: String(data.request_details ?? ''),
@@ -823,7 +1009,7 @@ export function PortalBookingFormPanel({
       attach_correspondence: Boolean(data.attach_correspondence),
       attach_cod_form: Boolean(data.attach_cod_form),
       attach_licence: Boolean(data.attach_licence),
-      booking_agent_line: String(data.booking_agent_line ?? 'KINGFISHER'),
+      booking_agent_line: String(data.booking_agent_line ?? base.booking_agent_line),
       agent_requester_name: String(data.agent_requester_name ?? ''),
       sq_bl_booking_reference: String(data.sq_bl_booking_reference ?? quote.number ?? ''),
       voyage_ref: String(data.voyage_ref ?? ''),
@@ -838,7 +1024,7 @@ export function PortalBookingFormPanel({
       bonded: Boolean(data.bonded),
       temperature_controlled: Boolean(data.temperature_controlled),
       handling_instructions: String(data.handling_instructions ?? ''),
-      cargo_category: String(data.cargo_category ?? 'GENERAL') || 'GENERAL',
+      cargo_category: String(data.cargo_category ?? '') || base.cargo_category,
       dg_class: String(data.dg_class ?? ''),
       attach_packing_list: Boolean(data.attach_packing_list),
       attach_bl_awb_copy: Boolean(data.attach_bl_awb_copy),
@@ -854,14 +1040,14 @@ export function PortalBookingFormPanel({
               sku_code: String(line.sku_code ?? ''),
               description: String(line.description ?? ''),
               quantity: line.quantity != null ? String(line.quantity) : '',
-              unit: String(line.unit ?? 'PCS'),
+              unit: String(line.unit ?? ''),
               cbm: line.cbm != null ? String(line.cbm) : '',
             }))
           : base.stock_lines,
       pallets:
         Array.isArray(data.pallets) && data.pallets.length > 0
           ? data.pallets.map((p) => ({
-              pallet_type: String(p.pallet_type ?? 'PMC'),
+              pallet_type: String(p.pallet_type ?? ''),
               count: p.count != null ? String(p.count) : '1',
               length_cm: p.length_cm != null ? String(p.length_cm) : '',
               width_cm: p.width_cm != null ? String(p.width_cm) : '',
@@ -869,6 +1055,31 @@ export function PortalBookingFormPanel({
               weight_kg: p.weight_kg != null ? String(p.weight_kg) : '',
             }))
           : base.pallets,
+      origin_city_country: String(
+        data.origin_city_country ??
+          (isLandish ? data.pol ?? quote.origin ?? '' : ''),
+      ),
+      dest_city_country: String(
+        data.dest_city_country ??
+          (isLandish ? data.pod ?? quote.destination ?? '' : ''),
+      ),
+      vehicle_type: String(data.vehicle_type ?? ''),
+      border_crossing: String(data.border_crossing ?? ''),
+      tracking_number: String(data.tracking_number ?? ''),
+      etd: String(data.etd ?? '').slice(0, 16),
+      eta: String(data.eta ?? '').slice(0, 16),
+      incoterms: String(data.incoterms ?? ''),
+      direction: String(data.direction ?? '') || base.direction,
+      border_or_port: String(data.border_or_port ?? ''),
+      entry_type: String(data.entry_type ?? ''),
+      declaration_type: String(data.declaration_type ?? ''),
+      port_of_entry: String(data.port_of_entry ?? ''),
+      port_of_exit: String(data.port_of_exit ?? ''),
+      country_of_origin: String(data.country_of_origin ?? ''),
+      country_of_destination: String(data.country_of_destination ?? ''),
+      invoice_value_amount:
+        data.invoice_value_amount != null ? String(data.invoice_value_amount) : '',
+      invoice_currency: String(data.invoice_currency ?? '') || base.invoice_currency,
     });
     if (data.mark_complete === true) setSubmitted(true);
   }, [
@@ -879,6 +1090,8 @@ export function PortalBookingFormPanel({
     quote.number,
     isAir,
     isWarehouse,
+    isLandish,
+    tenantAgentLine,
   ]);
 
   useEffect(() => {
@@ -1038,9 +1251,13 @@ export function PortalBookingFormPanel({
               ? isWarehouse
                 ? 'Thanks — your quotation converts to a job. Warehouse ops (ASN / GRN / GDO) continue on the staff side.'
                 : 'Thanks — your quotation converts to a job.'
-              : isAir
-                ? 'Thanks — next your forwarder sends the invoice (INVOICE_SENT), then air export or import ops begin.'
-                : 'Thanks — next your forwarder sends the invoice (INVOICE_SENT).'}
+              : invoiceAlreadySent
+                ? isAir
+                  ? 'Booking form is complete and your invoice has been sent. Air export / import ops continue on the shipment.'
+                  : 'Booking form is complete and your invoice has been sent. View it under Invoices.'
+                : isAir
+                  ? 'Thanks — next your forwarder sends the invoice (INVOICE_SENT), then air export or import ops begin.'
+                  : 'Thanks — next your forwarder sends the invoice (INVOICE_SENT).'}
           </p>
         </PortalPanel>
       </div>
@@ -1149,7 +1366,7 @@ export function PortalBookingFormPanel({
                 placeholder="Assigned by agent"
               />
             </label>
-            {!isAir && !isWarehouse ? (
+            {isSea ? (
               <label className="block">
                 <FieldLabel required>Number of TEUs</FieldLabel>
                 <Input
@@ -1168,7 +1385,7 @@ export function PortalBookingFormPanel({
                   value={form.service_scope}
                   onChange={(e) => patch({ service_scope: e.target.value })}
                 >
-                  {['DOOR_TO_DOOR', 'DOOR_TO_PORT', 'PORT_TO_DOOR', 'PORT_TO_PORT'].map((s) => (
+                  {SERVICE_SCOPES.map((s) => (
                     <option key={s} value={s}>
                       {s}
                     </option>
@@ -1194,7 +1411,7 @@ export function PortalBookingFormPanel({
                     value={form.service_scope}
                     onChange={(e) => patch({ service_scope: e.target.value })}
                   >
-                    {['DOOR_TO_DOOR', 'DOOR_TO_PORT', 'PORT_TO_DOOR', 'PORT_TO_PORT'].map((s) => (
+                    {SERVICE_SCOPES.map((s) => (
                       <option key={s} value={s}>
                         {s}
                       </option>
@@ -1313,7 +1530,7 @@ export function PortalBookingFormPanel({
                   <FieldLabel required>Warehouse name</FieldLabel>
                   <Input
                     className="mt-1"
-                    maxLength={200}
+                    maxLength={API_MAX_LENGTH.UpsertWarehouseBookingFormDto.warehouse_name}
                     value={form.warehouse_name}
                     onChange={(e) => {
                       const v = e.target.value.slice(0, 200);
@@ -1403,7 +1620,7 @@ export function PortalBookingFormPanel({
                     <div key={idx} className="grid gap-2 sm:grid-cols-5">
                       <Input
                         placeholder="SKU"
-                        maxLength={40}
+                        maxLength={API_MAX_LENGTH.WhStockLineInputDto.sku_code}
                         value={line.sku_code}
                         onChange={(e) =>
                           setForm((prev) => ({
@@ -1416,7 +1633,7 @@ export function PortalBookingFormPanel({
                       />
                       <Input
                         placeholder="Description"
-                        maxLength={500}
+                        maxLength={API_MAX_LENGTH.WhStockLineInputDto.description}
                         value={line.description}
                         onChange={(e) =>
                           setForm((prev) => ({
@@ -1442,7 +1659,7 @@ export function PortalBookingFormPanel({
                       />
                       <Input
                         placeholder="Unit"
-                        maxLength={20}
+                        maxLength={API_MAX_LENGTH.WhStockLineInputDto.unit}
                         value={line.unit}
                         onChange={(e) =>
                           setForm((prev) => ({
@@ -1481,7 +1698,7 @@ export function PortalBookingFormPanel({
                             sku_code: '',
                             description: '',
                             quantity: '',
-                            unit: 'CTN',
+                            unit: '',
                             cbm: '',
                           },
                         ],
@@ -1491,6 +1708,219 @@ export function PortalBookingFormPanel({
                     Add stock line
                   </Button>
                 </div>
+              </>
+            ) : isLandish || isCustoms ? (
+              <>
+                {isCustoms ? (
+                  <>
+                    <label className="block">
+                      <FieldLabel required>Direction</FieldLabel>
+                      <select
+                        className="mt-1 h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-2 text-sm"
+                        value={form.direction}
+                        onChange={(e) => patch({ direction: e.target.value })}
+                      >
+                        {CC_DIRECTIONS.map((d) => (
+                          <option key={d} value={d}>
+                            {d}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="block">
+                      <FieldLabel required>Border / port</FieldLabel>
+                      <Input
+                        className="mt-1"
+                        value={form.border_or_port}
+                        onChange={(e) => patch({ border_or_port: e.target.value })}
+                      />
+                    </label>
+                    <label className="block">
+                      <FieldLabel>Port of entry</FieldLabel>
+                      <Input
+                        className="mt-1"
+                        value={form.port_of_entry}
+                        onChange={(e) => patch({ port_of_entry: e.target.value })}
+                      />
+                    </label>
+                    <label className="block">
+                      <FieldLabel>Port of exit</FieldLabel>
+                      <Input
+                        className="mt-1"
+                        value={form.port_of_exit}
+                        onChange={(e) => patch({ port_of_exit: e.target.value })}
+                      />
+                    </label>
+                    <label className="block">
+                      <FieldLabel>Country of origin</FieldLabel>
+                      <Input
+                        className="mt-1"
+                        maxLength={2}
+                        value={form.country_of_origin}
+                        onChange={(e) =>
+                          patch({ country_of_origin: e.target.value.toUpperCase() })
+                        }
+                        placeholder="ISO-2"
+                      />
+                    </label>
+                    <label className="block">
+                      <FieldLabel>Country of destination</FieldLabel>
+                      <Input
+                        className="mt-1"
+                        maxLength={2}
+                        value={form.country_of_destination}
+                        onChange={(e) =>
+                          patch({ country_of_destination: e.target.value.toUpperCase() })
+                        }
+                        placeholder="ISO-2"
+                      />
+                    </label>
+                    <label className="block">
+                      <FieldLabel>Invoice value</FieldLabel>
+                      <Input
+                        className="mt-1"
+                        inputMode="decimal"
+                        value={form.invoice_value_amount}
+                        onChange={(e) => patch({ invoice_value_amount: e.target.value })}
+                      />
+                    </label>
+                    <label className="block">
+                      <FieldLabel>Invoice currency</FieldLabel>
+                      <Input
+                        className="mt-1"
+                        maxLength={3}
+                        value={form.invoice_currency}
+                        onChange={(e) =>
+                          patch({ invoice_currency: e.target.value.toUpperCase() })
+                        }
+                      />
+                    </label>
+                  </>
+                ) : null}
+                <label className="block sm:col-span-1">
+                  <FieldLabel required>Origin city / country</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    maxLength={API_MAX_LENGTH.UpsertLandBookingFormDto.origin_city_country}
+                    value={form.origin_city_country}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      patch({
+                        origin_city_country: v,
+                        pol: v.slice(0, L.pol),
+                      });
+                    }}
+                    placeholder="e.g. Dubai, AE"
+                  />
+                </label>
+                <label className="block sm:col-span-1">
+                  <FieldLabel required>Dest city / country</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    maxLength={API_MAX_LENGTH.UpsertLandBookingFormDto.dest_city_country}
+                    value={form.dest_city_country}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      patch({
+                        dest_city_country: v,
+                        pod: v.slice(0, L.pod),
+                      });
+                    }}
+                    placeholder="e.g. Riyadh, SA"
+                  />
+                </label>
+                <label className="block sm:col-span-2">
+                  <FieldLabel>Origin door address</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    value={form.origin_door_address}
+                    onChange={(e) => patch({ origin_door_address: e.target.value })}
+                  />
+                </label>
+                <label className="block sm:col-span-2">
+                  <FieldLabel>Dest door address</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    value={form.dest_door_address}
+                    onChange={(e) => patch({ dest_door_address: e.target.value })}
+                  />
+                </label>
+                {formKind === 'land' || formKind === 'road' ? (
+                  <>
+                    <label className="block">
+                      <FieldLabel>Vehicle type</FieldLabel>
+                      <select
+                        className="mt-1 h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-2 text-sm"
+                        value={form.vehicle_type}
+                        onChange={(e) => patch({ vehicle_type: e.target.value })}
+                      >
+                        <option value="">—</option>
+                        {VEHICLE_TYPES.map((v) => (
+                          <option key={v} value={v}>
+                            {v}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="block">
+                      <FieldLabel>Incoterms</FieldLabel>
+                      <Input
+                        className="mt-1"
+                        value={form.incoterms}
+                        onChange={(e) => patch({ incoterms: e.target.value })}
+                      />
+                    </label>
+                  </>
+                ) : null}
+                {formKind === 'road' ? (
+                  <label className="block">
+                    <FieldLabel>Border crossing</FieldLabel>
+                    <Input
+                      className="mt-1"
+                      maxLength={API_MAX_LENGTH.UpsertRoadFreightBookingFormDto.border_crossing}
+                      value={form.border_crossing}
+                      onChange={(e) => patch({ border_crossing: e.target.value })}
+                    />
+                  </label>
+                ) : null}
+                {formKind === 'courier' ? (
+                  <label className="block">
+                    <FieldLabel>Tracking number</FieldLabel>
+                    <Input
+                      className="mt-1"
+                      maxLength={API_MAX_LENGTH.UpsertCourierBookingFormDto.tracking_number}
+                      value={form.tracking_number}
+                      onChange={(e) => patch({ tracking_number: e.target.value })}
+                    />
+                  </label>
+                ) : null}
+                <label className="block">
+                  <FieldLabel>ETD</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    type="datetime-local"
+                    value={form.etd}
+                    onChange={(e) => patch({ etd: e.target.value })}
+                  />
+                </label>
+                <label className="block">
+                  <FieldLabel>ETA</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    type="datetime-local"
+                    value={form.eta}
+                    onChange={(e) => patch({ eta: e.target.value })}
+                  />
+                </label>
+                <label className="block">
+                  <FieldLabel>Volume CBM</FieldLabel>
+                  <Input
+                    className="mt-1"
+                    inputMode="decimal"
+                    value={form.volume_cbm}
+                    onChange={(e) => patch({ volume_cbm: e.target.value })}
+                  />
+                </label>
               </>
             ) : (
               <>
@@ -1534,7 +1964,7 @@ export function PortalBookingFormPanel({
                 onChange={(e) => patch({ net_weight_kg: e.target.value })}
               />
             </label>
-            {!isAir && !isWarehouse ? (
+            {isSea ? (
               <div className="sm:col-span-2 lg:col-span-3">
                 <FieldLabel required>Shipper&apos;s owned container (SOC)?</FieldLabel>
                 <ChoiceToggle
@@ -1563,7 +1993,7 @@ export function PortalBookingFormPanel({
                 <FieldLabel>DG class</FieldLabel>
                 <Input
                   className="mt-1"
-                  maxLength={20}
+                  maxLength={API_MAX_LENGTH.UpsertWarehouseBookingFormDto.dg_class}
                   value={form.dg_class}
                   onChange={(e) => patch({ dg_class: e.target.value })}
                   placeholder="e.g. 9"
@@ -1665,7 +2095,7 @@ export function PortalBookingFormPanel({
                       pallets: [
                         ...prev.pallets,
                         {
-                          pallet_type: 'PMC',
+                          pallet_type: '',
                           count: '1',
                           length_cm: '',
                           width_cm: '',
@@ -1771,17 +2201,7 @@ export function PortalBookingFormPanel({
                   value={form.cargo_category}
                   onChange={(e) => patch({ cargo_category: e.target.value })}
                 >
-                  {[
-                    'GENERAL',
-                    'VEHICLES',
-                    'FOOD_PERISHABLE',
-                    'PHARMA',
-                    'CHEMICALS_DG',
-                    'PERSONAL_EFFECTS',
-                    'PROJECT_OOG',
-                    'LIVESTOCK',
-                    'OTHER',
-                  ].map((c) => (
+                  {CARGO_CATEGORIES.map((c) => (
                     <option key={c} value={c}>
                       {c}
                     </option>
@@ -1806,14 +2226,16 @@ export function PortalBookingFormPanel({
                     value={form.activity_sector}
                     onChange={(e) =>
                       patch({
-                        activity_sector: e.target.value as FormUi['activity_sector'],
+                        activity_sector: asSector(e.target.value),
                       })
                     }
                   >
                     <option value="">—</option>
-                    <option value="CIVILIAN">CIVILIAN</option>
-                    <option value="MILITARY">MILITARY</option>
-                    <option value="NUCLEAR">NUCLEAR</option>
+                    {SECTORS.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
                   </select>
                 </label>
               </>

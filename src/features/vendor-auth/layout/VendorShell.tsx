@@ -30,6 +30,7 @@ export function VendorShell() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const unread = useVendorNotificationUnreadCount();
   const notificationCount = unread.data ?? 0;
+  const unreadReady = unread.isFetched ? notificationCount : undefined;
 
   const handleMenuClick = () => {
     if (window.matchMedia('(max-width: 1023px)').matches) {
@@ -65,7 +66,11 @@ export function VendorShell() {
   return (
     <div className="portal-shell flex min-h-screen bg-[#F4F7F9]">
       <style>{portalAnimationStyles}</style>
-      <NotificationToastWatcher unreadCount={notificationCount} title="Vendor portal" />
+      <NotificationToastWatcher
+        unreadCount={unreadReady}
+        title="Vendor portal"
+        storageKey="vendor"
+      />
 
       <VendorSidebar onLogout={() => void handleLogout()} collapsed={sidebarCollapsed} />
 

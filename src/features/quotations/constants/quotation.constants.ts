@@ -1,3 +1,5 @@
+import { API_ENUMS } from '@/lib/api/apiSchema.generated';
+
 export const QUOTATION_STATUSES = [
   'DRAFT',
   'SUBMITTED',
@@ -34,50 +36,16 @@ export const QUOTATION_STATUS_FILTERS = [
   'CONVERTED',
 ] as const satisfies readonly QuotationStatus[];
 
-export const JOB_TYPES = [
-  'AIR_EXPORT',
-  'AIR_IMPORT',
-  'SEA_FCL_EXPORT',
-  'SEA_FCL_IMPORT',
-  'SEA_LCL_EXPORT',
-  'SEA_LCL_IMPORT',
-  'LAND',
-  'ROAD_FREIGHT',
-  'COURIER',
-  'CUSTOMS_CLEARANCE',
-  'NVOCC_EXPORT',
-  'NVOCC_IMPORT',
-  'SERVICE_JOB',
-  'WAREHOUSE',
-] as const;
+// Request enums come from the OpenAPI spec — regenerate with `npm run gen:api-schema`.
+export const JOB_TYPES = API_ENUMS.CreateQuotationDto.job_type;
 
 export type JobType = (typeof JOB_TYPES)[number];
 
-export const INCOTERMS = [
-  'EXW',
-  'FCA',
-  'FAS',
-  'FOB',
-  'CFR',
-  'CIF',
-  'CPT',
-  'CIP',
-  'DAP',
-  'DPU',
-  'DDP',
-] as const;
+export const INCOTERMS = API_ENUMS.CreateQuotationDto.incoterm;
 
 export type Incoterm = (typeof INCOTERMS)[number];
 
-export const LOST_REASONS = [
-  'Competitor Rate',
-  'No Space',
-  'Cargo Type',
-  'No Longer Required',
-  'Booked Elsewhere',
-  'Price Too High',
-  'Other',
-] as const;
+export const LOST_REASONS = API_ENUMS.PortalQuotationRejectDto.reason;
 
 export type LostReason = (typeof LOST_REASONS)[number];
 
@@ -85,7 +53,7 @@ export type LostReason = (typeof LOST_REASONS)[number];
 export const DISAPPROVE_REASONS = LOST_REASONS;
 export type DisapproveReason = LostReason;
 
-export const PDF_MODES = ['CUSTOMER', 'INTERNAL'] as const;
+export const PDF_MODES = API_ENUMS.GenerateQuotationPdfDto.mode;
 export type PdfMode = (typeof PDF_MODES)[number];
 
 export const DEFAULT_QUOTATION_PAGE_SIZE = 20;

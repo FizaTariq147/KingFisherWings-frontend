@@ -1,5 +1,5 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
 import { ArrowLeft, Download, Calendar, Coins, Package, Scale } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -16,6 +16,8 @@ import {
 } from '@/features/portal-auth/components/portal-ui';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 import { QuotationStatusBadge } from '@/features/quotations/components/QuotationStatusBadge';
+import { usePortalInvoices } from '@/features/portal-invoices/hooks/usePortalInvoices';
+import { usePortalShipment } from '@/features/portal-shipments/hooks/usePortalShipments';
 import { PortalQuotationDecisionPanel } from '../components/PortalQuotationDecisionPanel';
 import { PortalBookingFormPanel } from '../components/PortalBookingFormPanel';
 import {
@@ -27,6 +29,7 @@ import { usePortalQuotation } from '../hooks/usePortalQuotations';
 import { portalQuotationsService } from '../services/portalQuotations.service';
 import {
   canPortalCustomerRespondToQuote,
+  portalQuoteIndicatesInvoiceSent,
   portalQuoteShowsBookingForm,
   portalQuoteTotalAmount,
 } from '../utils/portalQuotationStatus';
@@ -44,6 +47,38 @@ export default function PortalQuoteDetailPage() {
   const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
   const [pdfReadyFileName, setPdfReadyFileName] = useState('quotation.pdf');
   const [formSubmitted, setFormSubmitted] = useState(false);
+
+  const jobId = data?.jobId?.trim() || '';
+  const gatedForInvoiceCheck =
+    Boolean(data) && usesPortalCommercialFlow(data?.jobType);
+  const quoteLooksPastAccept =
+    formSubmitted ||
+    Boolean(jobId) ||
+    /APPROVED|ACCEPTED|CONVERTED|CUSTOMER_ACCEPTED|BOOKING_FORM/i.test(
+      String(data?.status ?? ''),
+    );
+  const invoiceListParams = useMemo(
+    () =>
+      jobId
+        ? { job_id: jobId, limit: 10 }
+        : data?.number
+          ? { search: data.number, limit: 20 }
+          : { limit: 10 },
+    [jobId, data?.number],
+  );
+  const invoicesQuery = usePortalInvoices(
+    invoiceListParams,
+    gatedForInvoiceCheck && quoteLooksPastAccept,
+    {
+      // Poll while waiting for staff INVOICE_SENT so the rail advances without a hard refresh.
+      refetchInterval: (query) => {
+        if (!formSubmitted || !gatedForInvoiceCheck) return false;
+        if ((query.state.data?.items?.length ?? 0) > 0) return false;
+        return 15_000;
+      },
+    },
+  );
+  const shipmentQuery = usePortalShipment(jobId);
 
   // Client KingFisher layout builds from quote detail — always available.
   const canTryPdf = Boolean(data);
@@ -108,6 +143,23 @@ export default function PortalQuoteDetailPage() {
     .toUpperCase()
     .startsWith('AIR');
 
+  const linkedInvoices = invoicesQuery.data?.items ?? [];
+  const hasLinkedInvoice = jobId
+    ? linkedInvoices.length > 0
+    : linkedInvoices.some((inv) => {
+        const hay = `${inv.number ?? ''}`.toUpperCase();
+        const quoteNo = String(data.number ?? '').toUpperCase();
+        return Boolean(quoteNo) && hay.includes(quoteNo);
+      });
+
+  const invoiceSent = portalQuoteIndicatesInvoiceSent(data, {
+    hasLinkedInvoice,
+    shipmentStatus: shipmentQuery.data?.status,
+  });
+  const commercialComplete = modeConvert
+    ? Boolean(data.convertedJobNumber || (formSubmitted && data.jobId))
+    : invoiceSent;
+
   return (
     <div className="space-y-5">
       <button
@@ -158,11 +210,19 @@ export default function PortalQuoteDetailPage() {
 
       {gatedCommercial ? (
         <PortalPanel padded className="space-y-3">
-          <PortalCommercialFlowRail quote={data} formSubmitted={formSubmitted} />
+          <PortalCommercialFlowRail
+            quote={data}
+            formSubmitted={formSubmitted}
+            commercialComplete={commercialComplete}
+          />
           <p className="text-xs text-[var(--color-neutral-500)]">
-            Follow the highlighted step: accept the quote, complete the booking form, then your
-            forwarder sends the invoice
-            {isAir ? ' — air export / import ops unlock after that.' : '.'}
+            {commercialComplete
+              ? modeConvert
+                ? 'Commercial steps are complete. Your quotation has been converted to a job.'
+                : 'Commercial steps are complete. Your invoice is ready in Invoices.'
+              : `Follow the highlighted step: accept the quote, complete the booking form, then your forwarder sends the invoice${
+                  isAir ? ' — air export / import ops unlock after that.' : '.'
+                }`}
           </p>
         </PortalPanel>
       ) : null}
@@ -247,6 +307,7 @@ export default function PortalQuoteDetailPage() {
       {showBookingForm ? (
         <PortalBookingFormPanel
           quote={data}
+          invoiceAlreadySent={!modeConvert && invoiceSent}
           onSuccess={(message) => {
             setActionSuccess(message);
           }}
@@ -256,7 +317,7 @@ export default function PortalQuoteDetailPage() {
         />
       ) : null}
 
-      {gatedCommercial && formSubmitted ? (
+      {gatedCommercial && formSubmitted && !commercialComplete ? (
         <PortalPanel padded className="border-sky-200 bg-sky-50/60">
           <h2 className="text-sm font-semibold text-sky-900">
             {modeConvert ? 'Next: Job created' : 'Next: Invoice (INVOICE_SENT)'}
@@ -268,6 +329,22 @@ export default function PortalQuoteDetailPage() {
                   isAir ? ', then AIR_EXPORT or AIR_IMPORT operations begin.' : '.'
                 }`}
           </p>
+        </PortalPanel>
+      ) : null}
+
+      {gatedCommercial && commercialComplete && !modeConvert ? (
+        <PortalPanel padded className="border-emerald-200 bg-emerald-50/60">
+          <h2 className="text-sm font-semibold text-emerald-900">Invoice sent</h2>
+          <p className="mt-1 text-sm text-emerald-800">
+            Your forwarder has sent the invoice
+            {isAir ? '. Air export / import operations can continue on the shipment.' : '.'}
+          </p>
+          <Link
+            to="/portal/invoices"
+            className="mt-2 inline-block text-sm font-medium text-[var(--color-primary)] underline"
+          >
+            View invoices
+          </Link>
         </PortalPanel>
       ) : null}
 

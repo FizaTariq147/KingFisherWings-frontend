@@ -226,12 +226,23 @@ export function normalizeJob(raw: unknown): Job | null {
   const seaLcl = asRecord(r.sea_lcl_details ?? r.seaLclDetails);
   const courier = asRecord(r.courier_details ?? r.courierDetails);
   const land = asRecord(r.land_details ?? r.landDetails);
+  const road = asRecord(r.road_freight_details ?? r.roadFreightDetails);
   const schedule = pickJobScheduleDates(r, air, sea, seaLcl);
+
+  let jobType = canonicalizeJobType(pickString(r, 'job_type', 'jobType'), 'AIR_EXPORT');
+  // Some convert paths store ROAD under land-ish labels but still attach road_freight_details.
+  if (
+    road &&
+    Object.keys(road).length > 0 &&
+    (jobType === 'LAND' || jobType === 'AIR_EXPORT' || jobType === 'SERVICE_JOB')
+  ) {
+    jobType = 'ROAD_FREIGHT';
+  }
 
   return {
     id: str(r.id),
     job_number: pickString(r, 'job_number', 'jobNumber') || undefined,
-    job_type: canonicalizeJobType(pickString(r, 'job_type', 'jobType'), 'AIR_EXPORT'),
+    job_type: jobType,
     status: (pickString(r, 'status') || 'ENQUIRY') as JobStatus,
     company_id: pickString(r, 'company_id', 'companyId') || undefined,
     branch_id: pickString(r, 'branch_id', 'branchId') || undefined,
@@ -399,7 +410,6 @@ export function normalizeJob(raw: unknown): Job | null {
         }
       : undefined,
     road_freight_details: (() => {
-      const road = asRecord(r.road_freight_details ?? r.roadFreightDetails);
       if (!road) return undefined;
       return {
         trucker_id: pickString(road, 'trucker_id', 'truckerId') || undefined,

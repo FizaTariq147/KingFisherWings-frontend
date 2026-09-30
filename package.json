@@ -21,7 +21,9 @@
     "test:integration": "node scripts/api-matrix-test.mjs && playwright test --project=setup --project=chromium --project=authenticated",
     "test:integration-report": "node scripts/integration-automation-report.mjs",
     "doctor": "npx react-doctor@latest",
-    "build:invoice-ui-layouts": "node scripts/build-invoice-format-ui-layouts.mjs"
+    "build:invoice-ui-layouts": "node scripts/build-invoice-format-ui-layouts.mjs",
+    "gen:api-schema": "node scripts/generate-api-schema.mjs",
+    "audit:api-coverage": "node scripts/audit-api-coverage.mjs"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.10.0",

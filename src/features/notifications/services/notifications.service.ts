@@ -9,7 +9,9 @@ export const notificationsService = {
     return normalizeNotificationList(res.data, params);
   },
   async unreadCount(): Promise<number> {
-    const res = await axiosInstance.get(NOTIFICATIONS_API.unreadCount);
+    const res = await axiosInstance.get(NOTIFICATIONS_API.unreadCount, {
+      skipErrorToast: true,
+    });
     return normalizeUnreadCount(res.data);
   },
   async markRead(id: string): Promise<void> {

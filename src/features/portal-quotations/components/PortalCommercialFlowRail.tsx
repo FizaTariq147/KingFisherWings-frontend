@@ -93,7 +93,10 @@ export function usesPortalCommercialFlow(jobType?: string): boolean {
 function resolveCurrentStep(
   quote: PortalQuotationDetail,
   formSubmitted: boolean,
-): PortalCommercialStepId {
+  commercialComplete: boolean,
+): PortalCommercialStepId | 'complete' {
+  if (commercialComplete) return 'complete';
+
   if (formSubmitted) return 'invoice-sent';
 
   const showsForm = portalQuoteShowsBookingForm(quote);
@@ -112,16 +115,38 @@ function resolveCurrentStep(
   return 'quote-sent';
 }
 
+function stepDetail(
+  step: Step,
+  opts: { modeConvert: boolean; commercialComplete: boolean; formSubmitted: boolean },
+): string | undefined {
+  if (step.id !== 'invoice-sent') return step.detail;
+  if (opts.modeConvert) {
+    return opts.commercialComplete
+      ? 'Job created from this quotation'
+      : step.detail;
+  }
+  if (opts.commercialComplete) return 'Invoice sent — view Invoices';
+  if (opts.formSubmitted) return 'Forwarder sends invoice next';
+  return step.detail;
+}
+
 interface PortalCommercialFlowRailProps {
   quote: PortalQuotationDetail;
   /** True after customer submitted the compliance booking form. */
   formSubmitted?: boolean;
+  /**
+   * True when shared commercial is finished:
+   * invoice flow → INVOICE_SENT / portal invoice exists;
+   * convert flow → converted job number present.
+   */
+  commercialComplete?: boolean;
 }
 
 /** Customer-facing shared commercial rail (Air + NVOCC + mode booking convert). */
 export function PortalCommercialFlowRail({
   quote,
   formSubmitted = false,
+  commercialComplete = false,
 }: PortalCommercialFlowRailProps) {
   if (!usesPortalCommercialFlow(quote.jobType)) return null;
 
@@ -132,8 +157,9 @@ export function PortalCommercialFlowRail({
       .startsWith('AIR');
   const modeConvert = usesModeBookingFormConvertFlow(quote.jobType);
   const steps = modeConvert ? STEPS_CONVERT : STEPS_INVOICE;
-  const current = resolveCurrentStep(quote, formSubmitted);
-  const currentIdx = steps.findIndex((s) => s.id === current);
+  const current = resolveCurrentStep(quote, formSubmitted, commercialComplete);
+  const allDone = current === 'complete';
+  const currentIdx = allDone ? steps.length : steps.findIndex((s) => s.id === current);
 
   const title = isAir
     ? 'Air freight · Shared commercial'
@@ -142,7 +168,9 @@ export function PortalCommercialFlowRail({
       : 'NVOCC · Shared commercial';
   const subtitle = modeConvert
     ? 'Accept → booking form → job'
-    : 'Accept → booking form → invoice';
+    : allDone
+      ? 'Accept → booking form → invoice sent'
+      : 'Accept → booking form → invoice';
 
   return (
     <div className="space-y-2">
@@ -152,8 +180,13 @@ export function PortalCommercialFlowRail({
       </div>
       <ol className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {steps.map((step, index) => {
-          const completed = currentIdx >= 0 && index < currentIdx;
-          const active = step.id === current;
+          const completed = allDone || (currentIdx >= 0 && index < currentIdx);
+          const active = !allDone && step.id === current;
+          const detail = stepDetail(step, {
+            modeConvert,
+            commercialComplete: allDone,
+            formSubmitted,
+          });
           return (
             <li
               key={step.id}
@@ -179,9 +212,9 @@ export function PortalCommercialFlowRail({
                 ) : null}
               </div>
               <p className="mt-1 text-sm font-medium text-[var(--color-neutral-900)]">{step.label}</p>
-              {step.detail ? (
+              {detail ? (
                 <p className="mt-0.5 text-[11px] leading-snug text-[var(--color-neutral-500)]">
-                  {step.detail}
+                  {detail}
                 </p>
               ) : null}
             </li>

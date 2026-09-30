@@ -4,7 +4,7 @@ import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore
 import type { ApiPeriodQuery, UiDashboardPeriod } from '@/lib/apiPeriod';
 import { uiPeriodToApi } from '@/lib/apiPeriod';
 import { portalInvoicesService } from '../services/portalInvoices.service';
-import type { PortalInvoiceListParams } from '../types/portalInvoices.types';
+import type { PortalInvoiceListParams, PortalInvoiceListResult } from '../types/portalInvoices.types';
 
 export const portalInvoiceKeys = {
   all: (scope: string) => ['portal', scope, 'invoices'] as const,
@@ -37,15 +37,25 @@ export function usePortalInvoiceSummary(
   });
 }
 
-export function usePortalInvoices(params: PortalInvoiceListParams) {
+export function usePortalInvoices(
+  params: PortalInvoiceListParams,
+  enabled = true,
+  options?: {
+    refetchInterval?:
+      | number
+      | false
+      | ((query: { state: { data?: PortalInvoiceListResult } }) => number | false | undefined);
+  },
+) {
   const accessToken = usePortalAuthStore((s) => s.accessToken);
   const scope = usePortalQueryScope();
   return useQuery({
     queryKey: portalInvoiceKeys.list(scope, params),
     queryFn: () => portalInvoicesService.list(params),
-    enabled: Boolean(accessToken) && scope !== 'anon',
+    enabled: Boolean(accessToken) && enabled && scope !== 'anon',
     staleTime: 0,
     placeholderData: keepPreviousData,
+    refetchInterval: options?.refetchInterval,
   });
 }
 

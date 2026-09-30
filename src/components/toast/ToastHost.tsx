@@ -142,33 +142,68 @@ export function ToastHost() {
   );
 }
 
+function unreadBaselineKey(surface: string): string {
+  return `kfw-unread-baseline:${surface}`;
+}
+
+function readStoredBaseline(surface: string): number | null {
+  try {
+    const raw = sessionStorage.getItem(unreadBaselineKey(surface));
+    if (raw == null || raw === '') return null;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredBaseline(surface: string, count: number): void {
+  try {
+    sessionStorage.setItem(unreadBaselineKey(surface), String(count));
+  } catch {
+    /* private mode / quota */
+  }
+}
+
 /**
  * Watches unread notification counts and pops a toast when they rise.
- * Additive only — does not change badge or list behaviour.
+ * Only toasts after a ready baseline — never treats loading (undefined) as 0→N.
+ * sessionStorage keeps the baseline across shell remounts in the same tab.
  */
 export function NotificationToastWatcher({
   unreadCount,
   title = 'Notification',
+  storageKey = 'default',
 }: {
-  unreadCount: number;
+  /** Omit / undefined while unread query has not fetched yet. */
+  unreadCount: number | undefined;
   title?: string;
+  /** Isolate admin / portal / vendor baselines. */
+  storageKey?: string;
 }) {
   const prevRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (typeof unreadCount !== 'number' || !Number.isFinite(unreadCount)) return;
+
     if (prevRef.current === null) {
-      prevRef.current = unreadCount;
+      const stored = readStoredBaseline(storageKey);
+      // First ready value in this mount: adopt max(stored, current) without toasting.
+      prevRef.current = stored != null ? Math.max(stored, unreadCount) : unreadCount;
+      writeStoredBaseline(storageKey, prevRef.current);
       return;
     }
+
     if (unreadCount > prevRef.current) {
       const delta = unreadCount - prevRef.current;
       toast.notification(
         delta === 1 ? 'You have a new notification.' : `You have ${delta} new notifications.`,
-        { title, dedupeMs: 4000 },
+        { title, dedupeMs: 8000 },
       );
     }
     prevRef.current = unreadCount;
-  }, [unreadCount, title]);
+    writeStoredBaseline(storageKey, unreadCount);
+  }, [unreadCount, title, storageKey]);
 
   return null;
 }

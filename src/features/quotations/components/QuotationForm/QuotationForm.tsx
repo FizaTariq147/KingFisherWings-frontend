@@ -160,10 +160,15 @@ export function QuotationForm({
 
   const watched = watch();
   const useAirports = isAirJobType(watched.job_type);
-  const isWarehouse =
-    String(watched.job_type ?? '')
-      .toUpperCase()
-      .replace(/[\s-]+/g, '_') === 'WAREHOUSE';
+  const jtNorm = String(watched.job_type ?? '')
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  const isWarehouse = jtNorm === 'WAREHOUSE';
+  const isRoadLand =
+    jtNorm === 'ROAD_FREIGHT' || jtNorm === 'LAND' || jtNorm.startsWith('ROAD');
+  const isCourier = jtNorm === 'COURIER';
+  const isCustoms = jtNorm === 'CUSTOMS_CLEARANCE' || jtNorm.startsWith('CUSTOMS');
+  const hideContainers = isWarehouse || isRoadLand || isCourier || isCustoms;
   const { data: containers = [] } = useMasterOptions(
     'container-types',
     MASTER_PATHS['container-types'],
@@ -344,7 +349,11 @@ export function QuotationForm({
                 ? 'Origin airport'
                 : isWarehouse
                   ? 'Pickup / origin location'
-                  : 'Origin'
+                  : isRoadLand || isCourier
+                    ? 'Origin city / hub (optional)'
+                    : isCustoms
+                      ? 'Origin / entry place (optional)'
+                      : 'Origin'
             }
             value={field.value ?? ''}
             onChange={field.onChange}
@@ -365,7 +374,11 @@ export function QuotationForm({
                 ? 'Destination airport'
                 : isWarehouse
                   ? 'Warehouse location'
-                  : 'Destination'
+                  : isRoadLand || isCourier
+                    ? 'Destination city / hub (optional)'
+                    : isCustoms
+                      ? 'Destination / exit place (optional)'
+                      : 'Destination'
             }
             value={field.value ?? ''}
             onChange={field.onChange}
@@ -380,6 +393,13 @@ export function QuotationForm({
           CreateQuotationDto has no warehouse_id — use pickup → warehouse places (or leave blank)
           and put bonded / storage days in special requirements. Full UpsertWarehouseBookingFormDto
           fields are on the warehouse booking form after approve.
+        </p>
+      ) : null}
+      {isRoadLand ? (
+        <p className="md:col-span-2 text-xs text-[var(--color-neutral-500)]">
+          Road/Land quotes: ports are optional. Door addresses, vehicle type, and border crossing
+          are collected on the booking form (UpsertRoadFreightBookingFormDto /
+          UpsertLandBookingFormDto) after approve.
         </p>
       ) : null}
     </>
@@ -534,25 +554,29 @@ export function QuotationForm({
               Planned Container / Consignment
             </h3>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="space-y-1">
-                <label htmlFor="container_type_id" className={labelClass}>
-                  Container type
-                </label>
-                <select
-                  id="container_type_id"
-                  className={selectClass}
-                  {...register('container_type_id')}
-                >
-                  <option value="">Select…</option>
-                  {containerOptions}
-                </select>
-              </div>
-              <Input
-                label="No of Container"
-                type="number"
-                error={fieldError('container_count')}
-                {...register('container_count', { valueAsNumber: true })}
-              />
+              {!hideContainers ? (
+                <>
+                  <div className="space-y-1">
+                    <label htmlFor="container_type_id" className={labelClass}>
+                      Container type
+                    </label>
+                    <select
+                      id="container_type_id"
+                      className={selectClass}
+                      {...register('container_type_id')}
+                    >
+                      <option value="">Select…</option>
+                      {containerOptions}
+                    </select>
+                  </div>
+                  <Input
+                    label="No of Container"
+                    type="number"
+                    error={fieldError('container_count')}
+                    {...register('container_count', { valueAsNumber: true })}
+                  />
+                </>
+              ) : null}
               <Input
                 label="No of Packages / Pieces"
                 type="number"
@@ -920,21 +944,29 @@ export function QuotationForm({
             error={fieldError('pieces')}
             {...register('pieces', { valueAsNumber: true })}
           />
-          <Input
-            label="Container count"
-            type="number"
-            error={fieldError('container_count')}
-            {...register('container_count', { valueAsNumber: true })}
-          />
-          <div className="space-y-1">
-            <label htmlFor="container_type_id" className={labelClass}>
-              Container type
-            </label>
-            <select id="container_type_id" className={selectClass} {...register('container_type_id')}>
-              <option value="">Select…</option>
-              {containerOptions}
-            </select>
-          </div>
+          {!hideContainers ? (
+            <>
+              <Input
+                label="Container count"
+                type="number"
+                error={fieldError('container_count')}
+                {...register('container_count', { valueAsNumber: true })}
+              />
+              <div className="space-y-1">
+                <label htmlFor="container_type_id" className={labelClass}>
+                  Container type
+                </label>
+                <select
+                  id="container_type_id"
+                  className={selectClass}
+                  {...register('container_type_id')}
+                >
+                  <option value="">Select…</option>
+                  {containerOptions}
+                </select>
+              </div>
+            </>
+          ) : null}
           <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)] mt-6">
             <input type="checkbox" {...register('is_dg')} />
             Dangerous goods

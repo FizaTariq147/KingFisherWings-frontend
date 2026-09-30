@@ -667,6 +667,7 @@ export const quotationService = {
       quotationId?: string;
       customerId?: string;
       jobType?: string;
+      jobNumber?: string;
     },
   ): Promise<Quotation | null> {
     if (hints?.quotationId && isUuid(hints.quotationId)) {
@@ -678,11 +679,37 @@ export const quotationService = {
     }
     if (!jobId || !isUuid(jobId)) return null;
 
-    const tryMatch = (items: Quotation[]) =>
-      items.find((q) => q.job_id === jobId) ?? null;
+    const jobNumberUpper = String(hints?.jobNumber ?? '')
+      .trim()
+      .toUpperCase();
 
-    try {
-      const listed = await this.list({
+    const tryMatch = (items: Quotation[]) => {
+      const byId = items.find((q) => q.job_id === jobId);
+      if (byId) return byId;
+      if (jobNumberUpper) {
+        const byNum = items.find(
+          (q) =>
+            String(q.job_number ?? '')
+              .trim()
+              .toUpperCase() === jobNumberUpper,
+        );
+        if (byNum) return byNum;
+      }
+      return null;
+    };
+
+    const listAttempts: Array<Parameters<typeof this.list>[0]> = [
+      {
+        page: 1,
+        limit: 100,
+        order: 'desc',
+        status: 'CONVERTED',
+        ...(hints?.customerId && isUuid(hints.customerId)
+          ? { customer_id: hints.customerId }
+          : {}),
+        ...(hints?.jobType ? { job_type: hints.jobType as Quotation['job_type'] } : {}),
+      },
+      {
         page: 1,
         limit: 50,
         order: 'desc',
@@ -690,25 +717,31 @@ export const quotationService = {
           ? { customer_id: hints.customerId }
           : {}),
         ...(hints?.jobType ? { job_type: hints.jobType as Quotation['job_type'] } : {}),
-      });
-      const matched = tryMatch(listed.quotations);
-      if (matched) {
-        if (matched.lines?.length) return matched;
-        return await this.getById(matched.id);
-      }
-    } catch {
-      /* ignore */
+      },
+      { page: 1, limit: 30, search: jobId, order: 'desc' },
+    ];
+    if (jobNumberUpper) {
+      listAttempts.push({ page: 1, limit: 30, search: jobNumberUpper, order: 'desc' });
+    }
+    // Air jobs often omit job_type hint — try both air modes.
+    if (!hints?.jobType) {
+      listAttempts.push(
+        { page: 1, limit: 50, order: 'desc', status: 'CONVERTED', job_type: 'AIR_EXPORT' as never },
+        { page: 1, limit: 50, order: 'desc', status: 'CONVERTED', job_type: 'AIR_IMPORT' as never },
+      );
     }
 
-    try {
-      const listed = await this.list({ page: 1, limit: 30, search: jobId, order: 'desc' });
-      const matched = tryMatch(listed.quotations);
-      if (matched) {
-        if (matched.lines?.length) return matched;
-        return await this.getById(matched.id);
+    for (const params of listAttempts) {
+      try {
+        const listed = await this.list(params);
+        const matched = tryMatch(listed.quotations);
+        if (matched) {
+          if (matched.lines?.length) return matched;
+          return await this.getById(matched.id);
+        }
+      } catch {
+        /* try next */
       }
-    } catch {
-      /* ignore */
     }
 
     return null;
@@ -1329,6 +1362,15 @@ export const quotationService = {
       } catch (convertErr) {
         const convertStatus = (convertErr as { response?: { status?: number } })?.response
           ?.status;
+        const detail = formatAxiosError(convertErr).message;
+        if (
+          convertStatus === 403 &&
+          /ROAD_FREIGHT|do not have access/i.test(detail)
+        ) {
+          throw new Error(
+            `${detail} Enable ROAD_FREIGHT job-type access for this user/department, then retry convert from Quotations.`,
+          );
+        }
         if (convertStatus !== 500) {
           if ((convertErr as { response?: unknown }).response) {
             throw formatAxiosError(convertErr);
@@ -1341,6 +1383,16 @@ export const quotationService = {
             await createJobFallbackFromQuotation({ ...quotation, branch_id: branchId }),
           );
         } catch (fallbackErr) {
+          const fbStatus = (fallbackErr as { response?: { status?: number } })?.response?.status;
+          const fbDetail = formatAxiosError(fallbackErr).message;
+          if (
+            fbStatus === 403 &&
+            /ROAD_FREIGHT|do not have access/i.test(fbDetail)
+          ) {
+            throw new Error(
+              `${fbDetail} Enable ROAD_FREIGHT job-type access for this user/department, then retry convert from Quotations.`,
+            );
+          }
           throw formatAxiosError(fallbackErr);
         }
       }

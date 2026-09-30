@@ -313,7 +313,9 @@ export const vendorNotificationsService = {
   async unreadCount(): Promise<number> {
     if (vendorNotificationsApiEnabled()) {
       try {
-        const res = await vendorApiClient.get(VENDOR_NOTIFICATIONS_API.unreadCount);
+        const res = await vendorApiClient.get(VENDOR_NOTIFICATIONS_API.unreadCount, {
+          skipErrorToast: true,
+        });
         return normalizeUnreadCount(res.data);
       } catch (err) {
         if (!isMissingEndpoint(err)) throw err;

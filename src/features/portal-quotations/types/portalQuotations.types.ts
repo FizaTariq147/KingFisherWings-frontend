@@ -344,6 +344,16 @@ export type PortalBookingForm = {
     value_amount?: number;
     currency_code?: string;
   }[];
+  /** Land / Road / Courier — UpsertLand|RoadFreight|CourierBookingFormDto */
+  origin_city_country?: string;
+  dest_city_country?: string;
+  vehicle_type?: string;
+  border_crossing?: string;
+  tracking_number?: string;
+  etd?: string;
+  eta?: string;
+  freight_terms?: string;
+  cfs_warehouse?: string;
 };
 
 /**
@@ -424,5 +434,14 @@ export type PortalBookingFormUpsertDto = {
   attach_poa?: boolean;
   attach_permit?: boolean;
   cargo_lines?: PortalBookingForm['cargo_lines'];
+  origin_city_country?: string;
+  dest_city_country?: string;
+  vehicle_type?: string;
+  border_crossing?: string;
+  tracking_number?: string;
+  etd?: string;
+  eta?: string;
+  freight_terms?: string;
+  cfs_warehouse?: string;
 };
 
