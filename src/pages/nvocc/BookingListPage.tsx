@@ -7,6 +7,11 @@ import { NVOCC_CARGO_TYPES } from '@/features/nvocc/constants/nvocc.constants';
 import { useNvoccBookings } from '@/features/nvocc/hooks/useNvocc';
 import { NvoccListState, NvoccStatusBadge, nvoccTdClass, nvoccThClass } from '@/features/nvocc/components/NvoccUi';
 import { nvoccDisplayNumber } from '@/features/nvocc/utils/normalizeNvocc';
+import {
+  nvoccBookingPartyLabel,
+  nvoccBookingRouteLabel,
+  nvoccBookingWeightLabel,
+} from '@/features/nvocc/utils/nvoccBookingDisplay';
 import type { NvoccBooking, NvoccBookingListParams } from '@/features/nvocc/types/nvocc.types';
 import type { NvoccCargoType } from '@/features/nvocc/constants/nvocc.constants';
 import { useQuotations } from '@/features/quotations/hooks/useQuotations';
@@ -202,10 +207,10 @@ export default function BookingListPage() {
                 <tr>
                   <th className={nvoccThClass}>Ref</th>
                   <th className={nvoccThClass}>Source</th>
-                  <th className={nvoccThClass}>Customer / cargo</th>
-                  <th className={nvoccThClass}>Route / HBL</th>
-                  <th className={nvoccThClass}>Amount / job</th>
-                  <th className={nvoccThClass}>Commodity</th>
+                  <th className={nvoccThClass}>Shipper / consignee</th>
+                  <th className={nvoccThClass}>Route / voyage</th>
+                  <th className={nvoccThClass}>Cargo / weight</th>
+                  <th className={nvoccThClass}>Job / HBL</th>
                   <th className={nvoccThClass}>Status</th>
                 </tr>
               </thead>
@@ -226,12 +231,27 @@ export default function BookingListPage() {
                           Booking
                         </span>
                       </td>
-                      <td className={nvoccTdClass}>{row.booking.cargo_type ?? '—'}</td>
-                      <td className={nvoccTdClass}>{row.booking.hbl_number ?? '—'}</td>
                       <td className={nvoccTdClass}>
-                        {row.booking.job_number ?? row.booking.job_id ?? '—'}
+                        <div>{nvoccBookingPartyLabel(row.booking, 'shipper')}</div>
+                        <div className="text-xs text-gray-500">
+                          {nvoccBookingPartyLabel(row.booking, 'consignee')}
+                        </div>
                       </td>
-                      <td className={nvoccTdClass}>{row.booking.commodity ?? '—'}</td>
+                      <td className={nvoccTdClass}>
+                        <div>{nvoccBookingRouteLabel(row.booking)}</div>
+                        <div className="text-xs text-gray-500">
+                          {row.booking.cargo_type ?? '—'}
+                          {row.booking.voyage_number ? ` · ${row.booking.voyage_number}` : ''}
+                        </div>
+                      </td>
+                      <td className={nvoccTdClass}>
+                        <div>{row.booking.commodity ?? '—'}</div>
+                        <div className="text-xs text-gray-500">{nvoccBookingWeightLabel(row.booking)}</div>
+                      </td>
+                      <td className={nvoccTdClass}>
+                        <div>{row.booking.job_number ?? row.booking.job_id ?? '—'}</div>
+                        <div className="text-xs text-gray-500">{row.booking.hbl_number ?? '—'}</div>
+                      </td>
                       <td className={nvoccTdClass}>
                         <NvoccStatusBadge status={row.booking.booking_status} />
                       </td>
@@ -245,6 +265,14 @@ export default function BookingListPage() {
                         >
                           {quotationDisplayNumber(row.quotation)}
                         </Link>
+                        <div className="mt-0.5">
+                          <Link
+                            className="text-xs text-blue-600 hover:underline"
+                            to={`/nvocc/bookings/new?quotationId=${encodeURIComponent(row.quotation.id)}`}
+                          >
+                            Create booking from quote
+                          </Link>
+                        </div>
                       </td>
                       <td className={nvoccTdClass}>
                         <span className="rounded bg-amber-50 px-1.5 py-0.5 text-xs text-amber-800">

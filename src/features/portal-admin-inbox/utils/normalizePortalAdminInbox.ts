@@ -37,9 +37,18 @@ export function normalizeAdminMessage(raw: unknown): AdminPortalMessage | null {
   return {
     id,
     subject: pickString(r.subject, r.title) || 'Message',
-    body: pickString(r.body, r.message) || undefined,
+    body: pickString(r.body, r.message, r.content, r.text) || undefined,
     partyId: pickString(r.party_id, r.partyId) || undefined,
     partyName: pickString(r.party_name, r.partyName, asRecord(r.party)?.name) || undefined,
+    jobId:
+      pickString(
+        r.job_id,
+        r.jobId,
+        r.shipment_id,
+        r.shipmentId,
+        asRecord(r.job)?.id,
+        asRecord(r.shipment)?.id,
+      ) || undefined,
     createdAt: pickString(r.created_at, r.createdAt) || undefined,
     isRead: pickBoolean(r.is_read, r.isRead, r.read_by_staff) ?? Boolean(readAt),
     senderEmail: pickString(r.sender_email, r.email, r.from_email) || undefined,

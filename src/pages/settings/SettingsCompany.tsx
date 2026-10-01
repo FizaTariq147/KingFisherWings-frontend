@@ -1,7 +1,15 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+import { PlatformBillingErrorAlert } from '@/features/platform-billing/components/PlatformBillingErrorAlert';
+import { PlatformBillingFieldGrid } from '@/features/platform-billing/components/PlatformBillingFieldGrid';
+import {
+  useTenantPlatformInvoices,
+  useTenantSubscription,
+} from '@/features/tenant-platform-billing/hooks/useTenantPlatformBilling';
+import { formatBillingScalar, statusBadgeVariant } from '@/features/platform-billing/utils/platformBillingUi';
 
 type SettingsTab = 'company' | 'billing' | 'preferences' | 'integrations';
 
@@ -184,71 +192,7 @@ export default function SettingsCompany() {
           )}
 
           {/* Billing Tab */}
-          {activeTab === 'billing' && (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Current Plan</CardTitle>
-                  <Badge variant="success">Active</Badge>
-                </CardHeader>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-2xl font-bold text-[var(--color-neutral-800)] mb-1">Professional Plan</p>
-                    <p className="text-sm text-[var(--color-neutral-400)]">Up to 10 users · All modules · Priority support</p>
-                    <p className="text-sm font-semibold text-[var(--color-primary-600)] mt-2">AED 2,499 / month</p>
-                  </div>
-                  <Button variant="secondary">Upgrade Plan</Button>
-                </div>
-                <div className="mt-4 grid grid-cols-3 gap-4">
-                  {[
-                    { label: 'Users',       used: 8,  total: 10  },
-                    { label: 'Storage',     used: 12, total: 50, unit: 'GB' },
-                    { label: 'API Calls',   used: 45, total: 100, unit: 'K/mo' },
-                  ].map((usage) => (
-                    <div key={usage.label} className="p-3 rounded-lg bg-[var(--color-neutral-50)]">
-                      <div className="flex justify-between text-sm mb-1">
-                        <span className="text-[var(--color-neutral-600)]">{usage.label}</span>
-                        <span className="font-mono font-medium">{usage.used}/{usage.total}{usage.unit || ''}</span>
-                      </div>
-                      <div className="h-1.5 bg-[var(--color-neutral-200)] rounded-full">
-                        <div
-                          className={`h-1.5 rounded-full ${
-                            (usage.used / usage.total) > 0.8
-                              ? 'bg-[var(--color-danger-500)]'
-                              : 'bg-[var(--color-primary-500)]'
-                          }`}
-                          style={{ width: `${(usage.used / usage.total) * 100}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-
-              <Card>
-                <CardHeader><CardTitle>Billing History</CardTitle></CardHeader>
-                <div className="space-y-3">
-                  {[
-                    { date: '2026-06-01', desc: 'Professional Plan — June 2026', amount: 2499, status: 'Paid' },
-                    { date: '2026-05-01', desc: 'Professional Plan — May 2026',  amount: 2499, status: 'Paid' },
-                    { date: '2026-04-01', desc: 'Professional Plan — April 2026', amount: 2499, status: 'Paid' },
-                  ].map((bill) => (
-                    <div key={bill.date} className="flex items-center justify-between py-2 border-b border-[var(--color-neutral-100)] last:border-0">
-                      <div>
-                        <p className="text-sm font-medium text-[var(--color-neutral-800)]">{bill.desc}</p>
-                        <p className="text-xs font-mono text-[var(--color-neutral-400)]">{bill.date}</p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono font-semibold text-sm">AED {bill.amount.toLocaleString()}</span>
-                        <Badge variant="success">{bill.status}</Badge>
-                        <button className="text-xs text-[var(--color-primary-500)] hover:underline">Receipt</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </>
-          )}
+          {activeTab === 'billing' && <SettingsBillingSummary />}
 
           {/* Preferences Tab */}
           {activeTab === 'preferences' && (
@@ -371,5 +315,87 @@ export default function SettingsCompany() {
         </div>
       </div>
     </div>
+  );
+}
+
+function SettingsBillingSummary() {
+  const subscription = useTenantSubscription();
+  const invoices = useTenantPlatformInvoices({ page: 1, limit: 3 });
+  const recent = invoices.data?.items ?? [];
+
+  return (
+    <>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between gap-2">
+          <CardTitle>Platform billing</CardTitle>
+          {subscription.data?.status ? (
+            <Badge variant={statusBadgeVariant(subscription.data.status)}>{subscription.data.status}</Badge>
+          ) : null}
+        </CardHeader>
+        <div className="space-y-4">
+          {subscription.isError && (
+            <PlatformBillingErrorAlert error={subscription.error} onRetry={() => subscription.refetch()} />
+          )}
+          {subscription.isLoading && (
+            <p className="text-sm text-[var(--color-neutral-500)]">Loading subscription…</p>
+          )}
+          {subscription.data ? (
+            <PlatformBillingFieldGrid
+              normalized={subscription.data as unknown as Record<string, unknown>}
+              raw={subscription.data.raw}
+            />
+          ) : (
+            !subscription.isLoading &&
+            !subscription.isError && (
+              <p className="text-sm text-[var(--color-neutral-500)]">No subscription data from the billing API.</p>
+            )
+          )}
+          <Link to="/settings/billing">
+            <Button type="button">Manage billing</Button>
+          </Link>
+        </div>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent platform invoices</CardTitle>
+        </CardHeader>
+        {invoices.isError && (
+          <PlatformBillingErrorAlert error={invoices.error} onRetry={() => invoices.refetch()} />
+        )}
+        {invoices.isLoading && (
+          <p className="text-sm text-[var(--color-neutral-500)]">Loading invoices…</p>
+        )}
+        <div className="space-y-2">
+          {recent.map((inv) => (
+            <div
+              key={inv.id}
+              className="flex flex-wrap items-center justify-between gap-2 py-2 border-b border-[var(--color-neutral-100)] last:border-0 text-sm"
+            >
+              <Link
+                to={`/settings/billing/invoices/${inv.id}`}
+                className="font-medium text-[var(--color-primary-600)] hover:underline"
+              >
+                {inv.number || inv.id}
+              </Link>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-[var(--color-neutral-500)]">
+                  {formatBillingScalar(inv.totalAmount)} {formatBillingScalar(inv.currencyCode)}
+                </span>
+                {inv.status ? <Badge variant={statusBadgeVariant(inv.status)}>{inv.status}</Badge> : null}
+              </div>
+            </div>
+          ))}
+          {recent.length === 0 && !invoices.isLoading && (
+            <p className="text-sm text-[var(--color-neutral-500)]">No platform invoices yet.</p>
+          )}
+        </div>
+        <div className="pt-3">
+          <Link to="/settings/billing" className="text-sm text-[var(--color-primary-600)] hover:underline">
+            View all billing
+          </Link>
+        </div>
+      </Card>
+    </>
   );
 }

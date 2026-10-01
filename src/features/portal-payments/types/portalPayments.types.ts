@@ -7,3 +7,20 @@ export interface PortalPaymentListItem {
   currencyCode?: string; method?: string; status?: string; direction?: string;
 }
 export interface PortalPaymentListResult { items: PortalPaymentListItem[]; meta: PortalPaginationMeta; }
+
+export interface PortalOnlinePaymentItem extends PortalPaymentListItem {
+  checkoutUrl?: string;
+  invoiceId?: string;
+  raw?: Record<string, unknown>;
+}
+
+export interface PortalOnlinePaymentListResult {
+  items: PortalOnlinePaymentItem[];
+  meta: PortalPaginationMeta;
+}
+
+export interface PortalStripeConfigView {
+  publishableKey?: string;
+  mode?: string;
+  raw: Record<string, unknown>;
+}

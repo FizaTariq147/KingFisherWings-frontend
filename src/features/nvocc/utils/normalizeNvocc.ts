@@ -246,18 +246,42 @@ export function normalizeNvoccBooking(raw: unknown): NvoccBooking | null {
   if (!record) return null;
   const id = idOf(record);
   if (!id) return null;
+  const voyageRec = asRecord(record.voyage);
+  const polName =
+    str(record.pol_name) ??
+    nestedName(record, 'pol') ??
+    (voyageRec ? nestedName(voyageRec, 'pol') ?? nestedName(voyageRec, 'origin_port') : undefined);
+  const podName =
+    str(record.pod_name) ??
+    nestedName(record, 'pod') ??
+    (voyageRec ? nestedName(voyageRec, 'pod') ?? nestedName(voyageRec, 'dest_port') : undefined);
+  const voyageNumber =
+    nestedNumber(record, 'voyage_number', 'voyage_no') ??
+    (voyageRec ? nestedNumber(voyageRec, 'voyage_number', 'voyage_no', 'number') : undefined);
+
   return {
     id,
     booking_number: nestedNumber(record, 'booking_number', 'booking_no', 'number'),
-    voyage_id: str(record.voyage_id),
+    voyage_id: str(record.voyage_id) ?? str(voyageRec?.id),
+    voyage_number: voyageNumber,
+    voyage_label: [voyageNumber, polName && podName ? `${polName} → ${podName}` : '']
+      .filter(Boolean)
+      .join(' · ') || undefined,
+    pol_name: polName,
+    pod_name: podName,
     enquiry_id: str(record.enquiry_id),
     shipper_id: str(record.shipper_id),
+    shipper_name: nestedName(record, 'shipper') ?? str(record.shipper_name),
     consignee_id: str(record.consignee_id),
+    consignee_name: nestedName(record, 'consignee') ?? str(record.consignee_name),
     notify_id: str(record.notify_id),
+    notify_name: nestedName(record, 'notify') ?? str(record.notify_name),
     agent_pol_id: str(record.agent_pol_id),
     agent_pod_id: str(record.agent_pod_id),
     cargo_type: str(record.cargo_type) as NvoccBooking['cargo_type'],
     container_type_id: str(record.container_type_id),
+    container_type_name:
+      nestedName(record, 'container_type') ?? str(record.container_type_name),
     container_count: num(record.container_count),
     cbm_allocated: num(record.cbm_allocated),
     gross_weight: num(record.gross_weight),

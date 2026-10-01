@@ -1,4 +1,13 @@
-import { Building2, KeyRound, Ruler, Shield, UserCircle, MonitorSmartphone, Webhook } from 'lucide-react';
+import {
+  Building2,
+  CreditCard,
+  KeyRound,
+  Ruler,
+  Shield,
+  UserCircle,
+  MonitorSmartphone,
+  Webhook,
+} from 'lucide-react';
 import type { MenuTile } from '@/features/customers/types/menu.types';
 
 /** Settings hub — account, security, and workspace configuration. */
@@ -42,6 +51,22 @@ export const settingsMenu: MenuTile[] = [
     icon: Webhook,
     iconColor: 'bg-violet-600',
     path: '/settings/public-api',
+  },
+  {
+    id: 'online-payments-stripe',
+    title: 'Online Payments / Stripe',
+    description: 'Stripe gateway settings, webhook rotation, and reconciliation.',
+    icon: CreditCard,
+    iconColor: 'bg-emerald-600',
+    path: '/settings/online-payments',
+  },
+  {
+    id: 'billing',
+    title: 'Billing Plans',
+    description: 'View subscription plans, subscribe, and manage platform invoices.',
+    icon: CreditCard,
+    iconColor: 'bg-emerald-600',
+    path: '/settings/billing',
   },
   {
     id: 'tools',

@@ -436,9 +436,14 @@ async function linkQuotationJobShell(
   jobId: string,
   current: Quotation,
 ): Promise<Quotation> {
+  const { coerceQuotationStatus } = await import('../utils/quotationStatus');
+  const { rememberQuotationConverted } = await import('../utils/quotationConvertedMemory');
+  // Remember shell link so Ops can resolve portal booking forms by job even when
+  // status stays APPROVED until booking-form complete.
+  rememberQuotationConverted(quotationId, jobId);
+
   if (current.job_id === jobId) return current;
 
-  const { coerceQuotationStatus } = await import('../utils/quotationStatus');
   const bodies: Record<string, unknown>[] = [{ job_id: jobId }, { jobId }];
   for (const body of bodies) {
     try {
@@ -679,9 +684,34 @@ export const quotationService = {
     }
     if (!jobId || !isUuid(jobId)) return null;
 
+    try {
+      const { findRememberedQuotationIdForJob } = await import(
+        '../utils/quotationConvertedMemory'
+      );
+      const rememberedId = findRememberedQuotationIdForJob(jobId);
+      if (rememberedId && isUuid(rememberedId)) {
+        try {
+          const remembered = await this.getById(rememberedId);
+          if (remembered) {
+            if (remembered.lines?.length) return remembered;
+            return remembered;
+          }
+        } catch {
+          /* fall through */
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+
     const jobNumberUpper = String(hints?.jobNumber ?? '')
       .trim()
       .toUpperCase();
+    const jobTypeUpper = String(hints?.jobType ?? '')
+      .trim()
+      .toUpperCase()
+      .replace(/[\s-]+/g, '_');
+    const isAirFamily = jobTypeUpper.startsWith('AIR');
 
     const tryMatch = (items: Quotation[]) => {
       const byId = items.find((q) => q.job_id === jobId);
@@ -698,7 +728,7 @@ export const quotationService = {
       return null;
     };
 
-    const listAttempts: Array<Parameters<typeof this.list>[0]> = [
+    const listAttempts: QuotationListParams[] = [
       {
         page: 1,
         limit: 100,
@@ -709,6 +739,35 @@ export const quotationService = {
           : {}),
         ...(hints?.jobType ? { job_type: hints.jobType as Quotation['job_type'] } : {}),
       },
+      // Air shell jobs often keep quotation APPROVED with job_id (not CONVERTED yet).
+      ...(isAirFamily
+        ? ([
+            {
+              page: 1,
+              limit: 50,
+              order: 'desc',
+              status: 'APPROVED',
+              ...(hints?.customerId && isUuid(hints.customerId)
+                ? { customer_id: hints.customerId }
+                : {}),
+              ...(hints?.jobType ? { job_type: hints.jobType as Quotation['job_type'] } : {}),
+            },
+            {
+              page: 1,
+              limit: 50,
+              order: 'desc',
+              status: 'APPROVED',
+              job_type: 'AIR_EXPORT' as never,
+            },
+            {
+              page: 1,
+              limit: 50,
+              order: 'desc',
+              status: 'APPROVED',
+              job_type: 'AIR_IMPORT' as never,
+            },
+          ] as QuotationListParams[])
+        : []),
       {
         page: 1,
         limit: 50,
@@ -724,7 +783,7 @@ export const quotationService = {
       listAttempts.push({ page: 1, limit: 30, search: jobNumberUpper, order: 'desc' });
     }
     // Air jobs often omit job_type hint — try both air modes.
-    if (!hints?.jobType) {
+    if (!hints?.jobType || isAirFamily) {
       listAttempts.push(
         { page: 1, limit: 50, order: 'desc', status: 'CONVERTED', job_type: 'AIR_EXPORT' as never },
         { page: 1, limit: 50, order: 'desc', status: 'CONVERTED', job_type: 'AIR_IMPORT' as never },

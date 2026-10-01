@@ -4,7 +4,11 @@ import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore
 import type { ApiPeriodQuery, UiDashboardPeriod } from '@/lib/apiPeriod';
 import { uiPeriodToApi } from '@/lib/apiPeriod';
 import { portalInvoicesService } from '../services/portalInvoices.service';
-import type { PortalInvoiceListParams, PortalInvoiceListResult } from '../types/portalInvoices.types';
+import type {
+  PortalInvoiceListParams,
+  PortalInvoiceListResult,
+  PortalInvoicePaymentStatusView,
+} from '../types/portalInvoices.types';
 
 export const portalInvoiceKeys = {
   all: (scope: string) => ['portal', scope, 'invoices'] as const,
@@ -14,6 +18,9 @@ export const portalInvoiceKeys = {
   openItems: (scope: string) => [...portalInvoiceKeys.all(scope), 'open-items'] as const,
   paymentProofs: (scope: string, invoiceId: string) =>
     [...portalInvoiceKeys.all(scope), 'payment-proofs', invoiceId] as const,
+  paymentStatus: (scope: string, invoiceId: string) =>
+    [...portalInvoiceKeys.all(scope), 'payment-status', invoiceId] as const,
+  stripeConfig: (scope: string) => [...portalInvoiceKeys.all(scope), 'stripe-config'] as const,
 };
 
 export function usePortalInvoiceSummary(
@@ -122,6 +129,69 @@ export function useUploadPortalInvoicePaymentProof(invoiceId: string) {
       void qc.invalidateQueries({ queryKey: portalInvoiceKeys.paymentProofs(scope, invoiceId) });
       void qc.invalidateQueries({ queryKey: portalInvoiceKeys.openItems(scope) });
     },
+  });
+}
+
+export function usePayPortalInvoice(invoiceId: string) {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: (body: Record<string, unknown>) => portalInvoicesService.pay(invoiceId, body),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: portalInvoiceKeys.detail(scope, invoiceId) });
+      void qc.invalidateQueries({ queryKey: portalInvoiceKeys.paymentStatus(scope, invoiceId) });
+      void qc.invalidateQueries({ queryKey: portalInvoiceKeys.openItems(scope) });
+    },
+  });
+}
+
+export function useCheckoutPortalInvoice(invoiceId: string) {
+  return useMutation({
+    mutationFn: (body: Record<string, unknown>) => portalInvoicesService.checkout(invoiceId, body),
+  });
+}
+
+export function usePortalInvoicePaymentStatus(
+  invoiceId: string,
+  enabled = true,
+  options?: {
+    refetchInterval?:
+      | number
+      | false
+      | ((query: { state: { data?: PortalInvoicePaymentStatusView } }) => number | false | undefined);
+  },
+) {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  return useQuery({
+    queryKey: portalInvoiceKeys.paymentStatus(scope, invoiceId),
+    queryFn: () => portalInvoicesService.paymentStatus(invoiceId),
+    enabled: Boolean(accessToken) && Boolean(invoiceId) && scope !== 'anon' && enabled,
+    refetchInterval: options?.refetchInterval,
+  });
+}
+
+export function usePortalInvoiceStripeConfig(enabled = true) {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  return useQuery({
+    queryKey: portalInvoiceKeys.stripeConfig(scope),
+    queryFn: () => portalInvoicesService.getStripeConfig(),
+    enabled: Boolean(accessToken) && scope !== 'anon' && enabled,
+  });
+}
+
+export function useDownloadPortalInvoiceProofFile() {
+  return useMutation({
+    mutationFn: ({
+      invoiceId,
+      proofId,
+      fileName,
+    }: {
+      invoiceId: string;
+      proofId: string;
+      fileName?: string;
+    }) => portalInvoicesService.downloadProofFile(invoiceId, proofId, fileName),
   });
 }
 

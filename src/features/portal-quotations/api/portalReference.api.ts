@@ -1,3 +1,4 @@
+/** Verified: quote flows load ports/airports via loadPortalPortOptions (legacy ports fallback only). */
 export const PORTAL_LOOKUPS_API = {
   /** Preferred world sea ports (searchable, limit ≤ 500). */
   ports: '/portal/lookups/ports',

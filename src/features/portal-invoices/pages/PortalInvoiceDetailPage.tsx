@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Download } from 'lucide-react';
+import { ArrowLeft, CreditCard, Download } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
@@ -14,9 +14,25 @@ import {
   PortalPanel,
   PortalStatCard,
 } from '@/features/portal-auth/components/portal-ui';
-import { usePortalInvoice, usePortalInvoicePaymentProofs, usePortalInvoicePdfBlob, useUploadPortalInvoicePaymentProof } from '../hooks/usePortalInvoices';
+import {
+  useDownloadPortalInvoiceProofFile,
+  usePayPortalInvoice,
+  usePortalInvoice,
+  usePortalInvoicePaymentProofs,
+  usePortalInvoicePaymentStatus,
+  usePortalInvoicePdfBlob,
+  usePortalInvoiceStripeConfig,
+  useUploadPortalInvoicePaymentProof,
+} from '../hooks/usePortalInvoices';
 import { PaymentProofList, PaymentProofUploadForm } from '@/features/payment-proofs/components/PaymentProofPanels';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
+import {
+  invoiceEligibleForOnlinePay,
+  isPendingLikePaymentStatus,
+  isPortalOnlinePayAvailable,
+  openBillingCheckoutUrl,
+  portalPaymentStatusBadgeVariant,
+} from '@/features/portal-payments/utils/portalPaymentsUi';
 
 export default function PortalInvoiceDetailPage() {
   const { id = '' } = useParams();
@@ -25,10 +41,34 @@ export default function PortalInvoiceDetailPage() {
   const pdfBlob = usePortalInvoicePdfBlob();
   const { data: proofs = [] } = usePortalInvoicePaymentProofs(id);
   const uploadProof = useUploadPortalInvoicePaymentProof(id);
+  const stripeConfig = usePortalInvoiceStripeConfig();
+  const payInvoice = usePayPortalInvoice(id);
+  const downloadProof = useDownloadPortalInvoiceProofFile();
+  const [payStarted, setPayStarted] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [payError, setPayError] = useState<string | null>(null);
+  const [proofDownloadError, setProofDownloadError] = useState<string | null>(null);
+  const [downloadingProofId, setDownloadingProofId] = useState<string | null>(null);
   const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
   const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
   const [pdfReadyFileName, setPdfReadyFileName] = useState('invoice.pdf');
+
+  const onlinePayAvailable = isPortalOnlinePayAvailable(stripeConfig.data);
+
+  const showPayNow = useMemo(() => {
+    if (!data) return false;
+    if (!onlinePayAvailable) return false;
+    return invoiceEligibleForOnlinePay(data);
+  }, [data, onlinePayAvailable]);
+
+  const paymentStatus = usePortalInvoicePaymentStatus(
+    id,
+    Boolean(id) && (onlinePayAvailable || payStarted),
+    {
+      refetchInterval: (query) =>
+        isPendingLikePaymentStatus(query.state.data?.status) ? 4000 : false,
+    },
+  );
 
   const openInvoicePdf = (invoiceId: string, name: string) => {
     setPdfError(null);
@@ -49,6 +89,22 @@ export default function PortalInvoiceDetailPage() {
             : 'Could not download invoice PDF.',
         );
       });
+  };
+
+  const startPayNow = async () => {
+    setPayError(null);
+    setPayStarted(true);
+    try {
+      const result = await payInvoice.mutateAsync({});
+      openBillingCheckoutUrl(result);
+      void paymentStatus.refetch();
+    } catch (err) {
+      setPayError(
+        err instanceof PortalApiError || err instanceof Error
+          ? err.message
+          : 'Could not start online payment.',
+      );
+    }
   };
 
   if (isLoading) return <PortalLoadingState label="Loading invoice…" />;
@@ -73,6 +129,17 @@ export default function PortalInvoiceDetailPage() {
         actions={
           <>
             {data.status ? <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge> : null}
+            {showPayNow ? (
+              <Button
+                type="button"
+                size="sm"
+                disabled={payInvoice.isPending}
+                onClick={() => void startPayNow()}
+              >
+                <CreditCard size={14} aria-hidden="true" />
+                {payInvoice.isPending ? 'Starting…' : 'Pay now'}
+              </Button>
+            ) : null}
             <Button
               type="button"
               size="sm"
@@ -111,12 +178,63 @@ export default function PortalInvoiceDetailPage() {
           {pdfError}
         </p>
       ) : null}
+      {payError ? (
+        <p className="text-sm text-[var(--color-danger-600)]" role="alert">
+          {payError}
+        </p>
+      ) : null}
+      {proofDownloadError ? (
+        <p className="text-sm text-[var(--color-danger-600)]" role="alert">
+          {proofDownloadError}
+        </p>
+      ) : null}
       <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <PortalAnimatedGridItem><PortalStatCard label="Total" value={data.totalAmount ?? '—'} /></PortalAnimatedGridItem>
         <PortalAnimatedGridItem><PortalStatCard label="Paid" value={data.paidAmount ?? '—'} /></PortalAnimatedGridItem>
         <PortalAnimatedGridItem><PortalStatCard label="Balance due" value={data.outstandingBalance ?? '—'} /></PortalAnimatedGridItem>
         <PortalAnimatedGridItem><PortalStatCard label="Currency" value={data.currencyCode || '—'} /></PortalAnimatedGridItem>
       </PortalAnimatedGrid>
+      {(onlinePayAvailable || payStarted) &&
+        (paymentStatus.isLoading || paymentStatus.data?.status || paymentStatus.isError) && (
+        <PortalPanel padded className="space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Online payment status</h2>
+            {paymentStatus.data?.status ? (
+              <Badge variant={portalPaymentStatusBadgeVariant(paymentStatus.data.status)}>
+                {paymentStatus.data.status.replaceAll('_', ' ')}
+              </Badge>
+            ) : null}
+            {paymentStatus.isFetching && isPendingLikePaymentStatus(paymentStatus.data?.status) ? (
+              <span className="text-xs text-[var(--color-neutral-500)]">Updating…</span>
+            ) : null}
+          </div>
+          {paymentStatus.isLoading ? (
+            <p className="text-sm text-[var(--color-neutral-500)]">Loading payment status…</p>
+          ) : paymentStatus.isError ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-sm text-[var(--color-danger-600)]">Could not load payment status.</p>
+              <Button type="button" size="sm" variant="secondary" onClick={() => paymentStatus.refetch()}>
+                Retry
+              </Button>
+            </div>
+          ) : paymentStatus.data ? (
+            <dl className="grid gap-2 text-sm sm:grid-cols-2">
+              {paymentStatus.data.paidAmount != null ? (
+                <div>
+                  <dt className="text-xs text-[var(--color-neutral-500)]">Paid (online)</dt>
+                  <dd className="font-medium tabular-nums">{paymentStatus.data.paidAmount}</dd>
+                </div>
+              ) : null}
+              {paymentStatus.data.outstandingAmount != null ? (
+                <div>
+                  <dt className="text-xs text-[var(--color-neutral-500)]">Outstanding</dt>
+                  <dd className="font-medium tabular-nums">{paymentStatus.data.outstandingAmount}</dd>
+                </div>
+              ) : null}
+            </dl>
+          ) : null}
+        </PortalPanel>
+      )}
       {data.remarks ? <PortalPanel padded><p className="text-sm text-[var(--color-neutral-700)]">{data.remarks}</p></PortalPanel> : null}
       <PortalPanel padded>
         <h2 className="mb-4 text-sm font-semibold text-[var(--color-neutral-900)]">Lines</h2>
@@ -138,7 +256,28 @@ export default function PortalInvoiceDetailPage() {
       </PortalPanel>
       <PortalPanel padded className="space-y-4">
         <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Payment proofs</h2>
-        <PaymentProofList proofs={proofs} viewer="portal" />
+        <PaymentProofList
+          proofs={proofs}
+          viewer="portal"
+          downloadingProofId={downloadingProofId}
+          onDownload={(proof) => {
+            setDownloadingProofId(proof.id);
+            void downloadProof
+              .mutateAsync({
+                invoiceId: id,
+                proofId: proof.id,
+                fileName: proof.fileName || proof.reference || 'payment-proof',
+              })
+              .catch((err) => {
+                setProofDownloadError(
+                  err instanceof PortalApiError || err instanceof Error
+                    ? err.message
+                    : 'Could not download payment proof.',
+                );
+              })
+              .finally(() => setDownloadingProofId(null));
+          }}
+        />
         <PaymentProofUploadForm
           disabled={uploadProof.isPending}
           currencyCode={data.currencyCode}

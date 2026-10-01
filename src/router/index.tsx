@@ -12,6 +12,10 @@ import SettingsMenuPage from '../pages/settings/SettingsMenuPage'
 import LoginSecurityPage from '../pages/settings/LoginSecurityPage'
 import TransportRequestsPage from '../features/transport/pages/TransportRequestsPage'
 import PublicApiAdminPage from '../features/public-api-admin/pages/PublicApiAdminPage'
+import TenantBillingPage from '../features/tenant-platform-billing/pages/TenantBillingPage'
+import TenantPlatformInvoiceDetailPage from '../features/tenant-platform-billing/pages/TenantPlatformInvoiceDetailPage'
+import TenantPlatformPaymentDetailPage from '../features/tenant-platform-billing/pages/TenantPlatformPaymentDetailPage'
+import PublicPayPage from '../features/public-payments/pages/PublicPayPage'
 import StaffToolsPage from '../features/tools/pages/StaffToolsPage'
 import PortalToolsPage from '../features/tools/pages/PortalToolsPage'
 import VendorToolsPage from '../features/tools/pages/VendorToolsPage'
@@ -222,6 +226,17 @@ import WmsStoragePage from '../features/wms/pages/WmsStoragePage'
 import { SuperAdminProtectedRoute } from '../features/superadmin/components/SuperAdminProtectedRoute/SuperAdminProtectedRoute'
 import SuperAdminLoginPage from '../features/superadmin/pages/SuperAdminLoginPage'
 import SuperAdminDashboardPage from '../features/superadmin/pages/SuperAdminDashboardPage'
+import PlatformBillingHubPage from '../features/platform-billing/pages/PlatformBillingHubPage'
+import PlatformBillingPlansPage from '../features/platform-billing/pages/PlatformBillingPlansPage'
+import PlatformBillingInvoicesPage from '../features/platform-billing/pages/PlatformBillingInvoicesPage'
+import PlatformBillingInvoiceDetailPage from '../features/platform-billing/pages/PlatformBillingInvoiceDetailPage'
+import PlatformBillingPaymentsPage from '../features/platform-billing/pages/PlatformBillingPaymentsPage'
+import PlatformBillingPaymentDetailPage from '../features/platform-billing/pages/PlatformBillingPaymentDetailPage'
+import PlatformBillingWebhooksPage from '../features/platform-billing/pages/PlatformBillingWebhooksPage'
+import StripeSettingsPage from '../features/online-payments/pages/StripeSettingsPage'
+import OnlinePaymentsPage from '../features/online-payments/pages/OnlinePaymentsPage'
+import OnlinePaymentDetailPage from '../features/online-payments/pages/OnlinePaymentDetailPage'
+import OnlinePaymentsHistoryPage from '../features/online-payments/pages/OnlinePaymentsHistoryPage'
 import { PortalShell } from '../features/portal-auth/layout/PortalShell'
 import { PortalProtectedRoute } from '../features/portal-auth/components/PortalProtectedRoute'
 import PortalLoginPage from '../features/portal-auth/pages/PortalLoginPage'
@@ -328,6 +343,13 @@ export const router = createBrowserRouter([
           { path: 'companies/new', element: <CompanyCreatePage /> },
           { path: 'companies/:id', element: <CompanyDetailPage /> },
           { path: 'companies/:id/edit', element: <CompanyEditPage /> },
+          { path: 'billing', element: <PlatformBillingHubPage /> },
+          { path: 'billing/plans', element: <PlatformBillingPlansPage /> },
+          { path: 'billing/invoices', element: <PlatformBillingInvoicesPage /> },
+          { path: 'billing/invoices/:id', element: <PlatformBillingInvoiceDetailPage /> },
+          { path: 'billing/payments', element: <PlatformBillingPaymentsPage /> },
+          { path: 'billing/payments/:id', element: <PlatformBillingPaymentDetailPage /> },
+          { path: 'billing/webhooks', element: <PlatformBillingWebhooksPage /> },
           // Super Admin cannot access tenant user management — Tenant Admin owns that in ERP.
         ],
       },
@@ -338,6 +360,7 @@ export const router = createBrowserRouter([
   { path: '/portal/accept-invite', element: <PortalLoginPage /> },
   { path: '/track', element: <PublicTrackPage /> },
   { path: '/track/widget', element: <PublicTrackWidgetPage /> },
+  { path: '/pay/:token', element: <PublicPayPage /> },
   {
     path: '/portal',
     element: <PortalProtectedRoute />,
@@ -675,8 +698,12 @@ export const router = createBrowserRouter([
             ),
             children: [
               { path: '/settings/public-api', element: <PublicApiAdminPage /> },
+              { path: '/settings/online-payments', element: <StripeSettingsPage /> },
             ],
           },
+          { path: '/settings/billing', element: <TenantBillingPage /> },
+          { path: '/settings/billing/invoices/:id', element: <TenantPlatformInvoiceDetailPage /> },
+          { path: '/settings/billing/payments/:id', element: <TenantPlatformPaymentDetailPage /> },
           { path: '/settings/tools', element: <StaffToolsPage /> },
           { path: '/operations/transport-requests', element: <TransportRequestsPage /> },
           {
@@ -756,6 +783,9 @@ export const router = createBrowserRouter([
               { path: '/payment-requests/new', element: <PaymentRequestCreatePage /> },
               { path: '/payment-requests/:id/edit', element: <PaymentRequestEditPage /> },
               { path: '/payment-requests/:id', element: <PaymentRequestDetailPage /> },
+              { path: '/finance/online-payments/history', element: <OnlinePaymentsHistoryPage /> },
+              { path: '/finance/online-payments/:id', element: <OnlinePaymentDetailPage /> },
+              { path: '/finance/online-payments', element: <OnlinePaymentsPage /> },
             ],
           },
           {

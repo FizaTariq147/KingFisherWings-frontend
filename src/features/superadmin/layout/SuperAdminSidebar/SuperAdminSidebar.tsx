@@ -2,12 +2,23 @@
 // Only change from before: /admin/* -> /superadmin/* (matches real router), added Dashboard link
 
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Building2, CreditCard, Activity, Settings, ScrollText } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Building2,
+  CreditCard,
+  Layers,
+  FileText,
+  Activity,
+  Settings,
+  ScrollText,
+} from 'lucide-react';
 
 const NAV_ITEMS = [
   { to: '/superadmin/dashboard', label: 'Dashboard', icon: LayoutDashboard, enabled: true },
   { to: '/superadmin/tenants', label: 'Tenants', icon: Building2, enabled: true },
-  { to: '/superadmin/billing', label: 'Billing', icon: CreditCard, enabled: false },
+  { to: '/superadmin/billing', label: 'Billing', icon: CreditCard, enabled: true },
+  { to: '/superadmin/billing/plans', label: 'Billing Plans', icon: Layers, enabled: true },
+  { to: '/superadmin/billing/invoices', label: 'Platform Invoices', icon: FileText, enabled: true },
   { to: '/superadmin/monitoring', label: 'Monitoring', icon: Activity, enabled: false },
   { to: '/superadmin/settings', label: 'Settings', icon: Settings, enabled: false },
   { to: '/superadmin/audit-log', label: 'Audit Log', icon: ScrollText, enabled: false },

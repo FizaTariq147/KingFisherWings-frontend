@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { AlertCircle, RefreshCw, CreditCard, Gauge } from 'lucide-react';
+import { AlertCircle, RefreshCw, Gauge } from 'lucide-react';
+import { PlatformTenantSubscriptionPanel } from '@/features/platform-billing/components/PlatformTenantSubscriptionPanel';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
@@ -312,12 +313,7 @@ export default function TenantDetailPage() {
           {
             key: 'subscription',
             label: 'Subscription',
-            content: (
-              <SubscriptionTab
-                tenant={tenant}
-                onManage={() => navigate(`/superadmin/tenants/${id}/edit`)}
-              />
-            ),
+            content: <PlatformTenantSubscriptionPanel tenant={tenant} />,
           },
         ]}
       />
@@ -421,42 +417,3 @@ function MetricCard({
   );
 }
 
-function SubscriptionTab({
-  tenant,
-  onManage,
-}: {
-  tenant: Tenant;
-  onManage: () => void;
-}) {
-  return (
-    <Card className="p-6 space-y-4">
-      <div className="flex items-start gap-3">
-        <div
-          className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-          style={{ background: 'var(--color-neutral-100)' }}
-        >
-          <CreditCard size={20} className="text-[var(--color-neutral-400)]" />
-        </div>
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-[var(--color-neutral-800)]">
-            {String(tenant.subscription_plan)} · {String(tenant.status)}
-          </p>
-          <p className="text-xs text-[var(--color-neutral-500)]">
-            Trial ends: {tenant.trial_ends ? new Date(tenant.trial_ends).toLocaleDateString() : '—'}
-            {' · '}
-            Subscription ends:{' '}
-            {tenant.subscription_ends
-              ? new Date(tenant.subscription_ends).toLocaleDateString()
-              : '—'}
-          </p>
-          <p className="text-xs text-[var(--color-neutral-400)]">
-            Update plan, limits, and dates from the tenant edit form.
-          </p>
-        </div>
-      </div>
-      <Button variant="secondary" onClick={onManage}>
-        Manage subscription
-      </Button>
-    </Card>
-  );
-}

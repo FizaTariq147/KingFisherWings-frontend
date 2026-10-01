@@ -16,6 +16,8 @@ export function modeBookingFormIsEmpty(raw: unknown): boolean {
   const hasRoute = Boolean(
     String(r.pol ?? '').trim() ||
       String(r.pod ?? '').trim() ||
+      String(r.origin_airport_code ?? '').trim() ||
+      String(r.dest_airport_code ?? '').trim() ||
       String(r.warehouse_name ?? '').trim() ||
       String(r.warehouse_id ?? '').trim(),
   );

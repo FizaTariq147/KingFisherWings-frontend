@@ -1,8 +1,7 @@
 import type { PortalPaginationMeta } from '@/features/portal-shared/normalize';
-import type { PortalInvoiceStatus } from '../api/portalInvoices.api';
 
 export interface PortalInvoiceListParams {
-  page?: number; limit?: number; status?: PortalInvoiceStatus | string;
+  page?: number; limit?: number; status?: string;
   job_id?: string; search?: string; from_date?: string; to_date?: string;
 }
 export interface PortalInvoiceSummary {
@@ -32,4 +31,22 @@ export interface PortalInvoiceDetail extends PortalInvoiceListItem {
   lines: PortalInvoiceLine[];
 }
 export interface PortalInvoiceListResult { items: PortalInvoiceListItem[]; meta: PortalPaginationMeta; }
+
+export interface PortalInvoicePaymentStatusView {
+  status?: string;
+  paidAmount?: number;
+  outstandingAmount?: number;
+  raw: Record<string, unknown>;
+}
+
+export interface PortalStripeConfigView {
+  publishableKey?: string;
+  mode?: string;
+  raw: Record<string, unknown>;
+}
+
+export interface PortalInvoiceCheckoutResult {
+  checkoutUrl: string;
+  raw: Record<string, unknown>;
+}
 

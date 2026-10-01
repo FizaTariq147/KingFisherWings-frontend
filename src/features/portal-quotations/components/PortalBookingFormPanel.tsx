@@ -1099,6 +1099,112 @@ export function PortalBookingFormPanel({
     onFormCompleteChange?.(complete);
   }, [submitted, formQuery.data?.mark_complete, onFormCompleteChange]);
 
+  // If submit already succeeded but Ops inbox never got the mirror (common), re-post once
+  // when the customer reopens the submitted quote so admin autofill can find it.
+  useEffect(() => {
+    if (!enabled) return;
+    if (!(submitted || formQuery.data?.mark_complete === true)) return;
+    const key = `kf.portal.bookingForm.inboxMirror:${quote.id}`;
+    try {
+      const existing = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(key) : null;
+      if (existing === '1' || existing === 'pending') return;
+      sessionStorage.setItem(key, 'pending');
+    } catch {
+      /* ignore */
+    }
+    const source = formQuery.data?.mark_complete ? formQuery.data : null;
+    const dto = source
+      ? undefined
+      : form.commodity.trim()
+        ? toDto(form, true, formKind)
+        : undefined;
+    if (!source && !dto) {
+      try {
+        if (sessionStorage.getItem(key) === 'pending') sessionStorage.removeItem(key);
+      } catch {
+        /* ignore */
+      }
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { portalQuotationsService } = await import('../services/portalQuotations.service');
+        await portalQuotationsService.remirrorBookingFormToInbox({
+          quotationId: quote.id,
+          quoteNumber: quote.number,
+          jobType: quote.jobType,
+          jobId,
+          bookingId,
+          form: source ?? dto!,
+        });
+        if (!cancelled) {
+          try {
+            sessionStorage.setItem(key, '1');
+          } catch {
+            /* ignore */
+          }
+        }
+      } catch {
+        try {
+          if (sessionStorage.getItem(key) === 'pending') sessionStorage.removeItem(key);
+        } catch {
+          /* ignore */
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // Intentionally omit `form` — hydrate from formQuery.data when complete; avoid remirror loops.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- remirror once per quote session
+  }, [
+    enabled,
+    submitted,
+    formQuery.data,
+    formKind,
+    quote.id,
+    quote.number,
+    quote.jobType,
+    jobId,
+    bookingId,
+  ]);
+
+  const remirrorToForwarder = () => {
+    setError(null);
+    setMsg(null);
+    try {
+      sessionStorage.removeItem(`kf.portal.bookingForm.inboxMirror:${quote.id}`);
+    } catch {
+      /* ignore */
+    }
+    const source = formQuery.data?.mark_complete ? formQuery.data : null;
+    const dto = toDto(form, true, formKind);
+    void (async () => {
+      try {
+        const { portalQuotationsService } = await import('../services/portalQuotations.service');
+        await portalQuotationsService.remirrorBookingFormToInbox({
+          quotationId: quote.id,
+          quoteNumber: quote.number,
+          jobType: quote.jobType,
+          jobId,
+          bookingId,
+          form: source ?? dto,
+        });
+        try {
+          sessionStorage.setItem(`kf.portal.bookingForm.inboxMirror:${quote.id}`, '1');
+        } catch {
+          /* ignore */
+        }
+        setMsg(
+          'Shared with your forwarder again. Ask them to refresh Ops / Portal Admin inbox.',
+        );
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Could not share with forwarder.');
+      }
+    })();
+  };
+
   const patch = (partial: Partial<FormUi>) => setForm((prev) => ({ ...prev, ...partial }));
 
   const submit = (complete: boolean) => {
@@ -1259,6 +1365,15 @@ export function PortalBookingFormPanel({
                   ? 'Thanks — next your forwarder sends the invoice (INVOICE_SENT), then air export or import ops begin.'
                   : 'Thanks — next your forwarder sends the invoice (INVOICE_SENT).'}
           </p>
+          {msg ? <p className="mt-2 text-xs text-emerald-900">{msg}</p> : null}
+          {error ? <p className="mt-2 text-xs text-red-700">{error}</p> : null}
+          <button
+            type="button"
+            className="mt-3 text-xs font-semibold text-emerald-900 underline underline-offset-2 hover:text-emerald-950"
+            onClick={remirrorToForwarder}
+          >
+            Share with forwarder again
+          </button>
         </PortalPanel>
       </div>
     );

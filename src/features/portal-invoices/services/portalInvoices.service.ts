@@ -17,7 +17,7 @@ import {
 } from '@/features/portal-shared/downloadPortalBlob';
 import { applyPortalInvoicePdfChrome } from '@/features/portal-shared/applyPortalInvoicePdfChrome';
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
-import { asRecord, pickString, unwrapData } from '@/features/portal-shared/normalize';
+import { asRecord, pickNumber, pickString, unwrapData } from '@/features/portal-shared/normalize';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import { PORTAL_DOCUMENTS_API } from '@/features/portal-documents/api/portalDocuments.api';
 import { generateInvoicePdf } from '@/features/invoices/utils/generateInvoicePdf';
@@ -26,7 +26,8 @@ import {
   shipmentFromPortalShipment,
 } from '@/features/invoices/utils/invoiceToPdfModel';
 import { portalShipmentsService } from '@/features/portal-shipments/services/portalShipments.service';
-import { PORTAL_INVOICES_API } from '../api/portalInvoices.api';
+import { PORTAL_INVOICE_PAYMENTS_API, PORTAL_INVOICES_API } from '../api/portalInvoices.api';
+import { normalizeCheckoutSession, unwrap } from '@/features/platform-billing/utils/billingApiHelpers';
 import type {
   PortalInvoiceDetail,
   PortalInvoiceListParams,
@@ -315,5 +316,48 @@ export const portalInvoicesService = {
   async downloadPdf(id: string, invoiceNumber = 'invoice'): Promise<void> {
     const { blob, fileName } = await this.getPdfBlob(id, invoiceNumber);
     triggerBlobDownload(blob, fileName);
+  },
+
+  async pay(id: string, body: Record<string, unknown> = {}) {
+    const res = await portalApiClient.post(PORTAL_INVOICES_API.pay(id), body);
+    return unwrap(res.data);
+  },
+
+  async checkout(id: string, body: Record<string, unknown> = {}) {
+    const res = await portalApiClient.post(PORTAL_INVOICES_API.checkout(id), body);
+    return normalizeCheckoutSession(res.data);
+  },
+
+  async paymentStatus(id: string) {
+    const res = await portalApiClient.get(PORTAL_INVOICES_API.paymentStatus(id));
+    const r = asRecord(unwrap(res.data)) ?? {};
+    return {
+      status: pickString(r.status, r.payment_status, r.paymentStatus) || undefined,
+      paidAmount: pickNumber(r.paid_amount, r.paidAmount),
+      outstandingAmount: pickNumber(r.outstanding_amount, r.outstandingAmount, r.balance_due),
+      raw: r,
+    };
+  },
+
+  async getStripeConfig() {
+    const res = await portalApiClient.get(PORTAL_INVOICE_PAYMENTS_API.stripeConfig);
+    const r = asRecord(unwrap(res.data)) ?? {};
+    return {
+      publishableKey: pickString(r.publishable_key, r.publishableKey) || undefined,
+      mode: pickString(r.mode, r.environment) || undefined,
+      raw: r,
+    };
+  },
+
+  async downloadProofFile(
+    invoiceId: string,
+    proofId: string,
+    fileName = 'payment-proof',
+  ): Promise<void> {
+    const result = await fetchPortalBlob(
+      PORTAL_INVOICES_API.proofFile(invoiceId, proofId),
+      fileName,
+    );
+    triggerBlobDownload(result.blob, result.filename);
   },
 };

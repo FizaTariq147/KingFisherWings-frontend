@@ -122,11 +122,16 @@ export function PaymentProofUploadForm({
 export function PaymentProofList({
   proofs,
   onSendEmail,
+  onDownload,
+  downloadingProofId,
   sendingProofId,
   viewer = 'portal',
 }: {
   proofs: PaymentProof[];
   onSendEmail?: (proof: PaymentProof) => void;
+  /** Explicit download (e.g. portal invoice proof file API). When omitted, open/view uses stored file URL. */
+  onDownload?: (proof: PaymentProof) => void;
+  downloadingProofId?: string | null;
   sendingProofId?: string | null;
   /** Auth context for opening stored files (portal customer vs vendor vs staff). */
   viewer?: PaymentProofViewer;
@@ -155,7 +160,19 @@ export function PaymentProofList({
                 {proof.status.replaceAll('_', ' ')}
               </Badge>
             ) : null}
-            <PaymentProofOpenButton proof={proof} viewer={viewer} />
+            {onDownload ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={downloadingProofId === proof.id}
+                onClick={() => onDownload(proof)}
+              >
+                {downloadingProofId === proof.id ? 'Downloading…' : 'Download'}
+              </Button>
+            ) : (
+              <PaymentProofOpenButton proof={proof} viewer={viewer} />
+            )}
             {onSendEmail ? (
               <Button
                 type="button"

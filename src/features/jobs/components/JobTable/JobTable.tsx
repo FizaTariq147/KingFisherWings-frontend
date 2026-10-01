@@ -10,7 +10,7 @@ import {
 import { JOB_TYPE_LABELS } from '../../constants/job.constants';
 import type { Job, PaginationMeta } from '../../types/job.types';
 import { jobDisplayNumber } from '../../utils/jobRoute';
-import { jobPartyLabel, jobScheduleLabel } from '../../utils/jobDisplay';
+import { jobPartyLabel, jobRouteLabel, jobScheduleLabel } from '../../utils/jobDisplay';
 import { JobActionMenu } from '../JobActionMenu';
 import { JobStatusBadge } from '../JobStatusBadge';
 
@@ -49,6 +49,8 @@ export function JobTable({
             <TableHead>Type</TableHead>
             <TableHead>Shipper</TableHead>
             <TableHead>Consignee</TableHead>
+            <TableHead>Route</TableHead>
+            <TableHead>Commodity</TableHead>
             <TableHead>ETD / ETA</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="w-12">{' '}</TableHead>
@@ -57,7 +59,7 @@ export function JobTable({
         <TableBody>
           {jobs.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={7} className="text-center text-[var(--color-neutral-400)] py-10">
+              <TableCell colSpan={9} className="text-center text-[var(--color-neutral-400)] py-10">
                 No jobs found
               </TableCell>
             </TableRow>
@@ -76,6 +78,8 @@ export function JobTable({
                 <TableCell>{JOB_TYPE_LABELS[j.job_type] ?? j.job_type}</TableCell>
                 <TableCell>{jobPartyLabel(j, 'shipper')}</TableCell>
                 <TableCell>{jobPartyLabel(j, 'consignee')}</TableCell>
+                <TableCell>{jobRouteLabel(j)}</TableCell>
+                <TableCell>{j.commodity?.trim() || '—'}</TableCell>
                 <TableCell>{jobScheduleLabel(j)}</TableCell>
                 <TableCell>
                   <JobStatusBadge job={j} />

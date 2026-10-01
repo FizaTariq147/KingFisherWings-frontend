@@ -146,6 +146,7 @@ export const createNvoccBookingFormSchema = z.object({
   shipper_id: optionalUuid(),
   consignee_id: optionalUuid(),
   cargo_type: cargoType,
+  container_type_id: optionalUuid(),
   container_count: integerField({ min: 1, max: 500 }),
   cbm_allocated: amountField({ min: 0, max: 999_999, maxDecimals: 3 }),
   gross_weight: amountField({ min: 0, max: 999_999_999, maxDecimals: 3 }),
@@ -155,6 +156,8 @@ export const createNvoccBookingFormSchema = z.object({
   shipper_ref: optionalTextUndef({ max: 100 }),
   incoterms: optionalTextUndef({ max: 10 }),
   freight_terms: optionalTextUndef({ max: 30 }),
+  job_type: optionalTextUndef({ max: 50 }),
+  is_dg: z.boolean().optional(),
   apply_tariff: z.boolean().optional(),
 });
 
@@ -236,6 +239,7 @@ export type NvoccBookingFormState = {
   shipper_id: string;
   consignee_id: string;
   cargo_type: string;
+  container_type_id: string;
   container_count: string;
   cbm_allocated: string;
   gross_weight: string;
@@ -245,6 +249,8 @@ export type NvoccBookingFormState = {
   shipper_ref: string;
   incoterms: string;
   freight_terms: string;
+  job_type: string;
+  is_dg: boolean;
   apply_tariff: boolean;
 };
 
@@ -351,6 +357,7 @@ export function bookingFormToSchemaInput(form: NvoccBookingFormState) {
     enquiry_id: form.enquiry_id || undefined,
     shipper_id: form.shipper_id || undefined,
     consignee_id: form.consignee_id || undefined,
+    container_type_id: form.container_type_id || undefined,
     container_count: form.container_count || undefined,
     cbm_allocated: form.cbm_allocated || undefined,
     gross_weight: form.gross_weight || undefined,
@@ -360,5 +367,7 @@ export function bookingFormToSchemaInput(form: NvoccBookingFormState) {
     shipper_ref: form.shipper_ref || undefined,
     incoterms: form.incoterms || undefined,
     freight_terms: form.freight_terms || undefined,
+    job_type: form.job_type || undefined,
+    is_dg: form.is_dg,
   };
 }

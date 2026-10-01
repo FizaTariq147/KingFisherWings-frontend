@@ -601,6 +601,7 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
   const [msg, setMsg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [portalPrefillApplied, setPortalPrefillApplied] = useState(false);
+  const [portalPrefillKey, setPortalPrefillKey] = useState('');
   const [forceCompleted, setForceCompleted] = useState(false);
   const apiSyncAttempted = useRef(false);
   const { data: organization } = useOrganizationProfile();
@@ -652,7 +653,7 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
   /** Row exists when staff API has data OR customer already submitted portal form. */
   const hasSavedForm = !apiEmpty || Boolean(portalPayload);
 
-  const buildFromPortal = (payload: PortalBookingFormMessagePayload, overwrite = true) =>
+  const buildFromPortal = (payload: PortalBookingFormMessagePayload) =>
     portalPayloadToComplianceForm(payload, {
       agentLine: defaultAgentLine,
       quoteNumber: linkedQuote?.quotation_number || linkedQuote?.quote_no,
@@ -674,28 +675,31 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
     }
   }, [formQuery.data, customerCompleted, apiEmpty, portalPayload]);
 
-  /** Prefill create/edit from portal when staff API is empty. */
+  /** Prefill create/edit from portal — matching customer fields autofill whenever payload is found. */
   useEffect(() => {
     if (panelMode !== 'create' && panelMode !== 'edit') return;
-    if (portalPrefillApplied) return;
     if (formQuery.isLoading || formQuery.isFetching) return;
     if (!portalPayload) return;
-    if (panelMode === 'edit' && !apiEmpty) {
-      setPortalPrefillApplied(true);
-      return;
-    }
-    setForm((prev) =>
-      mergePreferExisting(prev, buildFromPortal(portalPayload), panelMode === 'create'),
-    );
+    const payloadKey = `${portalPayload.quotationId}:${portalPayload.submittedAt || ''}:${portalPayload.mark_complete ? 1 : 0}`;
+    const key = `${payloadKey}:${panelMode}`;
+    if (portalPrefillApplied && portalPrefillKey === key) return;
+    const prevPayloadKey = portalPrefillKey.includes(':')
+      ? portalPrefillKey.split(':').slice(0, 3).join(':')
+      : '';
+    const isResubmit = Boolean(prevPayloadKey && prevPayloadKey !== payloadKey);
+    const overwrite = panelMode === 'create' || isResubmit || apiEmpty;
+    setForm((prev) => mergePreferExisting(prev, buildFromPortal(portalPayload), overwrite));
     setPortalPrefillApplied(true);
+    setPortalPrefillKey(key);
     setMsg(
-      `Customer portal air booking loaded (quote ${
+      `Autofilled from customer portal (quote ${
         portalPayload.quoteNumber || portalPayload.quotationId.slice(0, 8)
-      }). Review, then Save.`,
+      }). Review matching fields, then Save.`,
     );
   }, [
     panelMode,
     portalPrefillApplied,
+    portalPrefillKey,
     formQuery.isLoading,
     formQuery.isFetching,
     portalPayload,
@@ -768,13 +772,17 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
     setError(null);
     setMsg(null);
     setPortalPrefillApplied(false);
+    setPortalPrefillKey('');
     if (portalPayload) {
       setForm(buildFromPortal(portalPayload));
       setPortalPrefillApplied(true);
+      setPortalPrefillKey(
+        `${portalPayload.quotationId}:${portalPayload.submittedAt || ''}:${portalPayload.mark_complete ? 1 : 0}:create`,
+      );
       setMsg(
-        `Customer portal booking loaded (quote ${
+        `Autofilled from customer portal (quote ${
           portalPayload.quoteNumber || portalPayload.quotationId.slice(0, 8)
-        }). Review, then Save.`,
+        }). Review matching fields, then Save.`,
       );
     } else {
       setForm(emptyForm());
@@ -794,8 +802,24 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
     setError(null);
     setMsg(null);
     setPortalPrefillApplied(false);
-    setForm(hydrateDisplayForm());
+    setPortalPrefillKey('');
+    const base = hydrateDisplayForm();
+    setForm(
+      portalPayload
+        ? mergePreferExisting(base, buildFromPortal(portalPayload), apiEmpty)
+        : base,
+    );
     setPortalPrefillApplied(true);
+    if (portalPayload) {
+      setPortalPrefillKey(
+        `${portalPayload.quotationId}:${portalPayload.submittedAt || ''}:${portalPayload.mark_complete ? 1 : 0}:edit`,
+      );
+      setMsg(
+        `Autofilled from customer portal (quote ${
+          portalPayload.quoteNumber || portalPayload.quotationId.slice(0, 8)
+        }). Empty matching fields filled from customer submit.`,
+      );
+    }
     setPanelMode('edit');
   };
 
@@ -804,9 +828,9 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
     if (!payload) return;
     setForm((prev) => mergePreferExisting(prev, buildFromPortal(payload), true));
     setMsg(
-      `Customer portal fields re-applied (quote ${
+      `Autofilled from customer portal (quote ${
         payload.quoteNumber || payload.quotationId.slice(0, 8)
-      }). Review, then Save.`,
+      }). Matching fields re-applied — review, then Save.`,
     );
   };
 
@@ -888,7 +912,8 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
 
         {formQuery.isLoading ||
         linkedQuoteQuery.isFetching ||
-        portalBookingQuery.isFetching ? (
+        portalBookingQuery.isFetching ||
+        portalBookingQuery.isLoading ? (
           <p className="text-sm text-[var(--color-neutral-400)]">
             Looking up customer booking form…
           </p>
@@ -910,7 +935,17 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {!hasSavedForm || !displayForList ? (
+                {formQuery.isLoading ||
+                portalBookingQuery.isLoading ||
+                (portalBookingQuery.isFetching && !hasSavedForm) ? (
+                  <TableRow>
+                    <TableCell colSpan={6}>
+                      <p className="py-6 text-center text-sm text-[var(--color-neutral-400)]">
+                        Looking up customer portal booking form…
+                      </p>
+                    </TableCell>
+                  </TableRow>
+                ) : !hasSavedForm || !displayForList ? (
                   <TableRow>
                     <TableCell colSpan={6}>
                       <p className="py-6 text-center text-sm text-[var(--color-neutral-400)]">
@@ -1012,11 +1047,12 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
 
       {portalBookingQuery.data ? (
         <div className="rounded-xl border border-emerald-200 bg-emerald-50/80 px-3 py-2 text-xs text-emerald-900">
-          Customer portal booking found
+          Autofilled from customer portal
           {portalBookingQuery.data.quoteNumber
             ? ` · ${portalBookingQuery.data.quoteNumber}`
             : ''}
           {portalBookingQuery.data.mark_complete ? ' · submitted (Completed)' : ' · draft'}
+          . Matching fields mirror the customer booking form.
         </div>
       ) : null}
 
