@@ -16,9 +16,7 @@ import {
   PortalPageHeader,
   PortalPanel,
   PortalStatCard,
-  portalSelectClassName,
 } from '@/features/portal-auth/components/portal-ui';
-import { PORTAL_INVOICE_STATUSES } from '../api/portalInvoices.api';
 import {
   usePortalPreferences,
   useUpdatePortalPreferences,
@@ -77,6 +75,14 @@ export default function PortalInvoicesPage() {
   const items = active.data?.items ?? [];
   const meta = active.data?.meta;
   const { isLoading, isError, error, refetch, isFetching } = active;
+
+  const statusOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const inv of items) {
+      if (inv.status?.trim()) set.add(inv.status.trim());
+    }
+    return [...set].sort((a, b) => a.localeCompare(b));
+  }, [items]);
 
   const openInvoicePdf = (invoiceId: string, name: string) => {
     setPdfError(null);
@@ -207,10 +213,20 @@ export default function PortalInvoicesPage() {
           <Input label="Search" value={search} onChange={(e) => { setPage(1); setSearch(e.target.value); }} />
           <label className="block text-sm">
             <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">Status</span>
-            <select className={portalSelectClassName} value={status} onChange={(e) => { setPage(1); setStatus(e.target.value); }}>
-              <option value="">All</option>
-              {PORTAL_INVOICE_STATUSES.map((s) => <option key={s} value={s}>{s.replaceAll('_', ' ')}</option>)}
-            </select>
+            <Input
+              list="portal-invoice-status-options"
+              value={status}
+              onChange={(e) => {
+                setPage(1);
+                setStatus(e.target.value);
+              }}
+              placeholder="All statuses"
+            />
+            <datalist id="portal-invoice-status-options">
+              {statusOptions.map((s) => (
+                <option key={s} value={s} />
+              ))}
+            </datalist>
           </label>
           <Input
             label="From"

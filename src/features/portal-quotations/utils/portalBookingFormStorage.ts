@@ -13,6 +13,8 @@ export type PortalBookingFormMessagePayload = {
   quoteNumber?: string;
   jobType?: string;
   jobId?: string;
+  /** NVOCC booking id when customer submitted via /portal/bookings/:id/compliance-form. */
+  bookingId?: string;
   submittedAt: string;
 } & Partial<PortalBookingFormUpsertDto>;
 
@@ -113,6 +115,20 @@ function pickFormFields(src: Partial<PortalBookingForm> | PortalBookingFormUpser
   };
 }
 
+/** Convert stored / GET form into UpsertDto for inbox remirror. */
+export function portalBookingFormToUpsertDto(
+  form: PortalBookingForm | PortalBookingFormUpsertDto,
+): PortalBookingFormUpsertDto {
+  const picked = pickFormFields(form);
+  return {
+    ...picked,
+    commodity: picked.commodity || '',
+    parties: picked.parties ?? [],
+    mark_complete: true,
+    consent_accepted: Boolean(picked.consent_accepted),
+  };
+}
+
 export function readPortalBookingFormDraft(quotationId: string): PortalBookingForm | null {
   if (!quotationId || typeof localStorage === 'undefined') return null;
   try {
@@ -155,15 +171,17 @@ export function buildPortalBookingFormMessagePayload(opts: {
   quoteNumber?: string;
   jobType?: string;
   jobId?: string;
+  bookingId?: string;
   dto: PortalBookingFormUpsertDto;
 }): PortalBookingFormMessagePayload {
-  const { quotationId, quoteNumber, jobType, jobId, dto } = opts;
+  const { quotationId, quoteNumber, jobType, jobId, bookingId, dto } = opts;
   return {
     v: 2,
     quotationId,
     quoteNumber,
     jobType,
     jobId: jobId || undefined,
+    bookingId: bookingId || undefined,
     submittedAt: new Date().toISOString(),
     ...dto,
   };
@@ -174,6 +192,7 @@ export function formatBookingFormMessageBody(opts: {
   quoteNumber?: string;
   jobType?: string;
   jobId?: string;
+  bookingId?: string;
   dto: PortalBookingFormUpsertDto;
 }): string {
   const { quotationId, quoteNumber, jobType, dto } = opts;
@@ -205,6 +224,7 @@ export function formatBookingFormMessageBody(opts: {
     `Quotation ID: ${quotationId}`,
     `Job type: ${jobType || '—'}`,
     `Job ID: ${opts.jobId || '—'}`,
+    `Booking ID: ${opts.bookingId || '—'}`,
     `Mark complete: ${dto.mark_complete ? 'YES' : 'draft'}`,
     '',
     `date_of_request: ${dto.date_of_request || '—'}`,
@@ -262,6 +282,47 @@ export function formatBookingFormMessageBody(opts: {
   ].join('\n');
 }
 
+/** Compact body for remirror — avoids API truncation of the long human-readable mirror. */
+export function formatBookingFormMessageBodyCompact(opts: {
+  quotationId: string;
+  quoteNumber?: string;
+  jobType?: string;
+  jobId?: string;
+  bookingId?: string;
+  dto: PortalBookingFormUpsertDto;
+}): string {
+  const payload = buildPortalBookingFormMessagePayload(opts);
+  return [
+    'CUSTOMER BOOKING FORM',
+    `Quote: ${opts.quoteNumber || opts.quotationId}`,
+    `Quotation ID: ${opts.quotationId}`,
+    `Job type: ${opts.jobType || '—'}`,
+    `Job ID: ${opts.jobId || '—'}`,
+    `Booking ID: ${opts.bookingId || '—'}`,
+    `Mark complete: YES`,
+    '',
+    PORTAL_BOOKING_FORM_JSON_START,
+    JSON.stringify(payload),
+    PORTAL_BOOKING_FORM_JSON_END,
+  ].join('\n');
+}
+
+export function bookingFormInboxSubject(opts: {
+  quoteLabel: string;
+  quotationId?: string;
+  bookingId?: string;
+  jobId?: string;
+}): string {
+  const bits = [
+    `[Customer booking form] ${opts.quoteLabel}`,
+    opts.quotationId ? `qid:${opts.quotationId}` : '',
+    opts.bookingId ? `bid:${opts.bookingId}` : '',
+    opts.jobId ? `jid:${opts.jobId}` : '',
+    'BOOKING_FORM_COMPLETE',
+  ].filter(Boolean);
+  return bits.join(' ').slice(0, 200);
+}
+
 export function parsePortalBookingFormMessagePayload(
   body?: string | null,
 ): PortalBookingFormMessagePayload | null {
@@ -282,14 +343,30 @@ export function parsePortalBookingFormMessagePayload(
 
 export function portalBookingFormPayloadMatches(
   payload: PortalBookingFormMessagePayload,
-  filter: { jobId?: string; quotationId?: string; quoteNumber?: string },
+  filter: {
+    jobId?: string;
+    quotationId?: string;
+    quoteNumber?: string;
+    bookingId?: string;
+  },
 ): boolean {
   const jobId = filter.jobId?.trim();
-  const quotationId = filter.quotationId?.trim();
+  const bookingId = filter.bookingId?.trim();
+  const quotationId = filter.quotationId?.trim().toLowerCase();
   const quoteNumber = filter.quoteNumber?.trim().toUpperCase();
-  if (!jobId && !quotationId && !quoteNumber) return false;
+  if (!jobId && !bookingId && !quotationId && !quoteNumber) return false;
   if (jobId && payload.jobId && payload.jobId === jobId) return true;
-  if (quotationId && payload.quotationId === quotationId) return true;
+  if (bookingId && payload.bookingId && payload.bookingId === bookingId) return true;
+  // Legacy: NVOCC sometimes stamped booking id into jobId.
+  if (bookingId && payload.jobId && payload.jobId === bookingId) return true;
+  if (
+    quotationId &&
+    String(payload.quotationId ?? '')
+      .trim()
+      .toLowerCase() === quotationId
+  ) {
+    return true;
+  }
   if (quoteNumber && payload.quoteNumber?.trim().toUpperCase() === quoteNumber) return true;
   return false;
 }

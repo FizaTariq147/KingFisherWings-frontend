@@ -1,4 +1,4 @@
-import { FileText, AlertTriangle, Receipt, ShoppingCart, HandCoins } from 'lucide-react';
+import { FileText, AlertTriangle, Receipt, ShoppingCart, HandCoins, CreditCard } from 'lucide-react';
 import type { MenuTile } from '../../customers/types/menu.types';
 
 /** Finance hub — modules only; create actions live on each list page. */
@@ -50,5 +50,13 @@ export const financeMenu: MenuTile[] = [
     icon: HandCoins,
     iconColor: 'bg-orange-500',
     path: '/payment-requests',
+  },
+  {
+    id: 'online-payments',
+    title: 'Online Payments',
+    description: 'Stripe checkout payments, refunds, and payment history.',
+    icon: CreditCard,
+    iconColor: 'bg-emerald-500',
+    path: '/finance/online-payments',
   },
 ];

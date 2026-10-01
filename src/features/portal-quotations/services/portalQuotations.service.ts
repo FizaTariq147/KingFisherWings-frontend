@@ -32,6 +32,10 @@ import {
 } from '../utils/normalizePortalQuotations';
 import {
   formatBookingFormMessageBody,
+  formatBookingFormMessageBodyCompact,
+  bookingFormInboxSubject,
+  portalBookingFormToUpsertDto,
+  parsePortalBookingFormMessagePayload,
   readPortalBookingFormDraft,
   writePortalBookingFormDraft,
 } from '../utils/portalBookingFormStorage';
@@ -516,18 +520,30 @@ export const portalQuotationsService = {
 
     const saveViaMessages = async (): Promise<PortalBookingForm> => {
       const quoteLabel = opts.quoteNumber?.trim() || opts.quotationId.slice(0, 8);
-      const subject = dto.mark_complete
-        ? `[Customer booking form] ${quoteLabel} — ready for BOOKING_FORM_COMPLETE`
-        : `[Customer booking form draft] ${quoteLabel}`;
-      const body = formatBookingFormMessageBody({
+      const bookingId =
+        opts.bookingId && isUuid(opts.bookingId) ? opts.bookingId : undefined;
+      const payloadOpts = {
         quotationId: opts.quotationId,
         quoteNumber: opts.quoteNumber,
         jobType: opts.jobType,
         jobId: opts.jobId,
+        bookingId,
         dto,
-      });
+      };
+      const subject = dto.mark_complete
+        ? bookingFormInboxSubject({
+            quoteLabel,
+            quotationId: opts.quotationId,
+            bookingId,
+            jobId: opts.jobId,
+          })
+        : `[Customer booking form draft] ${quoteLabel}`.slice(0, 200);
+      const body = dto.mark_complete
+        ? formatBookingFormMessageBodyCompact(payloadOpts)
+        : formatBookingFormMessageBody(payloadOpts);
+      // Portal messages only accept PDF/JPEG/PNG attachments — payload stays in body.
       await portalMessagesService.create({
-        subject: subject.slice(0, 200),
+        subject,
         body,
         job_id: opts.jobId && isUuid(opts.jobId) ? opts.jobId : undefined,
       });
@@ -600,41 +616,59 @@ export const portalQuotationsService = {
 
         // Prefer linked job id on the quote so admin inbox can match by jobId.
         let mirrorJobId = opts.jobId;
+        let mirrorBookingId = opts.bookingId;
         let mirrorQuoteNumber = opts.quoteNumber;
         let mirrorJobType = opts.jobType;
         try {
           const fresh = await this.getById(opts.quotationId);
           mirrorJobId = fresh.jobId || opts.jobId || (target.kind === 'shipment' ? target.id : undefined);
+          mirrorBookingId =
+            opts.bookingId ||
+            fresh.bookingId ||
+            (target.kind === 'booking' ? target.id : undefined);
           mirrorQuoteNumber = fresh.number || opts.quoteNumber;
           mirrorJobType = fresh.jobType || opts.jobType;
         } catch {
           if (target.kind === 'shipment') mirrorJobId = mirrorJobId || target.id;
+          if (target.kind === 'booking') mirrorBookingId = mirrorBookingId || target.id;
         }
 
         // Always mirror to portal messages so admin inbox can prefill staff forms
         // cross-browser (compliance API alone is not readable from ERP inbox).
-        try {
+        const mirrorToInbox = async () => {
           const quoteLabel =
             mirrorQuoteNumber?.trim() || opts.quotationId.slice(0, 8);
-          const subject =
-            `[Customer booking form] ${quoteLabel} — ready for BOOKING_FORM_COMPLETE`.slice(
-              0,
-              200,
-            );
-          const body = formatBookingFormMessageBody({
+          const payloadOpts = {
             quotationId: opts.quotationId,
             quoteNumber: mirrorQuoteNumber,
             jobType: mirrorJobType,
             jobId: mirrorJobId,
+            bookingId: mirrorBookingId,
             dto: { ...dto, mark_complete: true },
+          };
+          const subject = bookingFormInboxSubject({
+            quoteLabel,
+            quotationId: opts.quotationId,
+            bookingId: mirrorBookingId,
+            jobId: mirrorJobId,
           });
+          const body = formatBookingFormMessageBodyCompact(payloadOpts);
+          // Portal messages only accept PDF/JPEG/PNG — keep payload in multipart body only.
           await portalMessagesService.create({
             subject,
             body,
             job_id: mirrorJobId && isUuid(mirrorJobId) ? mirrorJobId : undefined,
           });
+        };
+        try {
+          await mirrorToInbox();
         } catch {
-          /* inbox mirror is best-effort — compliance submit already succeeded */
+          // One retry — inbox mirror is how Ops autofills; do not fail customer submit.
+          try {
+            await mirrorToInbox();
+          } catch {
+            /* still best-effort */
+          }
         }
         const draft = writePortalBookingFormDraft(
           opts.quotationId,
@@ -651,15 +685,22 @@ export const portalQuotationsService = {
           const jobIdAfter = after.jobId?.trim();
           if (jobIdAfter && isUuid(jobIdAfter) && jobIdAfter !== mirrorJobId) {
             const quoteLabel = after.number || mirrorQuoteNumber || opts.quotationId.slice(0, 8);
+            const payloadOpts = {
+              quotationId: opts.quotationId,
+              quoteNumber: after.number || mirrorQuoteNumber,
+              jobType: after.jobType || mirrorJobType,
+              jobId: jobIdAfter,
+              bookingId: mirrorBookingId || after.bookingId,
+              dto: { ...dto, mark_complete: true },
+            };
             await portalMessagesService.create({
-              subject: `[Customer booking form] ${quoteLabel} — linked job`.slice(0, 200),
-              body: formatBookingFormMessageBody({
+              subject: bookingFormInboxSubject({
+                quoteLabel,
                 quotationId: opts.quotationId,
-                quoteNumber: after.number || mirrorQuoteNumber,
-                jobType: after.jobType || mirrorJobType,
+                bookingId: mirrorBookingId || after.bookingId,
                 jobId: jobIdAfter,
-                dto: { ...dto, mark_complete: true },
               }),
+              body: formatBookingFormMessageBodyCompact(payloadOpts),
               job_id: jobIdAfter,
             });
           }
@@ -683,6 +724,71 @@ export const portalQuotationsService = {
         return saveViaMessages();
       }
       throw error;
+    }
+  },
+
+  /**
+   * Re-post a completed booking form into portal messages so Ops inbox can find it.
+   * Used when compliance submit succeeded but the inbox mirror was missing / failed.
+   */
+  async remirrorBookingFormToInbox(opts: {
+    quotationId: string;
+    quoteNumber?: string;
+    jobType?: string;
+    jobId?: string;
+    bookingId?: string;
+    form: PortalBookingForm | PortalBookingFormUpsertDto;
+  }): Promise<void> {
+    let mirrorJobId = opts.jobId;
+    let mirrorBookingId = opts.bookingId;
+    let mirrorQuoteNumber = opts.quoteNumber;
+    let mirrorJobType = opts.jobType;
+    try {
+      const fresh = await this.getById(opts.quotationId);
+      mirrorJobId = fresh.jobId || opts.jobId;
+      mirrorBookingId = opts.bookingId || fresh.bookingId;
+      mirrorQuoteNumber = fresh.number || opts.quoteNumber;
+      mirrorJobType = fresh.jobType || opts.jobType;
+    } catch {
+      /* use opts */
+    }
+    const dto = portalBookingFormToUpsertDto(opts.form);
+    const payloadOpts = {
+      quotationId: opts.quotationId,
+      quoteNumber: mirrorQuoteNumber,
+      jobType: mirrorJobType,
+      jobId: mirrorJobId,
+      bookingId: mirrorBookingId,
+      dto: { ...dto, mark_complete: true },
+    };
+    const quoteLabel = mirrorQuoteNumber?.trim() || opts.quotationId.slice(0, 8);
+    const subject = bookingFormInboxSubject({
+      quoteLabel,
+      quotationId: opts.quotationId,
+      bookingId: mirrorBookingId,
+      jobId: mirrorJobId,
+    });
+    const body = formatBookingFormMessageBodyCompact(payloadOpts);
+    // No attachment — API rejects non PDF/JPEG/PNG; compact body carries the JSON markers.
+    const created = await portalMessagesService.create({
+      subject,
+      body,
+      job_id: mirrorJobId && isUuid(mirrorJobId) ? mirrorJobId : undefined,
+    });
+    const parsed =
+      parsePortalBookingFormMessagePayload(created.body) ||
+      parsePortalBookingFormMessagePayload(body);
+    if (!parsed) {
+      try {
+        const detail = await portalMessagesService.getById(created.id);
+        if (!parsePortalBookingFormMessagePayload(detail.body)) {
+          throw new Error(
+            'Message was sent but the booking-form payload was not stored. Ask your forwarder to check Portal Admin inbox, or try again.',
+          );
+        }
+      } catch (err) {
+        if (err instanceof Error && err.message.includes('payload was not stored')) throw err;
+      }
     }
   },
 

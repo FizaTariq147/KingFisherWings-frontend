@@ -6,9 +6,14 @@ export const PORTAL_INVOICES_API = {
   detail: (id: string) => `/portal/invoices/${encodeURIComponent(id)}`,
   pdf: (id: string) => `/portal/invoices/${encodeURIComponent(id)}/pdf`,
   paymentProofs: (id: string) => `/portal/invoices/${encodeURIComponent(id)}/payment-proofs`,
+  pay: (id: string) => `/portal/invoices/${encodeURIComponent(id)}/pay`,
+  checkout: (id: string) => `/portal/invoices/${encodeURIComponent(id)}/checkout`,
+  paymentStatus: (id: string) => `/portal/invoices/${encodeURIComponent(id)}/payment-status`,
+  proofFile: (invoiceId: string, proofId: string) =>
+    `/portal/invoices/${encodeURIComponent(invoiceId)}/payment-proofs/${encodeURIComponent(proofId)}/file`,
 } as const;
 
-export const PORTAL_INVOICE_STATUSES = [
-  'DRAFT', 'POSTED', 'SENT', 'PARTIALLY_PAID', 'PAID', 'CANCELLED', 'VOID',
-] as const;
-export type PortalInvoiceStatus = (typeof PORTAL_INVOICE_STATUSES)[number];
+/** Stripe config for portal online pay lives under portal payments. */
+export const PORTAL_INVOICE_PAYMENTS_API = {
+  stripeConfig: '/portal/payments/stripe/config',
+} as const;

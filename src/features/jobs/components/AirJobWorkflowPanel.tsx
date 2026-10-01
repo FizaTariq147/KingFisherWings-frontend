@@ -152,9 +152,12 @@ function applyPortalPayloadToAirForm(
         (p) => p.pallet_type.trim() || Number(p.count) > 1 || p.weight_kg.trim(),
       ));
 
+  const flightFromVoyage = String(payload.voyage_ref ?? '').trim();
+
   return {
     ...prev,
     commodity: pick(prev.commodity, payload.commodity),
+    flight_number: pick(prev.flight_number, flightFromVoyage || undefined),
     origin_airport_code: pick(
       prev.origin_airport_code,
       normalizeAirportCode(payload.origin_airport_code) ||
@@ -167,10 +170,22 @@ function applyPortalPayloadToAirForm(
         normalizeAirportCode(payload.pod) ||
         undefined,
     ),
-    notes: pick(prev.notes, payload.request_details || payload.insurance_details),
+    notes: pick(
+      prev.notes,
+      [payload.request_details, payload.insurance_details, payload.lc_bank_details]
+        .map((s) => String(s ?? '').trim())
+        .filter(Boolean)
+        .join('\n') || undefined,
+    ),
     special_handling: pick(
       prev.special_handling,
-      [payload.dg_class, payload.hs_code ? `HS ${payload.hs_code}` : '']
+      [
+        payload.dg_class,
+        payload.hs_code ? `HS ${payload.hs_code}` : '',
+        payload.final_use,
+        payload.activity_sector,
+      ]
+        .map((s) => String(s ?? '').trim())
         .filter(Boolean)
         .join(' · ') || undefined,
     ),
@@ -202,13 +217,17 @@ function applyPortalPayloadToAirForm(
       prev.delivery_address,
       payload.dest_door_address || payload.origin_door_address,
     ),
+    agent_at_origin: pick(
+      prev.agent_at_origin,
+      payload.booking_agent_line || payload.agent_requester_name,
+    ),
     shipper_name: pick(prev.shipper_name, shipper?.full_name),
-    shipper_city: pick(prev.shipper_city, shipper?.city || shipper?.address),
+    shipper_city: pick(prev.shipper_city, shipper?.city),
     shipper_country: pick(prev.shipper_country, shipper?.country),
     consignee_name: pick(prev.consignee_name, consignee?.full_name),
-    consignee_city: pick(prev.consignee_city, consignee?.city || consignee?.address),
+    consignee_city: pick(prev.consignee_city, consignee?.city),
     consignee_country: pick(prev.consignee_country, consignee?.country),
-    notify_name: pick(prev.notify_name, notify?.full_name),
+    notify_name: pick(prev.notify_name, notify?.full_name || consignee?.full_name),
     pallets: usePortalPallets ? portalPallets : prev.pallets,
   };
 }
@@ -296,6 +315,7 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
   const [actionError, setActionError] = useState<string | null>(null);
   const [bookingForm, setBookingForm] = useState<AirFormUi>(emptyAirForm);
   const [portalPrefillApplied, setPortalPrefillApplied] = useState(false);
+  const [portalPrefillKey, setPortalPrefillKey] = useState('');
   const [lastInvoiceId, setLastInvoiceId] = useState<string | undefined>();
   const invalidateInvoices = useInvalidateInvoices();
 
@@ -390,23 +410,22 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
 
   useEffect(() => {
     const payload = portalBookingQuery.data;
-    if (!payload || portalPrefillApplied) return;
-    const apiForm = airBookingQuery.data;
-    const apiHasParties = Boolean(apiForm?.parties?.some((p) => p.full_name?.trim()));
-    const apiHasRoute = Boolean(
-      String(apiForm?.origin_airport_code ?? '').trim() ||
-        String(apiForm?.dest_airport_code ?? '').trim(),
+    if (!payload) return;
+    const key = `${payload.quotationId}:${payload.submittedAt || ''}:${payload.mark_complete ? 1 : 0}`;
+    if (portalPrefillApplied && portalPrefillKey === key) return;
+    const isResubmit = portalPrefillKey !== '' && portalPrefillKey !== key;
+    setBookingForm((prev) =>
+      applyPortalPayloadToAirForm(prev, payload, {
+        // Fill empty matching fields; overwrite when customer re-submits.
+        overwrite: isResubmit,
+      }),
     );
-    if (apiHasParties || apiHasRoute) {
-      setPortalPrefillApplied(true);
-      return;
-    }
-    setBookingForm((prev) => applyPortalPayloadToAirForm(prev, payload, { overwrite: false }));
     setPortalPrefillApplied(true);
+    setPortalPrefillKey(key);
     setMessage(
-      `Customer portal booking loaded (quote ${payload.quoteNumber || payload.quotationId.slice(0, 8)}). Review, complete Ops fields, then mark complete.`,
+      `Autofilled from customer portal (quote ${payload.quoteNumber || payload.quotationId.slice(0, 8)}). Review matching fields, then mark complete.`,
     );
-  }, [portalBookingQuery.data, portalPrefillApplied, airBookingQuery.data]);
+  }, [portalBookingQuery.data, portalPrefillApplied, portalPrefillKey]);
 
   const commercialCurrent = firstOpenAirStage(AIR_COMMERCIAL_ACTION_ORDER, isDone);
   const commercialDone = AIR_COMMERCIAL_ACTION_ORDER.every(isDone);
@@ -812,17 +831,23 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
                 ) — IATA airport codes max 10 (e.g. DXB), not full city names from portal pol/pod.
               </p>
               {portalBookingQuery.data ? (
-                <p className="text-xs text-emerald-900">
-                  Portal submission found for quote{' '}
+                <p className="text-xs text-emerald-900 rounded-md border border-emerald-300 bg-white/60 px-2 py-1.5">
+                  Autofilled from customer portal (quote{' '}
                   <strong>
                     {portalBookingQuery.data.quoteNumber ||
                       portalBookingQuery.data.quotationId.slice(0, 8)}
                   </strong>
-                  .
+                  ). Matching fields mirror the customer booking form.
                 </p>
+              ) : portalBookingQuery.isLoading || portalBookingQuery.isFetching ? (
+                <p className="text-xs text-emerald-800">Looking up customer portal booking form…</p>
               ) : portalBookingQuery.isFetched ? (
                 <p className="text-xs text-amber-800">
-                  No customer portal booking form found yet in Portal Admin inbox.
+                  No customer portal booking form found yet. Open{' '}
+                  <strong>Portal Admin → Inbox</strong> and confirm a “[Customer booking form]”
+                  message exists for this quote. Then refresh this page. If the inbox is empty, ask
+                  the customer to click <strong>Share with forwarder again</strong> once more (after
+                  this frontend update).
                 </p>
               ) : null}
               {airBookingQuery.isError ? (
@@ -1056,13 +1081,13 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
                       applyPortalPayloadToAirForm(prev, payload, { overwrite: true }),
                     );
                     setMessage(
-                      `Applied customer portal booking (quote ${payload.quoteNumber || payload.quotationId.slice(0, 8)}).`,
+                      `Autofilled from customer portal (quote ${payload.quoteNumber || payload.quotationId.slice(0, 8)}).`,
                     );
                   }}
                 >
                   {portalBookingQuery.isFetching
                     ? 'Loading portal…'
-                    : 'Load customer portal booking'}
+                    : 'Autofill from customer portal'}
                 </Button>
                 <Button
                   type="button"

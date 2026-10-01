@@ -58,3 +58,18 @@ export function getRememberedQuotationConverted(
 export function isRememberedQuotationConverted(quotationId: string): boolean {
   return Boolean(getRememberedQuotationConverted(quotationId));
 }
+
+/** Reverse lookup: which quotation did we last link to this job in this browser. */
+export function findRememberedQuotationIdForJob(jobId: string): string | null {
+  const needle = String(jobId ?? '').trim();
+  if (!needle) return null;
+  const map = readMap();
+  let best: { id: string; at: number } | null = null;
+  for (const [id, entry] of Object.entries(map)) {
+    if (entry?.jobId !== needle) continue;
+    if (!best || (entry.at ?? 0) > best.at) {
+      best = { id, at: entry.at ?? 0 };
+    }
+  }
+  return best?.id ?? null;
+}

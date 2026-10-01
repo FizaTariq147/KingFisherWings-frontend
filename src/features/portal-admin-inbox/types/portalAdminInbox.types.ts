@@ -9,6 +9,8 @@ export interface AdminPortalMessage {
   body?: string;
   partyId?: string;
   partyName?: string;
+  /** Linked job / shipment when customer attached one on send. */
+  jobId?: string;
   createdAt?: string;
   isRead?: boolean;
   senderEmail?: string;

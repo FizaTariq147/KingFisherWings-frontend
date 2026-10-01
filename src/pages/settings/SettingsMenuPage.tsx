@@ -8,11 +8,16 @@ export default function SettingsMenuPage() {
   const { hasRole } = useAuth();
   const tiles = useMemo(
     () =>
-      settingsMenu.filter(
-        (tile) =>
-          tile.id !== 'public-api' ||
-          TENANT_USER_MANAGER_ROLE_SLUGS.some((slug) => hasRole(slug)),
-      ),
+      settingsMenu.filter((tile) => {
+        if (
+          tile.id === 'public-api' ||
+          tile.id === 'online-payments-stripe' ||
+          tile.id === 'billing'
+        ) {
+          return TENANT_USER_MANAGER_ROLE_SLUGS.some((slug) => hasRole(slug));
+        }
+        return true;
+      }),
     [hasRole],
   );
   return <ModuleMenuShell title="Settings" tiles={tiles} />;

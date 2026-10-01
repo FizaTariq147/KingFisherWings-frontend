@@ -18,6 +18,7 @@ import { PartyPortalUsersSection } from '../components/PartyPortalUsersSection';
 import { PartyTransactionSummarySection } from '../components/PartyTransactionSummarySection';
 import { PartyVendorPermissionsSection } from '../components/PartyVendorPermissionsSection';
 import { PartyVendorUsersSection } from '../components/PartyVendorUsersSection';
+import { PartyOnlinePaymentHistoryPanel } from '@/features/online-payments/components/PartyOnlinePaymentHistoryPanel';
 import { PARTY_TYPE_LABELS } from '../constants/party.constants';
 import { usePartyConfirmState } from '../hooks/usePartyConfirmState';
 import {
@@ -213,6 +214,13 @@ export default function PartyDetailPage() {
             key: 'edi-charges',
             label: 'EDI / charges',
             content: <PartyEdiAndChargesSection partyId={party.id} />,
+          },
+          {
+            key: 'payments',
+            label: 'Payments',
+            content: (
+              <PartyOnlinePaymentHistoryPanel partyId={party.id} partyType={party.party_type} />
+            ),
           },
           {
             key: 'history',

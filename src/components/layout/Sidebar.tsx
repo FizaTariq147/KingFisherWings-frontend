@@ -25,6 +25,8 @@ import {
   Loader2,
   Search,
   ScanBarcode,
+  CreditCard,
+  Layers,
   type LucideIcon,
 } from 'lucide-react';
 import { useUIStore } from '@/store/uiStore';
@@ -143,6 +145,9 @@ const SIDEBAR_ICON_STYLES: Record<string, NavIconStyle> = {
   '/superadmin/dashboard': navStyle('#0284C7'),
   '/superadmin/companies': navStyle('#B45309'),
   '/superadmin/tenants': navStyle('#4ADE80'),
+  '/superadmin/billing': navStyle('#F59E0B'),
+  '/superadmin/billing/plans': navStyle('#EAB308'),
+  '/settings/billing': navStyle('#10B981'),
 };
 
 function productBadge(product?: string): string {
@@ -420,10 +425,21 @@ const ADMIN_ORGANIZATION_NAV_ITEM: NavItem = {
   adminOnly: true,
 };
 
+const ADMIN_BILLING_NAV_ITEM: NavItem = {
+  label: 'Billing Plans',
+  path: '/settings/billing',
+  Icon: CreditCard,
+  permission: null,
+  adminOnly: true,
+  activePrefix: '/settings/billing',
+};
+
 const SUPER_ADMIN_NAV_ITEMS: NavItem[] = [
   { label: 'Platform', path: '/superadmin/dashboard', Icon: Globe, permission: null },
   { label: 'Companies', path: '/superadmin/companies', Icon: Briefcase, permission: null },
   { label: 'Tenants', path: '/superadmin/tenants', Icon: Building2, permission: null },
+  { label: 'Billing', path: '/superadmin/billing', Icon: CreditCard, permission: null, activePrefix: '/superadmin/billing' },
+  { label: 'Billing Plans', path: '/superadmin/billing/plans', Icon: Layers, permission: null },
 ];
 
 interface SidebarProps {
@@ -583,7 +599,13 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
             {!collapsed && (
               <SidebarSectionLabel title="Tenant Admin" color={SECTION_COLORS.tenantAdmin} />
             )}
-            {[ADMIN_MASTERS_NAV_ITEM, ADMIN_ORGANIZATION_NAV_ITEM, ADMIN_PARTIES_NAV_ITEM, ADMIN_USERS_NAV_ITEM].map(
+            {[
+              ADMIN_MASTERS_NAV_ITEM,
+              ADMIN_ORGANIZATION_NAV_ITEM,
+              ADMIN_PARTIES_NAV_ITEM,
+              ADMIN_USERS_NAV_ITEM,
+              ADMIN_BILLING_NAV_ITEM,
+            ].map(
               (item) => (
                 <SidebarNavLink
                   key={item.path}
@@ -595,6 +617,7 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
                   onNavigate={onNavigate}
                   resolveActive={(isActive) =>
                     isActive ||
+                    Boolean(item.activePrefix && location.pathname.startsWith(item.activePrefix)) ||
                     (item.path === '/organization' && location.pathname.startsWith('/organization'))
                   }
                 />
@@ -617,6 +640,10 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
                 iconStyle={item.iconStyle}
                 collapsed={collapsed}
                 onNavigate={onNavigate}
+                resolveActive={(isActive) =>
+                  isActive ||
+                  Boolean(item.activePrefix && location.pathname.startsWith(item.activePrefix!))
+                }
               />
             ))}
           </div>

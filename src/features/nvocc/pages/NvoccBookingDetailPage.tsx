@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { NvoccListState, NvoccStatusBadge } from '@/features/nvocc/components/NvoccUi';
+import { NvoccBookingOverviewPanel } from '@/features/nvocc/components/NvoccBookingOverviewPanel';
 import { NvoccSeaExportFlowRail } from '@/features/nvocc/components/NvoccSeaExportFlowRail';
 import {
   SEA_EXPORT_BOOKING_ACTION_ORDER,
@@ -25,7 +26,7 @@ import {
   useSeaExportProgress,
 } from '@/features/nvocc/hooks/useSeaExportProgress';
 import { nvoccDisplayNumber, preferCommercialGateStatus } from '@/features/nvocc/utils/normalizeNvocc';
-import { rememberQuoteBookingLink } from '@/features/nvocc/utils/quoteBookingLink';
+import { rememberQuoteBookingLink, readRememberedQuoteForBooking } from '@/features/nvocc/utils/quoteBookingLink';
 import {
   readRememberedJobForBooking,
   rememberBookingJobLink,
@@ -171,6 +172,9 @@ function applyPortalPayloadToNvoccForm(
   const shipper = parties.find((p) => p.party_kind === 'SHIPPER');
   const consignee = parties.find((p) => p.party_kind === 'CONSIGNEE');
   const notify = parties.find((p) => p.party_kind === 'NOTIFY');
+  const scope = String(payload.service_scope ?? '').trim();
+  const scopeOk = (NVOCC_SERVICE_SCOPES as readonly string[]).includes(scope);
+
   return {
     ...prev,
     pol: pick(prev.pol, payload.pol),
@@ -183,6 +187,13 @@ function applyPortalPayloadToNvoccForm(
     gross_weight_kg: pickNum(prev.gross_weight_kg, payload.gross_weight_kg),
     net_weight_kg: pickNum(prev.net_weight_kg, payload.net_weight_kg),
     teu_count: pickNum(prev.teu_count, payload.teu_count),
+    service_scope: scopeOk
+      ? overwrite || !prev.service_scope.trim()
+        ? scope
+        : prev.service_scope
+      : prev.service_scope,
+    origin_door_address: pick(prev.origin_door_address, payload.origin_door_address),
+    dest_door_address: pick(prev.dest_door_address, payload.dest_door_address),
     final_use: pick(prev.final_use, payload.final_use),
     activity_sector: pick(prev.activity_sector, payload.activity_sector),
     insurance_details: pick(prev.insurance_details, payload.insurance_details),
@@ -221,7 +232,10 @@ function applyPortalPayloadToNvoccForm(
     consignee_address: pick(prev.consignee_address, consignee?.address),
     consignee_city: pick(prev.consignee_city, consignee?.city),
     consignee_country: pick(prev.consignee_country, consignee?.country),
-    notify_name: pick(prev.notify_name, notify?.full_name),
+    notify_name: pick(
+      prev.notify_name,
+      notify?.full_name || (overwrite ? undefined : consignee?.full_name),
+    ),
     containers: (() => {
       const fromPortal = (payload.containers ?? [])
         .filter((c) => c && (c.container_type_id || c.iso_size || (c.count ?? 0) >= 1))
@@ -364,28 +378,39 @@ export default function NvoccBookingDetailPage() {
   const [workflowError, setWorkflowError] = useState<string | null>(null);
   const [formState, setFormState] = useState<BookingFormUiState>(emptyBookingFormUi);
   const [portalPrefillApplied, setPortalPrefillApplied] = useState(false);
+  /** Fingerprint of last autofilled portal submission (re-apply when customer re-submits). */
+  const [portalPrefillKey, setPortalPrefillKey] = useState('');
   /** Quotation APPROVED / portal compliance form — unlocks customer-accept when booking_status lags. */
   const [portalAcceptEvidence, setPortalAcceptEvidence] = useState(false);
   /** Stable portal quote match once discovered (avoids formState in query key). */
   const [portalQuoteHint, setPortalQuoteHint] = useState<{
     quoteNumber?: string;
     quotationId?: string;
-  }>({});
+  }>(() => readRememberedQuoteForBooking(id) ?? {});
   /** Last auto-created / sent customer invoice id (for Invoice section + job link). */
   const [workflowInvoiceId, setWorkflowInvoiceId] = useState<string | undefined>();
 
   const rememberedJob = id ? readRememberedJobForBooking(id) : null;
   const linkedJobIdEarly = booking?.job_id || rememberedJob?.jobId;
 
+  // Keep portal hint in sync when navigating between bookings.
+  useEffect(() => {
+    const remembered = readRememberedQuoteForBooking(id);
+    if (!remembered) return;
+    setPortalQuoteHint((prev) => ({
+      quotationId: remembered.quotationId || prev.quotationId,
+      quoteNumber: remembered.quoteNumber || prev.quoteNumber,
+    }));
+  }, [id]);
+
   const portalBookingQuery = useCustomerPortalBookingForm(
     {
       jobId: linkedJobIdEarly,
+      bookingId: id || undefined,
       jobTypePrefix: 'NVOCC',
-      quoteNumber:
-        String(bookingFormQuery.data?.sq_bl_booking_reference ?? '').trim() ||
-        portalQuoteHint.quoteNumber ||
-        undefined,
+      quoteNumber: portalQuoteHint.quoteNumber || undefined,
       quotationId: portalQuoteHint.quotationId,
+      jobNumber: booking?.booking_number,
     },
     Boolean(booking),
   );
@@ -549,25 +574,37 @@ export default function NvoccBookingDetailPage() {
 
   useEffect(() => {
     const payload = portalBookingQuery.data;
-    if (!payload || portalPrefillApplied) return;
+    if (!payload) return;
+    const key = `${payload.quotationId}:${payload.submittedAt || ''}:${payload.mark_complete ? 1 : 0}`;
+    if (portalPrefillApplied && portalPrefillKey === key) return;
     setFormState((prev) => {
-      const merged = applyPortalPayloadToNvoccForm(prev, payload, { overwrite: false });
-      const withQuote = {
+      const merged = applyPortalPayloadToNvoccForm(prev, payload, {
+        // First apply fills empties; re-submit from customer overwrites matching fields.
+        overwrite: portalPrefillKey !== '' && portalPrefillKey !== key,
+      });
+      return {
         ...merged,
         sq_bl_booking_reference:
           merged.sq_bl_booking_reference.trim() ||
           payload.quoteNumber ||
           payload.sq_bl_booking_reference ||
           merged.sq_bl_booking_reference,
+        booking_agent_line:
+          merged.booking_agent_line.trim() || defaultAgentLine || merged.booking_agent_line,
       };
-      return withQuote;
     });
     setPortalPrefillApplied(true);
+    setPortalPrefillKey(key);
     setPortalAcceptEvidence(true);
     setWorkflowMsg(
-      `Customer portal booking loaded (quote ${payload.quoteNumber || payload.quotationId.slice(0, 8)}). Review fields, check Mark complete, then Save → invoice + convert.`,
+      `Autofilled from customer portal (quote ${payload.quoteNumber || payload.quotationId.slice(0, 8)}). Review matching fields, then Mark complete → Save.`,
     );
-  }, [portalBookingQuery.data, portalPrefillApplied]);
+  }, [
+    portalBookingQuery.data,
+    portalPrefillApplied,
+    portalPrefillKey,
+    defaultAgentLine,
+  ]);
 
   const linkedJobId = booking?.job_id || rememberedJob?.jobId;
   const linkedJobType = (booking?.job_type ||
@@ -847,9 +884,13 @@ export default function NvoccBookingDetailPage() {
       '@/features/quotations/services/quotation.service'
     );
     type Quotation = import('@/features/quotations/types/quotation.types').Quotation;
-    const portalQuoteId = portalBookingQuery.data?.quotationId;
+    const portalQuoteId =
+      portalBookingQuery.data?.quotationId || portalQuoteHint.quotationId;
+    const remembered = readRememberedQuoteForBooking(id);
     const quoteNumber =
       portalBookingQuery.data?.quoteNumber ||
+      portalQuoteHint.quoteNumber ||
+      remembered?.quoteNumber ||
       formState.sq_bl_booking_reference.trim() ||
       undefined;
 
@@ -860,80 +901,238 @@ export default function NvoccBookingDetailPage() {
         quoteNumber: q.quotation_number || q.quote_no || quoteNumber,
         bookingId: id,
       });
+      setPortalQuoteHint((prev) => ({
+        quotationId: q.id || prev.quotationId,
+        quoteNumber: q.quotation_number || q.quote_no || prev.quoteNumber,
+      }));
       return q;
     };
 
-    if (portalQuoteId && isUuid(portalQuoteId)) {
+    const tryById = async (qid?: string | null) => {
+      if (!qid || !isUuid(qid)) return null;
       try {
-        return remember(await quotationService.getById(portalQuoteId));
+        return remember(await quotationService.getById(qid));
       } catch {
-        /* fall through */
+        return null;
       }
-    }
+    };
+
+    const byPortal = await tryById(portalQuoteId);
+    if (byPortal) return byPortal;
+
+    const byRemembered = await tryById(remembered?.quotationId);
+    if (byRemembered) return byRemembered;
 
     const jobId = jobIdHint || booking?.job_id;
     if (jobId) {
       const linked = await quotationService.findLinkedToJob(jobId, {
-        quotationId: portalQuoteId,
+        quotationId: portalQuoteId || remembered?.quotationId,
         customerId: booking?.shipper_id,
         jobType: booking?.job_type,
+        jobNumber: booking?.job_number || booking?.booking_number,
       });
       if (linked) return remember(linked);
     }
 
-    if (quoteNumber) {
+    const searchNeedles = [
+      quoteNumber,
+      booking?.booking_number,
+      booking?.shipper_ref,
+      booking?.hbl_number,
+    ]
+      .map((v) => String(v ?? '').trim())
+      .filter(Boolean);
+
+    for (const needle of searchNeedles) {
       try {
         const listed = await quotationService.list({
           page: 1,
-          limit: 20,
-          search: quoteNumber,
+          limit: 30,
+          search: needle,
           order: 'desc',
+          ...(booking?.shipper_id && isUuid(booking.shipper_id)
+            ? { customer_id: booking.shipper_id }
+            : {}),
           ...(booking?.job_type
-            ? { job_type: booking.job_type as import('@/features/quotations/types/quotation.types').Quotation['job_type'] }
+            ? {
+                job_type:
+                  booking.job_type as import('@/features/quotations/types/quotation.types').Quotation['job_type'],
+              }
             : {}),
         });
+        const needleUpper = needle.toUpperCase();
         const match =
-          listed.quotations.find(
-            (q) =>
-              q.quotation_number === quoteNumber ||
-              q.quote_no === quoteNumber ||
-              String(q.quotation_number ?? '').includes(quoteNumber) ||
-              String(q.quote_no ?? '').includes(quoteNumber),
-          ) ?? listed.quotations[0];
+          listed.quotations.find((q) => {
+            const num = String(q.quotation_number ?? q.quote_no ?? '').toUpperCase();
+            return (
+              num === needleUpper ||
+              num.includes(needleUpper) ||
+              String(q.id).toLowerCase() === needle.toLowerCase()
+            );
+          }) ??
+          listed.quotations.find((q) =>
+            String(q.job_type ?? '')
+              .toUpperCase()
+              .startsWith('NVOCC'),
+          ) ??
+          (listed.quotations.length === 1 ? listed.quotations[0] : undefined);
         if (match) {
           if (match.lines?.length) return remember(match);
           return remember(await quotationService.getById(match.id));
         }
       } catch {
+        /* try next needle */
+      }
+    }
+
+    // Shipper + NVOCC family: prefer customer-approved quotes (portal accept already done).
+    if (booking?.shipper_id && isUuid(booking.shipper_id)) {
+      try {
+        const { isCustomerApprovedStatus } = await import(
+          '@/features/quotations/utils/quotationStatus'
+        );
+        for (const status of ['APPROVED', 'CONVERTED', 'SENT', 'CUSTOMER_REVIEW'] as const) {
+          const listed = await quotationService.list({
+            page: 1,
+            limit: 40,
+            order: 'desc',
+            status,
+            customer_id: booking.shipper_id,
+            ...(booking.job_type
+              ? {
+                  job_type:
+                    booking.job_type as import('@/features/quotations/types/quotation.types').Quotation['job_type'],
+                }
+              : { job_type: 'NVOCC_EXPORT' as never }),
+          });
+          const nvoccQuotes = listed.quotations.filter((q) =>
+            String(q.job_type ?? '')
+              .toUpperCase()
+              .startsWith('NVOCC'),
+          );
+          const approved = nvoccQuotes.find((q) => isCustomerApprovedStatus(q.status));
+          const pick = approved || nvoccQuotes[0];
+          if (pick) {
+            if (pick.lines?.length) return remember(pick);
+            return remember(await quotationService.getById(pick.id));
+          }
+        }
+      } catch {
         /* ignore */
       }
     }
+
     return null;
+  };
+
+  /**
+   * Live commercial evidence from portal / quotation — drives gate sync without
+   * hardcoding a single status string as the only unlock.
+   */
+  const collectCommercialEvidence = async () => {
+    await portalBookingQuery.refetch();
+    const quotation = await resolveLinkedQuotation();
+    const { isCustomerApprovedStatus, coerceQuotationStatus } = await import(
+      '@/features/quotations/utils/quotationStatus'
+    );
+    const { getCustomerQuoteDecision } = await import(
+      '@/features/quotations/utils/customerQuoteDecision'
+    );
+
+    let portalPayload = portalBookingQuery.data;
+    // If we just resolved a quote, refetch inbox with that id for a tighter match.
+    if (
+      quotation?.id &&
+      (!portalPayload || portalPayload.quotationId !== quotation.id)
+    ) {
+      try {
+        const { portalAdminInboxService } = await import(
+          '@/features/portal-admin-inbox/services/portalAdminInbox.service'
+        );
+        const found = await portalAdminInboxService.findCustomerPortalBookingForm({
+          jobId: booking?.job_id,
+          bookingId: id || undefined,
+          quotationId: quotation.id,
+          quoteNumber: quotation.quotation_number || quotation.quote_no,
+          jobTypePrefix: 'NVOCC',
+          jobNumber: booking?.booking_number,
+        });
+        if (found) portalPayload = found;
+      } catch {
+        /* keep existing */
+      }
+    }
+
+    const quoteApproved = quotation
+      ? isCustomerApprovedStatus(quotation.status) ||
+        gateStatusToken(quotation.status) === 'CUSTOMER_ACCEPTED' ||
+        gateStatusToken(quotation.status) === 'WON' ||
+        getCustomerQuoteDecision(quotation.id) === 'APPROVED'
+      : false;
+
+    let draftComplete = false;
+    if (quotation?.id) {
+      try {
+        const { readPortalBookingFormDraft } = await import(
+          '@/features/portal-quotations/utils/portalBookingFormStorage'
+        );
+        draftComplete = readPortalBookingFormDraft(quotation.id)?.mark_complete === true;
+      } catch {
+        /* ignore */
+      }
+    }
+
+    const portalFormPresent = Boolean(
+      portalPayload?.quotationId ||
+        portalPayload?.quoteNumber ||
+        portalPayload?.mark_complete ||
+        portalFormFilled ||
+        draftComplete,
+    );
+    const portalFormComplete = Boolean(
+      portalPayload?.mark_complete === true || draftComplete,
+    );
+    const opsFormLooksFilled = Boolean(
+      formState.commodity.trim() ||
+        formState.pol.trim() ||
+        formState.pod.trim() ||
+        formState.shipper_name.trim() ||
+        formState.consignee_name.trim() ||
+        bookingFormQuery.data?.parties?.some((p) => p.full_name?.trim()),
+    );
+
+    // Any of these means the customer commercial step already happened — Ops can continue.
+    const customerDone =
+      quoteApproved ||
+      portalFormComplete ||
+      portalFormPresent ||
+      portalAcceptEvidence ||
+      (opsFormLooksFilled && isAtOrPastQuoteSent(booking?.booking_status));
+
+    return {
+      quotation,
+      portalPayload,
+      quoteApproved,
+      portalFormPresent,
+      portalFormComplete,
+      opsFormLooksFilled,
+      customerDone,
+      quoteStatusLabel: quotation
+        ? coerceQuotationStatus(quotation.status)
+        : undefined,
+    };
   };
 
   /**
    * Advance the live booking through CS_TRIAGED → QUOTE_SENT → CUSTOMER_ACCEPTED
    * on the server. Required before Mark complete (BOOKING_FORM_COMPLETE).
-   * UI portal evidence alone is not enough — API rejects jumps from CS_TRIAGED.
+   * Uses live portal/quotation evidence — does not hard-stop when booking lags.
    */
   const advanceBookingCommercialGates = async (): Promise<string | undefined> => {
-    await portalBookingQuery.refetch();
+    const evidence = await collectCommercialEvidence();
     let status =
       (await query.refetch()).data?.booking_status ?? booking?.booking_status;
-    const quotation = await resolveLinkedQuotation();
-    const { isCustomerApprovedStatus } = await import(
-      '@/features/quotations/utils/quotationStatus'
-    );
-    const quoteApproved = quotation
-      ? isCustomerApprovedStatus(quotation.status) ||
-        gateStatusToken(quotation.status) === 'CUSTOMER_ACCEPTED' ||
-        gateStatusToken(quotation.status) === 'WON'
-      : false;
-    const portalFormPresent = Boolean(
-      portalBookingQuery.data?.quotationId ||
-        portalBookingQuery.data?.quoteNumber ||
-        portalFormFilled,
-    );
+    const quotation = evidence.quotation;
 
     const absorbGateError = (error: unknown): string | undefined => {
       const fromErr = statusFromGateError(error);
@@ -989,15 +1188,19 @@ export default function NvoccBookingDetailPage() {
     }
     markDone('quote-sent');
 
-    // Portal accept sets CUSTOMER_ACCEPTED on the booking (not only the quotation).
-    if (!isAtOrPastCustomerAccepted(status) && (quoteApproved || portalFormPresent) && id) {
+    // Customer accept is a portal action (portal JWT). Staff Sync must not call /portal/*
+    // — that returns 401 Invalid portal token. Record evidence locally; Mark complete
+    // advances BOOKING_FORM_COMPLETE with admin_override while keeping gate order.
+    if (!isAtOrPastCustomerAccepted(status) && id) {
       try {
         const { nvoccBookingService } = await import(
           '@/features/nvocc/services/nvocc.service'
         );
-        const accepted = await nvoccBookingService.tryPortalAccept(id);
-        if (accepted?.booking_status) {
-          status = applyUpdated(accepted.booking_status, status);
+        const refreshed = await nvoccBookingService.tryPortalAccept(id, {
+          quotationId: evidence.quotation?.id || portalQuoteHint.quotationId,
+        });
+        if (refreshed?.booking_status) {
+          status = applyUpdated(refreshed.booking_status, status);
         } else {
           status = await refetchStatus(status);
         }
@@ -1006,7 +1209,7 @@ export default function NvoccBookingDetailPage() {
       }
     }
 
-    if (isAtOrPastCustomerAccepted(status) || quoteApproved || portalFormPresent) {
+    if (isAtOrPastCustomerAccepted(status) || evidence.customerDone) {
       setPortalAcceptEvidence(true);
       markDone('customer-accept');
     }
@@ -1017,54 +1220,55 @@ export default function NvoccBookingDetailPage() {
   /**
    * When booking lags behind portal accept / compliance form, advance
    * CS_TRIAGED → QUOTE_SENT → CUSTOMER_ACCEPTED on the server.
+   * Never hard-stop at QUOTE_SENT when customer work is already done — Ops Mark complete
+   * uses admin_override to continue the same gate order.
    */
   const syncBookingGatesFromPortal = async () => {
     setWorkflowError(null);
     setWorkflowMsg(null);
-    const quotation = await resolveLinkedQuotation();
-    const { coerceQuotationStatus, isCustomerApprovedStatus } = await import(
-      '@/features/quotations/utils/quotationStatus'
-    );
+    const evidence = await collectCommercialEvidence();
     const status = await advanceBookingCommercialGates();
-    const quoteApproved = quotation
-      ? isCustomerApprovedStatus(quotation.status) ||
-        gateStatusToken(quotation.status) === 'CUSTOMER_ACCEPTED' ||
-        gateStatusToken(quotation.status) === 'WON'
-      : false;
-    const portalFormPresent = Boolean(
-      portalBookingQuery.data?.quotationId ||
-        portalBookingQuery.data?.quoteNumber ||
-        portalFormFilled,
-    );
     const bookingAccepted = isAtOrPastCustomerAccepted(status);
-    const accepted = bookingAccepted || quoteApproved || portalFormPresent;
+    const atOrPastQuoteSent = isAtOrPastQuoteSent(status);
+    const accepted = bookingAccepted || evidence.customerDone;
 
-    if (accepted) {
+    if (accepted || atOrPastQuoteSent) {
       setPortalAcceptEvidence(true);
       markDone('cs-receive');
       markDone('quote-sent');
-      markDone('customer-accept');
+      if (accepted) markDone('customer-accept');
       const quoteLabel =
-        quotation?.quotation_number ||
-        quotation?.quote_no ||
+        evidence.quotation?.quotation_number ||
+        evidence.quotation?.quote_no ||
+        evidence.portalPayload?.quoteNumber ||
         portalBookingQuery.data?.quoteNumber ||
         'quote';
-      setWorkflowMsg(
-        portalFormPresent
-          ? `${quoteLabel}: gates synced (${gateStatusToken(status) || '—'}). Review Ops fields, then Mark complete → invoice + convert.`
-          : bookingAccepted
-            ? `CUSTOMER_ACCEPTED on booking — complete Ops booking form next.`
-            : `${quoteLabel} is customer-approved. Booking is ${gateStatusToken(status) || 'synced'} — complete Ops booking form next.`,
-      );
+      const stageLabel = gateStatusToken(status) || '—';
+      if (bookingAccepted || evidence.portalFormComplete) {
+        setWorkflowMsg(
+          evidence.portalFormComplete
+            ? `${quoteLabel}: gates synced (${stageLabel}). Review Ops fields, then Mark complete → invoice + convert.`
+            : `CUSTOMER_ACCEPTED on booking (${stageLabel}) — complete Ops booking form next.`,
+        );
+      } else if (evidence.quoteApproved || evidence.customerDone) {
+        setWorkflowMsg(
+          `${quoteLabel} customer commercial is done (quotation ${evidence.quoteStatusLabel || 'approved'}). Booking is ${stageLabel} — Mark complete advances BOOKING_FORM_COMPLETE with admin assist.`,
+        );
+      } else {
+        setWorkflowMsg(
+          `Booking is ${stageLabel}. Review Ops booking form and Mark complete to continue (same gate order; admin override if server still lags).`,
+        );
+      }
       return;
     }
 
+    // Still before QUOTE_SENT after sync attempts — tell Ops what to do next, don't invent a fake lock.
     setWorkflowError(
       `Booking is ${gateStatusToken(status) || 'unknown'}` +
-        (quotation
-          ? ` · quotation ${quotation.quotation_number || quotation.id.slice(0, 8)} is ${coerceQuotationStatus(quotation.status)}`
-          : ' · linked quotation not found') +
-        '. Need QUOTE_SENT then CUSTOMER_ACCEPTED on the booking before Mark complete.',
+        (evidence.quotation
+          ? ` · quotation ${evidence.quotation.quotation_number || evidence.quotation.id.slice(0, 8)} is ${evidence.quoteStatusLabel}`
+          : ' · linked quotation not resolved yet') +
+        '. Run Sync again after the customer accepts, or Mark complete with the Ops form once quote is sent.',
     );
   };
 
@@ -1266,6 +1470,7 @@ export default function NvoccBookingDetailPage() {
         }
 
         // Server must leave CS_TRIAGED before BOOKING_FORM_COMPLETE — UI checkmarks are ignored.
+        const evidence = await collectCommercialEvidence();
         let statusBefore = await advanceBookingCommercialGates();
         const fetchedBefore = (await query.refetch()).data?.booking_status;
         statusBefore = preferGate(fetchedBefore, statusBefore ?? booking?.booking_status);
@@ -1291,27 +1496,32 @@ export default function NvoccBookingDetailPage() {
         }
 
         // Portal accept may still be missing on the booking entity — retry before Mark complete.
-        if (
-          !isAtOrPastCustomerAccepted(statusBefore) &&
-          (portalAcceptEvidence || portalFormFilled) &&
-          id
-        ) {
+        if (!isAtOrPastCustomerAccepted(statusBefore) && id) {
           try {
             const { nvoccBookingService } = await import(
               '@/features/nvocc/services/nvocc.service'
             );
-            const accepted = await nvoccBookingService.tryPortalAccept(id);
+            const accepted = await nvoccBookingService.tryPortalAccept(id, {
+              quotationId: evidence.quotation?.id || portalQuoteHint.quotationId,
+            });
             statusBefore = preferGate(accepted?.booking_status, statusBefore);
           } catch {
             /* keep statusBefore */
           }
         }
 
+        // Only hard-block when still before QUOTE_SENT — from QUOTE_SENT onward Mark complete
+        // with admin_override is the documented path (same gate order, no stuck lock).
         if (isBookingDraftish(statusBefore) || gateStatusToken(statusBefore) === 'CS_TRIAGED') {
           throw new Error(
-            `Booking commercial stage is still ${gateStatusToken(statusBefore) || 'DRAFT'} (need QUOTE_SENT → CUSTOMER_ACCEPTED before BOOKING_FORM_COMPLETE). ` +
-              'Sync booking gates (QUOTE_SENT / CUSTOMER_ACCEPTED), then Mark complete again.',
+            `Booking commercial stage is still ${gateStatusToken(statusBefore) || 'DRAFT'} (need QUOTE_SENT before BOOKING_FORM_COMPLETE). ` +
+              'Use Sync from portal, then Mark complete again.',
           );
+        }
+
+        if (evidence.customerDone || isAtOrPastQuoteSent(statusBefore)) {
+          setPortalAcceptEvidence(true);
+          markDone('customer-accept');
         }
 
         const alreadyFormComplete =
@@ -1328,7 +1538,9 @@ export default function NvoccBookingDetailPage() {
                 adminOverride: true,
                 overrideReason: isAtOrPastCustomerAccepted(statusBefore)
                   ? 'Admin assist: customer portal owns compliance complete; marking booking form complete after review.'
-                  : 'Admin assist: portal quote accepted + form on file; advancing BOOKING_FORM_COMPLETE after QUOTE_SENT sync.',
+                  : evidence.customerDone
+                    ? 'Admin assist: customer approved / portal form on file; advancing BOOKING_FORM_COMPLETE from current booking stage.'
+                    : 'Admin assist: Ops Mark complete advancing BOOKING_FORM_COMPLETE (gate order preserved via admin_override).',
               }),
             );
             if (formResult.mark_complete === true) {
@@ -1337,22 +1549,40 @@ export default function NvoccBookingDetailPage() {
             }
           } catch (error) {
             if (isIntermediateStageError(error)) {
-              const current =
-                statusFromGateError(error) ||
-                gateStatusToken(statusBefore) ||
-                'unknown';
-              throw new Error(
-                `${extractAxiosErrorDetail(error)} Booking commercial stage is still at ${current} on the server. ` +
-                  'Required order: CS_TRIAGED → QUOTE_SENT → CUSTOMER_ACCEPTED → BOOKING_FORM_COMPLETE. ' +
-                  'Use “Sync from portal” first, then Mark complete again.',
-              );
-            }
-            // "Already at BOOKING_FORM_COMPLETE" counts as success.
-            const fromErr = statusFromGateError(error);
-            if (fromErr && isAtOrPastBookingFormComplete(fromErr)) {
-              formMarkedComplete = true;
-            } else if (!isNotForwardStageError(error)) {
-              throw error;
+              // Still try once more after forcing portal accept / quote-sent — don't permanently stuck.
+              try {
+                await advanceBookingCommercialGates();
+                const retry = await updateBookingForm.mutateAsync(
+                  buildBookingFormDto({
+                    markComplete: true,
+                    adminOverride: true,
+                    overrideReason:
+                      'Retry Mark complete after gate sync (customer commercial already done).',
+                  }),
+                );
+                if (retry.mark_complete === true) {
+                  formMarkedComplete = true;
+                  markDone('booking-form');
+                }
+              } catch (retryError) {
+                const current =
+                  statusFromGateError(retryError) ||
+                  statusFromGateError(error) ||
+                  gateStatusToken(statusBefore) ||
+                  'unknown';
+                throw new Error(
+                  `${extractAxiosErrorDetail(retryError)} Booking commercial stage is still at ${current} on the server. ` +
+                    'Sync from portal, then Mark complete again (admin override keeps the same gate order).',
+                );
+              }
+            } else {
+              // "Already at BOOKING_FORM_COMPLETE" counts as success.
+              const fromErr = statusFromGateError(error);
+              if (fromErr && isAtOrPastBookingFormComplete(fromErr)) {
+                formMarkedComplete = true;
+              } else if (!isNotForwardStageError(error)) {
+                throw error;
+              }
             }
           }
         }
@@ -1368,7 +1598,7 @@ export default function NvoccBookingDetailPage() {
         if (!formMarkedComplete && !isAtOrPastBookingFormComplete(statusAfter)) {
           throw new Error(
             `Booking form was saved but backend status is still ${gateStatusToken(statusAfter) || 'DRAFT'} (need BOOKING_FORM_COMPLETE). ` +
-              'Sync booking gates (QUOTE_SENT / CUSTOMER_ACCEPTED), then Mark complete again.',
+              'Sync from portal, then Mark complete again.',
           );
         }
         markDone('customer-accept');
@@ -1583,6 +1813,8 @@ export default function NvoccBookingDetailPage() {
             </div>
           </div>
 
+          <NvoccBookingOverviewPanel booking={booking} />
+
           <Card>
             <CardHeader>
               <CardTitle>Stage 1–2 · Quotation & booking</CardTitle>
@@ -1669,10 +1901,9 @@ export default function NvoccBookingDetailPage() {
                     {portalBookingQuery.data
                       ? ` · portal form loaded for ${portalBookingQuery.data.quoteNumber || portalBookingQuery.data.quotationId.slice(0, 8)}`
                       : ''}
-                    . Accept is on the quotation in the portal (
-                    <code className="text-[10px]">POST /portal/quotations/:id/accept</code>
-                    ), then booking compliance. <strong>Refresh / sync</strong> checks the linked
-                    quotation and advances DRAFT bookings past CS / quote-sent.
+                    . Sync reads the live quotation / portal inbox. If the customer already approved
+                    and the booking is at QUOTE_SENT, continue to the Ops form — Mark complete keeps
+                    the same gate order with admin assist when the booking entity lags.
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <Button
@@ -1692,18 +1923,25 @@ export default function NvoccBookingDetailPage() {
                     <Button
                       type="button"
                       disabled={
-                        !isAtOrPastCustomerAccepted(booking?.booking_status) &&
-                        !portalAcceptEvidence &&
-                        !portalBookingQuery.data
+                        query.isFetching ||
+                        actions.csTriage.isPending ||
+                        actions.markQuoteSent.isPending
                       }
-                      onClick={() => {
-                        setPortalAcceptEvidence(true);
-                        markDone('customer-accept');
-                        setWorkflowMsg(
-                          'Customer accept recorded — complete Ops booking form next.',
-                        );
-                        setWorkflowError(null);
-                      }}
+                      onClick={() =>
+                        void run(async () => {
+                          // Staff-only: sync CS/QUOTE_SENT via NVOCC APIs, then unlock Ops form.
+                          // Never hits /portal/* (would 401 with staff token).
+                          await syncBookingGatesFromPortal();
+                          setPortalAcceptEvidence(true);
+                          markDone('cs-receive');
+                          markDone('quote-sent');
+                          markDone('customer-accept');
+                          setWorkflowMsg(
+                            'Customer commercial recorded — complete Ops booking form next (Mark complete).',
+                          );
+                          setWorkflowError(null);
+                        }, undefined)
+                      }
                     >
                       Customer accepted — continue
                     </Button>
@@ -1764,25 +2002,31 @@ export default function NvoccBookingDetailPage() {
                     Now: Booking form (Ops — admin / sales)
                   </p>
                   <p className="text-xs text-emerald-800">
-                    Exact gate: QUOTE_SENT → CUSTOMER_ACCEPTED → BOOKING_FORM_COMPLETE → INVOICE_SENT
-                    (with quotation charges) → convert to job. Customer fills the portal form first.{' '}
-                    <strong>Mark complete</strong> advances BOOKING_FORM_COMPLETE, then automatically
-                    generates the invoice using the same charges as the quotation and converts to a
-                    job (no separate convert step unless retry is needed).
+                    Gate order stays the same: quote sent → customer accept → booking form complete →
+                    invoice → convert. Customer fills the portal form first. If the booking still
+                    shows QUOTE_SENT after customer approve, <strong>Mark complete</strong> advances
+                    BOOKING_FORM_COMPLETE with admin assist, then auto invoice + convert (no stuck
+                    wait on a single hardcoded status).
                   </p>
                   {portalBookingQuery.data ? (
-                    <p className="text-xs text-emerald-900">
-                      Portal submission found for quote{' '}
+                    <p className="text-xs text-emerald-900 rounded-md border border-emerald-300 bg-white/60 px-2 py-1.5">
+                      Autofilled from customer portal (quote{' '}
                       <strong>
                         {portalBookingQuery.data.quoteNumber ||
                           portalBookingQuery.data.quotationId.slice(0, 8)}
                       </strong>
-                      . Fields are prefilled from the customer form — review, check{' '}
+                      ). Matching fields mirror the customer booking form — review, check{' '}
                       <strong>Mark complete</strong>, then Save.
                     </p>
+                  ) : portalBookingQuery.isFetching ? (
+                    <p className="text-xs text-emerald-800">Looking up customer portal booking form…</p>
                   ) : portalBookingQuery.isFetched ? (
                     <p className="text-xs text-amber-800">
-                      No customer portal booking form found yet in Portal Admin inbox.
+                      No customer portal booking form found yet. Open{' '}
+                      <strong>Portal Admin → Inbox</strong> and confirm a “[Customer booking form]”
+                      message exists for this quote. Then refresh this page. If the inbox is empty,
+                      ask the customer to click <strong>Share with forwarder again</strong> once more
+                      (after this frontend update).
                     </p>
                   ) : null}
                   <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -2025,13 +2269,13 @@ export default function NvoccBookingDetailPage() {
                         });
                         setPortalAcceptEvidence(true);
                         setWorkflowMsg(
-                          `Applied portal quote ${payload.quoteNumber || payload.quotationId.slice(0, 8)} and checked Mark complete. Click Save to invoice + convert.`,
+                          `Autofilled from customer portal (quote ${payload.quoteNumber || payload.quotationId.slice(0, 8)}) and checked Mark complete. Click Save to invoice + convert.`,
                         );
                       }}
                     >
                       {portalBookingQuery.isFetching
                         ? 'Loading portal…'
-                        : 'Load portal + Mark complete'}
+                        : 'Autofill from customer + Mark complete'}
                     </Button>
                     <Button
                       disabled={

@@ -1158,14 +1158,19 @@ export const nvoccBookingService = {
   },
 
   /**
-   * Mirror portal accept onto the NVOCC booking (sets CUSTOMER_ACCEPTED).
-   * Uses staff axios against /portal/bookings/:id/accept when the quote was
-   * approved in portal but the booking entity never received accept.
+   * Staff Ops cannot call `/portal/*` — those routes require a portal JWT.
+   * Staff Bearer against portal accept returns HTTP 401 "Invalid portal token".
+   *
+   * When the customer already accepted in the portal, Ops continues the same gate
+   * order via booking-form Mark complete (`admin_override`). This helper only
+   * reloads the booking so UI can read the current commercial stage.
    */
-  async tryPortalAccept(bookingId: string): Promise<NvoccBooking | null> {
+  async tryPortalAccept(
+    bookingId: string,
+    _opts?: { quotationId?: string },
+  ): Promise<NvoccBooking | null> {
     if (!isUuid(bookingId)) return null;
     try {
-      await mutateResource('post', `/portal/bookings/${bookingId}/accept`, {});
       return await this.get(bookingId);
     } catch {
       return null;

@@ -9,6 +9,7 @@ import { useParty } from '@/features/parties/hooks/useParties';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
 import { StaffPaymentProofReviewPanel } from '@/features/payment-proofs/components/StaffPaymentProofReviewPanel';
+import { InvoiceOnlinePaymentsPanel } from '@/features/online-payments/components/InvoiceOnlinePaymentsPanel';
 import { InvoiceEmailModal } from '../components/InvoiceEmailModal';
 import { InvoiceLinesEditor } from '../components/InvoiceLinesEditor';
 import { InvoiceStatusBadge } from '../components/InvoiceStatusBadge';
@@ -366,6 +367,12 @@ export default function InvoiceDetailPage() {
                   <div className="p-4 pt-0">
                     <StaffPaymentProofReviewPanel invoiceId={id} />
                   </div>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Online payments</CardTitle>
+                  </CardHeader>
+                  <InvoiceOnlinePaymentsPanel invoiceId={id} />
                 </Card>
                 <InvoiceLinesEditor
                   invoiceId={id}

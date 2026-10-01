@@ -323,6 +323,8 @@ export function normalizeJob(raw: unknown): Job | null {
           mawb_number: pickString(air, 'mawb_number', 'mawbNumber') || undefined,
           flight_number: pickString(air, 'flight_number', 'flightNumber') || undefined,
           flight_date: pickString(air, 'flight_date', 'flightDate') || undefined,
+          screened: bool(air.screened),
+          screening_ref: pickString(air, 'screening_ref', 'screeningRef') || undefined,
           awb_type: pickString(air, 'awb_type', 'awbType') || undefined,
           freight_type: pickString(air, 'freight_type', 'freightType') || undefined,
           conversion_factor: num(air.conversion_factor ?? air.conversionFactor),
@@ -334,18 +336,64 @@ export function normalizeJob(raw: unknown): Job | null {
           vessel_id: pickString(sea, 'vessel_id', 'vesselId') || undefined,
           voyage_number: pickString(sea, 'voyage_number', 'voyageNumber') || undefined,
           shipping_line_name:
-            pickString(sea, 'shipping_line_name', 'shippingLineName') || undefined,
-          vessel_name: pickString(sea, 'vessel_name', 'vesselName') || undefined,
+            pickString(sea, 'shipping_line_name', 'shippingLineName') ||
+            pickRelationName(sea.shipping_line ?? sea.shippingLine) ||
+            undefined,
+          vessel_name:
+            pickString(sea, 'vessel_name', 'vesselName') ||
+            pickRelationName(sea.vessel) ||
+            undefined,
           booking_number:
             pickString(sea, 'booking_number', 'bookingNumber', 'booking_reference', 'bookingReference') ||
             undefined,
+          carrier_booking_ref:
+            pickString(sea, 'carrier_booking_ref', 'carrierBookingRef') || undefined,
           hbl_number: pickString(sea, 'hbl_number', 'hblNumber') || undefined,
           mbl_number: pickString(sea, 'mbl_number', 'mblNumber') || undefined,
+          place_of_receipt: pickString(sea, 'place_of_receipt', 'placeOfReceipt') || undefined,
+          place_of_delivery: pickString(sea, 'place_of_delivery', 'placeOfDelivery') || undefined,
           etd: pickString(sea, 'etd') || undefined,
           eta: pickString(sea, 'eta') || undefined,
+          actual_eta: pickString(sea, 'actual_eta', 'actualEta') || undefined,
+          incoterms: pickString(sea, 'incoterms') || undefined,
+          stuffing_location: pickString(sea, 'stuffing_location', 'stuffingLocation') || undefined,
+          stuffing_date: pickString(sea, 'stuffing_date', 'stuffingDate') || undefined,
+          si_cutoff: pickString(sea, 'si_cutoff', 'siCutoff') || undefined,
+          vgm_cutoff: pickString(sea, 'vgm_cutoff', 'vgmCutoff') || undefined,
+          cy_cutoff: pickString(sea, 'cy_cutoff', 'cyCutoff') || undefined,
+          si_submitted_at: pickString(sea, 'si_submitted_at', 'siSubmittedAt') || undefined,
+          si_version: num(sea.si_version ?? sea.siVersion),
+          vgm_submitted_at: pickString(sea, 'vgm_submitted_at', 'vgmSubmittedAt') || undefined,
+          vgm_method: pickString(sea, 'vgm_method', 'vgmMethod') || undefined,
           port_of_loading_id: pickString(sea, 'port_of_loading_id', 'portOfLoadingId') || undefined,
           port_of_discharge_id:
             pickString(sea, 'port_of_discharge_id', 'portOfDischargeId') || undefined,
+          bl_type: pickString(sea, 'bl_type', 'blType') || undefined,
+          freight_terms: pickString(sea, 'freight_terms', 'freightTerms') || undefined,
+          transhipment_port: pickString(sea, 'transhipment_port', 'transhipmentPort') || undefined,
+          sailed_at: pickString(sea, 'sailed_at', 'sailedAt') || undefined,
+          mbl_number_from_line:
+            pickString(sea, 'mbl_number_from_line', 'mblNumberFromLine') || undefined,
+          hbl_number_from_agent:
+            pickString(sea, 'hbl_number_from_agent', 'hblNumberFromAgent') || undefined,
+          customs_entry_number:
+            pickString(sea, 'customs_entry_number', 'customsEntryNumber') || undefined,
+          customs_examination_details:
+            pickString(sea, 'customs_examination_details', 'customsExaminationDetails') ||
+            undefined,
+          customs_duty_amount: num(sea.customs_duty_amount ?? sea.customsDutyAmount),
+          customs_tax_amount: num(sea.customs_tax_amount ?? sea.customsTaxAmount),
+          customs_clearance_date:
+            pickString(sea, 'customs_clearance_date', 'customsClearanceDate') || undefined,
+          customs_status: pickString(sea, 'customs_status', 'customsStatus') || undefined,
+          customs_broker_id: pickString(sea, 'customs_broker_id', 'customsBrokerId') || undefined,
+          linked_export_job_id:
+            pickString(sea, 'linked_export_job_id', 'linkedExportJobId') || undefined,
+          cfs_storage_rate_per_day: num(
+            sea.cfs_storage_rate_per_day ?? sea.cfsStorageRatePerDay,
+          ),
+          cfs_storage_start_date:
+            pickString(sea, 'cfs_storage_start_date', 'cfsStorageStartDate') || undefined,
         }
       : undefined,
     sea_lcl_details: seaLcl
@@ -353,18 +401,62 @@ export function normalizeJob(raw: unknown): Job | null {
           shipping_line_id: pickString(seaLcl, 'shipping_line_id', 'shippingLineId') || undefined,
           vessel_id: pickString(seaLcl, 'vessel_id', 'vesselId') || undefined,
           voyage_number: pickString(seaLcl, 'voyage_number', 'voyageNumber') || undefined,
-          vessel_name: pickString(seaLcl, 'vessel_name', 'vesselName') || undefined,
+          vessel_name:
+            pickString(seaLcl, 'vessel_name', 'vesselName') ||
+            pickRelationName(seaLcl.vessel) ||
+            undefined,
           booking_number: pickString(seaLcl, 'booking_number', 'bookingNumber') || undefined,
+          carrier_booking_ref:
+            pickString(seaLcl, 'carrier_booking_ref', 'carrierBookingRef') || undefined,
           hbl_number: pickString(seaLcl, 'hbl_number', 'hblNumber') || undefined,
           mbl_number: pickString(seaLcl, 'mbl_number', 'mblNumber') || undefined,
+          place_of_receipt:
+            pickString(seaLcl, 'place_of_receipt', 'placeOfReceipt') || undefined,
+          place_of_delivery:
+            pickString(seaLcl, 'place_of_delivery', 'placeOfDelivery') || undefined,
           etd: pickString(seaLcl, 'etd') || undefined,
           eta: pickString(seaLcl, 'eta') || undefined,
+          actual_eta: pickString(seaLcl, 'actual_eta', 'actualEta') || undefined,
+          incoterms: pickString(seaLcl, 'incoterms') || undefined,
+          freight_terms: pickString(seaLcl, 'freight_terms', 'freightTerms') || undefined,
+          bl_type: pickString(seaLcl, 'bl_type', 'blType') || undefined,
           port_of_loading_id:
             pickString(seaLcl, 'port_of_loading_id', 'portOfLoadingId') || undefined,
           port_of_discharge_id:
             pickString(seaLcl, 'port_of_discharge_id', 'portOfDischargeId') || undefined,
+          transhipment_port:
+            pickString(seaLcl, 'transhipment_port', 'transhipmentPort') || undefined,
+          sailed_at: pickString(seaLcl, 'sailed_at', 'sailedAt') || undefined,
+          si_cutoff: pickString(seaLcl, 'si_cutoff', 'siCutoff') || undefined,
+          si_submitted_at: pickString(seaLcl, 'si_submitted_at', 'siSubmittedAt') || undefined,
+          si_version: num(seaLcl.si_version ?? seaLcl.siVersion),
           consolidation_number:
             pickString(seaLcl, 'consolidation_number', 'consolidationNumber') || undefined,
+          cfs_warehouse_id: pickString(seaLcl, 'cfs_warehouse_id', 'cfsWarehouseId') || undefined,
+          cfs_storage_free_days: num(seaLcl.cfs_storage_free_days ?? seaLcl.cfsStorageFreeDays),
+          cfs_storage_rate_per_day: num(
+            seaLcl.cfs_storage_rate_per_day ?? seaLcl.cfsStorageRatePerDay,
+          ),
+          cfs_storage_start_date:
+            pickString(seaLcl, 'cfs_storage_start_date', 'cfsStorageStartDate') || undefined,
+          storage_rate_basis:
+            pickString(seaLcl, 'storage_rate_basis', 'storageRateBasis') || undefined,
+          wms_storage_charge_id:
+            pickString(seaLcl, 'wms_storage_charge_id', 'wmsStorageChargeId') || undefined,
+          customs_broker_id:
+            pickString(seaLcl, 'customs_broker_id', 'customsBrokerId') || undefined,
+          customs_entry_number:
+            pickString(seaLcl, 'customs_entry_number', 'customsEntryNumber') || undefined,
+          customs_examination_details:
+            pickString(seaLcl, 'customs_examination_details', 'customsExaminationDetails') ||
+            undefined,
+          customs_duty_amount: num(seaLcl.customs_duty_amount ?? seaLcl.customsDutyAmount),
+          customs_tax_amount: num(seaLcl.customs_tax_amount ?? seaLcl.customsTaxAmount),
+          customs_clearance_date:
+            pickString(seaLcl, 'customs_clearance_date', 'customsClearanceDate') || undefined,
+          customs_status: pickString(seaLcl, 'customs_status', 'customsStatus') || undefined,
+          linked_export_job_id:
+            pickString(seaLcl, 'linked_export_job_id', 'linkedExportJobId') || undefined,
         }
       : undefined,
     courier_details: courier
@@ -373,9 +465,18 @@ export function normalizeJob(raw: unknown): Job | null {
             pickString(courier, 'courier_vendor_id', 'courierVendorId') || undefined,
           tracking_number: pickString(courier, 'tracking_number', 'trackingNumber') || undefined,
           service_type: pickString(courier, 'service_type', 'serviceType') || undefined,
+          label_format: pickString(courier, 'label_format', 'labelFormat') || undefined,
+          barcode_value: pickString(courier, 'barcode_value', 'barcodeValue') || undefined,
           pickup_address: pickString(courier, 'pickup_address', 'pickupAddress') || undefined,
           delivery_address:
             pickString(courier, 'delivery_address', 'deliveryAddress') || undefined,
+          length_cm: num(courier.length_cm ?? courier.lengthCm),
+          width_cm: num(courier.width_cm ?? courier.widthCm),
+          height_cm: num(courier.height_cm ?? courier.heightCm),
+          linked_export_job_id:
+            pickString(courier, 'linked_export_job_id', 'linkedExportJobId') || undefined,
+          linked_import_job_id:
+            pickString(courier, 'linked_import_job_id', 'linkedImportJobId') || undefined,
         }
       : undefined,
     land_details: land
@@ -451,6 +552,12 @@ export function normalizeJob(raw: unknown): Job | null {
     milestones,
     notes_list: notesList,
     house_jobs: houseJobs,
+    containers: Array.isArray(r.containers) ? (r.containers as Job['containers']) : undefined,
+    cargo: Array.isArray(r.cargo) ? (r.cargo as Job['cargo']) : undefined,
+    documents: Array.isArray(r.documents) ? (r.documents as Job['documents']) : undefined,
+    bills_of_lading: Array.isArray(r.bills_of_lading ?? r.billsOfLading)
+      ? ((r.bills_of_lading ?? r.billsOfLading) as Job['bills_of_lading'])
+      : undefined,
   };
 }
 
