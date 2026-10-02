@@ -28,9 +28,13 @@ export interface CcDashboardStats {
 export interface CcQueueItem {
   id: string;
   job_id?: string;
+  /** Human-readable job number / reference when present. */
   job_number?: string;
+  /** Display name for the job (party/booking title) — prefer over raw id. */
+  job_name?: string;
   stage?: string;
   status?: string;
+  direction?: string;
   customer_name?: string;
   shipper_id?: string;
   updated_at?: string;

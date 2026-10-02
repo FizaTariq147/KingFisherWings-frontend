@@ -12,7 +12,7 @@ function isSuperAdminSurface(): boolean {
 /**
  * Idle timeout popup (60 minutes of inactivity — not from login).
  * Continue → refresh tokens and keep working (no login).
- * Revoke → POST /auth/sessions/{sessionId}/revoke then sign out.
+ * Revoke → POST /auth/logout (revoke current session) then sign out to login.
  *
  * ERP-only: never show on Super Admin routes or when a Super Admin session is active.
  */

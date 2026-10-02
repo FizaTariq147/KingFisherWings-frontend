@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useState, type CSSProperties } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { LogOut, X } from 'lucide-react';
 import { useApplyTheme } from '@/hooks/useApplyTheme';
@@ -11,6 +11,7 @@ import {
 } from '@/features/portal-auth/components/portal-ui';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
 import { useVendorNotificationUnreadCount } from '@/features/vendor-notifications/hooks/useVendorNotifications';
+import { vendorNotificationsService } from '@/features/vendor-notifications/services/vendorNotifications.service';
 import { NotificationToastWatcher } from '@/components/toast';
 import { VendorSidebar } from '../components/VendorSidebar';
 import { VendorTopbar } from '../components/VendorTopbar';
@@ -31,6 +32,20 @@ export function VendorShell() {
   const unread = useVendorNotificationUnreadCount();
   const notificationCount = unread.data ?? 0;
   const unreadReady = unread.isFetched ? notificationCount : undefined;
+
+  const fetchLatestNotification = useCallback(async () => {
+    const list = await vendorNotificationsService.list({
+      page: 1,
+      limit: 1,
+      unread_only: true,
+    });
+    const item = list.items[0];
+    if (!item) return null;
+    return {
+      title: item.title || 'Vendor portal',
+      message: item.body || item.title || undefined,
+    };
+  }, []);
 
   const handleMenuClick = () => {
     if (window.matchMedia('(max-width: 1023px)').matches) {
@@ -70,6 +85,7 @@ export function VendorShell() {
         unreadCount={unreadReady}
         title="Vendor portal"
         storageKey="vendor"
+        fetchLatest={fetchLatestNotification}
       />
 
       <VendorSidebar onLogout={() => void handleLogout()} collapsed={sidebarCollapsed} />

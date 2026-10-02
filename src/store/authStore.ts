@@ -130,6 +130,11 @@ interface AuthState {
   error: string | null
   /** True when idle timeout or refresh failed — show SessionExpiredModal. */
   sessionExpired: boolean
+  /**
+   * Continue / Revoke owns token refresh while the idle modal is open.
+   * Axios must not auto-refresh in the background (one-time refresh tokens).
+   */
+  sessionExpiryActionInProgress: boolean
   /** GET /auth/me blocked the tenant (e.g. subscription expired) — keep login session. */
   subscriptionBlocked: boolean
   subscriptionMessage: string | null
@@ -199,11 +204,17 @@ async function applyLoginSuccess(
     isLoading: false,
     error: null,
     sessionExpired: false,
+    sessionExpiryActionInProgress: false,
     subscriptionBlocked: false,
     subscriptionMessage: null,
     erpAccessBlocked: false,
     erpAccessMessage: null,
   })
+  try {
+    sessionStorage.removeItem(ERP_AUTH_SIGNOUT_FLAG)
+  } catch {
+    /* ignore */
+  }
 
   // Best-effort: bind real sessions-table id for POST /auth/sessions/{id}/revoke
   void authService.resolveCurrentSessionId().then((resolved) => {
@@ -221,12 +232,69 @@ function clearAuthState(): Partial<AuthState> {
     isAuthenticated: false,
     error: null,
     sessionExpired: false,
+    sessionExpiryActionInProgress: false,
     subscriptionBlocked: false,
     subscriptionMessage: null,
     erpAccessBlocked: false,
     erpAccessMessage: null,
   }
 }
+
+export const ERP_AUTH_STORAGE_KEY = 'KingFisher Tech-auth'
+/** Set before redirect so a late persist write cannot resurrect the session on /login. */
+export const ERP_AUTH_SIGNOUT_FLAG = 'KingFisher Tech-auth-signout'
+
+/**
+ * Clear in-memory + persisted ERP auth, then hard-navigate to login.
+ * Must wipe sessionStorage synchronously — async zustand persist can lose the race
+ * against window.location and resurrect the idle session after "Revoke".
+ */
+function hardSignOutToLogin(redirectPath = '/login'): void {
+  try {
+    sessionStorage.setItem(ERP_AUTH_SIGNOUT_FLAG, '1')
+  } catch {
+    /* private mode */
+  }
+  useAuthStore.setState({
+    ...clearAuthState(),
+    sessionExpiryActionInProgress: false,
+  })
+  try {
+    sessionStorage.removeItem(ERP_AUTH_STORAGE_KEY)
+  } catch {
+    /* private mode */
+  }
+  try {
+    void useAuthStore.persist.clearStorage()
+  } catch {
+    /* ignore */
+  }
+  // replace: avoid back-button returning to an authenticated shell
+  window.location.replace(redirectPath)
+}
+
+/** Discard a resurrected ERP session after intentional sign-out / revoke. */
+export function hasErpSignOutFlag(): boolean {
+  try {
+    return sessionStorage.getItem(ERP_AUTH_SIGNOUT_FLAG) === '1'
+  } catch {
+    return false
+  }
+}
+
+/** Clear the flag after rehydrate has had a chance to discard persisted auth. */
+export function consumeErpSignOutFlag(): boolean {
+  if (!hasErpSignOutFlag()) return false
+  try {
+    sessionStorage.removeItem(ERP_AUTH_SIGNOUT_FLAG)
+    sessionStorage.removeItem(ERP_AUTH_STORAGE_KEY)
+  } catch {
+    /* ignore */
+  }
+  return true
+}
+
+
 
 export const useAuthStore = create<AuthStore>()(
   persist(
@@ -240,6 +308,7 @@ export const useAuthStore = create<AuthStore>()(
       isLoading: false,
       error: null,
       sessionExpired: false,
+      sessionExpiryActionInProgress: false,
       subscriptionBlocked: false,
       subscriptionMessage: null,
       erpAccessBlocked: false,
@@ -250,6 +319,7 @@ export const useAuthStore = create<AuthStore>()(
           isLoading: true,
           error: null,
           sessionExpired: false,
+          sessionExpiryActionInProgress: false,
           subscriptionBlocked: false,
           subscriptionMessage: null,
           erpAccessBlocked: false,
@@ -293,6 +363,7 @@ export const useAuthStore = create<AuthStore>()(
           isLoading: true,
           error: null,
           sessionExpired: false,
+          sessionExpiryActionInProgress: false,
           subscriptionBlocked: false,
           subscriptionMessage: null,
           erpAccessBlocked: false,
@@ -342,8 +413,7 @@ export const useAuthStore = create<AuthStore>()(
         } catch {
           // Always clear local state regardless of server response
         } finally {
-          set(clearAuthState())
-          window.location.href = '/login'
+          hardSignOutToLogin('/login')
         }
       },
 
@@ -356,8 +426,7 @@ export const useAuthStore = create<AuthStore>()(
         } catch {
           // fall through to local clear
         } finally {
-          set(clearAuthState())
-          window.location.href = '/login'
+          hardSignOutToLogin('/login')
         }
       },
 
@@ -463,6 +532,7 @@ export const useAuthStore = create<AuthStore>()(
         if (!refreshToken) {
           throw new Error('Session cannot be continued. Sign in again.')
         }
+        set({ sessionExpiryActionInProgress: true })
         try {
           const pair = await authService.refresh({ refresh_token: refreshToken })
           let sessionId =
@@ -475,6 +545,7 @@ export const useAuthStore = create<AuthStore>()(
             sessionId,
             lastActiveAt: Date.now(),
             sessionExpired: false,
+            sessionExpiryActionInProgress: false,
             isAuthenticated: true,
           })
           try {
@@ -484,6 +555,7 @@ export const useAuthStore = create<AuthStore>()(
             // Keep JWT/login session id — Continue already succeeded.
           }
         } catch (err) {
+          set({ sessionExpiryActionInProgress: false })
           const status = (err as { response?: { status?: number } })?.response?.status
           if (status === 401 || status === 403) {
             throw new Error('Refresh token expired. Please sign in again.')
@@ -495,9 +567,11 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       revokeExpiredSessionAndLogin: async () => {
-        const { sessionId, refreshToken } = get()
+        set({ sessionExpiryActionInProgress: true })
+        const refreshToken = get().refreshToken
         try {
-          // Always refresh first — idle modal often still has an expired access token in memory.
+          // Idle modal often still has an expired access token. Refresh first so
+          // POST /auth/logout (revokes the *current* session) can authenticate.
           if (refreshToken) {
             try {
               const pair = await authService.refresh({ refresh_token: refreshToken })
@@ -507,21 +581,28 @@ export const useAuthStore = create<AuthStore>()(
                 sessionId:
                   pair.sessionId ||
                   sessionIdFromAccessToken(pair.accessToken) ||
-                  sessionId,
+                  get().sessionId,
               })
             } catch {
-              // Continue with best-effort revoke / local sign-out.
+              // Fall through — still clear local session below.
             }
           }
 
-          try {
-            await authService.revokeCurrentSession(get().sessionId)
-          } catch {
-            // Best-effort: user chose to leave; clear local session even if API rejects.
+          // Primary: OpenAPI "Revoke the current session" — no session-id required.
+          if (get().accessToken) {
+            try {
+              await authService.logout()
+            } catch {
+              // Secondary: explicit sessions/{id}/revoke if logout rejected.
+              try {
+                await authService.revokeCurrentSession(get().sessionId)
+              } catch {
+                /* local sign-out below */
+              }
+            }
           }
         } finally {
-          set(clearAuthState())
-          window.location.href = '/login'
+          hardSignOutToLogin('/login')
         }
       },
 
@@ -530,7 +611,7 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: 'KingFisher Tech-auth',
+      name: ERP_AUTH_STORAGE_KEY,
       storage: createJSONStorage(() => sessionStorage),
       // Persist refresh token for Swagger body refresh; never persist accessToken
       partialize: (state) => ({
@@ -541,6 +622,25 @@ export const useAuthStore = create<AuthStore>()(
         lastActiveAt: state.lastActiveAt,
         sessionExpired: state.sessionExpired,
       }),
+      // If Revoke/logout set the sign-out flag, ignore any late-written persist blob.
+      merge: (persisted, current) => {
+        try {
+          if (sessionStorage.getItem(ERP_AUTH_SIGNOUT_FLAG) === '1') {
+            return current
+          }
+        } catch {
+          /* ignore */
+        }
+        return {
+          ...current,
+          ...(persisted as Partial<AuthStore>),
+        }
+      },
+      onRehydrateStorage: () => () => {
+        if (consumeErpSignOutFlag()) {
+          useAuthStore.setState(clearAuthState())
+        }
+      },
     },
   ),
 )

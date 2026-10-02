@@ -135,7 +135,8 @@ portalApiClient.interceptors.response.use(
     const url = original?.url ?? '';
 
     const rejectWithToast = (error: unknown) => {
-      notifyAxiosError(error);
+      // Prefer original Axios error so skipErrorToast / silent URLs still work.
+      notifyAxiosError(err);
       return Promise.reject(error);
     };
 

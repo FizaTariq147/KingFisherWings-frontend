@@ -58,8 +58,13 @@ axiosInstance.interceptors.request.use(async (config) => {
 
   // Proactive refresh when access is missing/expired — prevents flaky 401 on
   // GET /auth/sessions and POST …/revoke (access token is not persisted).
+  // While the idle modal is open, only Continue/Revoke may refresh (one-time tokens).
   let token = useAuthStore.getState().accessToken
-  if (useAuthStore.getState().refreshToken) {
+  const authState = useAuthStore.getState()
+  const mayProactiveRefresh =
+    Boolean(authState.refreshToken) &&
+    (!authState.sessionExpired || authState.sessionExpiryActionInProgress)
+  if (mayProactiveRefresh) {
     token = (await ensureErpAccessToken()) ?? token
   }
   if (token) config.headers.Authorization = `Bearer ${token}`
@@ -90,12 +95,13 @@ axiosInstance.interceptors.response.use(
 
     if (error.response?.status !== 401) return rejectWithToast(error)
 
-    // Idle modal is showing — Continue / Revoke own refresh; do not auto-retry.
-    if (useAuthStore.getState().sessionExpired) {
+    // Idle modal owns refresh — unless Continue/Revoke is actively running.
+    const authState = useAuthStore.getState()
+    if (authState.sessionExpired && !authState.sessionExpiryActionInProgress) {
       return rejectWithToast(error)
     }
 
-    if (!useAuthStore.getState().refreshToken) {
+    if (!authState.refreshToken) {
       useAuthStore.getState().markSessionExpired()
       return rejectWithToast(error)
     }

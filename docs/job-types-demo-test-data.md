@@ -633,6 +633,7 @@ Shared portal fields: `currency_code` `AED` or `USD` as in staff quote · `valid
 | Doc | Scope |
 |-----|--------|
 | [job-types-demo-test-data.md](./job-types-demo-test-data.md) | **This file** — FCL, LCL, Road, Land, Courier, Air & NVOCC quote/booking |
+| [job-types-wrong-and-e2e-test-cases.md](./job-types-wrong-and-e2e-test-cases.md) | Wrong/negative cases + department E2E matrix for all 14 job types |
 | [warehouse-video-demo-test-data.md](./warehouse-video-demo-test-data.md) | Warehouse quote + booking + WMS yard flow |
 | [customs-clearance-demo-test-data.md](./customs-clearance-demo-test-data.md) | CC quote + booking + full stage rail |
 | [nvocc-air-portal-api-dummy-data.md](./nvocc-air-portal-api-dummy-data.md) | NVOCC/Air API payloads, CRO, portal compliance gates |

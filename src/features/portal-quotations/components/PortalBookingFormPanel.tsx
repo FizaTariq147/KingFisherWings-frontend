@@ -18,6 +18,13 @@ import {
   clipComplianceField,
   PORTAL_COMPLIANCE_FORM_LIMITS as L,
 } from '../utils/portalComplianceFormLimits';
+import {
+  normalizeBookingCurrencyInput,
+  normalizeBookingHsCodeInput,
+  normalizeBookingIataInput,
+  normalizeBookingIsoCountryInput,
+  validatePortalBookingFormStep,
+} from '../utils/validatePortalBookingForm';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import { API_ENUMS, API_MAX_LENGTH } from '@/lib/api/apiSchema.generated';
 
@@ -504,6 +511,7 @@ function PartyFields({
           maxLength={L.party_country}
           value={party.country}
           onChange={(e) => patch({ country: e.target.value.slice(0, L.party_country) })}
+          placeholder="Country name or ISO code (e.g. AE)"
         />
       </label>
       <label className="block">
@@ -528,7 +536,7 @@ function PartyFields({
           className="mt-1"
           value={party.other_details}
           onChange={(e) => patch({ other_details: e.target.value })}
-          placeholder="Email, phone, website…"
+          placeholder="Email (name@company.com), phone (+971501234567), or website"
         />
       </label>
     </div>
@@ -799,64 +807,7 @@ function validateStep(
   form: FormUi,
   kind: PortalBookingFormKind,
 ): string | null {
-  if (step === 'voyage') {
-    if (kind === 'sea' && !form.teu_count.trim()) {
-      return 'Number of TEUs is required (teu_count).';
-    }
-    if (kind === 'air') {
-      if (!form.origin_airport_code.trim()) {
-        return 'Origin airport code is required (origin_airport_code).';
-      }
-      if (!form.dest_airport_code.trim()) {
-        return 'Destination airport code is required (dest_airport_code).';
-      }
-      if (!form.pieces.trim()) return 'Pieces is required (pieces).';
-    } else if (kind === 'warehouse') {
-      if (!form.origin_door_address.trim() && !form.pol.trim()) {
-        return 'Pickup / origin address is required (origin_door_address).';
-      }
-      if (!form.warehouse_name.trim() && !form.pod.trim()) {
-        return 'Warehouse name is required (warehouse_name).';
-      }
-      if (!form.pieces.trim()) return 'Pieces is required (pieces).';
-    } else if (isLandishKind(kind)) {
-      const origin =
-        form.origin_city_country.trim() || form.origin_door_address.trim() || form.pol.trim();
-      const dest =
-        form.dest_city_country.trim() || form.dest_door_address.trim() || form.pod.trim();
-      if (!origin) return 'Origin city / country is required (origin_city_country).';
-      if (!dest) return 'Destination city / country is required (dest_city_country).';
-      if (!form.pieces.trim()) return 'Pieces is required (pieces).';
-    } else if (kind === 'customs') {
-      if (!form.direction.trim()) return 'Direction is required (direction).';
-      if (!form.border_or_port.trim() && !form.port_of_entry.trim()) {
-        return 'Border / port of entry is required.';
-      }
-      if (!form.pieces.trim()) return 'Pieces is required (pieces).';
-    } else {
-      if (!form.pol.trim()) return 'POL — Port of Loading is required (pol).';
-      if (!form.pod.trim()) return 'POD — Port of Discharge is required (pod).';
-    }
-    if (!form.gross_weight_kg.trim()) return 'Gross weight (kg) is required (gross_weight_kg).';
-    if (!form.net_weight_kg.trim()) return 'Net weight (kg) is required (net_weight_kg).';
-  }
-  if (step === 'shipper') {
-    if (!form.shipper.full_name.trim() || !form.shipper.address.trim()) {
-      return 'Shipper full name and address are required.';
-    }
-  }
-  if (step === 'consignee') {
-    if (!form.consignee.full_name.trim() || !form.consignee.address.trim()) {
-      return 'Consignee full name and address are required.';
-    }
-  }
-  if (step === 'commodity') {
-    if (!form.commodity.trim()) return 'Commodity is required (commodity).';
-  }
-  if (step === 'review') {
-    if (!form.consent_accepted) return 'Please accept consent before submitting (consent_accepted).';
-  }
-  return null;
+  return validatePortalBookingFormStep(step, form, kind);
 }
 
 interface PortalBookingFormPanelProps {
@@ -1488,8 +1439,10 @@ export function PortalBookingFormPanel({
                   className="mt-1"
                   inputMode="decimal"
                   value={form.teu_count}
-                  onChange={(e) => patch({ teu_count: e.target.value })}
-                  placeholder="e.g. 2"
+                  onChange={(e) =>
+                    patch({ teu_count: e.target.value.replace(/[^\d.]/g, '') })
+                  }
+                  placeholder="e.g. 1 or 2.25"
                 />
               </label>
             ) : isAir ? (
@@ -1515,8 +1468,10 @@ export function PortalBookingFormPanel({
                     className="mt-1"
                     inputMode="numeric"
                     value={form.pieces}
-                    onChange={(e) => patch({ pieces: e.target.value })}
-                    placeholder="e.g. 48"
+                    onChange={(e) =>
+                      patch({ pieces: e.target.value.replace(/[^\d]/g, '') })
+                    }
+                    placeholder="Whole number e.g. 48"
                   />
                 </label>
                 <label className="block">
@@ -1545,13 +1500,13 @@ export function PortalBookingFormPanel({
                     value={form.origin_airport_code}
                     onChange={(e) =>
                       patch({
-                        origin_airport_code: e.target.value
-                          .toUpperCase()
-                          .replace(/[^A-Z0-9]/g, '')
-                          .slice(0, L.origin_airport_code),
+                        origin_airport_code: normalizeBookingIataInput(e.target.value).slice(
+                          0,
+                          L.origin_airport_code,
+                        ),
                       })
                     }
-                    placeholder="e.g. DXB"
+                    placeholder="IATA e.g. DXB"
                   />
                 </label>
                 <label className="block sm:col-span-1">
@@ -1562,13 +1517,13 @@ export function PortalBookingFormPanel({
                     value={form.dest_airport_code}
                     onChange={(e) =>
                       patch({
-                        dest_airport_code: e.target.value
-                          .toUpperCase()
-                          .replace(/[^A-Z0-9]/g, '')
-                          .slice(0, L.dest_airport_code),
+                        dest_airport_code: normalizeBookingIataInput(e.target.value).slice(
+                          0,
+                          L.dest_airport_code,
+                        ),
                       })
                     }
-                    placeholder="e.g. RUH"
+                    placeholder="IATA e.g. RUH"
                   />
                 </label>
                 <label className="block">
@@ -1577,7 +1532,10 @@ export function PortalBookingFormPanel({
                     className="mt-1"
                     inputMode="numeric"
                     value={form.pieces}
-                    onChange={(e) => patch({ pieces: e.target.value })}
+                    onChange={(e) =>
+                      patch({ pieces: e.target.value.replace(/[^\d]/g, '') })
+                    }
+                    placeholder="Whole number e.g. 10"
                   />
                 </label>
                 <label className="block">
@@ -1586,7 +1544,10 @@ export function PortalBookingFormPanel({
                     className="mt-1"
                     inputMode="decimal"
                     value={form.volume_cbm}
-                    onChange={(e) => patch({ volume_cbm: e.target.value })}
+                    onChange={(e) =>
+                      patch({ volume_cbm: e.target.value.replace(/[^\d.]/g, '') })
+                    }
+                    placeholder="e.g. 1.250"
                   />
                 </label>
                 <label className="block">
@@ -1595,7 +1556,10 @@ export function PortalBookingFormPanel({
                     className="mt-1"
                     inputMode="numeric"
                     value={form.pallet_count}
-                    onChange={(e) => patch({ pallet_count: e.target.value })}
+                    onChange={(e) =>
+                      patch({ pallet_count: e.target.value.replace(/[^\d]/g, '') })
+                    }
+                    placeholder="Whole number"
                   />
                 </label>
                 <label className="block">
@@ -1604,7 +1568,12 @@ export function PortalBookingFormPanel({
                     className="mt-1"
                     inputMode="decimal"
                     value={form.chargeable_weight_kg}
-                    onChange={(e) => patch({ chargeable_weight_kg: e.target.value })}
+                    onChange={(e) =>
+                      patch({
+                        chargeable_weight_kg: e.target.value.replace(/[^\d.]/g, ''),
+                      })
+                    }
+                    placeholder="e.g. 125.500"
                   />
                 </label>
                 <label className="block sm:col-span-2">
@@ -1873,9 +1842,11 @@ export function PortalBookingFormPanel({
                         maxLength={2}
                         value={form.country_of_origin}
                         onChange={(e) =>
-                          patch({ country_of_origin: e.target.value.toUpperCase() })
+                          patch({
+                            country_of_origin: normalizeBookingIsoCountryInput(e.target.value),
+                          })
                         }
-                        placeholder="ISO-2"
+                        placeholder="ISO-2 e.g. AE"
                       />
                     </label>
                     <label className="block">
@@ -1885,9 +1856,13 @@ export function PortalBookingFormPanel({
                         maxLength={2}
                         value={form.country_of_destination}
                         onChange={(e) =>
-                          patch({ country_of_destination: e.target.value.toUpperCase() })
+                          patch({
+                            country_of_destination: normalizeBookingIsoCountryInput(
+                              e.target.value,
+                            ),
+                          })
                         }
-                        placeholder="ISO-2"
+                        placeholder="ISO-2 e.g. SA"
                       />
                     </label>
                     <label className="block">
@@ -1896,7 +1871,12 @@ export function PortalBookingFormPanel({
                         className="mt-1"
                         inputMode="decimal"
                         value={form.invoice_value_amount}
-                        onChange={(e) => patch({ invoice_value_amount: e.target.value })}
+                        onChange={(e) =>
+                          patch({
+                            invoice_value_amount: e.target.value.replace(/[^\d.]/g, ''),
+                          })
+                        }
+                        placeholder="e.g. 1500.00"
                       />
                     </label>
                     <label className="block">
@@ -1906,8 +1886,11 @@ export function PortalBookingFormPanel({
                         maxLength={3}
                         value={form.invoice_currency}
                         onChange={(e) =>
-                          patch({ invoice_currency: e.target.value.toUpperCase() })
+                          patch({
+                            invoice_currency: normalizeBookingCurrencyInput(e.target.value),
+                          })
                         }
+                        placeholder="USD"
                       />
                     </label>
                   </>
@@ -2067,7 +2050,10 @@ export function PortalBookingFormPanel({
                 className="mt-1"
                 inputMode="decimal"
                 value={form.gross_weight_kg}
-                onChange={(e) => patch({ gross_weight_kg: e.target.value })}
+                onChange={(e) =>
+                  patch({ gross_weight_kg: e.target.value.replace(/[^\d.]/g, '') })
+                }
+                placeholder="e.g. 1000.500"
               />
             </label>
             <label className="block">
@@ -2076,7 +2062,10 @@ export function PortalBookingFormPanel({
                 className="mt-1"
                 inputMode="decimal"
                 value={form.net_weight_kg}
-                onChange={(e) => patch({ net_weight_kg: e.target.value })}
+                onChange={(e) =>
+                  patch({ net_weight_kg: e.target.value.replace(/[^\d.]/g, '') })
+                }
+                placeholder="Must be ≤ gross weight"
               />
             </label>
             {isSea ? (
@@ -2103,15 +2092,15 @@ export function PortalBookingFormPanel({
                 ]}
               />
             </div>
-            {isWarehouse && form.is_dg ? (
+            {form.is_dg ? (
               <label className="block sm:col-span-1">
-                <FieldLabel>DG class</FieldLabel>
+                <FieldLabel required={isWarehouse}>DG class</FieldLabel>
                 <Input
                   className="mt-1"
                   maxLength={API_MAX_LENGTH.UpsertWarehouseBookingFormDto.dg_class}
                   value={form.dg_class}
-                  onChange={(e) => patch({ dg_class: e.target.value })}
-                  placeholder="e.g. 9"
+                  onChange={(e) => patch({ dg_class: e.target.value.trim() })}
+                  placeholder="e.g. 3 or 2.1"
                 />
               </label>
             ) : null}
@@ -2305,7 +2294,17 @@ export function PortalBookingFormPanel({
                 className="mt-1"
                 maxLength={L.hs_code}
                 value={form.hs_code}
-                onChange={(e) => patch({ hs_code: e.target.value.slice(0, L.hs_code) })}
+                onChange={(e) =>
+                  patch({
+                    hs_code: e.target.value.replace(/[^\d.]/g, '').slice(0, L.hs_code),
+                  })
+                }
+                onBlur={() =>
+                  patch({
+                    hs_code: normalizeBookingHsCodeInput(form.hs_code).slice(0, L.hs_code),
+                  })
+                }
+                placeholder="e.g. 8517 or 8517.12"
               />
             </label>
             {isWarehouse ? (

@@ -3,13 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { isUuid } from '@/lib/isUuid';
 import {
   usePartyTransactionSummary,
   useSendPartyTransactionSummary,
 } from '../../hooks/usePartyTransactionSummary';
 import type { Party } from '../../types/party.types';
-import type { PartyTransactionBucket } from '../../types/partyTransactionSummary.types';
+import type {
+  PartyTransactionBucket,
+  PartyTransactionItem,
+} from '../../types/partyTransactionSummary.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+
+function itemLabel(item: PartyTransactionItem): string {
+  const ref = item.reference?.trim();
+  if (ref && !isUuid(ref)) return ref;
+  return '—';
+}
 
 interface PartyTransactionSummarySectionProps {
   party: Party;
@@ -61,7 +71,7 @@ function BucketCard({
             <li key={item.id || `${item.reference}-${index}`} className="py-1.5 text-xs">
               <div className="flex justify-between gap-2">
                 <span className="text-[var(--color-neutral-700)] truncate">
-                  {item.reference || item.id || '—'}
+                  {itemLabel(item)}
                 </span>
                 <span className="text-[var(--color-neutral-500)] whitespace-nowrap">
                   {formatMoney(item.amount, currency)}
@@ -157,9 +167,8 @@ export function PartyTransactionSummarySection({
       ) : data && !data.available ? (
         <Card className="p-4 space-y-2">
           <p className="text-sm text-[var(--color-neutral-500)]">
-            Transaction summary APIs are not on the live OpenAPI yet
-            (<code className="text-xs">GET/POST /parties/:id/transaction-summary</code>). Use the
-            customer AR statement instead for invoices, receipts, and balance history.
+            Party history is temporarily unavailable. Use the customer AR statement for invoices,
+            receipts, and balance history.
           </p>
           <Button
             type="button"
@@ -197,9 +206,8 @@ export function PartyTransactionSummarySection({
         </CardHeader>
         <div className="p-4 pt-0 space-y-3">
           <p className="text-xs text-[var(--color-neutral-400)]">
-            Send uses <code>POST /parties/:id/transaction-summary/send</code> when the backend
-            ships it. Until then, open AR statement (view/print) or ask the customer to download
-            from portal <code>/portal/credit/statement.pdf</code>.
+            Emails the accounts / credit summary (optional statement PDF). Leave recipients empty to
+            use party contacts resolved by the API.
           </p>
           <label className="flex flex-col gap-1">
             <span className="text-xs font-medium text-[var(--color-neutral-600)]">Emails</span>

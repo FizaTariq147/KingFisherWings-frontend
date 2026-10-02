@@ -38,35 +38,69 @@ function isCancel(error: AxiosError): boolean {
   );
 }
 
+type ToastableError = AxiosError & {
+  status?: number;
+  config?: AxiosError['config'] & { skipErrorToast?: boolean };
+  /** Optional original Axios error when callers wrap as PortalApiError / VendorApiError. */
+  cause?: unknown;
+  originalError?: unknown;
+};
+
+function asAxiosCandidate(error: unknown): ToastableError | null {
+  if (!error || typeof error !== 'object') return null;
+  return error as ToastableError;
+}
+
+function resolveConfig(error: ToastableError): ToastableError['config'] | undefined {
+  if (error.config) return error.config;
+  const cause = asAxiosCandidate(error.cause) || asAxiosCandidate(error.originalError);
+  return cause?.config;
+}
+
+function resolveStatus(error: ToastableError): number | undefined {
+  if (typeof error.response?.status === 'number') return error.response.status;
+  if (typeof error.status === 'number') return error.status;
+  const cause = asAxiosCandidate(error.cause) || asAxiosCandidate(error.originalError);
+  if (typeof cause?.response?.status === 'number') return cause.response.status;
+  if (typeof cause?.status === 'number') return cause.status;
+  return undefined;
+}
+
+function resolveUrl(error: ToastableError): string | undefined {
+  const cfg = resolveConfig(error);
+  if (cfg?.url) return cfg.url;
+  const cause = asAxiosCandidate(error.cause) || asAxiosCandidate(error.originalError);
+  return cause?.config?.url;
+}
+
 /**
  * Surface an API failure as a bottom-right popup.
  * Safe to call from interceptors — never throws and never alters the error.
+ * Prefer passing the original Axios error (keeps skipErrorToast / silent URLs).
  */
 export function notifyAxiosError(error: unknown, opts?: { title?: string }): void {
   try {
-    if (!error || typeof error !== 'object') return;
-
-    const axiosErr = error as AxiosError & { status?: number };
+    const axiosErr = asAxiosCandidate(error);
+    if (!axiosErr) return;
     if (isCancel(axiosErr)) return;
 
-    const cfg = axiosErr.config as (AxiosError['config'] & { skipErrorToast?: boolean }) | undefined;
+    const cfg = resolveConfig(axiosErr);
     if (cfg?.skipErrorToast) return;
 
-    const url = cfg?.url;
+    const url = resolveUrl(axiosErr);
     if (isSilentUrl(url)) return;
 
-    const status =
-      axiosErr.response?.status ??
-      (typeof axiosErr.status === 'number' ? axiosErr.status : undefined);
+    const status = resolveStatus(axiosErr);
 
     const message =
-      typeof (error as Error).message === 'string' &&
-      (error as Error).message.trim() &&
-      !(error as Error).message.startsWith('Request failed with status code')
-        ? (error as Error).message.trim()
+      typeof axiosErr.message === 'string' &&
+      axiosErr.message.trim() &&
+      !axiosErr.message.startsWith('Request failed with status code')
+        ? axiosErr.message.trim()
         : extractAxiosErrorDetail(error);
 
-    if (isSoftJobTypeAccessDenied(String(message ?? ''), status)) return;
+    if (!message) return;
+    if (isSoftJobTypeAccessDenied(String(message), status)) return;
 
     // Session refresh / idle modal already owns UX — don't toast every 401.
     if (status === 401 && useAuthStore.getState().sessionExpired) return;
@@ -81,12 +115,39 @@ export function notifyAxiosError(error: unknown, opts?: { title?: string }): voi
             ? 'Not found'
             : status === 401
               ? 'Session'
-              : 'Request failed');
+              : status && status >= 400
+                ? 'Request failed'
+                : 'Warning');
 
-    toast.error(message, { title, dedupeMs: status === 401 || status === 403 ? 8000 : 5000 });
+    const variant = status && status >= 400 ? 'error' : 'warning';
+    if (variant === 'warning') {
+      toast.warning(message, { title, dedupeMs: 5000 });
+    } else {
+      toast.error(message, {
+        title,
+        dedupeMs: status === 401 || status === 403 ? 8000 : 5000,
+      });
+    }
   } catch {
     /* never break request pipeline */
   }
+}
+
+/**
+ * Show a frontend toast for an arbitrary warning/error string (e.g. soft failures).
+ * Prefer {@link notifyAxiosError} for Axios failures.
+ */
+export function notifyFrontendIssue(
+  message: string,
+  opts?: { title?: string; variant?: 'warning' | 'error' | 'info' },
+): void {
+  const text = String(message ?? '').trim();
+  if (!text) return;
+  const variant = opts?.variant ?? 'warning';
+  const title = opts?.title ?? (variant === 'error' ? 'Error' : 'Warning');
+  if (variant === 'error') toast.error(text, { title, dedupeMs: 5000 });
+  else if (variant === 'info') toast.info(text, { title, dedupeMs: 4000 });
+  else toast.warning(text, { title, dedupeMs: 5000 });
 }
 
 /** Route browser `alert()` into the toast stack (keeps call sites unchanged). */

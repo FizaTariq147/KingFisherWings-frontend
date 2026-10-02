@@ -25,6 +25,7 @@ export interface JobListParams {
   status?: JobStatus;
   job_type?: JobType;
   shipper_id?: string;
+  consignee_id?: string;
   salesperson_id?: string;
   branch_id?: string;
   company_id?: string;

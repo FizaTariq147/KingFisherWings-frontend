@@ -186,6 +186,7 @@ function buildListQuery(params: JobListParams): Record<string, string | number |
     query.job_type = params.job_type;
   }
   if (params.shipper_id) query.shipper_id = params.shipper_id;
+  if (params.consignee_id) query.consignee_id = params.consignee_id;
   if (params.salesperson_id) query.salesperson_id = params.salesperson_id;
   if (params.branch_id) query.branch_id = params.branch_id;
   if (params.company_id) query.company_id = params.company_id;

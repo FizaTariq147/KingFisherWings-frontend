@@ -24,12 +24,13 @@ createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
+          {/* Always mounted — must not sit behind AuthLoadingGate spinner. */}
+          <ToastHost />
           <AuthLoadingGate>
             <SessionExpiryWatcher />
             <SessionExpiredModal />
             <SubscriptionExpiredModal />
             <ErpAccessBlockedModal />
-            <ToastHost />
             <RouterProvider router={router} />
           </AuthLoadingGate>
         </AuthProvider>

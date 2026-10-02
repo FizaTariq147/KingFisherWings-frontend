@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { FooterStatusBar } from './FooterStatusBar';
@@ -11,6 +11,7 @@ import { OnboardingSteps } from '@/features/platform/components/OnboardingSteps'
 import { AppMotionStyles, AppPageTransition } from '@/components/motion';
 import { NotificationToastWatcher } from '@/components/toast';
 import { useNotificationUnreadCount } from '@/features/notifications/hooks/useNotifications';
+import { notificationsService } from '@/features/notifications/services/notifications.service';
 
 export function AppShell({ title }: { title: string }) {
   useApplyTheme();
@@ -22,6 +23,19 @@ export function AppShell({ title }: { title: string }) {
   const unread = useNotificationUnreadCount();
   const isSuperAdminArea =
     location.pathname.startsWith('/superadmin') && !location.pathname.includes('/login');
+
+  const fetchLatestNotification = useCallback(async () => {
+    const list = await notificationsService.list(
+      { page: 1, limit: 1, unread_only: true },
+      { skipErrorToast: true },
+    );
+    const item = list.items[0];
+    if (!item) return null;
+    return {
+      title: item.title || 'Admin notification',
+      message: item.body || item.title || undefined,
+    };
+  }, []);
 
   const footerUserLabel = isSuperAdminArea
     ? isSuperAdminAuthenticated
@@ -54,6 +68,7 @@ export function AppShell({ title }: { title: string }) {
           unreadCount={unread.isFetched ? (unread.data ?? 0) : undefined}
           title="Admin notification"
           storageKey="admin"
+          fetchLatest={fetchLatestNotification}
         />
       ) : null}
       <div className="hidden md:flex shrink-0">

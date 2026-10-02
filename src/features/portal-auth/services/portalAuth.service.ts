@@ -1,11 +1,19 @@
 import { portalApiClient, type ApiEnvelope } from '@/lib/portalApiClient';
 import { PORTAL_AUTH_API } from '../api/portalAuth.api';
-import type { PortalAcceptInviteDto, PortalLoginDto, PortalLoginResult, PortalUser } from '../types/portalAuth.types';
+import type {
+  PortalAcceptInviteDto,
+  PortalChangePasswordDto,
+  PortalLoginDto,
+  PortalLoginResult,
+  PortalUser,
+} from '../types/portalAuth.types';
 import {
+  mergePortalUserProfile,
   normalizePortalLoginResponse,
   normalizePortalTokenPair,
   normalizePortalUser,
 } from '../utils/normalizePortalAuth';
+import { usePortalAuthStore } from '../store/portalAuthStore';
 
 function unwrapData(raw: unknown): unknown {
   if (raw && typeof raw === 'object' && 'data' in (raw as object)) {
@@ -52,7 +60,17 @@ export const portalAuthService = {
 
   async me(): Promise<PortalUser> {
     const res = await portalApiClient.get<unknown>(PORTAL_AUTH_API.me);
-    return normalizePortalUser(unwrapData(res.data) ?? res.data);
+    const next = normalizePortalUser(unwrapData(res.data) ?? res.data);
+    const prior = usePortalAuthStore.getState().user;
+    return mergePortalUserProfile(prior, next);
+  },
+
+  /** POST /portal/auth/change-password — required when must_change_password is true. */
+  async changePassword(dto: PortalChangePasswordDto): Promise<void> {
+    await portalApiClient.post(PORTAL_AUTH_API.changePassword, {
+      current_password: dto.current_password,
+      new_password: dto.new_password,
+    });
   },
 
   async acceptInvite(dto: PortalAcceptInviteDto): Promise<PortalLoginResult | void> {

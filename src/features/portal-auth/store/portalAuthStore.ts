@@ -10,6 +10,7 @@ interface PortalAuthState {
   setSession: (user: PortalUser, accessToken: string, refreshToken: string) => void;
   setUser: (user: PortalUser) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
+  clearMustChangePassword: () => void;
   logout: () => void;
 }
 
@@ -28,6 +29,11 @@ export const usePortalAuthStore = create<PortalAuthState>()(
           accessToken,
           refreshToken,
           isAuthenticated: Boolean(accessToken),
+        }),
+      clearMustChangePassword: () =>
+        set((state) => {
+          if (!state.user?.mustChangePassword) return state;
+          return { user: { ...state.user, mustChangePassword: false } };
         }),
       logout: () =>
         set({

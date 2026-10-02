@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useState, type CSSProperties } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { LogOut, X } from 'lucide-react';
 import { useApplyTheme } from '@/hooks/useApplyTheme';
@@ -13,6 +13,7 @@ import { usePortalBrand } from '../hooks/usePortalBrand';
 import { usePortalAuthStore } from '../store/portalAuthStore';
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache';
 import { usePortalNotificationUnreadCount } from '@/features/portal-notifications/hooks/usePortalNotifications';
+import { portalNotificationsService } from '@/features/portal-notifications/services/portalNotifications.service';
 import { NotificationToastWatcher } from '@/components/toast';
 import { PORTAL_NAV_SECTIONS } from '../config/portalNav';
 
@@ -28,6 +29,19 @@ export function PortalShell() {
   const { companyName, portalLabel } = usePortalBrand();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const fetchLatestNotification = useCallback(async () => {
+    const list = await portalNotificationsService.list(
+      { page: 1, limit: 1, unread_only: true },
+      { skipErrorToast: true },
+    );
+    const item = list.items[0];
+    if (!item) return null;
+    return {
+      title: item.title || 'Customer portal',
+      message: item.body || item.title || undefined,
+    };
+  }, []);
 
   const handleMenuClick = () => {
     if (window.matchMedia('(max-width: 1023px)').matches) {
@@ -67,6 +81,7 @@ export function PortalShell() {
         unreadCount={unreadReady}
         title="Customer portal"
         storageKey="portal"
+        fetchLatest={fetchLatestNotification}
       />
 
       <PortalSidebar

@@ -28,6 +28,16 @@ export interface PortalUser {
   tenantId?: string;
   /** Forwarder / tenant display name from /me or login payload */
   tenantName?: string;
+  /**
+   * True when the customer must set their own password
+   * (temporary password / first login — POST /portal/auth/change-password).
+   */
+  mustChangePassword?: boolean;
+}
+
+export interface PortalChangePasswordDto {
+  current_password: string;
+  new_password: string;
 }
 
 export interface PortalLoginResult {

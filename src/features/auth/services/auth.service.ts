@@ -148,11 +148,11 @@ export const authService = {
   },
 
   async logout(): Promise<void> {
-    await axiosInstance.post(AUTH_API.logout);
+    await axiosInstance.post(AUTH_API.logout, undefined, { skipErrorToast: true });
   },
 
   async logoutAll(): Promise<void> {
-    await axiosInstance.post(AUTH_API.logoutAll);
+    await axiosInstance.post(AUTH_API.logoutAll, undefined, { skipErrorToast: true });
   },
 
   async me(): Promise<AuthMeResponse> {
@@ -208,15 +208,14 @@ export const authService = {
       throw new Error('Missing session id for revoke.');
     }
     await ensureErpAccessToken();
-    // Encode path segment safely (UUIDs are fine; avoids odd id characters).
-    await axiosInstance.post(AUTH_API.revokeSession(encodeURIComponent(id)));
+    // Do not encodeURIComponent here — axios handles path segments; double-encoding breaks UUIDs with backends that decode once.
+    await axiosInstance.post(AUTH_API.revokeSession(id), undefined, { skipErrorToast: true });
   },
 
   /**
    * Revoke the current browser session.
-   * 1) Resolve id from GET /auth/sessions
-   * 2) POST /auth/sessions/{id}/revoke
-   * 3) Fall back to POST /auth/logout (Swagger: "Revoke the current session")
+   * Prefer resolving the sessions-table id, then POST /auth/sessions/{id}/revoke.
+   * Fall back to POST /auth/logout (Swagger: "Revoke the current session").
    */
   async revokeCurrentSession(preferredSessionId?: string | null): Promise<void> {
     let sessionId = preferredSessionId?.trim() || '';
@@ -234,8 +233,8 @@ export const authService = {
         await this.revokeSession(sessionId);
         return;
       } catch (error) {
-        // Fall through to logout — expired/unauthorized tokens or unknown ids.
         const status = (error as { response?: { status?: number } })?.response?.status;
+        // Unknown / unauthorized id → fall through to logout.
         if (status && status !== 404 && status !== 400 && status !== 401 && status !== 403) {
           throw error;
         }

@@ -1,6 +1,8 @@
 import {
+  hasMustChangePasswordFlag,
   normalizeAuthLoginResponse,
   normalizeTokenPair,
+  pickMustChangePassword,
   resolveAuthTenantBranding,
   unwrapEnvelope,
 } from '@/features/auth/utils/normalizeAuthResponse';
@@ -30,6 +32,18 @@ function normalizeParty(raw: unknown): PortalPartySummary | null {
     name: name || id,
     code: pickString(record.code) || undefined,
   };
+}
+
+function resolveMustChangePassword(
+  ...sources: Array<Record<string, unknown> | null | undefined>
+): boolean | undefined {
+  for (const source of sources) {
+    if (!source) continue;
+    if (hasMustChangePasswordFlag(source)) {
+      return pickMustChangePassword(source);
+    }
+  }
+  return undefined;
 }
 
 /** Map login /me payloads into a stable portal user. */
@@ -62,6 +76,8 @@ export function normalizePortalUser(raw: unknown, _accessToken?: string | null):
     envelope,
   );
 
+  const mustChangePassword = resolveMustChangePassword(source, envelope, asRecord(raw));
+
   return {
     id,
     email,
@@ -72,6 +88,7 @@ export function normalizePortalUser(raw: unknown, _accessToken?: string | null):
     tenantSlug,
     tenantId: resolvedTenantId,
     tenantName,
+    ...(mustChangePassword === undefined ? {} : { mustChangePassword }),
   };
 }
 
@@ -81,6 +98,10 @@ export function normalizePortalLoginResponse(raw: unknown) {
 
   const userFromPayload = normalizePortalUser(raw, normalized.accessToken);
   const fallbackName = normalized.user.name;
+  const mustChangePassword =
+    userFromPayload.mustChangePassword === true ||
+    normalized.user.mustChangePassword === true;
+
   const user: PortalUser = {
     ...userFromPayload,
     id: userFromPayload.id || normalized.user.id,
@@ -89,6 +110,7 @@ export function normalizePortalLoginResponse(raw: unknown) {
       userFromPayload.fullName !== 'Portal user'
         ? userFromPayload.fullName
         : fallbackName || userFromPayload.fullName,
+    mustChangePassword,
   };
 
   return {
@@ -100,4 +122,17 @@ export function normalizePortalLoginResponse(raw: unknown) {
 
 export function normalizePortalTokenPair(raw: unknown) {
   return normalizeTokenPair(raw);
+}
+
+/** Merge /me into the session user without dropping a login-time must-change flag. */
+export function mergePortalUserProfile(prior: PortalUser | null, next: PortalUser): PortalUser {
+  const priorMustChange = Boolean(prior?.mustChangePassword);
+  return {
+    ...prior,
+    ...next,
+    mustChangePassword:
+      next.mustChangePassword === undefined
+        ? priorMustChange
+        : Boolean(next.mustChangePassword),
+  };
 }

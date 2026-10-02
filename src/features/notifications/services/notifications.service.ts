@@ -4,8 +4,14 @@ import type { NotificationListParams, NotificationListResult } from '../types/no
 import { normalizeNotificationList, normalizeUnreadCount } from '../utils/normalizeNotifications';
 
 export const notificationsService = {
-  async list(params: NotificationListParams = {}): Promise<NotificationListResult> {
-    const res = await axiosInstance.get(NOTIFICATIONS_API.list, { params });
+  async list(
+    params: NotificationListParams = {},
+    opts?: { skipErrorToast?: boolean },
+  ): Promise<NotificationListResult> {
+    const res = await axiosInstance.get(NOTIFICATIONS_API.list, {
+      params,
+      ...(opts?.skipErrorToast ? { skipErrorToast: true } : {}),
+    });
     return normalizeNotificationList(res.data, params);
   },
   async unreadCount(): Promise<number> {
