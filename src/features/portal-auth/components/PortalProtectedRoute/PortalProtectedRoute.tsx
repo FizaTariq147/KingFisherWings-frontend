@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { FullPageSpinner } from '@/components/skeletons/SkeletonPrimitives';
 import { usePortalAuthBootstrap } from '../../hooks/usePortalAuthBootstrap';
+import { PORTAL_CHANGE_PASSWORD_PATH } from '../../api/portalAuth.api';
 import { portalAuthService } from '../../services/portalAuth.service';
 import { usePortalAuthStore } from '../../store/portalAuthStore';
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache';
@@ -12,6 +13,7 @@ export function PortalProtectedRoute() {
   const { ready, accessToken } = usePortalAuthBootstrap();
   const logout = usePortalAuthStore((s) => s.logout);
   const setUser = usePortalAuthStore((s) => s.setUser);
+  const mustChangePassword = usePortalAuthStore((s) => Boolean(s.user?.mustChangePassword));
   const [sessionOk, setSessionOk] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -56,6 +58,11 @@ export function PortalProtectedRoute() {
 
   if (sessionOk !== true) {
     return <FullPageSpinner message="Checking portal session…" />;
+  }
+
+  // Temporary-password users must set their own password before using the portal.
+  if (mustChangePassword && location.pathname !== PORTAL_CHANGE_PASSWORD_PATH) {
+    return <Navigate to={PORTAL_CHANGE_PASSWORD_PATH} replace />;
   }
 
   return <Outlet />;

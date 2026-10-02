@@ -169,17 +169,21 @@ function writeStoredBaseline(surface: string, count: number): void {
  * Watches unread notification counts and pops a toast when they rise.
  * Only toasts after a ready baseline — never treats loading (undefined) as 0→N.
  * sessionStorage keeps the baseline across shell remounts in the same tab.
+ * Optionally resolves the latest unread item so the toast shows real title/body.
  */
 export function NotificationToastWatcher({
   unreadCount,
   title = 'Notification',
   storageKey = 'default',
+  fetchLatest,
 }: {
   /** Omit / undefined while unread query has not fetched yet. */
   unreadCount: number | undefined;
   title?: string;
   /** Isolate admin / portal / vendor baselines. */
   storageKey?: string;
+  /** When unread rises, fetch the newest unread notification for toast copy. */
+  fetchLatest?: () => Promise<{ title?: string; message?: string } | null | undefined>;
 }) {
   const prevRef = useRef<number | null>(null);
 
@@ -196,14 +200,31 @@ export function NotificationToastWatcher({
 
     if (unreadCount > prevRef.current) {
       const delta = unreadCount - prevRef.current;
-      toast.notification(
-        delta === 1 ? 'You have a new notification.' : `You have ${delta} new notifications.`,
-        { title, dedupeMs: 8000 },
-      );
+      const fallbackMessage =
+        delta === 1 ? 'You have a new notification.' : `You have ${delta} new notifications.`;
+
+      void (async () => {
+        let toastTitle = title;
+        let toastMessage = fallbackMessage;
+        if (fetchLatest) {
+          try {
+            const latest = await fetchLatest();
+            if (latest?.title?.trim()) toastTitle = latest.title.trim();
+            if (latest?.message?.trim()) toastMessage = latest.message.trim();
+            else if (latest?.title?.trim() && delta === 1) {
+              toastMessage = latest.title.trim();
+              toastTitle = title;
+            }
+          } catch {
+            /* keep generic fallback */
+          }
+        }
+        toast.notification(toastMessage, { title: toastTitle, dedupeMs: 8000 });
+      })();
     }
     prevRef.current = unreadCount;
     writeStoredBaseline(storageKey, unreadCount);
-  }, [unreadCount, title, storageKey]);
+  }, [unreadCount, title, storageKey, fetchLatest]);
 
   return null;
 }

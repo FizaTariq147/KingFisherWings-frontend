@@ -9,8 +9,14 @@ import {
 } from '../utils/normalizePortalNotifications';
 
 export const portalNotificationsService = {
-  async list(params: PortalNotificationListParams = {}): Promise<PortalNotificationListResult> {
-    const res = await portalApiClient.get(PORTAL_NOTIFICATIONS_API.list, { params });
+  async list(
+    params: PortalNotificationListParams = {},
+    opts?: { skipErrorToast?: boolean },
+  ): Promise<PortalNotificationListResult> {
+    const res = await portalApiClient.get(PORTAL_NOTIFICATIONS_API.list, {
+      params,
+      ...(opts?.skipErrorToast ? { skipErrorToast: true } : {}),
+    });
     return normalizePortalNotificationList(res.data, params);
   },
   async unreadCount(): Promise<number> {

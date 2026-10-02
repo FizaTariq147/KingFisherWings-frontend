@@ -105,11 +105,18 @@ export default function PortalLoginPage() {
       clearPortalQueryCache();
       setSession(user, accessToken, refreshToken);
 
+      let mustChange = Boolean(user.mustChangePassword);
       try {
         const me = await portalAuthService.me();
         usePortalAuthStore.getState().setUser(me);
+        mustChange = Boolean(me.mustChangePassword);
       } catch {
         /* login tokens are enough; /me can refresh on home */
+      }
+
+      if (mustChange) {
+        navigate('/portal/change-password', { replace: true });
+        return;
       }
 
       const from = (location.state as LocationState | null)?.from?.pathname;
@@ -164,7 +171,10 @@ export default function PortalLoginPage() {
   });
 
   if (ready && accessToken) {
-    return <Navigate to="/portal" replace />;
+    const mustChange = Boolean(usePortalAuthStore.getState().user?.mustChangePassword);
+    return (
+      <Navigate to={mustChange ? '/portal/change-password' : '/portal'} replace />
+    );
   }
 
   const closeToHub = () => navigate('/login');

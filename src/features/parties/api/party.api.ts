@@ -31,10 +31,13 @@ export const PARTY_API = {
     `/parties/${partyId}/vendor-users/${id}/resend-invite`,
   /** Parties → vendor document rights */
   vendorPermissions: (partyId: string) => `/parties/${partyId}/vendor-permissions`,
-  /** Customer transaction summary (may 404 until backend ships). */
-  transactionSummary: (id: string) => `/parties/${id}/transaction-summary`,
-  sendTransactionSummary: (id: string) => `/parties/${id}/transaction-summary/send`,
-  /** Credit summary email (Part 7 share). */
+  /**
+   * Transaction summary uses party history + credit summary email
+   * (OpenAPI: GET /parties/{id}/history, POST /parties/{id}/credit/summary/send-email).
+   */
+  transactionSummary: (id: string) => `/parties/${id}/history`,
+  sendTransactionSummary: (id: string) => `/parties/${id}/credit/summary/send-email`,
+  /** Credit summary email (Part 7 share / DocumentShareEmailDto). */
   creditSummarySendEmail: (id: string) => `/parties/${id}/credit/summary/send-email`,
   ediCodes: (id: string) => `/parties/${id}/edi-codes`,
   standardCharges: (id: string) => `/parties/${id}/standard-charges`,

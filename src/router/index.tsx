@@ -240,6 +240,7 @@ import OnlinePaymentsHistoryPage from '../features/online-payments/pages/OnlineP
 import { PortalShell } from '../features/portal-auth/layout/PortalShell'
 import { PortalProtectedRoute } from '../features/portal-auth/components/PortalProtectedRoute'
 import PortalLoginPage from '../features/portal-auth/pages/PortalLoginPage'
+import PortalChangePasswordPage from '../features/portal-auth/pages/PortalChangePasswordPage'
 import PortalHomePage from '../features/portal-auth/pages/PortalHomePage'
 import PortalAlertsPage from '../features/portal-auth/pages/PortalAlertsPage'
 import PortalAccountPage from '../features/portal-auth/pages/PortalAccountPage'
@@ -365,6 +366,7 @@ export const router = createBrowserRouter([
     path: '/portal',
     element: <PortalProtectedRoute />,
     children: [
+      { path: 'change-password', element: <PortalChangePasswordPage /> },
       {
         element: <PortalShell />,
         children: [

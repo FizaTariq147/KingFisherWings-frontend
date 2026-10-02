@@ -87,20 +87,84 @@ export function normalizeCcDashboard(raw: unknown): CcDashboardStats {
   };
 }
 
+function firstStr(...values: unknown[]): string | undefined {
+  for (const value of values) {
+    const s = str(value);
+    if (s) return s;
+  }
+  return undefined;
+}
+
 export function normalizeCcQueueItem(raw: unknown): CcQueueItem | null {
   const r = asRecord(raw);
   if (!r) return null;
-  const id = idOf(r) || str(r.job_id) || '';
+  const job = asRecord(r.job) ?? asRecord(r.Job) ?? {};
+  const id = idOf(r) || firstStr(r.job_id) || idOf(job) || '';
   if (!id) return null;
+
+  const customerName =
+    firstStr(
+      r.customer_name,
+      r.customerName,
+      r.party_name,
+      r.partyName,
+      r.shipper_name,
+      r.shipperName,
+      r.client_name,
+      r.clientName,
+      asRecord(r.customer)?.name,
+      asRecord(r.party)?.name,
+      asRecord(r.shipper)?.name,
+      asRecord(job.customer)?.name,
+      asRecord(job.shipper)?.name,
+      asRecord(job.party)?.name,
+    );
+
+  const jobNumber = firstStr(
+    r.job_number,
+    r.jobNumber,
+    r.reference,
+    r.job_reference,
+    r.jobReference,
+    job.job_number,
+    job.jobNumber,
+    job.reference,
+  );
+
+  const jobName =
+    firstStr(
+      r.job_name,
+      r.jobName,
+      r.name,
+      r.title,
+      r.display_name,
+      r.displayName,
+      r.booking_name,
+      r.bookingName,
+      r.shipment_name,
+      r.shipmentName,
+      job.job_name,
+      job.jobName,
+      job.name,
+      job.title,
+      job.display_name,
+      job.displayName,
+    ) ||
+    customerName ||
+    jobNumber ||
+    undefined;
+
   return {
     id,
-    job_id: str(r.job_id) ?? (isUuid(id) ? id : undefined),
-    job_number: str(r.job_number ?? r.jobNumber),
-    stage: str(r.stage ?? r.cc_stage ?? r.status),
-    status: str(r.status),
-    customer_name: str(r.customer_name ?? r.party_name ?? r.shipper_name),
-    shipper_id: str(r.shipper_id ?? r.customer_id),
-    updated_at: str(r.updated_at ?? r.updatedAt),
+    job_id: firstStr(r.job_id, job.id) ?? (isUuid(id) ? id : undefined),
+    job_number: jobNumber,
+    job_name: jobName,
+    stage: firstStr(r.stage, r.cc_stage, r.status, job.stage),
+    status: firstStr(r.status, job.status, r.cc_status),
+    direction: firstStr(r.direction, r.cc_direction, job.direction),
+    customer_name: customerName,
+    shipper_id: firstStr(r.shipper_id, r.customer_id, job.shipper_id),
+    updated_at: firstStr(r.updated_at, r.updatedAt, job.updated_at),
     raw: r,
   };
 }

@@ -3,23 +3,51 @@ import { useMemo, useState } from 'react';
 import { ClipboardList, FileSearch, Hash, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
+import {
+  CC_QUEUE_DIRECTIONS,
+  CC_QUEUE_OWNERS,
+  CC_QUEUE_STATUSES,
+} from '../constants/ccQueue.constants';
 import { useCcDashboard, useCcQueue } from '../hooks/useCustomsClearance';
+
+function queueItemTitle(item: {
+  job_name?: string;
+  job_number?: string;
+  customer_name?: string;
+  id: string;
+  job_id?: string;
+}): string {
+  if (item.job_name?.trim()) return item.job_name.trim();
+  if (item.job_number?.trim()) return item.job_number.trim();
+  if (item.customer_name?.trim()) return item.customer_name.trim();
+  const id = item.job_id || item.id;
+  return id.length > 12 ? `${id.slice(0, 8)}…` : id;
+}
 
 export default function CustomsClearanceHubPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const [directionFilter, setDirectionFilter] = useState('');
+  const [ownerFilter, setOwnerFilter] = useState('');
   const queueParams = useMemo(() => {
     const params: Record<string, unknown> = {};
     if (statusFilter.trim()) params.status = statusFilter.trim();
     if (directionFilter.trim()) params.direction = directionFilter.trim();
+    if (ownerFilter.trim()) params.owner = ownerFilter.trim();
     return params;
-  }, [statusFilter, directionFilter]);
+  }, [statusFilter, directionFilter, ownerFilter]);
   const dashboard = useCcDashboard();
   const queue = useCcQueue(queueParams);
   const stats = dashboard.data;
   const items = queue.data?.items ?? [];
+
+  const statusOptions = useMemo(() => {
+    const set = new Set<string>(CC_QUEUE_STATUSES);
+    for (const item of items) {
+      if (item.status?.trim()) set.add(item.status.trim());
+    }
+    return [...set];
+  }, [items]);
 
   const refresh = () => {
     void dashboard.refetch();
@@ -101,21 +129,41 @@ export default function CustomsClearanceHubPage() {
             CC queue
           </CardTitle>
           <div className="flex flex-wrap items-center gap-2">
-            <Input
-              className="w-36"
-              placeholder="Status filter"
+            <select
+              className="rounded-md border border-[var(--color-neutral-200)] bg-white px-2 py-1.5 text-sm"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-            />
+            >
+              <option value="">All statuses</option>
+              {statusOptions.map((status) => (
+                <option key={status} value={status}>
+                  {status.replaceAll('_', ' ')}
+                </option>
+              ))}
+            </select>
             <select
               className="rounded-md border border-[var(--color-neutral-200)] bg-white px-2 py-1.5 text-sm"
               value={directionFilter}
               onChange={(e) => setDirectionFilter(e.target.value)}
             >
               <option value="">All directions</option>
-              <option value="IMPORT">IMPORT</option>
-              <option value="EXPORT">EXPORT</option>
-              <option value="TRANSIT">TRANSIT</option>
+              {CC_QUEUE_DIRECTIONS.map((direction) => (
+                <option key={direction} value={direction}>
+                  {direction}
+                </option>
+              ))}
+            </select>
+            <select
+              className="rounded-md border border-[var(--color-neutral-200)] bg-white px-2 py-1.5 text-sm"
+              value={ownerFilter}
+              onChange={(e) => setOwnerFilter(e.target.value)}
+            >
+              <option value="">All owners</option>
+              {CC_QUEUE_OWNERS.map((owner) => (
+                <option key={owner} value={owner}>
+                  {owner}
+                </option>
+              ))}
             </select>
             <span className="text-xs text-[var(--color-neutral-500)]">
               {queue.data?.meta?.total != null
@@ -140,22 +188,28 @@ export default function CustomsClearanceHubPage() {
             <ul className="divide-y divide-[var(--color-neutral-100)] rounded-md border border-[var(--color-neutral-200)]">
               {items.map((item) => {
                 const jobId = item.job_id || item.id;
+                const title = queueItemTitle(item);
                 return (
                   <li
                     key={item.id}
                     className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 text-sm"
                   >
                     <div className="min-w-0">
-                      <p className="font-medium">
-                        {item.job_number || jobId.slice(0, 8)}
-                        {item.customer_name ? (
+                      <p className="font-medium truncate">
+                        {title}
+                        {item.job_number && item.job_number !== title ? (
+                          <span className="ml-2 font-normal text-[var(--color-neutral-500)]">
+                            · {item.job_number}
+                          </span>
+                        ) : null}
+                        {item.customer_name && item.customer_name !== title ? (
                           <span className="ml-2 font-normal text-[var(--color-neutral-500)]">
                             · {item.customer_name}
                           </span>
                         ) : null}
                       </p>
                       <p className="text-xs text-[var(--color-neutral-500)]">
-                        {[item.stage, item.status, item.updated_at]
+                        {[item.direction, item.stage, item.status, item.updated_at]
                           .filter(Boolean)
                           .join(' · ') || '—'}
                       </p>
@@ -165,7 +219,7 @@ export default function CustomsClearanceHubPage() {
                         id: jobId,
                         job_type: 'CUSTOMS_CLEARANCE',
                       })}
-                      className="text-xs font-medium text-[var(--color-primary-600)] underline"
+                      className="text-xs font-medium text-[var(--color-primary-600)] underline shrink-0"
                     >
                       Open job
                     </Link>

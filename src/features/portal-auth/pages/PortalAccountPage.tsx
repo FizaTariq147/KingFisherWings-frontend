@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
@@ -16,6 +17,7 @@ import {
 } from '../components/portal-ui';
 
 export default function PortalAccountPage() {
+  const navigate = useNavigate();
   const user = usePortalAuthStore((s) => s.user);
   const firstLetter = (user?.fullName || user?.email || 'U').charAt(0).toUpperCase();
   const prefs = usePortalPreferences();
@@ -68,6 +70,23 @@ export default function PortalAccountPage() {
             <Info label="Tenant" value={user?.tenantName || user?.tenantSlug || '—'} />
           </PortalAnimatedGridItem>
         </PortalAnimatedGrid>
+      </PortalPanel>
+
+      <PortalPanel padded className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Password</h2>
+          <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
+            Change the password you use to sign in to the customer portal.
+          </p>
+        </div>
+        <Button
+          type="button"
+          size="sm"
+          variant="secondary"
+          onClick={() => navigate('/portal/change-password')}
+        >
+          Change password
+        </Button>
       </PortalPanel>
 
       <PortalPanel padded className="space-y-4">
