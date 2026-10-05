@@ -38,6 +38,7 @@ export default defineConfig(({ mode }) => ({
       '.localhost',
       'kingfisherwings-frontend.onrender.com',
       '.onrender.com',
+          'freightnest.kingfishertec.com',
     ],
     proxy: {
       '/backend': {
@@ -61,6 +62,7 @@ export default defineConfig(({ mode }) => ({
       '.localhost',
       'kingfisherwings-frontend.onrender.com',
       '.onrender.com',
+          'freightnest.kingfishertec.com',
     ],
   },
 
