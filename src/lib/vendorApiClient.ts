@@ -132,7 +132,7 @@ vendorApiClient.interceptors.response.use(
     const url = original?.url ?? '';
 
     const rejectWithToast = (error: unknown) => {
-      notifyAxiosError(err);
+      notifyAxiosError(err, { message });
       return Promise.reject(error);
     };
 

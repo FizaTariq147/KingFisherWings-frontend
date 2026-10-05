@@ -1,156 +1,60 @@
 import type { AxiosError } from 'axios';
 import { extractAxiosErrorDetail } from '@/lib/extractAxiosErrorDetail';
 import { toast } from '@/store/toastStore';
-import { useAuthStore } from '@/store/authStore';
 
-const SILENT_PATH_SNIPPETS = [
-  '/health',
-  '/auth/refresh',
-  '/portal/auth/refresh',
-  '/vendor/auth/refresh',
-  '/super-admin/auth/refresh',
-  '/auth/me',
-  // Background unread polls — badge updates quietly; failures must not spam toasts.
-  '/notifications/unread-count',
-  '/portal/notifications/unread-count',
-  '/vendor/notifications/unread-count',
-  // Live API: route missing (404) or consistently 500 — callers soft-fail / use calculate.
-  '/wms/warehouses',
-  '/wms/storage/charges',
-] as const;
+/**
+ * Toast policy: bottom-right popups are for **inbox notifications** only
+ * (see NotificationToastWatcher). API / console / permission errors stay in
+ * page UI, modals, and the browser console — they must not spam the toast stack.
+ */
 
-function isSilentUrl(url?: string): boolean {
-  if (!url) return false;
-  const lower = url.toLowerCase();
-  return SILENT_PATH_SNIPPETS.some((snippet) => lower.includes(snippet));
-}
-
-/** Soft-fail job-type ACL probes (e.g. ROAD_FREIGHT list) — callers recover via unfiltered list. */
-function isSoftJobTypeAccessDenied(message: string, status?: number): boolean {
-  if (status !== 403 && status !== 401) return false;
-  return /do not have access to .+ jobs/i.test(message);
-}
-
-function isCancel(error: AxiosError): boolean {
+/** @deprecated Kept for call-site compatibility — no longer shows toasts. */
+export function isPermissionRequiredMessage(message: string, _status?: number): boolean {
+  const text = String(message ?? '');
+  if (!text.trim()) return false;
   return (
-    error.code === 'ERR_CANCELED' ||
-    (typeof error.message === 'string' && /canceled|cancelled/i.test(error.message))
+    /missing required permission/i.test(text) ||
+    /required permission[:\s]/i.test(text) ||
+    /permission denied/i.test(text) ||
+    /insufficient permissions?/i.test(text)
   );
 }
 
-type ToastableError = AxiosError & {
-  status?: number;
-  config?: AxiosError['config'] & { skipErrorToast?: boolean };
-  /** Optional original Axios error when callers wrap as PortalApiError / VendorApiError. */
-  cause?: unknown;
-  originalError?: unknown;
-};
-
-function asAxiosCandidate(error: unknown): ToastableError | null {
-  if (!error || typeof error !== 'object') return null;
-  return error as ToastableError;
-}
-
-function resolveConfig(error: ToastableError): ToastableError['config'] | undefined {
-  if (error.config) return error.config;
-  const cause = asAxiosCandidate(error.cause) || asAxiosCandidate(error.originalError);
-  return cause?.config;
-}
-
-function resolveStatus(error: ToastableError): number | undefined {
-  if (typeof error.response?.status === 'number') return error.response.status;
-  if (typeof error.status === 'number') return error.status;
-  const cause = asAxiosCandidate(error.cause) || asAxiosCandidate(error.originalError);
-  if (typeof cause?.response?.status === 'number') return cause.response.status;
-  if (typeof cause?.status === 'number') return cause.status;
-  return undefined;
-}
-
-function resolveUrl(error: ToastableError): string | undefined {
-  const cfg = resolveConfig(error);
-  if (cfg?.url) return cfg.url;
-  const cause = asAxiosCandidate(error.cause) || asAxiosCandidate(error.originalError);
-  return cause?.config?.url;
+/** @deprecated Kept for call-site compatibility — no longer shows toasts. */
+export function isAccessDeniedMessage(message: string, status?: number): boolean {
+  if (isPermissionRequiredMessage(message, status)) return true;
+  const text = String(message ?? '');
+  return (
+    /platform admin tokens cannot access/i.test(text) ||
+    /cannot access tenant erp/i.test(text) ||
+    /access denied/i.test(text) ||
+    status === 403
+  );
 }
 
 /**
- * Surface an API failure as a bottom-right popup.
- * Safe to call from interceptors — never throws and never alters the error.
- * Prefer passing the original Axios error (keeps skipErrorToast / silent URLs).
+ * Previously surfaced API failures as toasts. Now a no-op so only notification
+ * toasts appear. Call sites / interceptors can keep invoking this safely.
  */
-export function notifyAxiosError(error: unknown, opts?: { title?: string }): void {
-  try {
-    const axiosErr = asAxiosCandidate(error);
-    if (!axiosErr) return;
-    if (isCancel(axiosErr)) return;
-
-    const cfg = resolveConfig(axiosErr);
-    if (cfg?.skipErrorToast) return;
-
-    const url = resolveUrl(axiosErr);
-    if (isSilentUrl(url)) return;
-
-    const status = resolveStatus(axiosErr);
-
-    const message =
-      typeof axiosErr.message === 'string' &&
-      axiosErr.message.trim() &&
-      !axiosErr.message.startsWith('Request failed with status code')
-        ? axiosErr.message.trim()
-        : extractAxiosErrorDetail(error);
-
-    if (!message) return;
-    if (isSoftJobTypeAccessDenied(String(message), status)) return;
-
-    // Session refresh / idle modal already owns UX — don't toast every 401.
-    if (status === 401 && useAuthStore.getState().sessionExpired) return;
-
-    const title =
-      opts?.title ??
-      (status && status >= 500
-        ? 'Server error'
-        : status === 403
-          ? 'Access denied'
-          : status === 404
-            ? 'Not found'
-            : status === 401
-              ? 'Session'
-              : status && status >= 400
-                ? 'Request failed'
-                : 'Warning');
-
-    const variant = status && status >= 400 ? 'error' : 'warning';
-    if (variant === 'warning') {
-      toast.warning(message, { title, dedupeMs: 5000 });
-    } else {
-      toast.error(message, {
-        title,
-        dedupeMs: status === 401 || status === 403 ? 8000 : 5000,
-      });
-    }
-  } catch {
-    /* never break request pipeline */
-  }
+export function notifyAxiosError(
+  _error: unknown,
+  _opts?: { title?: string; message?: string },
+): void {
+  /* inbox notifications only — see NotificationToastWatcher */
 }
 
 /**
- * Show a frontend toast for an arbitrary warning/error string (e.g. soft failures).
- * Prefer {@link notifyAxiosError} for Axios failures.
+ * Non-notification app messages: no longer pushed to the toast stack.
+ * Prefer inline alerts / form errors. Use `toast.notification` for inbox items.
  */
 export function notifyFrontendIssue(
-  message: string,
-  opts?: { title?: string; variant?: 'warning' | 'error' | 'info' },
+  _message: string,
+  _opts?: { title?: string; variant?: 'warning' | 'error' | 'info' },
 ): void {
-  const text = String(message ?? '').trim();
-  if (!text) return;
-  const variant = opts?.variant ?? 'warning';
-  const title = opts?.title ?? (variant === 'error' ? 'Error' : 'Warning');
-  if (variant === 'error') toast.error(text, { title, dedupeMs: 5000 });
-  else if (variant === 'info') toast.info(text, { title, dedupeMs: 4000 });
-  else toast.warning(text, { title, dedupeMs: 5000 });
+  /* inbox notifications only */
 }
 
-/** Route browser `alert()` into the toast stack (keeps call sites unchanged). */
+/** Route browser `alert()` into a light info toast (not API errors). */
 export function installAlertToastBridge(): void {
   if (typeof window === 'undefined') return;
   const w = window as Window & { __kfAlertToastBridged?: boolean };
@@ -158,8 +62,29 @@ export function installAlertToastBridge(): void {
   w.__kfAlertToastBridged = true;
 
   window.alert = (message?: unknown) => {
-    const text = message == null ? '' : String(message);
-    if (!text.trim()) return;
+    const text = message == null ? '' : String(message).replace(/\s+/g, ' ').trim();
+    if (!text) return;
     toast.info(text, { title: 'Alert', dedupeMs: 1500 });
   };
+}
+
+/**
+ * Console bridge disabled — API/permission console noise must not become toasts.
+ * Kept as a no-op installer so main.tsx can call it safely.
+ */
+export function installConsoleToastBridge(): void {
+  /* intentionally empty */
+}
+
+/** Helper for pages that still want a readable API error string (not a toast). */
+export function formatApiErrorForUi(error: unknown): string {
+  const detail = extractAxiosErrorDetail(error)
+    .replace(/^HTTP\s+\d{3}:\s*/i, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (detail) return detail;
+  if (error instanceof Error && error.message.trim()) return error.message.trim();
+  const ax = error as AxiosError | undefined;
+  if (typeof ax?.message === 'string' && ax.message.trim()) return ax.message.trim();
+  return 'Request failed';
 }
