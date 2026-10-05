@@ -21,9 +21,10 @@ export function useNotificationUnreadCount() {
   return useQuery({
     queryKey: notificationKeys.unread(),
     queryFn: () => notificationsService.unreadCount(),
-    staleTime: 30_000,
+    staleTime: 15_000,
     placeholderData: keepPreviousData,
-    refetchInterval: 60_000,
+    refetchInterval: 30_000,
+    refetchOnWindowFocus: true,
   });
 }
 

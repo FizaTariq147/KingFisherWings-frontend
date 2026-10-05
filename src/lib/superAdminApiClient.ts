@@ -106,7 +106,7 @@ superAdminApiClient.interceptors.response.use(
     const isAuthBootstrap = matchesAnyApiPath(url, SUPERADMIN_NO_REFRESH);
 
     const rejectWithToast = (error: unknown) => {
-      notifyAxiosError(err);
+      notifyAxiosError(err, { message });
       return Promise.reject(error);
     };
 

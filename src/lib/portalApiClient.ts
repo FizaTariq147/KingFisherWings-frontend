@@ -136,7 +136,8 @@ portalApiClient.interceptors.response.use(
 
     const rejectWithToast = (error: unknown) => {
       // Prefer original Axios error so skipErrorToast / silent URLs still work.
-      notifyAxiosError(err);
+      // Pass resolved Nest message so permission text is not lost.
+      notifyAxiosError(err, { message });
       return Promise.reject(error);
     };
 

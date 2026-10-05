@@ -18,9 +18,9 @@ export function useVendorNotificationUnreadCount() {
     queryKey: vendorNotificationKeys.unread(scope),
     queryFn: () => vendorNotificationsService.unreadCount(),
     enabled: Boolean(accessToken) && scope !== 'anon',
-    staleTime: 30_000,
+    staleTime: 15_000,
     placeholderData: keepPreviousData,
-    refetchInterval: 45_000,
+    refetchInterval: 30_000,
     refetchOnWindowFocus: true,
   });
 }

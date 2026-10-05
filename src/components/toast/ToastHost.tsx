@@ -165,11 +165,42 @@ function writeStoredBaseline(surface: string, count: number): void {
   }
 }
 
+async function resolveNotificationToastCopy(
+  title: string,
+  delta: number,
+  fetchLatest?: () => Promise<{ title?: string; message?: string } | null | undefined>,
+): Promise<{ toastTitle: string; toastMessage: string }> {
+  const fallbackMessage =
+    delta === 1 ? 'You have a new notification.' : `You have ${delta} new notifications.`;
+  let toastTitle = title;
+  let toastMessage = fallbackMessage;
+
+  if (!fetchLatest) return { toastTitle, toastMessage };
+
+  try {
+    const latest = await fetchLatest();
+    const latestTitle = latest?.title?.trim();
+    const latestBody = latest?.message?.trim();
+    // Prefer real inbox notification title + body in the toast.
+    if (latestTitle && latestBody) {
+      toastTitle = latestTitle;
+      toastMessage = latestBody;
+    } else if (latestBody) {
+      toastMessage = latestBody;
+    } else if (latestTitle) {
+      toastTitle = title;
+      toastMessage = latestTitle;
+    }
+  } catch {
+    /* keep generic fallback */
+  }
+
+  return { toastTitle, toastMessage };
+}
+
 /**
  * Watches unread notification counts and pops a toast when they rise.
- * Only toasts after a ready baseline — never treats loading (undefined) as 0→N.
- * sessionStorage keeps the baseline across shell remounts in the same tab.
- * Optionally resolves the latest unread item so the toast shows real title/body.
+ * Toast stack is reserved for inbox notifications (not API/console errors).
  */
 export function NotificationToastWatcher({
   unreadCount,
@@ -186,43 +217,67 @@ export function NotificationToastWatcher({
   fetchLatest?: () => Promise<{ title?: string; message?: string } | null | undefined>;
 }) {
   const prevRef = useRef<number | null>(null);
+  const toastingRef = useRef(false);
 
   useEffect(() => {
     if (typeof unreadCount !== 'number' || !Number.isFinite(unreadCount)) return;
 
+    const pushNotificationToast = (delta: number, previous: number) => {
+      if (toastingRef.current) return;
+      toastingRef.current = true;
+      void (async () => {
+        const { toastTitle, toastMessage } = await resolveNotificationToastCopy(
+          title,
+          delta,
+          fetchLatest,
+        );
+        toast.notification(toastMessage, {
+          title: toastTitle,
+          dedupeMs: 4000,
+          durationMs: 9000,
+        });
+        toastingRef.current = false;
+      })().catch(() => {
+        toast.notification(
+          delta === 1 ? 'You have a new notification.' : `You have ${delta} new notifications.`,
+          { title, dedupeMs: 4000 },
+        );
+        toastingRef.current = false;
+        if (prevRef.current === unreadCount) {
+          prevRef.current = previous;
+        }
+      });
+    };
+
     if (prevRef.current === null) {
       const stored = readStoredBaseline(storageKey);
-      // First ready value in this mount: adopt max(stored, current) without toasting.
-      prevRef.current = stored != null ? Math.max(stored, unreadCount) : unreadCount;
+      prevRef.current =
+        stored != null ? Math.min(stored, unreadCount) : unreadCount;
       writeStoredBaseline(storageKey, prevRef.current);
+      if (stored != null && unreadCount > stored) {
+        const delta = unreadCount - stored;
+        prevRef.current = unreadCount;
+        writeStoredBaseline(storageKey, unreadCount);
+        pushNotificationToast(delta, stored);
+      }
+      return;
+    }
+
+    if (unreadCount < prevRef.current) {
+      prevRef.current = unreadCount;
+      writeStoredBaseline(storageKey, unreadCount);
       return;
     }
 
     if (unreadCount > prevRef.current) {
       const delta = unreadCount - prevRef.current;
-      const fallbackMessage =
-        delta === 1 ? 'You have a new notification.' : `You have ${delta} new notifications.`;
-
-      void (async () => {
-        let toastTitle = title;
-        let toastMessage = fallbackMessage;
-        if (fetchLatest) {
-          try {
-            const latest = await fetchLatest();
-            if (latest?.title?.trim()) toastTitle = latest.title.trim();
-            if (latest?.message?.trim()) toastMessage = latest.message.trim();
-            else if (latest?.title?.trim() && delta === 1) {
-              toastMessage = latest.title.trim();
-              toastTitle = title;
-            }
-          } catch {
-            /* keep generic fallback */
-          }
-        }
-        toast.notification(toastMessage, { title: toastTitle, dedupeMs: 8000 });
-      })();
+      const previous = prevRef.current;
+      prevRef.current = unreadCount;
+      writeStoredBaseline(storageKey, unreadCount);
+      pushNotificationToast(delta, previous);
+      return;
     }
-    prevRef.current = unreadCount;
+
     writeStoredBaseline(storageKey, unreadCount);
   }, [unreadCount, title, storageKey, fetchLatest]);
 
