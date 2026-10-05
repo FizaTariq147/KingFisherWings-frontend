@@ -193,7 +193,7 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
                 color: loginMode === 'tenant_admin' ? '#fff' : '#64748b',
               }}
             >
-              Tenant Admin
+              Company Admin
             </button>
             <button
               type="button"
@@ -209,12 +209,12 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
           </div>
 
           <div>
-            <label htmlFor="kf-tenant-slug" className={popupLabelClass}>Workspace</label>
+            <label htmlFor="kf-tenant-slug" className={popupLabelClass}>Username</label>
             <input
               id="kf-tenant-slug"
               type="text"
               autoComplete="off"
-              placeholder="tenant_slug"
+              placeholder="username"
               disabled={isLoading}
               aria-invalid={!!errors.tenant_slug}
               {...register('tenant_slug')}
