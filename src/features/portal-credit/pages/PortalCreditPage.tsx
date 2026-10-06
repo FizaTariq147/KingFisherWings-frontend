@@ -131,6 +131,70 @@ export default function PortalCreditPage() {
         </PortalAnimatedGridItem>
       </PortalAnimatedGrid>
 
+      <PortalPanel>
+        <div className="border-b border-[var(--color-neutral-100)] px-4 py-3">
+          <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">
+            Open invoices
+          </h2>
+          <p className="mt-0.5 text-xs text-[var(--color-neutral-500)]">
+            Remaining balance after amounts already paid.
+          </p>
+        </div>
+        {statement.isLoading ? (
+          <PortalLoadingState label="Loading open invoices…" />
+        ) : !(statement.data?.openInvoices?.length) ? (
+          <p className="px-4 py-6 text-sm text-[var(--color-neutral-400)]">
+            No open invoice balances.
+          </p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-left text-sm">
+              <thead className="bg-[var(--color-neutral-50)] text-xs uppercase tracking-wide text-[var(--color-neutral-500)]">
+                <tr>
+                  <th className="px-4 py-2.5 font-semibold">Invoice</th>
+                  <th className="px-4 py-2.5 font-semibold">Due</th>
+                  <th className="px-4 py-2.5 font-semibold text-right">Amount</th>
+                  <th className="px-4 py-2.5 font-semibold text-right">Remaining</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--color-neutral-100)]">
+                {statement.data.openInvoices.map((inv) => (
+                  <tr key={inv.id} className="text-[var(--color-neutral-800)]">
+                    <td className="px-4 py-2.5 font-medium">
+                      <button
+                        type="button"
+                        className="text-left underline-offset-2 hover:underline"
+                        onClick={() => navigate(`/portal/invoices/${inv.id}`)}
+                      >
+                        {inv.number || inv.id.slice(0, 8).toUpperCase()}
+                      </button>
+                      {inv.status ? (
+                        <div className="text-xs text-[var(--color-neutral-500)]">
+                          {inv.status.replaceAll('_', ' ')}
+                        </div>
+                      ) : null}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2.5">{inv.dueDate || '—'}</td>
+                    <td className="whitespace-nowrap px-4 py-2.5 text-right tabular-nums">
+                      <div>{formatMoney(inv.totalAmount, inv.currencyCode || currency)}</div>
+                      <div className="text-xs font-normal text-[var(--color-neutral-500)]">
+                        Paid {formatMoney(inv.paidAmount ?? 0, inv.currencyCode || currency)}
+                        {inv.pendingProofAmount != null && inv.pendingProofAmount > 0
+                          ? ' (incl. proof)'
+                          : ''}
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2.5 text-right font-semibold tabular-nums">
+                      {formatMoney(inv.remainingAmount, inv.currencyCode || currency)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </PortalPanel>
+
       <PortalPanel padded>
         <h2 className="mb-4 text-sm font-semibold text-[var(--color-neutral-900)]">Aging</h2>
         {aging.isLoading ? (

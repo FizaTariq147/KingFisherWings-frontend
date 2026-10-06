@@ -27,6 +27,7 @@ import {
   usePortalInvoices,
   usePortalInvoiceOpenItems,
   usePortalInvoicePdfBlob,
+  usePortalInvoiceDisplayRows,
 } from '../hooks/usePortalInvoices';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 
@@ -73,16 +74,18 @@ export default function PortalInvoicesPage() {
   const active = viewOpenOnly ? openItems : allInvoices;
   const pdfBlob = usePortalInvoicePdfBlob();
   const items = active.data?.items ?? [];
+  const displayItems = usePortalInvoiceDisplayRows(items);
   const meta = active.data?.meta;
   const { isLoading, isError, error, refetch, isFetching } = active;
 
   const statusOptions = useMemo(() => {
     const set = new Set<string>();
-    for (const inv of items) {
+    for (const inv of displayItems) {
+      if (inv.displayStatus?.trim()) set.add(inv.displayStatus.trim());
       if (inv.status?.trim()) set.add(inv.status.trim());
     }
     return [...set].sort((a, b) => a.localeCompare(b));
-  }, [items]);
+  }, [displayItems]);
 
   const openInvoicePdf = (invoiceId: string, name: string) => {
     setPdfError(null);
@@ -270,11 +273,11 @@ export default function PortalInvoicesPage() {
             <p className="text-sm text-[var(--color-danger-600)]">{error instanceof PortalApiError || error instanceof Error ? error.message : 'Failed to load invoices.'}</p>
             <Button type="button" size="sm" variant="secondary" onClick={() => refetch()}>Retry</Button>
           </div>
-        ) : items.length === 0 ? (
+        ) : displayItems.length === 0 ? (
           <PortalEmptyState title="No invoices" description="Invoices appear here once posted for your party." Icon={FileText} />
         ) : (
           <PortalAnimatedList className="divide-y divide-[var(--color-neutral-100)]">
-            {items.map((inv) => (
+            {displayItems.map((inv) => (
               <PortalAnimatedListItem key={inv.id} className="flex items-center justify-between gap-3 px-4 py-3.5">
                 <Link to={`/portal/invoices/${inv.id}`} className="min-w-0 flex-1 hover:opacity-80">
                   <div className="text-sm font-semibold truncate">{inv.number}</div>
@@ -282,13 +285,28 @@ export default function PortalInvoicesPage() {
                     {[inv.invoiceDate, inv.dueDate ? `Due ${inv.dueDate}` : null, inv.currencyCode].filter(Boolean).join(' · ') || '—'}
                   </div>
                   <div className="mt-0.5 text-xs tabular-nums text-[var(--color-neutral-600)]">
-                    Total {inv.totalAmount ?? '—'}
-                    {inv.paidAmount != null ? ` · Paid ${inv.paidAmount}` : ''}
-                    {inv.outstandingBalance != null ? ` · Due ${inv.outstandingBalance}` : ''}
+                    <div>Total {inv.totalAmount ?? '—'}</div>
+                    <div className="text-[var(--color-neutral-500)]">
+                      Paid {inv.displayPaidAmount}
+                      {inv.includesPendingProofs ? ' (incl. proof)' : ''}
+                      {` · Due ${inv.displayRemainingAmount}`}
+                    </div>
                   </div>
                 </Link>
                 <div className="flex items-center gap-2 shrink-0">
-                  {inv.status ? <Badge variant="info">{inv.status.replaceAll('_', ' ')}</Badge> : null}
+                  {inv.displayStatus ? (
+                    <Badge
+                      variant={
+                        inv.displayStatus === 'PAID'
+                          ? 'success'
+                          : inv.displayStatus === 'PARTIALLY_PAID'
+                            ? 'warning'
+                            : 'info'
+                      }
+                    >
+                      {inv.displayStatus.replaceAll('_', ' ')}
+                    </Badge>
+                  ) : null}
                   <Button type="button" size="sm" variant="secondary" disabled={pdfBlob.isPending}
                     onClick={() => openInvoicePdf(inv.id, inv.number)}>
                     <Download size={14} aria-hidden="true" />

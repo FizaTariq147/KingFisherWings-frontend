@@ -222,12 +222,12 @@ export default function VendorLoginPage() {
           >
             <div>
               <label htmlFor="vendor_tenant_slug" className={popupLabelClass}>
-                Workspace
+               Username
               </label>
               <input
                 id="vendor_tenant_slug"
                 autoComplete="organization"
-                placeholder="Tenant slug"
+                placeholder="Username"
                 className={popupInputClass}
                 {...form.register('tenant_slug')}
               />

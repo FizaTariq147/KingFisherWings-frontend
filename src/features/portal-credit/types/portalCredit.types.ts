@@ -29,6 +29,20 @@ export interface PortalStatementLine {
   description?: string;
 }
 
+export interface PortalOpenInvoiceLine {
+  id: string;
+  number?: string;
+  invoiceDate?: string;
+  dueDate?: string;
+  status?: string;
+  currencyCode?: string;
+  totalAmount?: number;
+  paidAmount?: number;
+  remainingAmount?: number;
+  /** Amount from payment proofs awaiting review (included in paidAmount). */
+  pendingProofAmount?: number;
+}
+
 export interface PortalStatementResult {
   asOf?: string;
   openingBalance?: number;
@@ -38,5 +52,7 @@ export interface PortalStatementResult {
   truncated?: boolean;
   /** True when lines were built from invoices/payments/credit notes. */
   composedFromLedgers?: boolean;
+  /** Invoices with a remaining balance (paid some / due some). */
+  openInvoices?: PortalOpenInvoiceLine[];
   lines: PortalStatementLine[];
 }

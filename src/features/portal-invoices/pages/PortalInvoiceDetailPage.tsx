@@ -25,6 +25,7 @@ import {
   useUploadPortalInvoicePaymentProof,
 } from '../hooks/usePortalInvoices';
 import { PaymentProofList, PaymentProofUploadForm } from '@/features/payment-proofs/components/PaymentProofPanels';
+import { adjustInvoiceAmountsWithProofs } from '@/features/payment-proofs/utils/adjustInvoiceAmountsWithProofs';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 import {
   invoiceEligibleForOnlinePay,
@@ -53,13 +54,31 @@ export default function PortalInvoiceDetailPage() {
   const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
   const [pdfReadyFileName, setPdfReadyFileName] = useState('invoice.pdf');
 
+  const amounts = useMemo(
+    () =>
+      adjustInvoiceAmountsWithProofs(
+        {
+          totalAmount: data?.totalAmount,
+          paidAmount: data?.paidAmount,
+          outstandingBalance: data?.outstandingBalance,
+          status: data?.status,
+        },
+        proofs,
+      ),
+    [data?.totalAmount, data?.paidAmount, data?.outstandingBalance, data?.status, proofs],
+  );
+
   const onlinePayAvailable = isPortalOnlinePayAvailable(stripeConfig.data);
 
   const showPayNow = useMemo(() => {
     if (!data) return false;
     if (!onlinePayAvailable) return false;
-    return invoiceEligibleForOnlinePay(data);
-  }, [data, onlinePayAvailable]);
+    if (amounts.displayStatus === 'PAID' || amounts.remainingAmount <= 0) return false;
+    return invoiceEligibleForOnlinePay({
+      status: amounts.displayStatus,
+      outstandingBalance: amounts.remainingAmount,
+    });
+  }, [data, onlinePayAvailable, amounts.displayStatus, amounts.remainingAmount]);
 
   const paymentStatus = usePortalInvoicePaymentStatus(
     id,
@@ -128,7 +147,19 @@ export default function PortalInvoiceDetailPage() {
         description={[data.invoiceDate, data.dueDate ? `Due ${data.dueDate}` : null].filter(Boolean).join(' · ') || 'Invoice detail'}
         actions={
           <>
-            {data.status ? <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge> : null}
+            {amounts.displayStatus ? (
+              <Badge
+                variant={
+                  amounts.displayStatus === 'PAID'
+                    ? 'success'
+                    : amounts.displayStatus === 'PARTIALLY_PAID'
+                      ? 'warning'
+                      : 'info'
+                }
+              >
+                {amounts.displayStatus.replaceAll('_', ' ')}
+              </Badge>
+            ) : null}
             {showPayNow ? (
               <Button
                 type="button"
@@ -189,11 +220,29 @@ export default function PortalInvoiceDetailPage() {
         </p>
       ) : null}
       <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <PortalAnimatedGridItem><PortalStatCard label="Total" value={data.totalAmount ?? '—'} /></PortalAnimatedGridItem>
-        <PortalAnimatedGridItem><PortalStatCard label="Paid" value={data.paidAmount ?? '—'} /></PortalAnimatedGridItem>
-        <PortalAnimatedGridItem><PortalStatCard label="Balance due" value={data.outstandingBalance ?? '—'} /></PortalAnimatedGridItem>
-        <PortalAnimatedGridItem><PortalStatCard label="Currency" value={data.currencyCode || '—'} /></PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard
+            label="Total"
+            value={amounts.totalAmount ?? data.totalAmount ?? '—'}
+            hint={`Paid ${amounts.paidAmount}${amounts.includesPendingProofs ? ' (incl. pending proof)' : ''}`}
+          />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard label="Paid" value={amounts.paidAmount} />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard label="Balance due" value={amounts.remainingAmount} />
+        </PortalAnimatedGridItem>
+        <PortalAnimatedGridItem>
+          <PortalStatCard label="Currency" value={data.currencyCode || '—'} />
+        </PortalAnimatedGridItem>
       </PortalAnimatedGrid>
+      {amounts.includesPendingProofs ? (
+        <p className="text-xs text-[var(--color-neutral-500)]">
+          Paid includes {amounts.pendingProofAmount} from payment proof(s) awaiting review.
+          Remaining balance is reduced by those claims.
+        </p>
+      ) : null}
       {(onlinePayAvailable || payStarted) &&
         (paymentStatus.isLoading || paymentStatus.data?.status || paymentStatus.isError) && (
         <PortalPanel padded className="space-y-2">
@@ -281,6 +330,7 @@ export default function PortalInvoiceDetailPage() {
         <PaymentProofUploadForm
           disabled={uploadProof.isPending}
           currencyCode={data.currencyCode}
+          remainingAmount={amounts.remainingAmount}
           onUpload={async (file, dto) => {
             await uploadProof.mutateAsync({ file, dto });
           }}

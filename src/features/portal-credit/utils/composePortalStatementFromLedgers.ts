@@ -4,7 +4,12 @@ import { portalInvoicesService } from '@/features/portal-invoices/services/porta
 import type { PortalInvoiceListItem } from '@/features/portal-invoices/types/portalInvoices.types';
 import { portalPaymentsService } from '@/features/portal-payments/services/portalPayments.service';
 import type { PortalPaymentListItem } from '@/features/portal-payments/types/portalPayments.types';
-import type { PortalStatementLine, PortalStatementResult } from '../types/portalCredit.types';
+import { adjustInvoiceAmountsWithProofs } from '@/features/payment-proofs/utils/adjustInvoiceAmountsWithProofs';
+import type {
+  PortalOpenInvoiceLine,
+  PortalStatementLine,
+  PortalStatementResult,
+} from '../types/portalCredit.types';
 
 type RawLine = PortalStatementLine & { sortKey: string };
 
@@ -66,6 +71,11 @@ export async function composePortalStatementFromLedgers(
     const amount = inv.totalAmount ?? inv.outstandingBalance;
     if (amount == null) continue;
     if (asOf && inv.invoiceDate && inv.invoiceDate > asOf) continue;
+    const remaining =
+      inv.outstandingBalance ??
+      (inv.totalAmount != null && inv.paidAmount != null
+        ? Math.max(0, inv.totalAmount - inv.paidAmount)
+        : undefined);
     const id = `invoice:${inv.id}`;
     if (seen.has(id)) continue;
     seen.add(id);
@@ -78,10 +88,12 @@ export async function composePortalStatementFromLedgers(
         inv.status ? `Status ${inv.status.replaceAll('_', ' ')}` : null,
         inv.dueDate ? `Due ${inv.dueDate}` : null,
         inv.paidAmount != null ? `Paid ${inv.paidAmount}` : null,
-        inv.outstandingBalance != null ? `Open ${inv.outstandingBalance}` : null,
+        remaining != null ? `Remaining ${remaining}` : null,
       ]
         .filter(Boolean)
         .join(' · ') || undefined,
+      // Ledger debit stays the invoice total; remaining is called out in description
+      // and in the Open invoices panel on the credit page.
       debit: amount,
       credit: undefined,
       sortKey: `${dateKey(inv.invoiceDate || inv.dueDate)}|1|${inv.number || inv.id}`,
@@ -167,11 +179,60 @@ export async function composePortalStatementFromLedgers(
     };
   }
 
+  const openInvoicesBase: PortalOpenInvoiceLine[] = invoiceItems
+    .map((inv) => {
+      const remaining =
+        inv.outstandingBalance ??
+        (inv.totalAmount != null && inv.paidAmount != null
+          ? Math.max(0, inv.totalAmount - inv.paidAmount)
+          : undefined);
+      // Keep zero-remaining invoices out unless proofs may still adjust them below.
+      if (remaining == null) return null;
+      return {
+        id: inv.id,
+        number: inv.number,
+        invoiceDate: inv.invoiceDate,
+        dueDate: inv.dueDate,
+        status: inv.status,
+        currencyCode: inv.currencyCode,
+        totalAmount: inv.totalAmount,
+        paidAmount: inv.paidAmount ?? 0,
+        remainingAmount: remaining,
+      };
+    })
+    .filter((row): row is PortalOpenInvoiceLine => Boolean(row));
+
+  // Adjust paid / remaining with customer payment proofs (partial claims pending review).
+  const openInvoices: PortalOpenInvoiceLine[] = (
+    await Promise.all(
+      openInvoicesBase.map(async (inv) => {
+        const proofs = await portalInvoicesService.listPaymentProofs(inv.id).catch(() => []);
+        const adjusted = adjustInvoiceAmountsWithProofs(
+          {
+            totalAmount: inv.totalAmount,
+            paidAmount: inv.paidAmount,
+            outstandingBalance: inv.remainingAmount,
+            status: inv.status,
+          },
+          proofs,
+        );
+        return {
+          ...inv,
+          status: adjusted.displayStatus,
+          paidAmount: adjusted.paidAmount,
+          remainingAmount: adjusted.remainingAmount,
+          pendingProofAmount: adjusted.pendingProofAmount || undefined,
+        };
+      }),
+    )
+  ).filter((inv) => (inv.remainingAmount ?? 0) > 0);
+
   return {
     ...summary,
     asOf: asOf || summary.asOf,
     closingBalance,
     invoiceCount: summary.invoiceCount ?? invoiceItems.length,
+    openInvoices,
     lines,
     composedFromLedgers: true,
   };

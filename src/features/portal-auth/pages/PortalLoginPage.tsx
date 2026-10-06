@@ -256,12 +256,12 @@ export default function PortalLoginPage() {
           >
             <div>
               <label htmlFor="tenant_slug" className={popupLabelClass}>
-                Workspace
+                Username
               </label>
               <input
                 id="tenant_slug"
                 autoComplete="organization"
-                placeholder="Tenant slug"
+                placeholder="Username"
                 className={popupInputClass}
                 {...form.register('tenant_slug')}
               />

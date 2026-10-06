@@ -74,27 +74,45 @@ export function normalizeCreditNoteLines(raw: unknown): CreditNoteLine[] {
     .filter((l): l is CreditNoteLine => Boolean(l));
 }
 
+function humanCode(value?: string): string | undefined {
+  const trimmed = value?.trim();
+  if (!trimmed || isUuid(trimmed)) return undefined;
+  return trimmed;
+}
+
 export function normalizeCreditNote(raw: unknown): CreditNote | null {
   const r = asRecord(raw);
   if (!r) return null;
   const id = str(r.id);
   if (!id || !isUuid(id)) return null;
+  const credited = asRecord(r.credited_invoice) ?? asRecord(r.invoice) ?? asRecord(r.source_invoice);
+  const party = asRecord(r.party) ?? asRecord(r.customer);
+  const creditedInvoiceId =
+    str(r.credited_invoice_id) ?? str(credited?.id) ?? str(credited?.invoice_id);
+  const creditedInvoiceNumber =
+    humanCode(str(r.credited_invoice_number)) ??
+    humanCode(str(r.credited_invoice_no)) ??
+    humanCode(str(credited?.invoice_number)) ??
+    humanCode(str(credited?.number));
+  const creditNoteNumber =
+    humanCode(str(r.credit_note_number)) ??
+    humanCode(str(r.credit_note_no)) ??
+    humanCode(str(r.invoice_number)) ??
+    humanCode(str(r.number));
   return {
     id,
-    invoice_number: str(r.invoice_number) ?? str(r.invoice_no) ?? str(r.number),
-    credit_note_number:
-      str(r.credit_note_number) ??
-      str(r.credit_note_no) ??
-      str(r.invoice_number) ??
-      str(r.number),
+    invoice_number: creditNoteNumber ?? humanCode(str(r.invoice_number) ?? str(r.invoice_no) ?? str(r.number)),
+    credit_note_number: creditNoteNumber,
     status: normalizeStatus(r.status),
     invoice_type: normalizeType(r.invoice_type),
-    credited_invoice_id: str(r.credited_invoice_id),
-    party_id: str(r.party_id),
+    credited_invoice_id: creditedInvoiceId,
+    credited_invoice_number: creditedInvoiceNumber,
+    party_id: str(r.party_id) ?? str(party?.id),
     party_name:
-      str(r.party_name) ??
-      str(r.customer_name) ??
-      str(asRecord(r.party)?.name),
+      humanCode(str(r.party_name)) ??
+      humanCode(str(r.customer_name)) ??
+      humanCode(str(party?.name)) ??
+      humanCode(str(credited?.party_name)),
     company_id: str(r.company_id),
     job_id: str(r.job_id),
     branch_id: str(r.branch_id),
@@ -125,8 +143,8 @@ export function normalizeCreditNotes(raw: unknown): CreditNote[] {
 
 export function creditNoteDisplayNumber(cn: CreditNote): string {
   return (
-    cn.credit_note_number ||
-    cn.invoice_number ||
+    humanCode(cn.credit_note_number) ||
+    humanCode(cn.invoice_number) ||
     cn.id.slice(0, 8).toUpperCase()
   );
 }

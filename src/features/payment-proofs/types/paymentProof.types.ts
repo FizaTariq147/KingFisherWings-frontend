@@ -2,6 +2,7 @@ export type PaymentProofStatus =
   | 'PENDING'
   | 'SUBMITTED'
   | 'ACKNOWLEDGED'
+  | 'APPROVED'
   | 'REJECTED'
   | string;
 
@@ -35,6 +36,12 @@ export interface UploadPaymentProofDto {
 
 export interface ReviewPaymentProofDto {
   review_notes?: string;
+}
+
+export interface ApprovePaymentProofDto {
+  review_notes?: string;
+  payment_method?: 'CASH' | 'BANK_TRANSFER' | 'CHEQUE' | 'CREDIT_CARD' | 'OTHER';
+  bank_account_id?: string;
 }
 
 export interface FinanceOpenItemsSummary {

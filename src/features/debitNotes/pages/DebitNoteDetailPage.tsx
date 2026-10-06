@@ -159,7 +159,7 @@ export default function DebitNoteDetailPage() {
                     <CardTitle>Details</CardTitle>
                   </CardHeader>
                   <dl className="grid grid-cols-1 gap-4 p-4 pt-0 sm:grid-cols-2 lg:grid-cols-3">
-                    <Field label="Party" value={debitNote.party_name || debitNote.party_id} />
+                    <Field label="Party" value={debitNote.party_name || '—'} />
                     <Field label="Currency" value={debitNote.currency_code} />
                     <Field label="Date" value={debitNote.invoice_date} />
                     <Field label="Job" value={debitNote.job_id} />
@@ -174,7 +174,8 @@ export default function DebitNoteDetailPage() {
                               navigate(`/invoices/${debitNote.credited_invoice_id}`)
                             }
                           >
-                            {debitNote.credited_invoice_id}
+                            {debitNote.credited_invoice_number ||
+                              debitNote.credited_invoice_id.slice(0, 8).toUpperCase()}
                           </button>
                         ) : (
                           '—'

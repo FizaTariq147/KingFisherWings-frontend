@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table';
+import { resolveInvoiceDisplayStatus } from '@/features/payment-proofs/utils/adjustInvoiceAmountsWithProofs';
 import {
   INVOICE_TYPE_LABELS,
   type InvoiceType,
@@ -22,6 +23,20 @@ interface InvoiceTableProps {
   onPage?: (page: number) => void;
   onView: (inv: Invoice) => void;
   emptyMessage?: string;
+}
+
+function rowPaymentView(inv: Invoice) {
+  const total = inv.total_amount;
+  const paid = inv.paid_amount ?? 0;
+  const remaining =
+    inv.outstanding_balance ??
+    (total != null ? Math.max(0, total - paid) : 0);
+  const displayStatus = resolveInvoiceDisplayStatus(inv.status, {
+    paidAmount: paid,
+    remainingAmount: remaining,
+    totalAmount: total,
+  });
+  return { paid, remaining, displayStatus };
 }
 
 export function InvoiceTable({
@@ -55,7 +70,9 @@ export function InvoiceTable({
               </TableCell>
             </TableRow>
           ) : (
-            invoices.map((inv) => (
+            invoices.map((inv) => {
+              const { paid, remaining, displayStatus } = rowPaymentView(inv);
+              return (
               <TableRow key={inv.id} className="cursor-pointer">
                 <TableCell>
                   <button
@@ -86,12 +103,19 @@ export function InvoiceTable({
                   {inv.total_amount != null
                     ? `${inv.currency_code} ${inv.total_amount.toLocaleString()}`
                     : '—'}
+                  <div className="text-xs text-[var(--color-neutral-500)]">
+                    Paid {inv.currency_code} {paid.toLocaleString()}
+                    {remaining > 0
+                      ? ` · Due ${remaining.toLocaleString()}`
+                      : ''}
+                  </div>
                 </TableCell>
                 <TableCell>
-                  <InvoiceStatusBadge status={inv.status} />
+                  <InvoiceStatusBadge status={displayStatus} />
                 </TableCell>
               </TableRow>
-            ))
+              );
+            })
           )}
         </TableBody>
       </Table>

@@ -35,6 +35,8 @@ export interface DebitNote {
   invoice_type?: DebitNoteInvoiceType | string;
   /** Original customer invoice being debited (API field name). */
   credited_invoice_id?: string;
+  /** Human invoice number for the debited customer invoice (not a UUID). */
+  credited_invoice_number?: string;
   party_id?: string;
   party_name?: string;
   company_id?: string;
