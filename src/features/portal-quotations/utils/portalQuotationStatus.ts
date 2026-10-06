@@ -67,9 +67,14 @@ export function applyPortalCustomerDecisionStatus(
   const current = normalizePortalQuoteStatus(detail.status);
   if (decision === 'reject') {
     if (isCustomerApprovedStatus(current) || current === 'CONVERTED') return detail;
+    // API stores DISAPPROVED; UI coerces to REJECTED.
     return { ...detail, status: 'REJECTED' };
   }
   if (isCustomerDisapprovedStatus(current) || current === 'EXPIRED') return detail;
+  // Accept may auto-create a job → CONVERTED.
+  if (current === 'CONVERTED' || detail.jobId || detail.convertedJobNumber) {
+    return { ...detail, status: 'CONVERTED' };
+  }
   return { ...detail, status: 'APPROVED' };
 }
 
@@ -126,10 +131,41 @@ export function canPortalCustomerRespondToQuote(
   status?: string,
   quote?: PortalQuotationListItem | PortalQuotationDetail,
 ): boolean {
+  const detail = quote as PortalQuotationDetail | undefined;
+  const actions = detail?.actions;
+  // Prefer GET action flags when present (accept OR reject still open).
+  if (actions) {
+    if (actions.can_accept === true || actions.can_reject === true) return true;
+    if (actions.can_accept === false && actions.can_reject === false) return false;
+  }
   const s = normalizePortalQuoteStatus(status);
   // Customer must not act on DRAFT / SUBMITTED / INTERNALLY_APPROVED enquiries.
   if (!canRespondCanonical(s)) return false;
   return true;
+}
+
+/** Accept button — prefers `actions.can_accept`. */
+export function canPortalCustomerAcceptQuote(
+  quote?: PortalQuotationListItem | PortalQuotationDetail | null,
+): boolean {
+  if (!quote) return false;
+  const detail = quote as PortalQuotationDetail;
+  if (typeof detail.actions?.can_accept === 'boolean') {
+    return detail.actions.can_accept;
+  }
+  return canPortalCustomerRespondToQuote(quote.status, quote);
+}
+
+/** Reject button — prefers `actions.can_reject`. */
+export function canPortalCustomerRejectQuote(
+  quote?: PortalQuotationListItem | PortalQuotationDetail | null,
+): boolean {
+  if (!quote) return false;
+  const detail = quote as PortalQuotationDetail;
+  if (typeof detail.actions?.can_reject === 'boolean') {
+    return detail.actions.can_reject;
+  }
+  return canPortalCustomerRespondToQuote(quote.status, quote);
 }
 
 export function portalQuoteTotalAmount(
@@ -184,12 +220,18 @@ export function portalQuoteStatusMessage(
   if (isCustomerApprovedStatus(s) || s === 'CONVERTED' || s === 'ACCEPTED') {
     const detail = quote as PortalQuotationDetail | undefined;
     const jt = String(detail?.jobType ?? detail?.raw?.job_type ?? '').toUpperCase();
+    if (detail?.jobId || detail?.convertedJobNumber || s === 'CONVERTED') {
+      if (jt.startsWith('AIR') || jt.startsWith('NVOCC') || usesModeBookingFormConvertFlow(jt)) {
+        return 'You approved this quotation — it is converted to a job. Complete the booking form below next.';
+      }
+      return 'You approved this quotation — it is converted to a job.';
+    }
     if (jt.startsWith('AIR') || jt.startsWith('NVOCC') || usesModeBookingFormConvertFlow(jt)) {
       return 'You approved this quotation. Complete the booking form below next.';
     }
     return 'You approved this quotation.';
   }
-  if (isCustomerDisapprovedStatus(s) || s === 'REJECTED') {
+  if (isCustomerDisapprovedStatus(s) || s === 'REJECTED' || s === 'DISAPPROVED') {
     return 'This quotation was rejected.';
   }
   if (s === 'EXPIRED') {
@@ -198,8 +240,15 @@ export function portalQuoteStatusMessage(
   return null;
 }
 
-export function canPortalCustomerCounterOffer(status?: string): boolean {
-  const s = normalizePortalQuoteStatus(status);
+export function canPortalCustomerCounterOffer(
+  status?: string,
+  quote?: PortalQuotationListItem | PortalQuotationDetail | null,
+): boolean {
+  const detail = quote as PortalQuotationDetail | undefined;
+  if (typeof detail?.actions?.can_counter_offer === 'boolean') {
+    return detail.actions.can_counter_offer;
+  }
+  const s = normalizePortalQuoteStatus(status ?? detail?.status);
   return s === 'SENT' || s === 'CUSTOMER_REVIEW' || s === 'NEGOTIATING';
 }
 

@@ -71,6 +71,22 @@ export interface QuotationApproval {
   approver_name?: string;
 }
 
+/** GET /quotations/:id (and portal) `actions` flags — server is source of truth. */
+export interface QuotationActions {
+  can_accept?: boolean;
+  can_reject?: boolean;
+  can_counter_offer?: boolean;
+  can_convert?: boolean;
+  can_send?: boolean;
+  can_revise_and_send?: boolean;
+  can_negotiation_accept?: boolean;
+  can_negotiation_reject?: boolean;
+  can_mark_won?: boolean;
+  can_mark_lost?: boolean;
+  /** Raw flags for forward-compat. */
+  raw?: Record<string, unknown>;
+}
+
 export interface Quotation {
   id: string;
   quotation_number?: string;
@@ -161,6 +177,7 @@ export interface Quotation {
   lines?: QuotationLine[];
   status_history?: QuotationStatusHistoryEntry[];
   approvals?: QuotationApproval[];
+  actions?: QuotationActions;
 }
 
 export type CreateQuotationDto = CreateQuotationFormValues;

@@ -43,14 +43,29 @@ export function buildPaymentProofUploadFields(
 
 /** Build multipart body for portal/vendor payment proof upload. */
 export function buildPaymentProofFormData(
-  file: File,
+  file: File | null | undefined,
   fields: Record<string, string | undefined>,
   fileField: string = 'file',
 ): FormData {
   const form = new FormData();
   appendFields(form, fields);
-  form.append(fileField, file, file.name);
+  if (file) form.append(fileField, file, file.name);
   return form;
+}
+
+/** Multipart fields for POST /portal/invoices/:id/payments. */
+export function buildPortalInvoicePaymentFields(dto: {
+  amount: number;
+  payment_date: string;
+  reference?: string;
+  notes?: string;
+}): Record<string, string | undefined> {
+  return {
+    amount: String(dto.amount),
+    payment_date: dto.payment_date,
+    ...(dto.reference?.trim() ? { reference_number: dto.reference.trim() } : {}),
+    ...(dto.notes?.trim() ? { notes: dto.notes.trim() } : {}),
+  };
 }
 
 function resolveApiBaseUrl(): string {
@@ -86,10 +101,12 @@ async function parseErrorMessage(res: Response, fallback: string): Promise<strin
  */
 export async function postPaymentProofMultipartFetch(options: {
   path: string;
-  file: File;
+  file?: File | null;
   fields: Record<string, string | undefined>;
   accessToken?: string | null;
   errorFactory?: (message: string, status: number) => Error;
+  /** Fallback when response has no message (portal payments vs proof upload). */
+  failureFallback?: string;
 }): Promise<unknown> {
   const base = resolveApiBaseUrl();
   const url = `${base}${options.path.startsWith('/') ? options.path : `/${options.path}`}`;
@@ -122,11 +139,12 @@ export async function postPaymentProofMultipartFetch(options: {
 
   const message = await parseErrorMessage(
     res,
-    res.status === 503
-      ? 'Payment proof storage temporarily unavailable.'
-      : res.status >= 500
-        ? 'Internal server error'
-        : 'Upload failed.',
+    options.failureFallback ??
+      (res.status === 503
+        ? 'Payment proof storage temporarily unavailable.'
+        : res.status >= 500
+          ? 'Internal server error'
+          : 'Upload failed.'),
   );
   throw makeError(message, res.status);
 }

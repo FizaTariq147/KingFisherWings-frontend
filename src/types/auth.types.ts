@@ -96,6 +96,11 @@ export interface AuthUser {
     submodule: string
     access: 'none' | 'read' | 'write'
   }>
+  /**
+   * Tenant allow-list from GET /auth/me (Super Admin Features → enabled_modules).
+   * Missing/undefined = all modules enabled.
+   */
+  enabledModules?: string[]
 }
 
 // Decoded JWT payload shape from NestJS backend

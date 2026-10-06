@@ -8,7 +8,7 @@ import {
   useQuotationNegotiation,
   useQuotationNegotiationActions,
 } from '../hooks/useQuotationNegotiation';
-import type { QuotationLine } from '../types/quotation.types';
+import type { QuotationActions, QuotationLine } from '../types/quotation.types';
 import type { NegotiationPricing, ReviseAndSendLineDto } from '../types/quotationExtended.types';
 import {
   canStaffRespondToCounter,
@@ -31,6 +31,8 @@ interface QuotationNegotiationPanelProps {
   /** Pricing from GET /quotations/:id when timeline omits it */
   pricingFromQuote?: NegotiationPricing | null;
   revenueTotal?: number;
+  /** GET /quotations/:id `actions` flags when present. */
+  actionsFlags?: QuotationActions | null;
   onUpdated?: () => void;
 }
 
@@ -105,6 +107,7 @@ export function QuotationNegotiationPanel({
   lines = [],
   pricingFromQuote,
   revenueTotal,
+  actionsFlags,
   onUpdated,
 }: QuotationNegotiationPanelProps) {
   const { hasPermission } = useAuth();
@@ -190,8 +193,18 @@ export function QuotationNegotiationPanel({
     negotiationClosed,
   );
   const canRespondToCounter =
-    canNegotiate && canStaffRespondToCounter(normalizedStatus, pendingCustomerTotal, negotiationClosed);
-  const canRevise = canNegotiate && canStaffReviseOffer(normalizedStatus, negotiationClosed);
+    canNegotiate &&
+    canStaffRespondToCounter(normalizedStatus, pendingCustomerTotal, negotiationClosed) &&
+    (actionsFlags?.can_negotiation_accept !== false ||
+      actionsFlags?.can_negotiation_reject !== false);
+  const canAcceptCounter =
+    canRespondToCounter && actionsFlags?.can_negotiation_accept !== false;
+  const canRejectCounter =
+    canRespondToCounter && actionsFlags?.can_negotiation_reject !== false;
+  const canRevise =
+    canNegotiate &&
+    canStaffReviseOffer(normalizedStatus, negotiationClosed) &&
+    actionsFlags?.can_revise_and_send !== false;
 
   const defaultTotalHint = useMemo(() => {
     const fromPricing = pricing?.tenantProposedTotal ?? pricing?.revenueTotal;
@@ -321,9 +334,9 @@ export function QuotationNegotiationPanel({
         <div className="rounded-md border border-[var(--color-secondary-200)] bg-[var(--color-secondary-50)]/40 p-3 space-y-3">
           <p className="text-sm font-medium">Respond to customer counter-offer</p>
           <p className="text-xs text-[var(--color-neutral-500)]">
-            Accept applies the customer&apos;s proposed total to revenue lines and marks the quote
-            won. Reject clears or continues negotiation. Revise-and-send (below) sends a new tenant
-            offer instead.
+            Accept applies the customer&apos;s proposed total and auto-converts to a job. Reject
+            clears or continues negotiation. Revise-and-send (below) sends a new tenant offer
+            (CUSTOMER_REVIEW). Staff mark-won / mark-lost are blocked.
           </p>
           {pendingCustomerTotal != null ? (
             <p className="text-sm">
@@ -353,40 +366,44 @@ export function QuotationNegotiationPanel({
             Terminal reject (close negotiation)
           </label>
           <div className="flex flex-wrap gap-2">
-            <Button
-              type="button"
-              size="sm"
-              disabled={actions.acceptCounterOffer.isPending}
-              onClick={() =>
-                void run(
-                  () =>
-                    actions.acceptCounterOffer.mutateAsync(
-                      acceptComments.trim() ? { comments: acceptComments.trim() } : {},
-                    ),
-                  'Counter-offer accepted. Customer total applied to revenue lines.',
-                )
-              }
-            >
-              {actions.acceptCounterOffer.isPending ? 'Accepting…' : 'Accept counter-offer'}
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant="danger"
-              disabled={!rejectMessage.trim() || actions.rejectCounterOffer.isPending}
-              onClick={() =>
-                void run(
-                  () =>
-                    actions.rejectCounterOffer.mutateAsync({
-                      message: rejectMessage.trim(),
-                      terminal: terminalReject,
-                    }),
-                  terminalReject ? 'Counter-offer rejected (terminal).' : 'Counter-offer rejected.',
-                )
-              }
-            >
-              {actions.rejectCounterOffer.isPending ? 'Rejecting…' : 'Reject counter-offer'}
-            </Button>
+            {canAcceptCounter ? (
+              <Button
+                type="button"
+                size="sm"
+                disabled={actions.acceptCounterOffer.isPending}
+                onClick={() =>
+                  void run(
+                    () =>
+                      actions.acceptCounterOffer.mutateAsync(
+                        acceptComments.trim() ? { comments: acceptComments.trim() } : {},
+                      ),
+                    'Counter-offer accepted — quotation converts to a job automatically.',
+                  )
+                }
+              >
+                {actions.acceptCounterOffer.isPending ? 'Accepting…' : 'Accept counter-offer'}
+              </Button>
+            ) : null}
+            {canRejectCounter ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="danger"
+                disabled={!rejectMessage.trim() || actions.rejectCounterOffer.isPending}
+                onClick={() =>
+                  void run(
+                    () =>
+                      actions.rejectCounterOffer.mutateAsync({
+                        message: rejectMessage.trim(),
+                        terminal: terminalReject,
+                      }),
+                    terminalReject ? 'Counter-offer rejected (terminal).' : 'Counter-offer rejected.',
+                  )
+                }
+              >
+                {actions.rejectCounterOffer.isPending ? 'Rejecting…' : 'Reject counter-offer'}
+              </Button>
+            ) : null}
           </div>
         </div>
       ) : null}

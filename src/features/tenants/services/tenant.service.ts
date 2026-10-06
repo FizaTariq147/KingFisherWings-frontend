@@ -24,6 +24,7 @@ import type {
   TenantListParams,
   TenantStatistics,
   UpdateTenantDto,
+  UpdateTenantFeaturesDto,
 } from '../types/tenant.types';
 
 export interface TenantListResult {
@@ -152,6 +153,30 @@ export const tenantService = {
       prepareTenantPayload(dto, { mode: 'update' }),
     );
     return normalizeTenant(res.data.data as unknown as Record<string, unknown>);
+  },
+
+  /**
+   * PATCH /tenants/{id}/features
+   * Sets quote_requests_bridge and/or enabled_modules (filters permission matrix & reports).
+   */
+  async updateFeatures(id: string, dto: UpdateTenantFeaturesDto): Promise<Tenant> {
+    if (!isUuid(id)) {
+      throw new Error('Invalid tenant id.');
+    }
+    const body: Record<string, unknown> = {};
+    if (dto.enabled_modules !== undefined) {
+      body.enabled_modules = dto.enabled_modules;
+    }
+    if (dto.quote_requests_bridge !== undefined) {
+      body.quote_requests_bridge = dto.quote_requests_bridge;
+    }
+    const res = await superAdminApiClient.patch<ApiEnvelope<Tenant>>(
+      TENANT_API.features(id),
+      body,
+    );
+    const payload = (res.data?.data ?? res.data) as unknown as Record<string, unknown>;
+    const tenant = normalizeTenant({ ...payload, id: payload.id || id });
+    return { ...tenant, id: tenant.id || id };
   },
 
   /** DELETE /tenants/{id} — Soft delete tenant. */

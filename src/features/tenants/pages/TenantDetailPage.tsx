@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { TenantConfirmModal } from '../components/TenantConfirmModal';
 import { TenantDetailSkeleton } from '../components/TenantDetailSkeleton';
+import { TenantFeaturesPanel } from '../components/TenantFeaturesPanel';
 import { TenantOverviewPanel } from '../components/TenantOverviewPanel';
 import { TenantStatusBadge } from '../components/TenantStatusBadge';
 import { useTenantConfirmState } from '../hooks/useTenantConfirmState';
@@ -304,6 +305,17 @@ export default function TenantDetailPage() {
             key: 'overview',
             label: 'Overview',
             content: <TenantOverviewPanel tenant={tenant} />,
+          },
+          {
+            key: 'features',
+            label: 'Features',
+            content: isDeleted ? (
+              <p className="text-sm text-[var(--color-neutral-500)]">
+                Restore this tenant before editing enabled modules.
+              </p>
+            ) : (
+              <TenantFeaturesPanel tenant={tenant} />
+            ),
           },
           {
             key: 'metrics',

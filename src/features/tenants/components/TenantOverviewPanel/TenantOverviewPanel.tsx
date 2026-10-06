@@ -132,6 +132,24 @@ export function TenantOverviewPanel({ tenant }: TenantOverviewPanelProps) {
           <DetailRow label="Storage limit" value={`${tenant.max_storage_gb} GB`} />
           <DetailRow label="Tenant status" value={tenant.is_active ? 'Active' : 'Inactive'} />
           <DetailRow label="Active flag" value={tenant.is_active ? 'Yes' : 'No'} />
+          <DetailRow
+            label="Enabled modules"
+            value={
+              tenant.enabled_modules?.length
+                ? tenant.enabled_modules.join(', ')
+                : 'All modules (unrestricted)'
+            }
+          />
+          <DetailRow
+            label="Quote requests bridge"
+            value={
+              tenant.quote_requests_bridge == null
+                ? '—'
+                : tenant.quote_requests_bridge
+                  ? 'On'
+                  : 'Off'
+            }
+          />
         </dl>
       </Card>
     </div>

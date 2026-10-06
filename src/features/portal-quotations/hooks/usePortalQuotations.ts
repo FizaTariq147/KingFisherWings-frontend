@@ -23,6 +23,7 @@ import type {
 import {
   applyPortalCustomerDecisionStatus,
 } from '../utils/portalQuotationStatus';
+import { isAwaitingCustomerDecision } from '@/features/quotations/utils/customerQuoteDecision';
 import type { ApiPeriodQuery } from '@/lib/apiPeriod';
 import { uiPeriodToApi, type UiDashboardPeriod } from '@/lib/apiPeriod';
 
@@ -85,11 +86,18 @@ async function syncPortalQuotationAfterDecision(
   decision: 'accept' | 'reject',
 ) {
   const closed = applyPortalCustomerDecisionStatus(quote, decision);
-  // Do not refetch list/detail here — live API often still returns NEGOTIATING after a
-  // successful reject/accept, which would wipe the updated badge.
+  // Optimistic cache for this device; then poll the API so other devices see the same status.
   patchPortalQuotationCaches(qc, scope, closed);
   void qc.invalidateQueries({ queryKey: portalQuotationKeys.summary(scope) });
   void qc.invalidateQueries({ queryKey: portalQuotationKeys.negotiation(scope, closed.id) });
+  // Delayed refetch: backend status often lags briefly after accept/reject/convert.
+  if (closed.id) {
+    window.setTimeout(() => {
+      void qc.invalidateQueries({ queryKey: portalQuotationKeys.detail(scope, closed.id) });
+      void qc.invalidateQueries({ queryKey: [...portalQuotationKeys.all(scope), 'list'] });
+      void qc.invalidateQueries({ queryKey: portalQuotationKeys.summary(scope) });
+    }, 2500);
+  }
 }
 
 /** World ports for quote booking — GET /portal/lookups/ports (fallback reference). */
@@ -209,6 +217,9 @@ export function usePortalQuotations(params: PortalQuotationListParams) {
     queryFn: () => portalQuotationsService.list(params),
     enabled: Boolean(accessToken) && scope !== 'anon',
     staleTime: 0,
+    // Keep list in sync across devices (approve/reject/convert on another session).
+    refetchInterval: 10_000,
+    refetchIntervalInBackground: false,
     placeholderData: keepPreviousData,
   });
 }
@@ -221,6 +232,18 @@ export function usePortalQuotation(id: string) {
     queryFn: () => portalQuotationsService.getById(id),
     enabled: Boolean(accessToken) && Boolean(id) && scope !== 'anon',
     staleTime: 0,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      // Poll while waiting for customer decision, or until convert/job appears after approve.
+      if (status && isAwaitingCustomerDecision(status)) return 5_000;
+      const raw = String(status ?? '').toUpperCase();
+      if (raw === 'APPROVED' || raw === 'WON' || raw === 'ACCEPTED') {
+        const jobId = query.state.data?.jobId;
+        if (!jobId) return 5_000;
+      }
+      return false;
+    },
+    refetchIntervalInBackground: false,
   });
 }
 
@@ -387,5 +410,31 @@ export function useUpdatePortalQuotationBookingForm(id: string) {
       qc.setQueryData(portalQuotationKeys.bookingForm(scope, id), form);
       void qc.invalidateQueries({ queryKey: portalQuotationKeys.bookingForm(scope, id) });
     },
+  });
+}
+
+/** POST …/compliance-form/documents/:kind (bookings or shipments). */
+export function useUploadPortalComplianceDocument(quotationId: string) {
+  return useMutation({
+    mutationFn: ({
+      kind,
+      file,
+      isAir,
+      jobId,
+      bookingId,
+      jobType,
+    }: {
+      kind: import('@/features/booking-documents/constants/bookingDocumentKinds').PortalBookingDocumentKind;
+      file: File;
+      isAir?: boolean;
+      jobId?: string;
+      bookingId?: string;
+      jobType?: string;
+    }) =>
+      portalQuotationsService.uploadComplianceDocument(
+        { quotationId, isAir, jobId, bookingId, jobType },
+        kind,
+        file,
+      ),
   });
 }

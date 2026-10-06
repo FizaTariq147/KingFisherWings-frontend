@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
+import {
+  staffBookingFormModeToApiMode,
+  type ModeBookingFormDocumentKind,
+} from '@/features/booking-documents/constants/bookingDocumentKinds';
 import { jobService } from '../services/job.service';
 import type { Job, ModeBookingForm, StaffBookingFormMode } from '../types/job.types';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
@@ -179,6 +183,18 @@ export function useStaffBookingFormActions(jobId: string, mode: StaffBookingForm
           }));
         }
         refresh();
+      },
+    }),
+    uploadDocument: useMutation({
+      mutationFn: ({ kind, file }: { kind: ModeBookingFormDocumentKind; file: File }) =>
+        jobService.uploadBookingFormDocument(
+          jobId,
+          staffBookingFormModeToApiMode(mode),
+          kind,
+          file,
+        ),
+      onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: key });
       },
     }),
     complete: useMutation({

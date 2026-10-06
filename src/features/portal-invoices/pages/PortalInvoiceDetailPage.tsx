@@ -22,9 +22,9 @@ import {
   usePortalInvoicePaymentStatus,
   usePortalInvoicePdfBlob,
   usePortalInvoiceStripeConfig,
-  useUploadPortalInvoicePaymentProof,
+  useRecordPortalInvoicePayment,
 } from '../hooks/usePortalInvoices';
-import { PaymentProofList, PaymentProofUploadForm } from '@/features/payment-proofs/components/PaymentProofPanels';
+import { PaymentProofList, PortalInvoicePaymentForm } from '@/features/payment-proofs/components/PaymentProofPanels';
 import { adjustInvoiceAmountsWithProofs } from '@/features/payment-proofs/utils/adjustInvoiceAmountsWithProofs';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 import {
@@ -41,7 +41,7 @@ export default function PortalInvoiceDetailPage() {
   const { data, isLoading, isError, error, refetch } = usePortalInvoice(id);
   const pdfBlob = usePortalInvoicePdfBlob();
   const { data: proofs = [] } = usePortalInvoicePaymentProofs(id);
-  const uploadProof = useUploadPortalInvoicePaymentProof(id);
+  const recordPayment = useRecordPortalInvoicePayment(id);
   const stripeConfig = usePortalInvoiceStripeConfig();
   const payInvoice = usePayPortalInvoice(id);
   const downloadProof = useDownloadPortalInvoiceProofFile();
@@ -239,8 +239,8 @@ export default function PortalInvoiceDetailPage() {
       </PortalAnimatedGrid>
       {amounts.includesPendingProofs ? (
         <p className="text-xs text-[var(--color-neutral-500)]">
-          Paid includes {amounts.pendingProofAmount} from payment proof(s) awaiting review.
-          Remaining balance is reduced by those claims.
+          Paid includes {amounts.pendingProofAmount} from payment proof(s) still awaiting staff
+          review (legacy proof upload). Prefer Record payment below to post immediately.
         </p>
       ) : null}
       {(onlinePayAvailable || payStarted) &&
@@ -304,7 +304,7 @@ export default function PortalInvoiceDetailPage() {
         )}
       </PortalPanel>
       <PortalPanel padded className="space-y-4">
-        <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Payment proofs</h2>
+        <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Payments &amp; proofs</h2>
         <PaymentProofList
           proofs={proofs}
           viewer="portal"
@@ -327,14 +327,20 @@ export default function PortalInvoiceDetailPage() {
               .finally(() => setDownloadingProofId(null));
           }}
         />
-        <PaymentProofUploadForm
-          disabled={uploadProof.isPending}
-          currencyCode={data.currencyCode}
-          remainingAmount={amounts.remainingAmount}
-          onUpload={async (file, dto) => {
-            await uploadProof.mutateAsync({ file, dto });
-          }}
-        />
+        {amounts.remainingAmount > 0 ? (
+          <PortalInvoicePaymentForm
+            disabled={recordPayment.isPending}
+            currencyCode={data.currencyCode}
+            remainingAmount={amounts.remainingAmount}
+            onRecord={async (file, dto) => {
+              await recordPayment.mutateAsync({ file, dto });
+            }}
+          />
+        ) : (
+          <p className="text-xs text-[var(--color-neutral-500)]">
+            This invoice is fully paid — no further payment needed.
+          </p>
+        )}
       </PortalPanel>
 
       <PdfReadyModal

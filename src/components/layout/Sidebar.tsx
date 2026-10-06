@@ -300,15 +300,62 @@ function SidebarBrand({
   );
 }
 
+/**
+ * matrixModule = Super Admin `enabled_modules` key (backend-validated).
+ * Valid: operations, sales, finance, masters, admin, hr, wms, transport,
+ * nvocc, documentation, support, logistics.
+ */
 const OPS_NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', path: '/dashboard', Icon: LayoutDashboard, permission: 'menu_dashboard' },
-  { label: 'Customers', path: '/customers', Icon: Users, permission: 'menu_customers' },
-  { label: 'Vendors', path: '/vendors', Icon: Truck, permission: 'menu_vendors' },
-  { label: 'Quotations', path: '/quotations', Icon: MessageSquare, permission: 'menu_quotations' },
-  { label: 'Management', path: '/management', Icon: Shapes, permission: 'menu_management' as PermissionKey },
-  { label: 'Air Export', path: '/jobs/air-export', Icon: Plane, permission: 'menu_jobs_air_export' },
-  { label: 'Sea Export', path: '/jobs/sea-export', Icon: Ship, permission: 'menu_jobs_sea_export' },
-  { label: 'Sea Import', path: '/jobs/sea-import', Icon: Ship, permission: 'menu_jobs_sea_import' },
+  {
+    label: 'Customers',
+    path: '/customers',
+    Icon: Users,
+    permission: 'menu_customers',
+    matrixModule: 'support',
+  },
+  {
+    label: 'Vendors',
+    path: '/vendors',
+    Icon: Truck,
+    permission: 'menu_vendors',
+    matrixModule: 'masters',
+  },
+  {
+    label: 'Quotations',
+    path: '/quotations',
+    Icon: MessageSquare,
+    permission: 'menu_quotations',
+    matrixModule: 'sales',
+  },
+  {
+    label: 'Management',
+    path: '/management',
+    Icon: Shapes,
+    permission: 'menu_management' as PermissionKey,
+    matrixModule: 'admin',
+  },
+  {
+    label: 'Air Export',
+    path: '/jobs/air-export',
+    Icon: Plane,
+    permission: 'menu_jobs_air_export',
+    matrixModule: 'operations',
+  },
+  {
+    label: 'Sea Export',
+    path: '/jobs/sea-export',
+    Icon: Ship,
+    permission: 'menu_jobs_sea_export',
+    matrixModule: 'operations',
+  },
+  {
+    label: 'Sea Import',
+    path: '/jobs/sea-import',
+    Icon: Ship,
+    permission: 'menu_jobs_sea_import',
+    matrixModule: 'operations',
+  },
   {
     label: 'Road Freight',
     path: '/jobs/road-freight',
@@ -320,6 +367,7 @@ const OPS_NAV_ITEMS: NavItem[] = [
       'menu_jobs_sea_import',
       'menu_documentation',
     ],
+    matrixModule: 'operations',
     activePrefix: '/jobs/road-freight',
   },
   {
@@ -333,11 +381,30 @@ const OPS_NAV_ITEMS: NavItem[] = [
       'menu_jobs_sea_import',
       'menu_documentation',
     ],
+    matrixModule: 'operations',
     activePrefix: '/customs-clearance',
   },
-  { label: 'NVOCC', path: '/nvocc', Icon: Building2, permission: 'menu_nvocc' },
-  { label: 'Documentation', path: '/documentation', Icon: FileText, permission: 'menu_documentation' },
-  { label: 'Transport', path: '/operations/transport-requests', Icon: Truck, permission: 'menu_documentation' },
+  {
+    label: 'NVOCC',
+    path: '/nvocc',
+    Icon: Building2,
+    permission: 'menu_nvocc',
+    matrixModule: 'nvocc',
+  },
+  {
+    label: 'Documentation',
+    path: '/documentation',
+    Icon: FileText,
+    permission: 'menu_documentation',
+    matrixModule: 'documentation',
+  },
+  {
+    label: 'Transport',
+    path: '/operations/transport-requests',
+    Icon: Truck,
+    permission: 'menu_documentation',
+    matrixModule: 'transport',
+  },
   {
     label: 'Barcode scan',
     path: '/jobs/barcode-scan',
@@ -349,16 +416,31 @@ const OPS_NAV_ITEMS: NavItem[] = [
       'menu_jobs_sea_import',
       'menu_documentation',
     ],
+    matrixModule: 'operations',
   },
-  { label: 'Finance', path: '/finance', Icon: Wallet, permission: 'menu_finance' },
+  {
+    label: 'Finance',
+    path: '/finance',
+    Icon: Wallet,
+    permission: 'menu_finance',
+    matrixModule: 'finance',
+  },
   {
     label: 'Accounts',
     path: '/accounts',
     Icon: DollarSign,
     permission: 'menu_accounts',
     permissionAny: ['menu_accounts', 'menu_finance'],
+    matrixModule: 'finance',
   },
-  { label: 'HR', path: '/hr', Icon: UserCircle, permission: 'menu_hr', matrixModule: 'hr', activePrefix: '/hr' },
+  {
+    label: 'HR',
+    path: '/hr',
+    Icon: UserCircle,
+    permission: 'menu_hr',
+    matrixModule: 'hr',
+    activePrefix: '/hr',
+  },
   {
     label: 'Warehouse',
     path: '/warehouse',
@@ -367,8 +449,20 @@ const OPS_NAV_ITEMS: NavItem[] = [
     matrixModule: 'wms',
     activePrefix: '/warehouse',
   },
-  { label: 'Reports', path: '/reports', Icon: BarChart3, permission: 'menu_reports' },
-  { label: 'Sales', path: '/sales', Icon: Percent, permission: 'menu_sales' as PermissionKey },
+  {
+    label: 'Reports',
+    path: '/reports',
+    Icon: BarChart3,
+    permission: 'menu_reports',
+    // No dedicated `reports` module key — hub tiles filter by family modules.
+  },
+  {
+    label: 'Sales',
+    path: '/sales',
+    Icon: Percent,
+    permission: 'menu_sales' as PermissionKey,
+    matrixModule: 'sales',
+  },
   { label: 'Settings', path: '/settings', Icon: Settings, permission: 'menu_settings' },
 ];
 
@@ -474,6 +568,10 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
     return NAV_GROUPS.map((group) => ({
       ...group,
       items: group.items.filter((item) => {
+        // Super Admin Features → enabled_modules (applies to Tenant Admin too).
+        if (item.matrixModule && authCtx && !authCtx.hasEnabledModule(item.matrixModule)) {
+          return false;
+        }
         if (isTenantAdmin) return true;
         if (item.matrixModule) {
           if (authCtx?.hasMatrixModule(item.matrixModule, 'see')) return true;

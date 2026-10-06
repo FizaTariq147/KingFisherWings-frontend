@@ -20,6 +20,7 @@ interface JobTableProps {
   meta?: PaginationMeta;
   onPage?: (page: number) => void;
   pendingId?: string | null;
+  emptyMessage?: string;
   onView: (j: Job) => void;
   onEdit: (j: Job) => void;
   onCancel: (j: Job) => void;
@@ -33,6 +34,7 @@ export function JobTable({
   meta,
   onPage,
   pendingId,
+  emptyMessage = 'No jobs found',
   onView,
   onEdit,
   onCancel,
@@ -60,7 +62,7 @@ export function JobTable({
           {jobs.length === 0 ? (
             <TableRow>
               <TableCell colSpan={9} className="text-center text-[var(--color-neutral-400)] py-10">
-                No jobs found
+                {emptyMessage}
               </TableCell>
             </TableRow>
           ) : (

@@ -4,6 +4,7 @@ export const TENANT_API = {
   statistics: '/tenants/statistics',
   syncPermissionsAll: '/tenants/sync-permissions',
   byId: (id: string) => `/tenants/${id}`,
+  features: (id: string) => `/tenants/${id}/features`,
   syncPermissions: (id: string) => `/tenants/${id}/sync-permissions`,
   restore: (id: string) => `/tenants/${id}/restore`,
   activate: (id: string) => `/tenants/${id}/activate`,

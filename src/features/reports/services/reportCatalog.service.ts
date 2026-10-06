@@ -42,6 +42,11 @@ function formatAxiosError(error: unknown): Error {
   if (status === 413) {
     return new Error('request entity too large');
   }
+  if (status === 403) {
+    return new Error(
+      'This report family is not allowed for your tenant modules or role permissions.',
+    );
+  }
   if (status) {
     const statusText = axiosErr.response?.statusText?.trim();
     return new Error(statusText || `Request failed (${status})`);

@@ -24,6 +24,10 @@ import {
   hasMatrixModuleAccess,
   type MatrixAccessLevel,
 } from '@/features/users/utils/matrixPermissionAccess'
+import {
+  isModuleEnabled,
+  pickEnabledModulesFromRecord,
+} from '@/features/tenants/utils/isModuleEnabled'
 import { bootstrapLocaleSession, clearLocaleSession } from '@/features/locale/bootstrap/localeBootstrap'
 import { pickPreferredCountryCode } from '@/store/locale/localeSlice'
 import { useAuthStore } from '@/store/authStore'
@@ -224,6 +228,11 @@ export interface AuthContextValue {
   hasAnyPermission: (...keys: PermissionKey[]) => boolean
   /** Access from JWT matrix keys (`{module}_module.see|read|write`, `{module}.view`, …). */
   hasMatrixModule:  (moduleKey: string, level?: MatrixAccessLevel) => boolean
+  /**
+   * Tenant `enabled_modules` allow-list from /auth/me (Super Admin Features).
+   * Missing list = all modules on. Applies to Tenant Admin too.
+   */
+  hasEnabledModule: (moduleKey: string) => boolean
   hasRole:          (roleSlug: string) => boolean
   logout:           () => Promise<void>
 }
@@ -332,6 +341,7 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     : undefined
 
   const warehouseFromMe = pickWarehouseSummariesFromMe(record)
+  const enabledModules = pickEnabledModulesFromRecord(record)
 
   return {
     id: id || email,
@@ -345,6 +355,7 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     product: (record.product as AuthUser['product']) || 'KingFisher Tech Gold',
     mustChangePassword,
     ...(matrixFromMe.summary.length ? { permissionMatrix: matrixFromMe.summary } : {}),
+    ...(enabledModules ? { enabledModules } : {}),
   }
 }
 
@@ -517,10 +528,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return keys.some((k) => user.permissions.includes(k))
   }, [user])
 
+  const hasEnabledModule = useCallback(
+    (moduleKey: string) => {
+      if (DEV_BYPASS_AUTH) return true
+      if (!user) return false
+      // Tenant Admin still respects Super Admin enabled_modules allow-list.
+      return isModuleEnabled(user.enabledModules, moduleKey)
+    },
+    [user],
+  )
+
   const hasMatrixModule = useCallback(
     (moduleKey: string, level: MatrixAccessLevel = 'see') => {
       if (DEV_BYPASS_AUTH) return true
       if (!user) return false
+      if (!isModuleEnabled(user.enabledModules, moduleKey)) return false
       if (isTenantUserManagerRole(user.role.slug) || isTenantUserManagerRole(user.role.name)) {
         return true
       }
@@ -551,9 +573,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     hasPermission,
     hasAnyPermission,
     hasMatrixModule,
+    hasEnabledModule,
     hasRole,
     logout,
-  }), [user, isLoading, hasPermission, hasAnyPermission, hasMatrixModule, hasRole, logout])
+  }), [user, isLoading, hasPermission, hasAnyPermission, hasMatrixModule, hasEnabledModule, hasRole, logout])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

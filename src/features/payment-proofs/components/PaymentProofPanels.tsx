@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { pickValidatedUploadFile, PAYMENT_PROOF_UPLOAD_OPTIONS } from '@/lib/fileUploadValidation';
-import type { PaymentProof, UploadPaymentProofDto } from '../types/paymentProof.types';
+import type {
+  PaymentProof,
+  RecordPortalInvoicePaymentDto,
+  UploadPaymentProofDto,
+} from '../types/paymentProof.types';
 import { Badge } from '@/components/ui/Badge';
 import { PaymentProofOpenButton } from './PaymentProofOpenButton';
 import type { PaymentProofViewer } from '../utils/openPaymentProofFile';
@@ -16,6 +20,7 @@ interface PaymentProofUploadFormProps {
   remainingAmount?: number;
 }
 
+/** Classic proof upload (file required) — vendor / legacy portal proof-only path. */
 export function PaymentProofUploadForm({
   onUpload,
   disabled,
@@ -142,6 +147,151 @@ export function PaymentProofUploadForm({
       {message ? <p className="text-xs text-[var(--color-success-700)]">{message}</p> : null}
       <Button type="button" size="sm" disabled={disabled || pending || !file} onClick={() => void submit()}>
         {pending ? 'Uploading…' : 'Upload proof'}
+      </Button>
+    </div>
+  );
+}
+
+interface PortalInvoicePaymentFormProps {
+  onRecord: (file: File | null, dto: RecordPortalInvoicePaymentDto) => Promise<void>;
+  disabled?: boolean;
+  currencyCode?: string;
+  remainingAmount?: number;
+}
+
+/**
+ * Portal customer payment: POST …/payments posts RECEIPT immediately.
+ * Proof file is optional; balance_due drops on success.
+ */
+export function PortalInvoicePaymentForm({
+  onRecord,
+  disabled,
+  currencyCode,
+  remainingAmount,
+}: PortalInvoicePaymentFormProps) {
+  const [file, setFile] = useState<File | null>(null);
+  const [amount, setAmount] = useState('');
+  const [paymentDate, setPaymentDate] = useState('');
+  const [reference, setReference] = useState('');
+  const [notes, setNotes] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
+
+  const submit = async () => {
+    setError(null);
+    setMessage(null);
+    const amountRaw = amount.trim();
+    if (!amountRaw) {
+      setError('Enter the amount paid.');
+      return;
+    }
+    const amountValue = Number(amountRaw);
+    if (!Number.isFinite(amountValue) || amountValue <= 0) {
+      setError('Amount must be a positive number.');
+      return;
+    }
+    if (
+      remainingAmount != null &&
+      Number.isFinite(remainingAmount) &&
+      amountValue > remainingAmount + 0.0001
+    ) {
+      setError(`Amount cannot exceed the remaining balance (${remainingAmount}).`);
+      return;
+    }
+    if (!paymentDate.trim()) {
+      setError('Payment date is required.');
+      return;
+    }
+    setPending(true);
+    try {
+      await onRecord(file, {
+        amount: amountValue,
+        payment_date: paymentDate.trim(),
+        ...(reference.trim() ? { reference: reference.trim() } : {}),
+        ...(notes.trim() ? { notes: notes.trim() } : {}),
+      });
+      const remainingAfter =
+        remainingAmount != null && Number.isFinite(remainingAmount)
+          ? Math.max(0, remainingAmount - amountValue)
+          : null;
+      setMessage(
+        remainingAfter != null
+          ? `Payment recorded for ${amountValue.toLocaleString()}. Balance due is now ${remainingAfter.toLocaleString()}${currencyCode ? ` ${currencyCode}` : ''}.`
+          : 'Payment recorded. Balance due has been updated.',
+      );
+      setFile(null);
+      setAmount('');
+      setPaymentDate('');
+      setReference('');
+      setNotes('');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not record payment.');
+    } finally {
+      setPending(false);
+    }
+  };
+
+  return (
+    <div className="space-y-3 rounded-md border border-[var(--color-neutral-200)] p-3">
+      <p className="text-sm font-medium text-[var(--color-neutral-800)]">Record payment</p>
+      <p className="text-xs text-[var(--color-neutral-500)]">
+        Records your payment and updates the invoice balance immediately
+        {remainingAmount != null && Number.isFinite(remainingAmount)
+          ? ` (remaining ${remainingAmount.toLocaleString()}${currencyCode ? ` ${currencyCode}` : ''})`
+          : ''}
+        . Attach a bank slip or receipt optionally.
+      </p>
+      <Input
+        type="file"
+        accept=".pdf,.png,.jpg,.jpeg,.webp"
+        onChange={(e) => {
+          const { file: picked, error: fileError } = pickValidatedUploadFile(
+            e.target.files,
+            PAYMENT_PROOF_UPLOAD_OPTIONS,
+          );
+          setFile(picked);
+          setError(fileError ?? null);
+          e.target.value = '';
+        }}
+      />
+      {file ? (
+        <p className="text-xs text-[var(--color-neutral-500)]">Attached: {file.name}</p>
+      ) : (
+        <p className="text-xs text-[var(--color-neutral-400)]">Proof file optional</p>
+      )}
+      <div className="grid gap-2 sm:grid-cols-2">
+        <Input
+          label="Amount paid"
+          placeholder="e.g. 100.00"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          required
+        />
+        <Input
+          label="Payment date"
+          type="date"
+          value={paymentDate}
+          onChange={(e) => setPaymentDate(e.target.value)}
+          required
+        />
+        <Input
+          placeholder="Bank reference"
+          value={reference}
+          onChange={(e) => setReference(e.target.value)}
+          className="sm:col-span-2"
+        />
+        <Input
+          placeholder="Notes (optional)"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          className="sm:col-span-2"
+        />
+      </div>
+      {error ? <p className="text-xs text-[var(--color-danger-600)]">{error}</p> : null}
+      {message ? <p className="text-xs text-[var(--color-success-700)]">{message}</p> : null}
+      <Button type="button" size="sm" disabled={disabled || pending} onClick={() => void submit()}>
+        {pending ? 'Recording…' : 'Record payment'}
       </Button>
     </div>
   );

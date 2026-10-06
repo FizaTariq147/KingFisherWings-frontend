@@ -35,9 +35,10 @@ export function UserPermissionMatrixSection({ userId }: UserPermissionMatrixSect
           <div>
             <CardTitle>Permissions matrix</CardTitle>
             <p className="mt-1 text-xs text-[var(--color-neutral-400)]">
-              None / Read / Read & Write per submodule. After saving, the user must sign in again so
-              the JWT picks up bridged classic permissions (e.g. wms.view). Operations submodule
-              grants still limit job list/create to those job types.
+              None / Read / Read & Write per submodule. The tree is filtered to this tenant&apos;s
+              enabled modules. After saving, the user must sign in again so the JWT picks up bridged
+              classic permissions (e.g. wms.view). Grants for disabled modules are rejected by the
+              API.
             </p>
           </div>
           <Button

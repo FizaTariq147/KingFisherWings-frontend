@@ -240,6 +240,36 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
       ) || undefined,
     packages: normalizePortalPackages(data.packages),
     negotiationPricing: normalizeNegotiationPricing(data),
+    actions: (() => {
+      const actionsRaw =
+        asRecord(data.actions) ??
+        asRecord(data.action_flags) ??
+        asRecord(data.actionFlags) ??
+        asRecord(data.available_actions);
+      if (!actionsRaw) return undefined;
+      const flag = (...keys: string[]): boolean | undefined => {
+        for (const key of keys) {
+          const v = actionsRaw[key];
+          if (typeof v === 'boolean') return v;
+          if (v === 'true' || v === 1 || v === '1') return true;
+          if (v === 'false' || v === 0 || v === '0') return false;
+        }
+        return undefined;
+      };
+      return {
+        can_accept: flag('can_accept', 'canAccept', 'accept'),
+        can_reject: flag('can_reject', 'canReject', 'reject'),
+        can_counter_offer: flag('can_counter_offer', 'canCounterOffer', 'counter_offer'),
+        can_convert: flag('can_convert', 'canConvert', 'convert'),
+        can_send: flag('can_send', 'canSend'),
+        can_revise_and_send: flag('can_revise_and_send', 'canReviseAndSend'),
+        can_negotiation_accept: flag('can_negotiation_accept', 'canNegotiationAccept'),
+        can_negotiation_reject: flag('can_negotiation_reject', 'canNegotiationReject'),
+        can_mark_won: flag('can_mark_won', 'canMarkWon') ?? false,
+        can_mark_lost: flag('can_mark_lost', 'canMarkLost') ?? false,
+        raw: actionsRaw,
+      };
+    })(),
     portalEstimateSnapshot: snapshotRaw
       ? {
           currencyCode:

@@ -138,6 +138,30 @@ export function useUploadPortalInvoicePaymentProof(invoiceId: string) {
   });
 }
 
+/** POST /portal/invoices/:id/payments — auto-posts RECEIPT; optional proof file. */
+export function useRecordPortalInvoicePayment(invoiceId: string) {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: ({
+      file,
+      dto,
+    }: {
+      file?: File | null;
+      dto: import('@/features/payment-proofs/types/paymentProof.types').RecordPortalInvoicePaymentDto;
+    }) => portalInvoicesService.recordPayment(invoiceId, dto, file),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: portalInvoiceKeys.paymentProofs(scope, invoiceId) });
+      void qc.invalidateQueries({ queryKey: portalInvoiceKeys.detail(scope, invoiceId) });
+      void qc.invalidateQueries({ queryKey: portalInvoiceKeys.openItems(scope) });
+      void qc.invalidateQueries({ queryKey: portalInvoiceKeys.all(scope) });
+      void qc.invalidateQueries({ queryKey: portalInvoiceKeys.paymentStatus(scope, invoiceId) });
+      void qc.invalidateQueries({ queryKey: ['portal', scope, 'credit'] });
+      void qc.invalidateQueries({ queryKey: ['portal', scope, 'payments'] });
+    },
+  });
+}
+
 export function usePayPortalInvoice(invoiceId: string) {
   const qc = useQueryClient();
   const scope = usePortalQueryScope();

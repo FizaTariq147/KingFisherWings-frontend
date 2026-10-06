@@ -10,6 +10,8 @@ import {
 } from '../hooks/usePortalQuotations';
 import type { PortalQuotationDetail } from '../types/portalQuotations.types';
 import {
+  canPortalCustomerAcceptQuote,
+  canPortalCustomerRejectQuote,
   canPortalCustomerRespondToQuote,
   formatPortalQuotationActionError,
   portalQuoteStatusMessage,
@@ -17,10 +19,18 @@ import {
 } from '../utils/portalQuotationStatus';
 import { usesModeBookingFormConvertFlow } from '@/features/quotations/utils/quotationStatus';
 
-function acceptSuccessMessage(quote: PortalQuotationDetail, isNegotiating: boolean, hasCounter: boolean): string {
+function acceptSuccessMessage(
+  quote: PortalQuotationDetail,
+  isNegotiating: boolean,
+  hasCounter: boolean,
+  result?: PortalQuotationDetail,
+): string {
   const jt = String(
     quote.jobType ?? (quote.raw as { job_type?: string } | undefined)?.job_type ?? '',
   ).toUpperCase();
+  const converted =
+    (result?.status || '').toUpperCase().replace(/\s+/g, '_') === 'CONVERTED' ||
+    Boolean(result?.jobId || result?.convertedJobNumber);
   if (jt.startsWith('NVOCC')) {
     return hasCounter && isNegotiating
       ? 'Approved at the forwarder’s offer. Complete the booking form below — Ops will finish the booking from your details.'
@@ -32,9 +42,19 @@ function acceptSuccessMessage(quote: PortalQuotationDetail, isNegotiating: boole
       : 'Quotation approved. Complete the air booking form below; Ops (admin / sales) will finish booking from your details.';
   }
   if (usesModeBookingFormConvertFlow(jt)) {
+    if (converted) {
+      return hasCounter && isNegotiating
+        ? 'Approved at the forwarder’s offer — converted to a job. Complete the booking form below next.'
+        : 'Quotation approved and converted to a job. Complete the booking form below next.';
+    }
     return hasCounter && isNegotiating
       ? 'Approved at the forwarder’s offer. Complete the booking form below — your quotation converts to a job after you submit it.'
       : 'Quotation approved. Complete the booking form below — your quotation converts to a job after you submit it.';
+  }
+  if (converted) {
+    return hasCounter && isNegotiating
+      ? 'Quotation approved at the forwarder’s offer and converted to a job.'
+      : 'Quotation approved and converted to a job.';
   }
   return hasCounter && isNegotiating
     ? 'Quotation approved at the forwarder’s offer (your counter was not applied).'
@@ -64,6 +84,8 @@ export function PortalQuotationDecisionPanel({
   const [confirmAccept, setConfirmAccept] = useState(false);
 
   const canRespond = canPortalCustomerRespondToQuote(quote.status, quote);
+  const canAccept = canPortalCustomerAcceptQuote(quote);
+  const canReject = canPortalCustomerRejectQuote(quote);
   const actionPending = acceptQuote.isPending || rejectQuote.isPending;
   const total = portalQuoteTotalAmount(quote);
   const currency = quote.currencyCode || 'AED';
@@ -81,13 +103,14 @@ export function PortalQuotationDecisionPanel({
     }
     void acceptQuote
       .mutateAsync(quote.id)
-      .then(() => {
+      .then((result) => {
         setConfirmAccept(false);
         onSuccess?.(
           acceptSuccessMessage(
             quote,
             isNegotiating,
             isNegotiating && customerCounter != null,
+            result,
           ),
         );
       })
@@ -129,34 +152,38 @@ export function PortalQuotationDecisionPanel({
 
   const actionButtons = (
     <div className="flex flex-wrap gap-2">
-      <Button
-        type="button"
-        size="sm"
-        disabled={actionPending}
-        onClick={runAccept}
-      >
-        <ThumbsUp size={14} aria-hidden="true" />
-        {acceptQuote.isPending
-          ? 'Approving…'
-          : confirmAccept
-            ? isNegotiating && customerCounter != null
-              ? 'Confirm: accept their offer'
-              : 'Confirm approve'
-            : 'Approve quote'}
-      </Button>
-      <Button
-        type="button"
-        size="sm"
-        variant="secondary"
-        disabled={actionPending}
-        onClick={() => {
-          setConfirmAccept(false);
-          setShowReject((v) => !v);
-        }}
-      >
-        <ThumbsDown size={14} aria-hidden="true" />
-        Reject
-      </Button>
+      {canAccept ? (
+        <Button
+          type="button"
+          size="sm"
+          disabled={actionPending}
+          onClick={runAccept}
+        >
+          <ThumbsUp size={14} aria-hidden="true" />
+          {acceptQuote.isPending
+            ? 'Approving…'
+            : confirmAccept
+              ? isNegotiating && customerCounter != null
+                ? 'Confirm: accept their offer'
+                : 'Confirm approve'
+              : 'Approve quote'}
+        </Button>
+      ) : null}
+      {canReject ? (
+        <Button
+          type="button"
+          size="sm"
+          variant="secondary"
+          disabled={actionPending}
+          onClick={() => {
+            setConfirmAccept(false);
+            setShowReject((v) => !v);
+          }}
+        >
+          <ThumbsDown size={14} aria-hidden="true" />
+          Reject
+        </Button>
+      ) : null}
     </div>
   );
 
@@ -205,7 +232,7 @@ export function PortalQuotationDecisionPanel({
         </p>
       ) : null}
 
-      {canRespond && showReject ? (
+      {canRespond && canReject && showReject ? (
         <div className="mt-4 space-y-3 border-t border-[var(--color-neutral-200)] pt-4">
           <p className="text-sm font-medium text-[var(--color-neutral-800)]">Reject this quotation</p>
           <label className="block text-sm">

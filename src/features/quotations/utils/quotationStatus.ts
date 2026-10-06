@@ -114,11 +114,17 @@ export function canStaffMarkCustomerDecision(status: string): boolean {
   return s === 'SENT' || s === 'CUSTOMER_REVIEW' || s === 'NEGOTIATING';
 }
 
-export function canConvertQuotationToJob(status: string, jobType?: string): boolean {
+export function canConvertQuotationToJob(
+  status: string,
+  jobType?: string,
+  actions?: { can_convert?: boolean } | null,
+): boolean {
   // NVOCC / Air: gated booking-form → invoice (no Convert button).
   if (usesGatedFreightQuoteFlow(jobType)) return false;
-  // Sea/Land/Road/Courier: customer portal booking form first — no manual Convert.
-  if (usesModeBookingFormConvertFlow(jobType)) return false;
+  // Prefer server GET actions flag when present.
+  if (actions && typeof actions.can_convert === 'boolean') {
+    return actions.can_convert;
+  }
   return coerceQuotationStatus(status) === 'APPROVED';
 }
 
@@ -142,10 +148,8 @@ export function usesGatedFreightQuoteFlow(jobType?: string): boolean {
 }
 
 /**
- * Sea FCL/LCL, Land, Road Freight, Courier, Warehouse, Customs Clearance: customer approve
- * keeps quotation APPROVED (no job yet). Convert runs after the booking form is completed
- * (customer portal submit and/or staff POST …/booking-form/complete). Staff mode booking
- * forms then load customer portal fields. Warehouse ops continue in WMS (ASN/GRN/GDO).
+ * Sea FCL/LCL, Land, Road Freight, Courier, Warehouse, Customs Clearance:
+ * customer approve converts quote → job; booking form / ops continue on the job.
  * Air / NVOCC stay on the gated invoice flow (usesGatedFreightQuoteFlow).
  */
 export function usesModeBookingFormConvertFlow(jobType?: string): boolean {
@@ -179,9 +183,9 @@ export function usesModeBookingFormConvertFlow(jobType?: string): boolean {
   return false;
 }
 
-/** True when customer approve must not run convert-to-job + draft invoice. */
+/** True when customer approve must not run convert-to-job + draft invoice (NVOCC / Air only). */
 export function skipsAutoConvertOnApprove(jobType?: string): boolean {
-  return usesGatedFreightQuoteFlow(jobType) || usesModeBookingFormConvertFlow(jobType);
+  return usesGatedFreightQuoteFlow(jobType);
 }
 
 /**

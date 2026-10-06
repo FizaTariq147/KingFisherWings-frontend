@@ -208,6 +208,8 @@ export interface PortalQuotationDetail extends PortalQuotationListItem {
   pdfReady?: boolean;
   portalEstimateSnapshot?: PortalEstimateSnapshot;
   negotiationPricing?: import('@/features/quotations/types/quotationExtended.types').NegotiationPricing;
+  /** GET /portal/quotations/:id action flags (accept/reject/counter/…). */
+  actions?: import('@/features/quotations/types/quotation.types').QuotationActions;
   lines?: Array<{
     id: string;
     description: string;

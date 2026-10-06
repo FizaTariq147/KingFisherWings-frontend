@@ -20,6 +20,8 @@ export interface PaymentProof {
   fileUrl?: string;
   submittedAt?: string;
   reviewedAt?: string;
+  /** When set, reject cancels the linked RECEIPT and restores invoice balance. */
+  linkedPaymentId?: string;
   raw?: Record<string, unknown>;
 }
 
@@ -32,6 +34,14 @@ export interface UploadPaymentProofDto {
   notes?: string;
   /** Optional; ISO currency from the open invoice. */
   currency_code?: string;
+}
+
+/** POST /portal/invoices/:id/payments — amount + payment_date required; file optional. */
+export interface RecordPortalInvoicePaymentDto {
+  amount: number;
+  payment_date: string;
+  reference?: string;
+  notes?: string;
 }
 
 export interface ReviewPaymentProofDto {

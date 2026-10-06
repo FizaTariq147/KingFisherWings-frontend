@@ -52,6 +52,15 @@ export function normalizePaymentProof(raw: unknown): PaymentProof | null {
       ) || undefined,
     submittedAt: pickString(record.submitted_at, record.created_at, record.submittedAt) || undefined,
     reviewedAt: pickString(record.reviewed_at, record.acknowledged_at, record.reviewedAt) || undefined,
+    linkedPaymentId:
+      pickString(
+        record.linked_payment_id,
+        record.linkedPaymentId,
+        record.payment_id,
+        record.paymentId,
+        record.gl_payment_id,
+        record.glPaymentId,
+      ) || undefined,
     raw: record,
   };
 }

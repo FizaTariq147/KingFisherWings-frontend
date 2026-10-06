@@ -169,6 +169,16 @@ export default function JobListPage() {
             meta={meta}
             onPage={setPage}
             pendingId={pendingId}
+            emptyMessage={
+              !debouncedSearch.trim() &&
+              !status &&
+              !jobType &&
+              !fromDate &&
+              !toDate &&
+              !mastersOnly
+                ? 'No jobs visible yet. Ops lists stay empty until a customer has at least one converted quote.'
+                : 'No jobs found'
+            }
             onView={(j) => navigate(`${prefix}/${j.id}`)}
             onEdit={(j) => navigate(`${prefix}/${j.id}/edit`)}
             onCancel={(j) => requestConfirm('cancel', j)}

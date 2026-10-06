@@ -147,7 +147,7 @@ export function QuotationActionMenu({
           )}
           {status === 'SENT' ? (
             <span className="px-3 py-1.5 text-[11px] text-[var(--color-neutral-400)] block">
-              Use detail page for Won / Lost
+              Convert / negotiate on detail page
             </span>
           ) : null}
         </>

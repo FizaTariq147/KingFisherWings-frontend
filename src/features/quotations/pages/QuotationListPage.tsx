@@ -227,6 +227,15 @@ export default function QuotationListPage() {
               meta={meta}
               onPage={setPage}
               pendingActionId={pendingActionId}
+              emptyMessage={
+                !debouncedSearch.trim() &&
+                status === 'all' &&
+                jobType === 'all' &&
+                !fromDate &&
+                !toDate
+                  ? 'No quotations visible yet. Ops lists stay empty until a customer has at least one converted quote.'
+                  : 'No quotations found'
+              }
               onView={(q) => navigate(`/quotations/${q.id}`)}
               onEdit={(q) => navigate(`/quotations/${q.id}/edit`)}
               onDuplicate={(q) => requestConfirm('duplicate', q)}

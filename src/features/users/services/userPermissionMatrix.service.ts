@@ -4,6 +4,7 @@ import { ROLE_API, USER_API } from '../api/user.api';
 import type {
   PermissionMatrix,
   RoleListResult,
+  RolePresetsResult,
   UpdatePermissionMatrixDto,
   UpdateUserPermissionsDto,
   UserPermissionAssignment,
@@ -12,6 +13,7 @@ import { isApiUnavailable } from '../utils/isApiUnavailable';
 import {
   normalizePermissionMatrix,
   normalizeRoleList,
+  normalizeRolePresets,
   normalizeUserPermissionAssignment,
 } from '../utils/normalizeUserPermissionMatrix';
 
@@ -30,6 +32,11 @@ function formatAxiosError(error: unknown): Error {
   const status = axiosErr.response?.status;
   if (status === 404 || status === 501) {
     return new Error('This permission API is not available yet.');
+  }
+  if (status === 403) {
+    return new Error(
+      'One or more grants target modules disabled for this tenant. Adjust enabled modules or remove those grants.',
+    );
   }
   return new Error(axiosErr.message || 'Request failed');
 }
@@ -104,6 +111,19 @@ export const userPermissionMatrixService = {
     } catch (error) {
       if (isApiUnavailable(error)) {
         return { available: false, roles: [] };
+      }
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /users/role-presets — filtered to tenant enabled_modules. */
+  async getRolePresets(): Promise<RolePresetsResult> {
+    try {
+      const res = await axiosInstance.get(USER_API.rolePresets);
+      return normalizeRolePresets(res.data, true);
+    } catch (error) {
+      if (isApiUnavailable(error)) {
+        return { available: false, presets: [] };
       }
       throw formatAxiosError(error);
     }

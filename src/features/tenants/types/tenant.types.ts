@@ -13,6 +13,19 @@ export interface Tenant extends CreateTenantFormValues {
   total_users?: number;
   total_branches?: number;
   storage_used_gb?: number;
+  /**
+   * Modules enabled for this tenant (GET /tenants/:id).
+   * Empty/omitted typically means all modules available.
+   */
+  enabled_modules?: string[];
+  /** Feature flag: quote requests bridge (PATCH /tenants/:id/features). */
+  quote_requests_bridge?: boolean;
+}
+
+/** PATCH /tenants/:id/features */
+export interface UpdateTenantFeaturesDto {
+  enabled_modules?: string[];
+  quote_requests_bridge?: boolean;
 }
 
 export interface PaginationMeta {

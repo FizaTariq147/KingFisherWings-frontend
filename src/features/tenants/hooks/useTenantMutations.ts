@@ -1,6 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { tenantService } from '../services/tenant.service';
-import type { CreateTenantDto, Tenant, UpdateTenantDto } from '../types/tenant.types';
+import type {
+  CreateTenantDto,
+  Tenant,
+  UpdateTenantDto,
+  UpdateTenantFeaturesDto,
+} from '../types/tenant.types';
 import { rememberDeletedTenant } from '../utils/deletedTenantsRegistry';
 import { tenantKeys } from './useTenants';
 
@@ -109,6 +114,22 @@ export function useSyncTenantPermissions() {
   return useMutation({
     mutationFn: (id: string) => tenantService.syncPermissions(id),
     onSuccess: (_data, id) => invalidate(id),
+  });
+}
+
+/** PATCH /tenants/:id/features — enabled_modules + quote_requests_bridge. */
+export function useUpdateTenantFeatures(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (dto: UpdateTenantFeaturesDto) => {
+      await tenantService.updateFeatures(id, dto);
+      // PATCH body may be sparse — refetch GET /tenants/:id for authoritative modules.
+      return tenantService.getById(id);
+    },
+    onSuccess: (tenant) => {
+      queryClient.setQueryData(tenantKeys.detail(id), tenant);
+      void queryClient.invalidateQueries({ queryKey: tenantKeys.all });
+    },
   });
 }
 
