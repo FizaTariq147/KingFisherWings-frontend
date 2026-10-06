@@ -5,7 +5,7 @@ import {
   type JobType,
   type QuotationStatus,
 } from '../constants/quotation.constants';
-import type { Quotation, QuotationLine } from '../types/quotation.types';
+import type { Quotation, QuotationActions, QuotationLine } from '../types/quotation.types';
 import { normalizeNegotiationPricing } from './normalizeQuotationExtended';
 import { coerceQuotationStatus, usesModeBookingFormConvertFlow } from './quotationStatus';
 import { resolveCustomerFacingQuoteStatus } from './customerQuoteDecision';
@@ -42,6 +42,40 @@ function num(value: unknown): number | undefined {
   if (value == null || value === '') return undefined;
   const n = Number(value);
   return Number.isFinite(n) ? n : undefined;
+}
+
+function normalizeQuotationActions(raw: unknown): QuotationActions | undefined {
+  const r = asRecord(raw);
+  if (!r) return undefined;
+  const flag = (...keys: string[]): boolean | undefined => {
+    for (const key of keys) {
+      const v = bool(r[key]);
+      if (v !== undefined) return v;
+    }
+    return undefined;
+  };
+  return {
+    can_accept: flag('can_accept', 'canAccept', 'accept'),
+    can_reject: flag('can_reject', 'canReject', 'reject'),
+    can_counter_offer: flag('can_counter_offer', 'canCounterOffer', 'counter_offer'),
+    can_convert: flag('can_convert', 'canConvert', 'convert_to_job', 'convert'),
+    can_send: flag('can_send', 'canSend', 'send'),
+    can_revise_and_send: flag('can_revise_and_send', 'canReviseAndSend', 'revise_and_send'),
+    can_negotiation_accept: flag(
+      'can_negotiation_accept',
+      'canNegotiationAccept',
+      'negotiation_accept',
+    ),
+    can_negotiation_reject: flag(
+      'can_negotiation_reject',
+      'canNegotiationReject',
+      'negotiation_reject',
+    ),
+    // Staff mark-won / mark-lost are blocked (400) — default false when absent.
+    can_mark_won: flag('can_mark_won', 'canMarkWon', 'mark_won') ?? false,
+    can_mark_lost: flag('can_mark_lost', 'canMarkLost', 'mark_lost') ?? false,
+    raw: r,
+  };
 }
 
 function bool(value: unknown): boolean | undefined {
@@ -321,6 +355,9 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
       ? (r.status_history as Quotation['status_history'])
       : undefined,
     approvals: Array.isArray(r.approvals) ? (r.approvals as Quotation['approvals']) : undefined,
+    actions: normalizeQuotationActions(
+      r.actions ?? r.action_flags ?? r.actionFlags ?? r.available_actions,
+    ),
   };
 }
 

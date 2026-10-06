@@ -44,7 +44,6 @@ import {
   canConvertQuotationToJob,
   canStartAirOpsJobFromQuote,
   canStaffInternallyApprove,
-  canStaffMarkCustomerDecision,
   canStaffSendToCustomer,
   coerceQuotationStatus,
   isQuotationDraftEditable,
@@ -292,9 +291,8 @@ export default function QuotationDetailPage() {
     };
   }, [linkedBooking, seaExportStage, status, bookingHref]);
 
-  // Customer Approved → auto job+invoice for **standard** modes only.
+  // Customer Approved → auto job+invoice for non-gated modes (incl. Sea/Land/Road/…).
   // NVOCC / Air: never auto-convert and never auto-create a job shell.
-  // Booking-form modes: convert only after customer portal booking form is complete.
   useEffect(() => {
     if (!quotation || !id) return;
     if (status !== 'APPROVED') return;
@@ -306,64 +304,6 @@ export default function QuotationDetailPage() {
       return;
     }
     if (actions.fulfillApproved.isPending || pending) return;
-
-    if (usesModeBookingFormConvertFlow(quotation.job_type)) {
-      if (quotation.job_id) return;
-      const formDone =
-        portalBookingQuery.data?.mark_complete === true ||
-        readPortalBookingFormDraft(id)?.mark_complete === true;
-      if (!formDone) {
-        setActionMessage(
-          'Approved — waiting for the customer to complete the portal booking form before converting to a job.',
-        );
-        return;
-      }
-      if (autoFulfillAttempted.current === id) return;
-      autoFulfillAttempted.current = id;
-      setActionError(null);
-      void actions.fulfillApproved
-        .mutateAsync()
-        .then((result) => {
-          const jobId =
-            result && typeof result === 'object' && 'job_id' in result
-              ? String((result as { job_id?: string }).job_id ?? '')
-              : '';
-          const invoiceId =
-            result && typeof result === 'object' && 'invoice_id' in result
-              ? String((result as { invoice_id?: string }).invoice_id ?? '')
-              : '';
-          if (jobId || invoiceId) {
-            setActionMessage(
-              invoiceId
-                ? 'Customer booking form received — job and draft invoice created.'
-                : 'Customer booking form received — quotation converted to job.',
-            );
-            if (jobId) {
-              navigate(
-                jobDetailPath({
-                  id: String(jobId),
-                  job_type: quotation.job_type,
-                }),
-              );
-            }
-          } else {
-            autoFulfillAttempted.current = null;
-            setActionMessage(
-              'Customer booking form is on file — convert will retry when you refresh.',
-            );
-          }
-          void refetch();
-        })
-        .catch((err) => {
-          autoFulfillAttempted.current = null;
-          setActionError(
-            getErrorMessage(err) ||
-              'Could not convert after customer booking form. Refresh once the form is submitted.',
-          );
-        });
-      return;
-    }
-
     if (quotation.job_id && quotation.invoice_id) return;
     if (autoFulfillAttempted.current === id) return;
 
@@ -399,9 +339,7 @@ export default function QuotationDetailPage() {
   }, [
     actions.fulfillApproved,
     id,
-    navigate,
     pending,
-    portalBookingQuery.data?.mark_complete,
     quotation,
     refetch,
     status,
@@ -529,24 +467,11 @@ export default function QuotationDetailPage() {
           { label: 'Reject', onClick: () => requestConfirm('reject', quotation), variant: 'danger' as const },
         ]
       : []),
-    ...(canStaffSendToCustomer(status)
+    ...((quotation.actions?.can_send === true ||
+      (quotation.actions?.can_send !== false && canStaffSendToCustomer(status)))
       ? [{ label: 'Send', onClick: () => requestConfirm('send', quotation), variant: 'primary' as const }]
       : []),
-    ...(canStaffMarkCustomerDecision(status)
-      ? [
-          {
-            label: 'Mark approved',
-            onClick: () => requestConfirm('mark-won', quotation),
-            variant: 'primary' as const,
-          },
-          {
-            label: 'Mark rejected',
-            onClick: () => requestConfirm('mark-lost', quotation),
-            variant: 'danger' as const,
-          },
-        ]
-      : []),
-    ...(canConvertQuotationToJob(status, quotation.job_type)
+    ...(canConvertQuotationToJob(status, quotation.job_type, quotation.actions)
       ? [
           {
             label: 'Convert to job',
@@ -819,6 +744,7 @@ export default function QuotationDetailPage() {
                 lines={lines}
                 pricingFromQuote={quotation.negotiation_pricing}
                 revenueTotal={quotation.revenue_total ?? quotation.total_amount}
+                actionsFlags={quotation.actions}
                 onUpdated={() => void refetch()}
               />
             ),

@@ -6,6 +6,8 @@ export const PORTAL_INVOICES_API = {
   detail: (id: string) => `/portal/invoices/${encodeURIComponent(id)}`,
   pdf: (id: string) => `/portal/invoices/${encodeURIComponent(id)}/pdf`,
   paymentProofs: (id: string) => `/portal/invoices/${encodeURIComponent(id)}/payment-proofs`,
+  /** POST multipart — posts RECEIPT immediately; optional proof file. */
+  payments: (id: string) => `/portal/invoices/${encodeURIComponent(id)}/payments`,
   pay: (id: string) => `/portal/invoices/${encodeURIComponent(id)}/pay`,
   checkout: (id: string) => `/portal/invoices/${encodeURIComponent(id)}/checkout`,
   paymentStatus: (id: string) => `/portal/invoices/${encodeURIComponent(id)}/payment-status`,

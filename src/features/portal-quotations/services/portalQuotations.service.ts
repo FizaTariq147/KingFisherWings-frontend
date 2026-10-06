@@ -41,7 +41,10 @@ import {
 } from '../utils/portalBookingFormStorage';
 import { portalMessagesService } from '@/features/portal-messages/services/portalMessages.service';
 import { isUuid } from '@/lib/isUuid';
-import { usesModeBookingFormConvertFlow } from '@/features/quotations/utils/quotationStatus';
+import {
+  skipsAutoConvertOnApprove,
+  usesModeBookingFormConvertFlow,
+} from '@/features/quotations/utils/quotationStatus';
 import {
   normalizePortalEstimate,
   normalizePortalServiceCatalog,
@@ -55,10 +58,26 @@ import { normalizeNegotiationTimeline } from '@/features/quotations/utils/normal
 import type { NegotiationTimeline } from '@/features/quotations/types/quotationExtended.types';
 
 /**
- * After portal booking form mark_complete: ask backend to convert quote → job.
- * Only the portal convert route — never call staff `/quotations/:id/convert-to-job`
- * with a portal token (returns "You do not have access to ROAD_FREIGHT jobs — Forbidden").
- * Staff QuotationList/Detail still convert via fulfillApproved / convertPendingAfterBookingForms.
+ * After customer approve: convert quote → job for non-gated modes (Sea/Land/Road/…).
+ * NVOCC / Air stay on gated booking/shipment accept flow (no convert here).
+ */
+async function tryConvertQuotationAfterCustomerApprove(opts: {
+  quotationId: string;
+  jobType?: string;
+}): Promise<boolean> {
+  if (skipsAutoConvertOnApprove(opts.jobType)) return false;
+  if (!opts.quotationId || !isUuid(opts.quotationId)) return false;
+  try {
+    await portalApiClient.post(PORTAL_QUOTATIONS_API.convertToJob(opts.quotationId), {});
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * After portal booking form mark_complete: ask backend to convert quote → job
+ * when approve-time convert did not already create the job.
  */
 async function tryConvertQuotationAfterBookingForm(opts: {
   quotationId: string;
@@ -237,6 +256,25 @@ export const portalQuotationsService = {
     } catch {
       /* keep prior */
     }
+
+    // Convert quote → job on customer approve (Sea/Land/Road/Courier/Warehouse/Customs/…).
+    // Gated NVOCC/Air skip this — they continue via booking/shipment accept + forms.
+    if (!jobId && !skipsAutoConvertOnApprove(jt)) {
+      const converted = await tryConvertQuotationAfterCustomerApprove({
+        quotationId: id,
+        jobType: jt,
+      });
+      if (converted) {
+        try {
+          fresh = await this.getById(id);
+          if (fresh.bookingId) bookingId = fresh.bookingId;
+          if (fresh.jobId) jobId = fresh.jobId;
+        } catch {
+          /* keep prior */
+        }
+      }
+    }
+
     const closed = applyPortalCustomerDecisionStatus(
       {
         ...fresh,
@@ -800,7 +838,7 @@ export const portalQuotationsService = {
       isAir?: boolean;
       jobType?: string;
     },
-    kind: 'commercial_invoice' | 'correspondence' | 'cod_form' | 'licence',
+    kind: import('@/features/booking-documents/constants/bookingDocumentKinds').PortalBookingDocumentKind,
     file: File,
   ): Promise<void> {
     const target = resolveComplianceTarget(opts);

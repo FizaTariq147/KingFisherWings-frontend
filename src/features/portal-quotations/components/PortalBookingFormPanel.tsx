@@ -6,7 +6,16 @@ import { getServerErrorMessage } from '@/lib/validation/mapApiErrors';
 import {
   usePortalQuotationBookingForm,
   useUpdatePortalQuotationBookingForm,
+  useUploadPortalComplianceDocument,
 } from '../hooks/usePortalQuotations';
+import { BookingDocumentUploadList } from '@/features/booking-documents/components/BookingDocumentUploadList';
+import {
+  BOOKING_DOCUMENT_KIND_LABELS,
+  MANDATORY_BOOKING_DOCUMENT_KINDS,
+  OPTIONAL_PORTAL_BOOKING_DOCUMENT_KINDS,
+  missingMandatoryBookingDocs,
+  type PortalBookingDocumentKind,
+} from '@/features/booking-documents/constants/bookingDocumentKinds';
 import type {
   PortalBookingFormUpsertDto,
   PortalQuotationDetail,
@@ -166,7 +175,7 @@ function getSteps(kind: PortalBookingFormKind): StepMeta[] {
       label: 'DOCUMENTS',
       eyebrow: 'SUPPORTING DOCUMENTS',
       title: 'Documents Checklist',
-      blurb: 'Indicate which supporting documents will be provided.',
+      blurb: 'These documents should be uploaded by you before submit.',
     },
     {
       id: 'agent',
@@ -868,6 +877,7 @@ export function PortalBookingFormPanel({
     jobType: quote.jobType,
   });
   const saveForm = useUpdatePortalQuotationBookingForm(quote.id);
+  const uploadDoc = useUploadPortalComplianceDocument(quote.id);
   const [form, setForm] = useState<FormUi>(emptyForm);
   // Forwarder (tenant) name — default agent line, replacing the old hardcoded value.
   const tenantName = usePortalAuthStore((s) => s.user?.tenantName);
@@ -876,7 +886,25 @@ export function PortalBookingFormPanel({
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [uploadedDocKinds, setUploadedDocKinds] = useState<Set<string>>(() => new Set());
+  const [uploadingKind, setUploadingKind] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+
+  // Customer uploads on Step 6 — portal compliance APIs for NVOCC bookings / Air shipments.
+  const jtUpper = String(quote.jobType ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  const usesPortalComplianceDocs =
+    isAir || jtUpper.startsWith('NVOCC') || Boolean(bookingId);
+  const portalDocKinds = useMemo(
+    () =>
+      [
+        ...MANDATORY_BOOKING_DOCUMENT_KINDS,
+        ...OPTIONAL_PORTAL_BOOKING_DOCUMENT_KINDS,
+      ] as PortalBookingDocumentKind[],
+    [],
+  );
 
   const steps = useMemo(() => getSteps(formKind), [formKind]);
   const step = steps[stepIndex] ?? steps[0];
@@ -1174,6 +1202,19 @@ export function PortalBookingFormPanel({
       const err = validateStep('voyage', form, formKind);
       if (err) {
         setError(err);
+        return;
+      }
+    }
+    if (complete) {
+      const missingDocs = missingMandatoryBookingDocs(uploadedDocKinds);
+      if (missingDocs.length) {
+        setError(
+          `Upload required documents before submit: ${missingDocs
+            .map((k) => BOOKING_DOCUMENT_KIND_LABELS[k])
+            .join(', ')}.`,
+        );
+        const docsIdx = steps.findIndex((x) => x.id === 'documents');
+        if (docsIdx >= 0) setStepIndex(docsIdx);
         return;
       }
     }
@@ -2384,38 +2425,57 @@ export function PortalBookingFormPanel({
         ) : null}
 
         {step.id === 'documents' ? (
-          <div className="grid gap-2 sm:grid-cols-2">
-            {(isWarehouse
-              ? ([
-                  ['attach_commercial_invoice', 'Commercial invoice'],
-                  ['attach_packing_list', 'Packing list'],
-                  ['attach_bl_awb_copy', 'BL / AWB copy'],
-                  ['attach_carnet', 'Carnet'],
-                  ['attach_vehicle_title', 'Vehicle title'],
-                  ['attach_msds', 'MSDS'],
-                  ['attach_dangerous_goods_declaration', 'DG declaration'],
-                  ['attach_health_veterinary', 'Health / veterinary'],
-                  ['attach_fda_moh', 'FDA / MOH'],
-                ] as const)
-              : ([
-                  ['attach_commercial_invoice', 'Commercial invoice'],
-                  ['attach_correspondence', 'Correspondence'],
-                  ['attach_cod_form', 'COD form'],
-                  ['attach_licence', 'Licence'],
-                ] as const)
-            ).map(([key, label]) => (
-              <label
-                key={key}
-                className="inline-flex items-center gap-2 rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
-              >
-                <input
-                  type="checkbox"
-                  checked={Boolean(form[key])}
-                  onChange={(e) => patch({ [key]: e.target.checked })}
-                />
-                {label}
-              </label>
-            ))}
+          <div className="space-y-3">
+            <p className="text-xs text-[var(--color-neutral-500)]">
+              Documents Checklist — upload each required file below
+              {usesPortalComplianceDocs
+                ? ' (correspondence and COD form are optional)'
+                : ''}
+              . Submit is blocked until all five mandatory documents are uploaded.
+            </p>
+            {!usesPortalComplianceDocs ? (
+              <p className="text-xs text-amber-800 rounded-md border border-amber-200 bg-amber-50 px-3 py-2">
+                File upload needs a linked booking or shipment. If upload fails, ask your forwarder
+                to link the booking, then return here to attach your documents.
+              </p>
+            ) : null}
+            <BookingDocumentUploadList
+              kinds={portalDocKinds}
+              uploadedKinds={uploadedDocKinds}
+              uploadingKind={uploadingKind}
+              disabled={saveForm.isPending || submitted}
+              requiredKinds={new Set(MANDATORY_BOOKING_DOCUMENT_KINDS)}
+              onUpload={async (kind, file) => {
+                setUploadingKind(kind);
+                try {
+                  await uploadDoc.mutateAsync({
+                    kind,
+                    file,
+                    isAir,
+                    jobId,
+                    bookingId,
+                    jobType: quote.jobType,
+                  });
+                  setUploadedDocKinds((prev) => new Set(prev).add(kind));
+                  // Keep legacy attach_* flags in sync for PUT form payload.
+                  if (kind === 'commercial_invoice') {
+                    patch({ attach_commercial_invoice: true });
+                  } else if (kind === 'licence') {
+                    patch({ attach_licence: true });
+                  } else if (kind === 'correspondence') {
+                    patch({ attach_correspondence: true });
+                  } else if (kind === 'cod_form') {
+                    patch({ attach_cod_form: true });
+                  } else if (kind === 'packing_list') {
+                    patch({ attach_packing_list: true });
+                  } else if (kind === 'bill_of_lading') {
+                    patch({ attach_bl_awb_copy: true });
+                  }
+                } finally {
+                  setUploadingKind(null);
+                }
+              }}
+            />
           </div>
         ) : null}
 

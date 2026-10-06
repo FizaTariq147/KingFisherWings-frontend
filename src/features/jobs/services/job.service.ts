@@ -1450,6 +1450,26 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.warehouseBookingFormComplete(id)));
   },
 
+  /**
+   * POST /jobs/:id/:mode/booking-form/documents/:kind
+   * Mandatory kinds: commercial_invoice, packing_list, bill_of_lading, licence, uat_tax_certificate.
+   */
+  async uploadBookingFormDocument(
+    id: string,
+    mode: import('@/features/booking-documents/constants/bookingDocumentKinds').ModeBookingFormApiMode,
+    kind: import('@/features/booking-documents/constants/bookingDocumentKinds').ModeBookingFormDocumentKind,
+    file: File,
+  ): Promise<unknown> {
+    assertId(id);
+    const form = new FormData();
+    form.append('file', file);
+    return request(() =>
+      axiosInstance.post(JOB_API.bookingFormDocument(id, mode, kind), form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }),
+    );
+  },
+
   async getCustomsClearanceBookingForm(id: string): Promise<ModeBookingForm> {
     assertId(id);
     return getModeBookingForm(JOB_API.customsClearanceBookingForm(id));

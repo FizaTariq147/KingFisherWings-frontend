@@ -27,7 +27,7 @@ export function PortalQuotationNegotiationPanel({
   quote,
   onSuccess,
 }: PortalQuotationNegotiationPanelProps) {
-  const canCounter = canPortalCustomerCounterOffer(quote.status);
+  const canCounter = canPortalCustomerCounterOffer(quote.status, quote);
   const showTimeline =
     canCounter || (quote.negotiationRound != null && quote.negotiationRound > 0);
   const { data: timeline, isLoading, isError, error, refetch } = usePortalQuotationNegotiation(

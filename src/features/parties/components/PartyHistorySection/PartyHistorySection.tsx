@@ -32,7 +32,8 @@ export function PartyHistorySection({ partyId }: PartyHistorySectionProps) {
         </div>
       ) : data.length === 0 ? (
         <p className="text-sm text-[var(--color-neutral-400)]">
-          No history entries yet for this party.
+          No history entries yet for this party. Ops history stays empty until the customer has at
+          least one converted quote.
         </p>
       ) : (
         <ul className="divide-y divide-[var(--color-neutral-100)]">

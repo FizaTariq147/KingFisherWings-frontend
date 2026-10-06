@@ -1059,31 +1059,30 @@ export const quotationService = {
 
   async markWon(id: string): Promise<ConvertToJobResult | Quotation> {
     assertId(id);
+    // Backend blocks staff mark-won (400). Use portal accept or negotiation accept → auto job.
     try {
       await postAction(QUOTATION_API.markWon(id));
       const quotation = await this.getById(id);
-      const { usesGatedFreightQuoteFlow, usesModeBookingFormConvertFlow } = await import(
-        '../utils/quotationStatus'
-      );
-      // NVOCC / Air: APPROVED only — never auto convert-to-job / never auto-create job shell.
+      const { usesGatedFreightQuoteFlow } = await import('../utils/quotationStatus');
       if (usesGatedFreightQuoteFlow(quotation.job_type)) {
-        return quotation;
-      }
-      // Sea/Land/Road/Courier: APPROVED only — customer fills portal booking form, then convert.
-      if (usesModeBookingFormConvertFlow(quotation.job_type)) {
         return quotation;
       }
       return await this.convertToJob(id);
     } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 400) {
+        throw new Error(
+          'Mark won is blocked for staff. The customer must accept the quote (or accept their counter-offer via Negotiation) to convert to a job.',
+        );
+      }
       throw formatAxiosError(error);
     }
   },
 
   /**
    * When portal already set APPROVED, staff ERP auto-creates job + draft invoice
-   * for **standard** modes only.
+   * for **standard + booking-form** modes.
    * NVOCC / Air: no-op (gated booking-form → send-invoice → convert on booking/job).
-   * Booking-form modes: convert only after the customer portal booking form is complete.
    */
   async fulfillApprovedQuotation(id: string): Promise<ConvertToJobResult | Quotation> {
     assertId(id);
@@ -1101,27 +1100,6 @@ export const quotationService = {
       return quotation;
     }
 
-    // Sea/Land/Road/Courier: wait for customer portal booking form, then convert.
-    if (usesModeBookingFormConvertFlow(quotation.job_type)) {
-      if (status === 'CONVERTED' || (quotation.job_id && isUuid(quotation.job_id))) {
-        if (quotation.job_id && !quotation.invoice_id) {
-          try {
-            const invoiceId = await ensureDraftInvoiceForJob(quotation.job_id);
-            return invoiceId ? { ...quotation, invoice_id: invoiceId } : quotation;
-          } catch {
-            return quotation;
-          }
-        }
-        return quotation;
-      }
-      if (status !== 'APPROVED') return quotation;
-      const formDone = await isCustomerPortalBookingFormComplete(quotation);
-      if (!formDone) return quotation;
-      const converted = await this.convertToJob(id, { afterCustomerBookingForm: true });
-      await syncPortalBookingFormAfterConvert(converted);
-      return converted;
-    }
-
     if (quotation.job_id || status === 'CONVERTED') {
       if (quotation.job_id && !quotation.invoice_id) {
         try {
@@ -1133,10 +1111,19 @@ export const quotationService = {
       }
       return quotation;
     }
-    if (!canConvertQuotationToJob(status, quotation.job_type)) {
+    if (
+      status !== 'APPROVED' &&
+      !canConvertQuotationToJob(status, quotation.job_type, quotation.actions)
+    ) {
       return quotation;
     }
-    return this.convertToJob(id);
+    const converted = await this.convertToJob(id, {
+      afterCustomerBookingForm: usesModeBookingFormConvertFlow(quotation.job_type),
+    });
+    if (usesModeBookingFormConvertFlow(quotation.job_type)) {
+      await syncPortalBookingFormAfterConvert(converted);
+    }
+    return converted;
   },
 
   /**
@@ -1348,9 +1335,16 @@ export const quotationService = {
 
   async markLost(id: string, dto: MarkLostDto): Promise<Quotation> {
     assertId(id);
+    // Backend blocks staff mark-lost (400). Customer reject → DISAPPROVED.
     try {
       return await postAction(QUOTATION_API.markLost(id), dto);
     } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 400) {
+        throw new Error(
+          'Mark lost is blocked for staff. Ask the customer to reject the quote, or use Reject on negotiation.',
+        );
+      }
       throw formatAxiosError(error);
     }
   },
@@ -1390,7 +1384,9 @@ export const quotationService = {
             `Quotation must be customer-approved before convert (current status: ${quotation.status}).`,
           );
         }
-      } else if (!canConvertQuotationToJob(quotation.status, quotation.job_type)) {
+      } else if (
+        !canConvertQuotationToJob(quotation.status, quotation.job_type, quotation.actions)
+      ) {
         throw new Error(
           usesGatedFreightQuoteFlow(quotation.job_type)
             ? `NVOCC/Air quotes do not convert here — continue Booking form → Send invoice on the gated flow (current status: ${quotation.status}).`

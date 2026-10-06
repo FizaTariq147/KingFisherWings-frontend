@@ -34,7 +34,7 @@ export interface UserPermissionMatrixEditorProps {
 export function UserPermissionMatrixEditor({
   initialGrants = EMPTY_GRANTS,
   onChange,
-  description = 'Module → submodule → None / Read / Read & Write. Loaded from GET /users/permission-matrix.',
+  description = 'Module → submodule → None / Read / Read & Write. Loaded from GET /users/permission-matrix (filtered to tenant enabled modules).',
   className,
 }: UserPermissionMatrixEditorProps) {
   const matrixQuery = usePermissionMatrix();

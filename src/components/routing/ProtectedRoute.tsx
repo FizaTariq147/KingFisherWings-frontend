@@ -12,6 +12,11 @@ interface ProtectedRouteProps {
   requireAnyPermission?: PermissionKey[]
   /** Matrix module key from GET /users/permission-matrix (e.g. `wms`). */
   requireMatrixModule?:  string
+  /**
+   * Tenant enabled_modules key from Super Admin Features (e.g. `quotations`).
+   * Checked even for Tenant Admin.
+   */
+  requireEnabledModule?: string
   requireRole?:          string
   /** Pass if any of these role slugs is enough (e.g. admin | tenant_admin). */
   requireAnyRole?:       string[]
@@ -22,10 +27,19 @@ export default function ProtectedRoute({
   requirePermissions,
   requireAnyPermission,
   requireMatrixModule,
+  requireEnabledModule,
   requireRole,
   requireAnyRole,
 }: ProtectedRouteProps) {
-  const { isAuthenticated, isLoading, hasPermission, hasAnyPermission, hasMatrixModule, hasRole } = useAuth()
+  const {
+    isAuthenticated,
+    isLoading,
+    hasPermission,
+    hasAnyPermission,
+    hasMatrixModule,
+    hasEnabledModule,
+    hasRole,
+  } = useAuth()
   const accessToken = useAuthStore((s) => s.accessToken)
   const storeAuthenticated = useAuthStore((s) => s.isAuthenticated && Boolean(s.accessToken))
   const storeUser = useAuthStore((s) => s.user)
@@ -54,8 +68,11 @@ export default function ProtectedRoute({
       ? !hasRole(requireRole)
       : false
 
+  const enabledModuleKey = requireEnabledModule || requireMatrixModule
+
   // ── Permission / role check
   const denied =
+    (enabledModuleKey && !hasEnabledModule(enabledModuleKey)) ||
     (requireMatrixModule && !hasMatrixModule(requireMatrixModule, 'see')) ||
     (requirePermissions   && !hasPermission(...requirePermissions))   ||
     (requireAnyPermission && !hasAnyPermission(...requireAnyPermission)) ||

@@ -25,6 +25,12 @@ import {
 import { useCustomerPortalBookingForm } from '@/features/portal-admin-inbox/hooks/usePortalAdminInbox';
 import type { PortalBookingFormMessagePayload } from '@/features/portal-quotations/utils/portalBookingFormStorage';
 import { quotationService } from '@/features/quotations/services/quotation.service';
+import { BookingDocumentUploadList } from '@/features/booking-documents/components/BookingDocumentUploadList';
+import {
+  BOOKING_DOCUMENT_KIND_LABELS,
+  MANDATORY_BOOKING_DOCUMENT_KINDS,
+  missingMandatoryBookingDocs,
+} from '@/features/booking-documents/constants/bookingDocumentKinds';
 import {
   staffBookingFormApiLabel,
   useStaffBookingForm,
@@ -614,7 +620,17 @@ function missingCustomsCompleteFields(form: FormUi): string[] {
 }
 
 /** Client-side mirror of backend `mark_complete` checks — avoids a bare 400. */
-function incompleteFormMessage(form: FormUi, mode: StaffBookingFormMode): string | null {
+function incompleteFormMessage(
+  form: FormUi,
+  mode: StaffBookingFormMode,
+  uploadedDocKinds: Iterable<string>,
+): string | null {
+  const missingDocs = missingMandatoryBookingDocs(uploadedDocKinds);
+  if (missingDocs.length) {
+    return `Upload required booking documents: ${missingDocs
+      .map((k) => BOOKING_DOCUMENT_KIND_LABELS[k])
+      .join(', ')}.`;
+  }
   if (mode === 'CUSTOMS_CLEARANCE') {
     const missing = missingCustomsCompleteFields(form);
     return missing.length ? `Customs clearance form incomplete: ${missing.join(', ')}.` : null;
@@ -802,7 +818,9 @@ export function ModeBookingFormPanel({
   mode: StaffBookingFormMode;
 }) {
   const query = useStaffBookingForm(jobId, mode);
-  const { save, complete } = useStaffBookingFormActions(jobId, mode);
+  const { save, complete, uploadDocument } = useStaffBookingFormActions(jobId, mode);
+  const [uploadedDocKinds, setUploadedDocKinds] = useState<Set<string>>(() => new Set());
+  const [uploadingKind, setUploadingKind] = useState<string | null>(null);
   const { data: containerTypes = [] } = useMasterOptions(
     'container-types',
     MASTER_PATHS['container-types'],
@@ -2391,9 +2409,47 @@ export function ModeBookingFormPanel({
 
       <Card className={sectionCardClass} padding="none">
         <CardHeader className={sectionHeaderClass}>
-          <CardTitle className={sectionTitleClass}>Attachments &amp; consent</CardTitle>
+          <CardTitle className={sectionTitleClass}>
+            Documents Checklist &amp; consent
+          </CardTitle>
         </CardHeader>
         <div className={`space-y-4 ${sectionPad}`}>
+          <div className="space-y-2">
+            <p className="text-xs text-[var(--color-neutral-500)]">
+              Documents Checklist (these documents should be uploaded by the customer). Ops may
+              upload here if the customer has not. Complete is blocked until all five are present.
+            </p>
+            <BookingDocumentUploadList
+              kinds={MANDATORY_BOOKING_DOCUMENT_KINDS}
+              uploadedKinds={uploadedDocKinds}
+              uploadingKind={uploadingKind}
+              disabled={readOnly || save.isPending || complete.isPending}
+              allRequired
+              onUpload={async (kind, file) => {
+                setUploadingKind(kind);
+                try {
+                  await uploadDocument.mutateAsync({
+                    kind: kind as (typeof MANDATORY_BOOKING_DOCUMENT_KINDS)[number],
+                    file,
+                  });
+                  setUploadedDocKinds((prev) => new Set(prev).add(kind));
+                  setForm((prev) => {
+                    const attaches = { ...prev.attaches };
+                    if (kind === 'commercial_invoice') attaches.attach_commercial_invoice = true;
+                    if (kind === 'packing_list') attaches.attach_packing_list = true;
+                    if (kind === 'bill_of_lading') attaches.attach_bl_awb_copy = true;
+                    if (kind === 'licence') {
+                      attaches.attach_licence = true;
+                      attaches.attach_permit = true;
+                    }
+                    return { ...prev, attaches };
+                  });
+                } finally {
+                  setUploadingKind(null);
+                }
+              }}
+            />
+          </div>
           <div className="flex flex-wrap gap-3 text-sm">
             {attachFlagsForMode(mode).map((a) => (
               <label key={a.key} className="inline-flex items-center gap-2">
@@ -2449,7 +2505,9 @@ export function ModeBookingFormPanel({
                 setMsg(null);
                 return;
               }
-              const incomplete = form.mark_complete ? incompleteFormMessage(form, mode) : null;
+              const incomplete = form.mark_complete
+                ? incompleteFormMessage(form, mode, uploadedDocKinds)
+                : null;
               if (incomplete) {
                 setErr(incomplete);
                 setMsg(null);
@@ -2490,7 +2548,7 @@ export function ModeBookingFormPanel({
                 setMsg(null);
                 return;
               }
-              const incomplete = incompleteFormMessage(form, mode);
+              const incomplete = incompleteFormMessage(form, mode, uploadedDocKinds);
               if (incomplete) {
                 setErr(incomplete);
                 setMsg(null);

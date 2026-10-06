@@ -3,10 +3,15 @@ import type { ApiPeriodQuery } from '@/lib/apiPeriod';
 import { periodQueryParams } from '@/lib/apiPeriod';
 import {
   buildPaymentProofUploadFields,
+  buildPortalInvoicePaymentFields,
   formatPaymentProofUploadError,
   postPaymentProofMultipartFetch,
 } from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
-import type { PaymentProof, UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
+import type {
+  PaymentProof,
+  RecordPortalInvoicePaymentDto,
+  UploadPaymentProofDto,
+} from '@/features/payment-proofs/types/paymentProof.types';
 import { normalizePaymentProof, normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
 import { formatPdfFilename, stripPdfExtension } from '@/features/files/utils/pdfFilename';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
@@ -174,6 +179,38 @@ export const portalInvoicesService = {
       const proof = normalizePaymentProof(data);
       if (!proof) throw new Error('Upload failed — server returned an unexpected response.');
       return proof;
+    } catch (error) {
+      throw formatPaymentProofUploadError(error);
+    }
+  },
+
+  /**
+   * POST /portal/invoices/:id/payments — records payment, posts RECEIPT immediately,
+   * optionally attaches a proof file. Invoice balance_due drops on success.
+   */
+  async recordPayment(
+    invoiceId: string,
+    dto: RecordPortalInvoicePaymentDto,
+    file?: File | null,
+  ): Promise<PaymentProof | null> {
+    if (!invoiceId?.trim()) throw new Error('Invoice id is required.');
+    if (!Number.isFinite(dto.amount) || dto.amount <= 0) {
+      throw new Error('Amount must be a positive number.');
+    }
+    if (!dto.payment_date?.trim()) {
+      throw new Error('Payment date is required.');
+    }
+    try {
+      const token = usePortalAuthStore.getState().accessToken;
+      const data = await postPaymentProofMultipartFetch({
+        path: PORTAL_INVOICES_API.payments(invoiceId),
+        file: file ?? null,
+        accessToken: token,
+        fields: buildPortalInvoicePaymentFields(dto),
+        errorFactory: (message, status) => new PortalApiError(message, status),
+        failureFallback: 'Could not record payment.',
+      });
+      return normalizePaymentProof(data);
     } catch (error) {
       throw formatPaymentProofUploadError(error);
     }

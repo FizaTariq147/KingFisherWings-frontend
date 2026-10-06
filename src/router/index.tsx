@@ -439,7 +439,12 @@ export const router = createBrowserRouter([
         children: [
           { path: '/dashboard', element: <DashboardPage /> },
           {
-            element: <ProtectedRoute requirePermissions={['menu_customers']} />,
+            element: (
+              <ProtectedRoute
+                requirePermissions={['menu_customers']}
+                requireEnabledModule="support"
+              />
+            ),
             children: [
               { path: '/customers', element: <CustomerServiceMenuPage /> },
               { path: '/customers/:id', element: <Placeholder title="Customer Profile" /> },
@@ -454,7 +459,10 @@ export const router = createBrowserRouter([
           },
           {
             element: (
-              <ProtectedRoute requireAnyPermission={['menu_vendors', 'menu_finance']} />
+              <ProtectedRoute
+                requireAnyPermission={['menu_vendors', 'menu_finance']}
+                requireEnabledModule="masters"
+              />
             ),
             children: [{ path: '/vendors', element: <VendorServiceMenuPage /> }],
           },
@@ -489,6 +497,7 @@ export const router = createBrowserRouter([
                   'menu_jobs_sea_export',
                   'menu_jobs_sea_import',
                 ]}
+                requireEnabledModule="operations"
               />
             ),
             children: [
@@ -533,7 +542,12 @@ export const router = createBrowserRouter([
             ],
           },
           {
-            element: <ProtectedRoute requirePermissions={['menu_documentation']} />,
+            element: (
+              <ProtectedRoute
+                requirePermissions={['menu_documentation']}
+                requireEnabledModule="documentation"
+              />
+            ),
             children: [
               { path: '/documentation', element: <DocumentationMenuPage /> },
               { path: '/documentation/boe-dashboard', element: <BoeDashboardPage /> },
@@ -558,7 +572,12 @@ export const router = createBrowserRouter([
             ],
           },
           {
-            element: <ProtectedRoute requirePermissions={['menu_quotations']} />,
+            element: (
+              <ProtectedRoute
+                requirePermissions={['menu_quotations']}
+                requireEnabledModule="sales"
+              />
+            ),
             children: [
               { path: '/quotations', element: <QuotationsMenuPage /> },
               { path: '/quotations/all', element: <QuotationListPage /> },
@@ -607,7 +626,12 @@ export const router = createBrowserRouter([
           },
 
           {
-            element: <ProtectedRoute requirePermissions={['menu_management']} />,
+            element: (
+              <ProtectedRoute
+                requirePermissions={['menu_management']}
+                requireEnabledModule="admin"
+              />
+            ),
             children: [
               { path: '/management', element: <ManagementMenuPage /> },
               {path: '/management/all-jobs-mis', element: <AllJobMisPage />},
@@ -621,7 +645,12 @@ export const router = createBrowserRouter([
             ],
           },
           {
-            element: <ProtectedRoute requirePermissions={['menu_nvocc']} />,
+            element: (
+              <ProtectedRoute
+                requirePermissions={['menu_nvocc']}
+                requireEnabledModule="nvocc"
+              />
+            ),
             children: [
               { path: '/nvocc', element: <NvoccMenuPage /> },
               { path: '/nvocc/all-jobs', element: <AllJobsPage /> },
@@ -738,7 +767,12 @@ export const router = createBrowserRouter([
             children: [{ path: '/vendor-admin/disputes', element: <VendorAdminDisputesPage /> }],
           },
           {
-            element: <ProtectedRoute requirePermissions={['menu_sales']} />,
+            element: (
+              <ProtectedRoute
+                requirePermissions={['menu_sales']}
+                requireEnabledModule="sales"
+              />
+            ),
             children: [
               { path: '/sales', element: <SalesMenuPage /> },
               {path: '/sales/call-sheet', element: <CrmCallLogsPage />},
@@ -763,7 +797,12 @@ export const router = createBrowserRouter([
 
 
           {
-            element: <ProtectedRoute requirePermissions={['menu_finance']} />,
+            element: (
+              <ProtectedRoute
+                requirePermissions={['menu_finance']}
+                requireEnabledModule="finance"
+              />
+            ),
             children: [
               { path: '/finance', element: <FinanceMenuPage /> },
               { path: '/invoices', element: <InvoiceListPage /> },
@@ -792,7 +831,10 @@ export const router = createBrowserRouter([
           },
           {
             element: (
-              <ProtectedRoute requireAnyPermission={['menu_accounts', 'menu_finance']} />
+              <ProtectedRoute
+                requireAnyPermission={['menu_accounts', 'menu_finance']}
+                requireEnabledModule="finance"
+              />
             ),
             children: [
               { path: '/accounts', element: <AccountsMenuPage /> },

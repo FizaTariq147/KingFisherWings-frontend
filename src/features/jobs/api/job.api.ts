@@ -38,6 +38,9 @@ export const JOB_API = {
   seaFclBookingFormComplete: (id: string) => `/jobs/${id}/sea-fcl/booking-form/complete`,
   seaLclBookingForm: (id: string) => `/jobs/${id}/sea-lcl/booking-form`,
   seaLclBookingFormComplete: (id: string) => `/jobs/${id}/sea-lcl/booking-form/complete`,
+  /** POST multipart — mode: sea-fcl|sea-lcl|land|road-freight|courier|customs-clearance|warehouse */
+  bookingFormDocument: (id: string, mode: string, kind: string) =>
+    `/jobs/${encodeURIComponent(id)}/${encodeURIComponent(mode)}/booking-form/documents/${encodeURIComponent(kind)}`,
   submitSi: (id: string) => `/jobs/${id}/sea-fcl-details/si-submission`,
   submitLclSi: (id: string) => `/jobs/${id}/sea-lcl-details/si-submission`,
   submitVgm: (id: string) => `/jobs/${id}/sea-fcl-details/vgm-submission`,

@@ -114,6 +114,33 @@ function pickDeletedAt(raw: Record<string, unknown>): string | null {
   return null;
 }
 
+function pickEnabledModules(raw: Record<string, unknown>): string[] | undefined {
+  const value = raw.enabled_modules ?? raw.enabledModules;
+  if (!Array.isArray(value)) return undefined;
+  const modules = value
+    .map((item) => {
+      if (typeof item === 'string') return item.trim();
+      const record = asRecord(item);
+      if (!record) return '';
+      return coerceStringField(record.key ?? record.module ?? record.code ?? record.name);
+    })
+    .filter(Boolean);
+  return modules;
+}
+
+function pickQuoteRequestsBridge(raw: Record<string, unknown>): boolean | undefined {
+  const features = asRecord(raw.features) || asRecord(raw.feature_flags) || asRecord(raw.featureFlags);
+  const value =
+    raw.quote_requests_bridge ??
+    raw.quoteRequestsBridge ??
+    features?.quote_requests_bridge ??
+    features?.quoteRequestsBridge;
+  if (typeof value === 'boolean') return value;
+  if (value === 'true' || value === 1 || value === '1') return true;
+  if (value === 'false' || value === 0 || value === '0') return false;
+  return undefined;
+}
+
 function coerceIsActive(raw: Record<string, unknown>): boolean {
   const flag = raw.is_active ?? raw.isActive;
   if (typeof flag === 'boolean') return flag;
@@ -162,6 +189,8 @@ export function normalizeTenant(raw: Record<string, unknown>): Tenant {
     storage_used_gb: coerceOptionalNumber(
       raw.storage_used_gb ?? raw.storage_usage_gb ?? raw.used_storage_gb,
     ),
+    enabled_modules: pickEnabledModules(raw),
+    quote_requests_bridge: pickQuoteRequestsBridge(raw),
   };
 }
 

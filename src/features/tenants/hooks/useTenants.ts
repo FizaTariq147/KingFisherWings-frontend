@@ -42,6 +42,7 @@ export function useTenantStatistics() {
 export {
   useCreateTenant,
   useUpdateTenant,
+  useUpdateTenantFeatures,
   useActivateTenant,
   useDeactivateTenant,
   useDeleteTenant,
