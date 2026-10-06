@@ -3,6 +3,7 @@ import type { ApiEnvelope } from '@/lib/apiEnvelope';
 import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
 import { CREDIT_NOTE_API } from '../api/creditNote.api';
+import { enrichCreditNotesDisplay } from '../utils/enrichCreditNoteDisplay';
 import {
   normalizeCreditNote,
   normalizeCreditNotes,
@@ -107,7 +108,7 @@ export const creditNoteService = {
         }),
       );
       const { items, meta } = unwrapList(res.data);
-      const creditNotes = normalizeCreditNotes(items);
+      const creditNotes = await enrichCreditNotesDisplay(normalizeCreditNotes(items));
       return { creditNotes, meta: normalizeMeta(meta, creditNotes.length, params) };
     } catch (error) {
       throw formatAxiosError(error);
@@ -122,7 +123,8 @@ export const creditNoteService = {
       );
       const creditNote = normalizeCreditNote(unwrapEntity(res.data));
       if (!creditNote) throw new Error('Credit note not found.');
-      return creditNote;
+      const [enriched] = await enrichCreditNotesDisplay([creditNote]);
+      return enriched ?? creditNote;
     } catch (error) {
       throw formatAxiosError(error);
     }

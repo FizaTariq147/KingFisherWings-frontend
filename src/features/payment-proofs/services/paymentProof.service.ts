@@ -1,7 +1,11 @@
 import { axiosInstance } from '@/lib/axios';
 import { withGatewayRetry } from '@/lib/wakeApi';
 import { PAYMENT_PROOF_API } from '../api/paymentProof.api';
-import type { PaymentProof, ReviewPaymentProofDto } from '../types/paymentProof.types';
+import type {
+  ApprovePaymentProofDto,
+  PaymentProof,
+  ReviewPaymentProofDto,
+} from '../types/paymentProof.types';
 import { normalizePaymentProof, normalizePaymentProofList } from '../utils/normalizePaymentProof';
 
 function unwrapEntity(raw: unknown): unknown {
@@ -22,6 +26,23 @@ export const paymentProofService = {
   async acknowledge(id: string, dto: ReviewPaymentProofDto = {}): Promise<PaymentProof> {
     const res = await withGatewayRetry(() =>
       axiosInstance.patch(PAYMENT_PROOF_API.acknowledge(id), dto),
+    );
+    const proof = normalizePaymentProof(unwrapEntity(res.data));
+    if (!proof) throw new Error('Payment proof not found.');
+    return proof;
+  },
+
+  /**
+   * Approve proof and post a GL receipt/payment allocated to the invoice
+   * (updates invoice paid_amount / outstanding_balance).
+   */
+  async approve(id: string, dto: ApprovePaymentProofDto = {}): Promise<PaymentProof> {
+    const res = await withGatewayRetry(() =>
+      axiosInstance.patch(PAYMENT_PROOF_API.approve(id), {
+        payment_method: dto.payment_method ?? 'BANK_TRANSFER',
+        ...(dto.review_notes?.trim() ? { review_notes: dto.review_notes.trim() } : {}),
+        ...(dto.bank_account_id?.trim() ? { bank_account_id: dto.bank_account_id.trim() } : {}),
+      }),
     );
     const proof = normalizePaymentProof(unwrapEntity(res.data));
     if (!proof) throw new Error('Payment proof not found.');

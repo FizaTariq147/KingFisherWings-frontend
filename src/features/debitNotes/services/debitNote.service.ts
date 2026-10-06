@@ -3,6 +3,7 @@ import type { ApiEnvelope } from '@/lib/apiEnvelope';
 import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
 import { DEBIT_NOTE_API } from '../api/debitNote.api';
+import { enrichDebitNotesDisplay } from '../utils/enrichDebitNoteDisplay';
 import {
   normalizeDebitNote,
   normalizeDebitNotes,
@@ -107,7 +108,7 @@ export const debitNoteService = {
         }),
       );
       const { items, meta } = unwrapList(res.data);
-      const debitNotes = normalizeDebitNotes(items);
+      const debitNotes = await enrichDebitNotesDisplay(normalizeDebitNotes(items));
       return { debitNotes, meta: normalizeMeta(meta, debitNotes.length, params) };
     } catch (error) {
       throw formatAxiosError(error);
@@ -122,7 +123,8 @@ export const debitNoteService = {
       );
       const debitNote = normalizeDebitNote(unwrapEntity(res.data));
       if (!debitNote) throw new Error('Debit note not found.');
-      return debitNote;
+      const [enriched] = await enrichDebitNotesDisplay([debitNote]);
+      return enriched ?? debitNote;
     } catch (error) {
       throw formatAxiosError(error);
     }

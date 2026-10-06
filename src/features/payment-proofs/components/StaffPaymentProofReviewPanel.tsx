@@ -3,13 +3,18 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/hooks/useAuth';
+import {
+  PAYMENT_METHOD_LABELS,
+  PAYMENT_METHODS,
+  type PaymentMethod,
+} from '@/features/glPayments/constants/glPayment.constants';
 import type { PaymentProof } from '../types/paymentProof.types';
 import { useInvoicePaymentProofs, useReviewPaymentProof } from '../hooks/usePaymentProofs';
 import { PaymentProofOpenButton } from './PaymentProofOpenButton';
 
 function proofVariant(status?: string): 'success' | 'warning' | 'danger' | 'info' | 'neutral' {
   const s = (status || '').toUpperCase();
-  if (s === 'ACKNOWLEDGED') return 'success';
+  if (s === 'ACKNOWLEDGED' || s === 'APPROVED') return 'success';
   if (s === 'REJECTED') return 'danger';
   if (s === 'SUBMITTED' || s === 'PENDING') return 'warning';
   return 'neutral';
@@ -25,6 +30,7 @@ export function StaffPaymentProofReviewPanel({ invoiceId }: StaffPaymentProofRev
   const { data: proofs = [], isLoading, refetch } = useInvoicePaymentProofs(invoiceId);
   const review = useReviewPaymentProof(invoiceId);
   const [notes, setNotes] = useState<Record<string, string>>({});
+  const [methods, setMethods] = useState<Record<string, PaymentMethod>>({});
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -63,24 +69,38 @@ export function StaffPaymentProofReviewPanel({ invoiceId }: StaffPaymentProofRev
       {message ? <p className="text-sm text-[var(--color-success-700)]">{message}</p> : null}
       {!canReview && pending.length > 0 ? (
         <p className="text-xs text-[var(--color-neutral-500)]">
-          {pending.length} proof(s) awaiting review. You need invoices.review_payment_proofs permission.
+          {pending.length} proof(s) awaiting review. You need invoices.review_payment_proofs
+          permission.
         </p>
       ) : null}
+      <p className="text-xs text-[var(--color-neutral-500)]">
+        Approving a proof posts the claimed amount to the invoice (paid / balance due) via a GL
+        receipt.
+      </p>
       {proofs.map((proof) => (
         <ProofRow
           key={proof.id}
           proof={proof}
           canReview={canReview}
           notes={notes[proof.id] || ''}
+          paymentMethod={methods[proof.id] || 'BANK_TRANSFER'}
           onNotesChange={(value) => setNotes((prev) => ({ ...prev, [proof.id]: value }))}
-          onAcknowledge={() =>
+          onMethodChange={(value) => setMethods((prev) => ({ ...prev, [proof.id]: value }))}
+          onApprove={() =>
             run(
               () =>
-                review.acknowledge.mutateAsync({
+                review.approve.mutateAsync({
                   id: proof.id,
-                  dto: notes[proof.id]?.trim() ? { review_notes: notes[proof.id].trim() } : {},
+                  dto: {
+                    payment_method: methods[proof.id] || 'BANK_TRANSFER',
+                    ...(notes[proof.id]?.trim()
+                      ? { review_notes: notes[proof.id].trim() }
+                      : {}),
+                  },
                 }),
-              'Payment proof acknowledged.',
+              proof.amount != null
+                ? `Proof approved. ${proof.amount} applied to invoice paid amount.`
+                : 'Payment proof approved and applied to invoice.',
             )
           }
           onReject={() =>
@@ -88,12 +108,14 @@ export function StaffPaymentProofReviewPanel({ invoiceId }: StaffPaymentProofRev
               () =>
                 review.reject.mutateAsync({
                   id: proof.id,
-                  dto: notes[proof.id]?.trim() ? { review_notes: notes[proof.id].trim() } : {},
+                  dto: notes[proof.id]?.trim()
+                    ? { review_notes: notes[proof.id].trim() }
+                    : {},
                 }),
               'Payment proof rejected.',
             )
           }
-          busy={review.acknowledge.isPending || review.reject.isPending}
+          busy={review.approve.isPending || review.reject.isPending}
         />
       ))}
     </div>
@@ -104,16 +126,20 @@ function ProofRow({
   proof,
   canReview,
   notes,
+  paymentMethod,
   onNotesChange,
-  onAcknowledge,
+  onMethodChange,
+  onApprove,
   onReject,
   busy,
 }: {
   proof: PaymentProof;
   canReview: boolean;
   notes: string;
+  paymentMethod: PaymentMethod;
   onNotesChange: (value: string) => void;
-  onAcknowledge: () => void;
+  onMethodChange: (value: PaymentMethod) => void;
+  onApprove: () => void;
   onReject: () => void;
   busy: boolean;
 }) {
@@ -121,12 +147,16 @@ function ProofRow({
   const reviewable = canReview && (s === 'SUBMITTED' || s === 'PENDING');
 
   return (
-    <div className="rounded-md border border-[var(--color-neutral-200)] px-3 py-3 text-sm space-y-2">
+    <div className="space-y-2 rounded-md border border-[var(--color-neutral-200)] px-3 py-3 text-sm">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="min-w-0">
           <p className="font-medium">{proof.fileName || proof.reference || proof.id}</p>
           <p className="text-xs text-[var(--color-neutral-500)]">
-            {[proof.paymentDate, proof.amount != null ? String(proof.amount) : null, proof.reference]
+            {[
+              proof.paymentDate,
+              proof.amount != null ? `Claimed ${proof.amount}` : null,
+              proof.reference,
+            ]
               .filter(Boolean)
               .join(' · ')}
           </p>
@@ -146,14 +176,28 @@ function ProofRow({
       ) : null}
       {reviewable ? (
         <div className="space-y-2 pt-1">
+          <label className="block text-xs font-medium text-[var(--color-neutral-600)]">
+            Payment method
+            <select
+              className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 py-2 text-sm"
+              value={paymentMethod}
+              onChange={(e) => onMethodChange(e.target.value as PaymentMethod)}
+            >
+              {PAYMENT_METHODS.map((method) => (
+                <option key={method} value={method}>
+                  {PAYMENT_METHOD_LABELS[method]}
+                </option>
+              ))}
+            </select>
+          </label>
           <Input
             placeholder="Review notes (optional)"
             value={notes}
             onChange={(e) => onNotesChange(e.target.value)}
           />
           <div className="flex flex-wrap gap-2">
-            <Button type="button" size="sm" disabled={busy} onClick={onAcknowledge}>
-              Acknowledge
+            <Button type="button" size="sm" disabled={busy} onClick={onApprove}>
+              Approve &amp; apply to invoice
             </Button>
             <Button type="button" size="sm" variant="danger" disabled={busy} onClick={onReject}>
               Reject

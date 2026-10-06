@@ -40,6 +40,7 @@ export function CreditNoteTable({
           <TableRow className="hover:bg-transparent">
             <TableHead>Credit Note No</TableHead>
             <TableHead>Party</TableHead>
+            <TableHead>Invoice</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Total</TableHead>
@@ -49,7 +50,7 @@ export function CreditNoteTable({
         <TableBody>
           {creditNotes.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center text-[var(--color-neutral-400)] py-10">
+              <TableCell colSpan={7} className="text-center text-[var(--color-neutral-400)] py-10">
                 {emptyMessage}
               </TableCell>
             </TableRow>
@@ -71,7 +72,12 @@ export function CreditNoteTable({
                     className="text-left"
                     onClick={() => onView(cn)}
                   >
-                    {cn.party_name || (cn.party_id ? cn.party_id.slice(0, 8) : '—')}
+                    {cn.party_name || '—'}
+                  </button>
+                </TableCell>
+                <TableCell>
+                  <button type="button" className="text-left" onClick={() => onView(cn)}>
+                    {cn.credited_invoice_number || '—'}
                   </button>
                 </TableCell>
                 <TableCell>

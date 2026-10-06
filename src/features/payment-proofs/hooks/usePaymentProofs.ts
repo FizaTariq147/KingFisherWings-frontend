@@ -2,8 +2,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import { invoiceKeys } from '@/features/invoices/hooks/useInvoices';
+import { glPaymentKeys } from '@/features/glPayments/hooks/useGlPayments';
 import { paymentProofService } from '../services/paymentProof.service';
-import type { ReviewPaymentProofDto } from '../types/paymentProof.types';
+import type {
+  ApprovePaymentProofDto,
+  ReviewPaymentProofDto,
+} from '../types/paymentProof.types';
 
 export const paymentProofKeys = {
   all: ['tenant', 'payment-proofs'] as const,
@@ -24,11 +28,20 @@ export function useReviewPaymentProof(invoiceId: string) {
   const invalidate = () => {
     void qc.invalidateQueries({ queryKey: paymentProofKeys.invoice(invoiceId) });
     void qc.invalidateQueries({ queryKey: invoiceKeys.detail(invoiceId) });
+    void qc.invalidateQueries({ queryKey: invoiceKeys.all });
+    void qc.invalidateQueries({ queryKey: glPaymentKeys.all });
   };
   return {
+    /** Marks reviewed only — does not post payment to the invoice. */
     acknowledge: useMutation({
       mutationFn: ({ id, dto }: { id: string; dto?: ReviewPaymentProofDto }) =>
         paymentProofService.acknowledge(id, dto),
+      onSuccess: invalidate,
+    }),
+    /** Approves proof and applies amount to invoice via GL payment allocation. */
+    approve: useMutation({
+      mutationFn: ({ id, dto }: { id: string; dto?: ApprovePaymentProofDto }) =>
+        paymentProofService.approve(id, dto),
       onSuccess: invalidate,
     }),
     reject: useMutation({

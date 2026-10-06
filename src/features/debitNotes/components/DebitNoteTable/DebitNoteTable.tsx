@@ -40,6 +40,7 @@ export function DebitNoteTable({
           <TableRow className="hover:bg-transparent">
             <TableHead>Debit Note No</TableHead>
             <TableHead>Party</TableHead>
+            <TableHead>Invoice</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Total</TableHead>
@@ -49,7 +50,7 @@ export function DebitNoteTable({
         <TableBody>
           {debitNotes.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center text-[var(--color-neutral-400)] py-10">
+              <TableCell colSpan={7} className="text-center text-[var(--color-neutral-400)] py-10">
                 {emptyMessage}
               </TableCell>
             </TableRow>
@@ -67,7 +68,12 @@ export function DebitNoteTable({
                 </TableCell>
                 <TableCell>
                   <button type="button" className="text-left" onClick={() => onView(dn)}>
-                    {dn.party_name || (dn.party_id ? dn.party_id.slice(0, 8) : '—')}
+                    {dn.party_name || '—'}
+                  </button>
+                </TableCell>
+                <TableCell>
+                  <button type="button" className="text-left" onClick={() => onView(dn)}>
+                    {dn.credited_invoice_number || '—'}
                   </button>
                 </TableCell>
                 <TableCell>

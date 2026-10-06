@@ -1,3 +1,4 @@
+import { isUuid } from '@/lib/isUuid';
 import {
   asRecord,
   normalizeMeta,
@@ -9,6 +10,14 @@ import {
 import type {
   PortalCreditNoteDetail, PortalCreditNoteLine, PortalCreditNoteListItem, PortalCreditNoteListResult,
 } from '../types/portalCreditNotes.types';
+
+function humanCode(...candidates: Array<string | undefined>): string | undefined {
+  for (const value of candidates) {
+    const trimmed = value?.trim();
+    if (trimmed && !isUuid(trimmed)) return trimmed;
+  }
+  return undefined;
+}
 
 export function normalizeCreditNoteLine(raw: unknown): PortalCreditNoteLine | null {
   const r = asRecord(raw); if (!r) return null;
@@ -27,9 +36,10 @@ export function normalizeCreditNoteListItem(
 ): PortalCreditNoteListItem | null {
   const r = asRecord(raw); if (!r) return null;
   const id = pickString(r.id); if (!id) return null;
-  return {
-    id,
-    number:
+  const credited = asRecord(r.credited_invoice) ?? asRecord(r.invoice) ?? asRecord(r.source_invoice);
+  const prefix = kind === 'debit' ? 'DN' : 'CN';
+  const number =
+    humanCode(
       pickString(
         r.credit_note_number,
         r.creditNoteNumber,
@@ -37,7 +47,11 @@ export function normalizeCreditNoteListItem(
         r.debitNoteNumber,
         r.number,
         r.ref,
-      ) || id,
+      ),
+    ) || `${prefix}-${id.slice(0, 8).toUpperCase()}`;
+  return {
+    id,
+    number,
     status: pickString(r.status) || undefined,
     currencyCode: pickString(r.currency_code, r.currencyCode) || undefined,
     creditDate:
@@ -51,14 +65,23 @@ export function normalizeCreditNoteListItem(
       ) || undefined,
     totalAmount: pickNumber(r.total_amount, r.totalAmount, r.total),
     creditedInvoiceId:
-      pickString(r.credited_invoice_id, r.creditedInvoiceId, r.invoice_id, r.debited_invoice_id) ||
-      undefined,
-    creditedInvoiceNumber:
       pickString(
-        r.credited_invoice_number,
-        r.creditedInvoiceNumber,
-        r.debited_invoice_number,
-        r.invoice_number,
+        r.credited_invoice_id,
+        r.creditedInvoiceId,
+        r.invoice_id,
+        r.debited_invoice_id,
+        credited?.id,
+      ) || undefined,
+    creditedInvoiceNumber:
+      humanCode(
+        pickString(
+          r.credited_invoice_number,
+          r.creditedInvoiceNumber,
+          r.debited_invoice_number,
+          credited?.invoice_number,
+          credited?.number,
+        ),
+        // Avoid treating the note's own number / UUID as the source invoice label.
       ) || undefined,
     kind,
   };

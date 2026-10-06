@@ -9,8 +9,11 @@ import { applyPortalInvoicePdfChrome } from '@/features/portal-shared/applyPorta
 import { fetchPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
 import { safeDownloadFilename } from '@/features/portal-shared/normalize';
 import { PORTAL_CREDIT_NOTES_API, PORTAL_DEBIT_NOTES_API } from '../api/portalCreditNotes.api';
+import { portalInvoicesService } from '@/features/portal-invoices/services/portalInvoices.service';
+import { isUuid } from '@/lib/isUuid';
 import type {
   PortalCreditNoteDetail,
+  PortalCreditNoteListItem,
   PortalCreditNoteListParams,
   PortalCreditNoteListResult,
 } from '../types/portalCreditNotes.types';
@@ -20,6 +23,45 @@ import {
 } from '../utils/normalizePortalCreditNotes';
 
 export type PortalNoteKind = 'credit' | 'debit';
+
+async function enrichPortalNoteInvoiceNumbers(
+  items: PortalCreditNoteListItem[],
+): Promise<PortalCreditNoteListItem[]> {
+  const missingIds = [
+    ...new Set(
+      items
+        .filter(
+          (item) =>
+            item.creditedInvoiceId &&
+            isUuid(item.creditedInvoiceId) &&
+            (!item.creditedInvoiceNumber || isUuid(item.creditedInvoiceNumber)),
+        )
+        .map((item) => item.creditedInvoiceId as string),
+    ),
+  ];
+  if (!missingIds.length) return items;
+
+  const numberById = new Map<string, string>();
+  await Promise.all(
+    missingIds.map(async (id) => {
+      try {
+        const detail = await portalInvoicesService.getById(id);
+        const number = detail.number?.trim();
+        if (number && !isUuid(number)) numberById.set(id, number);
+      } catch {
+        /* keep id-only fallback */
+      }
+    }),
+  );
+  if (!numberById.size) return items;
+
+  return items.map((item) => {
+    if (!item.creditedInvoiceId) return item;
+    const resolved = numberById.get(item.creditedInvoiceId);
+    if (!resolved) return item;
+    return { ...item, creditedInvoiceNumber: resolved };
+  });
+}
 
 const PDF_ACCEPT = 'application/pdf, application/octet-stream, application/json, */*';
 
@@ -76,14 +118,19 @@ export const portalCreditNotesService = {
     kind: PortalNoteKind = 'credit',
   ): Promise<PortalCreditNoteListResult> {
     const res = await portalApiClient.get(apiFor(kind).list, { params });
-    return normalizeCreditNoteList(res.data, params, kind);
+    const normalized = normalizeCreditNoteList(res.data, params, kind);
+    return {
+      ...normalized,
+      items: await enrichPortalNoteInvoiceNumbers(normalized.items),
+    };
   },
 
   async getById(id: string, kind: PortalNoteKind = 'credit'): Promise<PortalCreditNoteDetail> {
     const res = await portalApiClient.get(apiFor(kind).detail(id));
     const detail = normalizeCreditNoteDetail(res.data, kind);
     if (!detail) throw new Error(`${kind === 'debit' ? 'Debit' : 'Credit'} note not found.`);
-    return detail;
+    const [enriched] = await enrichPortalNoteInvoiceNumbers([detail]);
+    return { ...detail, ...(enriched ?? {}) };
   },
 
   async downloadPdf(

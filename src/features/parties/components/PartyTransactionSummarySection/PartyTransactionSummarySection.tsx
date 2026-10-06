@@ -185,7 +185,7 @@ export function PartyTransactionSummarySection({
             {buckets.map((entry) => (
               <BucketCard
                 key={entry.title}
-                title={entry.title}
+                title={entry.title === 'Invoices' ? 'Invoices (remaining)' : entry.title}
                 bucket={entry.bucket}
                 currency={currency}
               />

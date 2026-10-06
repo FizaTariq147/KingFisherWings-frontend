@@ -125,16 +125,32 @@ export const partyTransactionSummaryService = {
       amount: undefined,
     }));
 
-    const invoiceItems: PartyTransactionItem[] = invoicesRes.invoices.map((inv) => ({
-      id: inv.id,
-      reference: humanCode(
-        inv.invoice_number,
-        `Invoice ${inv.id.slice(0, 8).toUpperCase()}`,
-      ),
-      status: inv.status,
-      date: inv.invoice_date ?? inv.created_at,
-      amount: inv.total_amount ?? inv.outstanding_balance ?? inv.subtotal,
-    }));
+    const invoiceItems: PartyTransactionItem[] = invoicesRes.invoices.map((inv) => {
+      const remaining =
+        inv.outstanding_balance ??
+        (inv.total_amount != null && inv.paid_amount != null
+          ? Math.max(0, inv.total_amount - inv.paid_amount)
+          : undefined) ??
+        inv.total_amount ??
+        inv.subtotal;
+      const paidLabel =
+        inv.paid_amount != null && Number.isFinite(inv.paid_amount)
+          ? `Paid ${inv.paid_amount}`
+          : null;
+      const remainLabel =
+        remaining != null && Number.isFinite(remaining) ? `Remaining ${remaining}` : null;
+      return {
+        id: inv.id,
+        reference: humanCode(
+          inv.invoice_number,
+          `Invoice ${inv.id.slice(0, 8).toUpperCase()}`,
+        ),
+        status: [inv.status, paidLabel, remainLabel].filter(Boolean).join(' · ') || inv.status,
+        date: inv.invoice_date ?? inv.created_at,
+        // Credit views show what is still open against each invoice.
+        amount: remaining,
+      };
+    });
 
     const glItems: PartyTransactionItem[] = glPaymentsRes.payments.map((p) => ({
       id: p.id,

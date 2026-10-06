@@ -1,10 +1,13 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 import { usePortalQueryScope } from '@/features/portal-shared/usePortalQueryScope';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import type { ApiPeriodQuery, UiDashboardPeriod } from '@/lib/apiPeriod';
 import { uiPeriodToApi } from '@/lib/apiPeriod';
+import { adjustInvoiceAmountsWithProofs } from '@/features/payment-proofs/utils/adjustInvoiceAmountsWithProofs';
+import type { PaymentProof } from '@/features/payment-proofs/types/paymentProof.types';
 import { portalInvoicesService } from '../services/portalInvoices.service';
 import type {
+  PortalInvoiceListItem,
   PortalInvoiceListParams,
   PortalInvoiceListResult,
   PortalInvoicePaymentStatusView,
@@ -127,7 +130,10 @@ export function useUploadPortalInvoicePaymentProof(invoiceId: string) {
       portalInvoicesService.uploadPaymentProof(invoiceId, file, dto),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: portalInvoiceKeys.paymentProofs(scope, invoiceId) });
+      void qc.invalidateQueries({ queryKey: portalInvoiceKeys.detail(scope, invoiceId) });
       void qc.invalidateQueries({ queryKey: portalInvoiceKeys.openItems(scope) });
+      void qc.invalidateQueries({ queryKey: portalInvoiceKeys.all(scope) });
+      void qc.invalidateQueries({ queryKey: ['portal', scope, 'credit'] });
     },
   });
 }
@@ -194,4 +200,53 @@ export function useDownloadPortalInvoiceProofFile() {
     }) => portalInvoicesService.downloadProofFile(invoiceId, proofId, fileName),
   });
 }
+
+export type PortalInvoiceDisplayRow = PortalInvoiceListItem & {
+  displayStatus: string;
+  displayPaidAmount: number;
+  displayRemainingAmount: number;
+  includesPendingProofs: boolean;
+};
+
+/** Merge list rows with payment proofs so status/paid/remaining stay dynamic. */
+export function usePortalInvoiceDisplayRows(
+  items: PortalInvoiceListItem[],
+): PortalInvoiceDisplayRow[] {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  const ids = items.map((item) => item.id);
+
+  const proofQueries = useQueries({
+    queries: ids.map((invoiceId) => ({
+      queryKey: portalInvoiceKeys.paymentProofs(scope, invoiceId),
+      queryFn: () => portalInvoicesService.listPaymentProofs(invoiceId),
+      enabled: Boolean(accessToken) && Boolean(invoiceId) && scope !== 'anon',
+      staleTime: 30_000,
+    })),
+  });
+
+  return items.map((item, index) => {
+    const proofs = (proofQueries[index]?.data ?? []) as PaymentProof[];
+    const adjusted = adjustInvoiceAmountsWithProofs(
+      {
+        totalAmount: item.totalAmount,
+        paidAmount: item.paidAmount,
+        outstandingBalance: item.outstandingBalance,
+        status: item.status,
+      },
+      proofs,
+    );
+    return {
+      ...item,
+      displayStatus: adjusted.displayStatus,
+      displayPaidAmount: adjusted.paidAmount,
+      displayRemainingAmount: adjusted.remainingAmount,
+      includesPendingProofs: adjusted.includesPendingProofs,
+      paidAmount: adjusted.paidAmount,
+      outstandingBalance: adjusted.remainingAmount,
+      status: adjusted.displayStatus,
+    };
+  });
+}
+
 

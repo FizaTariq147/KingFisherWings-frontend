@@ -74,28 +74,46 @@ export function normalizeDebitNoteLines(raw: unknown): DebitNoteLine[] {
     .filter((l): l is DebitNoteLine => Boolean(l));
 }
 
+function humanCode(value?: string): string | undefined {
+  const trimmed = value?.trim();
+  if (!trimmed || isUuid(trimmed)) return undefined;
+  return trimmed;
+}
+
 export function normalizeDebitNote(raw: unknown): DebitNote | null {
   const r = asRecord(raw);
   if (!r) return null;
   const id = str(r.id);
   if (!id || !isUuid(id)) return null;
+  const credited = asRecord(r.credited_invoice) ?? asRecord(r.invoice) ?? asRecord(r.source_invoice);
+  const party = asRecord(r.party) ?? asRecord(r.customer);
+  const creditedInvoiceId =
+    str(r.credited_invoice_id) ?? str(credited?.id) ?? str(credited?.invoice_id);
+  const creditedInvoiceNumber =
+    humanCode(str(r.credited_invoice_number)) ??
+    humanCode(str(r.debited_invoice_number)) ??
+    humanCode(str(credited?.invoice_number)) ??
+    humanCode(str(credited?.number));
+  const debitNoteNumber =
+    humanCode(str(r.debit_note_number)) ??
+    humanCode(str(r.debit_note_no)) ??
+    humanCode(str(r.debitNoteNumber)) ??
+    humanCode(str(r.invoice_number)) ??
+    humanCode(str(r.number));
   return {
     id,
-    invoice_number: str(r.invoice_number) ?? str(r.invoice_no) ?? str(r.number),
-    debit_note_number:
-      str(r.debit_note_number) ??
-      str(r.debit_note_no) ??
-      str(r.debitNoteNumber) ??
-      str(r.invoice_number) ??
-      str(r.number),
+    invoice_number: debitNoteNumber ?? humanCode(str(r.invoice_number) ?? str(r.invoice_no) ?? str(r.number)),
+    debit_note_number: debitNoteNumber,
     status: normalizeStatus(r.status),
     invoice_type: normalizeType(r.invoice_type),
-    credited_invoice_id: str(r.credited_invoice_id),
-    party_id: str(r.party_id),
+    credited_invoice_id: creditedInvoiceId,
+    credited_invoice_number: creditedInvoiceNumber,
+    party_id: str(r.party_id) ?? str(party?.id),
     party_name:
-      str(r.party_name) ??
-      str(r.customer_name) ??
-      str(asRecord(r.party)?.name),
+      humanCode(str(r.party_name)) ??
+      humanCode(str(r.customer_name)) ??
+      humanCode(str(party?.name)) ??
+      humanCode(str(credited?.party_name)),
     company_id: str(r.company_id),
     job_id: str(r.job_id),
     branch_id: str(r.branch_id),
@@ -126,8 +144,8 @@ export function normalizeDebitNotes(raw: unknown): DebitNote[] {
 
 export function debitNoteDisplayNumber(dn: DebitNote): string {
   return (
-    dn.debit_note_number ||
-    dn.invoice_number ||
+    humanCode(dn.debit_note_number) ||
+    humanCode(dn.invoice_number) ||
     dn.id.slice(0, 8).toUpperCase()
   );
 }

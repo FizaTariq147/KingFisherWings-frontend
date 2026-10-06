@@ -161,7 +161,7 @@ export default function CreditNoteDetailPage() {
                   <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 pt-0">
                     <Field
                       label="Party"
-                      value={creditNote.party_name || creditNote.party_id}
+                      value={creditNote.party_name || '—'}
                     />
                     <Field label="Currency" value={creditNote.currency_code} />
                     <Field label="Date" value={creditNote.invoice_date} />
@@ -179,7 +179,8 @@ export default function CreditNoteDetailPage() {
                               navigate(`/invoices/${creditNote.credited_invoice_id}`)
                             }
                           >
-                            {creditNote.credited_invoice_id}
+                            {creditNote.credited_invoice_number ||
+                              creditNote.credited_invoice_id.slice(0, 8).toUpperCase()}
                           </button>
                         ) : (
                           '—'

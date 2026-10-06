@@ -148,7 +148,14 @@ export default function PortalCreditNotesPage() {
                 <Link to={`${basePath}/${cn.id}`} className="min-w-0 flex-1 hover:opacity-80">
                   <div className="text-sm font-semibold truncate">{cn.number}</div>
                   <div className="text-xs text-[var(--color-neutral-500)]">
-                    {[cn.creditedInvoiceNumber, cn.creditDate, cn.currencyCode, cn.totalAmount]
+                    {[
+                      cn.creditedInvoiceNumber
+                        ? `Invoice ${cn.creditedInvoiceNumber}`
+                        : null,
+                      cn.creditDate,
+                      cn.currencyCode,
+                      cn.totalAmount != null ? cn.totalAmount.toLocaleString() : null,
+                    ]
                       .filter((v) => v != null && v !== '')
                       .join(' · ') || '—'}
                   </div>

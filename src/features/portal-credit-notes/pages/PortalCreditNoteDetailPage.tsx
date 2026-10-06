@@ -55,7 +55,7 @@ export default function PortalCreditNoteDetailPage() {
         title={data.number}
         description={
           data.creditedInvoiceNumber
-            ? `Against ${data.creditedInvoiceNumber}`
+            ? `Against invoice ${data.creditedInvoiceNumber}`
             : kind === 'debit'
               ? 'Debit note detail'
               : 'Credit note detail'

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -9,6 +9,8 @@ import { useParty } from '@/features/parties/hooks/useParties';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
 import { StaffPaymentProofReviewPanel } from '@/features/payment-proofs/components/StaffPaymentProofReviewPanel';
+import { useInvoicePaymentProofs } from '@/features/payment-proofs/hooks/usePaymentProofs';
+import { adjustInvoiceAmountsWithProofs } from '@/features/payment-proofs/utils/adjustInvoiceAmountsWithProofs';
 import { InvoiceOnlinePaymentsPanel } from '@/features/online-payments/components/InvoiceOnlinePaymentsPanel';
 import { InvoiceEmailModal } from '../components/InvoiceEmailModal';
 import { InvoiceLinesEditor } from '../components/InvoiceLinesEditor';
@@ -40,6 +42,7 @@ export default function InvoiceDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { data: invoice, isLoading, isError, error, refetch } = useInvoice(id);
+  const { data: proofs = [] } = useInvoicePaymentProofs(id, Boolean(id));
   const actions = useInvoiceActions(id);
   const remove = useDeleteInvoice();
   const { data: pdfInfo, refetch: refetchPdf } = useInvoicePdf(id, Boolean(id));
@@ -53,6 +56,26 @@ export default function InvoiceDetailPage() {
   const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
   const [pdfReadyUrl, setPdfReadyUrl] = useState<string | null>(null);
   const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
+
+  const amounts = useMemo(
+    () =>
+      adjustInvoiceAmountsWithProofs(
+        {
+          totalAmount: invoice?.total_amount,
+          paidAmount: invoice?.paid_amount,
+          outstandingBalance: invoice?.outstanding_balance,
+          status: invoice?.status,
+        },
+        proofs,
+      ),
+    [
+      invoice?.total_amount,
+      invoice?.paid_amount,
+      invoice?.outstanding_balance,
+      invoice?.status,
+      proofs,
+    ],
+  );
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -279,13 +302,16 @@ export default function InvoiceDetailPage() {
             ? INVOICE_TYPE_LABELS[invoice.invoice_type as InvoiceType] ?? invoice.invoice_type
             : invoice.party_name
         }
-        statusLabel={INVOICE_STATUS_LABELS[invoice.status] ?? invoice.status}
+        statusLabel={
+          INVOICE_STATUS_LABELS[amounts.displayStatus as keyof typeof INVOICE_STATUS_LABELS] ??
+          amounts.displayStatus
+        }
         statusTone={
-          invoice.status === 'PAID'
+          amounts.displayStatus === 'PAID'
             ? 'emerald'
-            : invoice.status === 'CANCELLED' || invoice.status === 'VOID'
+            : amounts.displayStatus === 'CANCELLED' || amounts.displayStatus === 'VOID'
               ? 'rose'
-              : invoice.status === 'SENT' || invoice.status === 'PARTIALLY_PAID'
+              : amounts.displayStatus === 'SENT' || amounts.displayStatus === 'PARTIALLY_PAID'
                 ? 'amber'
                 : 'slate'
         }
@@ -300,7 +326,7 @@ export default function InvoiceDetailPage() {
             content: (
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <InvoiceStatusBadge status={invoice.status} />
+                  <InvoiceStatusBadge status={amounts.displayStatus} />
                 </div>
                 <Card>
                   <CardHeader>
@@ -317,29 +343,25 @@ export default function InvoiceDetailPage() {
                     <Field label="Job" value={invoice.job_id} />
                     <Field label="Subtotal" value={invoice.subtotal} />
                     <Field label="Tax" value={invoice.tax_total} />
-                    <Field
-                      label="Total"
-                      value={
-                        invoice.total_amount != null
-                          ? `${invoice.currency_code} ${invoice.total_amount}`
-                          : undefined
-                      }
-                    />
+                    <div>
+                      <dt className="text-xs text-[var(--color-neutral-400)]">Total</dt>
+                      <dd className="mt-0.5 text-sm text-[var(--color-neutral-800)]">
+                        {amounts.totalAmount != null || invoice.total_amount != null
+                          ? `${invoice.currency_code} ${amounts.totalAmount ?? invoice.total_amount}`
+                          : '—'}
+                        <span className="mt-0.5 block text-xs tabular-nums text-[var(--color-neutral-500)]">
+                          Paid {invoice.currency_code} {amounts.paidAmount}
+                          {amounts.includesPendingProofs ? ' (incl. pending proof)' : ''}
+                        </span>
+                      </dd>
+                    </div>
                     <Field
                       label="Paid"
-                      value={
-                        invoice.paid_amount != null
-                          ? `${invoice.currency_code} ${invoice.paid_amount}`
-                          : undefined
-                      }
+                      value={`${invoice.currency_code} ${amounts.paidAmount}`}
                     />
                     <Field
                       label="Balance due"
-                      value={
-                        invoice.outstanding_balance != null
-                          ? `${invoice.currency_code} ${invoice.outstanding_balance}`
-                          : undefined
-                      }
+                      value={`${invoice.currency_code} ${amounts.remainingAmount}`}
                     />
                     <Field label="Remarks" value={invoice.remarks} />
                     <Field label="Internal notes" value={invoice.internal_notes} />

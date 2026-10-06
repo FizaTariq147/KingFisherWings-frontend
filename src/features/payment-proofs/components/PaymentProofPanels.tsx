@@ -12,12 +12,15 @@ interface PaymentProofUploadFormProps {
   disabled?: boolean;
   /** Prefill currency from the open invoice when known. */
   currencyCode?: string;
+  /** Remaining balance still due — amount claimed cannot exceed this. */
+  remainingAmount?: number;
 }
 
 export function PaymentProofUploadForm({
   onUpload,
   disabled,
   currencyCode,
+  remainingAmount,
 }: PaymentProofUploadFormProps) {
   const [file, setFile] = useState<File | null>(null);
   const [amount, setAmount] = useState('');
@@ -38,24 +41,41 @@ export function PaymentProofUploadForm({
     setPending(true);
     try {
       const amountRaw = amount.trim();
-      let amountValue: number | undefined;
-      if (amountRaw) {
-        amountValue = Number(amountRaw);
-        if (!Number.isFinite(amountValue)) {
-          setError('Amount must be a valid number.');
-          setPending(false);
-          return;
-        }
+      if (!amountRaw) {
+        setError('Enter the amount paid for this proof.');
+        setPending(false);
+        return;
+      }
+      const amountValue = Number(amountRaw);
+      if (!Number.isFinite(amountValue) || amountValue <= 0) {
+        setError('Amount must be a positive number.');
+        setPending(false);
+        return;
+      }
+      if (
+        remainingAmount != null &&
+        Number.isFinite(remainingAmount) &&
+        amountValue > remainingAmount + 0.0001
+      ) {
+        setError(
+          `Amount cannot exceed the remaining balance (${remainingAmount}).`,
+        );
+        setPending(false);
+        return;
       }
       const dto: UploadPaymentProofDto = {
-        ...(amountValue != null ? { amount: amountValue } : {}),
+        amount: amountValue,
         ...(paymentDate ? { payment_date: paymentDate } : {}),
         ...(reference.trim() ? { reference: reference.trim() } : {}),
         ...(notes.trim() ? { notes: notes.trim() } : {}),
         ...(currencyCode?.trim() ? { currency_code: currencyCode.trim() } : {}),
       };
       await onUpload(file, dto);
-      setMessage('Payment proof uploaded.');
+      setMessage(
+        remainingAmount != null && amountValue < remainingAmount
+          ? `Proof uploaded for ${amountValue}. Remaining due will show as ${(remainingAmount - amountValue).toLocaleString()}.`
+          : 'Payment proof uploaded.',
+      );
       setFile(null);
       setAmount('');
       setPaymentDate('');
@@ -71,6 +91,13 @@ export function PaymentProofUploadForm({
   return (
     <div className="space-y-3 rounded-md border border-[var(--color-neutral-200)] p-3">
       <p className="text-sm font-medium text-[var(--color-neutral-800)]">Upload payment proof</p>
+      {remainingAmount != null && Number.isFinite(remainingAmount) ? (
+        <p className="text-xs text-[var(--color-neutral-500)]">
+          Remaining balance: {remainingAmount.toLocaleString()}
+          {currencyCode ? ` ${currencyCode}` : ''}. Enter the amount you paid
+          (partial payments are allowed).
+        </p>
+      ) : null}
       <Input
         type="file"
         accept=".pdf,.png,.jpg,.jpeg,.webp"
@@ -90,6 +117,7 @@ export function PaymentProofUploadForm({
           placeholder="e.g. 100.00"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
+          required
         />
         <Input
           label="Payment date"
