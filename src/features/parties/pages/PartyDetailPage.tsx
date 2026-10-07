@@ -21,14 +21,18 @@ import { PartyVendorUsersSection } from '../components/PartyVendorUsersSection';
 import { PartyOnlinePaymentHistoryPanel } from '@/features/online-payments/components/PartyOnlinePaymentHistoryPanel';
 import { PARTY_TYPE_LABELS, type PartyType } from '../constants/party.constants';
 
-/** Customer parties use customer portal tabs; supplier/vendor use vendor portal tabs. */
-function usesCustomerPortalTabs(partyType: PartyType | string): boolean {
-  return String(partyType).toUpperCase() === 'CUSTOMER';
-}
-
+/** Supplier/vendor parties use vendor portal tabs. */
 function usesVendorPortalTabs(partyType: PartyType | string): boolean {
   const t = String(partyType).toUpperCase();
   return t === 'SUPPLIER' || t === 'VENDOR';
+}
+
+/**
+ * Customer portal logins (Users Portal) for non-vendor party types.
+ * Live data also attaches portal users to WAREHOUSE / AGENT / etc., not only CUSTOMER.
+ */
+function usesCustomerPortalTabs(partyType: PartyType | string): boolean {
+  return !usesVendorPortalTabs(partyType);
 }
 import { usePartyConfirmState } from '../hooks/usePartyConfirmState';
 import {

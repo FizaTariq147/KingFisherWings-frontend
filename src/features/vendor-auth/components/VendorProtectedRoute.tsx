@@ -3,6 +3,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { FullPageSpinner } from '@/components/skeletons/SkeletonPrimitives';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
 import { isVendorApiUnavailable } from '@/features/vendor-shared/vendorUnavailable';
+import { VENDOR_CHANGE_PASSWORD_PATH } from '../api/vendorAuth.api';
 import { useVendorAuthBootstrap } from '../hooks/useVendorAuthBootstrap';
 import { vendorAuthService } from '../services/vendorAuth.service';
 import { useVendorAuthStore } from '../store/vendorAuthStore';
@@ -12,6 +13,7 @@ export function VendorProtectedRoute() {
   const { ready, accessToken } = useVendorAuthBootstrap();
   const logout = useVendorAuthStore((s) => s.logout);
   const setUser = useVendorAuthStore((s) => s.setUser);
+  const mustChangePassword = useVendorAuthStore((s) => Boolean(s.user?.mustChangePassword));
   const [sessionOk, setSessionOk] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -65,6 +67,11 @@ export function VendorProtectedRoute() {
 
   if (sessionOk !== true) {
     return <FullPageSpinner message="Checking vendor session…" />;
+  }
+
+  // Temporary-password users must set their own password before using the vendor portal.
+  if (mustChangePassword && location.pathname !== VENDOR_CHANGE_PASSWORD_PATH) {
+    return <Navigate to={VENDOR_CHANGE_PASSWORD_PATH} replace />;
   }
 
   return <Outlet />;

@@ -174,7 +174,10 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
                         if (result.temporaryPassword) {
                           setTempPassword(result.temporaryPassword);
                         } else {
-                          window.alert(result.message || 'Password reset. Check email if SMTP is configured.');
+                          window.alert(
+                            result.message ||
+                              'Password reset. Check email if SMTP is configured.',
+                          );
                         }
                       } catch (err) {
                         window.alert(getErrorMessage(err) || 'Password reset failed.');

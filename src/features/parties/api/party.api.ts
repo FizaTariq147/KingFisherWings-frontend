@@ -10,25 +10,26 @@ export const PARTY_API = {
   import: '/parties/import',
   export: '/parties/export',
   /** Parties → portal users (docs#/Parties) */
-  portalUsers: (partyId: string) => `/parties/${partyId}/portal-users`,
+  portalUsers: (partyId: string) => `/parties/${encodeURIComponent(partyId)}/portal-users`,
   portalUserStatus: (partyId: string, id: string) =>
-    `/parties/${partyId}/portal-users/${id}/status`,
+    `/parties/${encodeURIComponent(partyId)}/portal-users/${encodeURIComponent(id)}/status`,
   portalUserResetPassword: (partyId: string, id: string) =>
-    `/parties/${partyId}/portal-users/${id}/reset-password`,
+    `/parties/${encodeURIComponent(partyId)}/portal-users/${encodeURIComponent(id)}/reset-password`,
   portalUserResendInvite: (partyId: string, id: string) =>
-    `/parties/${partyId}/portal-users/${id}/resend-invite`,
+    `/parties/${encodeURIComponent(partyId)}/portal-users/${encodeURIComponent(id)}/resend-invite`,
   /** Parties → portal document rights */
-  portalPermissions: (partyId: string) => `/parties/${partyId}/portal-permissions`,
+  portalPermissions: (partyId: string) =>
+    `/parties/${encodeURIComponent(partyId)}/portal-permissions`,
   portalPermissionsReset: (partyId: string) =>
-    `/parties/${partyId}/portal-permissions/reset-defaults`,
+    `/parties/${encodeURIComponent(partyId)}/portal-permissions/reset-defaults`,
   /** Parties → vendor portal users (docs#/Parties + Admin — Vendor Portal Users) */
-  vendorUsers: (partyId: string) => `/parties/${partyId}/vendor-users`,
+  vendorUsers: (partyId: string) => `/parties/${encodeURIComponent(partyId)}/vendor-users`,
   vendorUserStatus: (partyId: string, id: string) =>
-    `/parties/${partyId}/vendor-users/${id}/status`,
+    `/parties/${encodeURIComponent(partyId)}/vendor-users/${encodeURIComponent(id)}/status`,
   vendorUserResetPassword: (partyId: string, id: string) =>
-    `/parties/${partyId}/vendor-users/${id}/reset-password`,
+    `/parties/${encodeURIComponent(partyId)}/vendor-users/${encodeURIComponent(id)}/reset-password`,
   vendorUserResendInvite: (partyId: string, id: string) =>
-    `/parties/${partyId}/vendor-users/${id}/resend-invite`,
+    `/parties/${encodeURIComponent(partyId)}/vendor-users/${encodeURIComponent(id)}/resend-invite`,
   /** Parties → vendor document rights */
   vendorPermissions: (partyId: string) => `/parties/${partyId}/vendor-permissions`,
   /**
