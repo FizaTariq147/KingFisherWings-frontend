@@ -156,6 +156,12 @@ export async function enrichJobsWithDisplayNames(jobs: Job[]): Promise<Job[]> {
       .catch(() => new Map<string, string>()),
   ]);
 
+  const readable = (value?: string | null) => {
+    const trimmed = value?.trim();
+    if (!trimmed || isUuid(trimmed)) return undefined;
+    return trimmed;
+  };
+
   return jobs.map((job) => {
     const etd =
       job.etd ||
@@ -166,17 +172,24 @@ export async function enrichJobsWithDisplayNames(jobs: Job[]): Promise<Job[]> {
 
     return {
       ...job,
-      shipper_name: job.shipper_name || parties.get(job.shipper_id) || job.shipper_name,
+      shipper_name:
+        readable(job.shipper_name) || parties.get(job.shipper_id) || job.shipper_name,
       consignee_name:
-        job.consignee_name ||
+        readable(job.consignee_name) ||
         (job.consignee_id ? parties.get(job.consignee_id) : undefined) ||
         job.consignee_name,
-      agent_name: job.agent_name || (job.agent_id ? parties.get(job.agent_id) : undefined) || job.agent_name,
+      agent_name:
+        readable(job.agent_name) ||
+        (job.agent_id ? parties.get(job.agent_id) : undefined) ||
+        job.agent_name,
       salesperson_name:
-        job.salesperson_name ||
+        readable(job.salesperson_name) ||
         (job.salesperson_id ? users.get(job.salesperson_id) : undefined) ||
         job.salesperson_name,
-      branch_name: job.branch_name || (job.branch_id ? branches.get(job.branch_id) : undefined) || job.branch_name,
+      branch_name:
+        readable(job.branch_name) ||
+        (job.branch_id ? branches.get(job.branch_id) : undefined) ||
+        job.branch_name,
       origin_port_code: resolvePortLabel(job.origin_port_code, job.origin_port_id, ports),
       dest_port_code: resolvePortLabel(job.dest_port_code, job.dest_port_id, ports),
       etd: etd ? String(etd).slice(0, 10) : job.etd,

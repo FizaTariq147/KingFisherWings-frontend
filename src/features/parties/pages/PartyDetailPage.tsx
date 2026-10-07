@@ -19,7 +19,17 @@ import { PartyTransactionSummarySection } from '../components/PartyTransactionSu
 import { PartyVendorPermissionsSection } from '../components/PartyVendorPermissionsSection';
 import { PartyVendorUsersSection } from '../components/PartyVendorUsersSection';
 import { PartyOnlinePaymentHistoryPanel } from '@/features/online-payments/components/PartyOnlinePaymentHistoryPanel';
-import { PARTY_TYPE_LABELS } from '../constants/party.constants';
+import { PARTY_TYPE_LABELS, type PartyType } from '../constants/party.constants';
+
+/** Customer parties use customer portal tabs; supplier/vendor use vendor portal tabs. */
+function usesCustomerPortalTabs(partyType: PartyType | string): boolean {
+  return String(partyType).toUpperCase() === 'CUSTOMER';
+}
+
+function usesVendorPortalTabs(partyType: PartyType | string): boolean {
+  const t = String(partyType).toUpperCase();
+  return t === 'SUPPLIER' || t === 'VENDOR';
+}
 import { usePartyConfirmState } from '../hooks/usePartyConfirmState';
 import {
   useDeleteParty,
@@ -85,6 +95,80 @@ export default function PartyDetailPage() {
   };
 
   const active = party.is_active !== false;
+  const showCustomerPortal = usesCustomerPortalTabs(party.party_type);
+  const showVendorPortal = usesVendorPortalTabs(party.party_type);
+
+  const tabs = [
+    {
+      key: 'overview',
+      label: 'Overview',
+      content: <PartyOverviewPanel party={party} />,
+    },
+    {
+      key: 'transactions',
+      label: 'Transactions',
+      content: <PartyTransactionSummarySection party={party} />,
+    },
+    {
+      key: 'contacts',
+      label: `Contacts (${party.contacts?.length ?? 0})`,
+      content: (
+        <PartyContactsSection partyId={party.id} contacts={party.contacts ?? []} />
+      ),
+    },
+    {
+      key: 'addresses',
+      label: `Addresses (${party.addresses?.length ?? 0})`,
+      content: (
+        <PartyAddressesSection partyId={party.id} addresses={party.addresses ?? []} />
+      ),
+    },
+    ...(showCustomerPortal
+      ? [
+          {
+            key: 'portal-users',
+            label: 'Users Portal',
+            content: <PartyPortalUsersSection partyId={party.id} />,
+          },
+          {
+            key: 'portal-permissions',
+            label: 'Portal rights',
+            content: <PartyPortalPermissionsSection partyId={party.id} />,
+          },
+        ]
+      : []),
+    ...(showVendorPortal
+      ? [
+          {
+            key: 'vendor-users',
+            label: 'Vendor Portal',
+            content: <PartyVendorUsersSection partyId={party.id} />,
+          },
+          {
+            key: 'vendor-permissions',
+            label: 'Vendor rights',
+            content: <PartyVendorPermissionsSection partyId={party.id} />,
+          },
+        ]
+      : []),
+    {
+      key: 'edi-charges',
+      label: 'EDI / charges',
+      content: <PartyEdiAndChargesSection partyId={party.id} />,
+    },
+    {
+      key: 'payments',
+      label: 'Payments',
+      content: (
+        <PartyOnlinePaymentHistoryPanel partyId={party.id} partyType={party.party_type} />
+      ),
+    },
+    {
+      key: 'history',
+      label: 'History',
+      content: <PartyHistorySection partyId={party.id} />,
+    },
+  ];
 
   return (
     <div className="space-y-4">
@@ -165,69 +249,7 @@ export default function PartyDetailPage() {
             </div>
           </Card>
         }
-        tabs={[
-          {
-            key: 'overview',
-            label: 'Overview',
-            content: <PartyOverviewPanel party={party} />,
-          },
-          {
-            key: 'transactions',
-            label: 'Transactions',
-            content: <PartyTransactionSummarySection party={party} />,
-          },
-          {
-            key: 'contacts',
-            label: `Contacts (${party.contacts?.length ?? 0})`,
-            content: (
-              <PartyContactsSection partyId={party.id} contacts={party.contacts ?? []} />
-            ),
-          },
-          {
-            key: 'addresses',
-            label: `Addresses (${party.addresses?.length ?? 0})`,
-            content: (
-              <PartyAddressesSection partyId={party.id} addresses={party.addresses ?? []} />
-            ),
-          },
-          {
-            key: 'portal-users',
-            label: 'Users Portal',
-            content: <PartyPortalUsersSection partyId={party.id} />,
-          },
-          {
-            key: 'portal-permissions',
-            label: 'Portal rights',
-            content: <PartyPortalPermissionsSection partyId={party.id} />,
-          },
-          {
-            key: 'vendor-users',
-            label: 'Vendor Portal',
-            content: <PartyVendorUsersSection partyId={party.id} />,
-          },
-          {
-            key: 'vendor-permissions',
-            label: 'Vendor rights',
-            content: <PartyVendorPermissionsSection partyId={party.id} />,
-          },
-          {
-            key: 'edi-charges',
-            label: 'EDI / charges',
-            content: <PartyEdiAndChargesSection partyId={party.id} />,
-          },
-          {
-            key: 'payments',
-            label: 'Payments',
-            content: (
-              <PartyOnlinePaymentHistoryPanel partyId={party.id} partyType={party.party_type} />
-            ),
-          },
-          {
-            key: 'history',
-            label: 'History',
-            content: <PartyHistorySection partyId={party.id} />,
-          },
-        ]}
+        tabs={tabs}
       />
 
       {confirm && (

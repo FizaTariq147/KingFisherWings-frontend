@@ -11,6 +11,7 @@ import { isUuid } from '@/lib/isUuid';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
+import { useUsers } from '@/features/users/hooks/useUsers';
 import { useMemo } from 'react';
 import { JOB_TYPE_LABELS } from '../../constants/quotation.constants';
 import type { PaginationMeta, Quotation } from '../../types/quotation.types';
@@ -18,6 +19,7 @@ import {
   buildPortLabelMap,
   formatQuotationDate,
   quotationCustomerLabel,
+  quotationIdNameLabel,
   quotationRouteLabel,
   quotationTotalLabel,
 } from '../../utils/quotationDisplay';
@@ -61,10 +63,21 @@ export function QuotationTable({
   emptyMessage = 'No quotations found',
 }: QuotationTableProps) {
   const { data: ports = [] } = useMasterOptions('ports', MASTER_PATHS.ports, true);
+  const { data: departments = [] } = useMasterOptions(
+    'departments',
+    MASTER_PATHS.departments,
+    true,
+  );
   const { data: customersResult } = useParties({
     page: 1,
     limit: 100,
     party_type: 'CUSTOMER',
+    order: 'asc',
+  });
+  const { data: usersResult } = useUsers({
+    tenantId: '',
+    page: 1,
+    limit: 100,
     order: 'asc',
   });
 
@@ -73,11 +86,34 @@ export function QuotationTable({
     const map = new Map<string, string>();
     for (const p of customersResult?.parties ?? []) {
       if (!isUuid(p.id)) continue;
-      const label = [p.code, p.name].filter(Boolean).join(' — ') || p.id.slice(0, 8);
-      map.set(p.id, label);
+      const label = [p.code, p.name].filter(Boolean).join(' — ');
+      if (label) map.set(p.id, label);
     }
     return map;
   }, [customersResult?.parties]);
+  const departmentMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const d of departments) {
+      const id = String(d.id ?? '');
+      if (!isUuid(id)) continue;
+      const label = String(d.name ?? d.code ?? '').trim();
+      if (label && !isUuid(label)) map.set(id, label);
+    }
+    return map;
+  }, [departments]);
+  const userMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const u of usersResult?.users ?? []) {
+      if (!isUuid(u.id)) continue;
+      const label =
+        u.full_name?.trim() ||
+        [u.first_name, u.last_name].filter(Boolean).join(' ').trim() ||
+        u.email?.trim() ||
+        '';
+      if (label && !isUuid(label)) map.set(u.id, label);
+    }
+    return map;
+  }, [usersResult?.users]);
 
   return (
     <div className="relative space-y-3">
@@ -87,6 +123,8 @@ export function QuotationTable({
           <TableRow className="hover:bg-transparent">
             <TableHead>Quote No</TableHead>
             <TableHead>Customer</TableHead>
+            <TableHead>Department</TableHead>
+            <TableHead>Salesperson</TableHead>
             <TableHead>Job type</TableHead>
             <TableHead>Route</TableHead>
             <TableHead>Valid until</TableHead>
@@ -98,7 +136,7 @@ export function QuotationTable({
         <TableBody>
           {quotations.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={8} className="text-center text-[var(--color-neutral-400)] py-10">
+              <TableCell colSpan={10} className="text-center text-[var(--color-neutral-400)] py-10">
                 {emptyMessage}
               </TableCell>
             </TableRow>
@@ -111,6 +149,12 @@ export function QuotationTable({
               >
                 <TableCell>{quotationDisplayNumber(q)}</TableCell>
                 <TableCell>{quotationCustomerLabel(q, partyMap)}</TableCell>
+                <TableCell>
+                  {quotationIdNameLabel(q.department_name, q.department_id, departmentMap)}
+                </TableCell>
+                <TableCell>
+                  {quotationIdNameLabel(q.salesperson_name, q.salesperson_id, userMap)}
+                </TableCell>
                 <TableCell>{JOB_TYPE_LABELS[q.job_type] ?? q.job_type}</TableCell>
                 <TableCell className="max-w-[280px] whitespace-normal break-words">
                   {quotationRouteLabel(q, portMap)}

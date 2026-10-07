@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -150,6 +151,24 @@ function StaffOfferRow({
         <p className="text-xs text-[var(--color-neutral-600)]">
           Negotiation closed —{' '}
           {status === 'APPROVED' ? 'approved.' : status === 'DISAPPROVED' ? 'disapproved.' : 'done.'}
+        </p>
+      ) : null}
+
+      {status === 'APPROVED' && (offer.purchaseInvoiceId || offer.invoiceId) ? (
+        <p className="text-xs text-[var(--color-neutral-700)]">
+          Purchase invoice:{' '}
+          <Link
+            to={`/purchase-invoices/${offer.purchaseInvoiceId || offer.invoiceId}`}
+            className="font-medium text-[var(--color-primary)] underline"
+          >
+            Open PI
+          </Link>
+          . Vendor posts from the vendor portal; record payment proofs here on the admin side.
+        </p>
+      ) : status === 'APPROVED' ? (
+        <p className="text-xs text-[var(--color-neutral-500)]">
+          Vendor accepted — a draft invoice is created for the vendor to post. Check Purchase
+          Invoices once posted; payment proofs are recorded on this admin side.
         </p>
       ) : null}
 

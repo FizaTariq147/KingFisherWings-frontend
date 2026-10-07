@@ -210,6 +210,7 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
   const nestedDest =
     asRecord(r.dest_port) ?? asRecord(r.destination) ?? asRecord(r.destPort);
   const nestedSales = asRecord(r.salesperson);
+  const nestedDepartment = asRecord(r.department);
   const nestedCarrier = asRecord(r.carrier);
 
   const linesRaw =
@@ -234,7 +235,11 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
       ([str(nestedSales?.first_name), str(nestedSales?.last_name)].filter(Boolean).join(' ') ||
         str(nestedSales?.name)),
     branch_id: pickStr(r, 'branch_id', 'branchId'),
-    department_id: pickStr(r, 'department_id', 'departmentId'),
+    department_id:
+      pickStr(r, 'department_id', 'departmentId') ?? pickStr(nestedDepartment ?? {}, 'id'),
+    department_name:
+      pickStr(r, 'department_name', 'departmentName') ??
+      pickStr(nestedDepartment ?? {}, 'name', 'code'),
     carrier_id: pickStr(r, 'carrier_id', 'carrierId'),
     carrier_name: pickStr(r, 'carrier_name', 'carrierName') ?? str(nestedCarrier?.name),
     origin_port_id: pickStr(r, 'origin_port_id', 'originPortId'),

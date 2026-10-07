@@ -58,8 +58,9 @@ import { normalizeNegotiationTimeline } from '@/features/quotations/utils/normal
 import type { NegotiationTimeline } from '@/features/quotations/types/quotationExtended.types';
 
 /**
- * After customer approve: convert quote → job for non-gated modes (Sea/Land/Road/…).
- * NVOCC / Air stay on gated booking/shipment accept flow (no convert here).
+ * After customer approve: convert quote → job only for modes that do not use a
+ * booking form and are not gated. Booking-form modes convert on form submit;
+ * NVOCC / Air stay on gated booking/shipment accept flow.
  */
 async function tryConvertQuotationAfterCustomerApprove(opts: {
   quotationId: string;
@@ -257,8 +258,8 @@ export const portalQuotationsService = {
       /* keep prior */
     }
 
-    // Convert quote → job on customer approve (Sea/Land/Road/Courier/Warehouse/Customs/…).
-    // Gated NVOCC/Air skip this — they continue via booking/shipment accept + forms.
+    // Convert on approve only when the mode is not booking-form gated and not NVOCC/Air.
+    // Sea/Land/Road/… wait for booking-form submit (tryConvertQuotationAfterBookingForm).
     if (!jobId && !skipsAutoConvertOnApprove(jt)) {
       const converted = await tryConvertQuotationAfterCustomerApprove({
         quotationId: id,
@@ -845,8 +846,8 @@ export const portalQuotationsService = {
     if (!target) {
       throw new PortalApiError(
         opts.isAir || isAirJobType(opts.jobType)
-          ? 'No air shipment/job is linked to this quote yet. Ask your forwarder to start the air job, then try again.'
-          : 'No NVOCC booking is linked to this quote yet. Ask your forwarder to create the booking, then try again.',
+          ? 'File selected. Upload starts when an air shipment/job is linked to this quote.'
+          : 'File selected. Upload starts when an NVOCC booking is linked to this quote.',
         404,
       );
     }

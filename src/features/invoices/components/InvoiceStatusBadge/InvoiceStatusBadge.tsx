@@ -9,6 +9,7 @@ const VARIANT: Record<
   'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'primary'
 > = {
   DRAFT: 'neutral',
+  SUBMITTED: 'warning',
   POSTED: 'primary',
   SENT: 'info',
   PARTIALLY_PAID: 'warning',

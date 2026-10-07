@@ -169,7 +169,7 @@ interface AuthActions {
 type AuthStore = AuthState & AuthActions
 
 /** Idle timeout — inactivity only (not counted from login). */
-export const SESSION_IDLE_MS = 60 * 60 * 1000
+export const SESSION_IDLE_MS = 20 * 60 * 1000
 
 export function isSessionIdleExpired(lastActiveAt: number | null | undefined): boolean {
   if (!lastActiveAt || !Number.isFinite(lastActiveAt)) return false

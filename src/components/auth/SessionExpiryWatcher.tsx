@@ -22,7 +22,7 @@ function isSuperAdminSurface(): boolean {
 }
 
 /**
- * Idle timeout is 60 minutes from last activity (not from login).
+ * Idle timeout is 20 minutes from last activity (not from login).
  * When idle expires, SessionExpiredModal offers Continue (no login) or Revoke.
  * ERP staff/tenant only — disabled on Super Admin surfaces.
  */

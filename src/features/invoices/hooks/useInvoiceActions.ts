@@ -19,7 +19,15 @@ export function useInvoiceActions(invoiceId: string) {
     onSuccess: () => invalidate(id),
   });
   const send = useMutation({
-    mutationFn: (dto: SendInvoiceEmailDto) => invoiceService.send(id, dto),
+    mutationFn: (args: {
+      dto: SendInvoiceEmailDto;
+      pdfBlob?: Blob;
+      fileName?: string;
+    }) =>
+      invoiceService.send(id, args.dto, {
+        pdfBlob: args.pdfBlob,
+        fileName: args.fileName,
+      }),
     onSuccess: () => invalidate(id),
   });
   const cancel = useMutation({

@@ -5,7 +5,7 @@ import { wakeApi, withGatewayRetry } from '@/lib/wakeApi';
 import {
   formatShareEmailError,
   normalizeShareEmailResult,
-  SHARE_EMAIL_TIMEOUT_MS,
+  postStaffEmailWithPdf,
 } from '@/features/shared/share-email';
 import { INVOICE_API } from '../api/invoice.api';
 import {
@@ -431,24 +431,102 @@ export const invoiceService = {
     }
   },
 
-  async send(id: string, dto: SendInvoiceEmailDto): Promise<Invoice> {
+  /**
+   * Store KingFisher client PDF so send-email can attach the same formatted file.
+   * Tries multipart → JSON pdf_base64 → server POST /invoices/:id/pdf.
+   */
+  async storeClientPdf(
+    id: string,
+    opts: { blob: Blob; fileName?: string },
+  ): Promise<InvoicePdfInfo> {
+    assertId(id);
+    const fileName = (opts.fileName || `invoice-${id}.pdf`).replace(/[^\w.\- ()[\]]+/g, '_');
+    const file = new File([opts.blob], fileName, { type: 'application/pdf' });
+    const stripFormContentType = [
+      (data: unknown, headers?: Record<string, unknown> & { delete?: (key: string) => void }) => {
+        if (headers && typeof headers === 'object' && data instanceof FormData) {
+          delete headers['Content-Type'];
+          delete headers['content-type'];
+          headers.delete?.('Content-Type');
+          headers.delete?.('content-type');
+        }
+        return data;
+      },
+    ];
+
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      form.append('layout_variant', 'KFW_STANDARD');
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post<unknown>(INVOICE_API.pdf(id), form, {
+          withCredentials: false,
+          transformRequest: stripFormContentType,
+        }),
+      );
+      return normalizeInvoicePdfInfo(res.data);
+    } catch {
+      /* try base64 JSON next */
+    }
+
+    try {
+      const buffer = await opts.blob.arrayBuffer();
+      let binary = '';
+      const bytes = new Uint8Array(buffer);
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+      }
+      const pdfBase64 = btoa(binary);
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post<unknown>(
+          INVOICE_API.pdf(id),
+          { pdf_base64: pdfBase64, file_name: fileName, layout_variant: 'KFW_STANDARD' },
+          {
+            withCredentials: false,
+            headers: { 'Content-Type': 'application/json' },
+          },
+        ),
+      );
+      return normalizeInvoicePdfInfo(res.data);
+    } catch {
+      return this.generatePdf(id);
+    }
+  },
+
+  async send(
+    id: string,
+    dto: SendInvoiceEmailDto,
+    opts?: { pdfBlob?: Blob; fileName?: string },
+  ): Promise<Invoice> {
     assertId(id);
     try {
-      // Wake cold dyno first; PDF + SMTP often needs longer than the default 120s.
       await wakeApi(45_000);
-      const res = await axiosInstance.post<unknown>(
+
+      const fields: Record<string, string | undefined> = {
+        to_email: dto.to_email.trim(),
+        message: dto.message?.trim() ? dto.message.trim().slice(0, 500) : undefined,
+      };
+
+      // Live OpenAPI: attach client KingFisher PDF via multipart file / pdf_base64.
+      // Without a client PDF, generate server PDF then SMTP-send the stored file.
+      if (!opts?.pdfBlob) {
+        await this.generatePdf(id);
+        const { waitForInvoicePdfReady } = await import('../utils/waitForInvoicePdfReady');
+        await waitForInvoicePdfReady(id);
+      }
+
+      const data = await postStaffEmailWithPdf(
+        axiosInstance,
         INVOICE_API.send(id),
-        {
-          to_email: dto.to_email.trim(),
-          ...(dto.message?.trim() ? { message: dto.message.trim().slice(0, 500) } : {}),
-        },
-        { timeout: SHARE_EMAIL_TIMEOUT_MS },
+        fields,
+        { pdfBlob: opts?.pdfBlob, fileName: opts?.fileName },
       );
-      const share = normalizeShareEmailResult(res.data);
+      const share = normalizeShareEmailResult(data);
       if (share.success === false) {
         throw new Error(share.message || 'Invoice email was not sent.');
       }
-      const invoice = normalizeInvoice(unwrapEntity(res.data));
+      const invoice = normalizeInvoice(unwrapEntity(data));
       if (invoice) return invoice;
       return this.getById(id);
     } catch (error) {

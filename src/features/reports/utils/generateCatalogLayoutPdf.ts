@@ -7,8 +7,9 @@ import {
 
 /**
  * Client layout PDF for any catalogue / registry code that has a permanent JSON layout.
- * Additive preview path only — never replaces POST /invoices/:id/pdf or /quotations/:id/pdf,
- * and never replaces live POST /reports/generate when a pack is bound + active.
+ * Used for entity-bound live data (quotation / invoice / job / party) and as fallback
+ * when POST /reports/generate is unavailable. Never replaces POST /invoices/:id/pdf
+ * or /quotations/:id/pdf.
  */
 export async function generateCatalogLayoutPdf(
   code: string,

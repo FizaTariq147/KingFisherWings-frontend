@@ -26,6 +26,7 @@ export default function SalesReportsPage() {
         backTo="/sales"
         backLabel="Back to Sales"
         tiles={salesReportHubTiles}
+        catalogFamilies={['quotation', 'commercial']}
       />
 
       <Card className="p-4">

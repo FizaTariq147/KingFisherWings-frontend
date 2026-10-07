@@ -20,38 +20,30 @@ import {
 } from '@/features/shared/share-email';
 import { formatVendorMoney } from '@/features/vendor-shared/formatMoney';
 import { VendorQueryError } from '@/features/vendor-shared/VendorQueryError';
-import { vendorInvoicePdfErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import {
+  vendorErrorMessage,
+  vendorInvoicePdfErrorMessage,
+} from '@/features/vendor-shared/vendorUnavailable';
+import {
+  usePostVendorInvoice,
   useSendVendorInvoiceEmail,
-  useSendVendorPaymentProofEmail,
-  useUploadVendorInvoicePaymentProof,
   useVendorInvoice,
-  useVendorInvoicePaymentProofs,
   useVendorInvoicePdfBlob,
 } from '../hooks/useVendorInvoices';
-import {
-  PaymentProofList,
-  PaymentProofUploadForm,
-} from '@/features/payment-proofs/components/PaymentProofPanels';
-import type { PaymentProof } from '@/features/payment-proofs/types/paymentProof.types';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
-
-type ShareTarget =
-  | { kind: 'invoice' }
-  | { kind: 'proof'; proof: PaymentProof };
 
 export default function VendorInvoiceDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError, error, refetch } = useVendorInvoice(id);
   const pdfBlob = useVendorInvoicePdfBlob();
-  const { data: proofs = [] } = useVendorInvoicePaymentProofs(id);
-  const uploadProof = useUploadVendorInvoicePaymentProof(id);
+  const postInvoice = usePostVendorInvoice();
   const sendInvoiceEmail = useSendVendorInvoiceEmail();
-  const sendProofEmail = useSendVendorPaymentProofEmail();
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [emailMessage, setEmailMessage] = useState<string | null>(null);
-  const [shareTarget, setShareTarget] = useState<ShareTarget | null>(null);
+  const [shareOpen, setShareOpen] = useState(false);
   const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
   const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
   const [pdfReadyFileName, setPdfReadyFileName] = useState('invoice.pdf');
@@ -85,20 +77,29 @@ export default function VendorInvoiceDetailPage() {
     );
   }
 
-  const emailPending = sendInvoiceEmail.isPending || sendProofEmail.isPending;
+  const statusUpper = String(data.status || '').trim().toUpperCase();
+  const canPost = statusUpper === 'DRAFT' || statusUpper === 'SUBMITTED' || statusUpper === '';
+  const emailPending = sendInvoiceEmail.isPending;
 
   const onShare = async (dto: ShareEmailDto) => {
-    if (!shareTarget) return;
-    const result =
-      shareTarget.kind === 'invoice'
-        ? await sendInvoiceEmail.mutateAsync({ id: data.id, dto })
-        : await sendProofEmail.mutateAsync({
-            invoiceId: data.id,
-            proofId: shareTarget.proof.id,
-            dto,
-          });
-    setShareTarget(null);
+    const result = await sendInvoiceEmail.mutateAsync({ id: data.id, dto });
+    setShareOpen(false);
     setEmailMessage(formatShareEmailSuccess(result));
+  };
+
+  const onPost = () => {
+    setActionError(null);
+    setActionMessage(null);
+    void postInvoice
+      .mutateAsync(data)
+      .then(() => {
+        setActionMessage(
+          'Invoice posted. Your forwarder can process it under Purchase Invoices and record payment proofs there.',
+        );
+      })
+      .catch((err) => {
+        setActionError(vendorErrorMessage(err, 'Could not post invoice.'));
+      });
   };
 
   return (
@@ -119,6 +120,16 @@ export default function VendorInvoiceDetailPage() {
         actions={
           <>
             {data.status ? <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge> : null}
+            {canPost ? (
+              <Button
+                type="button"
+                size="sm"
+                disabled={postInvoice.isPending}
+                onClick={onPost}
+              >
+                {postInvoice.isPending ? 'Posting…' : 'Post invoice'}
+              </Button>
+            ) : null}
             <Button
               type="button"
               size="sm"
@@ -134,7 +145,7 @@ export default function VendorInvoiceDetailPage() {
               disabled={emailPending}
               onClick={() => {
                 setEmailMessage(null);
-                setShareTarget({ kind: 'invoice' });
+                setShareOpen(true);
               }}
             >
               <Mail size={14} />
@@ -153,14 +164,24 @@ export default function VendorInvoiceDetailPage() {
           </>
         }
       />
+      {actionError ? (
+        <p className="text-sm text-[var(--color-danger-600)]" role="alert">
+          {actionError}
+        </p>
+      ) : null}
+      {actionMessage ? (
+        <p className="text-sm text-emerald-700" role="status">
+          {actionMessage}
+        </p>
+      ) : null}
       {pdfError ? (
         <p className="text-sm text-[var(--color-danger-600)]" role="alert">
           {pdfError}
         </p>
-      ) : !data.pdfUrl && String(data.status || '').toUpperCase() === 'DRAFT' ? (
+      ) : canPost && !data.pdfUrl ? (
         <p className="text-sm text-[var(--color-neutral-500)]">
-          PDF download becomes available after your forwarder posts this draft purchase invoice in
-          ERP.
+          Post this invoice so your forwarder can process it under Purchase Invoices. Payment proofs
+          are recorded on the admin side.
         </p>
       ) : null}
       {emailMessage ? (
@@ -217,38 +238,13 @@ export default function VendorInvoiceDetailPage() {
           </PortalAnimatedList>
         )}
       </PortalPanel>
-      <PortalPanel padded className="space-y-4">
-        <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Payment proofs</h2>
-        <PaymentProofList
-          proofs={proofs}
-          viewer="vendor"
-          sendingProofId={
-            sendProofEmail.isPending && shareTarget?.kind === 'proof'
-              ? shareTarget.proof.id
-              : null
-          }
-          onSendEmail={(proof) => {
-            setEmailMessage(null);
-            setShareTarget({ kind: 'proof', proof });
-          }}
-        />
-        <PaymentProofUploadForm
-          disabled={uploadProof.isPending}
-          currencyCode={data.currencyCode}
-          onUpload={async (file, dto) => {
-            await uploadProof.mutateAsync({ file, dto });
-          }}
-        />
-      </PortalPanel>
 
       <ShareEmailModal
-        open={Boolean(shareTarget)}
-        title={
-          shareTarget?.kind === 'proof' ? 'Email payment proof to admin' : 'Email PI PDF to admin'
-        }
+        open={shareOpen}
+        title="Email PI PDF to admin"
         description="Default admin inbox is the tenant email / finance users when To is left empty."
         isPending={emailPending}
-        onClose={() => setShareTarget(null)}
+        onClose={() => setShareOpen(false)}
         onSend={onShare}
       />
 

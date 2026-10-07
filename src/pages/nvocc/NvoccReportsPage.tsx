@@ -18,6 +18,7 @@ import {
   useNvoccUtilizationReport,
   useNvoccVoyagePnl,
 } from '@/features/nvocc/hooks/useNvoccReports';
+import { ModuleReportFormatsSection } from '@/features/reports/components/ModuleReportFormatsSection';
 import { useSeaKpiWeekly } from '@/features/reports/hooks/useReportCatalog';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterList } from '@/features/masters/hooks/useMasterResource';
@@ -228,6 +229,8 @@ export default function NvoccReportsPage() {
           </p>
         </div>
       </div>
+
+      <ModuleReportFormatsSection families={['sea_docs', 'ops_list']} />
 
       <Card className="p-4 space-y-4">
         <div className="flex flex-wrap gap-3 items-end">

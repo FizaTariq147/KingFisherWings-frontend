@@ -31,11 +31,58 @@ function bool(value: unknown): boolean | undefined {
   return undefined;
 }
 
-function normalizeStatus(value: unknown): PurchaseInvoiceStatus {
-  const raw = String(value ?? 'DRAFT').trim().toUpperCase();
-  return (PURCHASE_INVOICE_STATUSES as readonly string[]).includes(raw)
-    ? (raw as PurchaseInvoiceStatus)
-    : 'DRAFT';
+function looksVendorOriginated(record: Record<string, unknown>): boolean {
+  const source = (
+    str(record.source) ||
+    str(record.origin) ||
+    str(record.created_via) ||
+    str(record.submitted_via) ||
+    ''
+  ).toUpperCase();
+  if (source && /VENDOR/.test(source)) return true;
+  if (bool(record.vendor_submitted) || bool(record.submitted_by_vendor)) return true;
+  const remarks = `${str(record.remarks) ?? ''} ${str(record.internal_notes) ?? ''}`;
+  return /auto-created after accepting vendor|vendor portal|vendor cost offer/i.test(remarks);
+}
+
+function normalizeStatus(
+  value: unknown,
+  record: Record<string, unknown>,
+): PurchaseInvoiceStatus {
+  const raw = String(
+    value ??
+      record.invoice_status ??
+      record.state ??
+      record.workflow_status ??
+      record.pi_status ??
+      '',
+  )
+    .trim()
+    .toUpperCase();
+
+  // Vendor submit/post is the finalize step — admin only records remittance proofs.
+  // Do not keep showing Draft when the PI came from the vendor portal.
+  if (
+    looksVendorOriginated(record) &&
+    (!raw || raw === 'DRAFT' || raw === 'SUBMITTED' || raw === 'PENDING_REVIEW' || raw === 'PENDING')
+  ) {
+    return 'POSTED';
+  }
+
+  if (
+    raw === 'SUBMITTED' ||
+    raw === 'PENDING_REVIEW' ||
+    raw === 'PENDING' ||
+    raw === 'VENDOR_SUBMITTED'
+  ) {
+    return 'SUBMITTED';
+  }
+
+  if ((PURCHASE_INVOICE_STATUSES as readonly string[]).includes(raw)) {
+    return raw as PurchaseInvoiceStatus;
+  }
+  // Prefer Posted over Draft for unknown non-empty statuses from newer APIs.
+  return raw ? 'POSTED' : 'DRAFT';
 }
 
 function normalizeType(value: unknown): PurchaseInvoiceType | string | undefined {
@@ -83,7 +130,7 @@ export function normalizePurchaseInvoice(raw: unknown): PurchaseInvoice | null {
   return {
     id,
     invoice_number: str(r.invoice_number) ?? str(r.invoice_no) ?? str(r.number),
-    status: normalizeStatus(r.status),
+    status: normalizeStatus(r.status, r),
     invoice_type: normalizeType(r.invoice_type),
     party_id,
     party_name:

@@ -1452,7 +1452,8 @@ export const jobService = {
 
   /**
    * POST /jobs/:id/:mode/booking-form/documents/:kind
-   * Mandatory kinds: commercial_invoice, packing_list, bill_of_lading, licence, uat_tax_certificate.
+   * Document kinds: commercial_invoice, packing_list, licence, uat_tax_certificate (mandatory);
+   * bill_of_lading (optional).
    */
   async uploadBookingFormDocument(
     id: string,

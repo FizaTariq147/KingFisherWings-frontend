@@ -121,6 +121,8 @@ export function canConvertQuotationToJob(
 ): boolean {
   // NVOCC / Air: gated booking-form → invoice (no Convert button).
   if (usesGatedFreightQuoteFlow(jobType)) return false;
+  // Sea/Land/Road/…: convert only after booking-form submit (no manual Convert).
+  if (usesModeBookingFormConvertFlow(jobType)) return false;
   // Prefer server GET actions flag when present.
   if (actions && typeof actions.can_convert === 'boolean') {
     return actions.can_convert;
@@ -149,7 +151,8 @@ export function usesGatedFreightQuoteFlow(jobType?: string): boolean {
 
 /**
  * Sea FCL/LCL, Land, Road Freight, Courier, Warehouse, Customs Clearance:
- * customer approve converts quote → job; booking form / ops continue on the job.
+ * customer approve leaves quote APPROVED; convert → job runs only after the
+ * customer submits the portal booking form (or staff completes booking-form).
  * Air / NVOCC stay on the gated invoice flow (usesGatedFreightQuoteFlow).
  */
 export function usesModeBookingFormConvertFlow(jobType?: string): boolean {
@@ -158,9 +161,13 @@ export function usesModeBookingFormConvertFlow(jobType?: string): boolean {
     .toUpperCase()
     .replace(/[\s-]+/g, '_');
   if (!jt) return false;
+  // Air / NVOCC stay on the separate gated invoice flow.
+  if (usesGatedFreightQuoteFlow(jt)) return false;
   if (
     jt === 'SEA_FCL' ||
     jt === 'SEA_LCL' ||
+    jt === 'SEA_EXPORT' ||
+    jt === 'SEA_IMPORT' ||
     jt === 'LAND' ||
     jt === 'LAND_TRANSPORT' ||
     jt === 'LAND_FREIGHT' ||
@@ -175,7 +182,7 @@ export function usesModeBookingFormConvertFlow(jobType?: string): boolean {
   ) {
     return true;
   }
-  if (jt.startsWith('SEA_FCL_') || jt.startsWith('SEA_LCL_')) return true;
+  if (jt.startsWith('SEA_')) return true;
   if (jt.startsWith('ROAD_')) return true;
   if (jt.startsWith('WAREHOUSE_')) return true;
   if (jt.startsWith('COURIER_')) return true;
@@ -183,9 +190,14 @@ export function usesModeBookingFormConvertFlow(jobType?: string): boolean {
   return false;
 }
 
-/** True when customer approve must not run convert-to-job + draft invoice (NVOCC / Air only). */
+/**
+ * True when customer approve must not run convert-to-job + draft invoice.
+ * NVOCC / Air are gated; booking-form modes wait for booking-form submit.
+ */
 export function skipsAutoConvertOnApprove(jobType?: string): boolean {
-  return usesGatedFreightQuoteFlow(jobType);
+  return (
+    usesGatedFreightQuoteFlow(jobType) || usesModeBookingFormConvertFlow(jobType)
+  );
 }
 
 /**
