@@ -69,6 +69,8 @@ export default function VendorLoginPage() {
   const setSession = useVendorAuthStore((s) => s.setSession);
   const { ready, accessToken } = useVendorAuthBootstrap();
   const [showPassword, setShowPassword] = useState(false);
+  /** Explicit option when signing in with an admin-issued temporary password. */
+  const [setNewPasswordAfterLogin, setSetNewPasswordAfterLogin] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -102,6 +104,19 @@ export default function VendorLoginPage() {
     mutationFn: vendorAuthService.login,
     onSuccess: async ({ user, accessToken: token, refreshToken }) => {
       await applySession(user, token, refreshToken);
+
+      const mustChange = Boolean(useVendorAuthStore.getState().user?.mustChangePassword);
+      // API must_change_password → forced set-password (customer portal parity).
+      // Checkbox → open Set new password after sign-in without locking the session
+      // (live vendor API may omit the flag after a temporary-password reset).
+      if (mustChange || setNewPasswordAfterLogin) {
+        if (mustChange) {
+          useVendorAuthStore.getState().markMustChangePassword();
+        }
+        navigate('/vendor/change-password', { replace: true });
+        return;
+      }
+
       const from = (location.state as LocationState | null)?.from?.pathname;
       navigate(safeInternalPath(from, { prefix: '/vendor', fallback: '/vendor' }), { replace: true });
     },
@@ -140,7 +155,8 @@ export default function VendorLoginPage() {
   });
 
   if (ready && accessToken) {
-    return <Navigate to="/vendor" replace />;
+    const mustChange = Boolean(useVendorAuthStore.getState().user?.mustChangePassword);
+    return <Navigate to={mustChange ? '/vendor/change-password' : '/vendor'} replace />;
   }
 
   const closeToHub = () => navigate('/login');
@@ -275,6 +291,18 @@ export default function VendorLoginPage() {
                 <p className="mt-1 text-xs text-red-600">{form.formState.errors.password.message}</p>
               )}
             </div>
+            <label className="flex items-start gap-2 text-xs text-slate-600 leading-snug">
+              <input
+                type="checkbox"
+                className="mt-0.5 rounded border-slate-300"
+                checked={setNewPasswordAfterLogin}
+                onChange={(e) => setSetNewPasswordAfterLogin(e.target.checked)}
+              />
+              <span>
+                I have a temporary password — set a new password after sign-in (same as customer
+                portal)
+              </span>
+            </label>
             <button
               type="submit"
               disabled={loginMutation.isPending}

@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
 import {
   PortalAnimatedGrid,
   PortalAnimatedGridItem,
@@ -8,7 +10,9 @@ import {
 import { useVendorAuthStore } from '../store/vendorAuthStore';
 
 export default function VendorAccountPage() {
+  const navigate = useNavigate();
   const user = useVendorAuthStore((s) => s.user);
+  const mustChange = Boolean(user?.mustChangePassword);
   const firstLetter = (user?.fullName || user?.email || 'V').charAt(0).toUpperCase();
 
   return (
@@ -49,6 +53,25 @@ export default function VendorAccountPage() {
             <Info label="Tenant" value={user?.tenantName || user?.tenantSlug || '—'} />
           </PortalAnimatedGridItem>
         </PortalAnimatedGrid>
+      </PortalPanel>
+
+      <PortalPanel padded className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Password</h2>
+          <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
+            {mustChange
+              ? 'You signed in with a temporary password. Set your own password to continue.'
+              : 'Change the password you use to sign in to the vendor portal.'}
+          </p>
+        </div>
+        <Button
+          type="button"
+          size="sm"
+          variant={mustChange ? 'primary' : 'secondary'}
+          onClick={() => navigate('/vendor/change-password')}
+        >
+          {mustChange ? 'Set new password' : 'Change password'}
+        </Button>
       </PortalPanel>
     </div>
   );

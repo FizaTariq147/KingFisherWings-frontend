@@ -64,12 +64,15 @@ export function normalizeCreatePartyPortalUserResult(raw: unknown): CreatePartyP
     user,
     temporaryPassword:
       pickString(
+        data.initial_password,
+        data.initialPassword,
         data.temporary_password,
         data.temporaryPassword,
         data.temp_password,
         data.password,
         asRecord(data.credentials)?.password,
         asRecord(data.credentials)?.temporary_password,
+        asRecord(data.credentials)?.initial_password,
       ) || undefined,
   };
 }
@@ -77,16 +80,20 @@ export function normalizeCreatePartyPortalUserResult(raw: unknown): CreatePartyP
 export function normalizeResetPartyPortalPasswordResult(
   raw: unknown,
 ): ResetPartyPortalPasswordResult {
-  const data = asRecord(unwrapData(raw)) ?? asRecord(raw) ?? {};
+  const envelope = asRecord(raw) ?? {};
+  const data = asRecord(unwrapData(raw)) ?? envelope;
   return {
+    // Live API returns data.initial_password (not temporary_password).
     temporaryPassword:
       pickString(
+        data.initial_password,
+        data.initialPassword,
         data.temporary_password,
         data.temporaryPassword,
         data.temp_password,
         data.password,
       ) || undefined,
-    message: pickString(data.message) || undefined,
+    message: pickString(envelope.message, data.message) || undefined,
   };
 }
 

@@ -64,19 +64,31 @@ export const partyVendorService = {
     id: string,
     dto: ResetPartyVendorPasswordDto = {},
   ): Promise<ResetPartyVendorPasswordResult> {
-    const res = await axiosInstance.post(PARTY_API.vendorUserResetPassword(partyId, id), dto);
-    return normalizeResetPartyVendorPasswordResult(bodyOf(res) ?? res.data);
+    if (!partyId?.trim() || !id?.trim()) {
+      throw new Error('Party id and vendor user id are required.');
+    }
+    // Pass full envelope — password lives in data.initial_password; message on the root.
+    const res = await axiosInstance.post(PARTY_API.vendorUserResetPassword(partyId, id), {
+      ...(dto.password?.trim() ? { password: dto.password.trim() } : {}),
+      ...(dto.send_email != null ? { send_email: dto.send_email } : {}),
+    });
+    return normalizeResetPartyVendorPasswordResult(res.data);
   },
 
   async resendInvite(partyId: string, id: string): Promise<{ message?: string }> {
+    if (!partyId?.trim() || !id?.trim()) {
+      throw new Error('Party id and vendor user id are required.');
+    }
     const res = await axiosInstance.post(PARTY_API.vendorUserResendInvite(partyId, id));
-    const raw = bodyOf<{ message?: string }>(res) ?? (res.data as { message?: string });
-    return {
-      message:
-        raw && typeof raw === 'object' && 'message' in raw
-          ? String((raw as { message?: string }).message || 'Invite resent.')
-          : 'Invite resent.',
-    };
+    const envelope =
+      res.data && typeof res.data === 'object'
+        ? (res.data as { message?: string; data?: { message?: string } })
+        : null;
+    const message =
+      (typeof envelope?.message === 'string' && envelope.message.trim()) ||
+      (typeof envelope?.data?.message === 'string' && envelope.data.message.trim()) ||
+      'Invite resent.';
+    return { message };
   },
 
   async getPermissions(partyId: string): Promise<PartyVendorPermissionEntry[]> {

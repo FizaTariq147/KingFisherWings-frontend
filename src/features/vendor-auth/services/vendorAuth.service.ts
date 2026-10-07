@@ -2,11 +2,14 @@ import { vendorApiClient, type VendorApiEnvelope } from '@/lib/vendorApiClient';
 import { VENDOR_AUTH_API } from '../api/vendorAuth.api';
 import type {
   VendorAcceptInviteDto,
+  VendorChangePasswordDto,
   VendorLoginDto,
   VendorLoginResult,
   VendorUser,
 } from '../types/vendorAuth.types';
+import { useVendorAuthStore } from '../store/vendorAuthStore';
 import {
+  mergeVendorUserProfile,
   normalizeVendorLogin,
   normalizeVendorTokenPair,
   normalizeVendorUser,
@@ -53,9 +56,18 @@ export const vendorAuthService = {
 
   async me(): Promise<VendorUser> {
     const res = await vendorApiClient.get<unknown>(VENDOR_AUTH_API.me);
-    const user = normalizeVendorUser(unwrapData(res.data) ?? res.data);
-    if (!user) throw new Error('Could not load vendor profile.');
-    return user;
+    const next = normalizeVendorUser(unwrapData(res.data) ?? res.data);
+    if (!next) throw new Error('Could not load vendor profile.');
+    const prior = useVendorAuthStore.getState().user;
+    return mergeVendorUserProfile(prior, next);
+  },
+
+  /** POST /vendor/auth/change-password — required when must_change_password is true. */
+  async changePassword(dto: VendorChangePasswordDto): Promise<void> {
+    await vendorApiClient.post(VENDOR_AUTH_API.changePassword, {
+      current_password: dto.current_password,
+      new_password: dto.new_password,
+    });
   },
 
   async acceptInvite(dto: VendorAcceptInviteDto): Promise<VendorLoginResult | void> {

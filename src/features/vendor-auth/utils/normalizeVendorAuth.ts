@@ -1,5 +1,7 @@
 import {
+  hasMustChangePasswordFlag,
   normalizeAuthLoginResponse,
+  pickMustChangePassword,
   resolveAuthTenantBranding,
   unwrapEnvelope,
 } from '@/features/auth/utils/normalizeAuthResponse';
@@ -27,6 +29,18 @@ function pickVendorUserSource(envelope: Record<string, unknown>): Record<string,
   );
 }
 
+function resolveMustChangePassword(
+  ...sources: Array<Record<string, unknown> | null | undefined>
+): boolean | undefined {
+  for (const source of sources) {
+    if (!source) continue;
+    if (hasMustChangePasswordFlag(source)) {
+      return pickMustChangePassword(source);
+    }
+  }
+  return undefined;
+}
+
 export function normalizeVendorUser(raw: unknown): VendorUser | null {
   const envelope = unwrapEnvelope(raw);
   const r = pickVendorUserSource(envelope) ?? asRecord(raw);
@@ -37,6 +51,7 @@ export function normalizeVendorUser(raw: unknown): VendorUser | null {
 
   const party = normalizeParty(r.party) ?? normalizeParty(r.vendor) ?? normalizeParty(envelope.party);
   const { tenantId, tenantSlug, tenantName } = resolveAuthTenantBranding(r, envelope);
+  const mustChangePassword = resolveMustChangePassword(r, envelope, asRecord(raw));
 
   return {
     id: id || email,
@@ -47,6 +62,20 @@ export function normalizeVendorUser(raw: unknown): VendorUser | null {
     tenantName,
     party,
     status: pickString(r.status) || undefined,
+    ...(mustChangePassword === undefined ? {} : { mustChangePassword }),
+  };
+}
+
+/** Merge /me into the session user without dropping a login-time must-change flag. */
+export function mergeVendorUserProfile(prior: VendorUser | null, next: VendorUser): VendorUser {
+  const priorMustChange = Boolean(prior?.mustChangePassword);
+  return {
+    ...prior,
+    ...next,
+    mustChangePassword:
+      next.mustChangePassword === undefined
+        ? priorMustChange
+        : Boolean(next.mustChangePassword),
   };
 }
 
@@ -64,6 +93,10 @@ export function normalizeVendorLogin(raw: unknown): VendorLoginResult | null {
   if (!login?.accessToken) return null;
 
   const userFromPayload = normalizeVendorUser(raw);
+  const mustChangePassword =
+    userFromPayload?.mustChangePassword === true ||
+    login.user.mustChangePassword === true;
+
   const user: VendorUser | null = userFromPayload
     ? {
         ...userFromPayload,
@@ -74,18 +107,20 @@ export function normalizeVendorLogin(raw: unknown): VendorLoginResult | null {
             ? userFromPayload.fullName
             : login.user.name || userFromPayload.fullName,
         tenantId: userFromPayload.tenantId || login.user.tenantId || '',
+        mustChangePassword,
       }
     : normalizeVendorUser({
         id: login.user.id,
         email: login.user.email,
         full_name: login.user.name,
         tenant_id: login.user.tenantId,
+        must_change_password: mustChangePassword,
       });
 
   if (!user) return null;
   return {
     accessToken: login.accessToken,
     refreshToken: login.refreshToken || '',
-    user,
+    user: { ...user, mustChangePassword },
   };
 }

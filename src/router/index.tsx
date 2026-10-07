@@ -267,6 +267,7 @@ import VendorUsersAdminPage from '../features/vendor-users-admin/pages/VendorUse
 import { VendorShell } from '../features/vendor-auth/layout/VendorShell'
 import { VendorProtectedRoute } from '../features/vendor-auth/components/VendorProtectedRoute'
 import VendorLoginPage from '../features/vendor-auth/pages/VendorLoginPage'
+import VendorChangePasswordPage from '../features/vendor-auth/pages/VendorChangePasswordPage'
 import VendorHomePage from '../features/vendor-auth/pages/VendorHomePage'
 import VendorAccountPage from '../features/vendor-auth/pages/VendorAccountPage'
 import VendorInvoicesPage from '../features/vendor-invoices/pages/VendorInvoicesPage'
@@ -405,6 +406,7 @@ export const router = createBrowserRouter([
     path: '/vendor',
     element: <VendorProtectedRoute />,
     children: [
+      { path: 'change-password', element: <VendorChangePasswordPage /> },
       {
         element: <VendorShell />,
         children: [

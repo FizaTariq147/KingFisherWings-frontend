@@ -13,6 +13,16 @@ export interface VendorUser {
   tenantName?: string;
   party?: VendorParty;
   status?: string;
+  /**
+   * True when the vendor must set their own password
+   * (temporary password / first login — POST /vendor/auth/change-password).
+   */
+  mustChangePassword?: boolean;
+}
+
+export interface VendorChangePasswordDto {
+  current_password: string;
+  new_password: string;
 }
 
 export interface VendorLoginDto {

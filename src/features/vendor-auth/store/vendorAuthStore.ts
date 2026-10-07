@@ -10,6 +10,9 @@ interface VendorAuthState {
   setSession: (user: VendorUser, accessToken: string, refreshToken: string) => void;
   setUser: (user: VendorUser) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
+  clearMustChangePassword: () => void;
+  /** Mark session as requiring a new password (temporary-password login fallback). */
+  markMustChangePassword: () => void;
   logout: () => void;
 }
 
@@ -28,6 +31,17 @@ export const useVendorAuthStore = create<VendorAuthState>()(
           accessToken,
           refreshToken,
           isAuthenticated: Boolean(accessToken),
+        }),
+      clearMustChangePassword: () =>
+        set((state) => {
+          if (!state.user?.mustChangePassword) return state;
+          return { user: { ...state.user, mustChangePassword: false } };
+        }),
+      markMustChangePassword: () =>
+        set((state) => {
+          if (!state.user) return state;
+          if (state.user.mustChangePassword) return state;
+          return { user: { ...state.user, mustChangePassword: true } };
         }),
       logout: () =>
         set({
