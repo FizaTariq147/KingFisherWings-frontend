@@ -5,16 +5,27 @@ import { MenuTileCard } from '@/components/widgets/MenuTileCard';
 import { filterMenuTiles } from '@/components/widgets/filterMenuTiles';
 import { AppAnimatedGrid, AppAnimatedGridItem } from '@/components/motion';
 import { ReportsPageBackLink } from './ReportsPageBackLink';
+import { ModuleReportFormatsSection } from './ModuleReportFormatsSection';
 import { isFromReports, withFromReports } from '../hooks/useReportsBackLink';
+import type { ReportFamily } from '../types/reportCatalog.types';
+import { catalogFamiliesForReportsTile } from '../utils/moduleCatalogFamily';
 
 type ReportsHubPageProps = {
   title: string;
   backTo: string;
   backLabel: string;
   tiles: MenuTile[];
+  /** Optional override; otherwise inferred from title/path of the hub. */
+  catalogFamilies?: ReportFamily[];
 };
 
-export function ReportsHubPage({ title, backTo, backLabel, tiles }: ReportsHubPageProps) {
+export function ReportsHubPage({
+  title,
+  backTo,
+  backLabel,
+  tiles,
+  catalogFamilies,
+}: ReportsHubPageProps) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState('');
@@ -25,6 +36,14 @@ export function ReportsHubPage({ title, backTo, backLabel, tiles }: ReportsHubPa
   };
 
   const filtered = useMemo(() => filterMenuTiles(tiles, query), [tiles, query]);
+
+  const families = useMemo(
+    () =>
+      catalogFamilies?.length
+        ? catalogFamilies
+        : catalogFamiliesForReportsTile({ title, path: backTo, id: title }),
+    [catalogFamilies, title, backTo],
+  );
 
   const sectionGroups = useMemo(() => {
     const hasSections = filtered.some((tile) => tile.section);
@@ -84,6 +103,10 @@ export function ReportsHubPage({ title, backTo, backLabel, tiles }: ReportsHubPa
           ) : null}
         </div>
       </div>
+
+      {families.length ? (
+        <ModuleReportFormatsSection families={families} />
+      ) : null}
     </div>
   );
 }

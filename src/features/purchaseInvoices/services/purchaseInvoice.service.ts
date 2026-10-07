@@ -2,6 +2,21 @@ import { axiosInstance } from '@/lib/axios';
 import type { ApiEnvelope } from '@/lib/apiEnvelope';
 import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
+import type {
+  PaymentProof,
+  UploadPaymentProofDto,
+} from '@/features/payment-proofs/types/paymentProof.types';
+import {
+  normalizePaymentProof,
+  normalizePaymentProofList,
+} from '@/features/payment-proofs/utils/normalizePaymentProof';
+import {
+  buildPaymentProofUploadFields,
+  formatPaymentProofUploadError,
+  postPaymentProofMultipartFetch,
+} from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
+import { ensureErpAccessToken } from '@/lib/ensureErpAccessToken';
+import { useAuthStore } from '@/store/authStore';
 import { PURCHASE_INVOICE_API } from '../api/purchaseInvoice.api';
 import {
   normalizePurchaseInvoice,
@@ -187,6 +202,61 @@ export const purchaseInvoiceService = {
       return invoice;
     } catch (error) {
       throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /purchase-invoices/{id}/payment-proofs */
+  async listPaymentProofs(id: string): Promise<PaymentProof[]> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(PURCHASE_INVOICE_API.paymentProofs(id)),
+      );
+      return normalizePaymentProofList(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /**
+   * POST /purchase-invoices/{id}/payment-proofs
+   * Multipart: file + amount_claimed + payment_date (+ optional reference_number, notes).
+   * Uses browser fetch (not axios) so Multer receives a proper multipart boundary.
+   */
+  async uploadPaymentProof(
+    id: string,
+    file: File,
+    dto: UploadPaymentProofDto,
+  ): Promise<PaymentProof> {
+    assertId(id);
+    if (dto.amount == null || !Number.isFinite(dto.amount) || dto.amount <= 0) {
+      throw new Error('Amount claimed is required.');
+    }
+    const paymentDate = dto.payment_date?.trim();
+    if (!paymentDate || !/^\d{4}-\d{2}-\d{2}$/.test(paymentDate)) {
+      throw new Error('Payment date is required (YYYY-MM-DD).');
+    }
+    try {
+      const token = (await ensureErpAccessToken()) ?? useAuthStore.getState().accessToken;
+      if (!token) {
+        throw new Error('Your session expired. Sign in again, then retry the payment proof upload.');
+      }
+      const data = await postPaymentProofMultipartFetch({
+        path: PURCHASE_INVOICE_API.paymentProofs(id),
+        file,
+        fields: buildPaymentProofUploadFields(
+          { ...dto, payment_date: paymentDate },
+          'extended',
+        ),
+        accessToken: token,
+        credentials: 'include',
+        failureFallback: 'Could not save payment proof. Verify amount_claimed and payment_date.',
+      });
+      const proof = normalizePaymentProof(unwrapEntity(data));
+      if (!proof) throw new Error('Upload succeeded but no payment proof was returned.');
+      return proof;
+    } catch (error) {
+      throw formatPaymentProofUploadError(error);
     }
   },
 };

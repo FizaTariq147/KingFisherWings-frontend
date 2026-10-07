@@ -78,15 +78,18 @@ export function useQuotationResolvedLabels(q: Quotation) {
     const map = new Map<string, string>();
     for (const party of customersResult?.parties ?? []) {
       if (!isUuid(party.id)) continue;
-      map.set(party.id, partyDisplayLabel(party));
+      const label = partyDisplayLabel(party);
+      if (label && label !== '—') map.set(party.id, label);
     }
     return map;
   }, [customersResult?.parties]);
 
   const customerLabel = useMemo(() => {
-    if (q.customer_name) return q.customer_name;
+    if (q.customer_name?.trim() && !isUuid(q.customer_name.trim())) {
+      return q.customer_name.trim();
+    }
     const fromList = quotationCustomerLabel(q, partyMap);
-    if (fromList !== q.customer_id?.slice(0, 8)) return fromList;
+    if (fromList && fromList !== '—') return fromList;
     if (customerParty) return partyDisplayLabel(customerParty);
     if (customerLoading) return 'Loading…';
     return '—';

@@ -35,7 +35,7 @@ export function formatShareEmailError(error: unknown, fallback = 'Could not send
 
   if (status === 500 && isGenericInternalError(detail)) {
     return new Error(
-      'Email send failed on the server (500). Usually SMTP/PDF generation — confirm SMTP_HOST=smtp.gmail.com and that the PDF can be generated, then retry.',
+      'Email send failed on the server (500). Check Render logs for this send-email/send request. Frontend attaches the KingFisher PDF as multipart file (or pdf_base64) with to_email when available.',
     );
   }
 
@@ -94,15 +94,25 @@ function extractShareErrorDetail(data: unknown): string | undefined {
     root.error,
     root.detail,
     root.cause,
+    root.description,
     asRecord(root.error)?.message,
     asRecord(root.cause)?.message,
     asRecord(root.data)?.message,
+    asRecord(root.response)?.message,
   ];
 
   for (const candidate of candidates) {
     if (typeof candidate === 'string' && candidate.trim()) return candidate.trim();
     if (Array.isArray(candidate)) {
-      const joined = candidate.map(String).filter(Boolean).join('; ');
+      const joined = candidate
+        .map((item) => {
+          if (typeof item === 'string') return item;
+          const rec = asRecord(item);
+          if (rec && typeof rec.message === 'string') return rec.message;
+          return item != null ? String(item) : '';
+        })
+        .filter(Boolean)
+        .join('; ');
       if (joined) return joined;
     }
   }

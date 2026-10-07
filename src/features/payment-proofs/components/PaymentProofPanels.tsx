@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { pickValidatedUploadFile, PAYMENT_PROOF_UPLOAD_OPTIONS } from '@/lib/fileUploadValidation';
@@ -20,21 +20,43 @@ interface PaymentProofUploadFormProps {
   remainingAmount?: number;
 }
 
-/** Classic proof upload (file required) — vendor / legacy portal proof-only path. */
+function todayLocalYmd(): string {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/** Classic proof upload (file required) — staff AP / legacy portal proof-only path. */
 export function PaymentProofUploadForm({
   onUpload,
   disabled,
   currencyCode,
   remainingAmount,
 }: PaymentProofUploadFormProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [amount, setAmount] = useState('');
-  const [paymentDate, setPaymentDate] = useState('');
+  const [paymentDate, setPaymentDate] = useState(todayLocalYmd);
   const [reference, setReference] = useState('');
   const [notes, setNotes] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+
+  const clearFile = () => {
+    setFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  /** Open the file picker so a selected proof can be replaced in place. */
+  const replaceFile = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+      fileInputRef.current.click();
+    }
+  };
 
   const submit = async () => {
     if (!file) {
@@ -45,7 +67,8 @@ export function PaymentProofUploadForm({
     setMessage(null);
     setPending(true);
     try {
-      const amountRaw = amount.trim();
+      // Allow "1,000.50" style input from copy/paste.
+      const amountRaw = amount.trim().replace(/,/g, '');
       if (!amountRaw) {
         setError('Enter the amount paid for this proof.');
         setPending(false);
@@ -68,12 +91,17 @@ export function PaymentProofUploadForm({
         setPending(false);
         return;
       }
+      const dateValue = paymentDate.trim();
+      if (!dateValue || !/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+        setError('Payment date is required (YYYY-MM-DD).');
+        setPending(false);
+        return;
+      }
       const dto: UploadPaymentProofDto = {
         amount: amountValue,
-        ...(paymentDate ? { payment_date: paymentDate } : {}),
+        payment_date: dateValue,
         ...(reference.trim() ? { reference: reference.trim() } : {}),
         ...(notes.trim() ? { notes: notes.trim() } : {}),
-        ...(currencyCode?.trim() ? { currency_code: currencyCode.trim() } : {}),
       };
       await onUpload(file, dto);
       setMessage(
@@ -81,9 +109,9 @@ export function PaymentProofUploadForm({
           ? `Proof uploaded for ${amountValue}. Remaining due will show as ${(remainingAmount - amountValue).toLocaleString()}.`
           : 'Payment proof uploaded.',
       );
-      setFile(null);
+      clearFile();
       setAmount('');
-      setPaymentDate('');
+      setPaymentDate(todayLocalYmd());
       setReference('');
       setNotes('');
     } catch (err) {
@@ -103,19 +131,49 @@ export function PaymentProofUploadForm({
           (partial payments are allowed).
         </p>
       ) : null}
-      <Input
-        type="file"
-        accept=".pdf,.png,.jpg,.jpeg,.webp"
-        onChange={(e) => {
-          const { file, error: fileError } = pickValidatedUploadFile(
-            e.target.files,
-            PAYMENT_PROOF_UPLOAD_OPTIONS,
-          );
-          setFile(file);
-          setError(fileError ?? null);
-          e.target.value = '';
-        }}
-      />
+      <label className="block text-sm">
+        <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
+          Proof file *
+        </span>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf,.png,.jpg,.jpeg,.webp,application/pdf,image/png,image/jpeg,image/webp"
+          className="block w-full text-sm text-[var(--color-neutral-700)] file:mr-3 file:rounded-md file:border-0 file:bg-[var(--color-neutral-100)] file:px-3 file:py-1.5 file:text-sm"
+          onChange={(e) => {
+            const { file: picked, error: fileError } = pickValidatedUploadFile(
+              e.target.files,
+              PAYMENT_PROOF_UPLOAD_OPTIONS,
+            );
+            if (picked) {
+              setFile(picked);
+              setError(null);
+              // Keep input replaceable (same path can be re-chosen after Change file).
+              e.target.value = '';
+              return;
+            }
+            if (fileError) setError(fileError);
+          }}
+        />
+      </label>
+      {file ? (
+        <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--color-neutral-700)]">
+          <span>
+            Selected: <span className="font-medium">{file.name}</span>
+          </span>
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            disabled={disabled || pending}
+            onClick={replaceFile}
+          >
+            Change file
+          </Button>
+        </div>
+      ) : (
+        <p className="text-xs text-[var(--color-neutral-400)]">No file chosen</p>
+      )}
       <div className="grid gap-2 sm:grid-cols-2">
         <Input
           label="Amount claimed"
@@ -129,6 +187,7 @@ export function PaymentProofUploadForm({
           type="date"
           value={paymentDate}
           onChange={(e) => setPaymentDate(e.target.value)}
+          required
         />
         <Input
           placeholder="Bank reference"
@@ -145,7 +204,12 @@ export function PaymentProofUploadForm({
       </div>
       {error ? <p className="text-xs text-[var(--color-danger-600)]">{error}</p> : null}
       {message ? <p className="text-xs text-[var(--color-success-700)]">{message}</p> : null}
-      <Button type="button" size="sm" disabled={disabled || pending || !file} onClick={() => void submit()}>
+      <Button
+        type="button"
+        size="sm"
+        disabled={disabled || pending || !file || !amount.trim() || !paymentDate.trim()}
+        onClick={() => void submit()}
+      >
         {pending ? 'Uploading…' : 'Upload proof'}
       </Button>
     </div>

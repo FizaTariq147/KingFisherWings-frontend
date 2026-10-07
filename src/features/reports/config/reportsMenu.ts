@@ -94,7 +94,8 @@ const reportsCsTile: MenuTile = csPricingDashboard
 export const reportsCatalogTile: MenuTile = {
   id: 'fresa-report-catalog',
   title: 'Report formats catalogue',
-  description: 'Browse layout PDFs by section and generate live reports when a pack is bound.',
+  description:
+    'Browse format PDFs by family. Open from a quotation, invoice, or job to fill formats with live record data.',
   icon: FileStack,
   iconColor: 'bg-orange-500',
   path: REPORT_CATALOG_ROUTE,

@@ -1,8 +1,14 @@
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { useUsers } from '@/features/users/hooks/useUsers';
+import { isUuid } from '@/lib/isUuid';
+import { useMemo } from 'react';
 import { JOB_TYPE_LABELS } from '../../constants/quotation.constants';
 import { useQuotationResolvedLabels } from '../../hooks/useQuotationResolvedLabels';
 import type { Quotation } from '../../types/quotation.types';
 import { formatQuotationRemarks } from '../../utils/formatQuotationRemarks';
 import { quotationDisplayNumber } from '../../utils/normalizeQuotation';
+import { quotationIdNameLabel } from '../../utils/quotationDisplay';
 
 function Row({ label, value }: { label: string; value?: string | number | null }) {
   return (
@@ -19,6 +25,40 @@ interface QuotationOverviewPanelProps {
 
 export function QuotationOverviewPanel({ quotation: q }: QuotationOverviewPanelProps) {
   const { customerLabel, originLabel, destinationLabel } = useQuotationResolvedLabels(q);
+  const { data: departments = [] } = useMasterOptions(
+    'departments',
+    MASTER_PATHS.departments,
+    true,
+  );
+  const { data: usersResult } = useUsers({
+    tenantId: '',
+    page: 1,
+    limit: 100,
+    order: 'asc',
+  });
+  const departmentMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const d of departments) {
+      const id = String(d.id ?? '');
+      if (!isUuid(id)) continue;
+      const label = String(d.name ?? d.code ?? '').trim();
+      if (label && !isUuid(label)) map.set(id, label);
+    }
+    return map;
+  }, [departments]);
+  const userMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const u of usersResult?.users ?? []) {
+      if (!isUuid(u.id)) continue;
+      const label =
+        u.full_name?.trim() ||
+        [u.first_name, u.last_name].filter(Boolean).join(' ').trim() ||
+        u.email?.trim() ||
+        '';
+      if (label && !isUuid(label)) map.set(u.id, label);
+    }
+    return map;
+  }, [usersResult?.users]);
 
   const remarks = formatQuotationRemarks(q.remarks, {
     contactName: q.contact_name,
@@ -49,7 +89,14 @@ export function QuotationOverviewPanel({ quotation: q }: QuotationOverviewPanelP
           <Row label="Contact" value={q.contact_name} />
           <Row label="Email" value={q.contact_email} />
           <Row label="Phone" value={q.contact_phone} />
-          <Row label="Salesperson" value={q.salesperson_name || q.salesperson_id} />
+          <Row
+            label="Department"
+            value={quotationIdNameLabel(q.department_name, q.department_id, departmentMap)}
+          />
+          <Row
+            label="Salesperson"
+            value={quotationIdNameLabel(q.salesperson_name, q.salesperson_id, userMap)}
+          />
         </dl>
       </section>
 

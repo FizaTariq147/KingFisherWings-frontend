@@ -195,7 +195,11 @@ export function useVendorPortalOfferActions(offerId: string) {
   const accept = useMutation({
     mutationFn: (dto: VendorNegotiationAcceptDto = {}) =>
       vendorPortalJobsService.accept(offerId, dto),
-    onSuccess: invalidate,
+    onSuccess: () => {
+      invalidate();
+      // Draft invoice may have been auto-created on accept.
+      void queryClient.invalidateQueries({ queryKey: ['vendor', scope, 'invoices'] });
+    },
   });
   const reject = useMutation({
     mutationFn: (dto: VendorNegotiationRejectDto) =>

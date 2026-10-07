@@ -7,6 +7,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table';
+import { useParties } from '@/features/parties/hooks/useParties';
+import { isUuid } from '@/lib/isUuid';
+import { useMemo } from 'react';
 import { JOB_TYPE_LABELS } from '../../constants/job.constants';
 import type { Job, PaginationMeta } from '../../types/job.types';
 import { jobDisplayNumber } from '../../utils/jobRoute';
@@ -41,6 +44,21 @@ export function JobTable({
   onClose,
   onDelete,
 }: JobTableProps) {
+  const { data: partiesResult } = useParties({
+    page: 1,
+    limit: 100,
+    order: 'asc',
+  });
+  const partyMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const p of partiesResult?.parties ?? []) {
+      if (!isUuid(p.id)) continue;
+      const label = [p.code, p.name].filter(Boolean).join(' — ');
+      if (label) map.set(p.id, label);
+    }
+    return map;
+  }, [partiesResult?.parties]);
+
   return (
     <div className="relative space-y-3">
       <AppFetchBar active={Boolean(isFetching)} className="absolute top-0 left-0 right-0 z-10" />
@@ -78,10 +96,14 @@ export function JobTable({
                   </button>
                 </TableCell>
                 <TableCell>{JOB_TYPE_LABELS[j.job_type] ?? j.job_type}</TableCell>
-                <TableCell>{jobPartyLabel(j, 'shipper')}</TableCell>
-                <TableCell>{jobPartyLabel(j, 'consignee')}</TableCell>
+                <TableCell>{jobPartyLabel(j, 'shipper', partyMap)}</TableCell>
+                <TableCell>{jobPartyLabel(j, 'consignee', partyMap)}</TableCell>
                 <TableCell>{jobRouteLabel(j)}</TableCell>
-                <TableCell>{j.commodity?.trim() || '—'}</TableCell>
+                <TableCell>
+                  {j.commodity?.trim() && !isUuid(j.commodity.trim())
+                    ? j.commodity.trim()
+                    : '—'}
+                </TableCell>
                 <TableCell>{jobScheduleLabel(j)}</TableCell>
                 <TableCell>
                   <JobStatusBadge job={j} />

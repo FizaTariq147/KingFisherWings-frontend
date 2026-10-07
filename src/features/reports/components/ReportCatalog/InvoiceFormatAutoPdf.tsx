@@ -1,29 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
-import { PdfViewerModal } from '@/features/files/components/PdfViewerModal';
-import { usePdfViewer } from '@/features/files/hooks/usePdfViewer';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { getInvoiceFormatPreview } from '../../data/invoiceFormatPreviews';
 import { getInvoiceFormatUiLayout } from '../../data/invoiceFormatUiLayouts';
 import { getAccountsFormatUiLayout } from '../../data/accountsFormatUiLayouts';
 import { getWmsFormatUiLayout } from '../../data/wmsFormatUiLayouts';
 import type { InvoiceFormatPreview } from '../../types/invoiceFormatPreview.types';
+import type { ReportContextIds } from '../../utils/reportParameterUtils';
 import {
-  generateInvoiceFormatLayoutPdf,
-  invoiceRecordToFormatPdfData,
-} from '../../utils/generateInvoiceFormatLayoutPdf';
-import { invoiceService } from '@/features/invoices/services/invoice.service';
+  CatalogFormatPdfViewerShell,
+  useCatalogFormatLayoutPdf,
+} from '../../hooks/useCatalogFormatLayoutPdf';
 
 type Props = {
   code: string;
   invoiceId?: string;
+  /** Full catalogue deep-link context (preferred when present). */
+  context?: ReportContextIds | null;
   autoOpen?: boolean;
 };
-
-function isUuid(value: string): boolean {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-    value.trim(),
-  );
-}
 
 function previewFromLayout(code: string): InvoiceFormatPreview | undefined {
   const layout =
@@ -45,83 +38,41 @@ function previewFromLayout(code: string): InvoiceFormatPreview | undefined {
 
 /**
  * Opens KingFisher layout PDF on select (JSON layout + KF logo).
- * Live invoice fields are merged when invoiceId is present.
+ * Live invoice / related entity fields are merged from context or invoiceId.
  */
-export function InvoiceFormatAutoPdf({ code, invoiceId, autoOpen = true }: Props) {
+export function InvoiceFormatAutoPdf({
+  code,
+  invoiceId,
+  context,
+  autoOpen = true,
+}: Props) {
   const preview = getInvoiceFormatPreview(code) ?? previewFromLayout(code);
-  const viewer = usePdfViewer();
-  const [error, setError] = useState<string | null>(null);
-  const openedFor = useRef<string | null>(null);
+  const resolvedContext: ReportContextIds | null = context
+    ? { ...context, invoice_id: context.invoice_id || invoiceId }
+    : invoiceId
+      ? { invoice_id: invoiceId }
+      : null;
 
-  useEffect(() => {
-    if (!autoOpen || !preview) return;
-    if (openedFor.current === `${preview.code}:${invoiceId || ''}`) return;
-    openedFor.current = `${preview.code}:${invoiceId || ''}`;
-
-    const fileName = formatPdfFilename(
-      `Format-${preview.formatNumber}-${preview.code}`,
+  const { viewer, error, boundLabel } = useCatalogFormatLayoutPdf({
+    autoOpen,
+    preview,
+    fileName: formatPdfFilename(
+      `Format-${preview?.formatNumber ?? 0}-${preview?.code ?? code}`,
       'invoice-format',
-    );
-    const title = preview.name;
-
-    let cancelled = false;
-    setError(null);
-
-    void viewer
-      .loadPreview(async () => {
-        let data = {};
-        if (invoiceId && isUuid(invoiceId)) {
-          try {
-            const invoice = await invoiceService.getById(invoiceId);
-            data = invoiceRecordToFormatPdfData(invoice);
-          } catch {
-            /* keep layout demo defaults */
-          }
-          // Optional enrich from GET /invoices/:id/format-payload — additive only.
-          try {
-            const payload = await invoiceService.getFormatPayload(invoiceId, preview.code);
-            if (payload && typeof payload === 'object') {
-              data = { ...data, ...payload };
-            }
-          } catch {
-            /* endpoint may be absent; preview still works */
-          }
-        }
-        return generateInvoiceFormatLayoutPdf(preview, data);
-      }, { fileName, title })
-      .catch((err) => {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Could not open PDF.');
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- open once per code / invoice
-  }, [preview?.code, invoiceId, autoOpen]);
+    ),
+    title: preview?.name,
+    context: resolvedContext,
+    formatCode: preview?.code,
+  });
 
   if (!preview) return null;
 
   return (
-    <>
-      {error ? (
-        <p role="alert" className="text-sm text-[var(--color-danger-600)]">
-          {error}
-        </p>
-      ) : null}
-
-      <PdfViewerModal
-        open={viewer.open}
-        onClose={viewer.close}
-        src={viewer.src}
-        blob={viewer.blob}
-        fileName={viewer.fileName}
-        title={viewer.title}
-        loading={viewer.loading}
-        error={viewer.error}
-        skipBranding
-      />
-    </>
+    <CatalogFormatPdfViewerShell
+      viewer={viewer}
+      error={error}
+      title={preview.name}
+      boundLabel={boundLabel}
+    />
   );
 }

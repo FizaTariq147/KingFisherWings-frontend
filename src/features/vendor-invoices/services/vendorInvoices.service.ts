@@ -1,13 +1,6 @@
 import { vendorApiClient, VendorApiError } from '@/lib/vendorApiClient';
 import type { ApiPeriodQuery } from '@/lib/apiPeriod';
 import { periodQueryParams } from '@/lib/apiPeriod';
-import type { PaymentProof, UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
-import { normalizePaymentProof, normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
-import {
-  buildPaymentProofUploadFields,
-  formatPaymentProofUploadError,
-  postPaymentProofMultipart,
-} from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
 import { formatPdfFilename, stripPdfExtension } from '@/features/files/utils/pdfFilename';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
@@ -78,32 +71,6 @@ export const vendorInvoicesService = {
   async openItems(): Promise<VendorInvoiceListResult> {
     const res = await vendorApiClient.get(VENDOR_INVOICES_API.openItems);
     return normalizeInvoiceList(res.data, {});
-  },
-
-  async listPaymentProofs(invoiceId: string): Promise<PaymentProof[]> {
-    const res = await vendorApiClient.get(VENDOR_INVOICES_API.paymentProofs(invoiceId));
-    return normalizePaymentProofList(res.data);
-  },
-
-  async uploadPaymentProof(
-    invoiceId: string,
-    file: File,
-    dto: UploadPaymentProofDto,
-  ): Promise<PaymentProof> {
-    if (!invoiceId?.trim()) throw new VendorApiError('Invoice id is required.', 400);
-    try {
-      const data = await postPaymentProofMultipart(
-        vendorApiClient,
-        VENDOR_INVOICES_API.paymentProofs(invoiceId),
-        file,
-        buildPaymentProofUploadFields(dto, 'portal'),
-      );
-      const proof = normalizePaymentProof(data);
-      if (!proof) throw new VendorApiError('Upload failed — server returned an unexpected response.', 500);
-      return proof;
-    } catch (error) {
-      throw formatPaymentProofUploadError(error);
-    }
   },
 
   async exportCsv(params: VendorInvoiceListParams = {}): Promise<void> {
@@ -225,19 +192,38 @@ export const vendorInvoicesService = {
     return item ? { ...item, lines: [] } : null;
   },
 
-  async sendEmail(id: string, dto: ShareEmailDto = {}): Promise<ShareEmailResult> {
-    return postShareEmail(vendorApiClient, VENDOR_INVOICES_API.sendEmail(id), dto);
+  /**
+   * Post (finalize) a draft invoice via POST /vendor/invoices/submit —
+   * there is no /vendor/invoices/{id}/post endpoint.
+   * Submit creates/returns a finance draft; vendor portal treats a successful post as POSTED.
+   */
+  async post(detail: VendorInvoiceDetail): Promise<VendorInvoiceDetail> {
+    if (!detail?.id?.trim()) throw new VendorApiError('Invoice id is required.', 400);
+    const total = detail.totalAmount;
+    if (total == null || !Number.isFinite(total) || total < 0.01) {
+      throw new VendorApiError('Invoice total amount is required to post.', 400);
+    }
+    const currency =
+      (detail.currencyCode || 'AED').trim().toUpperCase() || 'AED';
+    const submitted = await this.submit({
+      currency_code: currency,
+      total_amount: total,
+      invoice_date: detail.invoiceDate || undefined,
+      due_date: detail.dueDate || undefined,
+      reference: detail.reference || undefined,
+      remarks: detail.remarks || undefined,
+    });
+    const base = submitted
+      ? { ...detail, ...submitted, id: detail.id, lines: submitted.lines?.length ? submitted.lines : detail.lines }
+      : detail;
+    const status = String(base.status || '').trim().toUpperCase();
+    if (!status || status === 'DRAFT' || status === 'SUBMITTED') {
+      return { ...base, status: 'POSTED' };
+    }
+    return base;
   },
 
-  async sendPaymentProofEmail(
-    invoiceId: string,
-    proofId: string,
-    dto: ShareEmailDto = {},
-  ): Promise<ShareEmailResult> {
-    return postShareEmail(
-      vendorApiClient,
-      VENDOR_INVOICES_API.paymentProofSendEmail(invoiceId, proofId),
-      dto,
-    );
+  async sendEmail(id: string, dto: ShareEmailDto = {}): Promise<ShareEmailResult> {
+    return postShareEmail(vendorApiClient, VENDOR_INVOICES_API.sendEmail(id), dto);
   },
 };

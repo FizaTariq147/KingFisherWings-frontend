@@ -156,10 +156,12 @@ export default function VendorInvoicesPage() {
 
       <PortalPanel padded className="space-y-4">
         <div>
-          <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Submit a draft invoice</h2>
+          <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Post an invoice</h2>
           <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
-            Send currency, total amount, and optional PDF / dates / reference. Staff will post the
-            purchase invoice in ERP.
+            After you accept a cost offer, a draft invoice is created automatically — open it and
+            post when ready. You can also post a new invoice here (currency, total, optional PDF).
+            It appears under Purchase Invoices for your forwarder; payment proofs are recorded on
+            the admin side.
           </p>
         </div>
         {submitError ? (
@@ -194,7 +196,9 @@ export default function VendorInvoicesPage() {
                 file: file ?? undefined,
               })
               .then(() => {
-                setSubmitMsg('Draft invoice submitted. Staff will post it in ERP.');
+                setSubmitMsg(
+                  'Invoice posted. Your forwarder can process it under Purchase Invoices.',
+                );
                 setAmount('');
                 setInvoiceDate('');
                 setDueDate('');
@@ -203,7 +207,7 @@ export default function VendorInvoicesPage() {
                 setFile(null);
               })
               .catch((err) => {
-                setSubmitError(vendorErrorMessage(err, 'Could not submit invoice.'));
+                setSubmitError(vendorErrorMessage(err, 'Could not post invoice.'));
               });
           }}
         >
@@ -253,7 +257,7 @@ export default function VendorInvoicesPage() {
           </label>
           <div className="sm:col-span-2 lg:col-span-3">
             <Button type="submit" disabled={submit.isPending}>
-              {submit.isPending ? 'Submitting…' : 'Submit draft PI'}
+              {submit.isPending ? 'Posting…' : 'Post invoice'}
             </Button>
           </div>
         </form>

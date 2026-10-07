@@ -33,6 +33,8 @@ export default function QuotationListPage() {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<QuotationStatus | 'all'>('all');
   const [jobType, setJobType] = useState<JobType | 'all'>('all');
+  const [departmentId, setDepartmentId] = useState('');
+  const [salespersonId, setSalespersonId] = useState('');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
@@ -48,7 +50,7 @@ export default function QuotationListPage() {
 
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch, status, jobType, fromDate, toDate, order]);
+  }, [debouncedSearch, status, jobType, departmentId, salespersonId, fromDate, toDate, order]);
 
   const listParams = {
     page,
@@ -56,6 +58,9 @@ export default function QuotationListPage() {
     search: debouncedSearch.trim() || undefined,
     status: status === 'all' ? undefined : status,
     job_type: jobType === 'all' ? undefined : jobType,
+    // Opt-in only — Sales All Quotations stays unscoped when these are empty.
+    department_id: departmentId || undefined,
+    salesperson_id: salespersonId || undefined,
     from_date: fromDate || undefined,
     to_date: toDate || undefined,
     order,
@@ -174,6 +179,10 @@ export default function QuotationListPage() {
           onStatusChange={setStatus}
           jobType={jobType}
           onJobTypeChange={setJobType}
+          departmentId={departmentId}
+          onDepartmentIdChange={setDepartmentId}
+          salespersonId={salespersonId}
+          onSalespersonIdChange={setSalespersonId}
           fromDate={fromDate}
           onFromDateChange={setFromDate}
           toDate={toDate}

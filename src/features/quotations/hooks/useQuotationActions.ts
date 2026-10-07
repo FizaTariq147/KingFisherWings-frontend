@@ -95,7 +95,15 @@ export function useQuotationActions(quotationId: string) {
     },
   });
   const sendEmail = useMutation({
-    mutationFn: (dto: SendQuotationEmailDto) => quotationService.sendEmail(id, dto),
+    mutationFn: (args: {
+      dto: SendQuotationEmailDto;
+      pdfBlob?: Blob;
+      fileName?: string;
+    }) =>
+      quotationService.sendEmail(id, args.dto, {
+        pdfBlob: args.pdfBlob,
+        fileName: args.fileName,
+      }),
   });
 
   return {

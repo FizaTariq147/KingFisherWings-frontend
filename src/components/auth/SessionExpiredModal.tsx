@@ -10,7 +10,7 @@ function isSuperAdminSurface(): boolean {
 }
 
 /**
- * Idle timeout popup (60 minutes of inactivity — not from login).
+ * Idle timeout popup (20 minutes of inactivity — not from login).
  * Continue → refresh tokens and keep working (no login).
  * Revoke → POST /auth/logout (revoke current session) then sign out to login.
  *
@@ -89,7 +89,7 @@ export function SessionExpiredModal() {
                 Session idle
               </h2>
               <p className="text-sm text-[var(--color-neutral-500)] mt-1 leading-relaxed">
-                No activity for 60 minutes. Continue to keep working without signing in again, or
+                No activity for 20 minutes. Continue to keep working without signing in again, or
                 revoke this session.
               </p>
             </div>

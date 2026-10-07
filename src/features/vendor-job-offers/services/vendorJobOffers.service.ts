@@ -366,15 +366,48 @@ export const vendorPortalJobsService = {
       VENDOR_JOB_OFFERS_API.vendorAccept(id),
       VENDOR_JOB_OFFERS_API.vendorAcceptLegacy(id),
     ];
+    let detail: VendorPortalJobDetail | null = null;
     for (const path of paths) {
       try {
         const res = await vendorApiClient.post(path, body);
-        return normalizeVendorPortalJobDetail(res.data) ?? (await this.getById(id));
+        detail = normalizeVendorPortalJobDetail(res.data) ?? (await this.getById(id));
+        break;
       } catch (err) {
         if (!isNotFound(err)) throw err;
       }
     }
-    throw friendlyUnavailable('Accept cost offer');
+    if (!detail) throw friendlyUnavailable('Accept cost offer');
+
+    // Auto-create draft vendor invoice; vendor posts from /vendor/invoices.
+    // Admin notification on accept is a backend responsibility (see GET /notifications).
+    try {
+      const { fulfillVendorAcceptOffer } = await import('../utils/fulfillVendorAcceptOffer');
+      const { coerceVendorOfferStatus } = await import('../utils/vendorOfferStatus');
+      // Refresh so offerStatus is APPROVED before invoice submit.
+      if (coerceVendorOfferStatus(detail.offerStatus || '') !== 'APPROVED') {
+        try {
+          detail = await this.getById(id);
+        } catch {
+          /* keep accept response */
+        }
+      }
+      const fulfilled = await fulfillVendorAcceptOffer(detail);
+      return {
+        ...fulfilled.detail,
+        ...(fulfilled.invoice?.id
+          ? {
+              notes: [
+                fulfilled.detail.notes,
+                `Draft invoice ${fulfilled.invoice.number || fulfilled.invoice.id.slice(0, 8)} created — open Vendor Invoices and post it. Payment proofs are handled on the admin Purchase Invoices side.`,
+              ]
+                .filter(Boolean)
+                .join(' · '),
+            }
+          : {}),
+      };
+    } catch {
+      return detail;
+    }
   },
 
   async reject(id: string, dto: VendorNegotiationRejectDto): Promise<VendorPortalJobDetail> {

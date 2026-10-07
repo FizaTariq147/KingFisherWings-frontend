@@ -1,3 +1,7 @@
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { useUsers } from '@/features/users/hooks/useUsers';
+import { isUuid } from '@/lib/isUuid';
 import {
   JOB_TYPE_LABELS,
   JOB_TYPES,
@@ -17,6 +21,10 @@ interface QuotationFiltersProps {
   onStatusChange: (value: QuotationStatus | 'all') => void;
   jobType: JobType | 'all';
   onJobTypeChange: (value: JobType | 'all') => void;
+  departmentId: string;
+  onDepartmentIdChange: (value: string) => void;
+  salespersonId: string;
+  onSalespersonIdChange: (value: string) => void;
   fromDate: string;
   onFromDateChange: (value: string) => void;
   toDate: string;
@@ -32,6 +40,10 @@ export function QuotationFilters({
   onStatusChange,
   jobType,
   onJobTypeChange,
+  departmentId,
+  onDepartmentIdChange,
+  salespersonId,
+  onSalespersonIdChange,
   fromDate,
   onFromDateChange,
   toDate,
@@ -39,6 +51,18 @@ export function QuotationFilters({
   order,
   onOrderChange,
 }: QuotationFiltersProps) {
+  const { data: departments = [] } = useMasterOptions(
+    'departments',
+    MASTER_PATHS.departments,
+    true,
+  );
+  const { data: usersResult } = useUsers({
+    tenantId: '',
+    page: 1,
+    limit: 100,
+    order: 'asc',
+  });
+
   return (
     <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
       <input
@@ -74,6 +98,39 @@ export function QuotationFilters({
             {JOB_TYPE_LABELS[t]}
           </option>
         ))}
+      </select>
+      <select
+        value={departmentId}
+        onChange={(e) => onDepartmentIdChange(e.target.value)}
+        aria-label="Filter by department"
+        className={selectClass}
+      >
+        <option value="">All departments</option>
+        {departments
+          .filter((d) => isUuid(String(d.id)))
+          .map((d) => (
+            <option key={String(d.id)} value={String(d.id)}>
+              {String(d.name ?? d.code ?? d.id)}
+            </option>
+          ))}
+      </select>
+      <select
+        value={salespersonId}
+        onChange={(e) => onSalespersonIdChange(e.target.value)}
+        aria-label="Filter by salesperson"
+        className={selectClass}
+      >
+        <option value="">All salespeople</option>
+        {(usersResult?.users ?? [])
+          .filter((u) => isUuid(u.id))
+          .map((u) => (
+            <option key={u.id} value={u.id}>
+              {u.full_name ||
+                [u.first_name, u.last_name].filter(Boolean).join(' ') ||
+                u.email ||
+                u.id.slice(0, 8)}
+            </option>
+          ))}
       </select>
       <input
         type="date"

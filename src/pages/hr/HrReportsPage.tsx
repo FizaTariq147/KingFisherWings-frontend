@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Card } from '@/components/ui/Card';
 import { hrService } from '@/features/hr/services/hr.service';
 import { ReportsPageBackLink } from '@/features/reports/components/ReportsPageBackLink';
+import { ModuleReportFormatsSection } from '@/features/reports/components/ModuleReportFormatsSection';
 
 function asRows(raw: unknown[]): Record<string, string>[] {
   return raw.map((item, index) => {
@@ -80,6 +81,8 @@ export default function HrReportsPage() {
     <div className="space-y-4">
       <ReportsPageBackLink fallbackTo="/hr" fallbackLabel="Back to HR" />
       <h1 className="text-sm font-semibold text-gray-800">Reports - HR</h1>
+
+      <ModuleReportFormatsSection families={['other']} />
 
       <Card>
         <div className="flex items-center justify-between mb-3">

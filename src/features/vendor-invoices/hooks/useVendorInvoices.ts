@@ -13,8 +13,6 @@ export const vendorInvoiceKeys = {
     [...vendorInvoiceKeys.all(scope), 'list', params] as const,
   detail: (scope: string, id: string) => [...vendorInvoiceKeys.all(scope), 'detail', id] as const,
   openItems: (scope: string) => [...vendorInvoiceKeys.all(scope), 'open-items'] as const,
-  paymentProofs: (scope: string, invoiceId: string) =>
-    [...vendorInvoiceKeys.all(scope), 'payment-proofs', invoiceId] as const,
 };
 
 export function useVendorInvoiceSummary(
@@ -106,6 +104,38 @@ export function useSubmitVendorInvoice() {
   });
 }
 
+export function usePostVendorInvoice() {
+  const queryClient = useQueryClient();
+  const scope = useVendorQueryScope();
+  return useMutation({
+    mutationFn: (detail: import('../types/vendorInvoices.types').VendorInvoiceDetail) =>
+      vendorInvoicesService.post(detail),
+    onSuccess: (detail, original) => {
+      const id = detail?.id || original.id;
+      const status = detail?.status || 'POSTED';
+      if (id) {
+        queryClient.setQueryData(vendorInvoiceKeys.detail(scope, id), detail);
+        // Patch list/open-item rows so status shows POSTED without refetching DRAFT from API.
+        queryClient.setQueriesData(
+          { queryKey: vendorInvoiceKeys.all(scope) },
+          (old: unknown) => {
+            if (!old || typeof old !== 'object') return old;
+            const record = old as { items?: Array<{ id: string; status?: string }> };
+            if (!Array.isArray(record.items)) return old;
+            return {
+              ...record,
+              items: record.items.map((item) =>
+                item.id === id ? { ...item, status } : item,
+              ),
+            };
+          },
+        );
+      }
+      void queryClient.invalidateQueries({ queryKey: vendorInvoiceKeys.summary(scope) });
+    },
+  });
+}
+
 export function useVendorInvoiceOpenItems(enabled = true) {
   const accessToken = useVendorAuthStore((s) => s.accessToken);
   const scope = useVendorQueryScope();
@@ -116,45 +146,9 @@ export function useVendorInvoiceOpenItems(enabled = true) {
   });
 }
 
-export function useVendorInvoicePaymentProofs(invoiceId: string) {
-  const accessToken = useVendorAuthStore((s) => s.accessToken);
-  const scope = useVendorQueryScope();
-  return useQuery({
-    queryKey: vendorInvoiceKeys.paymentProofs(scope, invoiceId),
-    queryFn: () => vendorInvoicesService.listPaymentProofs(invoiceId),
-    enabled: Boolean(accessToken) && Boolean(invoiceId) && scope !== 'anon',
-  });
-}
-
-export function useUploadVendorInvoicePaymentProof(invoiceId: string) {
-  const qc = useQueryClient();
-  const scope = useVendorQueryScope();
-  return useMutation({
-    mutationFn: ({ file, dto }: { file: File; dto: import('@/features/payment-proofs/types/paymentProof.types').UploadPaymentProofDto }) =>
-      vendorInvoicesService.uploadPaymentProof(invoiceId, file, dto),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: vendorInvoiceKeys.paymentProofs(scope, invoiceId) });
-    },
-  });
-}
-
 export function useSendVendorInvoiceEmail() {
   return useMutation({
     mutationFn: ({ id, dto }: { id: string; dto?: import('@/features/shared/share-email').ShareEmailDto }) =>
       vendorInvoicesService.sendEmail(id, dto),
-  });
-}
-
-export function useSendVendorPaymentProofEmail() {
-  return useMutation({
-    mutationFn: ({
-      invoiceId,
-      proofId,
-      dto,
-    }: {
-      invoiceId: string;
-      proofId: string;
-      dto?: import('@/features/shared/share-email').ShareEmailDto;
-    }) => vendorInvoicesService.sendPaymentProofEmail(invoiceId, proofId, dto),
   });
 }

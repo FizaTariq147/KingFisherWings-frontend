@@ -1,84 +1,71 @@
-import { useEffect, useRef, useState } from 'react';
-import { PdfViewerModal } from '@/features/files/components/PdfViewerModal';
-import { usePdfViewer } from '@/features/files/hooks/usePdfViewer';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { getQuotationFormatSpec } from '../../constants/quotationFormatCatalog';
 import { getQuotationFormatUiLayout } from '../../data/quotationFormatUiLayouts';
-import { generateInvoiceFormatLayoutPdf } from '../../utils/generateInvoiceFormatLayoutPdf';
 import type { InvoiceFormatPreview } from '../../types/invoiceFormatPreview.types';
+import type { ReportContextIds } from '../../utils/reportParameterUtils';
+import {
+  CatalogFormatPdfViewerShell,
+  useCatalogFormatLayoutPdf,
+} from '../../hooks/useCatalogFormatLayoutPdf';
 
 type Props = {
   code: string;
+  quotationId?: string;
+  context?: ReportContextIds | null;
   autoOpen?: boolean;
 };
 
-export function QuotationFormatAutoPdf({ code, autoOpen = true }: Props) {
+/**
+ * Opens KingFisher quotation layout PDF on select.
+ * Live quotation / related entity fields are merged from context or quotationId.
+ */
+export function QuotationFormatAutoPdf({
+  code,
+  quotationId,
+  context,
+  autoOpen = true,
+}: Props) {
   const spec = getQuotationFormatSpec(code);
   const layout = getQuotationFormatUiLayout(code);
-  const viewer = usePdfViewer();
-  const [error, setError] = useState<string | null>(null);
-  const openedFor = useRef<string | null>(null);
+  const preview: InvoiceFormatPreview | undefined = layout
+    ? {
+        code: layout.code,
+        formatNumber: layout.formatNumber || spec?.sortOrder || 0,
+        name: layout.name || spec?.name || layout.code,
+        samplePdfUrl: null,
+        layoutKind: 'generic',
+        paper: layout.paper,
+        rtl: layout.rtl,
+        sections: [],
+      }
+    : undefined;
 
-  useEffect(() => {
-    if (!autoOpen || !layout) return;
-    if (openedFor.current === layout.code) return;
-    openedFor.current = layout.code;
+  const resolvedContext: ReportContextIds | null = context
+    ? { ...context, quotation_id: context.quotation_id || quotationId }
+    : quotationId
+      ? { quotation_id: quotationId }
+      : null;
 
-    const preview: InvoiceFormatPreview = {
-      code: layout.code,
-      formatNumber: layout.formatNumber || spec?.sortOrder || 0,
-      name: layout.name || spec?.name || layout.code,
-      samplePdfUrl: null,
-      layoutKind: 'generic',
-      paper: layout.paper,
-      rtl: layout.rtl,
-      sections: [],
-    };
-
-    const fileName = formatPdfFilename(
-      `Quotation-${layout.formatNumber}-${layout.code}`,
+  const { viewer, error, boundLabel } = useCatalogFormatLayoutPdf({
+    autoOpen,
+    preview,
+    fileName: formatPdfFilename(
+      `Quotation-${layout?.formatNumber ?? 0}-${layout?.code ?? code}`,
       'quotation-format',
-    );
-    let cancelled = false;
-    setError(null);
+    ),
+    title: preview?.name || spec?.name,
+    context: resolvedContext,
+    formatCode: preview?.code,
+  });
 
-    void viewer
-      .loadPreview(async () => generateInvoiceFormatLayoutPdf(preview, {}), {
-        fileName,
-        title: preview.name,
-      })
-      .catch((err: unknown) => {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Could not open PDF.');
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- open once per code
-  }, [code, autoOpen, spec?.code, layout?.code]);
-
-  if (!layout) return null;
+  if (!layout || !preview) return null;
 
   return (
-    <>
-      {error ? (
-        <p role="alert" className="text-sm text-[var(--color-danger-600)]">
-          {error}
-        </p>
-      ) : null}
-      <PdfViewerModal
-        open={viewer.open}
-        onClose={viewer.close}
-        src={viewer.src}
-        blob={viewer.blob}
-        fileName={viewer.fileName}
-        title={viewer.title || spec?.name || layout.name}
-        loading={viewer.loading}
-        error={viewer.error}
-        skipBranding
-      />
-    </>
+    <CatalogFormatPdfViewerShell
+      viewer={viewer}
+      error={error}
+      title={preview.name || spec?.name}
+      boundLabel={boundLabel}
+    />
   );
 }

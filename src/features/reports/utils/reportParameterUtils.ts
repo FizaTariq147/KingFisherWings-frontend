@@ -10,6 +10,35 @@ export type ReportContextIds = {
 const CONTEXT_KEYS = ['job_id', 'quotation_id', 'invoice_id', 'party_id'] as const;
 
 /**
+ * Merge deep-link / launcher context with form parameter values.
+ * Form values win when non-empty so Generate uses what the user typed.
+ */
+export function mergeReportContextIds(
+  context?: ReportContextIds | null,
+  params?: Record<string, string> | null,
+): ReportContextIds {
+  const pick = (key: (typeof CONTEXT_KEYS)[number]): string | undefined => {
+    const fromParams = String(params?.[key] ?? '').trim();
+    if (fromParams) return fromParams;
+    const fromContext = String(context?.[key] ?? '').trim();
+    return fromContext || undefined;
+  };
+  return {
+    job_id: pick('job_id'),
+    quotation_id: pick('quotation_id'),
+    invoice_id: pick('invoice_id'),
+    party_id: pick('party_id'),
+  };
+}
+
+export function hasReportEntityContext(context?: ReportContextIds | null): boolean {
+  if (!context) return false;
+  return Boolean(
+    context.job_id || context.quotation_id || context.invoice_id || context.party_id,
+  );
+}
+
+/**
  * Prefer schema defaults, then overlay launcher context IDs so invoice/job deep-links
  * always pre-fill generate parameters (even when schema omits a context field).
  */

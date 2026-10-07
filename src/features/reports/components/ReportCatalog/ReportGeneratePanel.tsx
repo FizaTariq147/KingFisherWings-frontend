@@ -24,6 +24,7 @@ import {
   generateInvoiceFormatLayoutPdf,
   invoiceRecordToFormatPdfData,
 } from '../../utils/generateInvoiceFormatLayoutPdf';
+import { resolveCatalogContextPdfData } from '../../utils/resolveCatalogContextPdfData';
 import {
   generateCatalogLayoutPdf,
   hasCatalogLayoutPdf,
@@ -33,6 +34,8 @@ import {
   buildInitialReportParams,
   coerceReportParameters,
   downloadExtensionForFormat,
+  hasReportEntityContext,
+  mergeReportContextIds,
   type ReportContextIds,
 } from '../../utils/reportParameterUtils';
 import { getInvoiceFormatPreview } from '../../data/invoiceFormatPreviews';
@@ -216,29 +219,37 @@ export function ReportGeneratePanel({
 
     const canLiveGenerate = !detailFailed && resolved.is_active;
     const hasLayout = hasCatalogLayoutPdf(resolved.code);
+    const contextIds = mergeReportContextIds(context, params);
+    const entityBound = hasReportEntityContext(contextIds);
 
-    // Prefer POST /reports/generate when pack is bound + active (additive FRESA path).
-    // Client layout PDF is preview fallback only — never POST /invoices/:id/pdf
-    // or POST /quotations/:id/pdf (see documentPdfPreserve.ts).
-    if (!canLiveGenerate && format === 'PDF' && (isInvoiceFormatPdf || hasLayout)) {
+    // Entity-bound catalogue PDFs: hydrate from live quotation / invoice / job / party
+    // the same way document PDFs use the record — even when a backend pack is active.
+    // Without entity context, client layout is still used when live generate is unavailable.
+    // Never call POST /invoices/:id/pdf or /quotations/:id/pdf (see documentPdfPreserve.ts).
+    const useEntityHydratedClientPdf =
+      format === 'PDF' &&
+      (isInvoiceFormatPdf || hasLayout) &&
+      (entityBound || !canLiveGenerate);
+
+    if (useEntityHydratedClientPdf) {
       setClientGenerating(true);
       try {
-        let data = {};
+        let data = await resolveCatalogContextPdfData(contextIds, {
+          formatCode: resolved.code,
+        });
+        const liveReady = Boolean(
+          data.invoiceNumber || data.billToName || data.lines?.length || data.total,
+        );
+
         if (isInvoiceFormatPdf) {
-          const invoiceId =
-            (params.invoice_id || context?.invoice_id || '').trim() || undefined;
-          if (invoiceId && isUuid(invoiceId)) {
+          // Prefer dedicated invoice preview path when available (preserves prior behavior).
+          const invoiceId = contextIds.invoice_id;
+          if (invoiceId && isUuid(invoiceId) && Object.keys(data).length === 0) {
             try {
               const invoice = await invoiceService.getById(invoiceId);
               data = invoiceRecordToFormatPdfData(invoice);
             } catch {
-              // Keep demo data if invoice fetch fails — still show layout PDF.
-            }
-            try {
-              const payload = await invoiceService.getFormatPayload(invoiceId, resolved.code);
-              if (payload) data = { ...data, ...payload };
-            } catch {
-              /* optional enrich */
+              /* demo layout */
             }
           }
           const preview = getInvoiceFormatPreview(resolved.code);
@@ -256,7 +267,9 @@ export function ReportGeneratePanel({
             setPdfReadyOpen(true);
             setJobId(null);
             setMessage(
-              'Layout preview PDF ready (client). Bind + Activate for live backend PDF.',
+              liveReady || entityBound
+                ? 'Report PDF ready with live record data.'
+                : 'Layout preview PDF ready (client). Bind + Activate for live backend PDF.',
             );
             return;
           }
@@ -281,7 +294,9 @@ export function ReportGeneratePanel({
         setPdfReadyOpen(true);
         setJobId(null);
         setMessage(
-          'Layout preview PDF ready (client). Bind + Activate for live backend PDF.',
+          liveReady || entityBound
+            ? 'Report PDF ready with live record data.'
+            : 'Layout preview PDF ready (client). Bind + Activate for live backend PDF.',
         );
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Could not generate layout PDF.');
@@ -314,7 +329,8 @@ export function ReportGeneratePanel({
         code: resolved.code,
         format,
         parameters: Object.keys(parameters).length ? parameters : undefined,
-        context,
+        // Always forward merged entity ids so backend packs can bind live data too.
+        context: entityBound ? contextIds : context,
       });
       handledReadyJobId.current = null;
       setPdfReadyOpen(false);
@@ -446,7 +462,11 @@ export function ReportGeneratePanel({
       </div>
 
       {isInvoiceFormat && !omitClientPreview ? (
-        <InvoiceFormatAutoPdf code={resolved.code} invoiceId={context?.invoice_id} />
+        <InvoiceFormatAutoPdf
+          code={resolved.code}
+          invoiceId={context?.invoice_id}
+          context={context}
+        />
       ) : null}
 
       {resolved.description ? (

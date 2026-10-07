@@ -37,8 +37,10 @@ import {
   isAwaitingCustomerDecision,
   resolveCustomerFacingQuoteStatus,
 } from '../utils/customerQuoteDecision';
+import { ensureQuotationEmailPdf } from '../utils/ensureQuotationEmailPdf';
 import { quotationDisplayNumber } from '../utils/normalizeQuotation';
 import { recalculateQuotationTotals } from '../utils/recalculateQuotationTotals';
+import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import {
   canArchiveQuotation,
   canConvertQuotationToJob,
@@ -71,6 +73,7 @@ export default function QuotationDetailPage() {
   const location = useLocation();
   const { data: quotation, isLoading, isError, error, refetch } = useQuotation(id);
   const { data: revisions = [] } = useQuotationRevisions(id, Boolean(id));
+  const { data: companies = [] } = useTenantCompanies(Boolean(id));
   const actions = useQuotationActions(id);
   const remove = useDeleteQuotation();
   const { data: pdfInfo, refetch: refetchPdf } = useQuotationPdf(id, Boolean(id));
@@ -291,13 +294,15 @@ export default function QuotationDetailPage() {
     };
   }, [linkedBooking, seaExportStage, status, bookingHref]);
 
-  // Customer Approved → auto job+invoice for non-gated modes (incl. Sea/Land/Road/…).
+  // Customer Approved → auto job+invoice ONLY for modes that do not use booking-form convert.
+  // Sea/Land/Road/Courier/Warehouse/Customs: wait for booking-form submit (never auto here).
   // NVOCC / Air: never auto-convert and never auto-create a job shell.
   useEffect(() => {
     if (!quotation || !id) return;
     if (status !== 'APPROVED') return;
     if (
       usesGatedFreightQuoteFlow(quotation.job_type) ||
+      usesModeBookingFormConvertFlow(quotation.job_type) ||
       isAirQuoteJobType(quotation.job_type) ||
       isNvoccQuoteJobType(quotation.job_type)
     ) {
@@ -345,19 +350,62 @@ export default function QuotationDetailPage() {
     status,
   ]);
 
-  // Same-tab: customer submitted portal booking form → retry convert.
+  // Same-tab: customer submitted portal booking form → convert to job (only after form).
   useEffect(() => {
     if (!id || !usesModeBookingFormConvertFlow(quotation?.job_type)) return;
     const onFormComplete = (ev: Event) => {
       const detail = (ev as CustomEvent<{ quotationId?: string }>).detail;
       if (detail?.quotationId && detail.quotationId !== id) return;
-      autoFulfillAttempted.current = null;
-      void refetch();
-      void portalBookingQuery.refetch();
+      void (async () => {
+        try {
+          const { quotationService } = await import('../services/quotation.service');
+          await quotationService.convertAfterCustomerBookingForm(id);
+          setActionMessage(
+            'Booking form submitted — quotation converted to job and draft invoice created.',
+          );
+          void refetch();
+          void portalBookingQuery.refetch();
+        } catch (err) {
+          setActionError(
+            getErrorMessage(err) ||
+              'Booking form saved, but convert to job failed. Refresh or retry from Ops.',
+          );
+        }
+      })();
     };
     window.addEventListener('kfw-customer-booking-form-complete', onFormComplete);
     return () => window.removeEventListener('kfw-customer-booking-form-complete', onFormComplete);
   }, [id, portalBookingQuery, quotation?.job_type, refetch]);
+
+  // Cross-session: APPROVED booking-form quote with completed portal form → convert once.
+  useEffect(() => {
+    if (!quotation || !id) return;
+    if (status !== 'APPROVED') return;
+    if (!usesModeBookingFormConvertFlow(quotation.job_type)) return;
+    if (quotation.job_id) return;
+    if (autoFulfillAttempted.current === `bf:${id}`) return;
+    if (portalBookingQuery.data?.mark_complete !== true) return;
+
+    autoFulfillAttempted.current = `bf:${id}`;
+    void (async () => {
+      try {
+        const { quotationService } = await import('../services/quotation.service');
+        await quotationService.convertAfterCustomerBookingForm(id);
+        setActionMessage(
+          'Booking form complete — quotation converted to job and draft invoice created.',
+        );
+        void refetch();
+      } catch {
+        autoFulfillAttempted.current = null;
+      }
+    })();
+  }, [
+    id,
+    portalBookingQuery.data?.mark_complete,
+    quotation,
+    refetch,
+    status,
+  ]);
 
   const { customerLabel } = useQuotationResolvedLabels(quotation ?? {
     id: '',
@@ -518,7 +566,10 @@ export default function QuotationDetailPage() {
     { label: 'PDF', onClick: () => setPdfOpen(true), variant: 'secondary' as const },
     {
       label: 'Reports',
-      onClick: () => navigate(`/reports/catalog?context=quotation&quotation_id=${encodeURIComponent(id)}`),
+      onClick: () =>
+        navigate(
+          `/reports/catalog?family=quotation&context=quotation&quotation_id=${encodeURIComponent(id)}`,
+        ),
       variant: 'secondary' as const,
     },
     { label: 'Email', onClick: () => setEmailOpen(true), variant: 'secondary' as const },
@@ -923,15 +974,39 @@ export default function QuotationDetailPage() {
 
       <QuotationEmailModal
         open={emailOpen}
-        isPending={actions.sendEmail.isPending}
+        isPending={actions.sendEmail.isPending || actions.storeClientPdf.isPending}
         defaultTo={quotation.contact_email || ''}
         onClose={() => setEmailOpen(false)}
         onSend={async (dto) => {
           setActionError(null);
           try {
-            await actions.sendEmail.mutateAsync(dto);
-            setActionMessage('Email sent.');
+            const companyMatch =
+              companies.find(
+                (c) => c.id && quotation.company_id && c.id === quotation.company_id,
+              ) || companies[0];
+            const pdf = await ensureQuotationEmailPdf({
+              quotation,
+              mode: dto.pdf_mode === 'INTERNAL' ? 'INTERNAL' : 'CUSTOMER',
+              companyName: companyMatch?.name,
+            });
+            // SMTP: attach client KingFisher PDF (multipart / pdf_base64 per live OpenAPI).
+            const result = await actions.sendEmail.mutateAsync({
+              dto,
+              pdfBlob: pdf.blob,
+              fileName: pdf.fileName,
+            });
+            const { formatShareEmailSuccess } = await import('@/features/shared/share-email');
+            setActionMessage(
+              formatShareEmailSuccess(
+                (result as { success?: boolean; pdf_attached?: boolean; message?: string }) || {},
+              ) || 'Quotation email sent.',
+            );
             setEmailOpen(false);
+            try {
+              await refetchPdf();
+            } catch {
+              /* optional */
+            }
           } catch (err) {
             setActionError(getErrorMessage(err));
             // Modal shows the error; do not rethrow.

@@ -144,9 +144,23 @@ export function quotationCustomerLabel(
   q: Quotation,
   partyMap?: Map<string, string>,
 ): string {
-  if (q.customer_name) return q.customer_name;
+  const name = q.customer_name?.trim();
+  if (name && !isUuid(name)) return name;
   if (q.customer_id && partyMap?.has(q.customer_id)) {
     return partyMap.get(q.customer_id)!;
   }
-  return q.customer_id ? q.customer_id.slice(0, 8) : '—';
+  // Never surface raw UUIDs in list/detail UI.
+  return '—';
+}
+
+/** Prefer resolved name; never show a raw UUID as the cell value. */
+export function quotationIdNameLabel(
+  name: string | undefined,
+  id: string | undefined,
+  labelMap?: Map<string, string>,
+): string {
+  const trimmed = name?.trim();
+  if (trimmed && !isUuid(trimmed)) return trimmed;
+  if (id && labelMap?.has(id)) return labelMap.get(id)!;
+  return '—';
 }

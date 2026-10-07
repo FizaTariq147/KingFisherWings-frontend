@@ -20,8 +20,8 @@ export type PaymentProofUploadFieldMode = 'portal' | 'extended';
 
 /**
  * Multipart text fields for payment proof upload.
- * Portal (strict): only `amount_claimed` + `payment_date` per backend contract.
- * Extended: also reference / notes / currency_code (vendor if supported).
+ * Portal/staff (strict): amount_claimed + payment_date; optional reference_number + notes.
+ * Never send currency_code — purchase/vendor proof DTOs reject it.
  */
 export function buildPaymentProofUploadFields(
   dto: UploadPaymentProofDto,
@@ -29,14 +29,16 @@ export function buildPaymentProofUploadFields(
 ): Record<string, string | undefined> {
   const fields: Record<string, string | undefined> = {
     ...(dto.amount != null && Number.isFinite(dto.amount)
-      ? { amount_claimed: String(dto.amount) }
+      ? // OpenAPI example is "100.00" — always send two decimal places.
+        { amount_claimed: Number(dto.amount).toFixed(2) }
       : {}),
-    ...(dto.payment_date ? { payment_date: dto.payment_date } : {}),
+    ...(dto.payment_date?.trim()
+      ? { payment_date: dto.payment_date.trim() }
+      : {}),
   };
   if (mode === 'extended') {
-    if (dto.reference) fields.reference = dto.reference;
-    if (dto.notes) fields.notes = dto.notes;
-    if (dto.currency_code) fields.currency_code = dto.currency_code;
+    if (dto.reference?.trim()) fields.reference_number = dto.reference.trim();
+    if (dto.notes?.trim()) fields.notes = dto.notes.trim();
   }
   return fields;
 }
@@ -69,10 +71,8 @@ export function buildPortalInvoicePaymentFields(dto: {
 }
 
 function resolveApiBaseUrl(): string {
-  const raw =
-    import.meta.env.VITE_API_BASE_URL ||
-    import.meta.env.VITE_API_URL ||
-    '/backend';
+  // Match axiosInstance (`VITE_API_URL`) so staff uploads hit the same host/proxy.
+  const raw = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '/backend';
   return String(raw).replace(/\/$/, '');
 }
 
@@ -107,6 +107,8 @@ export async function postPaymentProofMultipartFetch(options: {
   errorFactory?: (message: string, status: number) => Error;
   /** Fallback when response has no message (portal payments vs proof upload). */
   failureFallback?: string;
+  /** Staff ERP uses cookies + Bearer; portal/vendor use Bearer only. */
+  credentials?: RequestCredentials;
 }): Promise<unknown> {
   const base = resolveApiBaseUrl();
   const url = `${base}${options.path.startsWith('/') ? options.path : `/${options.path}`}`;
@@ -124,7 +126,8 @@ export async function postPaymentProofMultipartFetch(options: {
     method: 'POST',
     headers,
     body: form,
-    credentials: 'omit',
+    // Do not set Content-Type — browser adds multipart boundary so Nest/Multer sees fields.
+    credentials: options.credentials ?? 'omit',
   });
 
   if (res.ok) {
@@ -176,39 +179,59 @@ export async function postPaymentProofMultipart(
   return res.data;
 }
 
-export function formatPaymentProofUploadError(error: unknown): Error {
+function extractUploadErrorMessage(error: unknown): { message: string; status?: number } {
   if (error instanceof PortalApiError || error instanceof VendorApiError) {
-    const msg = error.message?.trim() || 'Upload failed.';
-    if (/unexpected field/i.test(msg)) {
-      return new Error(
-        'Unexpected field — send only multipart file (field name "file"), amount_claimed, and payment_date. Extra fields are rejected by Multer.',
-      );
-    }
-    if (error.status === 400) {
-      return new Error(
-        msg ||
-          'Invalid payment proof. Use file (PDF/JPEG/PNG/WebP), amount_claimed, and payment_date (YYYY-MM-DD).',
-      );
-    }
-    if (error.status === 503) {
-      return new Error(
-        `${msg} Payment proof storage is temporarily unavailable — retry shortly.`,
-      );
-    }
-    if (error.status >= 500 || /internal server/i.test(msg)) {
-      return new Error(
-        `${msg} — If this persists after the backend redeploy, confirm multipart uses file + amount_claimed + payment_date.`,
-      );
-    }
-    return error;
+    return { message: error.message?.trim() || 'Upload failed.', status: error.status };
   }
-  if (error instanceof Error) {
+  const axiosErr = error as {
+    response?: { status?: number; data?: { message?: string | string[]; error?: string } };
+    message?: string;
+  };
+  const data = axiosErr.response?.data;
+  const raw = data?.message;
+  const message = Array.isArray(raw)
+    ? raw.map(String).join('; ')
+    : typeof raw === 'string' && raw.trim()
+      ? raw.trim()
+      : typeof data?.error === 'string' && data.error.trim()
+        ? data.error.trim()
+        : axiosErr.message?.trim() || 'Upload failed.';
+  return { message, status: axiosErr.response?.status };
+}
+
+export function formatPaymentProofUploadError(error: unknown): Error {
+  if (error instanceof Error && !(error as { response?: unknown }).response) {
     if (/unexpected field/i.test(error.message)) {
       return new Error(
         'Unexpected field — send only multipart file (field name "file"), amount_claimed, and payment_date.',
       );
     }
-    return error;
+    if (error instanceof PortalApiError || error instanceof VendorApiError) {
+      /* fall through with status */
+    } else {
+      return error;
+    }
   }
-  return new Error('Upload failed.');
+
+  const { message: msg, status } = extractUploadErrorMessage(error);
+  if (/unexpected field/i.test(msg)) {
+    return new Error(
+      'Unexpected field — send only multipart file (field name "file"), amount_claimed, and payment_date. Extra fields are rejected by Multer.',
+    );
+  }
+  if (status === 400 || /amount_claimed|payment_date|could not save payment proof/i.test(msg)) {
+    return new Error(
+      msg ||
+        'Invalid payment proof. Use file (PDF/JPEG/PNG/WebP), amount_claimed, and payment_date (YYYY-MM-DD).',
+    );
+  }
+  if (status === 503) {
+    return new Error(`${msg} Payment proof storage is temporarily unavailable — retry shortly.`);
+  }
+  if (status != null && status >= 500) {
+    return new Error(
+      `${msg} — If this persists after the backend redeploy, confirm multipart uses file + amount_claimed + payment_date.`,
+    );
+  }
+  return new Error(msg);
 }

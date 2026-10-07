@@ -29,6 +29,7 @@ import { BookingDocumentUploadList } from '@/features/booking-documents/componen
 import {
   BOOKING_DOCUMENT_KIND_LABELS,
   MANDATORY_BOOKING_DOCUMENT_KINDS,
+  MODE_BOOKING_FORM_DOCUMENT_KINDS,
   missingMandatoryBookingDocs,
 } from '@/features/booking-documents/constants/bookingDocumentKinds';
 import {
@@ -2417,19 +2418,20 @@ export function ModeBookingFormPanel({
           <div className="space-y-2">
             <p className="text-xs text-[var(--color-neutral-500)]">
               Documents Checklist (these documents should be uploaded by the customer). Ops may
-              upload here if the customer has not. Complete is blocked until all five are present.
+              upload here if the customer has not. Complete is blocked until all mandatory docs
+              are present (Bill of lading / AWB is optional).
             </p>
             <BookingDocumentUploadList
-              kinds={MANDATORY_BOOKING_DOCUMENT_KINDS}
+              kinds={MODE_BOOKING_FORM_DOCUMENT_KINDS}
               uploadedKinds={uploadedDocKinds}
               uploadingKind={uploadingKind}
               disabled={readOnly || save.isPending || complete.isPending}
-              allRequired
+              requiredKinds={new Set(MANDATORY_BOOKING_DOCUMENT_KINDS)}
               onUpload={async (kind, file) => {
                 setUploadingKind(kind);
                 try {
                   await uploadDocument.mutateAsync({
-                    kind: kind as (typeof MANDATORY_BOOKING_DOCUMENT_KINDS)[number],
+                    kind: kind as (typeof MODE_BOOKING_FORM_DOCUMENT_KINDS)[number],
                     file,
                   });
                   setUploadedDocKinds((prev) => new Set(prev).add(kind));

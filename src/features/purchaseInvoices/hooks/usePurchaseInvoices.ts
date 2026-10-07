@@ -1,6 +1,8 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
+import { glPaymentKeys } from '@/features/glPayments/hooks/useGlPayments';
+import type { UploadPaymentProofDto } from '@/features/payment-proofs/types/paymentProof.types';
 import { purchaseInvoiceService } from '../services/purchaseInvoice.service';
 import type {
   CreatePurchaseInvoiceDto,
@@ -13,6 +15,7 @@ export const purchaseInvoiceKeys = {
   list: (params: PurchaseInvoiceListParams) =>
     [...purchaseInvoiceKeys.all, 'list', params] as const,
   detail: (id: string) => [...purchaseInvoiceKeys.all, 'detail', id] as const,
+  paymentProofs: (id: string) => [...purchaseInvoiceKeys.all, 'payment-proofs', id] as const,
 };
 
 export function usePurchaseInvoices(params: PurchaseInvoiceListParams) {
@@ -77,5 +80,33 @@ export function usePostPurchaseInvoice(id: string) {
   return useMutation({
     mutationFn: () => purchaseInvoiceService.post(id),
     onSuccess: () => invalidate(id),
+  });
+}
+
+/** GET /purchase-invoices/{id}/payment-proofs */
+export function usePurchaseInvoicePaymentProofs(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: purchaseInvoiceKeys.paymentProofs(id),
+    queryFn: () => purchaseInvoiceService.listPaymentProofs(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** POST /purchase-invoices/{id}/payment-proofs */
+export function useUploadPurchaseInvoicePaymentProof(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ file, dto }: { file: File; dto: UploadPaymentProofDto }) =>
+      purchaseInvoiceService.uploadPaymentProof(id, file, dto),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: purchaseInvoiceKeys.paymentProofs(id) });
+      void queryClient.invalidateQueries({ queryKey: purchaseInvoiceKeys.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: purchaseInvoiceKeys.all });
+      void queryClient.invalidateQueries({
+        queryKey: ['tenant', 'payment-proofs', 'purchase-invoice', id],
+      });
+      void queryClient.invalidateQueries({ queryKey: glPaymentKeys.all });
+    },
   });
 }

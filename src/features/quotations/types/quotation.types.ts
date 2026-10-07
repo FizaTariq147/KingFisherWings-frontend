@@ -103,6 +103,7 @@ export interface Quotation {
   salesperson_name?: string;
   branch_id?: string;
   department_id?: string;
+  department_name?: string;
   carrier_id?: string;
   carrier_name?: string;
   origin_port_id?: string;

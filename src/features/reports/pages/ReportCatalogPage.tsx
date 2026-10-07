@@ -182,6 +182,66 @@ export default function ReportCatalogPage() {
     [jobId, quotationId, invoiceId, partyId],
   );
 
+  /**
+   * Deep-link with entity ids: bias family/context and auto-open the first matching format
+   * so catalogue PDFs hydrate immediately (user can still change family/code).
+   */
+  const entityDeepLinkApplied = useRef(false);
+  useEffect(() => {
+    if (entityDeepLinkApplied.current) return;
+    if (!quotationId && !invoiceId && !jobId && !partyId) return;
+    entityDeepLinkApplied.current = true;
+
+    const next = new URLSearchParams(searchParams);
+    let changed = false;
+
+    if (quotationId) {
+      if (!next.get('family') || next.get('family') === 'all') {
+        next.set('family', 'quotation');
+        changed = true;
+      }
+      if (!next.get('context') || next.get('context') === 'all') {
+        next.set('context', 'quotation');
+        changed = true;
+      }
+      if (!next.get('code')) {
+        const first = listQuotationFormats()[0]?.code;
+        if (first) {
+          next.set('code', first);
+          changed = true;
+        }
+      }
+    } else if (invoiceId) {
+      if (!next.get('family') || next.get('family') === 'all') {
+        next.set('family', 'commercial');
+        changed = true;
+      }
+      if (!next.get('context') || next.get('context') === 'all') {
+        next.set('context', 'invoice');
+        changed = true;
+      }
+      if (!next.get('code')) {
+        const first = listInvoiceFormatPreviews()[0]?.code;
+        if (first) {
+          next.set('code', first);
+          changed = true;
+        }
+      }
+    } else if (jobId) {
+      if (!next.get('context') || next.get('context') === 'all') {
+        next.set('context', 'job');
+        changed = true;
+      }
+    } else if (partyId) {
+      if (!next.get('context') || next.get('context') === 'all') {
+        next.set('context', 'party');
+        changed = true;
+      }
+    }
+
+    if (changed) setSearchParams(next, { replace: true });
+  }, [quotationId, invoiceId, jobId, partyId, searchParams, setSearchParams]);
+
   const patchParams = (updates: Record<string, string | null | undefined>, replace = true) => {
     const next = new URLSearchParams(searchParams);
     for (const [key, value] of Object.entries(updates)) {
@@ -683,21 +743,25 @@ export default function ReportCatalogPage() {
     catalogStripVisibleForAllowList(
       accountsStripCodes,
       allowedCodes,
-      isAccountsFormatCode(selectedCode),
+      Boolean(partyId) || isAccountsFormatCode(selectedCode),
     ) &&
     (!searchActive ||
       accountsFormatsMatchSearch(searchQuery) ||
       isAccountsFormatCode(selectedCode));
 
   const showWmsFormatStrip =
-    catalogStripVisibleForAllowList(wmsStripCodes, allowedCodes, isWmsFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(
+      wmsStripCodes,
+      allowedCodes,
+      Boolean(jobId) || isWmsFormatCode(selectedCode),
+    ) &&
     (!searchActive || wmsFormatsMatchSearch(searchQuery) || isWmsFormatCode(selectedCode));
 
   const showArrivalNoticeFormatStrip =
     catalogStripVisibleForAllowList(
       arrivalStripCodes,
       allowedCodes,
-      isArrivalNoticeFormatCode(selectedCode),
+      Boolean(jobId) || isArrivalNoticeFormatCode(selectedCode),
     ) &&
     (!searchActive ||
       arrivalNoticeFormatsMatchSearch(searchQuery) ||
@@ -707,25 +771,33 @@ export default function ReportCatalogPage() {
     catalogStripVisibleForAllowList(
       deliveryStripCodes,
       allowedCodes,
-      isDeliveryOrderFormatCode(selectedCode),
+      Boolean(jobId) || isDeliveryOrderFormatCode(selectedCode),
     ) &&
     (!searchActive ||
       deliveryOrderFormatsMatchSearch(searchQuery) ||
       isDeliveryOrderFormatCode(selectedCode));
 
   const showHawbFormatStrip =
-    catalogStripVisibleForAllowList(hawbStripCodes, allowedCodes, isHawbFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(
+      hawbStripCodes,
+      allowedCodes,
+      Boolean(jobId) || isHawbFormatCode(selectedCode),
+    ) &&
     (!searchActive || hawbFormatsMatchSearch(searchQuery) || isHawbFormatCode(selectedCode));
 
   const showHblFormatStrip =
-    catalogStripVisibleForAllowList(hblStripCodes, allowedCodes, isHblFormatCode(selectedCode)) &&
+    catalogStripVisibleForAllowList(
+      hblStripCodes,
+      allowedCodes,
+      Boolean(jobId) || isHblFormatCode(selectedCode),
+    ) &&
     (!searchActive || hblFormatsMatchSearch(searchQuery) || isHblFormatCode(selectedCode));
 
   const showOtherReportsFormatStrip =
     catalogStripVisibleForAllowList(
       otherStripCodes,
       allowedCodes,
-      isOtherReportsFormatCode(selectedCode),
+      Boolean(jobId) || Boolean(partyId) || isOtherReportsFormatCode(selectedCode),
     ) &&
     (!searchActive ||
       otherReportsFormatsMatchSearch(searchQuery) ||
@@ -735,7 +807,7 @@ export default function ReportCatalogPage() {
     catalogStripVisibleForAllowList(
       quotationStripCodes,
       allowedCodes,
-      isQuotationFormatCode(selectedCode),
+      Boolean(quotationId) || isQuotationFormatCode(selectedCode),
     ) &&
     (!searchActive ||
       quotationFormatsMatchSearch(searchQuery) ||
@@ -745,7 +817,7 @@ export default function ReportCatalogPage() {
     catalogStripVisibleForAllowList(
       opsStripCodes,
       allowedCodes,
-      isOpsListFormatCode(selectedCode),
+      Boolean(jobId) || isOpsListFormatCode(selectedCode),
     ) &&
     (!searchActive ||
       opsListFormatsMatchSearch(searchQuery) ||
@@ -755,7 +827,10 @@ export default function ReportCatalogPage() {
     catalogStripVisibleForAllowList(
       commercialExtraStripCodes,
       allowedCodes,
-      isCommercialExtraFormatCode(selectedCode),
+      Boolean(jobId) ||
+        Boolean(quotationId) ||
+        Boolean(invoiceId) ||
+        isCommercialExtraFormatCode(selectedCode),
     ) &&
     (!searchActive ||
       commercialExtraFormatsMatchSearch(searchQuery) ||
@@ -765,7 +840,7 @@ export default function ReportCatalogPage() {
     catalogStripVisibleForAllowList(
       seaDocsExtraStripCodes,
       allowedCodes,
-      isSeaDocsExtraFormatCode(selectedCode),
+      Boolean(jobId) || isSeaDocsExtraFormatCode(selectedCode),
     ) &&
     (!searchActive ||
       seaDocsExtraFormatsMatchSearch(searchQuery) ||
@@ -775,7 +850,11 @@ export default function ReportCatalogPage() {
     catalogStripVisibleForAllowList(
       leftoverStripCodes,
       allowedCodes,
-      isLeftoverFormatCode(selectedCode),
+      Boolean(jobId) ||
+        Boolean(quotationId) ||
+        Boolean(invoiceId) ||
+        Boolean(partyId) ||
+        isLeftoverFormatCode(selectedCode),
     ) &&
     (!searchActive ||
       leftoverFormatsMatchSearch(searchQuery) ||
@@ -1044,7 +1123,8 @@ export default function ReportCatalogPage() {
         selectedCode={selectedCode || undefined}
         onSelect={selectQuotationFormatCode}
         searchQuery={searchQuery}
-        allowedCodes={allowedCodes}
+        // Deep-link with quotation_id: show all quotation formats (don't hide via family allow-list).
+        allowedCodes={quotationId ? null : allowedCodes}
       />
 
       <OpsListFormatBrowseStrip
@@ -1088,33 +1168,45 @@ export default function ReportCatalogPage() {
       />
 
       {hasInvoiceLayout ? (
-        <InvoiceFormatAutoPdf code={selectedCode} invoiceId={invoiceId} />
+        <InvoiceFormatAutoPdf
+          code={selectedCode}
+          invoiceId={invoiceId}
+          context={reportContext}
+        />
       ) : hasAccountsLayout ? (
-        <AccountsFormatAutoPdf code={selectedCode} />
+        <AccountsFormatAutoPdf code={selectedCode} context={reportContext} />
       ) : hasWmsLayout ? (
-        <WmsFormatAutoPdf code={selectedCode} />
+        <WmsFormatAutoPdf code={selectedCode} context={reportContext} />
       ) : hasArrivalNoticeLayout ? (
-        <ArrivalNoticeFormatAutoPdf code={selectedCode} />
+        <ArrivalNoticeFormatAutoPdf code={selectedCode} context={reportContext} />
       ) : hasDeliveryOrderLayout ? (
-        <DeliveryOrderFormatAutoPdf code={selectedCode} />
+        <DeliveryOrderFormatAutoPdf code={selectedCode} context={reportContext} />
       ) : hasHawbLayout ? (
-        <HawbFormatAutoPdf code={selectedCode} />
+        <HawbFormatAutoPdf code={selectedCode} context={reportContext} />
       ) : hasHblLayout ? (
-        <HblFormatAutoPdf code={selectedCode} />
+        <HblFormatAutoPdf code={selectedCode} context={reportContext} />
       ) : hasOtherReportsLayout ? (
-        <OtherReportsFormatAutoPdf code={selectedCode} />
+        <OtherReportsFormatAutoPdf code={selectedCode} context={reportContext} />
       ) : hasQuotationLayout ? (
-        <QuotationFormatAutoPdf code={selectedCode} />
+        <QuotationFormatAutoPdf
+          code={selectedCode}
+          quotationId={quotationId}
+          context={reportContext}
+        />
       ) : hasOpsListLayout ? (
-        <OpsListFormatAutoPdf code={selectedCode} />
+        <OpsListFormatAutoPdf code={selectedCode} context={reportContext} />
       ) : hasCommercialExtraLayout ? (
-        <CommercialExtraFormatAutoPdf code={selectedCode} />
+        <CommercialExtraFormatAutoPdf code={selectedCode} context={reportContext} />
       ) : hasSeaDocsExtraLayout ? (
-        <SeaDocsExtraFormatAutoPdf code={selectedCode} />
+        <SeaDocsExtraFormatAutoPdf code={selectedCode} context={reportContext} />
       ) : hasLeftoverLayout ? (
-        <LeftoverFormatAutoPdf code={selectedCode} />
+        <LeftoverFormatAutoPdf code={selectedCode} context={reportContext} />
       ) : hasRegisteredLayout ? (
-        <CatalogReportAutoPdf code={selectedCode} invoiceId={invoiceId} />
+        <CatalogReportAutoPdf
+          code={selectedCode}
+          invoiceId={invoiceId}
+          context={reportContext}
+        />
       ) : null}
 
       {selected && !hasRegisteredLayout && !showSpecificAutoPdf ? (

@@ -2,19 +2,25 @@
 export const MANDATORY_BOOKING_DOCUMENT_KINDS = [
   'commercial_invoice',
   'packing_list',
-  'bill_of_lading',
   'licence',
   'uat_tax_certificate',
 ] as const;
 
+/** Optional on portal + staff booking forms (not required for submit/complete). */
+export const OPTIONAL_BOOKING_DOCUMENT_KINDS = ['bill_of_lading'] as const;
+
 /** Portal compliance only — optional extras. */
 export const OPTIONAL_PORTAL_BOOKING_DOCUMENT_KINDS = [
+  'bill_of_lading',
   'correspondence',
   'cod_form',
 ] as const;
 
 export type MandatoryBookingDocumentKind =
   (typeof MANDATORY_BOOKING_DOCUMENT_KINDS)[number];
+
+export type OptionalBookingDocumentKind =
+  (typeof OPTIONAL_BOOKING_DOCUMENT_KINDS)[number];
 
 export type OptionalPortalBookingDocumentKind =
   (typeof OPTIONAL_PORTAL_BOOKING_DOCUMENT_KINDS)[number];
@@ -23,7 +29,15 @@ export type PortalBookingDocumentKind =
   | MandatoryBookingDocumentKind
   | OptionalPortalBookingDocumentKind;
 
-export type ModeBookingFormDocumentKind = MandatoryBookingDocumentKind;
+/** Staff mode forms: mandatory kinds + optional bill of lading / AWB. */
+export type ModeBookingFormDocumentKind =
+  | MandatoryBookingDocumentKind
+  | OptionalBookingDocumentKind;
+
+export const MODE_BOOKING_FORM_DOCUMENT_KINDS: readonly ModeBookingFormDocumentKind[] = [
+  ...MANDATORY_BOOKING_DOCUMENT_KINDS,
+  ...OPTIONAL_BOOKING_DOCUMENT_KINDS,
+];
 
 export const BOOKING_DOCUMENT_KIND_LABELS: Record<PortalBookingDocumentKind, string> = {
   commercial_invoice: 'Commercial invoice',

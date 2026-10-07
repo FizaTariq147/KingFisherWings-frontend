@@ -7,7 +7,7 @@ import { wakeApi, withGatewayRetry } from '@/lib/wakeApi';
 import {
   formatShareEmailError,
   normalizeShareEmailResult,
-  SHARE_EMAIL_TIMEOUT_MS,
+  postStaffEmailWithPdf,
 } from '@/features/shared/share-email';
 import { ensureJobNumberFormatReady } from '@/features/organization/utils/ensureJobNumberFormat';
 import { normalizeJob } from '@/features/jobs/utils/normalizeJob';
@@ -159,16 +159,30 @@ function assertId(id: string, label = 'quotation'): asserts id is string {
   if (!id || !isUuid(id)) throw new Error(`Invalid ${label} id.`);
 }
 
+function readableName(value?: string | null): string | undefined {
+  const trimmed = value?.trim();
+  if (!trimmed || isUuid(trimmed)) return undefined;
+  return trimmed;
+}
+
 function mergeQuotationForList(base: Quotation, detail: Quotation): Quotation {
   return {
     ...base,
-    customer_name: base.customer_name || detail.customer_name,
+    customer_name: readableName(base.customer_name) || readableName(detail.customer_name),
+    department_name:
+      readableName(base.department_name) || readableName(detail.department_name),
+    salesperson_name:
+      readableName(base.salesperson_name) || readableName(detail.salesperson_name),
     origin_port_id: base.origin_port_id || detail.origin_port_id,
     dest_port_id: base.dest_port_id || detail.dest_port_id,
-    origin_port_code: base.origin_port_code || detail.origin_port_code,
-    dest_port_code: base.dest_port_code || detail.dest_port_code,
-    origin_port_name: base.origin_port_name || detail.origin_port_name,
-    dest_port_name: base.dest_port_name || detail.dest_port_name,
+    origin_port_code:
+      readableName(base.origin_port_code) || readableName(detail.origin_port_code),
+    dest_port_code:
+      readableName(base.dest_port_code) || readableName(detail.dest_port_code),
+    origin_port_name:
+      readableName(base.origin_port_name) || readableName(detail.origin_port_name),
+    dest_port_name:
+      readableName(base.dest_port_name) || readableName(detail.dest_port_name),
     subtotal: base.subtotal ?? detail.subtotal,
     tax_total: base.tax_total ?? detail.tax_total,
     total_amount: base.total_amount ?? detail.total_amount,
@@ -184,37 +198,56 @@ function mergeQuotationForList(base: Quotation, detail: Quotation): Quotation {
 function needsListEnrichment(q: Quotation): boolean {
   const hasRouteIds = Boolean(q.origin_port_id || q.dest_port_id);
   const hasRouteLabels = Boolean(
-    q.origin_port_code || q.dest_port_code || q.origin_port_name || q.dest_port_name,
+    readableName(q.origin_port_code) ||
+      readableName(q.dest_port_code) ||
+      readableName(q.origin_port_name) ||
+      readableName(q.dest_port_name),
   );
-  return hasRouteIds && !hasRouteLabels;
+  const missingNames =
+    (Boolean(q.customer_id) && !readableName(q.customer_name)) ||
+    (Boolean(q.department_id) && !readableName(q.department_name)) ||
+    (Boolean(q.salesperson_id) && !readableName(q.salesperson_name));
+  return (hasRouteIds && !hasRouteLabels) || missingNames;
 }
 
 async function enrichQuotationsForList(quotations: Quotation[]): Promise<Quotation[]> {
   const targets = quotations.filter(
     (q) => quotationTotalAmount(q) == null || needsListEnrichment(q),
   );
-  if (!targets.length) return quotations;
 
   const detailById = new Map<string, Quotation>();
-  await Promise.all(
-    targets.slice(0, 25).map(async (q) => {
-      try {
-        const res = await withGatewayRetry(() =>
-          axiosInstance.get<ApiEnvelope<Quotation> | Quotation>(QUOTATION_API.byId(q.id)),
-        );
-        const detail = normalizeQuotation(unwrapEntity(res.data));
-        if (detail) detailById.set(q.id, detail);
-      } catch {
-        // Keep list row as-is when detail fetch fails.
-      }
-    }),
-  );
+  if (targets.length) {
+    await Promise.all(
+      targets.slice(0, 25).map(async (q) => {
+        try {
+          const res = await withGatewayRetry(() =>
+            axiosInstance.get<ApiEnvelope<Quotation> | Quotation>(QUOTATION_API.byId(q.id)),
+          );
+          const detail = normalizeQuotation(unwrapEntity(res.data));
+          if (detail) detailById.set(q.id, detail);
+        } catch {
+          // Keep list row as-is when detail fetch fails.
+        }
+      }),
+    );
+  }
 
-  if (!detailById.size) return quotations;
-  return quotations.map((q) => {
+  let merged = quotations.map((q) => {
     const detail = detailById.get(q.id);
     return detail ? mergeQuotationForList(q, detail) : q;
   });
+
+  // Resolve remaining UUID-backed labels via party / user / department masters.
+  try {
+    const { enrichQuotationsWithDisplayNames } = await import(
+      '../utils/enrichQuotationsWithDisplayNames'
+    );
+    merged = await enrichQuotationsWithDisplayNames(merged);
+  } catch {
+    /* optional — UI maps still hide raw IDs */
+  }
+
+  return merged;
 }
 
 function buildListQuery(
@@ -495,16 +528,8 @@ async function createBookingOpsJobShellFromQuotation(
 async function isCustomerPortalBookingFormComplete(
   quotation: Pick<Quotation, 'id' | 'job_id' | 'job_type' | 'quotation_number' | 'quote_no'>,
 ): Promise<boolean> {
-  try {
-    const { readPortalBookingFormDraft } = await import(
-      '@/features/portal-quotations/utils/portalBookingFormStorage'
-    );
-    const draft = readPortalBookingFormDraft(quotation.id);
-    if (draft?.mark_complete === true) return true;
-  } catch {
-    /* ignore */
-  }
-
+  // Staff inbox only (cross-device). Do not trust localStorage drafts — they can
+  // flip mark_complete before Ops should convert.
   try {
     const { portalAdminInboxService } = await import(
       '@/features/portal-admin-inbox/services/portalAdminInbox.service'
@@ -1063,8 +1088,15 @@ export const quotationService = {
     try {
       await postAction(QUOTATION_API.markWon(id));
       const quotation = await this.getById(id);
-      const { usesGatedFreightQuoteFlow } = await import('../utils/quotationStatus');
-      if (usesGatedFreightQuoteFlow(quotation.job_type)) {
+      const {
+        skipsAutoConvertOnApprove,
+        usesModeBookingFormConvertFlow,
+      } = await import('../utils/quotationStatus');
+      // NVOCC/Air gated + Sea/Land/Road booking-form modes: approve only — never convert here.
+      if (skipsAutoConvertOnApprove(quotation.job_type)) {
+        return quotation;
+      }
+      if (usesModeBookingFormConvertFlow(quotation.job_type)) {
         return quotation;
       }
       return await this.convertToJob(id);
@@ -1117,12 +1149,13 @@ export const quotationService = {
     ) {
       return quotation;
     }
-    const converted = await this.convertToJob(id, {
-      afterCustomerBookingForm: usesModeBookingFormConvertFlow(quotation.job_type),
-    });
+    // Booking-form modes: convert only after customer (or staff) booking form is complete.
     if (usesModeBookingFormConvertFlow(quotation.job_type)) {
-      await syncPortalBookingFormAfterConvert(converted);
+      const formDone = await isCustomerPortalBookingFormComplete(quotation);
+      if (!formDone) return quotation;
+      return this.convertAfterCustomerBookingForm(id);
     }
+    const converted = await this.convertToJob(id);
     return converted;
   },
 
@@ -1542,7 +1575,7 @@ export const quotationService = {
 
   /**
    * Store the KingFisher client PDF on the quotation so portal/email can use the same file.
-   * Tries multipart upload first; falls back to JSON queue with layout_variant=KFW_STANDARD.
+   * Tries multipart → JSON pdf_base64 → queue layout_variant=KFW_STANDARD.
    */
   async storeClientPdf(
     id: string,
@@ -1557,6 +1590,18 @@ export const quotationService = {
     const fileName = (opts.fileName || `quotation-${id}.pdf`).replace(/[^\w.\- ()[\]]+/g, '_');
     const file = new File([opts.blob], fileName, { type: 'application/pdf' });
 
+    const stripFormContentType = [
+      (data: unknown, headers?: Record<string, unknown> & { delete?: (key: string) => void }) => {
+        if (headers && typeof headers === 'object' && data instanceof FormData) {
+          delete headers['Content-Type'];
+          delete headers['content-type'];
+          headers.delete?.('Content-Type');
+          headers.delete?.('content-type');
+        }
+        return data;
+      },
+    ];
+
     try {
       const form = new FormData();
       form.append('mode', mode);
@@ -1565,25 +1610,41 @@ export const quotationService = {
       const res = await withGatewayRetry(() =>
         axiosInstance.post<unknown>(QUOTATION_API.pdf(id), form, {
           withCredentials: false,
-          transformRequest: [
-            (data, headers) => {
-              if (headers && typeof headers === 'object' && data instanceof FormData) {
-                const h = headers as Record<string, unknown> & {
-                  delete?: (key: string) => void;
-                };
-                delete h['Content-Type'];
-                delete h['content-type'];
-                h.delete?.('Content-Type');
-                h.delete?.('content-type');
-              }
-              return data;
-            },
-          ],
+          transformRequest: stripFormContentType,
         }),
       );
       return normalizeQuotationPdfInfo(res.data);
     } catch {
-      // Backend OpenAPI is JSON-only today — queue generation with KFW layout id.
+      /* try base64 JSON next */
+    }
+
+    try {
+      const buffer = await opts.blob.arrayBuffer();
+      let binary = '';
+      const bytes = new Uint8Array(buffer);
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+      }
+      const pdfBase64 = btoa(binary);
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post<unknown>(
+          QUOTATION_API.pdf(id),
+          {
+            mode,
+            layout_variant: 'KFW_STANDARD',
+            pdf_base64: pdfBase64,
+            file_name: fileName,
+          },
+          {
+            withCredentials: false,
+            headers: { 'Content-Type': 'application/json' },
+          },
+        ),
+      );
+      return normalizeQuotationPdfInfo(res.data);
+    } catch {
+      // OpenAPI: POST /pdf is JSON-only { mode, layout_variant } — queue KFW layout.
       return this.generatePdf(id, { mode, layout_variant: 'KFW_STANDARD' });
     }
   },
@@ -1606,26 +1667,38 @@ export const quotationService = {
     }
   },
 
-  async sendEmail(id: string, dto: SendQuotationEmailDto): Promise<unknown> {
+  async sendEmail(
+    id: string,
+    dto: SendQuotationEmailDto,
+    opts?: { pdfBlob?: Blob; fileName?: string },
+  ): Promise<unknown> {
     assertId(id);
     try {
-      const body: Record<string, string> = {
-        to_email: dto.to_email.trim(),
-      };
-      const cc = dto.cc_email?.trim();
-      if (cc) body.cc_email = cc;
-      if (dto.pdf_mode === 'CUSTOMER' || dto.pdf_mode === 'INTERNAL') {
-        body.pdf_mode = dto.pdf_mode;
-      }
-      const message = dto.message?.trim();
-      if (message) body.message = message.slice(0, 500);
-
-      // Wake cold dyno; PDF generate + SMTP often exceeds the default 120s client timeout.
       await wakeApi(45_000);
-      const res = await axiosInstance.post<unknown>(QUOTATION_API.sendEmail(id), body, {
-        timeout: SHARE_EMAIL_TIMEOUT_MS,
-      });
-      return unwrapEntity(res.data) ?? normalizeShareEmailResult(res.data);
+
+      const mode = dto.pdf_mode === 'INTERNAL' ? 'INTERNAL' : 'CUSTOMER';
+      const fields: Record<string, string | undefined> = {
+        to_email: dto.to_email.trim(),
+        cc_email: dto.cc_email?.trim() || undefined,
+        pdf_mode: dto.pdf_mode === 'CUSTOMER' || dto.pdf_mode === 'INTERNAL' ? dto.pdf_mode : mode,
+        message: dto.message?.trim() ? dto.message.trim().slice(0, 500) : undefined,
+      };
+
+      // Live OpenAPI: attach client KingFisher PDF via multipart file / pdf_base64.
+      // Without a client PDF, queue server generation then SMTP-send the stored file.
+      if (!opts?.pdfBlob) {
+        await this.generatePdf(id, { mode, layout_variant: 'KFW_STANDARD' });
+        const { waitForQuotationPdfReady } = await import('../utils/waitForQuotationPdfReady');
+        await waitForQuotationPdfReady(id, mode);
+      }
+
+      const data = await postStaffEmailWithPdf(
+        axiosInstance,
+        QUOTATION_API.sendEmail(id),
+        fields,
+        { pdfBlob: opts?.pdfBlob, fileName: opts?.fileName },
+      );
+      return unwrapEntity(data) ?? normalizeShareEmailResult(data);
     } catch (error) {
       throw formatShareEmailError(error, 'Could not send quotation email.');
     }

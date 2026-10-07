@@ -5,6 +5,7 @@ import type {
   ApprovePaymentProofDto,
   PaymentProof,
   ReviewPaymentProofDto,
+  UploadPaymentProofDto,
 } from '../types/paymentProof.types';
 import { normalizePaymentProof, normalizePaymentProofList } from '../utils/normalizePaymentProof';
 
@@ -21,6 +22,24 @@ export const paymentProofService = {
       axiosInstance.get(PAYMENT_PROOF_API.staffInvoiceProofs(invoiceId)),
     );
     return normalizePaymentProofList(res.data);
+  },
+
+  async listForPurchaseInvoice(invoiceId: string): Promise<PaymentProof[]> {
+    const { purchaseInvoiceService } = await import(
+      '@/features/purchaseInvoices/services/purchaseInvoice.service'
+    );
+    return purchaseInvoiceService.listPaymentProofs(invoiceId);
+  },
+
+  async uploadForPurchaseInvoice(
+    invoiceId: string,
+    file: File,
+    dto: UploadPaymentProofDto,
+  ): Promise<PaymentProof> {
+    const { purchaseInvoiceService } = await import(
+      '@/features/purchaseInvoices/services/purchaseInvoice.service'
+    );
+    return purchaseInvoiceService.uploadPaymentProof(invoiceId, file, dto);
   },
 
   async acknowledge(id: string, dto: ReviewPaymentProofDto = {}): Promise<PaymentProof> {

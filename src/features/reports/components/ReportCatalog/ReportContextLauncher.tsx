@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { FileText } from 'lucide-react';
-import { REPORT_CATALOG_ROUTE } from '../../api/reportCatalog.api';
 import type { ReportContext } from '../../types/reportCatalog.types';
+import {
+  buildCatalogHref,
+  catalogFamilyForContext,
+} from '../../utils/moduleCatalogFamily';
 
 type ReportContextLauncherProps = {
   context: ReportContext;
@@ -12,7 +15,8 @@ type ReportContextLauncherProps = {
 };
 
 /**
- * Additive launcher — opens FRESA catalog filtered by context.
+ * Additive launcher — opens formats catalogue filtered by context + entity id.
+ * Live quotation / invoice / job / party data hydrates every selected format.
  * Does not replace existing PDF / Generate PDF buttons.
  */
 export function ReportContextLauncher({
@@ -21,18 +25,15 @@ export function ReportContextLauncher({
   label = 'Reports',
   className = '',
 }: ReportContextLauncherProps) {
-  const paramKey =
-    context === 'job'
-      ? 'job_id'
-      : context === 'quotation'
-        ? 'quotation_id'
-        : context === 'invoice'
-          ? 'invoice_id'
-          : context === 'party'
-            ? 'party_id'
-            : 'id';
-
-  const to = `${REPORT_CATALOG_ROUTE}?context=${encodeURIComponent(context)}&${paramKey}=${encodeURIComponent(entityId)}`;
+  const family = catalogFamilyForContext(context);
+  const to = buildCatalogHref({
+    context,
+    family,
+    quotation_id: context === 'quotation' ? entityId : undefined,
+    invoice_id: context === 'invoice' ? entityId : undefined,
+    job_id: context === 'job' ? entityId : undefined,
+    party_id: context === 'party' ? entityId : undefined,
+  });
 
   return (
     <Link

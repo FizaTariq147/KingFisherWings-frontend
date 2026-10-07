@@ -225,7 +225,7 @@ export default function InvoiceDetailPage() {
       variant: 'secondary' as const,
     },
     {
-      label: 'FRESA formats',
+      label: 'Formats',
       onClick: () => navigate(buildInvoiceFresaCatalogPath(id)),
       variant: 'secondary' as const,
     },
@@ -409,17 +409,28 @@ export default function InvoiceDetailPage() {
 
       <InvoiceEmailModal
         open={emailOpen}
-        isPending={actions.send.isPending}
+        isPending={actions.send.isPending || actions.generatePdf.isPending}
         defaultTo={party?.email || ''}
         onClose={() => setEmailOpen(false)}
         onSend={async (dto) => {
           try {
-            await actions.send.mutateAsync(dto);
+            const { ensureInvoiceEmailPdf } = await import('../utils/ensureInvoiceEmailPdf');
+            const pdf = await ensureInvoiceEmailPdf({
+              invoice,
+              party,
+              job,
+              companyName: companyMatch?.name,
+            });
+            // SMTP: attach client KingFisher PDF (multipart / pdf_base64 per live OpenAPI).
+            await actions.send.mutateAsync({
+              dto,
+              pdfBlob: pdf.blob,
+              fileName: pdf.fileName,
+            });
+            const { formatShareEmailSuccess } = await import('@/features/shared/share-email');
+            setActionMessage(formatShareEmailSuccess({}) || 'Invoice email sent.');
             setEmailOpen(false);
             setActionError(null);
-            setActionMessage(
-              'Invoice emailed (PDF attached when SMTP succeeds). Check inbox and Spam.',
-            );
             refetch();
           } catch (err) {
             // Modal shows the error; keep page error banner in sync for SMTP/503.

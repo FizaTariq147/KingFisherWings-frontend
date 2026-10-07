@@ -887,6 +887,7 @@ export function PortalBookingFormPanel({
   const [msg, setMsg] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [uploadedDocKinds, setUploadedDocKinds] = useState<Set<string>>(() => new Set());
+  const [stagedDocKinds, setStagedDocKinds] = useState<Set<string>>(() => new Set());
   const [uploadingKind, setUploadingKind] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -897,6 +898,17 @@ export function PortalBookingFormPanel({
     .replace(/[\s-]+/g, '_');
   const usesPortalComplianceDocs =
     isAir || jtUpper.startsWith('NVOCC') || Boolean(bookingId);
+  // Live upload needs a linked booking (NVOCC) or shipment/job (Air). Until then, stage files in the UI.
+  const canUploadComplianceDocs = isAir
+    ? Boolean(jobId && /^[0-9a-f-]{36}$/i.test(jobId))
+    : Boolean(bookingId && /^[0-9a-f-]{36}$/i.test(bookingId));
+  const docsSatisfiedKinds = useMemo(() => {
+    const next = new Set(uploadedDocKinds);
+    if (!canUploadComplianceDocs) {
+      for (const k of stagedDocKinds) next.add(k);
+    }
+    return next;
+  }, [uploadedDocKinds, stagedDocKinds, canUploadComplianceDocs]);
   const portalDocKinds = useMemo(
     () =>
       [
@@ -1206,10 +1218,10 @@ export function PortalBookingFormPanel({
       }
     }
     if (complete) {
-      const missingDocs = missingMandatoryBookingDocs(uploadedDocKinds);
+      const missingDocs = missingMandatoryBookingDocs(docsSatisfiedKinds);
       if (missingDocs.length) {
         setError(
-          `Upload required documents before submit: ${missingDocs
+          `Choose required documents before submit: ${missingDocs
             .map((k) => BOOKING_DOCUMENT_KIND_LABELS[k])
             .join(', ')}.`,
         );
@@ -2429,22 +2441,39 @@ export function PortalBookingFormPanel({
             <p className="text-xs text-[var(--color-neutral-500)]">
               Documents Checklist — upload each required file below
               {usesPortalComplianceDocs
-                ? ' (correspondence and COD form are optional)'
-                : ''}
-              . Submit is blocked until all five mandatory documents are uploaded.
+                ? ' (bill of lading / AWB, correspondence, and COD form are optional)'
+                : ' (bill of lading / AWB is optional)'}
+              . Submit is blocked until all mandatory documents are chosen.
             </p>
-            {!usesPortalComplianceDocs ? (
+            {!canUploadComplianceDocs ? (
               <p className="text-xs text-amber-800 rounded-md border border-amber-200 bg-amber-50 px-3 py-2">
-                File upload needs a linked booking or shipment. If upload fails, ask your forwarder
-                to link the booking, then return here to attach your documents.
+                Choose files below — the file name appears next to each row. Upload to the server
+                starts automatically once your forwarder links the booking or shipment.
               </p>
             ) : null}
             <BookingDocumentUploadList
               kinds={portalDocKinds}
               uploadedKinds={uploadedDocKinds}
               uploadingKind={uploadingKind}
+              canUpload={canUploadComplianceDocs}
               disabled={saveForm.isPending || submitted}
               requiredKinds={new Set(MANDATORY_BOOKING_DOCUMENT_KINDS)}
+              onFileSelected={(kind) => {
+                setStagedDocKinds((prev) => new Set(prev).add(kind));
+                if (kind === 'commercial_invoice') {
+                  patch({ attach_commercial_invoice: true });
+                } else if (kind === 'licence') {
+                  patch({ attach_licence: true });
+                } else if (kind === 'correspondence') {
+                  patch({ attach_correspondence: true });
+                } else if (kind === 'cod_form') {
+                  patch({ attach_cod_form: true });
+                } else if (kind === 'packing_list') {
+                  patch({ attach_packing_list: true });
+                } else if (kind === 'bill_of_lading') {
+                  patch({ attach_bl_awb_copy: true });
+                }
+              }}
               onUpload={async (kind, file) => {
                 setUploadingKind(kind);
                 try {
@@ -2457,7 +2486,11 @@ export function PortalBookingFormPanel({
                     jobType: quote.jobType,
                   });
                   setUploadedDocKinds((prev) => new Set(prev).add(kind));
-                  // Keep legacy attach_* flags in sync for PUT form payload.
+                  setStagedDocKinds((prev) => {
+                    const next = new Set(prev);
+                    next.delete(kind);
+                    return next;
+                  });
                   if (kind === 'commercial_invoice') {
                     patch({ attach_commercial_invoice: true });
                   } else if (kind === 'licence') {

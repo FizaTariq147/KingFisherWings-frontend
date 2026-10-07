@@ -116,8 +116,16 @@ export default function VendorJobDetailPage() {
     setFormError(null);
     setFormMsg(null);
     try {
-      await fn();
-      setFormMsg(success);
+      const result = await fn();
+      const notes =
+        result && typeof result === 'object' && 'notes' in result
+          ? String((result as { notes?: string }).notes ?? '')
+          : '';
+      setFormMsg(
+        notes.includes('Draft invoice')
+          ? `${success} Open Invoices to continue.`
+          : success,
+      );
       refreshAll();
     } catch (err) {
       setFormError(vendorErrorMessage(err, 'Request failed.'));
@@ -252,13 +260,12 @@ export default function VendorJobDetailPage() {
               size="sm"
               disabled={actions.accept.isPending}
               onClick={() =>
-                void run(
-                  () =>
-                    actions.accept.mutateAsync(
-                      acceptMessage.trim() ? { message: acceptMessage.trim() } : {},
-                    ),
-                  'Cost offer accepted (APPROVED).',
-                )
+                void run(async () => {
+                  const result = await actions.accept.mutateAsync(
+                    acceptMessage.trim() ? { message: acceptMessage.trim() } : {},
+                  );
+                  return result;
+                }, 'Offer accepted. A draft invoice was created in Vendor Invoices — review it there. Your forwarder is notified and will post it under Purchase Invoices.')
               }
             >
               {actions.accept.isPending ? 'Accepting…' : 'Accept offer'}

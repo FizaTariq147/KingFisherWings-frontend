@@ -1,5 +1,6 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { ReportsBackButton } from '@/features/reports/components/ReportsBackButton';
+import { ModuleReportFormatsSection } from '@/features/reports/components/ModuleReportFormatsSection';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import {
@@ -106,6 +107,8 @@ export default function DocumentationReportsPage() {
     <div className="space-y-4">
       <ReportsBackButton fallbackTo="/documentation" fallbackLabel="Back to Documentation" />
       <h2 className="text-sm font-semibold text-[var(--color-neutral-800)]">Documentation reports</h2>
+
+      <ModuleReportFormatsSection families={['sea_docs', 'air_docs', 'ops_list']} />
 
       <Card className="space-y-4 p-4">
         <div className="flex flex-wrap items-end gap-3">

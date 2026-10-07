@@ -1,5 +1,6 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { ReportsBackButton } from '@/features/reports/components/ReportsBackButton';
+import { ModuleReportFormatsSection } from '@/features/reports/components/ModuleReportFormatsSection';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import {
@@ -219,10 +220,12 @@ export default function QuotationReportsPage() {
             Quotation reports
           </h2>
           <p className="text-xs text-[var(--color-neutral-400)] mt-0.5">
-            Chargewise listing, conversion, lost reasons, and response time.
+            Catalogue formats for this module, plus chargewise / analytics APIs.
           </p>
         </div>
       </div>
+
+      <ModuleReportFormatsSection families={['quotation']} />
 
       <Card className="p-4 space-y-4">
         <div className="flex flex-wrap gap-3 items-end">

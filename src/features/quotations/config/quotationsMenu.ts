@@ -47,7 +47,8 @@ export const quotationsMenu: MenuTile[] = [
 export const reportsQuotationTile: MenuTile = {
   id: 'reports-quotation',
   title: 'Reports - Quotation',
-  description: 'To view all reports in quotation module',
+  description:
+    'Quotation catalogue formats plus chargewise / conversion analytics for this module.',
   icon: FileText,
   iconColor: 'bg-sky-500',
   path: '/quotations/reports',
