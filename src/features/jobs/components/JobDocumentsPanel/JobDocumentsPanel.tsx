@@ -18,7 +18,10 @@ import { getErrorMessage } from '../../utils/getErrorMessage';
 import { resolveJobDocumentPdfMeta } from '../../utils/jobDocumentPdfMeta';
 import { prepareJobDocumentDisplayPdf } from '../../utils/prepareJobDocumentDisplayPdf';
 import { jobDisplayNumber } from '../../utils/jobRoute';
-import { resolveJobDocumentFileUrl } from '../../utils/resolveJobDocumentFileUrl';
+import {
+  resolveJobDocumentFileUrl,
+  resolveJobDocumentFileUrlCandidates,
+} from '../../utils/resolveJobDocumentFileUrl';
 import { resolveSessionTenantIdFromAuth } from '@/lib/tenantFromAuth';
 import { useAuthStore } from '@/store/authStore';
 
@@ -140,6 +143,7 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
     documentLabel?: string,
     fileUrl?: string | null,
     waitForUrl = false,
+    fallbackUrls?: string[] | null,
   ) => {
     setError(null);
     setPdfBusy(true);
@@ -157,6 +161,7 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
         jobId,
         tenantId,
         fileUrl,
+        fallbackUrls,
         waitForUrl,
       });
       setPdfReadyBlob(blob);
@@ -206,15 +211,37 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
             documents.map((raw) => {
               const d = raw as {
                 id: string;
+                tenant_id?: string;
                 document_type?: string;
                 file_name?: string;
+                fileName?: string;
                 file_url?: string;
+                fileUrl?: string;
                 s3_key?: string;
+                s3Key?: string;
+                download_url?: string;
+                downloadUrl?: string;
                 status?: string;
                 is_finalized?: boolean;
                 reference_number?: string;
               };
-              const storedUrl = resolveJobDocumentFileUrl(d, tenantId);
+              const docRef = {
+                file_url: d.file_url || d.fileUrl,
+                s3_key: d.s3_key || d.s3Key,
+                file_name: d.file_name || d.fileName,
+                download_url: d.download_url || d.downloadUrl,
+              };
+              const docTenant = tenantId || d.tenant_id;
+              const urlCandidates = resolveJobDocumentFileUrlCandidates(docRef, docTenant);
+              const storedUrl = urlCandidates[0] ?? resolveJobDocumentFileUrl(docRef, docTenant);
+              const openDocPdf = () =>
+                void openKingFisherPdf(
+                  d.document_type || 'DOCUMENT',
+                  d.file_name || d.document_type,
+                  storedUrl,
+                  false,
+                  urlCandidates.slice(1),
+                );
               return (
                 <div
                   key={d.id}
@@ -232,13 +259,7 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                       type="button"
                       size="sm"
                       disabled={pdfBusy}
-                      onClick={() =>
-                        void openKingFisherPdf(
-                          d.document_type || 'DOCUMENT',
-                          d.file_name || d.document_type,
-                          storedUrl,
-                        )
-                      }
+                      onClick={openDocPdf}
                     >
                       {pdfBusy ? 'Building…' : 'View PDF'}
                     </Button>
@@ -247,13 +268,7 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                       size="sm"
                       variant="secondary"
                       disabled={pdfBusy}
-                      onClick={() =>
-                        void openKingFisherPdf(
-                          d.document_type || 'DOCUMENT',
-                          d.file_name || d.document_type,
-                          storedUrl,
-                        )
-                      }
+                      onClick={openDocPdf}
                     >
                       Download PDF
                     </Button>

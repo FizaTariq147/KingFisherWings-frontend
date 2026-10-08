@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -15,6 +16,49 @@ import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import { useJobContainers, useJobCutoffs } from '../../hooks/useJobs';
 import type { Job } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import type { JobCutoffLane } from '../../utils/normalizeJobCutoffs';
+
+function formatCutoffDate(value?: string | null): string {
+  if (!value?.trim()) return '—';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleString(undefined, {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function cutoffBadgeVariant(
+  status?: string,
+): 'success' | 'warning' | 'danger' | 'neutral' {
+  const s = String(status || '').toUpperCase();
+  if (s === 'GREEN') return 'success';
+  if (s === 'AMBER' || s === 'YELLOW') return 'warning';
+  if (s === 'RED') return 'danger';
+  return 'neutral';
+}
+
+function CutoffLaneRow({ label, lane }: { label: string; lane?: JobCutoffLane }) {
+  const hours =
+    lane?.hoursRemaining != null && Number.isFinite(lane.hoursRemaining)
+      ? `${lane.hoursRemaining}h remaining`
+      : null;
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm border-b border-[var(--color-neutral-100)] last:border-0">
+      <div className="min-w-0">
+        <p className="font-medium text-[var(--color-neutral-800)]">{label}</p>
+        <p className="text-xs text-[var(--color-neutral-500)]">
+          {formatCutoffDate(lane?.cutoff)}
+          {hours ? ` · ${hours}` : ''}
+        </p>
+      </div>
+      <Badge variant={cutoffBadgeVariant(lane?.status)}>{lane?.status || 'NONE'}</Badge>
+    </div>
+  );
+}
 
 interface JobOpsPanelProps {
   job: Job;
@@ -163,9 +207,28 @@ export function JobOpsPanel({ job }: JobOpsPanelProps) {
             <CardHeader>
               <CardTitle>Cutoffs</CardTitle>
             </CardHeader>
-            <pre className="px-4 pb-4 text-xs overflow-auto max-h-40">
-              {cutoffs ? JSON.stringify(cutoffs, null, 2) : '—'}
-            </pre>
+            <div className="px-4 pb-4 space-y-1">
+              {!cutoffs ? (
+                <p className="text-sm text-[var(--color-neutral-400)]">Loading cutoffs…</p>
+              ) : (
+                <>
+                  <CutoffLaneRow label="SI cutoff" lane={cutoffs.si} />
+                  <CutoffLaneRow label="VGM cutoff" lane={cutoffs.vgm} />
+                  <CutoffLaneRow label="CY cutoff" lane={cutoffs.cy} />
+                  {(cutoffs.siSubmittedAt || cutoffs.vgmSubmittedAt || cutoffs.vgmMethod) && (
+                    <div className="pt-2 text-xs text-[var(--color-neutral-500)] space-y-1">
+                      {cutoffs.siSubmittedAt ? (
+                        <p>SI submitted: {formatCutoffDate(cutoffs.siSubmittedAt)}</p>
+                      ) : null}
+                      {cutoffs.vgmSubmittedAt ? (
+                        <p>VGM submitted: {formatCutoffDate(cutoffs.vgmSubmittedAt)}</p>
+                      ) : null}
+                      {cutoffs.vgmMethod ? <p>VGM method: {cutoffs.vgmMethod}</p> : null}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </Card>
           <Card>
             <CardHeader>

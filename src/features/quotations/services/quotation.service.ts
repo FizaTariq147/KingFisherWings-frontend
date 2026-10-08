@@ -470,9 +470,9 @@ async function linkQuotationJobShell(
   current: Quotation,
 ): Promise<Quotation> {
   const { coerceQuotationStatus } = await import('../utils/quotationStatus');
+  // Remember job↔quote for inbox reverse lookup only — status stays APPROVED
+  // until customer booking-form submit triggers convert-to-job.
   const { rememberQuotationConverted } = await import('../utils/quotationConvertedMemory');
-  // Remember shell link so Ops can resolve portal booking forms by job even when
-  // status stays APPROVED until booking-form complete.
   rememberQuotationConverted(quotationId, jobId);
 
   if (current.job_id === jobId) return current;
@@ -1229,14 +1229,18 @@ export const quotationService = {
   },
 
   /**
-   * After staff POST …/booking-form/complete (or portal form already on file),
-   * mark quote CONVERTED. Prefer customer portal form → convert when no job yet.
+   * After the customer portal booking form is complete, mark quote CONVERTED.
+   * Staff booking-form complete must NOT call this — OpenAPI convert requires the
+   * customer mode/compliance form; admin complete only flips Draft → Completed.
    */
   async convertAfterBookingFormComplete(
     jobId: string,
     opts?: { staffFormJustCompleted?: boolean },
   ): Promise<Quotation | null> {
     if (!jobId || !isUuid(jobId)) return null;
+    // Staff complete is not a convert trigger.
+    if (opts?.staffFormJustCompleted) return null;
+
     const linked = await this.findLinkedToJob(jobId);
     if (!linked) return null;
 
@@ -1259,10 +1263,7 @@ export const quotationService = {
     }
 
     const portalDone = await isCustomerPortalBookingFormComplete(linked);
-    const staffDone =
-      opts?.staffFormJustCompleted === true ||
-      (await isStaffModeBookingFormComplete(jobId, linked.job_type));
-    if (!portalDone && !staffDone) return linked;
+    if (!portalDone) return linked;
 
     // Job shell already exists — flip APPROVED → CONVERTED without creating a second job.
     if (linked.job_id && isUuid(linked.job_id) && linked.job_id === jobId) {

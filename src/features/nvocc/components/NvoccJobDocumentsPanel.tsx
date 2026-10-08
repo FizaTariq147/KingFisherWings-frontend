@@ -10,7 +10,10 @@ import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import { resolveJobDocumentPdfMeta } from '@/features/jobs/utils/jobDocumentPdfMeta';
 import { prepareJobDocumentDisplayPdf } from '@/features/jobs/utils/prepareJobDocumentDisplayPdf';
 import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
-import { resolveJobDocumentFileUrl } from '@/features/jobs/utils/resolveJobDocumentFileUrl';
+import {
+  resolveJobDocumentFileUrl,
+  resolveJobDocumentFileUrlCandidates,
+} from '@/features/jobs/utils/resolveJobDocumentFileUrl';
 import { resolveSessionTenantIdFromAuth } from '@/lib/tenantFromAuth';
 import { useAuthStore } from '@/store/authStore';
 import {
@@ -83,6 +86,7 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
     documentLabel?: string,
     fileUrl?: string | null,
     waitForUrl = false,
+    fallbackUrls?: string[] | null,
   ) => {
     setError(null);
     setPdfBusy(true);
@@ -98,6 +102,7 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
     try {
       const blob = await prepareJobDocumentDisplayPdf({
         jobId,
+        fallbackUrls,
         tenantId,
         fileUrl,
         waitForUrl,
@@ -147,13 +152,25 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
             documents.map((raw) => {
               const d = raw as {
                 id: string;
+                tenant_id?: string;
                 document_type?: string;
                 file_name?: string;
                 file_url?: string;
                 s3_key?: string;
                 status?: string;
               };
-              const storedUrl = resolveJobDocumentFileUrl(d, tenantId);
+              const docTenant = tenantId || d.tenant_id;
+              const urlCandidates = resolveJobDocumentFileUrlCandidates(d, docTenant);
+              const storedUrl =
+                urlCandidates[0] ?? resolveJobDocumentFileUrl(d, docTenant);
+              const openDocPdf = () =>
+                void openKingFisherPdf(
+                  d.document_type || 'DOCUMENT',
+                  d.file_name || d.document_type,
+                  storedUrl,
+                  false,
+                  urlCandidates.slice(1),
+                );
               return (
                 <div
                   key={d.id}
@@ -170,13 +187,7 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
                       type="button"
                       size="sm"
                       disabled={pdfBusy}
-                      onClick={() =>
-                        void openKingFisherPdf(
-                          d.document_type || 'DOCUMENT',
-                          d.file_name || d.document_type,
-                          storedUrl,
-                        )
-                      }
+                      onClick={openDocPdf}
                     >
                       {pdfBusy ? 'Building…' : 'View PDF'}
                     </Button>
@@ -185,13 +196,7 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
                       size="sm"
                       variant="secondary"
                       disabled={pdfBusy}
-                      onClick={() =>
-                        void openKingFisherPdf(
-                          d.document_type || 'DOCUMENT',
-                          d.file_name || d.document_type,
-                          storedUrl,
-                        )
-                      }
+                      onClick={openDocPdf}
                     >
                       Download PDF
                     </Button>
