@@ -25,7 +25,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -179,7 +179,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -333,7 +333,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -492,7 +492,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -647,7 +647,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -818,7 +818,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -973,7 +973,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -1128,7 +1128,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -1283,7 +1283,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -1439,7 +1439,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -1595,7 +1595,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -1766,7 +1766,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -1921,7 +1921,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -2080,7 +2080,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -2235,7 +2235,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -2390,7 +2390,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -2546,7 +2546,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -2717,7 +2717,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -2873,7 +2873,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -3032,7 +3032,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -3187,7 +3187,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -3346,7 +3346,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -3501,7 +3501,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -3657,7 +3657,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -3828,7 +3828,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -3983,7 +3983,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -4142,7 +4142,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -4297,7 +4297,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -4453,7 +4453,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -4624,7 +4624,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -4779,7 +4779,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -4938,7 +4938,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -5093,7 +5093,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -5248,7 +5248,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -5404,7 +5404,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -5575,7 +5575,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -5730,7 +5730,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -5889,7 +5889,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -6044,7 +6044,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -6200,7 +6200,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -6371,7 +6371,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -6526,7 +6526,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -6685,7 +6685,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -6840,7 +6840,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -6996,7 +6996,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -7167,7 +7167,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -7322,7 +7322,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -7481,7 +7481,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -7652,7 +7652,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -7823,7 +7823,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -7978,7 +7978,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -8137,7 +8137,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -8296,7 +8296,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -8455,7 +8455,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -8626,7 +8626,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -8781,7 +8781,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -8937,7 +8937,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -9108,7 +9108,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -9263,7 +9263,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -9418,7 +9418,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -9573,7 +9573,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -9732,7 +9732,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -9887,7 +9887,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -10043,7 +10043,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -10214,7 +10214,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -10369,7 +10369,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -10528,7 +10528,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -10683,7 +10683,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -10839,7 +10839,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -10998,7 +10998,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -11153,7 +11153,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -11308,7 +11308,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -11467,7 +11467,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -11622,7 +11622,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -11778,7 +11778,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -11933,7 +11933,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -12092,7 +12092,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -12247,7 +12247,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -12403,7 +12403,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -12559,7 +12559,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -12730,7 +12730,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -12885,7 +12885,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {
@@ -13040,7 +13040,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
-      "email": "info@kingfisherwingsgroup.com",
+      "email": "inquiry@kingfishertec.com",
       "logo": "kingfisher"
     },
     "demo": {

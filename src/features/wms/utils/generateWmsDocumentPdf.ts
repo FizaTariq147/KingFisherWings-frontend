@@ -465,7 +465,7 @@ function resolveMeta(options: WmsDocumentPdfOptions) {
       company?.tagline || 'FREIGHT - LOGISTICS - GENERAL TRADING',
     ).toUpperCase(),
     phone: safePdfText(company?.phone || '+971 55 5355 286'),
-    email: safePdfText(company?.email || 'info@kingfisherwingsgroup.com'),
+    email: safePdfText(company?.email || 'inquiry@kingfishertec.com'),
     website: safePdfText(company?.website || 'www.kingfisherwingsgroup.com'),
     address: safePdfText(
       company?.address || 'Office, Dubai, United Arab Emirates',

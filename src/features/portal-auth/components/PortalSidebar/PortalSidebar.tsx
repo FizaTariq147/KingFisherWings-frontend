@@ -185,12 +185,9 @@ export function PortalSidebar({
             />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <p className="truncate text-sm font-semibold text-white" title={companyName}>
+                <p className="text-sm font-semibold leading-snug text-white break-words" title={companyName}>
                   {companyName}
                 </p>
-                <span className="shrink-0 rounded bg-[var(--color-secondary)] px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-white">
-                  GOLD
-                </span>
               </div>
               <p className="mt-0.5 truncate text-[11px] text-white/45">{portalLabel}</p>
             </div>

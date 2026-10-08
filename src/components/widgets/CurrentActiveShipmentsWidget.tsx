@@ -52,7 +52,7 @@ export function CurrentActiveShipmentsWidget() {
       emptyMessage={
         isError ? 'Unable to load active shipments.' : 'No active shipments right now.'
       }
-      onExpand={() => navigate('/jobs/air-export')}
+      onExpand={() => navigate('/management/all-jobs-mis')}
       onAdd={() => navigate('/jobs/new')}
     >
       <Table>

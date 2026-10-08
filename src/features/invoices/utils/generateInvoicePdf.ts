@@ -402,7 +402,7 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
     model.company?.tagline || 'FREIGHT - LOGISTICS - GENERAL TRADING',
   ).toUpperCase();
   const companyPhone = safePdfText(model.company?.phone || '+971 55 5355 286');
-  const companyEmail = safePdfText(model.company?.email || 'info@kingfisherwingsgroup.com');
+  const companyEmail = safePdfText(model.company?.email || 'inquiry@kingfishertec.com');
   const companyWeb = safePdfText(model.company?.website || 'www.kingfisherwingsgroup.com');
   const copyLabel = safePdfText(model.copyLabel || 'ORIGINAL');
   const vatPct =

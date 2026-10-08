@@ -299,8 +299,7 @@ export default function VendorLoginPage() {
                 onChange={(e) => setSetNewPasswordAfterLogin(e.target.checked)}
               />
               <span>
-                I have a temporary password — set a new password after sign-in (same as customer
-                portal)
+                I have a temporary password and want to set a new password after sign-in
               </span>
             </label>
             <button
