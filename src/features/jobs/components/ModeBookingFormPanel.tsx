@@ -1158,9 +1158,13 @@ export function ModeBookingFormPanel({
   const shipperName =
     saved?.parties?.find((p) => p.party_kind === 'SHIPPER')?.full_name?.trim() || '—';
   /** Save alone → Draft; Complete / mark_complete → Completed. */
+  const savedStatus = String(saved?.status ?? '').toUpperCase().replace(/[\s-]+/g, '_');
   const listStatus = !hasSavedForm
     ? null
-    : forceCompleted || saved?.mark_complete === true
+    : forceCompleted ||
+        saved?.mark_complete === true ||
+        savedStatus === 'COMPLETED' ||
+        savedStatus === 'COMPLETE'
       ? 'Completed'
       : 'Draft';
 
@@ -2519,18 +2523,15 @@ export function ModeBookingFormPanel({
                 async () => {
                   const result = await save.mutateAsync(toDto(form, mode));
                   if (form.mark_complete || (result as ModeBookingForm)?.mark_complete) {
-                    const convertResult = await complete.mutateAsync();
+                    await complete.mutateAsync();
                     setForceCompleted(true);
                     setForm((prev) => ({ ...prev, mark_complete: true }));
-                    if (convertResult.converted) {
-                      return 'Booking form completed — quotation converted to job.';
-                    }
-                    return 'Booking form saved & marked complete.';
+                    return 'Booking form completed.';
                   }
                   return undefined;
                 },
                 form.mark_complete
-                  ? 'Booking form saved & marked complete.'
+                  ? 'Booking form completed.'
                   : 'Booking form saved as Draft.',
                 true,
               );
@@ -2568,11 +2569,8 @@ export function ModeBookingFormPanel({
                     consent_accepted: true,
                     mark_complete: true,
                   }));
-                  const convertResult = await complete.mutateAsync();
+                  await complete.mutateAsync();
                   setForceCompleted(true);
-                  if (convertResult.converted) {
-                    return 'Booking form completed — quotation converted to job.';
-                  }
                   return undefined;
                 },
                 'Booking form completed.',

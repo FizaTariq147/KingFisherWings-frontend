@@ -71,7 +71,20 @@ export function applyPortalCustomerDecisionStatus(
     return { ...detail, status: 'REJECTED' };
   }
   if (isCustomerDisapprovedStatus(current) || current === 'EXPIRED') return detail;
-  // Accept may auto-create a job → CONVERTED.
+
+  const jt = String(detail.jobType ?? detail.raw?.job_type ?? detail.raw?.jobType ?? '')
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+
+  // Mode booking-form quotes stay APPROVED until the customer submits the form
+  // (OpenAPI: convert-to-job after booking form is complete). Do not flip to
+  // CONVERTED just because a provisional job_id / shell exists.
+  if (usesModeBookingFormConvertFlow(jt)) {
+    if (current === 'CONVERTED') return { ...detail, status: 'CONVERTED' };
+    return { ...detail, status: 'APPROVED' };
+  }
+
+  // Non–booking-form modes may convert on accept → CONVERTED when job exists.
   if (current === 'CONVERTED' || detail.jobId || detail.convertedJobNumber) {
     return { ...detail, status: 'CONVERTED' };
   }
@@ -219,14 +232,22 @@ export function portalQuoteStatusMessage(
   }
   if (isCustomerApprovedStatus(s) || s === 'CONVERTED' || s === 'ACCEPTED') {
     const detail = quote as PortalQuotationDetail | undefined;
-    const jt = String(detail?.jobType ?? detail?.raw?.job_type ?? '').toUpperCase();
+    const jt = String(detail?.jobType ?? detail?.raw?.job_type ?? '')
+      .toUpperCase()
+      .replace(/[\s-]+/g, '_');
+    if (usesModeBookingFormConvertFlow(jt)) {
+      if (s === 'CONVERTED') {
+        return 'You approved this quotation and submitted the booking form — it is converted to a job.';
+      }
+      return 'You approved this quotation. Complete the booking form below — it converts to a job after you submit.';
+    }
     if (detail?.jobId || detail?.convertedJobNumber || s === 'CONVERTED') {
-      if (jt.startsWith('AIR') || jt.startsWith('NVOCC') || usesModeBookingFormConvertFlow(jt)) {
-        return 'You approved this quotation — it is converted to a job. Complete the booking form below next.';
+      if (jt.startsWith('AIR') || jt.startsWith('NVOCC')) {
+        return 'You approved this quotation. Complete the booking form below next.';
       }
       return 'You approved this quotation — it is converted to a job.';
     }
-    if (jt.startsWith('AIR') || jt.startsWith('NVOCC') || usesModeBookingFormConvertFlow(jt)) {
+    if (jt.startsWith('AIR') || jt.startsWith('NVOCC')) {
       return 'You approved this quotation. Complete the booking form below next.';
     }
     return 'You approved this quotation.';

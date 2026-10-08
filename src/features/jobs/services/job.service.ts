@@ -1596,9 +1596,13 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.submitVgm(id), dto), normalizeJob);
   },
 
-  async getCutoffs(id: string): Promise<unknown> {
+  async getCutoffs(id: string): Promise<import('../utils/normalizeJobCutoffs').JobCutoffs> {
     assertId(id);
-    return request(() => axiosInstance.get(JOB_API.cutoffs(id)));
+    const { normalizeJobCutoffs } = await import('../utils/normalizeJobCutoffs');
+    return request(
+      () => axiosInstance.get(JOB_API.cutoffs(id)),
+      (raw) => normalizeJobCutoffs(raw),
+    );
   },
 
   async listContainers(id: string): Promise<unknown[]> {

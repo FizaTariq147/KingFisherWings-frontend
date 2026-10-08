@@ -129,27 +129,26 @@ async function completeBookingForm(mode: StaffBookingFormMode, jobId: string) {
 }
 
 /**
- * POST …/booking-form/complete, then quote→job convert when the linked quotation
- * is still APPROVED (Sea/Land/Road/Courier/Warehouse/Customs).
+ * POST …/booking-form/complete only.
+ * Quote→job convert is driven by the customer portal booking-form submit
+ * (OpenAPI: convert after the mode booking form is complete on the customer side).
+ * Admin complete flips the job booking form Draft → Completed — it must not convert.
  */
+export async function completeStaffBookingForm(
+  mode: StaffBookingFormMode,
+  jobId: string,
+): Promise<{ completed: boolean }> {
+  await completeBookingForm(mode, jobId);
+  return { completed: true };
+}
+
+/** @deprecated Use completeStaffBookingForm — staff complete no longer converts. */
 export async function completeStaffBookingFormAndConvert(
   mode: StaffBookingFormMode,
   jobId: string,
 ): Promise<{ completed: boolean; converted: boolean }> {
-  await completeBookingForm(mode, jobId);
-  try {
-    const { quotationService } = await import(
-      '@/features/quotations/services/quotation.service'
-    );
-    const linked = await quotationService.convertAfterBookingFormComplete(jobId, {
-      staffFormJustCompleted: true,
-    });
-    const converted = String(linked?.status ?? '').toUpperCase() === 'CONVERTED';
-    return { completed: true, converted };
-  } catch {
-    // Complete succeeded; convert may retry from quotation detail / refresh.
-    return { completed: true, converted: false };
-  }
+  await completeStaffBookingForm(mode, jobId);
+  return { completed: true, converted: false };
 }
 
 export function useStaffBookingForm(jobId: string, mode: StaffBookingFormMode, enabled = true) {
@@ -198,7 +197,7 @@ export function useStaffBookingFormActions(jobId: string, mode: StaffBookingForm
       },
     }),
     complete: useMutation({
-      mutationFn: () => completeStaffBookingFormAndConvert(mode, jobId),
+      mutationFn: () => completeStaffBookingForm(mode, jobId),
       onSuccess: async () => {
         invalidate(jobId);
         await queryClient.invalidateQueries({ queryKey: key });

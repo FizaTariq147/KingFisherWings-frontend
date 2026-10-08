@@ -27,10 +27,15 @@ function acceptSuccessMessage(
 ): string {
   const jt = String(
     quote.jobType ?? (quote.raw as { job_type?: string } | undefined)?.job_type ?? '',
-  ).toUpperCase();
-  const converted =
-    (result?.status || '').toUpperCase().replace(/\s+/g, '_') === 'CONVERTED' ||
-    Boolean(result?.jobId || result?.convertedJobNumber);
+  )
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  const statusConverted =
+    (result?.status || '').toUpperCase().replace(/\s+/g, '_') === 'CONVERTED';
+  // Mode booking-form quotes convert only after form submit — ignore provisional job_id.
+  const converted = usesModeBookingFormConvertFlow(jt)
+    ? statusConverted
+    : statusConverted || Boolean(result?.jobId || result?.convertedJobNumber);
   if (jt.startsWith('NVOCC')) {
     return hasCounter && isNegotiating
       ? 'Approved at the forwarder’s offer. Complete the booking form below — Ops will finish the booking from your details.'
@@ -42,11 +47,6 @@ function acceptSuccessMessage(
       : 'Quotation approved. Complete the air booking form below; Ops (admin / sales) will finish booking from your details.';
   }
   if (usesModeBookingFormConvertFlow(jt)) {
-    if (converted) {
-      return hasCounter && isNegotiating
-        ? 'Approved at the forwarder’s offer — converted to a job. Complete the booking form below next.'
-        : 'Quotation approved and converted to a job. Complete the booking form below next.';
-    }
     return hasCounter && isNegotiating
       ? 'Approved at the forwarder’s offer. Complete the booking form below — your quotation converts to a job after you submit it.'
       : 'Quotation approved. Complete the booking form below — your quotation converts to a job after you submit it.';

@@ -96,16 +96,14 @@ function normalizeStatus(
 
   const jobType =
     (record && (str(record.job_type) || str(record.jobType))) || undefined;
-  // Booking-form modes stay APPROVED while a job shell exists for the form.
+  // Booking-form modes: trust API status only. A provisional job_id / local
+  // convert memory must not show CONVERTED until POST …/convert-to-job after
+  // the customer submits the portal booking form.
   if (usesModeBookingFormConvertFlow(jobType)) {
-    if (
-      id &&
-      isRememberedQuotationConverted(id) &&
-      (resolved === 'APPROVED' || resolved === 'WON')
-    ) {
-      return 'CONVERTED';
-    }
-    return resolved;
+    const apiStatus = coerceQuotationStatus(value);
+    if (apiStatus === 'CONVERTED') return 'CONVERTED';
+    if (apiStatus === 'APPROVED' || apiStatus === 'WON') return 'APPROVED';
+    return resolved === 'CONVERTED' ? 'APPROVED' : resolved;
   }
 
   const jobId =
