@@ -21,7 +21,7 @@ function hexToRgb(hex: string) {
 /** Logged-in user for invoice PDF/preview footers. */
 export function getInvoiceFooterUserEmail(): string {
   const email = useAuthStore.getState().user?.email?.trim();
-  return email || 'info@kingfisherwingsgroup.com';
+  return email || 'inquiry@kingfishertec.com';
 }
 
 export function getInvoiceFooterUserName(): string {

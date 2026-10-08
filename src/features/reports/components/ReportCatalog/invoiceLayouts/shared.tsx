@@ -17,7 +17,7 @@ export const KF = {
   address: 'Dubai, United Arab Emirates',
   web: 'www.kingfisherwingsgroup.com',
   phone: '+971 55 5355 286',
-  email: 'info@kingfisherwingsgroup.com',
+  email: 'inquiry@kingfishertec.com',
 } as const;
 
 /** Format-4 Standard Tax Invoice palette (extracted from Fresa sample PDF). */

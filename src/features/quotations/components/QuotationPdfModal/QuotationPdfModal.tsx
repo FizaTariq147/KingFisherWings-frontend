@@ -139,7 +139,7 @@ export function QuotationPdfModal({
       name: match?.name || 'KingFisher Wings Group',
       tagline: 'FREIGHT - LOGISTICS - GENERAL TRADING',
       phone: '+971 55 5355 286',
-      email: 'info@kingfisherwingsgroup.com',
+      email: 'inquiry@kingfishertec.com',
       website: 'www.kingfisherwingsgroup.com',
       addressLines: [] as string[],
     };

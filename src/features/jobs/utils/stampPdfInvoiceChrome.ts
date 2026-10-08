@@ -222,7 +222,7 @@ export async function stampPdfInvoiceChrome(
       options?.company?.tagline || 'FREIGHT - LOGISTICS - GENERAL TRADING',
     ).toUpperCase(),
     phone: safePdfText(options?.company?.phone || '+971 55 5355 286'),
-    email: safePdfText(options?.company?.email || 'info@kingfisherwingsgroup.com'),
+    email: safePdfText(options?.company?.email || 'inquiry@kingfishertec.com'),
     website: safePdfText(options?.company?.website || 'www.kingfisherwingsgroup.com'),
   };
 

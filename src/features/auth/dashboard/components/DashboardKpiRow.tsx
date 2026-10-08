@@ -83,7 +83,7 @@ export function DashboardKpiRow({
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <KpiCard
-        to="/jobs/air-export"
+        to="/management/all-jobs-mis"
         label="Active jobs"
         value={loadingJobs ? null : String(activeJobs)}
         unit="open"

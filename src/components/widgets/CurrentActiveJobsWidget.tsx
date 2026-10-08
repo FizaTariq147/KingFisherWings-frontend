@@ -55,7 +55,7 @@ export function CurrentActiveJobsWidget() {
       emptyMessage={
         isError ? 'Unable to load active jobs.' : 'No active jobs right now.'
       }
-      onExpand={() => navigate('/jobs/air-export')}
+      onExpand={() => navigate('/management/all-jobs-mis')}
       onAdd={() => navigate('/jobs/new')}
     >
       <Table>
