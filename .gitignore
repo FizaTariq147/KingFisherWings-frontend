@@ -25,11 +25,12 @@ coverage/
 Thumbs.db
 Desktop.ini
 
-# IDE
+# IDE / local tooling
 .idea/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json.example
+.kilo/
 
 # Playwright / E2E
 /test-results/
@@ -43,10 +44,30 @@ e2e/.auth/
 .tmp-react-doctor-verify/
 .tmp-react-doctor-verify2/
 
-# Local temp / swagger extracts / analysis artifacts
+# Local temp / analysis dumps (do not commit)
+.tmp/
 .tmp-*
 .tmp*
 tmp/
+/tmp-*
+/tmp_*
+/tsc-full.txt
+/debug.log
 
-# Optional local reports (keep docs/*.md tracked; ignore raw JSON dumps at root)
+# One-off OpenAPI / API extracts at repo root
+/*-openapi-extract.json
+/openapi-extract.json
+/portal-api-extract.txt
+/tmp-openapi-inspect.mjs
+
+# Scratch docs helpers & generated extracts
+docs/_*
+docs/_schema-extract.json
+
+# Scratch / one-off scripts and their outputs
+scripts/tmp-*
+scripts/_api-coverage.json
+scripts/_*.json
+
+# Optional local reports
 .tmp-api-test-results.json
