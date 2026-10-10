@@ -2,9 +2,8 @@
 export const dashType = {
   header: {
     date: 'text-[11px] font-semibold tracking-[0.14em] text-[var(--color-neutral-400)]',
-    title:
-      'mt-1 text-2xl font-semibold tracking-tight text-[var(--color-neutral-900)] sm:text-[28px]',
-    subtitle: 'mt-1 text-sm text-[var(--color-neutral-500)]',
+    title: 'mt-1 text-[17px] font-medium text-gray-800',
+    subtitle: 'mt-1 text-sm text-gray-500',
     periodWrap:
       'inline-flex shrink-0 rounded-full border border-[var(--color-neutral-200)] bg-white p-1 shadow-sm',
     periodBtn: 'rounded-full px-3 py-1.5 text-xs font-medium transition-colors',

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { isUuid } from '@/lib/isUuid';
 import { DEBIT_NOTE_ROUTE_PREFIX } from '../api/debitNote.api';
@@ -31,7 +32,7 @@ export default function DebitNoteCreatePage() {
         ← Back to debit notes
       </button>
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">New debit note</h2>
+        <h2 className={appType.pageTitle}>New debit note</h2>
         <p className="mt-0.5 text-sm text-[var(--color-neutral-400)]">
           Create a debit note against a posted customer invoice (extra charge).
         </p>

@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { QuotationForm } from '../components/QuotationForm';
@@ -58,7 +59,7 @@ export default function QuotationCreatePage() {
         ← Back to quotations
       </button>
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create Quotation</h2>
+        <h2 className={appType.pageTitle}>Create Quotation</h2>
       </div>
       {error && (
         <div

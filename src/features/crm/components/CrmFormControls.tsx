@@ -1,12 +1,12 @@
+import { Link } from 'react-router-dom';
 import { CountrySelect } from '@/components/ui/CountrySelect';
 import { PhoneInput } from '@/components/ui/PhoneInput';
+import { useParties } from '@/features/parties/hooks/useParties';
+import { isUuid } from '@/lib/isUuid';
 import { cn } from '@/lib/utils';
 import { useCrmCurrencyOptions } from '../hooks/useCrmCurrencyOptions';
 import { useCrmSalespeople } from '../hooks/useCrmSalespeople';
 import { Field, SelectInput } from './CrmUi';
-
-const selectClass =
-  'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm';
 
 export function CrmSalespersonSelect({
   label,
@@ -132,5 +132,73 @@ export function CrmPhoneField({
       error={error}
       required={required}
     />
+  );
+}
+
+/** Reuses Party list API — same pattern as QuotationForm customer select. */
+export function CrmPartySelect({
+  label = 'Party',
+  value,
+  onChange,
+  error,
+  required,
+  allowEmpty = true,
+  placeholder = 'Select party…',
+}: {
+  label?: string;
+  value: string;
+  onChange: (id: string) => void;
+  error?: string;
+  required?: boolean;
+  allowEmpty?: boolean;
+  placeholder?: string;
+}) {
+  const { data, isLoading, isError } = useParties({
+    page: 1,
+    limit: 100,
+    party_type: 'CUSTOMER',
+    order: 'asc',
+  });
+  const parties = (data?.parties ?? []).filter((p) => isUuid(p.id));
+  const selected = parties.find((p) => p.id === value);
+
+  return (
+    <div className="space-y-1">
+      <Field label={label} required={required} error={error}>
+        <SelectInput
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={cn(error && 'border-red-400')}
+          disabled={isLoading}
+        >
+          {allowEmpty && (
+            <option value="">{isLoading ? 'Loading…' : isError ? 'Failed to load parties' : placeholder}</option>
+          )}
+          {parties.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+              {p.code ? ` (${p.code})` : ''}
+            </option>
+          ))}
+        </SelectInput>
+      </Field>
+      {selected && (
+        <p className="text-xs text-[var(--color-neutral-500)]">
+          {selected.city ? `${selected.city} · ` : ''}
+          {selected.country_code ?? ''}
+          {selected.email ? ` · ${selected.email}` : ''}
+          {' · '}
+          <Link className="font-medium underline" to={`/parties/${selected.id}`}>
+            View party
+          </Link>
+        </p>
+      )}
+      <p className="text-xs text-[var(--color-neutral-400)]">
+        Need a new customer?{' '}
+        <Link className="font-medium underline" to="/parties/new">
+          Create party
+        </Link>
+      </p>
+    </div>
   );
 }

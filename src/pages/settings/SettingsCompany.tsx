@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -52,7 +53,7 @@ export default function SettingsCompany() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">Settings</h1>
+          <h1 className={appType.pageTitle}>Settings</h1>
           <p className="text-sm text-[var(--color-neutral-400)]">Manage your company profile and preferences</p>
         </div>
         {saved && <Badge variant="success">✓ Changes saved</Badge>}

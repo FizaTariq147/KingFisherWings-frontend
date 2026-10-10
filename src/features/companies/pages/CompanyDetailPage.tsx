@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -134,7 +135,7 @@ export default function CompanyDetailPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">{company.name}</h2>
+            <h2 className={appType.pageTitle}>{company.name}</h2>
             <CompanyStatusBadge company={company} />
             <CompanyDefaultBadge isDefault={company.is_default} />
           </div>

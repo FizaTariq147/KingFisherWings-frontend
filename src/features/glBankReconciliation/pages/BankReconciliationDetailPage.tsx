@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -66,7 +67,7 @@ export default function BankReconciliationDetailPage() {
       </button>
       <div className="flex flex-wrap gap-2 items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+          <h2 className={appType.pageTitle}>
             Reconciliation {data.id.slice(0, 8)}
           </h2>
           <p className="text-sm text-[var(--color-neutral-500)]">

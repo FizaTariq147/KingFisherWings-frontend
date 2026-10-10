@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { appType } from '@/lib/erpTypography';
+import { useParams } from 'react-router-dom';
+import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { Button } from '@/components/ui/Button';
 import { CHEQUE_ROUTE_PREFIX } from '../api/cheque.api';
 import { ChequeForm } from '../components/ChequeForm';
@@ -10,7 +12,7 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function ChequeEditPage() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
+  const { goBack } = useReturnNavigation(`${CHEQUE_ROUTE_PREFIX}/${id}`);
   const { data: cheque, isLoading, isError, error } = useCheque(id);
   const update = useUpdateCheque(id);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -35,7 +37,7 @@ export default function ChequeEditPage() {
         <Button
           type="button"
           variant="secondary"
-          onClick={() => navigate(`${CHEQUE_ROUTE_PREFIX}/${id}`)}
+          onClick={() => goBack()}
         >
           View cheque
         </Button>
@@ -48,11 +50,11 @@ export default function ChequeEditPage() {
       <button
         type="button"
         className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-        onClick={() => navigate(`${CHEQUE_ROUTE_PREFIX}/${id}`)}
+        onClick={() => goBack()}
       >
         ← Back to cheque
       </button>
-      <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Edit cheque</h2>
+      <h2 className={appType.pageTitle}>Edit cheque</h2>
       {saveError && (
         <div
           role="alert"
@@ -70,12 +72,12 @@ export default function ChequeEditPage() {
         mode="edit"
         defaultValues={chequeToFormValues(cheque)}
         isSubmitting={update.isPending}
-        onCancel={() => navigate(`${CHEQUE_ROUTE_PREFIX}/${id}`)}
+        onCancel={goBack}
         onSubmit={async (values) => {
           setSaveError(null);
           try {
             await update.mutateAsync(values as UpdateChequeFormValues);
-            navigate(`${CHEQUE_ROUTE_PREFIX}/${id}`);
+            goBack();
           } catch (err) {
             setSaveError(getErrorMessage(err));
           }

@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { appType } from '@/lib/erpTypography';
 import { Building2, CreditCard, Hash } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppAutoAnimate } from '@/components/motion';
@@ -16,7 +17,7 @@ export default function OrganizationShell() {
   return (
     <div className="space-y-4 max-w-6xl">
       <div>
-        <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">Organization</h1>
+        <h1 className={appType.pageTitle}>Organization</h1>
         <p className="text-sm text-[var(--color-neutral-400)]">
           Manage your tenant profile, bank accounts, and document number formats.
         </p>

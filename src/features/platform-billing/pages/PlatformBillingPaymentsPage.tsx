@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { Link } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Card } from '@/components/ui/Card';
@@ -29,7 +30,7 @@ export default function PlatformBillingPaymentsPage() {
     <div className="space-y-4">
       <PageBackLink to="/superadmin/billing" label="Back to billing hub" />
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Platform payments</h2>
+        <h2 className={appType.pageTitle}>Platform payments</h2>
         <p className="text-sm text-[var(--color-neutral-400)]">Review proofs, verify, reject, or refund</p>
       </div>
 

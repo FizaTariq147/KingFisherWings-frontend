@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { Link, useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -41,7 +42,7 @@ export default function TenantCreatePage() {
       </button>
 
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create Tenant</h2>
+        <h2 className={appType.pageTitle}>Create Tenant</h2>
       </div>
 
       {!companiesLoading && !hasCompanyProfile ? (

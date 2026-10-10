@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
@@ -178,7 +179,7 @@ export default function PlatformBillingInvoiceDetailPage() {
       <PageBackLink to="/superadmin/billing/invoices" label="Back to invoices" />
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+          <h2 className={appType.pageTitle}>
             Invoice {inv!.number || inv!.id}
           </h2>
           {(inv!.tenantName || inv!.tenantId) && (

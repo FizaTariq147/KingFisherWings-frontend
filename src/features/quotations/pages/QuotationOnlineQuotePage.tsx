@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { type Resolver } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -208,7 +209,7 @@ export default function QuotationOnlineQuotePage() {
         ← Quotations
       </button>
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Online Quote</h2>
+        <h2 className={appType.pageTitle}>Online Quote</h2>
       </div>
 
       {error && (

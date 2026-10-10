@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { appType } from '@/lib/erpTypography';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -58,7 +59,7 @@ export default function ChartOfAccountTreePage() {
           >
             ← Chart of Accounts
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Account tree</h2>
+          <h2 className={appType.pageTitle}>Account tree</h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
             Hierarchical chart of accounts (GET /gl/accounts/tree).
           </p>

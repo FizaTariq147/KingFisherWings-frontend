@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
+import { FormPageHeader } from '@/components/ui/FormPageHeader';
+import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { UserForm } from '../components/UserForm';
 import { UserDetailSkeleton } from '../components/UserDetailSkeleton';
 import { useUpdateUserPermissions, useUserPermissions } from '../hooks/useUserPermissionMatrix';
@@ -14,8 +16,9 @@ import { toAccessGrants } from '../utils/permissionAccess';
 
 export default function UserEditPage() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
   const { tenantId, sessionScoped, userPath } = useUserTenantScope();
+  const detailPath = userPath(`/${id}`);
+  const { goBack } = useReturnNavigation(detailPath);
   const { data: user, isLoading, isError } = useUser(tenantId, id);
   const updateUser = useUpdateUser(tenantId || 'session', id);
   const assignmentQuery = useUserPermissions(id);
@@ -57,20 +60,12 @@ export default function UserEditPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-4">
-      <button
-        type="button"
-        onClick={() => navigate(userPath(`/${id}`))}
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] transition-colors"
-      >
-        ← Back to user
-      </button>
-
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
-          Edit {formatUserLabel(user)}
-        </h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">{user.email}</p>
-      </div>
+      <FormPageHeader
+        title={`Edit ${formatUserLabel(user)}`}
+        subtitle={user.email}
+        onBack={goBack}
+        backLabel="Back to user"
+      />
 
       {apiError && (
         <div
@@ -111,7 +106,7 @@ export default function UserEditPage() {
             if (grants.length > 0) {
               await updatePermissions.mutateAsync({ grants });
             }
-            navigate(userPath(`/${id}`));
+            goBack();
           } catch (err) {
             setApiError(getErrorMessage(err) || 'Failed to update user.');
           }

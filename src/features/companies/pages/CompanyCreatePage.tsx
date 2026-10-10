@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -28,7 +29,7 @@ export default function CompanyCreatePage() {
       </button>
 
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create Company</h2>
+        <h2 className={appType.pageTitle}>Create Company</h2>
       </div>
 
       {isOnboarding ? (

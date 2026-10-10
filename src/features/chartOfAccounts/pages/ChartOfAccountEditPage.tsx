@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { FormPageHeader } from '@/components/ui/FormPageHeader';
+import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { CHART_OF_ACCOUNT_ROUTE_PREFIX } from '../api/chartOfAccount.api';
 import { ChartOfAccountForm } from '../components/ChartOfAccountForm';
 import {
@@ -13,7 +15,7 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function ChartOfAccountEditPage() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
+  const { goBack } = useReturnNavigation(`${CHART_OF_ACCOUNT_ROUTE_PREFIX}/${id}`);
   const { data: account, isLoading, isError, error } = useChartOfAccount(id);
   const { data: listData } = useChartOfAccounts({ is_active: true });
   const update = useUpdateChartOfAccount(id);
@@ -34,19 +36,12 @@ export default function ChartOfAccountEditPage() {
 
   return (
     <div className="space-y-4">
-      <button
-        type="button"
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-        onClick={() => navigate(`${CHART_OF_ACCOUNT_ROUTE_PREFIX}/${id}`)}
-      >
-        ← Back to account
-      </button>
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
-          Edit {account.account_code}
-        </h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">{account.account_name}</p>
-      </div>
+      <FormPageHeader
+        title={`Edit ${account.account_code}`}
+        subtitle={account.account_name}
+        onBack={goBack}
+        backLabel="Back to account"
+      />
       {formError && (
         <div
           role="alert"
@@ -68,12 +63,12 @@ export default function ChartOfAccountEditPage() {
         })}
         parentOptions={parentOptions}
         isSubmitting={update.isPending}
-        onCancel={() => navigate(`${CHART_OF_ACCOUNT_ROUTE_PREFIX}/${id}`)}
+        onCancel={goBack}
         onSubmit={async (values) => {
           setFormError(null);
           try {
             await update.mutateAsync(values as UpdateChartOfAccountFormValues);
-            navigate(`${CHART_OF_ACCOUNT_ROUTE_PREFIX}/${id}`);
+            goBack();
           } catch (err) {
             setFormError(getErrorMessage(err));
           }

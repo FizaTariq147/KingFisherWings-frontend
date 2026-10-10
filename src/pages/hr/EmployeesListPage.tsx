@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Plus, Search, ChevronDown, Maximize2, ArrowUpDown, Pencil, Heart } from 'lucide-react';
+import { appType, listShell } from '@/lib/erpTypography';
 import { SelectInput } from '../../components/widgets/FilterField';
 import { hrService } from '../../features/hr/services/hr.service';
 import { EMPLOYEE_STATUSES, labelEnum } from '../../features/hr/constants/hr.constants';
@@ -74,15 +75,15 @@ export default function EmployeesListPage() {
   };
 
   return (
-    <div className="space-y-3">
+    <div className={listShell.page}>
       <PageBackLink to="/hr" label="Back to HR" />
-      <div className="bg-white border border-gray-200 rounded-md">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
-          <h2 className="text-[17px] font-medium text-gray-800">Employees List</h2>
+      <div className={listShell.card}>
+        <div className={listShell.header}>
+          <h2 className={appType.pageTitle}>Employees List</h2>
           <button
             type="button"
             onClick={() => navigate('/hr/employee-master/new')}
-            className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity"
+            className={appType.listCreateBtn}
           >
             <Plus size={14} />
             Create

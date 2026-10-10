@@ -12,20 +12,23 @@ export type QuotationWizardStepDef = {
 type QuotationWizardStepperProps = {
   /** 0-based active step index */
   currentStep: number;
-  /** Override steps (e.g. portal book). Defaults to staff create wizard. */
+  /** Override steps (e.g. portal book / enquiry). Defaults to staff create wizard. */
   steps?: readonly QuotationWizardStepDef[];
   className?: string;
+  /** Accessible name for the step nav (defaults to “Wizard steps”). */
+  ariaLabel?: string;
 };
 
 export function QuotationWizardStepper({
   currentStep,
   steps = QUOTATION_WIZARD_STEPS,
   className = '',
+  ariaLabel = 'Wizard steps',
 }: QuotationWizardStepperProps) {
   const wide = steps.length >= 5;
   return (
     <nav
-      aria-label="Quotation steps"
+      aria-label={ariaLabel}
       className={`w-full overflow-x-auto pb-1 ${className}`.trim()}
     >
       <ol

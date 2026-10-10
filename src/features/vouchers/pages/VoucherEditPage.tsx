@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { FormPageHeader } from '@/components/ui/FormPageHeader';
+import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { VOUCHER_ROUTE_PREFIX } from '../api/voucher.api';
 import { VoucherForm } from '../components/VoucherForm';
 import { useUpdateVoucher, useVoucher } from '../hooks/useVouchers';
@@ -9,7 +11,7 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function VoucherEditPage() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
+  const { goBack } = useReturnNavigation(`${VOUCHER_ROUTE_PREFIX}/${id}`);
   const { data: voucher, isLoading, isError, error } = useVoucher(id);
   const update = useUpdateVoucher(id);
   const [formError, setFormError] = useState<string | null>(null);
@@ -33,10 +35,10 @@ export default function VoucherEditPage() {
         </p>
         <button
           type="button"
-          className="text-sm underline"
-          onClick={() => navigate(`${VOUCHER_ROUTE_PREFIX}/${id}`)}
+          className="text-sm text-[var(--color-primary-600)]"
+          onClick={() => goBack()}
         >
-          Back to voucher
+          ← Back to detail
         </button>
       </div>
     );
@@ -44,21 +46,11 @@ export default function VoucherEditPage() {
 
   return (
     <div className="space-y-4">
-      <button
-        type="button"
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-        onClick={() => navigate(`${VOUCHER_ROUTE_PREFIX}/${id}`)}
-      >
-        ← Back to voucher
-      </button>
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
-          Edit voucher header
-        </h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          {voucher.voucher_number || id.slice(0, 8)} — manage lines on the detail page.
-        </p>
-      </div>
+      <FormPageHeader
+        title="Edit voucher header"
+        subtitle={`${voucher.voucher_number || id.slice(0, 8)} — manage lines on the detail page.`}
+        onBack={goBack}
+      />
       {formError && (
         <div
           role="alert"
@@ -74,14 +66,14 @@ export default function VoucherEditPage() {
       )}
       <VoucherForm
         mode="edit"
-        defaultValues={voucherToFormValues(voucher)}
+        defaultValues={voucherToFormValues(voucher as never)}
         isSubmitting={update.isPending}
-        onCancel={() => navigate(`${VOUCHER_ROUTE_PREFIX}/${id}`)}
+        onCancel={goBack}
         onSubmit={async (values) => {
           setFormError(null);
           try {
             await update.mutateAsync(values as UpdateVoucherFormValues);
-            navigate(`${VOUCHER_ROUTE_PREFIX}/${id}`);
+            goBack();
           } catch (err) {
             setFormError(getErrorMessage(err));
           }

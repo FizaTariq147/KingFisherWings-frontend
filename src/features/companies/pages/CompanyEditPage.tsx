@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
+import { FormPageHeader } from '@/components/ui/FormPageHeader';
+import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { CompanyForm } from '../components/CompanyForm';
 import { CompanyTenantSelector } from '../components/CompanyTenantSelector';
 import { useCompany, useUpdateCompany } from '../hooks/useCompanies';
@@ -10,8 +12,9 @@ import type { UpdateCompanyFormValues } from '../types/company.types';
 
 export default function CompanyEditPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { tenantId, companyPath } = useCompanyTenantScope();
+  const detailPath = companyPath(`/${id}`);
+  const { goBack } = useReturnNavigation(detailPath);
   const { data: company, isLoading, isError } = useCompany(tenantId, id!);
   const updateCompany = useUpdateCompany(tenantId, id!);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -47,20 +50,12 @@ export default function CompanyEditPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-4">
-      <button
-        type="button"
-        onClick={() => navigate(companyPath(`/${id}`))}
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-      >
-        ← Back to company
-      </button>
-
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
-          Edit {company.name}
-        </h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">{company.code}</p>
-      </div>
+      <FormPageHeader
+        title={`Edit ${company.name}`}
+        subtitle={company.code}
+        onBack={goBack}
+        backLabel="Back to company"
+      />
 
       {apiError && (
         <div
@@ -81,11 +76,12 @@ export default function CompanyEditPage() {
         mode="edit"
         defaultValues={company}
         isSubmitting={updateCompany.isPending}
+        onCancel={goBack}
         onSubmit={async (values) => {
           setApiError(null);
           try {
             await updateCompany.mutateAsync(values as UpdateCompanyFormValues);
-            navigate(companyPath(`/${id}`));
+            goBack();
           } catch (err) {
             const message = err instanceof Error ? err.message : 'Failed to save changes.';
             setApiError(message);

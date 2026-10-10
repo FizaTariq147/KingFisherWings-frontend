@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
@@ -52,7 +53,7 @@ export default function JobCreatePage() {
     <div className="space-y-4">
       <PageBackLink to={backPath} label={backLabel} />
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create Job</h2>
+        <h2 className={appType.pageTitle}>Create Job</h2>
       </div>
       {error ? (
         <div

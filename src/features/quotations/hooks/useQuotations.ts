@@ -65,7 +65,7 @@ export function useQuotation(id: string) {
   useSyncCustomerQuoteDecisionsAcrossTabs();
   return useQuery({
     queryKey: quotationKeys.detail(id),
-    queryFn: () => quotationService.getById(id),
+    queryFn: () => quotationService.getDetail(id),
     enabled: Boolean(accessToken) && isUuid(id),
     staleTime: 3_000,
     refetchInterval: (query) => {

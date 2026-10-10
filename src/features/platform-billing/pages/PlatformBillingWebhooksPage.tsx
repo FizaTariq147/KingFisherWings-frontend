@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -43,7 +44,7 @@ export default function PlatformBillingWebhooksPage() {
     <div className="space-y-4">
       <PageBackLink to="/superadmin/billing" label="Back to billing hub" />
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Webhook events</h2>
+        <h2 className={appType.pageTitle}>Webhook events</h2>
         <p className="text-sm text-[var(--color-neutral-400)]">Inspect Stripe webhook processing and replay failures</p>
       </div>
 

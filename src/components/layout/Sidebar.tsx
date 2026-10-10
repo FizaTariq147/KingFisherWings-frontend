@@ -27,6 +27,7 @@ import {
   ScanBarcode,
   CreditCard,
   Layers,
+  Package,
   type LucideIcon,
 } from 'lucide-react';
 import { useUIStore } from '@/store/uiStore';
@@ -255,7 +256,7 @@ function SidebarNavLink({
         return (
           <>
             <SidebarNavIcon path={path} Icon={Icon} itemStyle={iconStyle} active={active} />
-            {!collapsed && <span>{label}</span>}
+            {!collapsed && <span className="min-w-0 truncate leading-snug">{label}</span>}
           </>
         );
       }}
@@ -308,14 +309,14 @@ function SidebarBrand({
 const OPS_NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', path: '/dashboard', Icon: LayoutDashboard, permission: 'menu_dashboard' },
   {
-    label: 'Customers',
+    label: 'Customer Services',
     path: '/customers',
     Icon: Users,
     permission: 'menu_customers',
     matrixModule: 'support',
   },
   {
-    label: 'Vendors',
+    label: 'Vendor Services',
     path: '/vendors',
     Icon: Truck,
     permission: 'menu_vendors',
@@ -404,6 +405,18 @@ const OPS_NAV_ITEMS: NavItem[] = [
     Icon: Truck,
     permission: 'menu_documentation',
     matrixModule: 'transport',
+  },
+  {
+    label: 'Shipments',
+    path: '/operations/shipments',
+    Icon: Package,
+    permission: 'menu_documentation',
+    permissionAny: [
+      'menu_documentation',
+      'menu_jobs_sea_export',
+      'menu_jobs_sea_import',
+    ],
+    matrixModule: 'operations',
   },
   {
     label: 'Barcode scan',

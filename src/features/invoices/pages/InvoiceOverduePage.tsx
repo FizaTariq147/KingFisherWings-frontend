@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { appType } from '@/lib/erpTypography';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -22,7 +23,7 @@ export default function InvoiceOverduePage() {
           >
             ← Finance
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+          <h2 className={appType.pageTitle}>
             Overdue invoices
           </h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">

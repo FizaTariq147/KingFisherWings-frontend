@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { FormPageHeader } from '@/components/ui/FormPageHeader';
+import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
 import { InvoiceForm } from '../components/InvoiceForm';
 import { useInvoice, useUpdateInvoice } from '../hooks/useInvoices';
@@ -9,7 +11,8 @@ import { invoiceToFormValues } from '../utils/invoiceToFormValues';
 
 export default function InvoiceEditPage() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
+  const detailPath = `${INVOICE_ROUTE_PREFIX}/${id}`;
+  const { goBack } = useReturnNavigation(detailPath);
   const { data: invoice, isLoading, isError, error } = useInvoice(id);
   const update = useUpdateInvoice(id);
   const [formError, setFormError] = useState<string | null>(null);
@@ -35,7 +38,7 @@ export default function InvoiceEditPage() {
         <button
           type="button"
           className="text-sm text-[var(--color-primary-600)]"
-          onClick={() => navigate(`${INVOICE_ROUTE_PREFIX}/${id}`)}
+          onClick={() => goBack()}
         >
           ← Back to detail
         </button>
@@ -45,19 +48,11 @@ export default function InvoiceEditPage() {
 
   return (
     <div className="space-y-4">
-      <button
-        type="button"
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-        onClick={() => navigate(`${INVOICE_ROUTE_PREFIX}/${id}`)}
-      >
-        ← Back to detail
-      </button>
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Edit invoice</h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Update header fields. Lines are managed on the detail page.
-        </p>
-      </div>
+      <FormPageHeader
+        title="Edit invoice"
+        subtitle="Update header fields. Lines are managed on the detail page."
+        onBack={goBack}
+      />
       {formError && (
         <div
           role="alert"
@@ -75,12 +70,12 @@ export default function InvoiceEditPage() {
         mode="edit"
         defaultValues={invoiceToFormValues(invoice)}
         isSubmitting={update.isPending}
-        onCancel={() => navigate(`${INVOICE_ROUTE_PREFIX}/${id}`)}
+        onCancel={goBack}
         onSubmit={async (values) => {
           setFormError(null);
           try {
             await update.mutateAsync(values as UpdateInvoiceFormValues);
-            navigate(`${INVOICE_ROUTE_PREFIX}/${id}`);
+            goBack();
           } catch (err) {
             setFormError(getErrorMessage(err));
             throw err;

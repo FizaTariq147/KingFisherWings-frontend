@@ -93,7 +93,7 @@ export default function PortalShipmentDetailPage() {
         <button
           type="button"
           className="block text-sm text-[var(--color-primary)] underline"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/portal/shipments')}
         >
           Back
         </button>
@@ -106,7 +106,7 @@ export default function PortalShipmentDetailPage() {
       <button
         type="button"
         className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-neutral-500)] hover:text-[var(--color-primary)]"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/portal/shipments')}
       >
         <ArrowLeft size={14} aria-hidden="true" />
         Back

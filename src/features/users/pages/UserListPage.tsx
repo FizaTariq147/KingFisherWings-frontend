@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { authService } from '@/features/auth/services/auth.service';
@@ -171,7 +172,7 @@ export default function UserListPage() {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Users</h2>
+          <h2 className={appType.pageTitle}>Users</h2>
           <p className="text-sm text-[var(--color-neutral-400)]">
             {totalCount} user{totalCount === 1 ? '' : 's'}
             {status === 'deleted' ? ' deleted' : ''} in your tenant workspace

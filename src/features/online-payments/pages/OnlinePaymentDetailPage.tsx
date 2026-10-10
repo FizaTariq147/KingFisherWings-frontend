@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { Link, useParams } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
@@ -98,7 +99,7 @@ export default function OnlinePaymentDetailPage() {
     <div className="space-y-4">
       <PageBackLink to="/finance/online-payments" label="Back to online payments" />
       <div className="flex flex-wrap items-center gap-2">
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Payment {pay.id}</h2>
+        <h2 className={appType.pageTitle}>Payment {pay.id}</h2>
         {pay.status && <Badge variant={statusBadgeVariant(pay.status)}>{pay.status}</Badge>}
       </div>
 

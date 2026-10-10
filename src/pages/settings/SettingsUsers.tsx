@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
@@ -101,7 +102,7 @@ export default function SettingsUsers() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">Users & Permissions</h1>
+          <h1 className={appType.pageTitle}>Users & Permissions</h1>
           <p className="text-sm text-[var(--color-neutral-400)]">
             {users.filter((u) => u.status === 'Active').length} active users · {roles.length} roles
           </p>

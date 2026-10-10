@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { RefreshCw } from 'lucide-react';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
@@ -91,7 +92,7 @@ export default function StripeSettingsPage() {
     <div className="space-y-4">
       <PageBackLink to="/settings" label="Back to settings" />
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Online Payments / Stripe</h2>
+        <h2 className={appType.pageTitle}>Online Payments / Stripe</h2>
         <p className="text-sm text-[var(--color-neutral-400)]">
           Connect Stripe, manage gateway settings, and run maintenance actions
         </p>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { appType } from '@/lib/erpTypography';
 import { FileText, CreditCard, Webhook, Layers, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -39,7 +40,7 @@ export default function PlatformBillingHubPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Platform billing</h2>
+        <h2 className={appType.pageTitle}>Platform billing</h2>
         <p className="text-sm text-[var(--color-neutral-400)]">
           Stripe integration, plans, invoices, and tenant subscriptions
         </p>

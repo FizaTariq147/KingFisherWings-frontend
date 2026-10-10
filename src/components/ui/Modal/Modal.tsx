@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { cn } from '../../../lib/utils';
+import { appType } from '../../../lib/erpTypography';
 import { Button } from '../Button';
 
 interface ModalProps {
@@ -88,7 +89,7 @@ export function Modal({
         aria-labelledby="app-modal-title"
       >
         <div className="flex shrink-0 items-center justify-between border-b border-[var(--color-neutral-200)] px-6 py-4">
-          <h2 id="app-modal-title" className="text-base font-semibold text-[var(--color-neutral-800)]">
+          <h2 id="app-modal-title" className={appType.modalTitle}>
             {title}
           </h2>
           <Button variant="ghost" size="sm" onClick={onClose} aria-label="Close">

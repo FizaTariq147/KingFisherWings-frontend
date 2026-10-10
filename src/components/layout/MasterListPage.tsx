@@ -5,6 +5,7 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../ui/Table';
 import { AppAnimatedTableBody, AppFetchBar, AppLoadingState } from '@/components/motion';
+import { appType, listShell } from '@/lib/erpTypography';
 
 interface Column {
   key: string;
@@ -121,23 +122,24 @@ export function MasterListPage({
   const Body = animateRows ? AppAnimatedTableBody : TableBody;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">{title}</h2>
+    <div className={listShell.page}>
+      <div className={listShell.card}>
+      <div className={listShell.header}>
+        <h2 className={appType.pageTitle}>{title}</h2>
         {onAdd && (
-          <Button onClick={onAdd} className="w-full sm:w-auto">
+          <button type="button" onClick={onAdd} className={appType.listCreateBtn}>
             + Add New
-          </Button>
+          </button>
         )}
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 px-5 py-3 border-b border-gray-200">
         <input
           type="text"
           value={search}
           onChange={(e) => onSearchChange?.(e.target.value)}
           placeholder={`Search ${title.toLowerCase()}...`}
-          className="h-9 w-full sm:flex-1 sm:min-w-[12rem] sm:max-w-md rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]"
+          className="h-9 w-full sm:flex-1 sm:min-w-[12rem] sm:max-w-md border border-gray-300 rounded px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]"
         />
         <div className="flex gap-2">
           <select
@@ -306,6 +308,7 @@ export function MasterListPage({
             →
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

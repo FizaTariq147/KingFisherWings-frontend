@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { FormPageHeader } from '@/components/ui/FormPageHeader';
+import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { QuotationForm } from '../components/QuotationForm';
 import { useQuotation, useUpdateQuotation } from '../hooks/useQuotations';
 import type { UpdateQuotationFormValues } from '../types/quotation.types';
@@ -8,7 +10,8 @@ import { quotationToFormValues } from '../utils/quotationToFormValues';
 
 export default function QuotationEditPage() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
+  const detailPath = `/quotations/${id}`;
+  const { goBack } = useReturnNavigation(detailPath);
   const { data: quotation, isLoading, isError, error } = useQuotation(id);
   const update = useUpdateQuotation(id);
   const [formError, setFormError] = useState<string | null>(null);
@@ -35,7 +38,7 @@ export default function QuotationEditPage() {
         <button
           type="button"
           className="text-sm text-[var(--color-primary-600)]"
-          onClick={() => navigate(`/quotations/${id}`)}
+          onClick={() => goBack()}
         >
           ← Back to detail
         </button>
@@ -45,19 +48,12 @@ export default function QuotationEditPage() {
 
   return (
     <div className="space-y-4">
-      <button
-        type="button"
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-        onClick={() => navigate(`/quotations/${id}`)}
-      >
-        ← Back to detail
-      </button>
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Edit quotation</h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Update header fields for this DRAFT / REJECTED quotation.
-        </p>
-      </div>
+      <FormPageHeader
+        title="Edit quotation"
+        subtitle="Update header fields for this DRAFT / REJECTED quotation."
+        onBack={goBack}
+        backLabel="Back"
+      />
       {formError && (
         <div
           role="alert"
@@ -75,12 +71,12 @@ export default function QuotationEditPage() {
         mode="edit"
         defaultValues={quotationToFormValues(quotation)}
         isSubmitting={update.isPending}
-        onCancel={() => navigate(`/quotations/${id}`)}
+        onCancel={goBack}
         onSubmit={async (values) => {
           setFormError(null);
           try {
             await update.mutateAsync(values as UpdateQuotationFormValues);
-            navigate(`/quotations/${id}`);
+            goBack();
           } catch (err) {
             setFormError(getErrorMessage(err));
             throw err;

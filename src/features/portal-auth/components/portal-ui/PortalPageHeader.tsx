@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { appType } from '@/lib/erpTypography';
 
 type PortalPageHeaderProps = {
   title: string;
@@ -17,12 +18,8 @@ export function PortalPageHeader({ title, description, actions, className }: Por
       )}
     >
       <div className="min-w-0 space-y-1">
-        <h2 className="text-[28px] font-semibold tracking-tight text-[#0A2942]">
-          {title}
-        </h2>
-        {description ? (
-          <p className="text-sm text-[#7A8A98] max-w-2xl">{description}</p>
-        ) : null}
+        <h1 className={appType.pageTitle}>{title}</h1>
+        {description ? <p className={appType.pageSubtitle}>{description}</p> : null}
       </div>
       {actions ? (
         <div className="flex flex-wrap items-center gap-2 shrink-0">{actions}</div>

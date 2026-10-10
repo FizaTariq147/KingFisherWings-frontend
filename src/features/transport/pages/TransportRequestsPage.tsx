@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -40,7 +41,7 @@ export default function TransportRequestsPage() {
     <div className="space-y-4">
       <PageBackLink to="/dashboard" />
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Transport requests</h2>
+        <h2 className={appType.pageTitle}>Transport requests</h2>
         <p className="text-sm text-[var(--color-neutral-500)]">
           Tenant transport board — assign trucker, pickup, transit, delivery, cost, and PDF.
         </p>

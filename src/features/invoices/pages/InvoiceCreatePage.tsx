@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
 import { InvoiceForm } from '../components/InvoiceForm';
@@ -24,7 +25,7 @@ export default function InvoiceCreatePage() {
         ← Back to invoices
       </button>
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create Invoice</h2>
+        <h2 className={appType.pageTitle}>Create Invoice</h2>
       </div>
 
       {error && (

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { Link } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Card } from '@/components/ui/Card';
@@ -30,7 +31,7 @@ export default function OnlinePaymentsPage() {
       <PageBackLink to="/finance" label="Back to finance" />
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Online payments</h2>
+          <h2 className={appType.pageTitle}>Online payments</h2>
           <p className="text-sm text-[var(--color-neutral-400)]">Stripe checkout sessions and payment records</p>
         </div>
         <Link

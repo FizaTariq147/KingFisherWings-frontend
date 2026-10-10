@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { appType } from '@/lib/erpTypography';
 import { Card, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
@@ -120,7 +121,7 @@ export default function InvoiceDetail() {
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-lg font-semibold text-[var(--color-neutral-800)] font-mono">
+            <h1 className={`${appType.pageTitle} font-mono`}>
               {invoice.invoiceNo}
             </h1>
             <Badge variant={statusVariant[invoice.status]}>{invoice.status}</Badge>

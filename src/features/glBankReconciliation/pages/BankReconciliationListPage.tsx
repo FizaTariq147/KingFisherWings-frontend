@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, Plus, RefreshCw } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
@@ -53,7 +54,7 @@ export default function BankReconciliationListPage() {
           >
             ← Accounts
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+          <h2 className={appType.pageTitle}>
             Bank Reconciliation
           </h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">

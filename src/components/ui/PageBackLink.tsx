@@ -1,13 +1,15 @@
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getReturnPath } from '@/lib/navigation/returnNavigation';
 
 const BACK_LINK_CLASS =
   'text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] transition-colors';
 
 export interface PageBackLinkProps {
   /**
-   * Fallback path only when there is no in-app history
-   * (e.g. user opened the page in a new tab). Prefer history back otherwise.
+   * Explicit destination (module list / detail). Used when provided so Back
+   * matches the labeled route instead of an arbitrary history entry.
+   * If omitted, uses `location.state.from` then history (`-1`).
    */
   to?: string;
   /** Shown after ← ; defaults to "Back". */
@@ -19,8 +21,7 @@ export interface PageBackLinkProps {
 
 /**
  * App-wide text back control.
- * Always returns to the previous screen in history when possible —
- * not a fixed module hub route.
+ * Order: onClick → explicit `to` → `state.from` → history (-1).
  */
 export function PageBackLink({
   to,
@@ -40,13 +41,17 @@ export function PageBackLink({
       onClick();
       return;
     }
-    // In-app navigation leaves a non-default location key.
-    if (location.key !== 'default') {
-      navigate(-1);
-      return;
-    }
     if (to) {
       navigate(to);
+      return;
+    }
+    const from = getReturnPath(location, '');
+    if (from) {
+      navigate(from);
+      return;
+    }
+    if (location.key !== 'default') {
+      navigate(-1);
       return;
     }
     navigate(-1);

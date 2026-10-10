@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Card } from '../../components/ui/Card';
@@ -66,7 +67,7 @@ export default function EmployeeList() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">Employees</h1>
+          <h1 className={appType.pageTitle}>Employees</h1>
           <p className="text-sm text-[var(--color-neutral-400)]">{employees.length} total employees</p>
         </div>
         <div className="flex gap-2">

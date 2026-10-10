@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AlertCircle, Download, Mail, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -79,7 +80,7 @@ export default function ApStatementPage() {
           >
             ← AP Aging
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+          <h2 className={appType.pageTitle}>
             Vendor statement
           </h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { PartyForm } from '../components/PartyForm';
 import { useCreateParty } from '../hooks/useParties';
@@ -20,7 +21,7 @@ export default function PartyCreatePage() {
         ← Back to parties
       </button>
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create Party</h2>
+        <h2 className={appType.pageTitle}>Create Party</h2>
       </div>
       {error && (
         <div

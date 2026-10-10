@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AlertCircle, Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -34,7 +35,8 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 
 export default function JobListPage() {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const { pathname } = location;
   const segment = segmentFromPath(pathname) ?? 'air-export';
   const segmentConfig = JOB_SEGMENTS[segment as JobSegmentKey];
 
@@ -109,7 +111,7 @@ export default function JobListPage() {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+          <h2 className={appType.pageTitle}>
             {segmentConfig.label} Jobs
           </h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
@@ -180,7 +182,7 @@ export default function JobListPage() {
                 : 'No jobs found'
             }
             onView={(j) => navigate(`${prefix}/${j.id}`)}
-            onEdit={(j) => navigate(`${prefix}/${j.id}/edit`)}
+            onEdit={(j) => navigate(`${prefix}/${j.id}/edit`, { state: { from: `${location.pathname}${location.search}` } })}
             onCancel={(j) => requestConfirm('cancel', j)}
             onClose={(j) => requestConfirm('close', j)}
             onDelete={(j) => requestConfirm('delete', j)}

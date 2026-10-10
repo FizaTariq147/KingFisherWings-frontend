@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { isUuid } from '@/lib/isUuid';
 import { CREDIT_NOTE_ROUTE_PREFIX } from '../api/creditNote.api';
@@ -31,7 +32,7 @@ export default function CreditNoteCreatePage() {
         ← Back to credit notes
       </button>
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">New credit note</h2>
+        <h2 className={appType.pageTitle}>New credit note</h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
           Create a credit note against a posted customer invoice.
         </p>

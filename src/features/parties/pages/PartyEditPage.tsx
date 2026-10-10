@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { FormPageHeader } from '@/components/ui/FormPageHeader';
 import { isUuid } from '@/lib/isUuid';
+import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { PartyForm } from '../components/PartyForm';
 import { useParty, useUpdateParty } from '../hooks/useParties';
 import type { CreatePartyFormValues, UpdatePartyFormValues } from '../types/party.types';
@@ -11,7 +13,7 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function PartyEditPage() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
+  const { goBack } = useReturnNavigation(`/parties/${id}`);
   const { data: party, isLoading, isError, error, refetch } = useParty(id);
   const updateParty = useUpdateParty(id);
   const [formError, setFormError] = useState<string | null>(null);
@@ -65,17 +67,12 @@ export default function PartyEditPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-4">
-      <button
-        type="button"
-        onClick={() => navigate(`/parties/${id}`)}
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-      >
-        ← Back to party
-      </button>
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Edit party</h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">{party.name}</p>
-      </div>
+      <FormPageHeader
+        title="Edit party"
+        subtitle={party.name}
+        onBack={goBack}
+        backLabel="Back to party"
+      />
       {formError && (
         <div
           role="alert"
@@ -94,12 +91,12 @@ export default function PartyEditPage() {
         mode="edit"
         defaultValues={defaults}
         isSubmitting={updateParty.isPending}
-        onCancel={() => navigate(`/parties/${id}`)}
+        onCancel={goBack}
         onSubmit={async (values) => {
           setFormError(null);
           try {
             await updateParty.mutateAsync(values as UpdatePartyFormValues);
-            navigate(`/parties/${id}`);
+            goBack();
           } catch (err) {
             setFormError(getErrorMessage(err));
           }

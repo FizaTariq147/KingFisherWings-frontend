@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { appType } from '@/lib/erpTypography';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AlertCircle, Plus, RefreshCw, TimerReset } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -30,6 +31,7 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 
 export default function QuotationListPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<QuotationStatus | 'all'>('all');
   const [jobType, setJobType] = useState<JobType | 'all'>('all');
@@ -145,7 +147,7 @@ export default function QuotationListPage() {
           >
             ← Back to Quotations
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">All Quotations</h2>
+          <h2 className={appType.pageTitle}>All Quotations</h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
             Search, filter, and manage quotations across statuses.
           </p>
@@ -246,7 +248,7 @@ export default function QuotationListPage() {
                   : 'No quotations found'
               }
               onView={(q) => navigate(`/quotations/${q.id}`)}
-              onEdit={(q) => navigate(`/quotations/${q.id}/edit`)}
+              onEdit={(q) => navigate(`/quotations/${q.id}/edit`, { state: { from: `${location.pathname}${location.search}` } })}
               onDuplicate={(q) => requestConfirm('duplicate', q)}
               onSubmit={(q) => requestConfirm('submit', q)}
               onApprove={(q) => requestConfirm('approve', q)}

@@ -30,6 +30,29 @@ export function useQuotationActions(quotationId: string) {
     mutationFn: (dto: ApprovalDecisionDto = {}) => quotationService.approve(id, dto),
     onSuccess: afterStatusChange,
   });
+  const verify = useMutation({
+    mutationFn: () => quotationService.verify(id),
+    onSuccess: afterStatusChange,
+  });
+  const approveVerified = useMutation({
+    mutationFn: () => quotationService.approveVerified(id),
+    onSuccess: afterStatusChange,
+  });
+  const generateShipment = useMutation({
+    mutationFn: () => quotationService.generateShipment(id),
+    onSuccess: () => {
+      afterStatusChange();
+      void queryClient.invalidateQueries({ queryKey: ['tenant', 'shipments'] });
+    },
+  });
+  const generateJob = useMutation({
+    mutationFn: () => quotationService.generateJob(id),
+    onSuccess: () => {
+      afterStatusChange();
+      void queryClient.invalidateQueries({ queryKey: ['tenant', 'jobs'] });
+      void queryClient.invalidateQueries({ queryKey: ['tenant', 'shipments'] });
+    },
+  });
   const reject = useMutation({
     mutationFn: (dto: ApprovalDecisionDto = {}) => quotationService.reject(id, dto),
     onSuccess: afterStatusChange,
@@ -49,6 +72,15 @@ export function useQuotationActions(quotationId: string) {
   const duplicate = useMutation({
     mutationFn: () => quotationService.duplicate(id),
     onSuccess: () => invalidate(id),
+  });
+  const copy = useMutation({
+    mutationFn: () => quotationService.copy(id),
+    onSuccess: () => invalidate(),
+  });
+  const changeStatus = useMutation({
+    mutationFn: (dto: { status: string; reason?: string }) =>
+      quotationService.changeStatus(id, dto),
+    onSuccess: afterStatusChange,
   });
   const convertToJob = useMutation({
     mutationFn: () => quotationService.convertToJob(id),
@@ -109,11 +141,17 @@ export function useQuotationActions(quotationId: string) {
   return {
     submit,
     approve,
+    verify,
+    approveVerified,
+    generateShipment,
+    generateJob,
     reject,
     send,
     markWon,
     markLost,
     duplicate,
+    copy,
+    changeStatus,
     convertToJob,
     createOpsJobWithoutInvoice,
     createBookingOpsJobShell,

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { TARIFF_ROUTE_PREFIX } from '../api/tariff.api';
 import { TariffForm } from '../components/TariffForm';
@@ -21,7 +22,7 @@ export default function TariffCreatePage() {
         ← Back to tariffs
       </button>
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create Tariff</h2>
+        <h2 className={appType.pageTitle}>Create Tariff</h2>
       </div>
       {error && (
         <div

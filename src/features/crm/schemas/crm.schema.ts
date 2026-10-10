@@ -123,21 +123,77 @@ export const patchFollowUpSchema = z.object({
   notes: optionalTextUndef({ max: 4000 }),
 });
 
+const enquiryChargeLineSchema = z.object({
+  party_id: optionalUuid(),
+  department_id: optionalUuid(),
+  charge_code_id: optionalUuid(),
+  description: requiredText({ min: 1, max: 300 }),
+  quantity: z.coerce.number().min(0).optional(),
+  unit_price: z.coerce.number().optional(),
+  amount: z.coerce.number(),
+  currency_code: z.string().length(3).optional(),
+  is_cost: z.boolean().optional(),
+});
+
 const enquiryObject = z.object({
   lead_id: optionalUuid(),
   party_id: optionalUuid(),
   salesperson_id: optionalUuid(),
+  sales_coordinator_id: optionalUuid(),
+  price_coordinator_id: optionalUuid(),
+  company_id: optionalUuid(),
+  branch_id: optionalUuid(),
+  department_id: optionalUuid(),
   service_type: serviceTypeSchema,
+  enquiry_date: dateString({ required: false }),
+  shipper_id: optionalUuid(),
+  consignee_id: optionalUuid(),
+  shipper_address: optionalTextUndef({ max: 2000 }),
+  consignee_address: optionalTextUndef({ max: 2000 }),
+  customer_address: optionalTextUndef({ max: 2000 }),
   origin_port_id: optionalUuid(),
   dest_port_id: optionalUuid(),
+  por_port_id: optionalUuid(),
+  etd: optionalTextUndef({ max: 40 }),
+  eta: optionalTextUndef({ max: 40 }),
+  payable_at: optionalTextUndef({ max: 200 }),
+  dispatch_at: optionalTextUndef({ max: 200 }),
+  carrier_id: optionalUuid(),
+  voyage_number: optionalTextUndef({ max: 50 }),
+  vessel_name: optionalTextUndef({ max: 200 }),
+  unit_price: z.coerce.number().min(0).optional(),
+  gross_weight: z.coerce.number().min(0).optional(),
+  chargeable_weight: z.coerce.number().min(0).optional(),
+  net_weight: z.coerce.number().min(0).optional(),
+  weight_unit: optionalTextUndef({ max: 10 }),
+  volume_cbm: z.coerce.number().min(0).optional(),
+  cbm_unit: optionalTextUndef({ max: 10 }),
+  hs_code: optionalTextUndef({ max: 12 }),
+  pieces: z.coerce.number().min(0).optional(),
+  container_type_id: optionalUuid(),
+  container_count: z.coerce.number().min(0).optional(),
   cargo_details: optionalTextUndef({ max: 4000 }),
+  commodity: optionalTextUndef({ max: 500 }),
   incoterms: optionalTextUndef({ min: 3, max: 10 }),
   special_requirements: optionalTextUndef({ max: 4000 }),
   currency_code: currencyCode(true),
   status: enquiryStatusSchema.optional(),
+  charges: z.array(enquiryChargeLineSchema).optional(),
 });
 
-export const createEnquirySchema = enquiryObject;
+const FCL_SERVICE_TYPES = new Set(['SEA_FCL_EXPORT', 'SEA_FCL_IMPORT']);
+
+/** FCL Export/Import require an existing Party (no Organization step). */
+export const createEnquirySchema = enquiryObject.superRefine((values, ctx) => {
+  if (FCL_SERVICE_TYPES.has(values.service_type) && !values.party_id) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['party_id'],
+      message: 'Select a party for FCL Export/Import enquiries.',
+    });
+  }
+});
+
 export const updateEnquirySchema = enquiryObject.partial();
 
 export const createBudgetSchema = z.object({
@@ -185,12 +241,14 @@ export type CreateCampaignFormValues = z.infer<typeof createCampaignSchema>;
 
 /** Strip UI-only fields before API submit. */
 export function toCreateLeadDto(values: CreateLeadFormValues) {
-  const { contact_country_code: _c, tags, ...rest } = values;
+  const { contact_country_code, tags, ...rest } = values;
+  void contact_country_code;
   return { ...rest, tags: splitTags(tags) };
 }
 
 export function toUpdateLeadDto(values: UpdateLeadFormValues) {
-  const { contact_country_code: _c, tags, ...rest } = values;
+  const { contact_country_code, tags, ...rest } = values;
+  void contact_country_code;
   return {
     ...rest,
     ...(tags !== undefined ? { tags: splitTags(tags) } : {}),

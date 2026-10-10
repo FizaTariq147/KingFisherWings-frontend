@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { FormPageHeader } from '@/components/ui/FormPageHeader';
+import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { useAuth } from '@/hooks/useAuth';
 import { isTenantUserManagerRole, resolveAuthRoleSlug } from '@/features/users/constants/userPermissions';
 import { GL_PAYMENT_ROUTE_PREFIX } from '../api/glPayment.api';
@@ -16,7 +18,7 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function GlPaymentEditPage() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
+  const { goBack } = useReturnNavigation(`${GL_PAYMENT_ROUTE_PREFIX}/${id}`);
   const { user } = useAuth();
   const { data: payment, isLoading, isError, error } = useGlPayment(id);
   const update = useUpdateGlPayment(id);
@@ -47,10 +49,10 @@ export default function GlPaymentEditPage() {
         </p>
         <button
           type="button"
-          className="text-sm underline"
-          onClick={() => navigate(`${GL_PAYMENT_ROUTE_PREFIX}/${id}`)}
+          className="text-sm text-[var(--color-primary-600)]"
+          onClick={() => goBack()}
         >
-          Back to payment
+          ← Back to detail
         </button>
       </div>
     );
@@ -58,19 +60,11 @@ export default function GlPaymentEditPage() {
 
   return (
     <div className="space-y-4">
-      <button
-        type="button"
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-        onClick={() => navigate(`${GL_PAYMENT_ROUTE_PREFIX}/${id}`)}
-      >
-        ← Back to payment
-      </button>
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Edit payment</h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Manage allocations on the detail page.
-        </p>
-      </div>
+      <FormPageHeader
+        title="Edit payment"
+        subtitle="Manage allocations on the detail page."
+        onBack={goBack}
+      />
       {permissionBlocked && (
         <div
           role="alert"
@@ -101,7 +95,7 @@ export default function GlPaymentEditPage() {
         mode="edit"
         defaultValues={glPaymentToFormValues(payment)}
         isSubmitting={update.isPending || permissionBlocked}
-        onCancel={() => navigate(`${GL_PAYMENT_ROUTE_PREFIX}/${id}`)}
+        onCancel={goBack}
         onSubmit={async (values) => {
           setFormError(null);
           if (permissionBlocked) {
@@ -110,7 +104,7 @@ export default function GlPaymentEditPage() {
           }
           try {
             await update.mutateAsync(values as UpdateGlPaymentFormValues);
-            navigate(`${GL_PAYMENT_ROUTE_PREFIX}/${id}`);
+            goBack();
           } catch (err) {
             setFormError(
               formatGlPaymentPermissionError(getErrorMessage(err), { isTenantAdmin }),

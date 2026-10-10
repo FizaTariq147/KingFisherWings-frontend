@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
@@ -99,7 +100,7 @@ export default function ReportsList() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">Reports & MIS</h1>
+          <h1 className={appType.pageTitle}>Reports & MIS</h1>
           <p className="text-sm text-[var(--color-neutral-400)]">{reports.length} reports available</p>
         </div>
         <Button variant="secondary">+ Schedule Report</Button>

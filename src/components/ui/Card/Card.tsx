@@ -1,4 +1,5 @@
 import { cn } from '../../../lib/utils';
+import { appType } from '../../../lib/erpTypography';
 
 interface CardProps {
   children: React.ReactNode;
@@ -10,7 +11,7 @@ export function Card({ children, className, padding = 'md' }: CardProps) {
   const paddingMap = { none: '', sm: 'p-3', md: 'p-4', lg: 'p-6' };
   return (
     <div className={cn(
-      'rounded-lg border border-[var(--color-neutral-200)] bg-white shadow-sm',
+      'rounded-sm border border-[#d0d7de] bg-white shadow-none',
       paddingMap[padding],
       className
     )}>
@@ -29,7 +30,7 @@ export function CardHeader({ children, className }: { children: React.ReactNode;
 
 export function CardTitle({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <h3 className={cn('text-sm font-semibold text-[var(--color-neutral-800)]', className)}>
+    <h3 className={cn(appType.cardTitle, className)}>
       {children}
     </h3>
   );

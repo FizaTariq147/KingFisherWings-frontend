@@ -1,5 +1,5 @@
 import type { Job, JobCharge, JobListParams, JobMilestone, JobNote, AirUldRequest } from '../types/job.types';
-import type { JobStatus, JobType } from '../constants/job.constants';
+import type { JobStatus } from '../constants/job.constants';
 import { canonicalizeJobType } from './canonicalizeJobType';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -248,6 +248,18 @@ export function normalizeJob(raw: unknown): Job | null {
     branch_id: pickString(r, 'branch_id', 'branchId') || undefined,
     department_id: pickString(r, 'department_id', 'departmentId') || undefined,
     parent_job_id: pickString(r, 'parent_job_id', 'parentJobId') || undefined,
+    quotation_id:
+      pickString(r, 'quotation_id', 'quotationId') ||
+      pickString(asRecord(r.quotation) ?? {}, 'id') ||
+      undefined,
+    shipment_id:
+      pickString(r, 'shipment_id', 'shipmentId') ||
+      pickString(asRecord(r.shipment) ?? {}, 'id') ||
+      undefined,
+    enquiry_id:
+      pickString(r, 'enquiry_id', 'enquiryId', 'crm_enquiry_id', 'crmEnquiryId') ||
+      pickString(asRecord(r.enquiry) ?? {}, 'id') ||
+      undefined,
     shipper_id: pickString(r, 'shipper_id', 'shipperId'),
     shipper_name:
       pickString(r, 'shipper_name', 'shipperName') ||

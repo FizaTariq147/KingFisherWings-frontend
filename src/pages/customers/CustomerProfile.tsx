@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
@@ -160,7 +161,7 @@ export default function CustomerProfile() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">{customer.name}</h2>
+              <h2 className={appType.pageTitle}>{customer.name}</h2>
               <Badge variant={statusVariant[customer.status]}>{customer.status}</Badge>
             </div>
             <p className="text-sm text-[var(--color-neutral-400)]">

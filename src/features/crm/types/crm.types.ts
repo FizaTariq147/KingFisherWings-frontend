@@ -43,15 +43,134 @@ export interface CreateFollowUpDto { due_date: string; subject: string; lead_id?
 export interface PatchFollowUpDto { status?: FollowUpStatus; due_date?: string; notes?: string }
 export interface FollowUpListParams { page?: number; limit?: number; status?: FollowUpStatus; team?: boolean; owner_id?: string; from?: string; to?: string }
 
-export interface Enquiry extends BaseEntity {
-  service_type: ServiceType; currency_code: string; status: EnquiryStatus;
-  lead_id?: string; party_id?: string; salesperson_id?: string; origin_port_id?: string;
-  dest_port_id?: string; cargo_details?: string; incoterms?: string; special_requirements?: string;
+/** GET /crm/enquiries/:id `actions` flags — server is source of truth when present. */
+export interface EnquiryActions {
+  can_generate_quotation?: boolean;
+  can_convert_to_quote?: boolean;
+  can_generate_shipment?: boolean;
+  can_generate_job?: boolean;
+  can_cancel?: boolean;
+  can_copy?: boolean;
+  raw?: Record<string, unknown>;
 }
+
+/** Matches OpenAPI EnquiryChargeLineDto. */
+export interface EnquiryChargeLine {
+  party_id?: string;
+  department_id?: string;
+  charge_code_id?: string;
+  description: string;
+  quantity?: number;
+  unit_price?: number;
+  amount: number;
+  currency_code?: string;
+  is_cost?: boolean;
+}
+
+export interface Enquiry extends BaseEntity {
+  service_type: ServiceType;
+  currency_code: string;
+  status: EnquiryStatus;
+  lead_id?: string;
+  party_id?: string;
+  salesperson_id?: string;
+  sales_coordinator_id?: string;
+  price_coordinator_id?: string;
+  company_id?: string;
+  branch_id?: string;
+  department_id?: string;
+  enquiry_date?: string;
+  shipper_id?: string;
+  consignee_id?: string;
+  shipper_address?: string;
+  consignee_address?: string;
+  customer_address?: string;
+  origin_port_id?: string;
+  dest_port_id?: string;
+  por_port_id?: string;
+  origin_port_name?: string;
+  dest_port_name?: string;
+  por_port_name?: string;
+  etd?: string;
+  eta?: string;
+  payable_at?: string;
+  dispatch_at?: string;
+  carrier_id?: string;
+  carrier_name?: string;
+  voyage_number?: string;
+  vessel_name?: string;
+  unit_price?: number;
+  gross_weight?: number;
+  chargeable_weight?: number;
+  net_weight?: number;
+  weight_unit?: string;
+  volume_cbm?: number;
+  cbm_unit?: string;
+  hs_code?: string;
+  pieces?: number;
+  container_type_id?: string;
+  container_count?: number;
+  cargo_details?: string;
+  commodity?: string;
+  incoterms?: string;
+  special_requirements?: string;
+  charges?: EnquiryChargeLine[];
+  standard_charges_snapshot?: unknown;
+  party_name?: string;
+  lead_name?: string;
+  salesperson_name?: string;
+  enquiry_number?: string;
+  quotation_id?: string;
+  shipment_id?: string;
+  job_id?: string;
+  actions?: EnquiryActions;
+}
+
 export interface CreateEnquiryDto {
-  service_type: ServiceType; currency_code: string; lead_id?: string; party_id?: string;
-  salesperson_id?: string; origin_port_id?: string; dest_port_id?: string;
-  cargo_details?: string; incoterms?: string; special_requirements?: string; status?: EnquiryStatus;
+  service_type: ServiceType;
+  currency_code: string;
+  lead_id?: string;
+  party_id?: string;
+  salesperson_id?: string;
+  sales_coordinator_id?: string;
+  price_coordinator_id?: string;
+  company_id?: string;
+  branch_id?: string;
+  department_id?: string;
+  enquiry_date?: string;
+  shipper_id?: string;
+  consignee_id?: string;
+  shipper_address?: string;
+  consignee_address?: string;
+  customer_address?: string;
+  origin_port_id?: string;
+  dest_port_id?: string;
+  por_port_id?: string;
+  etd?: string;
+  eta?: string;
+  payable_at?: string;
+  dispatch_at?: string;
+  carrier_id?: string;
+  voyage_number?: string;
+  vessel_name?: string;
+  unit_price?: number;
+  gross_weight?: number;
+  chargeable_weight?: number;
+  net_weight?: number;
+  weight_unit?: string;
+  volume_cbm?: number;
+  cbm_unit?: string;
+  hs_code?: string;
+  pieces?: number;
+  container_type_id?: string;
+  container_count?: number;
+  cargo_details?: string;
+  commodity?: string;
+  incoterms?: string;
+  special_requirements?: string;
+  charges?: EnquiryChargeLine[];
+  standard_charges_snapshot?: unknown;
+  status?: EnquiryStatus;
 }
 export type UpdateEnquiryDto = Partial<CreateEnquiryDto>;
 export interface EnquiryListParams { page?: number; limit?: number; status?: EnquiryStatus; salesperson_id?: string }
