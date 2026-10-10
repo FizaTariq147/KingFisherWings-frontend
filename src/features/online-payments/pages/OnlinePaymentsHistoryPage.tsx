@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { Link, useSearchParams } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Card } from '@/components/ui/Card';
@@ -93,7 +94,7 @@ export default function OnlinePaymentsHistoryPage() {
     <div className="space-y-4">
       <PageBackLink to="/finance/online-payments" label="Back to online payments" />
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Online payment history</h2>
+        <h2 className={appType.pageTitle}>Online payment history</h2>
         <p className="text-sm text-[var(--color-neutral-400)]">
           Posted ERP payments &amp; receipts from /payments/history (and scoped variants)
         </p>

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { Link, useNavigate } from 'react-router-dom';
 import { AlertCircle, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -74,7 +75,7 @@ export default function UserCreatePage() {
       </button>
 
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Add User</h2>
+        <h2 className={appType.pageTitle}>Add User</h2>
       </div>
 
       {createdLogin && (

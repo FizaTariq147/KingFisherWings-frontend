@@ -335,6 +335,34 @@ function extractJobIdFromConvertResponse(raw: unknown): string {
   return '';
 }
 
+function extractShipmentIdFromResponse(raw: unknown): string {
+  const root = asRecord(raw);
+  const data = asRecord(root?.data) ?? root;
+  if (!data) return '';
+  const nested = asRecord(data.shipment);
+  const candidates = [
+    data.shipment_id,
+    data.shipmentId,
+    nested?.id,
+    root?.shipment_id,
+    root?.shipmentId,
+  ];
+  for (const value of candidates) {
+    const id = String(value ?? '');
+    if (isUuid(id)) return id;
+  }
+  // Some generate-shipment responses return the shipment entity as data.
+  if (isUuid(String(data.id ?? '')) && !asRecord(data.job_type) && !data.quotation_number) {
+    const looksLikeShipment =
+      data.shipment_number != null ||
+      data.shipmentNumber != null ||
+      data.reference != null ||
+      String(data.entity_type ?? data.entityType ?? '').toUpperCase() === 'SHIPMENT';
+    if (looksLikeShipment) return String(data.id);
+  }
+  return '';
+}
+
 function extractInvoiceIdFromConvertResponse(raw: unknown): string {
   const root = asRecord(raw);
   const data = asRecord(root?.data) ?? root;
@@ -1064,6 +1092,67 @@ export const quotationService = {
     }
   },
 
+  /** POST /quotations/:id/verify — Fresa continuum. */
+  async verify(id: string): Promise<Quotation> {
+    assertId(id);
+    try {
+      return await postAction(QUOTATION_API.verify(id));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /quotations/:id/approve-verified — Fresa continuum. */
+  async approveVerified(id: string): Promise<Quotation> {
+    assertId(id);
+    try {
+      return await postAction(QUOTATION_API.approveVerified(id));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /quotations/:id/generate-shipment — Fresa continuum. */
+  async generateShipment(id: string): Promise<Quotation & { shipment_id?: string }> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post<unknown>(QUOTATION_API.generateShipment(id)),
+      );
+      const shipmentId = extractShipmentIdFromResponse(res.data);
+      const quotation =
+        normalizeQuotation(unwrapEntity(res.data)) ?? (await this.getById(id));
+      return {
+        ...quotation,
+        ...(shipmentId ? { shipment_id: shipmentId } : {}),
+        ...(quotation.shipment_id ? {} : shipmentId ? { shipment_id: shipmentId } : {}),
+      };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /quotations/:id/generate-job — Fresa continuum (distinct from convert-to-job). */
+  async generateJob(id: string): Promise<Quotation & { job_id?: string }> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post<unknown>(QUOTATION_API.generateJob(id), undefined, JOB_POST_AXIOS_CONFIG),
+      );
+      const jobId =
+        extractJobIdFromConvertResponse(res.data) ||
+        extractJobIdFromConvertResponse(unwrapEntity(res.data));
+      const quotation =
+        normalizeQuotation(unwrapEntity(res.data)) ?? (await this.getById(id));
+      return {
+        ...quotation,
+        ...(jobId ? { job_id: jobId } : {}),
+      };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
   async reject(id: string, dto: ApprovalDecisionDto = {}): Promise<Quotation> {
     assertId(id);
     try {
@@ -1387,6 +1476,65 @@ export const quotationService = {
     assertId(id);
     try {
       return await postAction(QUOTATION_API.duplicate(id));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /quotations/:id/copy — Fresa alias of duplicate. */
+  async copy(id: string): Promise<Quotation> {
+    assertId(id);
+    try {
+      return await postAction(QUOTATION_API.copy(id));
+    } catch (error) {
+      // Fall back to duplicate if copy alias is unavailable.
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 404) return this.duplicate(id);
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /quotations/:id/change-status — staff status change with optional reason. */
+  async changeStatus(
+    id: string,
+    dto: { status: string; reason?: string },
+  ): Promise<Quotation> {
+    assertId(id);
+    try {
+      return await postAction(QUOTATION_API.changeStatus(id), dto);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /quotations/:id/detail — Fresa detail envelope; falls back to getById. */
+  async getDetail(id: string): Promise<Quotation> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<unknown>(QUOTATION_API.detail(id)),
+      );
+      const item = normalizeQuotation(unwrapEntity(res.data) ?? res.data);
+      if (item) return item;
+      return this.getById(id);
+    } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 404) return this.getById(id);
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /quotations/:id/detail/:tab — lazy tab payload. */
+  async getDetailTab(id: string, tab: string): Promise<Record<string, unknown>> {
+    assertId(id);
+    const key = tab.trim();
+    if (!key) throw new Error('Tab key is required.');
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<unknown>(QUOTATION_API.detailTab(id, key)),
+      );
+      const payload = unwrapEntity(res.data);
+      return asRecord(payload) ?? asRecord(res.data) ?? { raw: payload ?? res.data };
     } catch (error) {
       throw formatAxiosError(error);
     }

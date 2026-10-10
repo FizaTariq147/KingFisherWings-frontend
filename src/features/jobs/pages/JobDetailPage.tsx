@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
+import { buildFclContinuumSteps } from '@/features/shared/continuum/buildFclContinuumSteps';
+import { FclContinuumRail } from '@/features/shared/continuum/FclContinuumRail';
 import { JobBillsOfLadingPanel } from '../components/JobBillsOfLadingPanel';
 import { JobCargoPanel } from '../components/JobCargoPanel';
 import { JobChargesPanel } from '../components/JobChargesPanel';
@@ -84,13 +86,14 @@ export default function JobDetailPage() {
   }, [job, pathname, navigate, location.state]);
 
   // Surface partial costing failures from create wizard (POST /jobs/:id/charges).
+  const costingWarnings = (location.state as { costingWarnings?: string[] } | null)?.costingWarnings;
+  const costingWarningMessage = costingWarnings?.length
+    ? `Job created, but some charge lines failed: ${costingWarnings.join(' · ')}`
+    : null;
   useEffect(() => {
-    const state = location.state as { costingWarnings?: string[] } | null;
-    const warnings = state?.costingWarnings;
-    if (!warnings?.length) return;
-    setActionError(`Job created, but some charge lines failed: ${warnings.join(' · ')}`);
+    if (!costingWarnings?.length) return;
     navigate(location.pathname, { replace: true, state: null });
-  }, [location.pathname, location.state, navigate]);
+  }, [costingWarnings, location.pathname, navigate]);
 
   const { shipperLabel } = useJobResolvedLabels(
     job ?? {
@@ -129,6 +132,52 @@ export default function JobDetailPage() {
         label: 'Overview',
         content: (
           <div className="space-y-4">
+            {(job.quotation_id || job.shipment_id || job.enquiry_id || isSeaFcl(job.job_type)) && (
+              <div className="space-y-2">
+                <FclContinuumRail
+                  steps={buildFclContinuumSteps({
+                    partyId: job.shipper_id || job.billing_party_id,
+                    enquiryId: job.enquiry_id,
+                    quotationId: job.quotation_id,
+                    verified: true,
+                    approved: true,
+                    shipmentId: job.shipment_id,
+                    jobId: job.id,
+                    jobHref: jobDetailPath(job),
+                  })}
+                />
+                <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-[13px]">
+                  <span className="font-semibold text-[var(--fresa-header-text,#0A2942)]">
+                    Related:{' '}
+                  </span>
+                  {job.enquiry_id && isUuid(job.enquiry_id) ? (
+                    <Link
+                      className="mr-3 font-medium text-[var(--fresa-action,#0A2942)] hover:underline"
+                      to={`/sales/enquiries/${job.enquiry_id}`}
+                    >
+                      Enquiry {job.enquiry_id.slice(0, 8)}
+                    </Link>
+                  ) : null}
+                  {job.quotation_id && isUuid(job.quotation_id) ? (
+                    <Link
+                      className="mr-3 font-medium text-[var(--fresa-action,#0A2942)] hover:underline"
+                      to={`/quotations/${job.quotation_id}`}
+                    >
+                      Quotation {job.quotation_id.slice(0, 8)}
+                    </Link>
+                  ) : null}
+                  {job.shipment_id && isUuid(job.shipment_id) ? (
+                    <Link
+                      className="mr-3 font-medium text-[var(--fresa-action,#0A2942)] hover:underline"
+                      to={`/operations/shipments/${job.shipment_id}`}
+                    >
+                      Shipment {job.shipment_id.slice(0, 8)}
+                    </Link>
+                  ) : null}
+                  <span className="text-[#64748b]">· {job.job_type?.replaceAll('_', ' ')}</span>
+                </div>
+              </div>
+            )}
             <JobOverviewPanel job={job} />
             <JobBarcodePanel job={job} />
           </div>
@@ -299,11 +348,11 @@ export default function JobDetailPage() {
 
   return (
     <>
-      {(actionError || actionMessage) && (
+      {(actionError || costingWarningMessage || actionMessage) && (
         <div className="mb-3 space-y-2">
-          {actionError && (
+          {(actionError || costingWarningMessage) && (
             <div role="alert" className="text-sm text-[var(--color-danger-600)]">
-              {actionError}
+              {actionError || costingWarningMessage}
             </div>
           )}
           {actionMessage && (

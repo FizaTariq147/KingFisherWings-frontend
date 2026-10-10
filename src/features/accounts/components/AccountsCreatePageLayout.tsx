@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 
 export function AccountsFormAlert({
@@ -61,7 +62,7 @@ export function AccountsCreatePageLayout({
         label={backLabel.startsWith('Back to ') ? 'Back' : backLabel}
       />
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">{title}</h2>
+        <h2 className={appType.pageTitle}>{title}</h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">{subtitle}</p>
       </div>
       {banner ? (

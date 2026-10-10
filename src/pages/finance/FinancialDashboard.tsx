@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { appType } from '@/lib/erpTypography';
 import { Card, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import {
@@ -88,7 +89,7 @@ export default function FinancialDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">Financial Dashboard</h1>
+          <h1 className={appType.pageTitle}>Financial Dashboard</h1>
           <p className="text-sm text-[var(--color-neutral-400)]">Jan 2026 – Jun 2026</p>
         </div>
         <div className="flex gap-2">

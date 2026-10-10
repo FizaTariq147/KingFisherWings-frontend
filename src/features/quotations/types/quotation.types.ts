@@ -83,6 +83,13 @@ export interface QuotationActions {
   can_negotiation_reject?: boolean;
   can_mark_won?: boolean;
   can_mark_lost?: boolean;
+  /** Fresa continuum gates */
+  can_verify?: boolean;
+  can_approve_verified?: boolean;
+  can_generate_shipment?: boolean;
+  can_generate_job?: boolean;
+  can_copy?: boolean;
+  can_change_status?: boolean;
   /** Raw flags for forward-compat. */
   raw?: Record<string, unknown>;
 }
@@ -166,6 +173,10 @@ export interface Quotation {
   job_id?: string;
   /** Human job number when converted (e.g. JOB-RF-2026-00163) — from converted_job_number / job_number. */
   job_number?: string;
+  /** Linked shipment from Fresa generate-shipment continuum. */
+  shipment_id?: string;
+  /** Source CRM enquiry when present. */
+  enquiry_id?: string;
   /** Linked NVOCC booking when quote continues into sea booking gates. */
   booking_id?: string;
   /** Draft customer invoice created on convert / customer approve. */

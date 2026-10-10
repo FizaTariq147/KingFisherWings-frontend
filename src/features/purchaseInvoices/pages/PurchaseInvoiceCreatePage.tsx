@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { PURCHASE_INVOICE_ROUTE_PREFIX } from '../api/purchaseInvoice.api';
 import { PurchaseInvoiceForm } from '../components/PurchaseInvoiceForm';
@@ -21,7 +22,7 @@ export default function PurchaseInvoiceCreatePage() {
         ← Back to purchase invoices
       </button>
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+        <h2 className={appType.pageTitle}>
           Create Purchase Invoice
         </h2>
       </div>

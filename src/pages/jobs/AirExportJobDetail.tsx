@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
@@ -156,7 +157,7 @@ export default function AirExportJobDetail() {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <span className="text-2xl">✈️</span>
-            <h1 className="text-lg font-semibold text-[var(--color-neutral-800)] font-mono">
+            <h1 className={`${appType.pageTitle} font-mono`}>
               {job.jobNo}
             </h1>
             <Badge variant={statusVariant[job.status]}>{job.status}</Badge>

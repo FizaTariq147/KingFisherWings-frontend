@@ -74,6 +74,20 @@ function normalizeQuotationActions(raw: unknown): QuotationActions | undefined {
     // Staff mark-won / mark-lost are blocked (400) — default false when absent.
     can_mark_won: flag('can_mark_won', 'canMarkWon', 'mark_won') ?? false,
     can_mark_lost: flag('can_mark_lost', 'canMarkLost', 'mark_lost') ?? false,
+    can_verify: flag('can_verify', 'canVerify', 'verify'),
+    can_approve_verified: flag(
+      'can_approve_verified',
+      'canApproveVerified',
+      'approve_verified',
+    ),
+    can_generate_shipment: flag(
+      'can_generate_shipment',
+      'canGenerateShipment',
+      'generate_shipment',
+    ),
+    can_generate_job: flag('can_generate_job', 'canGenerateJob', 'generate_job'),
+    can_copy: flag('can_copy', 'canCopy', 'copy'),
+    can_change_status: flag('can_change_status', 'canChangeStatus', 'change_status'),
     raw: r,
   };
 }
@@ -330,6 +344,16 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
       str(asRecord(r.job)?.jobNumber) ??
       str(asRecord(r.converted_job)?.job_number) ??
       str(asRecord(r.converted_job)?.number),
+    shipment_id:
+      str(r.shipment_id) ??
+      str(r.shipmentId) ??
+      str(asRecord(r.shipment)?.id),
+    enquiry_id:
+      str(r.enquiry_id) ??
+      str(r.enquiryId) ??
+      str(r.crm_enquiry_id) ??
+      str(r.crmEnquiryId) ??
+      str(asRecord(r.enquiry)?.id),
     booking_id:
       str(r.booking_id) ??
       str(r.bookingId) ??

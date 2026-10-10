@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { Link, useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
@@ -171,7 +172,7 @@ export default function PlatformBillingInvoicesPage() {
       <PageBackLink to="/superadmin/billing" label="Back to billing hub" />
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Platform invoices</h2>
+          <h2 className={appType.pageTitle}>Platform invoices</h2>
           <p className="text-sm text-[var(--color-neutral-400)]">
             Send, collect, and reconcile tenant invoices
           </p>

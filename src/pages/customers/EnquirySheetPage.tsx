@@ -173,7 +173,7 @@ export default function EnquirySheetPage() {
       <PageBackLink to="/customers" label="Back to Customers" />
       <div className="bg-white border border-gray-200 rounded-md">
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
-          <h2 className="text-[17px] font-medium text-gray-800">All Enquiry</h2>
+          <h2 className="text-[17px] font-medium text-gray-800">Enquiry Sheet</h2>
           <div className="flex items-center gap-2">
             <button
               type="button"

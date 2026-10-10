@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useSearchParams } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
@@ -913,7 +914,7 @@ export default function ReportCatalogPage() {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Report catalogue</h2>
+          <h2 className={appType.pageTitle}>Report catalogue</h2>
           <p className="mt-0.5 text-sm text-[var(--color-neutral-500)]">
             {metaTotal} of {completeReportTotal} complete reports
             {isReportSearchActive(searchQuery) || family !== 'all' || contextFilter !== 'all'

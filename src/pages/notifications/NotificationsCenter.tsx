@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
@@ -91,7 +92,7 @@ export default function NotificationsCenter() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">Notifications</h1>
+          <h1 className={appType.pageTitle}>Notifications</h1>
           {unreadCount > 0 && (
             <span className="w-6 h-6 rounded-full bg-[var(--color-danger-500)] text-white text-xs flex items-center justify-center font-semibold">
               {unreadCount}

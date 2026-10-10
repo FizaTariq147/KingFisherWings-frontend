@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { FormPageHeader } from '@/components/ui/FormPageHeader';
+import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { PURCHASE_INVOICE_ROUTE_PREFIX } from '../api/purchaseInvoice.api';
 import { PurchaseInvoiceForm } from '../components/PurchaseInvoiceForm';
 import {
@@ -12,7 +14,7 @@ import { purchaseInvoiceToFormValues } from '../utils/purchaseInvoiceToFormValue
 
 export default function PurchaseInvoiceEditPage() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
+  const { goBack } = useReturnNavigation(`${PURCHASE_INVOICE_ROUTE_PREFIX}/${id}`);
   const { data: invoice, isLoading, isError, error } = usePurchaseInvoice(id);
   const update = useUpdatePurchaseInvoice(id);
   const [formError, setFormError] = useState<string | null>(null);
@@ -38,7 +40,7 @@ export default function PurchaseInvoiceEditPage() {
         <button
           type="button"
           className="text-sm text-[var(--color-primary-600)]"
-          onClick={() => navigate(`${PURCHASE_INVOICE_ROUTE_PREFIX}/${id}`)}
+          onClick={() => goBack()}
         >
           ← Back to detail
         </button>
@@ -48,21 +50,11 @@ export default function PurchaseInvoiceEditPage() {
 
   return (
     <div className="space-y-4">
-      <button
-        type="button"
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-        onClick={() => navigate(`${PURCHASE_INVOICE_ROUTE_PREFIX}/${id}`)}
-      >
-        ← Back to detail
-      </button>
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
-          Edit purchase invoice
-        </h2>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Update header fields (UpdateInvoiceDto).
-        </p>
-      </div>
+      <FormPageHeader
+        title="Edit purchase invoice"
+        subtitle="Update header fields (UpdateInvoiceDto)."
+        onBack={goBack}
+      />
       {formError && (
         <div
           role="alert"
@@ -80,12 +72,12 @@ export default function PurchaseInvoiceEditPage() {
         mode="edit"
         defaultValues={purchaseInvoiceToFormValues(invoice)}
         isSubmitting={update.isPending}
-        onCancel={() => navigate(`${PURCHASE_INVOICE_ROUTE_PREFIX}/${id}`)}
+        onCancel={goBack}
         onSubmit={async (values) => {
           setFormError(null);
           try {
             await update.mutateAsync(values as UpdatePurchaseInvoiceFormValues);
-            navigate(`${PURCHASE_INVOICE_ROUTE_PREFIX}/${id}`);
+            goBack();
           } catch (err) {
             setFormError(getErrorMessage(err));
             throw err;

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AlertCircle, Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -113,7 +114,7 @@ export default function TariffListPage() {
           >
             ← Quotations
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+          <h2 className={appType.pageTitle}>
             Online Tariff Master
           </h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
@@ -189,7 +190,7 @@ export default function TariffListPage() {
             onPage={setPage}
             pendingId={pendingId}
             onView={(t) => navigate(`${TARIFF_ROUTE_PREFIX}/${t.id}`)}
-            onEdit={(t) => navigate(`${TARIFF_ROUTE_PREFIX}/${t.id}/edit`)}
+            onEdit={(t) => navigate(`${TARIFF_ROUTE_PREFIX}/${t.id}/edit`, { state: { from: `${location.pathname}${location.search}` } })}
             onDuplicate={(t) => setConfirm({ action: 'duplicate', tariff: t })}
             onActivate={(t) => setConfirm({ action: 'activate', tariff: t })}
             onDeactivate={(t) => setConfirm({ action: 'deactivate', tariff: t })}

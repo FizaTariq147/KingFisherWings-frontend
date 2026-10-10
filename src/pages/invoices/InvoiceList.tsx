@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useQuery } from '@tanstack/react-query';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
@@ -67,7 +68,7 @@ export default function InvoiceList() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">Invoices</h1>
+          <h1 className={appType.pageTitle}>Invoices</h1>
           <p className="text-sm text-[var(--color-neutral-400)]">{invoices.length} total invoices</p>
         </div>
         <div className="flex gap-2">

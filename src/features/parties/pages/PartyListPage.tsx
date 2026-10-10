@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { appType, listShell } from '@/lib/erpTypography';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AlertCircle, Download, RefreshCw, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -36,6 +37,7 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 
 export default function PartyListPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const fileRef = useRef<HTMLInputElement>(null);
   const [search, setSearch] = useState('');
   const [partyType, setPartyType] = useState<PartyType | 'all'>('all');
@@ -89,11 +91,11 @@ export default function PartyListPage() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className={listShell.page}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Parties</h2>
-          <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
+          <h2 className={appType.pageTitle}>Parties</h2>
+          <p className={appType.pageSubtitle}>
             Any party can have Users Portal and Vendor Portal logins from the party detail page.
           </p>
         </div>
@@ -229,7 +231,7 @@ export default function PartyListPage() {
           onPage={setPage}
           pendingActionId={pendingActionId}
           onView={(p) => navigate(`/parties/${p.id}`)}
-          onEdit={(p) => navigate(`/parties/${p.id}/edit`)}
+          onEdit={(p) => navigate(`/parties/${p.id}/edit`, { state: { from: `${location.pathname}${location.search}` } })}
           onActivate={(p) => requestConfirm('activate', p)}
           onDeactivate={(p) => requestConfirm('deactivate', p)}
           onCreditStatus={(p) => requestConfirm('credit_status', p)}

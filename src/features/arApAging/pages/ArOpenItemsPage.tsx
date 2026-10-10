@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -66,7 +67,7 @@ export function GlOpenItemsPage({ kind }: GlOpenItemsPageProps) {
           >
             ← Accounts
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">{title}</h2>
+          <h2 className={appType.pageTitle}>{title}</h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">{description}</p>
         </div>
         <div className="flex flex-wrap gap-2">

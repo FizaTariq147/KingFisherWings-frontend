@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { ZIP_DISTANCE_ROUTE_PREFIX } from '../api/zipDistance.api';
 import { ZipDistanceForm } from '../components/ZipDistanceForm';
@@ -21,7 +22,7 @@ export default function ZipDistanceCreatePage() {
         ← Back to zip distances
       </button>
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+        <h2 className={appType.pageTitle}>
           Create zip distance
         </h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">

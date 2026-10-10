@@ -5,6 +5,7 @@
 import { type ReactNode, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { appType } from '@/lib/erpTypography';
 
 export interface FormStep {
   key: string;
@@ -47,8 +48,8 @@ export function StepFormTemplate({
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-navy">{title}</h1>
-        {subtitle && <p className="text-sm text-slate-500 mt-0.5">{subtitle}</p>}
+        <h1 className={appType.pageTitle}>{title}</h1>
+        {subtitle && <p className={appType.pageSubtitle}>{subtitle}</p>}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

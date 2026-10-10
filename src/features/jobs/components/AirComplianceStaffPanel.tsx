@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useQuery } from '@tanstack/react-query';
 import { Eye, Pencil } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
@@ -881,7 +882,7 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
       <div className="space-y-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+            <h3 className={appType.pageTitle}>
               Air compliance / booking form
             </h3>
             <p className="text-xs text-[var(--color-neutral-400)]">

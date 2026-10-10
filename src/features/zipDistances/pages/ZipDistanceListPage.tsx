@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AlertCircle, Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -104,7 +105,7 @@ export default function ZipDistanceListPage() {
           >
             ← Quotations
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+          <h2 className={appType.pageTitle}>
             Zip Distance Master
           </h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
@@ -180,7 +181,7 @@ export default function ZipDistanceListPage() {
             onPage={setPage}
             pendingId={pendingId}
             onView={(item) => navigate(`${ZIP_DISTANCE_ROUTE_PREFIX}/${item.id}`)}
-            onEdit={(item) => navigate(`${ZIP_DISTANCE_ROUTE_PREFIX}/${item.id}/edit`)}
+            onEdit={(item) => navigate(`${ZIP_DISTANCE_ROUTE_PREFIX}/${item.id}/edit`, { state: { from: `${location.pathname}${location.search}` } })}
             onActivate={(item) => setConfirm({ action: 'activate', item })}
             onDeactivate={(item) => setConfirm({ action: 'deactivate', item })}
             onDelete={(item) => setConfirm({ action: 'delete', item })}

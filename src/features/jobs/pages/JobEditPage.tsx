@@ -1,7 +1,8 @@
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { PageBackLink } from '@/components/ui/PageBackLink';
+import { useLocation, useParams } from 'react-router-dom';
+import { FormPageHeader } from '@/components/ui/FormPageHeader';
+import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { JobForm } from '../components/JobForm';
-import { JOB_SEGMENTS, JOB_TYPE_WIZARD_OPTIONS, type JobSegmentKey } from '../constants/job.constants';
+import { JOB_TYPE_WIZARD_OPTIONS, type JobSegmentKey } from '../constants/job.constants';
 import { useJob, useUpdateJob } from '../hooks/useJobs';
 import type { UpdateJobFormValues } from '../types/job.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
@@ -10,10 +11,11 @@ import { jobToFormValues } from '../utils/prepareJobPayload';
 
 export default function JobEditPage() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
   const { pathname } = useLocation();
   const segment = (segmentFromPath(pathname) ?? 'air-export') as JobSegmentKey;
   const prefix = jobRoutePrefix(segment);
+  const detailPath = `${prefix}/${id}`;
+  const { goBack } = useReturnNavigation(detailPath);
   const { data: job, isLoading, isError, error } = useJob(id);
   const update = useUpdateJob(id);
 
@@ -30,10 +32,7 @@ export default function JobEditPage() {
 
   return (
     <div className="space-y-4">
-      <PageBackLink to={`${prefix}/${id}`} label="Back to job" />
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Edit job</h2>
-      </div>
+      <FormPageHeader title="Edit job" onBack={goBack} backLabel="Back to job" />
       <JobForm
         mode="edit"
         jobTypeOptions={
@@ -41,12 +40,12 @@ export default function JobEditPage() {
             ? JOB_TYPE_WIZARD_OPTIONS
             : [...JOB_TYPE_WIZARD_OPTIONS, job.job_type]
         }
-        defaultValues={jobToFormValues(job)}
+        defaultValues={jobToFormValues(job) as UpdateJobFormValues}
         isSubmitting={update.isPending}
-        onCancel={() => navigate(`${prefix}/${id}`)}
+        onCancel={goBack}
         onSubmit={async (values) => {
           await update.mutateAsync(values as UpdateJobFormValues);
-          navigate(`${prefix}/${id}`);
+          goBack();
         }}
       />
     </div>

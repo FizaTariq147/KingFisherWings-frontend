@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { appType } from '@/lib/erpTypography';
+import { useParams } from 'react-router-dom';
+import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { PAYMENT_REQUEST_ROUTE_PREFIX } from '../api/paymentRequest.api';
 import { PaymentRequestForm } from '../components/PaymentRequestForm';
 import {
@@ -12,7 +14,7 @@ import { paymentRequestToFormValues } from '../utils/paymentRequestToFormValues'
 
 export default function PaymentRequestEditPage() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
+  const { goBack } = useReturnNavigation(`${PAYMENT_REQUEST_ROUTE_PREFIX}/${id}`);
   const { data: pr, isLoading, isError, error, refetch } = usePaymentRequest(id);
   const update = useUpdatePaymentRequest(id);
   const [formError, setFormError] = useState<string | null>(null);
@@ -42,7 +44,7 @@ export default function PaymentRequestEditPage() {
         <button
           type="button"
           className="text-sm underline"
-          onClick={() => navigate(`${PAYMENT_REQUEST_ROUTE_PREFIX}/${id}`)}
+          onClick={() => goBack()}
         >
           Back to detail
         </button>
@@ -55,11 +57,11 @@ export default function PaymentRequestEditPage() {
       <button
         type="button"
         className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-        onClick={() => navigate(`${PAYMENT_REQUEST_ROUTE_PREFIX}/${id}`)}
+        onClick={() => goBack()}
       >
         ← Back
       </button>
-      <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+      <h2 className={appType.pageTitle}>
         Edit payment request
       </h2>
 
@@ -81,12 +83,12 @@ export default function PaymentRequestEditPage() {
         mode="edit"
         defaultValues={paymentRequestToFormValues(pr)}
         isSubmitting={update.isPending}
-        onCancel={() => navigate(`${PAYMENT_REQUEST_ROUTE_PREFIX}/${id}`)}
+        onCancel={goBack}
         onSubmit={async (values) => {
           setFormError(null);
           try {
             await update.mutateAsync(values as UpdatePaymentRequestFormValues);
-            navigate(`${PAYMENT_REQUEST_ROUTE_PREFIX}/${id}`);
+            goBack();
           } catch (err) {
             setFormError(getErrorMessage(err));
             throw err;

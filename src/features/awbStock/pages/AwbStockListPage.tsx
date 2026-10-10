@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { appType } from '@/lib/erpTypography';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -38,6 +39,7 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 
 export default function AwbStockListPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [search, setSearch] = useState('');
   const [airlineId, setAirlineId] = useState('');
   const [branchId, setBranchId] = useState('');
@@ -133,7 +135,7 @@ export default function AwbStockListPage() {
           >
             ← Masters
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+          <h2 className={appType.pageTitle}>
             AWB Stock Master
           </h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
@@ -210,7 +212,7 @@ export default function AwbStockListPage() {
                 : 'No AWB stock batches found'
             }
             onView={(b) => navigate(`${AWB_STOCK_ROUTE_PREFIX}/${b.id}`)}
-            onEdit={(b) => navigate(`${AWB_STOCK_ROUTE_PREFIX}/${b.id}/edit`)}
+            onEdit={(b) => navigate(`${AWB_STOCK_ROUTE_PREFIX}/${b.id}/edit`, { state: { from: `${location.pathname}${location.search}` } })}
             onDelete={(b) => setConfirm({ action: 'delete', batch: b })}
           />
         )}

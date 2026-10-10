@@ -55,6 +55,8 @@ import CreditNoteDetailPage from '../features/creditNotes/pages/CreditNoteDetail
 import DebitNoteListPage from '../features/debitNotes/pages/DebitNoteListPage'
 import DebitNoteCreatePage from '../features/debitNotes/pages/DebitNoteCreatePage'
 import DebitNoteDetailPage from '../features/debitNotes/pages/DebitNoteDetailPage'
+import ShipmentListPage from '../features/shipments/pages/ShipmentListPage'
+import ShipmentDetailPage from '../features/shipments/pages/ShipmentDetailPage'
 import PurchaseInvoiceListPage from '../features/purchaseInvoices/pages/PurchaseInvoiceListPage'
 import PurchaseInvoiceCreatePage from '../features/purchaseInvoices/pages/PurchaseInvoiceCreatePage'
 import PurchaseInvoiceEditPage from '../features/purchaseInvoices/pages/PurchaseInvoiceEditPage'
@@ -739,6 +741,8 @@ export const router = createBrowserRouter([
           { path: '/settings/billing/payments/:id', element: <TenantPlatformPaymentDetailPage /> },
           { path: '/settings/tools', element: <StaffToolsPage /> },
           { path: '/operations/transport-requests', element: <TransportRequestsPage /> },
+          { path: '/operations/shipments', element: <ShipmentListPage /> },
+          { path: '/operations/shipments/:id', element: <ShipmentDetailPage /> },
           {
             element: (
               <ProtectedRoute

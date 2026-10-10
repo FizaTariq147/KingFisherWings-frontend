@@ -55,6 +55,34 @@ const CONFIG: Record<
     confirmLabel: 'Convert',
     variant: 'primary',
   },
+  verify: {
+    title: 'Verify quotation?',
+    description: (label) =>
+      `${label} will be marked verified (Fresa continuum). Approval is a separate step.`,
+    confirmLabel: 'Verify',
+    variant: 'primary',
+  },
+  'approve-verified': {
+    title: 'Approve verified quotation?',
+    description: (label) =>
+      `${label} will be approved after verification. You can then generate a shipment.`,
+    confirmLabel: 'Approve verified',
+    variant: 'primary',
+  },
+  'generate-shipment': {
+    title: 'Generate shipment?',
+    description: (label) =>
+      `${label} will create a shipment from this quotation (Fresa continuum).`,
+    confirmLabel: 'Generate shipment',
+    variant: 'primary',
+  },
+  'generate-job': {
+    title: 'Generate job?',
+    description: (label) =>
+      `${label} will create a job from this quotation (Fresa continuum).`,
+    confirmLabel: 'Generate job',
+    variant: 'primary',
+  },
   'start-air-ops': {
     title: 'Start air ops job?',
     description: (label) =>
@@ -84,6 +112,12 @@ const CONFIG: Record<
     title: 'Duplicate quotation?',
     description: (label) => `Create a new DRAFT revision from ${label}.`,
     confirmLabel: 'Duplicate',
+    variant: 'primary',
+  },
+  copy: {
+    title: 'Copy quotation?',
+    description: (label) => `Create a copy of ${label} via the backend copy API.`,
+    confirmLabel: 'Copy',
     variant: 'primary',
   },
 };

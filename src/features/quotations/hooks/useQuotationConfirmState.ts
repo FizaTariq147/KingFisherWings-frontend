@@ -10,10 +10,15 @@ export type QuotationConfirmKind =
   | 'mark-lost'
   | 'convert'
   | 'start-air-ops'
+  | 'verify'
+  | 'approve-verified'
+  | 'generate-shipment'
+  | 'generate-job'
   | 'archive'
   | 'expire'
   | 'delete'
-  | 'duplicate';
+  | 'duplicate'
+  | 'copy';
 
 export interface QuotationConfirmState {
   kind: QuotationConfirmKind;

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { appType } from '@/lib/erpTypography';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AlertCircle, Network, Plus, RefreshCw, Scale, Sprout } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -31,6 +32,7 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 
 export default function ChartOfAccountListPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [search, setSearch] = useState('');
   const [accountGroup, setAccountGroup] = useState<AccountGroup | 'all'>('all');
@@ -97,7 +99,7 @@ export default function ChartOfAccountListPage() {
           >
             ← Accounts
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+          <h2 className={appType.pageTitle}>
             Chart of Accounts
           </h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
@@ -205,7 +207,7 @@ export default function ChartOfAccountListPage() {
               onView={(a) => navigate(`${CHART_OF_ACCOUNT_ROUTE_PREFIX}/${a.id}`)}
               onEdit={
                 canWriteCoa
-                  ? (a) => navigate(`${CHART_OF_ACCOUNT_ROUTE_PREFIX}/${a.id}/edit`)
+                  ? (a) => navigate(`${CHART_OF_ACCOUNT_ROUTE_PREFIX}/${a.id}/edit`, { state: { from: `${location.pathname}${location.search}` } })
                   : undefined
               }
             />

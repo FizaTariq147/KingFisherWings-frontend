@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -99,7 +100,7 @@ export default function MasterResourceDetailPage(props: MasterPageRouteProps = {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">{title}</h2>
+            <h2 className={appType.pageTitle}>{title}</h2>
             <Badge variant={active ? 'success' : 'neutral'}>{active ? 'Active' : 'Inactive'}</Badge>
           </div>
           <p className="text-xs font-mono text-[var(--color-neutral-400)] mt-1">{data.id}</p>

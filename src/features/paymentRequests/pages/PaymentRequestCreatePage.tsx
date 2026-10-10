@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { isUuid } from '@/lib/isUuid';
 import { PAYMENT_REQUEST_ROUTE_PREFIX } from '../api/paymentRequest.api';
@@ -33,7 +34,7 @@ export default function PaymentRequestCreatePage() {
         ← Back to payment requests
       </button>
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+        <h2 className={appType.pageTitle}>
           New payment request
         </h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">

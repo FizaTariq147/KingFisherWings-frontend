@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -70,7 +71,7 @@ export default function VoucherListPage() {
           >
             ← Accounts
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Vouchers</h2>
+          <h2 className={appType.pageTitle}>Vouchers</h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
             Journal, payment, receipt, and other GL vouchers.
           </p>

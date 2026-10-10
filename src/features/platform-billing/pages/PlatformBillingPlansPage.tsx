@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -103,7 +104,7 @@ export default function PlatformBillingPlansPage() {
       <PageBackLink to="/superadmin/billing" label="Back to billing hub" />
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Billing plans</h2>
+          <h2 className={appType.pageTitle}>Billing plans</h2>
           <p className="text-sm text-[var(--color-neutral-400)]">Platform subscription plans and Stripe sync</p>
         </div>
         <Button type="button" size="sm" onClick={() => setShowCreate((v) => !v)}>

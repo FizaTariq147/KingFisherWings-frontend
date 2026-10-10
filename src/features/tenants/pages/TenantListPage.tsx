@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -135,7 +136,7 @@ export default function TenantListPage() {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Tenants</h2>
+          <h2 className={appType.pageTitle}>Tenants</h2>
           <p className="text-sm text-[var(--color-neutral-400)]">
             {totalCount} workspace{totalCount === 1 ? '' : 's'}
             {status === 'deleted' ? ' deleted' : ''} on KINGFISHER WINGS LOGISTIC

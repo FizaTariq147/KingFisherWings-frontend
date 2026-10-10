@@ -56,6 +56,40 @@
   --color-danger-700:  #B91C1C;
   --color-info-100:    #CFFAFE;
   --color-info-500:    #06B6D4;
+  --color-info-700:    #0E7490;
+
+  /* ERP layout (compact operational UI) */
+  --erp-radius: 0.375rem;
+  --erp-input-height: 2.25rem;
+  --erp-page-gap: 0.75rem;
+
+  /* Fresa-inspired operational continuum chrome (Enquiry → Job).
+     Blues track the sidebar primary (#0A2942) — not Fresa's #1E5AA8. */
+  --fresa-action:        var(--color-primary);
+  --fresa-action-hover:  var(--color-primary-600);
+  --fresa-action-soft:   var(--color-primary-50);
+  --fresa-header-bg:     var(--color-primary-50);
+  --fresa-header-text:   var(--color-primary);
+  --fresa-border:        #C9D3DF;
+  --fresa-page-bg:       #F4F6F9;
+  --fresa-toolbar-bg:    #EEF3F9;
+  --fresa-thead-bg:      var(--color-primary-50);
+  --fresa-row-hover:     #F5F9FC;
+  /* Status / semantic (Fresa operational palette) */
+  --fresa-success:       var(--color-success-500);
+  --fresa-success-soft:  var(--color-success-100);
+  --fresa-success-text:  var(--color-success-700);
+  --fresa-warning:       var(--color-warning-500);
+  --fresa-warning-soft:  var(--color-warning-100);
+  --fresa-warning-text:  var(--color-warning-700);
+  --fresa-danger:        var(--color-danger-500);
+  --fresa-danger-soft:   var(--color-danger-100);
+  --fresa-danger-text:   var(--color-danger-700);
+  --fresa-info:          var(--color-info-500);
+  --fresa-info-soft:     var(--color-info-100);
+  --fresa-info-text:     var(--color-info-700);
+  --fresa-secondary-bg:  #FFFFFF;
+  --fresa-secondary-border: #C9D3DF;
 
   /* Transport modes */
   --color-mode-sea:    #0EA5E9;
@@ -65,6 +99,12 @@
   /* Typography */
   --font-sans: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'Nunito', sans-serif;
+  --text-page-title: 1.125rem;
+  --text-page-title-lg: 1.25rem;
+  --text-section-title: 1rem;
+  --text-card-title: 0.875rem;
+  --text-body: 0.875rem;
 
   /* Sidebar — FIXED: was var(--color-primary-900) (#051523, too dark),
      now the exact official Primary (#0A2942), matching Topbar. */
@@ -160,6 +200,7 @@ h4 { font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 600; line-
 
 /* ── Marketing hero override — larger on big screens ─────────────── */
 .hero-h1 {
+  font-family: 'Nunito', sans-serif;
   font-size: clamp(2rem, 4.5vw, 3.25rem);
   font-weight: 700;
   line-height: 1.1;

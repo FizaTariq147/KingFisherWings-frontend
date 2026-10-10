@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
+import { appType } from '@/lib/erpTypography';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { SAVED_REPORT_ROUTE_PREFIX } from '../api/savedReport.api';
@@ -71,7 +72,7 @@ export default function SavedReportDetailPage() {
 
       <div className="flex flex-wrap gap-2 items-start justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">{report.name}</h2>
+          <h2 className={appType.pageTitle}>{report.name}</h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
             {SAVED_REPORT_TYPE_LABELS[report.report_type]}
             {report.is_shared ? ' · Shared' : ' · Private'}

@@ -645,6 +645,10 @@ export interface Job {
   branch_id?: string;
   department_id?: string;
   parent_job_id?: string;
+  /** Linked continuum records when returned by the API. */
+  quotation_id?: string;
+  shipment_id?: string;
+  enquiry_id?: string;
   shipper_id: string;
   shipper_name?: string;
   consignee_id?: string;

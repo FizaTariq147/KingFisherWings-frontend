@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { appType } from '@/lib/erpTypography';
 import { Building2, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -19,7 +20,7 @@ export default function SuperAdminDashboardPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Platform Overview</h2>
+        <h2 className={appType.pageTitle}>Platform Overview</h2>
         <p className="text-sm text-[var(--color-neutral-400)]">KINGFISHER WINGS LOGISTIC — Super Admin</p>
       </div>
 

@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
+import { FormPageHeader } from '@/components/ui/FormPageHeader';
+import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { TenantForm } from '../components/TenantForm';
 import { useTenant, useUpdateTenant } from '../hooks/useTenants';
 import type { UpdateTenantFormValues } from '../types/tenant.types';
@@ -8,7 +10,7 @@ import { formatTenantSlug } from '../utils/formatTenantSlug';
 
 export default function TenantEditPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const { goBack } = useReturnNavigation(`/superadmin/tenants/${id}`);
   const { data: tenant, isLoading, isError } = useTenant(id!);
   const updateTenant = useUpdateTenant(id!);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -35,22 +37,12 @@ export default function TenantEditPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-4">
-      <button
-        type="button"
-        onClick={() => navigate(`/superadmin/tenants/${id}`)}
-        className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] transition-colors"
-      >
-        ← Back to tenant
-      </button>
-
-      <div>
-        <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">
-          Edit {tenant.display_name}
-        </h1>
-        <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          {tenant.code} · {formatTenantSlug(tenant.slug)}
-        </p>
-      </div>
+      <FormPageHeader
+        title={`Edit ${tenant.display_name}`}
+        subtitle={`${tenant.code} · ${formatTenantSlug(tenant.slug)}`}
+        onBack={goBack}
+        backLabel="Back to tenant"
+      />
 
       {apiError && (
         <div
@@ -75,13 +67,15 @@ export default function TenantEditPage() {
           subscription_ends: toDateInputValue(tenant.subscription_ends),
         }}
         isSubmitting={updateTenant.isPending}
+        onCancel={goBack}
         onSubmit={async (values) => {
           setApiError(null);
           try {
             await updateTenant.mutateAsync(values as UpdateTenantFormValues);
-            navigate(`/superadmin/tenants/${id}`);
+            goBack();
           } catch (err) {
-            const message = err instanceof Error ? err.message : 'Failed to save changes. Please try again.';
+            const message =
+              err instanceof Error ? err.message : 'Failed to save changes. Please try again.';
             setApiError(message);
           }
         }}

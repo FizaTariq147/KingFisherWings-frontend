@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -49,7 +50,7 @@ export default function PaymentRequestListPage() {
           >
             ← Finance
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+          <h2 className={appType.pageTitle}>
             Payment Requests
           </h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">

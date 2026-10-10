@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { Link, useParams } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
@@ -60,7 +61,7 @@ export default function TenantPlatformInvoiceDetailPage() {
     <div className="space-y-4 max-w-5xl">
       <PageBackLink to="/settings/billing" label="Back to billing" />
       <div className="flex flex-wrap items-center gap-2">
-        <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">
+        <h2 className={appType.pageTitle}>
           Invoice {inv.number || inv.id}
         </h2>
         {inv.status ? <Badge variant={statusBadgeVariant(inv.status)}>{inv.status}</Badge> : null}

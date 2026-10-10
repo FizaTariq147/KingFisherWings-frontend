@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { appType } from '@/lib/erpTypography';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -33,6 +34,7 @@ function companyDetailPath(company: RegistryCompany) {
 
 export default function CompanyListPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { companyPath } = useCompanyTenantScope();
   const draftCompanies = usePlatformOnboardingStore((s) => s.draftCompanies);
   const removeDraftCompany = usePlatformOnboardingStore((s) => s.removeDraftCompany);
@@ -120,7 +122,7 @@ export default function CompanyListPage() {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">Companies</h2>
+          <h2 className={appType.pageTitle}>Companies</h2>
           <p className="text-sm text-[var(--color-neutral-400)]">
             Company profiles from /tenants (platform admin cannot call tenant ERP /companies)
           </p>
@@ -215,7 +217,7 @@ export default function CompanyListPage() {
                 navigate('/superadmin/companies/new');
                 return;
               }
-              navigate(`${companyDetailPath(c as RegistryCompany)}/edit`);
+              navigate(`${companyDetailPath(c as RegistryCompany)}/edit`, { state: { from: `${location.pathname}${location.search}` } });
             }}
             onDelete={handleDelete}
             onActivate={handleActivate}

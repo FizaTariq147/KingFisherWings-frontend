@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 import { PageBackLink } from '@/components/ui/PageBackLink';
+import { appType } from '@/lib/erpTypography';
 
 export interface DetailTab {
   key: string;
@@ -26,18 +28,21 @@ interface DetailPageTemplateProps {
   actions?: DetailAction[];
   actionsDisabled?: boolean;
   sidebar?: ReactNode;
-  /** @deprecated Prefer history back via PageBackLink; kept for API compatibility. */
+  /** Explicit back handler (module list). Preferred when provided. */
   onBack?: () => void;
-  /** Fallback path only when there is no in-app history. */
+  /** Explicit back path when `onBack` is not set. */
   backTo?: string;
   backLabel?: string;
 }
 
-const TONE_CLASSES: Record<string, string> = {
-  emerald: 'bg-[var(--color-success-100)] text-[var(--color-success-700)]',
-  amber: 'bg-[var(--color-warning-100)] text-[var(--color-warning-700)]',
-  rose: 'bg-[var(--color-danger-100)] text-[var(--color-danger-700)]',
-  slate: 'bg-[var(--color-neutral-100)] text-[var(--color-neutral-600)]',
+const TONE_VARIANT: Record<
+  string,
+  'success' | 'warning' | 'danger' | 'neutral'
+> = {
+  emerald: 'success',
+  amber: 'warning',
+  rose: 'danger',
+  slate: 'neutral',
 };
 
 const ACTION_VARIANT: Record<string, 'primary' | 'secondary' | 'danger'> = {
@@ -56,11 +61,10 @@ export function DetailPageTemplate({
   actions,
   actionsDisabled,
   sidebar,
-  onBack: _onBack,
+  onBack,
   backTo,
   backLabel = 'Back',
 }: DetailPageTemplateProps) {
-  void _onBack;
   const initialKey =
     (defaultTab && tabs.some((t) => t.key === defaultTab) ? defaultTab : undefined) ||
     tabs[0]?.key;
@@ -76,20 +80,20 @@ export function DetailPageTemplate({
 
   return (
     <div>
-      <PageBackLink to={backTo} label={backLabel} className="mb-3" />
+      <PageBackLink to={backTo} label={backLabel} onClick={onBack} className="mb-3" />
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-5">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">{title}</h1>
-            {statusLabel && (
-              <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${TONE_CLASSES[statusTone]}`}>
+            <h1 className={appType.pageTitle}>{title}</h1>
+            {statusLabel ? (
+              <Badge variant={TONE_VARIANT[statusTone] ?? 'neutral'} dot={false}>
                 {statusLabel}
-              </span>
-            )}
+              </Badge>
+            ) : null}
           </div>
           {subtitle && (
-            <p className="text-xs text-[var(--color-neutral-400)] mt-0.5">{subtitle}</p>
+            <p className={appType.pageSubtitle}>{subtitle}</p>
           )}
         </div>
         {actions && actions.length > 0 && (

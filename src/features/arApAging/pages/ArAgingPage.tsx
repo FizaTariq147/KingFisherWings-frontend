@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -49,7 +50,7 @@ export default function ArAgingPage() {
           >
             ← Accounts
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-neutral-800)]">AR Aging</h2>
+          <h2 className={appType.pageTitle}>AR Aging</h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
             Customer receivables by aging bucket (GET /gl/ar/aging).
           </p>

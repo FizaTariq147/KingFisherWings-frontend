@@ -64,7 +64,7 @@ export default defineConfig({
       dependencies: ['setup'],
       // One worker: shared refresh tokens must not rotate in parallel.
       workers: 1,
-      testMatch: /(authenticated|regression|api-integration|module-integration)\.spec\.ts/,
+      testMatch: /(authenticated|regression|api-integration|module-integration|fcl-continuum)\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
         storageState: 'e2e/.auth/tenant-admin.json',

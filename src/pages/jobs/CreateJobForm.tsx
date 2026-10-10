@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appType } from '@/lib/erpTypography';
 import { Card, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
@@ -44,7 +45,7 @@ export default function CreateJobForm() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-[var(--color-neutral-800)]">Create New Job</h1>
+          <h1 className={appType.pageTitle}>Create New Job</h1>
           <p className="text-sm text-[var(--color-neutral-400)]">Step {currentStep} of {steps.length}</p>
         </div>
         <Button variant="secondary">Cancel</Button>
