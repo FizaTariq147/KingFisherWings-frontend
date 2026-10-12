@@ -1,13 +1,40 @@
-/** Jobs REST paths — Swagger tag Jobs (Bearer JWT). 121 ops under /jobs. */
+/** Jobs REST paths — Swagger tag Jobs (Bearer JWT). */
 export const JOB_API = {
   list: '/jobs',
   dashboardCounts: '/jobs/dashboard-counts',
   teamWorkload: '/jobs/team-workload',
+  /** Catalog (Approved / Open / Closed labels); optional ?job_id= */
+  statusOptions: '/jobs/status-options',
   byBarcode: (code: string) => `/jobs/by-barcode/${encodeURIComponent(code)}`,
   scan: '/jobs/scan',
   byId: (id: string) => `/jobs/${id}`,
+  /** Fresa header + tabs + actions */
+  detail: (id: string) => `/jobs/${id}/detail`,
+  detailTab: (id: string, tab: string) =>
+    `/jobs/${id}/detail/${encodeURIComponent(tab)}`,
+  changeStatus: (id: string) => `/jobs/${id}/change-status`,
+  reopen: (id: string) => `/jobs/${id}/reopen`,
+  stop: (id: string) => `/jobs/${id}/stop`,
   cancel: (id: string) => `/jobs/${id}/cancel`,
   close: (id: string) => `/jobs/${id}/close`,
+  closeChecklist: (id: string) => `/jobs/${id}/close-checklist`,
+  copy: (id: string) => `/jobs/${id}/copy`,
+  organizationClientReference: (id: string) =>
+    `/jobs/${id}/organization/client-reference`,
+  dimensions: (id: string) => `/jobs/${id}/dimensions`,
+  gpum: (id: string) => `/jobs/${id}/gpum`,
+  storageChargesCalculate: (id: string) =>
+    `/jobs/${id}/containers/storage-charges/calculate`,
+  storageChargesConfirm: (id: string) =>
+    `/jobs/${id}/containers/storage-charges/confirm-to-costing`,
+  chargeAttachments: (id: string, chargeId: string) =>
+    `/jobs/${id}/charges/${chargeId}/attachments`,
+  shipments: (id: string) => `/jobs/${id}/shipments`,
+  shipmentsAttach: (id: string) => `/jobs/${id}/shipments/attach`,
+  getCharges: (id: string) => `/jobs/${id}/get-charges`,
+  copyCharges: (id: string) => `/jobs/${id}/copy-charges`,
+  prorateToShipments: (id: string) => `/jobs/${id}/prorate-to-shipments`,
+  cancelProrate: (id: string) => `/jobs/${id}/cancel-prorate`,
   houseJobs: (id: string) => `/jobs/${id}/house-jobs`,
   subJobs: (id: string) => `/jobs/${id}/sub-jobs`,
   prorateCost: (id: string, chargeCodeId: string) =>
@@ -196,6 +223,7 @@ export const JOB_API = {
   generateFreightManifest: (id: string) => `/jobs/${id}/documents/freight-manifest`,
   generatePreAlertDoc: (id: string) => `/jobs/${id}/documents/pre-alert`,
   generateJobCard: (id: string) => `/jobs/${id}/documents/job-card`,
+  generateBookingConfirmation: (id: string) => `/jobs/${id}/documents/booking-confirmation`,
   generateJobPnl: (id: string) => `/jobs/${id}/documents/job-pnl`,
   generateProformaInvoice: (id: string) => `/jobs/${id}/documents/proforma-invoice`,
   generateDeliveryOrder: (id: string) => `/jobs/${id}/documents/delivery-order`,
@@ -222,3 +250,18 @@ export const JOB_API = {
   schedulePreAlert: (id: string) => `/jobs/${id}/pre-alert/schedule`,
   whatsappStatus: (id: string) => `/jobs/${id}/whatsapp/status`,
 } as const;
+
+/** Known Fresa job detail tab keys (backend may return a subset). */
+export const JOB_DETAIL_TABS = [
+  'information',
+  /** Backend path/key; UI label is Party */
+  'organization',
+  'dimensions',
+  'costing',
+  'gpum',
+  'history',
+  'booking_form',
+  'shipments',
+] as const;
+
+export type JobDetailTabKey = (typeof JOB_DETAIL_TABS)[number];

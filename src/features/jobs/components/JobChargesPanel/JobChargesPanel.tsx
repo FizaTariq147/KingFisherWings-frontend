@@ -29,6 +29,11 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const [unitPrice, setUnitPrice] = useState('');
   const [currency, setCurrency] = useState('AED');
   const [prorateCodeId, setProrateCodeId] = useState('');
+  const [storageUpto, setStorageUpto] = useState('');
+  const [storagePreview, setStoragePreview] = useState<unknown>(null);
+  const [attachChargeId, setAttachChargeId] = useState('');
+  const [attachFileName, setAttachFileName] = useState('');
+  const [attachFileUrl, setAttachFileUrl] = useState('');
 
   const run = async (fn: () => Promise<unknown>, success?: string) => {
     setError(null);
@@ -227,6 +232,116 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
               Prorate cost
             </Button>
           </div>
+        </div>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Container storage charges</CardTitle>
+        </CardHeader>
+        <div className="px-4 pb-4 space-y-2">
+          <p className="text-xs text-[var(--color-neutral-500)]">
+            Calculate from storage slabs, then confirm lines into costing.
+          </p>
+          <div className="flex flex-wrap items-end gap-2">
+            <Input
+              label="Storage upto date"
+              type="date"
+              value={storageUpto}
+              onChange={(e) => setStorageUpto(e.target.value)}
+              className="max-w-xs"
+            />
+            <Button
+              type="button"
+              size="sm"
+              variant="warning"
+              disabled={!storageUpto || actions.calculateStorageCharges.isPending}
+              onClick={() =>
+                void run(async () => {
+                  const preview = await actions.calculateStorageCharges.mutateAsync({
+                    storage_upto_date: storageUpto,
+                  });
+                  setStoragePreview(preview);
+                }, 'Storage charges calculated.')
+              }
+            >
+              Calculate
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="success"
+              disabled={!storageUpto || actions.confirmStorageCharges.isPending}
+              onClick={() =>
+                void run(
+                  () =>
+                    actions.confirmStorageCharges.mutateAsync({
+                      storage_upto_date: storageUpto,
+                    }),
+                  'Storage charges confirmed to costing.',
+                )
+              }
+            >
+              Confirm to costing
+            </Button>
+          </div>
+          {storagePreview ? (
+            <pre className="max-h-48 overflow-auto rounded-sm border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-2 text-[11px]">
+              {JSON.stringify(storagePreview, null, 2)}
+            </pre>
+          ) : null}
+        </div>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Charge attachments</CardTitle>
+        </CardHeader>
+        <div className="px-4 pb-4 grid gap-3 sm:grid-cols-2">
+          <Input
+            label="Charge id"
+            value={attachChargeId}
+            onChange={(e) => setAttachChargeId(e.target.value)}
+            placeholder="Charge UUID"
+          />
+          <Input
+            label="File name"
+            value={attachFileName}
+            onChange={(e) => setAttachFileName(e.target.value)}
+          />
+          <Input
+            label="File URL"
+            value={attachFileUrl}
+            onChange={(e) => setAttachFileUrl(e.target.value)}
+            className="sm:col-span-2"
+          />
+          <Button
+            type="button"
+            size="sm"
+            variant="create"
+            className="w-fit"
+            disabled={
+              !attachChargeId.trim() ||
+              !attachFileName.trim() ||
+              !attachFileUrl.trim() ||
+              actions.createChargeAttachment.isPending
+            }
+            onClick={() =>
+              void run(
+                () =>
+                  actions.createChargeAttachment.mutateAsync({
+                    chargeId: attachChargeId.trim(),
+                    dto: {
+                      file_name: attachFileName.trim(),
+                      file_url: attachFileUrl.trim(),
+                    },
+                  }),
+                'Attachment added.',
+              )
+            }
+          >
+            Attach to charge
+          </Button>
         </div>
       </Card>
     </div>

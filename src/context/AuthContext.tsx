@@ -75,6 +75,23 @@ function extractMePermissionMatrix(record: Record<string, unknown>): {
       keys.push(`${module}.write`)
       keys.push(`${module}.manage`)
     }
+    // Shipments API guards: view | create | update | generate (not operations.view).
+    // Matrix may nest under operations/sales → shipments, or a top-level shipments module.
+    const mod = module.toLowerCase()
+    const sub = submodule.toLowerCase()
+    const isShipmentsModule = mod === 'shipments'
+    const isShipmentsSub =
+      (mod === 'operations' || mod === 'sales') &&
+      (sub === 'shipments' || sub === 'shipment' || sub === 'booking')
+    if (isShipmentsModule || isShipmentsSub) {
+      if (access === 'read' || access === 'write') keys.push('shipments.view')
+      if (access === 'write') {
+        keys.push('shipments.create')
+        keys.push('shipments.update')
+        keys.push('shipments.generate')
+        keys.push('shipments.manage')
+      }
+    }
   }
 
   const root =

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import {
@@ -6,48 +7,85 @@ import {
   TENANT_ENABLED_MODULE_OPTIONS,
 } from '../../constants/tenantModules.constants';
 import { useUpdateTenantFeatures } from '../../hooks/useTenants';
+import { tenantService } from '../../services/tenant.service';
 import type { Tenant } from '../../types/tenant.types';
 
 interface TenantFeaturesPanelProps {
   tenant: Tenant;
 }
 
-const VALID_MODULE_KEYS = new Set<string>(TENANT_ENABLED_MODULE_KEYS);
+type ModuleOption = { key: string; label: string };
 
-function defaultSelectedModules(tenant: Tenant): string[] {
+const FALLBACK_OPTIONS: ModuleOption[] = TENANT_ENABLED_MODULE_OPTIONS.map((m) => ({
+  key: m.key,
+  label: m.label,
+}));
+
+function defaultSelectedModules(tenant: Tenant, catalogKeys: Set<string>): string[] {
   if (tenant.enabled_modules?.length) {
-    // Only pre-check keys the API accepts.
-    return tenant.enabled_modules.filter((key) => VALID_MODULE_KEYS.has(key));
+    return tenant.enabled_modules.filter((key) => catalogKeys.has(key));
   }
   // Missing/empty from API = unrestricted workspace → show full catalog checked.
-  return TENANT_ENABLED_MODULE_OPTIONS.map((m) => m.key);
+  return [...catalogKeys];
 }
 
 export function TenantFeaturesPanel({ tenant }: TenantFeaturesPanelProps) {
   const updateFeatures = useUpdateTenantFeatures(tenant.id);
+
+  const productModulesQuery = useQuery({
+    queryKey: ['superadmin', 'tenants', 'product-modules'],
+    queryFn: () => tenantService.listProductModules(),
+    staleTime: 60_000,
+  });
+
+  const moduleOptions = useMemo(() => {
+    const fromApi = productModulesQuery.data ?? [];
+    if (!fromApi.length) return FALLBACK_OPTIONS;
+    const map = new Map<string, ModuleOption>();
+    for (const row of FALLBACK_OPTIONS) map.set(row.key, row);
+    for (const row of fromApi) {
+      const key = row.key.trim();
+      if (!key) continue;
+      map.set(key, { key, label: row.label?.trim() || key });
+    }
+    // Prefer static label order, then any API-only keys.
+    const preferred = FALLBACK_OPTIONS.map((m) => map.get(m.key)!).filter(Boolean);
+    const extras = [...map.values()].filter(
+      (m) => !FALLBACK_OPTIONS.some((f) => f.key === m.key),
+    );
+    return [...preferred, ...extras];
+  }, [productModulesQuery.data]);
+
   const catalogKeys = useMemo(
-    () => new Set<string>(TENANT_ENABLED_MODULE_OPTIONS.map((m) => m.key)),
-    [],
+    () => new Set(moduleOptions.map((m) => m.key)),
+    [moduleOptions],
   );
+
+  const validKeys = useMemo(() => {
+    const set = new Set<string>(TENANT_ENABLED_MODULE_KEYS);
+    for (const key of catalogKeys) set.add(key);
+    return set;
+  }, [catalogKeys]);
 
   const unknownModules = useMemo(
     () => (tenant.enabled_modules ?? []).filter((key) => !catalogKeys.has(key)),
     [tenant.enabled_modules, catalogKeys],
   );
 
-  const [selected, setSelected] = useState<string[]>(() => defaultSelectedModules(tenant));
+  const [selected, setSelected] = useState<string[]>(() =>
+    defaultSelectedModules(tenant, new Set(FALLBACK_OPTIONS.map((m) => m.key))),
+  );
   const [bridge, setBridge] = useState(Boolean(tenant.quote_requests_bridge));
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    setSelected(defaultSelectedModules(tenant));
+    setSelected(defaultSelectedModules(tenant, catalogKeys));
     setBridge(Boolean(tenant.quote_requests_bridge));
-  }, [tenant.id, tenant.enabled_modules, tenant.quote_requests_bridge]);
+  }, [tenant.id, tenant.enabled_modules, tenant.quote_requests_bridge, catalogKeys]);
 
   const allCatalogSelected =
-    TENANT_ENABLED_MODULE_OPTIONS.length > 0 &&
-    TENANT_ENABLED_MODULE_OPTIONS.every((m) => selected.includes(m.key));
+    moduleOptions.length > 0 && moduleOptions.every((m) => selected.includes(m.key));
 
   const toggle = (key: string) => {
     setSelected((prev) =>
@@ -58,7 +96,7 @@ export function TenantFeaturesPanel({ tenant }: TenantFeaturesPanelProps) {
   const save = async () => {
     setError(null);
     setMessage(null);
-    const enabled_modules = selected.filter((key) => VALID_MODULE_KEYS.has(key));
+    const enabled_modules = selected.filter((key) => validKeys.has(key));
     if (enabled_modules.length === 0) {
       setError('Select at least one module. An empty allow-list would lock out the workspace.');
       return;
@@ -69,7 +107,7 @@ export function TenantFeaturesPanel({ tenant }: TenantFeaturesPanelProps) {
         quote_requests_bridge: bridge,
       });
       setMessage(
-        'Features saved. Permission matrix, role presets, and reports filter to these modules. Ask tenant users to sign in again so JWT picks up the change.',
+        'Features saved. Permission matrix, role presets, and reports filter to these modules. Ask tenant users to sign in again so JWT picks up the change. Run Sync permissions after enabling Shipments so roles receive shipments.view / create / update / generate.',
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update features.');
@@ -82,10 +120,12 @@ export function TenantFeaturesPanel({ tenant }: TenantFeaturesPanelProps) {
         <div>
           <CardTitle>Enabled modules</CardTitle>
           <p className="mt-1 text-xs text-[var(--color-neutral-500)] max-w-xl">
-            Checked modules are the allow-list sent as <code className="text-[10px]">enabled_modules</code>.
-            Valid keys: operations, sales, finance, masters, admin, hr, wms, transport, nvocc,
-            documentation, support, logistics. They control the permission matrix, role presets, and
-            report catalog. Empty selection cannot be saved.
+            Checked modules are the allow-list sent as{' '}
+            <code className="text-[10px]">enabled_modules</code> (
+            <code className="text-[10px]">PATCH /tenants/:id/features</code>). Catalog from{' '}
+            <code className="text-[10px]">GET /tenants/product-modules</code> when available —
+            includes <strong>shipments</strong>. After enabling, use Sync permissions so JWT keys
+            (shipments.view / create / update / generate) are seeded.
           </p>
         </div>
         <Button
@@ -130,7 +170,7 @@ export function TenantFeaturesPanel({ tenant }: TenantFeaturesPanelProps) {
             type="button"
             size="sm"
             variant="secondary"
-            onClick={() => setSelected(TENANT_ENABLED_MODULE_OPTIONS.map((m) => m.key))}
+            onClick={() => setSelected(moduleOptions.map((m) => m.key))}
           >
             {allCatalogSelected ? 'All selected' : 'Select all'}
           </Button>
@@ -140,7 +180,7 @@ export function TenantFeaturesPanel({ tenant }: TenantFeaturesPanelProps) {
         </div>
 
         <ul className="grid gap-2 sm:grid-cols-2">
-          {TENANT_ENABLED_MODULE_OPTIONS.map((mod) => (
+          {moduleOptions.map((mod) => (
             <li key={mod.key}>
               <label className="flex items-center gap-2 rounded-md border border-[var(--color-neutral-100)] px-3 py-2 text-sm">
                 <input
@@ -161,6 +201,11 @@ export function TenantFeaturesPanel({ tenant }: TenantFeaturesPanelProps) {
         {unknownModules.length > 0 ? (
           <p className="text-xs text-[var(--color-neutral-500)]">
             Ignoring unknown keys from API (not sent on save): {unknownModules.join(', ')}.
+          </p>
+        ) : null}
+        {tenant.available_modules?.length ? (
+          <p className="text-xs text-[var(--color-neutral-500)]">
+            API available_modules: {tenant.available_modules.join(', ')}.
           </p>
         ) : null}
       </div>

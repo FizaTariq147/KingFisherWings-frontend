@@ -7,4 +7,6 @@ export const ORGANIZATION_API = {
     `/organization/number-formats/${encodeURIComponent(documentType)}`,
   numberFormatPreview: (documentType: string) =>
     `/organization/number-formats/${encodeURIComponent(documentType)}/preview`,
+  /** Job date source: ETD_ATD | ETA_ATA | SYSTEM_DATE */
+  jobDateSettings: '/organization/settings/job-date',
 } as const;

@@ -41,7 +41,7 @@ export function NvoccFormActions({
       <button
         type="submit"
         disabled={pending}
-        className="rounded bg-[#0A2942] px-4 py-2 text-sm text-white hover:opacity-90 disabled:opacity-50"
+        className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-[var(--btn-primary-bg)] px-4 py-2 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--btn-primary-ring)] focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-[var(--btn-disabled-opacity,0.45)]"
       >
         {pending ? 'Saving…' : submitLabel}
       </button>

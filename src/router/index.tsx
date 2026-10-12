@@ -56,6 +56,7 @@ import DebitNoteListPage from '../features/debitNotes/pages/DebitNoteListPage'
 import DebitNoteCreatePage from '../features/debitNotes/pages/DebitNoteCreatePage'
 import DebitNoteDetailPage from '../features/debitNotes/pages/DebitNoteDetailPage'
 import ShipmentListPage from '../features/shipments/pages/ShipmentListPage'
+import ShipmentCreatePage from '../features/shipments/pages/ShipmentCreatePage'
 import ShipmentDetailPage from '../features/shipments/pages/ShipmentDetailPage'
 import PurchaseInvoiceListPage from '../features/purchaseInvoices/pages/PurchaseInvoiceListPage'
 import PurchaseInvoiceCreatePage from '../features/purchaseInvoices/pages/PurchaseInvoiceCreatePage'
@@ -310,6 +311,7 @@ import OrganizationShell from '../features/organization/pages/OrganizationShell'
 import OrganizationProfilePage from '../features/organization/pages/OrganizationProfilePage'
 import BankAccountsPage from '../features/organization/pages/BankAccountsPage'
 import NumberFormatsPage from '../features/organization/pages/NumberFormatsPage'
+import JobDateSettingsPage from '../features/organization/pages/JobDateSettingsPage'
 import { TENANT_USER_MANAGER_ROLE_SLUGS } from '../features/users/constants/userPermissions'
 function Placeholder({ title }: { title: string }) {
   return (
@@ -453,6 +455,8 @@ export const router = createBrowserRouter([
               { path: '/customers', element: <CustomerServiceMenuPage /> },
               { path: '/customers/:id', element: <Placeholder title="Customer Profile" /> },
               { path: '/customer-service/shipments', element: <AllShipmentsPage /> },
+              { path: '/customer-service/shipments/new', element: <ShipmentCreatePage /> },
+              { path: '/customer-service/shipments/:id', element: <ShipmentDetailPage /> },
               { path: '/customer-service/enquiry-sheet', element: <EnquirySheetPage /> },
               { path: '/customer-service/pricing-dashboard', element: <PricingDashboardPage /> },
               { path: '/customer-service/sailing-schedule', element: <SailingSchedulePage /> },
@@ -489,6 +493,7 @@ export const router = createBrowserRouter([
                   { index: true, element: <OrganizationProfilePage /> },
                   { path: 'bank-accounts', element: <BankAccountsPage /> },
                   { path: 'number-formats', element: <NumberFormatsPage /> },
+                  { path: 'job-date', element: <JobDateSettingsPage /> },
                 ],
               },
             ],
@@ -742,6 +747,7 @@ export const router = createBrowserRouter([
           { path: '/settings/tools', element: <StaffToolsPage /> },
           { path: '/operations/transport-requests', element: <TransportRequestsPage /> },
           { path: '/operations/shipments', element: <ShipmentListPage /> },
+          { path: '/operations/shipments/new', element: <ShipmentCreatePage /> },
           { path: '/operations/shipments/:id', element: <ShipmentDetailPage /> },
           {
             element: (

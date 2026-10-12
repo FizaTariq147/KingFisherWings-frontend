@@ -7,12 +7,14 @@ import type {
   BankAccountListParams,
   BankAccountListResult,
   CreateNumberFormatDto,
+  JobDateSettings,
   NumberFormat,
   NumberFormatFormValues,
   NumberFormatPreview,
   OrganizationProfile,
   OrganizationProfileFormValues,
   TenantBankAccount,
+  UpdateJobDateSettingsDto,
   UpdateNumberFormatDto,
 } from '../types/organization.types';
 import {
@@ -251,6 +253,47 @@ export const organizationService = {
         /* ignore fallback errors */
       }
       return normalized;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /organization/settings/job-date */
+  async getJobDateSettings(): Promise<JobDateSettings> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(ORGANIZATION_API.jobDateSettings),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      const record =
+        data && typeof data === 'object' && !Array.isArray(data)
+          ? (data as Record<string, unknown>)
+          : {};
+      const source = String(
+        record.job_date_source ?? record.jobDateSource ?? 'SYSTEM_DATE',
+      ).trim();
+      return { job_date_source: source || 'SYSTEM_DATE' };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** PATCH /organization/settings/job-date */
+  async updateJobDateSettings(dto: UpdateJobDateSettingsDto): Promise<JobDateSettings> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch(ORGANIZATION_API.jobDateSettings, dto),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      const record =
+        data && typeof data === 'object' && !Array.isArray(data)
+          ? (data as Record<string, unknown>)
+          : {};
+      return {
+        job_date_source: String(
+          record.job_date_source ?? record.jobDateSource ?? dto.job_date_source,
+        ),
+      };
     } catch (error) {
       throw formatAxiosError(error);
     }

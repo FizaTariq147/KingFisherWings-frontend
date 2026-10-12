@@ -1,29 +1,57 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import {
+  ArrowLeft,
+  BarChart2,
+  Briefcase,
+  Building2,
+  Check,
+  Copy,
+  ExternalLink,
+  FileCheck,
+  FileText,
+  Layers,
+  MapPin,
+  Pencil,
+  Plus,
+  RefreshCw,
+  Save,
+  Split,
+  X,
+} from 'lucide-react';
 import { OperationTypeBadge, StatusBadge } from '@/components/erp';
 import { Button } from '@/components/ui/Button';
-import { FormPageHeader } from '@/components/ui/FormPageHeader';
 import { Modal } from '@/components/ui/Modal';
+import { appType } from '@/lib/erpTypography';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import { buildFclContinuumSteps } from '@/features/shared/continuum/buildFclContinuumSteps';
 import { FclContinuumRail } from '@/features/shared/continuum/FclContinuumRail';
 import { erpForm } from '@/lib/erpForm';
 import { isUuid } from '@/lib/isUuid';
 import { cn } from '@/lib/utils';
-import { SHIPMENT_DETAIL_TABS, SHIPMENT_ROUTE_PREFIX } from '../api/shipment.api';
+import {
+  isShipmentShowAllTab,
+  SHIPMENT_DETAIL_TABS,
+  SHIPMENT_SHOW_ALL_TAB,
+} from '../api/shipment.api';
 import { ShipmentTabPanel } from '../components/ShipmentTabPanel';
+import { useShipmentPaths } from '../hooks/useShipmentPaths';
+import { useShipmentResolvedLabels } from '../hooks/useShipmentResolvedLabels';
 import {
   useChangeShipmentBlStatus,
   useChangeShipmentDepartment,
   useChangeShipmentStatus,
   useCopyShipment,
   useGenerateShipmentJob,
+  useQueueShipmentBookingConfirmation,
   useShipment,
   useShipmentCreateSubmaster,
   useShipmentKpi,
   useShipmentTracking,
   useSplitShipment,
+  useUpdateShipment,
 } from '../hooks/useShipments';
+import { useShipmentsPermissions } from '../hooks/useShipmentsPermissions';
 import {
   SHIPMENT_BL_STATUSES,
   SHIPMENT_STATUSES,
@@ -32,29 +60,83 @@ import {
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { shipmentDisplayNumber } from '../utils/normalizeShipment';
 
-function FieldRow({ label, value }: { label: string; value?: string | number | null }) {
-  if (value == null || value === '') return null;
+function displayValue(value?: string | number | null): string | undefined {
+  if (value == null || value === '') return undefined;
+  const text = String(value).trim();
+  if (!text || isUuid(text)) return undefined;
+  return text;
+}
+
+/** Fresa-style label + readonly box (matches shipment detail screenshots). */
+function FresaReadonlyField({
+  label,
+  value,
+  href,
+}: {
+  label: string;
+  value?: string | number | null;
+  href?: string;
+}) {
+  const shown = displayValue(value) ?? '—';
   return (
-    <div>
-      <dt className="text-[11px] font-semibold uppercase tracking-wide text-[#64748b]">
-        {label}
-      </dt>
-      <dd className="mt-0.5 text-[13px] text-[#0f172a]">{value}</dd>
+    <div className="min-w-0">
+      <div className={erpForm.label}>{label}</div>
+      <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[13px] text-[#0f172a]">
+        {href && shown !== '—' ? (
+          <Link className="truncate font-medium text-[var(--color-primary-700)] hover:underline" to={href}>
+            {shown}
+          </Link>
+        ) : (
+          <span className="truncate">{shown}</span>
+        )}
+      </div>
     </div>
   );
 }
 
-function defaultTabs(shipment: Shipment): { key: string; label: string }[] {
-  if (shipment.tabs?.length) {
-    return shipment.tabs.map((t) => ({
-      key: t.key,
-      label: t.label || t.key.replace(/[-_]/g, ' '),
-    }));
+function tabLabel(key: string, label?: string): string {
+  if (isShipmentShowAllTab(key) || (label && isShipmentShowAllTab(label))) return 'Show All';
+  const norm = key.trim().toLowerCase().replace(/_/g, '-');
+  const labelNorm = (label || '').trim().toLowerCase().replace(/_/g, '-');
+  if (norm === 'information' || norm === 'info') return 'Info';
+  /** Continuum term is Party (backend tab key may still be organization). */
+  if (
+    norm === 'organization' ||
+    norm === 'organisation' ||
+    labelNorm === 'organization' ||
+    labelNorm === 'organisation'
+  ) {
+    return 'Party';
   }
-  return SHIPMENT_DETAIL_TABS.map((key) => ({
-    key,
-    label: key.replace(/-/g, ' '),
+  if (norm === 'planned-containers' || norm === 'planned-consignment') return 'Planned containers';
+  if (norm === 'actual-containers' || norm === 'actual-consignment') return 'Actual containers';
+  return (label || key).trim().replace(/[-_]/g, ' ');
+}
+
+/** Always expose Show All first; keep backend tabs (deduped) then known defaults. */
+function defaultTabs(shipment: Shipment): { key: string; label: string }[] {
+  const fromApi = (shipment.tabs ?? []).map((t) => ({
+    key: t.key,
+    label: tabLabel(t.key, t.label),
   }));
+  const fallback = SHIPMENT_DETAIL_TABS.map((key) => ({
+    key,
+    label: tabLabel(key),
+  }));
+  const merged = [...fromApi, ...fallback];
+  const seen = new Set<string>();
+  const tabs: { key: string; label: string }[] = [
+    { key: SHIPMENT_SHOW_ALL_TAB, label: 'Show All' },
+  ];
+  seen.add(SHIPMENT_SHOW_ALL_TAB);
+  for (const t of merged) {
+    const norm = t.key.trim().toLowerCase().replace(/_/g, '-');
+    if (isShipmentShowAllTab(t.key) || seen.has(norm) || seen.has(t.key)) continue;
+    seen.add(norm);
+    seen.add(t.key);
+    tabs.push({ key: t.key, label: t.label });
+  }
+  return tabs;
 }
 
 type ConfirmKind =
@@ -69,33 +151,71 @@ type ConfirmKind =
 export default function ShipmentDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
+  const paths = useShipmentPaths();
+  const perms = useShipmentsPermissions();
   const query = useShipment(id);
   const generateJob = useGenerateShipmentJob(id);
   const copyShipment = useCopyShipment(id);
+  const updateShipment = useUpdateShipment(id);
+  const queueBookingConfirmation = useQueueShipmentBookingConfirmation(id);
   const splitShipment = useSplitShipment(id);
   const changeStatus = useChangeShipmentStatus(id);
   const changeBlStatus = useChangeShipmentBlStatus(id);
   const changeDepartment = useChangeShipmentDepartment(id);
   const createSubmaster = useShipmentCreateSubmaster(id);
 
+  const infoRef = useRef<HTMLElement>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [confirmKind, setConfirmKind] = useState<ConfirmKind | null>(null);
   const [statusValue, setStatusValue] = useState('');
   const [blStatusValue, setBlStatusValue] = useState('');
   const [departmentId, setDepartmentId] = useState('');
-  const [activeTab, setActiveTab] = useState<string>('information');
+  const [activeTab, setActiveTab] = useState<string>(SHIPMENT_SHOW_ALL_TAB);
   const [showKpi, setShowKpi] = useState(false);
   const [showTracking, setShowTracking] = useState(false);
+  const [generateJobMode, setGenerateJobMode] = useState<'HOUSE' | 'DIRECT'>('HOUSE');
+  const [editing, setEditing] = useState(false);
+  const [editDraft, setEditDraft] = useState({
+    commodity: '',
+    cargo_details: '',
+    incoterms: '',
+    freight_payment_type: '',
+    currency_code: '',
+    mbl_number: '',
+    hbl_number: '',
+    vessel_name: '',
+    voyage_number: '',
+  });
+  const [reportPending, setReportPending] = useState(false);
 
   const kpiQuery = useShipmentKpi(id, showKpi);
   const trackingQuery = useShipmentTracking(id, showTracking);
 
   const shipment = query.data;
+  const labels = useShipmentResolvedLabels(shipment);
   const tabs = useMemo(() => (shipment ? defaultTabs(shipment) : []), [shipment]);
   const effectiveTab = tabs.some((t) => t.key === activeTab)
     ? activeTab
     : tabs[0]?.key ?? 'information';
+
+  if (!perms.canReadApi) {
+    return (
+      <div className="space-y-3 p-2">
+        <p className="text-sm text-[var(--color-danger-700)]">
+          Missing permission: shipments.view
+        </p>
+        <Button
+          type="button"
+          variant="back"
+          leftIcon={<ArrowLeft />}
+          onClick={() => navigate(paths.list)}
+        >
+          Back to shipments
+        </Button>
+      </div>
+    );
+  }
 
   if (query.isLoading) {
     return (
@@ -108,15 +228,19 @@ export default function ShipmentDetailPage() {
   }
 
   if (query.isError || !shipment) {
+    const errMsg = getErrorMessage(query.error) || 'Shipment not found.';
     return (
       <div className="space-y-3">
-        <p className="text-sm text-[var(--color-danger-700)]">
-          {getErrorMessage(query.error) || 'Shipment not found.'}
-        </p>
-        <Button type="button" variant="secondary" onClick={() => query.refetch()}>
+        <p className="text-sm text-[var(--color-danger-700)]">{errMsg}</p>
+        <Button type="button" variant="secondary" leftIcon={<RefreshCw />} onClick={() => query.refetch()}>
           Retry
         </Button>
-        <Button type="button" variant="secondary" onClick={() => navigate(SHIPMENT_ROUTE_PREFIX)}>
+        <Button
+          type="button"
+          variant="back"
+          leftIcon={<ArrowLeft />}
+          onClick={() => navigate(paths.list)}
+        >
           Back to shipments
         </Button>
       </div>
@@ -127,15 +251,20 @@ export default function ShipmentDetailPage() {
   const hasJob = Boolean(shipment.job_id && isUuid(shipment.job_id));
   const actions = shipment.actions;
   const canGenerateJob =
-    !hasJob && (actions == null ? true : actions.can_generate_job === true);
-  const canCopy = actions?.can_copy !== false;
-  const canChangeStatus = actions?.can_change_status !== false;
-  const canChangeBl = actions?.can_change_bl_status === true || actions?.can_change_bl_status == null;
-  const canChangeDepartment = actions?.can_change_department !== false;
-  const canSplit = actions?.can_split === true;
-  const canSubmaster = actions?.can_create_submaster === true;
-  const canKpi = actions?.can_kpi !== false;
-  const canTracking = actions?.can_tracking !== false;
+    perms.canWriteGenerate &&
+    !hasJob &&
+    (actions == null ? true : actions.can_generate_job === true);
+  const canCopy = perms.canWriteCreate && actions?.can_copy !== false;
+  const canChangeStatus = perms.canWriteUpdate && actions?.can_change_status !== false;
+  const canChangeBl =
+    perms.canWriteUpdate &&
+    (actions?.can_change_bl_status === true || actions?.can_change_bl_status == null);
+  const canChangeDepartment =
+    perms.canWriteUpdate && actions?.can_change_department !== false;
+  const canSplit = perms.canWriteUpdate && actions?.can_split === true;
+  const canSubmaster = perms.canWriteGenerate && actions?.can_create_submaster === true;
+  const canKpi = perms.canView && actions?.can_kpi !== false;
+  const canTracking = perms.canView && actions?.can_tracking !== false;
 
   const statusOptions = actions?.allowed_statuses?.length
     ? actions.allowed_statuses
@@ -160,6 +289,8 @@ export default function ShipmentDetailPage() {
   const anyPending =
     generateJob.isPending ||
     copyShipment.isPending ||
+    updateShipment.isPending ||
+    queueBookingConfirmation.isPending ||
     splitShipment.isPending ||
     changeStatus.isPending ||
     changeBlStatus.isPending ||
@@ -179,138 +310,163 @@ export default function ShipmentDetailPage() {
     }
   };
 
-  return (
-    <div className="space-y-2.5">
-      <FormPageHeader
-        title={shipmentDisplayNumber(shipment)}
-        subtitle={
-          <span className="inline-flex flex-wrap items-center gap-2">
-            <OperationTypeBadge code={jobType} />
-            <StatusBadge status={shipment.status} />
-            {shipment.bl_status ? <StatusBadge status={shipment.bl_status} label={`BL: ${shipment.bl_status}`} /> : null}
-          </span>
-        }
-        backTo={SHIPMENT_ROUTE_PREFIX}
-        backLabel="Shipments"
-      />
+  const startEdit = () => {
+    if (!perms.canWriteUpdate) {
+      setActionError('Missing permission: shipments.update');
+      return;
+    }
+    setEditDraft({
+      commodity: displayValue(shipment.commodity) || '',
+      cargo_details: displayValue(shipment.cargo_details) || '',
+      incoterms: displayValue(shipment.incoterms) || '',
+      freight_payment_type: displayValue(shipment.freight_payment_type) || '',
+      currency_code: displayValue(shipment.currency_code) || '',
+      mbl_number: displayValue(shipment.mbl_number) || '',
+      hbl_number: displayValue(shipment.hbl_number) || '',
+      vessel_name: displayValue(shipment.vessel_name) || '',
+      voyage_number: displayValue(shipment.voyage_number) || '',
+    });
+    setEditing(true);
+    setActionError(null);
+    window.requestAnimationFrame(() => {
+      infoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
 
-      {/* Action toolbar — only show actions allowed / relevant */}
-      <div className={erpForm.toolbar}>
-        {hasJob ? (
-          <Button
-            size="sm"
-            type="button"
-            onClick={() =>
-              navigate(jobDetailPath({ id: shipment.job_id!, job_type: jobType }))
-            }
-          >
-            Open Job
-          </Button>
-        ) : canGenerateJob ? (
-          <Button
-            size="sm"
-            type="button"
-            disabled={anyPending}
-            onClick={() => setConfirmKind('generate-job')}
-          >
-            Generate Job
-          </Button>
-        ) : null}
-        {canChangeStatus && (
-          <Button
-            size="sm"
-            type="button"
-            variant="secondary"
-            disabled={anyPending}
-            onClick={() => {
-              setStatusValue(shipment.status || statusOptions[0] || 'BOOKED');
-              setConfirmKind('change-status');
-            }}
-          >
-            Change Status
-          </Button>
-        )}
-        {canChangeBl && (
-          <Button
-            size="sm"
-            type="button"
-            variant="secondary"
-            disabled={anyPending}
-            onClick={() => {
-              setBlStatusValue(shipment.bl_status || blOptions[0] || 'DRAFT');
-              setConfirmKind('change-bl-status');
-            }}
-          >
-            Change BL Status
-          </Button>
-        )}
-        {canChangeDepartment && (
-          <Button
-            size="sm"
-            type="button"
-            variant="secondary"
-            disabled={anyPending}
-            onClick={() => {
-              setDepartmentId(shipment.department_id || '');
-              setConfirmKind('change-department');
-            }}
-          >
-            Change Department
-          </Button>
-        )}
-        {canCopy && (
-          <Button
-            size="sm"
-            type="button"
-            variant="secondary"
-            disabled={anyPending}
-            onClick={() => setConfirmKind('copy')}
-          >
-            Copy
-          </Button>
-        )}
-        {canSplit && (
-          <Button
-            size="sm"
-            type="button"
-            variant="secondary"
-            disabled={anyPending}
-            onClick={() => setConfirmKind('split')}
-          >
-            Split
-          </Button>
-        )}
-        {canSubmaster && (
-          <Button
-            size="sm"
-            type="button"
-            variant="secondary"
-            disabled={anyPending}
-            onClick={() => setConfirmKind('create-submaster')}
-          >
-            Create Submaster
-          </Button>
-        )}
-        {canKpi && (
-          <Button
-            size="sm"
-            type="button"
-            variant="secondary"
-            onClick={() => setShowKpi((v) => !v)}
-          >
-            {showKpi ? 'Hide KPI' : 'KPI'}
-          </Button>
-        )}
-        {canTracking && (
-          <Button
-            size="sm"
-            type="button"
-            variant="secondary"
-            onClick={() => setShowTracking((v) => !v)}
-          >
-            {showTracking ? 'Hide Tracking' : 'Track & Trace'}
-          </Button>
-        )}
+  const saveEdit = async () => {
+    setActionError(null);
+    setActionMessage(null);
+    try {
+      await updateShipment.mutateAsync({
+        commodity: editDraft.commodity.trim() || undefined,
+        // OpenAPI UpdateShipmentDto uses `notes` (not cargo_details)
+        notes: editDraft.cargo_details.trim() || undefined,
+        incoterms: editDraft.incoterms.trim() || undefined,
+        freight_payment_type: editDraft.freight_payment_type.trim() || undefined,
+        hbl_number: editDraft.hbl_number.trim() || undefined,
+        vessel_name: editDraft.vessel_name.trim() || undefined,
+        voyage_number: editDraft.voyage_number.trim() || undefined,
+      });
+      setEditing(false);
+      setActionMessage('Shipment updated.');
+      await query.refetch();
+    } catch (e) {
+      setActionError(getErrorMessage(e));
+    }
+  };
+
+  const onReport = async () => {
+    setReportPending(true);
+    setActionError(null);
+    setActionMessage(null);
+    try {
+      if (hasJob) {
+        await queueBookingConfirmation.mutateAsync();
+        setActionMessage('Booking confirmation PDF queued (POST /shipments/:id/documents/booking-confirmation).');
+      } else {
+        navigate(
+          `/reports/catalog?family=shipment&context=shipment&shipment_id=${encodeURIComponent(id)}`,
+        );
+      }
+    } catch (e) {
+      setActionError(getErrorMessage(e));
+    } finally {
+      setReportPending(false);
+    }
+  };
+
+  const jobHref =
+    hasJob && shipment.job_id
+      ? jobDetailPath({ id: shipment.job_id, job_type: jobType })
+      : undefined;
+
+  return (
+    <div className="space-y-2.5 bg-[var(--fresa-page-bg,#F4F6F9)] -mx-1 px-1 pb-4">
+      {/* ── Fresa main chrome: title + Create / Edit / Report / Back ── */}
+      <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2.5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
+              Shipment details
+            </p>
+            <h1 className={`mt-0.5 ${appType.pageTitle}`}>{shipmentDisplayNumber(shipment)}</h1>
+            <p className={`${appType.pageSubtitle} mt-1`}>
+              <span className="inline-flex flex-wrap items-center gap-2">
+                <OperationTypeBadge code={jobType} />
+                <StatusBadge status={shipment.status} />
+                {shipment.bl_status ? (
+                  <StatusBadge status={shipment.bl_status} label={`BL: ${shipment.bl_status}`} />
+                ) : null}
+              </span>
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-end gap-2 print:hidden">
+            <Button
+              size="sm"
+              type="button"
+              variant="create"
+              leftIcon={<Plus />}
+              disabled={!perms.canWriteCreate}
+              onClick={() => navigate(paths.create)}
+            >
+              Create
+            </Button>
+            {editing ? (
+              <>
+                <Button
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                  leftIcon={<X />}
+                  disabled={updateShipment.isPending}
+                  onClick={() => setEditing(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  type="button"
+                  variant="success"
+                  leftIcon={<Save />}
+                  disabled={updateShipment.isPending}
+                  onClick={() => void saveEdit()}
+                >
+                  {updateShipment.isPending ? 'Saving…' : 'Save'}
+                </Button>
+              </>
+            ) : (
+              <Button
+                size="sm"
+                type="button"
+                variant="edit"
+                leftIcon={<Pencil />}
+                disabled={!perms.canWriteUpdate || anyPending}
+                onClick={startEdit}
+              >
+                Edit
+              </Button>
+            )}
+            <Button
+              size="sm"
+              type="button"
+              variant="report"
+              leftIcon={<FileText />}
+              disabled={reportPending || anyPending}
+              onClick={() => void onReport()}
+            >
+              {reportPending ? 'Report…' : 'Report'}
+            </Button>
+            <Button
+              size="sm"
+              type="button"
+              variant="back"
+              leftIcon={<ArrowLeft />}
+              onClick={() => navigate(paths.list)}
+            >
+              Back
+            </Button>
+          </div>
+        </div>
       </div>
 
       <FclContinuumRail steps={continuum} />
@@ -326,58 +482,204 @@ export default function ShipmentDetailPage() {
         </div>
       )}
 
-      {/* Compact operational header */}
-      <section className={erpForm.section}>
-        <div className={erpForm.sectionHeader}>Shipment information</div>
-        <dl className={`${erpForm.sectionBody} ${erpForm.grid3}`}>
-          <FieldRow label="Customer" value={shipment.party_name || shipment.customer_name} />
-          <FieldRow label="Department" value={shipment.department_name} />
-          <FieldRow label="Branch" value={shipment.branch_name} />
-          <FieldRow label="Currency" value={shipment.currency_code} />
-          <FieldRow label="Incoterms" value={shipment.incoterms} />
-          <FieldRow label="Freight terms" value={shipment.freight_payment_type} />
-          <FieldRow label="POR" value={shipment.por || shipment.place_of_receipt} />
-          <FieldRow label="POL" value={shipment.pol || shipment.origin_port_name || shipment.origin_port_id} />
-          <FieldRow label="POD" value={shipment.pod || shipment.dest_port_name || shipment.dest_port_id} />
-          <FieldRow label="POF / Delivery" value={shipment.pof || shipment.place_of_delivery} />
-          <FieldRow label="ETD" value={shipment.etd} />
-          <FieldRow label="ETA" value={shipment.eta} />
-          <FieldRow label="MBL" value={shipment.mbl_number} />
-          <FieldRow label="HBL" value={shipment.hbl_number} />
-          <FieldRow label="Vessel / Voyage" value={[shipment.vessel_name, shipment.voyage_number].filter(Boolean).join(' / ') || undefined} />
-          <FieldRow label="Carrier" value={shipment.carrier_name} />
-          <FieldRow label="Commodity" value={shipment.commodity} />
-          <FieldRow label="Containers" value={shipment.container_count} />
-        </dl>
+      {/* ── Shipment detail (key fields) ── */}
+      <section ref={infoRef} className={erpForm.section}>
+        <div className={erpForm.sectionHeader}>Shipment detail</div>
+        <div className={`${erpForm.sectionBody} grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-3`}>
+          <FresaReadonlyField label="Shipment No" value={shipmentDisplayNumber(shipment)} />
+          <FresaReadonlyField
+            label="Job No"
+            value={displayValue(shipment.job_number) || (hasJob ? 'View job' : undefined)}
+            href={jobHref}
+          />
+          <FresaReadonlyField label="Client" value={labels.customerLabel} />
+          <FresaReadonlyField label="Department" value={labels.departmentLabel} />
+          <FresaReadonlyField label="Branch" value={labels.branchLabel} />
+          <FresaReadonlyField label="Status" value={shipment.status} />
+          <FresaReadonlyField label="BL Status" value={shipment.bl_status} />
+          <FresaReadonlyField label="POL" value={labels.originLabel} />
+          <FresaReadonlyField label="POD" value={labels.destLabel} />
+          <FresaReadonlyField label="ETD" value={shipment.etd} />
+          <FresaReadonlyField label="ETA" value={shipment.eta} />
+          <FresaReadonlyField label="Carrier" value={shipment.carrier_name} />
+          {shipment.enquiry_id && isUuid(shipment.enquiry_id) ? (
+            <FresaReadonlyField
+              label="Enquiry No"
+              value={displayValue(shipment.enquiry_number) || 'View enquiry'}
+              href={`/sales/enquiries/${shipment.enquiry_id}`}
+            />
+          ) : null}
+          {shipment.quotation_id && isUuid(shipment.quotation_id) ? (
+            <FresaReadonlyField
+              label="Quotation No"
+              value={displayValue(shipment.quotation_number) || 'View quotation'}
+              href={`/quotations/${shipment.quotation_id}`}
+            />
+          ) : null}
+          <FresaReadonlyField label="MBL" value={shipment.mbl_number} />
+          <FresaReadonlyField label="HBL" value={shipment.hbl_number} />
+        </div>
+        {editing ? (
+          <div className={`border-t border-[var(--fresa-border,#C9D3DF)] ${erpForm.sectionBody} grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-3`}>
+            {(
+              [
+                ['commodity', 'Commodity'],
+                ['cargo_details', 'Cargo details'],
+                ['incoterms', 'Incoterms'],
+                ['freight_payment_type', 'Freight terms'],
+                ['currency_code', 'Currency'],
+                ['mbl_number', 'MBL'],
+                ['hbl_number', 'HBL'],
+                ['vessel_name', 'Vessel'],
+                ['voyage_number', 'Voyage'],
+              ] as const
+            ).map(([key, label]) => (
+              <label key={key} className="block">
+                <span className={erpForm.label}>{label}</span>
+                <input
+                  className={erpForm.input}
+                  value={editDraft[key]}
+                  onChange={(e) =>
+                    setEditDraft((prev) => ({ ...prev, [key]: e.target.value }))
+                  }
+                />
+              </label>
+            ))}
+          </div>
+        ) : null}
       </section>
 
-      {/* Related records */}
-      <section className="rounded-sm border border-[#d0d7de] bg-white px-3 py-2 text-[13px]">
-        <span className="font-semibold text-[#0A2942]">Related: </span>
-        {shipment.party_id && isUuid(shipment.party_id) && (
-          <Link className="mr-3 text-[var(--color-primary-700)] hover:underline" to={`/parties/${shipment.party_id}`}>
-            Party
-          </Link>
-        )}
-        {shipment.enquiry_id && isUuid(shipment.enquiry_id) && (
-          <Link className="mr-3 text-[var(--color-primary-700)] hover:underline" to={`/sales/enquiries/${shipment.enquiry_id}`}>
-            Enquiry {shipment.enquiry_number || shipment.enquiry_id.slice(0, 8)}
-          </Link>
-        )}
-        {shipment.quotation_id && isUuid(shipment.quotation_id) && (
-          <Link className="mr-3 text-[var(--color-primary-700)] hover:underline" to={`/quotations/${shipment.quotation_id}`}>
-            Quotation {shipment.quotation_number || shipment.quotation_id.slice(0, 8)}
-          </Link>
-        )}
-        {shipment.job_id && isUuid(shipment.job_id) && (
-          <Link
-            className="mr-3 text-[var(--color-primary-700)] hover:underline"
-            to={jobDetailPath({ id: shipment.job_id, job_type: jobType })}
+      {/* ── Actions toolbar (below Shipment detail) ── */}
+      <div className={erpForm.toolbar}>
+        <p className="mr-1 w-full text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)] sm:mr-2 sm:w-auto">
+          Actions
+        </p>
+        {hasJob ? (
+          <Button
+            size="sm"
+            type="button"
+            variant="success"
+            leftIcon={<ExternalLink />}
+            onClick={() => navigate(jobHref!)}
           >
-            Job {shipment.job_number || shipment.job_id.slice(0, 8)}
-          </Link>
+            Open Job
+          </Button>
+        ) : canGenerateJob ? (
+          <Button
+            size="sm"
+            type="button"
+            variant="success"
+            leftIcon={<Briefcase />}
+            disabled={anyPending}
+            onClick={() => setConfirmKind('generate-job')}
+          >
+            Generate Job
+          </Button>
+        ) : null}
+        {canChangeStatus && (
+          <Button
+            size="sm"
+            type="button"
+            variant="warning"
+            leftIcon={<RefreshCw />}
+            disabled={anyPending}
+            onClick={() => {
+              setStatusValue(shipment.status || statusOptions[0] || 'BOOKED');
+              setConfirmKind('change-status');
+            }}
+          >
+            Change Status
+          </Button>
         )}
-      </section>
+        {canChangeBl && (
+          <Button
+            size="sm"
+            type="button"
+            variant="primary"
+            leftIcon={<FileCheck />}
+            disabled={anyPending}
+            onClick={() => {
+              setBlStatusValue(shipment.bl_status || blOptions[0] || 'DRAFT');
+              setConfirmKind('change-bl-status');
+            }}
+          >
+            Change BL Status
+          </Button>
+        )}
+        {canChangeDepartment && (
+          <Button
+            size="sm"
+            type="button"
+            variant="report"
+            leftIcon={<Building2 />}
+            disabled={anyPending}
+            onClick={() => {
+              setDepartmentId(shipment.department_id || '');
+              setConfirmKind('change-department');
+            }}
+          >
+            Change Department
+          </Button>
+        )}
+        {canCopy && (
+          <Button
+            size="sm"
+            type="button"
+            variant="edit"
+            leftIcon={<Copy />}
+            disabled={anyPending}
+            onClick={() => setConfirmKind('copy')}
+          >
+            Copy
+          </Button>
+        )}
+        {canSplit && (
+          <Button
+            size="sm"
+            type="button"
+            variant="warning"
+            leftIcon={<Split />}
+            disabled={anyPending}
+            onClick={() => setConfirmKind('split')}
+          >
+            Split
+          </Button>
+        )}
+        {canSubmaster && (
+          <Button
+            size="sm"
+            type="button"
+            variant="create"
+            leftIcon={<Layers />}
+            disabled={anyPending}
+            onClick={() => setConfirmKind('create-submaster')}
+          >
+            Create Submaster
+          </Button>
+        )}
+        {canKpi && (
+          <Button
+            size="sm"
+            type="button"
+            variant="primary"
+            leftIcon={<BarChart2 />}
+            onClick={() => setShowKpi((v) => !v)}
+          >
+            {showKpi ? 'Hide KPI' : 'KPI'}
+          </Button>
+        )}
+        {canTracking && (
+          <Button
+            size="sm"
+            type="button"
+            variant="report"
+            leftIcon={<MapPin />}
+            onClick={() => setShowTracking((v) => !v)}
+          >
+            {showTracking ? 'Hide Tracking' : 'Track & Trace'}
+          </Button>
+        )}
+      </div>
 
       {showKpi && (
         <section className={erpForm.section}>
@@ -413,19 +715,19 @@ export default function ShipmentDetailPage() {
         </section>
       )}
 
-      {/* Lazy tabs */}
+      {/* ── Fresa special tabs: Show All | Info | Party | … ── */}
       <section className={erpForm.section}>
-        <div className="flex gap-0 overflow-x-auto border-b border-[#d0d7de] bg-[#f8fafc]">
+        <div className="kf-tabs-scroll flex gap-0 overflow-x-auto border-b border-[var(--color-sidebar-bg,#0A2942)] bg-[var(--color-sidebar-bg,#0A2942)]">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               type="button"
               onClick={() => setActiveTab(tab.key)}
               className={cn(
-                'shrink-0 border-b-2 px-3 py-2 text-[12px] font-medium capitalize transition-colors',
+                'shrink-0 border-b-2 px-3.5 py-2.5 text-[12px] font-semibold capitalize transition-colors',
                 effectiveTab === tab.key
-                  ? 'border-[var(--color-primary-700)] bg-white text-[var(--color-primary-700)]'
-                  : 'border-transparent text-[#64748b] hover:text-[#0f172a]',
+                  ? 'border-white bg-white/15 text-white'
+                  : 'border-transparent text-white/80 hover:bg-white/10 hover:text-white',
               )}
             >
               {tab.label}
@@ -433,21 +735,44 @@ export default function ShipmentDetailPage() {
           ))}
         </div>
         {effectiveTab ? (
-          <ShipmentTabPanel shipmentId={shipment.id} tabKey={effectiveTab} />
+          <ShipmentTabPanel
+            shipmentId={shipment.id}
+            tabKey={effectiveTab}
+            siblingTabKeys={tabs.map((t) => t.key)}
+          />
         ) : null}
       </section>
 
       {/* Confirm dialogs */}
       {confirmKind === 'generate-job' && (
         <ConfirmModal
-          title="Generate job?"
-          body="Creates a job from this shipment via the backend."
+          title="Generate job from shipment?"
+          body={
+            <div className="space-y-3 text-sm">
+              <p className="text-[13px] text-[#475569]">
+                Choose how to generate the job (Fresa: house or direct), then confirm.
+              </p>
+              <label className="flex flex-col gap-1">
+                <span className={erpForm.label}>Job mode</span>
+                <select
+                  className={erpForm.input}
+                  value={generateJobMode}
+                  onChange={(e) =>
+                    setGenerateJobMode(e.target.value as 'HOUSE' | 'DIRECT')
+                  }
+                >
+                  <option value="HOUSE">Generate job with house</option>
+                  <option value="DIRECT">Generate job with direct</option>
+                </select>
+              </label>
+            </div>
+          }
           pending={generateJob.isPending}
-          confirmLabel="Generate job"
+          confirmLabel="Finish"
           onClose={() => setConfirmKind(null)}
           onConfirm={() =>
             void run(async () => {
-              const result = await generateJob.mutateAsync();
+              const result = await generateJob.mutateAsync({ mode: generateJobMode });
               setActionMessage('Job generated.');
               if (result.job_id && isUuid(result.job_id)) {
                 navigate(
@@ -473,7 +798,7 @@ export default function ShipmentDetailPage() {
             void run(async () => {
               const copied = await copyShipment.mutateAsync();
               setActionMessage('Shipment copied.');
-              navigate(`${SHIPMENT_ROUTE_PREFIX}/${copied.id}`);
+              navigate(paths.detail(copied.id));
             })
           }
         />
@@ -490,7 +815,7 @@ export default function ShipmentDetailPage() {
             void run(async () => {
               const created = await splitShipment.mutateAsync({});
               setActionMessage('Shipment split.');
-              navigate(`${SHIPMENT_ROUTE_PREFIX}/${created.id}`);
+              navigate(paths.detail(created.id));
             })
           }
         />
@@ -507,7 +832,7 @@ export default function ShipmentDetailPage() {
             void run(async () => {
               const created = await createSubmaster.mutateAsync();
               setActionMessage('Submaster created.');
-              navigate(`${SHIPMENT_ROUTE_PREFIX}/${created.id}`);
+              navigate(paths.detail(created.id));
             })
           }
         />
@@ -520,11 +845,18 @@ export default function ShipmentDetailPage() {
           title="Change shipment status"
           footer={
             <div className="flex justify-end gap-2">
-              <Button type="button" variant="secondary" disabled={changeStatus.isPending} onClick={() => setConfirmKind(null)}>
+              <Button
+                type="button"
+                variant="back"
+                leftIcon={<ArrowLeft />}
+                disabled={changeStatus.isPending}
+                onClick={() => setConfirmKind(null)}
+              >
                 Back
               </Button>
               <Button
                 type="button"
+                leftIcon={<Save />}
                 disabled={changeStatus.isPending || !statusValue}
                 onClick={() =>
                   void run(async () => {
@@ -562,11 +894,18 @@ export default function ShipmentDetailPage() {
           title="Change BL status"
           footer={
             <div className="flex justify-end gap-2">
-              <Button type="button" variant="secondary" disabled={changeBlStatus.isPending} onClick={() => setConfirmKind(null)}>
+              <Button
+                type="button"
+                variant="back"
+                leftIcon={<ArrowLeft />}
+                disabled={changeBlStatus.isPending}
+                onClick={() => setConfirmKind(null)}
+              >
                 Back
               </Button>
               <Button
                 type="button"
+                leftIcon={<Save />}
                 disabled={changeBlStatus.isPending || !blStatusValue}
                 onClick={() =>
                   void run(async () => {
@@ -606,7 +945,8 @@ export default function ShipmentDetailPage() {
             <div className="flex justify-end gap-2">
               <Button
                 type="button"
-                variant="secondary"
+                variant="back"
+                leftIcon={<ArrowLeft />}
                 disabled={changeDepartment.isPending}
                 onClick={() => setConfirmKind(null)}
               >
@@ -614,6 +954,7 @@ export default function ShipmentDetailPage() {
               </Button>
               <Button
                 type="button"
+                leftIcon={<Save />}
                 disabled={changeDepartment.isPending || !departmentId.trim()}
                 onClick={() =>
                   void run(async () => {
@@ -653,7 +994,7 @@ function ConfirmModal({
   onConfirm,
 }: {
   title: string;
-  body: string;
+  body: ReactNode;
   pending: boolean;
   confirmLabel: string;
   onClose: () => void;
@@ -666,16 +1007,20 @@ function ConfirmModal({
       title={title}
       footer={
         <div className="flex justify-end gap-2">
-          <Button type="button" variant="secondary" disabled={pending} onClick={onClose}>
+          <Button type="button" variant="back" leftIcon={<ArrowLeft />} disabled={pending} onClick={onClose}>
             Back
           </Button>
-          <Button type="button" disabled={pending} onClick={onConfirm}>
+          <Button type="button" leftIcon={<Check />} disabled={pending} onClick={onConfirm}>
             {pending ? 'Working…' : confirmLabel}
           </Button>
         </div>
       }
     >
-      <p className="text-[13px] text-[#475569]">{body}</p>
+      {typeof body === 'string' ? (
+        <p className="text-[13px] text-[#475569]">{body}</p>
+      ) : (
+        body
+      )}
     </Modal>
   );
 }

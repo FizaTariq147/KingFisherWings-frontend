@@ -10,6 +10,7 @@ import {
   normalizeAirUldRequest,
   normalizeJob,
   normalizeJobs,
+  normalizeJobStatusOptions,
   normalizePaginationMeta,
   unwrapEntity,
   unwrapList,
@@ -36,8 +37,12 @@ import type {
   AssignRoadFreightTruckerDto,
   AttachLclHouseDto,
   CalculateCfsStorageDto,
+  CalculateStorageChargesDto,
+  ChangeJobStatusDto,
   ConfirmCourierBookingDto,
+  ConfirmStorageChargesDto,
   CreateBillOfLadingDto,
+  CreateJobChargeAttachmentDto,
   CreateCourierPodDto,
   CreateDamageReportDto,
   CreateJobCargoDto,
@@ -60,9 +65,18 @@ import type {
   FinalizeJobDocumentDto,
   GenerateJobDocumentDto,
   Job,
+  JobChangeStatusResult,
+  JobChargeAttachment,
+  JobGpumAllocation,
   JobListParams,
   JobListResult,
   JobPnl,
+  JobStatusOption,
+  PatchJobDimensionsDto,
+  PutJobGpumDto,
+  ReopenJobDto,
+  StopJobDto,
+  UpsertJobPartyReferenceDto,
   LclCfsStorageCalculationDto,
   LinkAirTranshipmentDto,
   LinkCourierJobDto,
@@ -869,6 +883,57 @@ export const jobService = {
     return request(() => axiosInstance.get(JOB_API.byId(id)), normalizeJob);
   },
 
+  /**
+   * GET /jobs/:id/detail — Fresa header/tabs/actions; falls back to GET /jobs/:id.
+   */
+  async getDetail(id: string): Promise<Job> {
+    assertId(id);
+    const basic = await this.getById(id);
+    try {
+      const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.detail(id)));
+      const enriched = normalizeJob(unwrapEntity(res.data) ?? res.data);
+      if (enriched) return { ...basic, ...enriched, id: basic.id };
+    } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status !== 404 && status !== 501) throw formatAxiosError(error);
+    }
+    return basic;
+  },
+
+  /** GET /jobs/:id/detail/:tab */
+  async getDetailTab(id: string, tab: string): Promise<Record<string, unknown>> {
+    assertId(id);
+    const key = tab.trim();
+    if (!key) throw new Error('Tab key is required.');
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.detailTab(id, key)),
+      );
+      const payload = unwrapEntity(res.data);
+      const record =
+        payload && typeof payload === 'object' && !Array.isArray(payload)
+          ? (payload as Record<string, unknown>)
+          : null;
+      return record ?? { raw: payload ?? res.data };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /jobs/status-options — optional job_id for context-aware catalog. */
+  async getStatusOptions(jobId?: string): Promise<JobStatusOption[]> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.statusOptions, {
+          params: jobId && isUuid(jobId) ? { job_id: jobId } : undefined,
+        }),
+      );
+      return normalizeJobStatusOptions(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
   /** GET /jobs/by-barcode/:code — lookup any job by barcode (no scan event). */
   async findByBarcode(code: string): Promise<Job> {
     const trimmed = normalizeCode128Value(code);
@@ -930,9 +995,272 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.cancel(id)), normalizeJob);
   },
 
-  async close(id: string): Promise<Job> {
+  async close(id: string, body?: { force?: boolean }): Promise<Job> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.close(id)), normalizeJob);
+    return request(
+      () => axiosInstance.post(JOB_API.close(id), body ?? {}),
+      normalizeJob,
+    );
+  },
+
+  /**
+   * POST /jobs/:id/change-status — anytime status; may return warnings[].
+   */
+  async changeStatus(id: string, dto: ChangeJobStatusDto): Promise<JobChangeStatusResult> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.changeStatus(id), dto),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      const record =
+        data && typeof data === 'object' && !Array.isArray(data)
+          ? (data as Record<string, unknown>)
+          : null;
+      const warningsRaw = record?.warnings ?? (res.data as { warnings?: unknown })?.warnings;
+      const warnings = Array.isArray(warningsRaw)
+        ? warningsRaw.map(String).filter(Boolean)
+        : undefined;
+      const job =
+        normalizeJob(record?.job ?? data) ??
+        (await this.getDetail(id).catch(() => this.getById(id)));
+      return { job, warnings };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /jobs/:id/reopen — from COMPLETED / CANCELLED / DELIVERED. */
+  async reopen(id: string, dto: ReopenJobDto = {}): Promise<Job> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.reopen(id), dto), normalizeJob);
+  },
+
+  /** POST /jobs/:id/stop — status → ON_HOLD. */
+  async stop(id: string, dto: StopJobDto = {}): Promise<Job> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.stop(id), dto), normalizeJob);
+  },
+
+  /** PATCH /jobs/:id/organization/client-reference */
+  async upsertClientReference(id: string, dto: UpsertJobPartyReferenceDto): Promise<Job> {
+    assertId(id);
+    return request(
+      () => axiosInstance.patch(JOB_API.organizationClientReference(id), dto),
+      normalizeJob,
+    );
+  },
+
+  /** PATCH /jobs/:id/dimensions */
+  async patchDimensions(id: string, dto: PatchJobDimensionsDto): Promise<Job> {
+    assertId(id);
+    return request(() => axiosInstance.patch(JOB_API.dimensions(id), dto), normalizeJob);
+  },
+
+  /** GET /jobs/:id/gpum */
+  async getGpum(id: string): Promise<JobGpumAllocation[]> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.gpum(id)));
+      const data = unwrapEntity(res.data) ?? res.data;
+      const list =
+        (Array.isArray(data) && data) ||
+        (data &&
+          typeof data === 'object' &&
+          Array.isArray((data as { allocations?: unknown }).allocations) &&
+          (data as { allocations: unknown[] }).allocations) ||
+        (data &&
+          typeof data === 'object' &&
+          Array.isArray((data as { items?: unknown }).items) &&
+          (data as { items: unknown[] }).items) ||
+        [];
+      return list
+        .map((row) => {
+          if (!row || typeof row !== 'object') return null;
+          const r = row as Record<string, unknown>;
+          const userId = String(r.user_id ?? r.userId ?? '').trim();
+          const gp = Number(r.gp_percent ?? r.gpPercent);
+          if (!userId || !Number.isFinite(gp)) return null;
+          return {
+            user_id: userId,
+            gp_percent: gp,
+            user_name:
+              typeof r.user_name === 'string'
+                ? r.user_name
+                : typeof r.userName === 'string'
+                  ? r.userName
+                  : undefined,
+            id: typeof r.id === 'string' ? r.id : undefined,
+          } satisfies JobGpumAllocation;
+        })
+        .filter((x): x is JobGpumAllocation => Boolean(x));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** PUT /jobs/:id/gpum — allocations must total 100%. */
+  async putGpum(id: string, dto: PutJobGpumDto): Promise<JobGpumAllocation[]> {
+    assertId(id);
+    try {
+      await withGatewayRetry(() => axiosInstance.put(JOB_API.gpum(id), dto));
+      return this.getGpum(id);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /jobs/:id/containers/storage-charges/calculate */
+  async calculateStorageCharges(
+    id: string,
+    dto: CalculateStorageChargesDto,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.storageChargesCalculate(id), dto));
+  },
+
+  /** POST /jobs/:id/containers/storage-charges/confirm-to-costing */
+  async confirmStorageCharges(
+    id: string,
+    dto: ConfirmStorageChargesDto,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.storageChargesConfirm(id), dto));
+  },
+
+  /** GET /jobs/:id/charges/:chargeId/attachments */
+  async listChargeAttachments(
+    id: string,
+    chargeId: string,
+  ): Promise<JobChargeAttachment[]> {
+    assertId(id);
+    if (!isUuid(chargeId)) throw new Error('Invalid charge id.');
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.chargeAttachments(id, chargeId)),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      const list =
+        (Array.isArray(data) && data) ||
+        (data &&
+          typeof data === 'object' &&
+          Array.isArray((data as { items?: unknown }).items) &&
+          (data as { items: unknown[] }).items) ||
+        (data &&
+          typeof data === 'object' &&
+          Array.isArray((data as { attachments?: unknown }).attachments) &&
+          (data as { attachments: unknown[] }).attachments) ||
+        [];
+      return list
+        .map((row) => {
+          if (!row || typeof row !== 'object') return null;
+          const r = row as Record<string, unknown>;
+          const file_name = String(r.file_name ?? r.fileName ?? '').trim();
+          const file_url = String(r.file_url ?? r.fileUrl ?? '').trim();
+          if (!file_name || !file_url) return null;
+          return {
+            id: typeof r.id === 'string' ? r.id : undefined,
+            file_name,
+            file_url,
+            s3_key: typeof r.s3_key === 'string' ? r.s3_key : undefined,
+            file_size: Number.isFinite(Number(r.file_size ?? r.fileSize))
+              ? Number(r.file_size ?? r.fileSize)
+              : undefined,
+            mime_type: typeof r.mime_type === 'string' ? r.mime_type : undefined,
+            created_at: typeof r.created_at === 'string' ? r.created_at : undefined,
+          } satisfies JobChargeAttachment;
+        })
+        .filter((x): x is JobChargeAttachment => Boolean(x));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /jobs/:id/charges/:chargeId/attachments */
+  async createChargeAttachment(
+    id: string,
+    chargeId: string,
+    dto: CreateJobChargeAttachmentDto,
+  ): Promise<JobChargeAttachment> {
+    assertId(id);
+    if (!isUuid(chargeId)) throw new Error('Invalid charge id.');
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.chargeAttachments(id, chargeId), dto),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      const r =
+        data && typeof data === 'object' && !Array.isArray(data)
+          ? (data as Record<string, unknown>)
+          : {};
+      return {
+        id: typeof r.id === 'string' ? r.id : undefined,
+        file_name: String(r.file_name ?? r.fileName ?? dto.file_name),
+        file_url: String(r.file_url ?? r.fileUrl ?? dto.file_url),
+        s3_key: typeof r.s3_key === 'string' ? r.s3_key : dto.s3_key,
+        file_size:
+          Number.isFinite(Number(r.file_size ?? r.fileSize ?? dto.file_size))
+            ? Number(r.file_size ?? r.fileSize ?? dto.file_size)
+            : undefined,
+        mime_type:
+          typeof r.mime_type === 'string' ? r.mime_type : dto.mime_type,
+      };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async closeChecklist(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.closeChecklist(id)));
+  },
+
+  async copyJob(id: string, body: Record<string, unknown> = {}): Promise<Job> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.copy(id), body), normalizeJob);
+  },
+
+  async listJobShipments(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.shipments(id)));
+  },
+
+  async attachJobShipments(id: string, body: Record<string, unknown>): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.shipments(id), body));
+  },
+
+  async attachExistingJobShipments(
+    id: string,
+    body: Record<string, unknown>,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.shipmentsAttach(id), body));
+  },
+
+  async pullJobCharges(id: string, body: Record<string, unknown> = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.getCharges(id), body));
+  },
+
+  async copyJobCharges(id: string, body: Record<string, unknown>): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.copyCharges(id), body));
+  },
+
+  async prorateToShipments(id: string, body: Record<string, unknown> = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.prorateToShipments(id), body));
+  },
+
+  async cancelProrateToShipments(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.cancelProrate(id)));
+  },
+
+  async queueJobBookingConfirmation(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.generateBookingConfirmation(id)));
   },
 
   async listHouseJobs(id: string): Promise<Job[]> {

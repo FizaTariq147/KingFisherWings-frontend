@@ -76,8 +76,8 @@ function ViewToggleButton({
       className={`inline-flex h-8 w-8 items-center justify-center rounded transition-colors
         ${
           active
-            ? 'bg-[#0A2942] text-white'
-            : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-[#0A2942]'
+            ? 'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)]'
+            : 'bg-[var(--btn-secondary-bg)] text-[var(--btn-ghost-text)] hover:bg-[var(--btn-secondary-hover)] hover:text-[var(--btn-primary-bg)]'
         }`}
     >
       <Icon size={14} />
@@ -211,7 +211,7 @@ export function ModuleMenuShell({
       </div>
 
       {!hideTitleBar ? (
-        <div className={`bg-[#0A2942] px-6 ${compact ? 'py-2' : 'py-3'}`}>
+        <div className={`bg-[var(--color-primary)] px-6 ${compact ? 'py-2' : 'py-3'}`}>
           <p className={`text-white ${compact ? 'text-[11px]' : 'text-xs'}`}>
             <span className="text-white/60">Menu</span>
             <span className="text-white/40 mx-2">/</span>

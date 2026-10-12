@@ -9,9 +9,11 @@ import type {
   CreateShipmentDto,
   MergeShipmentsDto,
   ShipmentListParams,
+  GenerateJobFromShipmentDto,
   SplitShipmentDto,
   UpdateShipmentDto,
 } from '../types/shipment.types';
+import { useShipmentsPermissions } from './useShipmentsPermissions';
 
 export const shipmentKeys = {
   all: ['tenant', 'shipments'] as const,
@@ -25,10 +27,11 @@ export const shipmentKeys = {
 
 export function useShipments(params: ShipmentListParams) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const { canReadApi } = useShipmentsPermissions();
   return useQuery({
     queryKey: shipmentKeys.list(params),
     queryFn: () => shipmentService.list(params),
-    enabled: Boolean(accessToken),
+    enabled: Boolean(accessToken) && canReadApi,
     placeholderData: keepPreviousData,
     staleTime: 30_000,
   });
@@ -37,38 +40,55 @@ export function useShipments(params: ShipmentListParams) {
 /** Prefer Fresa detail endpoint; falls back inside the service. */
 export function useShipment(id: string) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const { canReadApi } = useShipmentsPermissions();
   return useQuery({
     queryKey: shipmentKeys.detail(id),
     queryFn: () => shipmentService.getDetail(id),
-    enabled: Boolean(accessToken) && isUuid(id),
+    enabled: Boolean(accessToken) && isUuid(id) && canReadApi,
   });
 }
 
 export function useShipmentDetailTab(id: string, tab: string | null) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const { canReadApi } = useShipmentsPermissions();
   return useQuery({
     queryKey: shipmentKeys.detailTab(id, tab || ''),
     queryFn: () => shipmentService.getDetailTab(id, tab!),
-    enabled: Boolean(accessToken) && isUuid(id) && Boolean(tab?.trim()),
+    enabled: Boolean(accessToken) && isUuid(id) && Boolean(tab?.trim()) && canReadApi,
+    staleTime: 30_000,
+  });
+}
+
+/** Fresa Show All — aggregates every detail tab + related GET APIs. */
+export function useShipmentShowAll(id: string, siblingTabKeys: string[], enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const { canReadApi } = useShipmentsPermissions();
+  const keys = siblingTabKeys.map((k) => k.trim()).filter(Boolean).sort();
+  return useQuery({
+    queryKey: [...shipmentKeys.detail(id), 'show-all', keys] as const,
+    queryFn: () => shipmentService.getShowAll(id, keys),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled && canReadApi,
     staleTime: 30_000,
   });
 }
 
 export function useShipmentKpi(id: string, enabled = false) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const { canReadApi } = useShipmentsPermissions();
   return useQuery({
     queryKey: shipmentKeys.kpi(id),
     queryFn: () => shipmentService.kpi(id),
-    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+    enabled: Boolean(accessToken) && isUuid(id) && enabled && canReadApi,
   });
 }
 
 export function useShipmentTracking(id: string, enabled = false) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const { canReadApi } = useShipmentsPermissions();
   return useQuery({
     queryKey: shipmentKeys.tracking(id),
     queryFn: () => shipmentService.tracking(id),
-    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+    enabled: Boolean(accessToken) && isUuid(id) && enabled && canReadApi,
   });
 }
 
@@ -102,7 +122,8 @@ export function useGenerateShipmentJob(id: string) {
   const invalidate = useInvalidateShipments();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => shipmentService.generateJob(id),
+    mutationFn: (dto?: GenerateJobFromShipmentDto) =>
+      shipmentService.generateJob(id, dto ?? { mode: 'HOUSE' }),
     onSuccess: () => {
       invalidate(id);
       void queryClient.invalidateQueries({ queryKey: ['tenant', 'jobs'] });
@@ -165,6 +186,31 @@ export function useShipmentCreateSubmaster(id: string) {
   return useMutation({
     mutationFn: () => shipmentService.createSubmaster(id),
     onSuccess: () => invalidate(),
+  });
+}
+
+export function useShipmentBookingForm(id: string, enabled = false) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const { canReadApi } = useShipmentsPermissions();
+  return useQuery({
+    queryKey: [...shipmentKeys.detail(id), 'booking-form'] as const,
+    queryFn: () => shipmentService.getBookingForm(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled && canReadApi,
+  });
+}
+
+export function useUpsertShipmentBookingForm(id: string) {
+  const invalidate = useInvalidateShipments();
+  return useMutation({
+    mutationFn: (body: Record<string, unknown>) =>
+      shipmentService.upsertBookingForm(id, body),
+    onSuccess: () => invalidate(id),
+  });
+}
+
+export function useQueueShipmentBookingConfirmation(id: string) {
+  return useMutation({
+    mutationFn: () => shipmentService.queueBookingConfirmation(id),
   });
 }
 

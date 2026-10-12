@@ -140,7 +140,9 @@ export interface Quotation {
   remarks?: string;
   internal_notes?: string;
   transit_time_days?: number;
+  valid_from?: string;
   valid_until?: string;
+  terms_and_conditions?: string;
   quotation_date?: string;
   currency_code: string;
   exchange_rate?: number;
@@ -175,6 +177,7 @@ export interface Quotation {
   job_number?: string;
   /** Linked shipment from Fresa generate-shipment continuum. */
   shipment_id?: string;
+  shipment_number?: string;
   /** Source CRM enquiry when present. */
   enquiry_id?: string;
   /** Linked NVOCC booking when quote continues into sea booking gates. */

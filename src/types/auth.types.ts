@@ -46,6 +46,12 @@ export type PermissionKey =
   | 'quotations.service_catalog.manage'
   | 'quotations.negotiate'
   | 'invoices.review_payment_proofs'
+  // Shipments (Fresa booking / HBL) — backend Guards on /shipments
+  | 'shipments.view'
+  | 'shipments.create'
+  | 'shipments.update'
+  | 'shipments.generate'
+  | 'shipments.manage'
   | (string & {})
 
 export interface Permission {

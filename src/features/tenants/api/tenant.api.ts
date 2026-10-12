@@ -2,6 +2,8 @@
 export const TENANT_API = {
   list: '/tenants',
   statistics: '/tenants/statistics',
+  /** Product module catalog for Features allow-list (includes shipments). */
+  productModules: '/tenants/product-modules',
   syncPermissionsAll: '/tenants/sync-permissions',
   byId: (id: string) => `/tenants/${id}`,
   features: (id: string) => `/tenants/${id}/features`,

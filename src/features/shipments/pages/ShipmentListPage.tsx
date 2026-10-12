@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { RefreshCw } from 'lucide-react';
+import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import {
   EmptyState,
@@ -10,8 +10,13 @@ import {
   StatusBadge,
 } from '@/components/erp';
 import { appType, erpTable, listShell } from '@/lib/erpTypography';
-import { SHIPMENT_ROUTE_PREFIX } from '../api/shipment.api';
+import {
+  JOB_TYPES,
+  JOB_TYPE_LABELS,
+} from '@/features/jobs/constants/job.constants';
+import { useShipmentPaths } from '../hooks/useShipmentPaths';
 import { useShipments } from '../hooks/useShipments';
+import { useShipmentsPermissions } from '../hooks/useShipmentsPermissions';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { shipmentDisplayNumber } from '../utils/normalizeShipment';
 
@@ -26,6 +31,8 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 
 export default function ShipmentListPage() {
   const navigate = useNavigate();
+  const paths = useShipmentPaths();
+  const { canReadApi, canWriteCreate } = useShipmentsPermissions();
   const [search, setSearch] = useState('');
   const [jobType, setJobType] = useState('');
   const [page, setPage] = useState(1);
@@ -47,13 +54,32 @@ export default function ShipmentListPage() {
           <div className="min-w-0">
             <h2 className={appType.pageTitle}>Shipments</h2>
             <p className={appType.pageSubtitle}>
-              Approved quotation → shipment → job (FCL Export / Import).
+              Continuum (Party → Enquiry → Quotation → Shipment → Job) or create a shipment directly — all departments.
             </p>
           </div>
-          <Button type="button" variant="secondary" size="sm" onClick={() => refetch()} disabled={isFetching}>
-            <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            {canWriteCreate ? (
+              <Button
+                type="button"
+                variant="create"
+                size="sm"
+                leftIcon={<Plus />}
+                onClick={() => navigate(paths.create)}
+              >
+                Create
+              </Button>
+            ) : null}
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              leftIcon={<RefreshCw className={isFetching ? 'animate-spin' : undefined} />}
+              onClick={() => refetch()}
+              disabled={isFetching}
+            >
+              Refresh
+            </Button>
+          </div>
         </div>
 
         <FilterBar>
@@ -76,12 +102,19 @@ export default function ShipmentListPage() {
             className="h-8 rounded-sm border border-[#c5cdd6] px-2.5 text-[13px]"
           >
             <option value="">All departments</option>
-            <option value="SEA_FCL_EXPORT">FCL Export</option>
-            <option value="SEA_FCL_IMPORT">FCL Import</option>
+            {JOB_TYPES.map((type) => (
+              <option key={type} value={type}>
+                {JOB_TYPE_LABELS[type]}
+              </option>
+            ))}
           </select>
         </FilterBar>
 
-        {isError ? (
+        {!canReadApi ? (
+          <div className="px-3 pb-4">
+            <ErrorState message="Missing permission: shipments.view" />
+          </div>
+        ) : isError ? (
           <div className="px-3">
             <ErrorState
               message={getErrorMessage(error) || 'Failed to load shipments.'}
@@ -97,7 +130,7 @@ export default function ShipmentListPage() {
         ) : shipments.length === 0 ? (
           <EmptyState
             title="No shipments found."
-            description="Generate a shipment from an approved quotation."
+            description="Create a shipment directly, or generate one from an approved quotation."
           />
         ) : (
           <>
@@ -120,7 +153,7 @@ export default function ShipmentListPage() {
                     <tr
                       key={s.id}
                       className={`${erpTable.row} cursor-pointer`}
-                      onClick={() => navigate(`${SHIPMENT_ROUTE_PREFIX}/${s.id}`)}
+                      onClick={() => navigate(paths.detail(s.id))}
                     >
                       <td className={erpTable.td}>
                         <span className="font-semibold text-[var(--color-primary-700)]">

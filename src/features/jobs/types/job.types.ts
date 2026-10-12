@@ -636,6 +636,99 @@ export interface JobPnl {
   lines?: Array<Record<string, unknown>>;
 }
 
+/** Fresa GET /jobs/:id/detail action flags. */
+export interface JobActions {
+  can_change_status?: boolean;
+  can_reopen?: boolean;
+  can_stop?: boolean;
+  can_close?: boolean;
+  can_cancel?: boolean;
+  can_edit?: boolean;
+  can_delete?: boolean;
+  can_gpum?: boolean;
+  can_status_options?: boolean;
+  [key: string]: boolean | undefined;
+}
+
+export interface JobDetailTab {
+  key: string;
+  label?: string;
+}
+
+export interface JobStatusOption {
+  value: string;
+  label: string;
+  /** Approved / Open / Closed grouping when API returns groups. */
+  group?: string;
+}
+
+export interface ChangeJobStatusDto {
+  status: JobStatus | string;
+  reason?: string;
+}
+
+export interface ReopenJobDto {
+  status?: JobStatus | string;
+  reason?: string;
+}
+
+export interface StopJobDto {
+  reason?: string;
+}
+
+export interface UpsertJobPartyReferenceDto {
+  party_role?: 'CLIENT' | 'SHIPPER' | 'CONSIGNEE' | 'BILLING_PARTY' | 'AGENT' | string;
+  party_id?: string;
+  reference_type: 'PO_NUMBER' | 'CUSTOMER_REF' | 'OTHER' | string;
+  reference_no: string;
+}
+
+export interface PatchJobDimensionsDto {
+  commodity_description?: string;
+  hs_code?: string;
+}
+
+export interface JobGpumLineDto {
+  user_id: string;
+  gp_percent: number;
+}
+
+export interface PutJobGpumDto {
+  allocations: JobGpumLineDto[];
+}
+
+export interface JobGpumAllocation extends JobGpumLineDto {
+  user_name?: string;
+  id?: string;
+}
+
+export interface CalculateStorageChargesDto {
+  storage_upto_date: string;
+}
+
+export interface ConfirmStorageChargesDto {
+  storage_upto_date: string;
+  line_keys?: number[];
+}
+
+export interface CreateJobChargeAttachmentDto {
+  file_name: string;
+  file_url: string;
+  s3_key?: string;
+  file_size?: number;
+  mime_type?: string;
+}
+
+export interface JobChargeAttachment {
+  id?: string;
+  file_name: string;
+  file_url: string;
+  s3_key?: string;
+  file_size?: number;
+  mime_type?: string;
+  created_at?: string;
+}
+
 export interface Job {
   id: string;
   job_number?: string;
@@ -665,6 +758,8 @@ export interface Job {
   origin_port_code?: string;
   dest_port_code?: string;
   commodity?: string;
+  /** Dimension tab — commodity description (PATCH /jobs/:id/dimensions). */
+  commodity_description?: string;
   hs_code?: string;
   gross_weight?: number;
   chargeable_weight?: number;
@@ -678,6 +773,8 @@ export interface Job {
   notes?: string;
   customer_remarks?: string;
   tags?: string[];
+  /** Tenant job_date_source (ETD/ETA/System) applied on create / generate-job. */
+  job_date?: string;
   /** Universal job barcode (CODE128 value used on labels / scans). */
   barcode?: string;
   barcode_value?: string;
@@ -685,6 +782,11 @@ export interface Job {
   eta?: string;
   created_at?: string;
   updated_at?: string;
+  /** From GET /jobs/:id/detail */
+  actions?: JobActions;
+  tabs?: JobDetailTab[];
+  client_reference_no?: string;
+  client_reference_type?: string;
   air_details?: JobAirDetail;
   sea_fcl_details?: JobSeaFclDetail;
   sea_lcl_details?: JobSeaLclDetail;
@@ -703,6 +805,11 @@ export interface Job {
   cargo?: JobCargo[];
   documents?: JobDocument[];
   bills_of_lading?: JobBillOfLading[];
+}
+
+export interface JobChangeStatusResult {
+  job: Job;
+  warnings?: string[];
 }
 
 export interface JobListResult {

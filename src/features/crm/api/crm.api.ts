@@ -18,6 +18,13 @@ export const CRM_API = {
   enquiryGenerateJob: (id: string) => `/crm/enquiries/${id}/generate-job`,
   enquiryCopy: (id: string) => `/crm/enquiries/${id}/copy`,
   enquiryCancel: (id: string) => `/crm/enquiries/${id}/cancel`,
+  /** OpenAPI: Enquiry PDF / report data pack (FE may render PDF). */
+  enquiryPdf: (id: string) => `/crm/enquiries/${id}/pdf`,
+  /** OpenAPI: alias of enquiry PDF/report data pack. */
+  enquiryReport: (id: string) => `/crm/enquiries/${id}/report`,
+  /** OpenAPI: open enquiries report (NEW / QUOTED). */
+  enquiriesReportOpen: '/crm/enquiries/reports/open',
+  enquiryWizard: '/crm/enquiries/wizard',
   dashboard: '/crm/dashboard',
   budgets: '/crm/budgets',
   report: (type: string) => `/crm/reports/${type}`,

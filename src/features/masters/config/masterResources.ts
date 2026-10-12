@@ -269,6 +269,12 @@ export const MASTER_RESOURCES: Record<MasterResourceKey, MasterResourceConfig> =
       { name: 'teu', label: 'TEU', type: 'number', placeholder: '2' },
       { name: 'max_payload', label: 'Max payload (kg)', type: 'number', placeholder: '26500' },
       { name: 'volume_cbm', label: 'Volume (CBM)', type: 'number', placeholder: '76.3' },
+      {
+        name: 'calculation_method',
+        label: 'Calculation method',
+        type: 'text',
+        placeholder: 'Costing parity method',
+      },
       boolActive,
     ],
   },
@@ -1224,10 +1230,17 @@ export const MASTER_RESOURCES: Record<MasterResourceKey, MasterResourceConfig> =
     columns: [
       { key: 'code', label: 'Code', mono: true },
       { key: 'name', label: 'Name' },
+      { key: 'calculation_method', label: 'Calc method' },
     ],
     fields: [
       { name: 'code', label: 'Code', type: 'text', required: true, mono: true, placeholder: 'LR' },
       { name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Per Pallet' },
+      {
+        name: 'calculation_method',
+        label: 'Calculation method',
+        type: 'text',
+        placeholder: 'Costing parity method',
+      },
       boolActive,
     ],
   },
@@ -1296,6 +1309,12 @@ export const MASTER_RESOURCES: Record<MasterResourceKey, MasterResourceConfig> =
         optionsLabelKey: 'name',
       },
       { name: 'currency_code', label: 'Currency code', type: 'text', placeholder: 'AED' },
+      {
+        name: 'charge_description',
+        label: 'Charge description',
+        type: 'text',
+        placeholder: 'Description posted to costing',
+      },
       boolActive,
     ],
   },

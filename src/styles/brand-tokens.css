@@ -51,4 +51,53 @@
   --color-sidebar-text: rgba(255, 255, 255, 0.85);
   --color-sidebar-text-muted: rgba(255, 255, 255, 0.55);
   --color-topbar-bg: var(--color-primary);
+
+  /* Button aliases — canonical definitions live in src/index.css (:root --btn-*).
+     Kept here so brand-tokens consumers still resolve if index.css order changes.
+     Primary = sidebar navy; chrome Back/Report/Edit/Create use fixed swatches. */
+  --btn-primary-bg: var(--color-primary);
+  --btn-primary-hover: var(--color-primary-600);
+  --btn-primary-active: var(--color-primary-700);
+  --btn-primary-text: #FFFFFF;
+  --btn-primary-ring: var(--color-primary);
+  --btn-secondary-bg: #FFFFFF;
+  --btn-secondary-hover: var(--color-surface);
+  --btn-secondary-border: #C9D3DF;
+  --btn-secondary-text: var(--color-neutral-900);
+  --btn-secondary-ring: var(--color-primary);
+  --btn-back-bg: #99A5A4;
+  --btn-back-hover: #879391;
+  --btn-back-text: #FFFFFF;
+  --btn-back-ring: #99A5A4;
+  --btn-report-bg: #A855F7;
+  --btn-report-hover: #7C3AED;
+  --btn-report-text: #FFFFFF;
+  --btn-report-border: #7C3AED;
+  --btn-report-ring: #7C3AED;
+  --btn-edit-bg: #0EA5E9;
+  --btn-edit-hover: #0284C7;
+  --btn-edit-text: #FFFFFF;
+  --btn-edit-border: #0284C7;
+  --btn-edit-ring: #0284C7;
+  --btn-create-bg: #FF751F;
+  --btn-create-hover: #E8650F;
+  --btn-create-text: #FFFFFF;
+  --btn-create-border: #E8650F;
+  --btn-create-ring: #FF751F;
+  --btn-success-bg: var(--color-success-500);
+  --btn-success-hover: #176F46;
+  --btn-success-text: #FFFFFF;
+  --btn-success-ring: var(--color-success-500);
+  --btn-warning-bg: var(--color-warning-500);
+  --btn-warning-hover: #945F18;
+  --btn-warning-text: #FFFFFF;
+  --btn-warning-ring: var(--color-warning-500);
+  --btn-danger-bg: var(--color-danger-500);
+  --btn-danger-hover: var(--color-danger-600);
+  --btn-danger-text: #FFFFFF;
+  --btn-danger-ring: var(--color-danger-500);
+  --btn-ghost-text: var(--color-neutral-600);
+  --btn-ghost-hover: var(--color-neutral-100);
+  --btn-ghost-ring: var(--color-primary-500);
+  --btn-disabled-opacity: 0.45;
 }

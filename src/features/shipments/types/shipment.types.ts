@@ -67,6 +67,7 @@ export interface Shipment {
   commodity?: string;
   container_count?: number;
   container_type_id?: string;
+  container_type_name?: string;
   incoterms?: string;
   freight_payment_type?: string;
   currency_code?: string;
@@ -94,7 +95,11 @@ export interface ShipmentListParams {
   search?: string;
   status?: string;
   job_type?: string;
+  /** OpenAPI: customer_id (party / customer UUID). */
+  customer_id?: string;
+  /** @deprecated Prefer customer_id — mapped to customer_id on GET /shipments. */
   party_id?: string;
+  job_id?: string;
   quotation_id?: string;
 }
 
@@ -103,20 +108,71 @@ export interface ShipmentListResult {
   meta: PaginationMeta;
 }
 
+/**
+ * POST /shipments — OpenAPI CreateShipmentDto.
+ * Required: job_type, customer_id.
+ */
 export interface CreateShipmentDto {
+  job_type: string;
+  customer_id: string;
+  /** @deprecated Mapped to customer_id before POST; never sent as party_id. */
+  party_id?: string;
   quotation_id?: string;
   enquiry_id?: string;
-  party_id?: string;
-  job_type?: string;
-  service_type?: string;
+  company_id?: string;
+  branch_id?: string;
+  department_id?: string;
+  shipper_id?: string;
+  consignee_id?: string;
+  notify_party_id?: string;
+  delivery_agent_id?: string;
+  carrier_agent_id?: string;
+  salesperson_id?: string;
+  carrier_id?: string;
   origin_port_id?: string;
   dest_port_id?: string;
-  cargo_details?: string;
-  currency_code?: string;
-  [key: string]: unknown;
+  por_port_id?: string;
+  pof_port_id?: string;
+  place_of_delivery?: string;
+  shipment_date?: string;
+  customer_address?: string;
+  freight_terms?: string;
+  freight_payable_at?: string;
+  freight_payment_type?: string;
+  marks_numbers?: string;
+  is_cross_trade?: boolean;
+  etd?: string;
+  eta?: string;
+  atd?: string;
+  ata?: string;
+  onboard_date?: string;
+  vessel_name?: string;
+  voyage_number?: string;
+  flight_number?: string;
+  commodity?: string;
+  hs_code?: string;
+  gross_weight?: number;
+  chargeable_weight?: number;
+  volume_cbm?: number;
+  pieces?: number;
+  container_type_id?: string;
+  container_count?: number;
+  container_numbers?: string;
+  seal_numbers?: string;
+  incoterms?: string;
+  is_dg?: boolean;
+  dg_class?: string;
+  notes?: string;
+  hbl_number?: string;
+  hbl_date?: string;
+  bl_status?: string;
+  charges?: CreateShipmentChargeDto[];
 }
 
-export type UpdateShipmentDto = Partial<CreateShipmentDto> & {
+export type UpdateShipmentDto = Partial<Omit<CreateShipmentDto, 'job_type' | 'customer_id'>> & {
+  job_type?: string;
+  customer_id?: string;
+  party_id?: string;
   status?: string;
 };
 
@@ -142,6 +198,39 @@ export interface SplitShipmentDto {
 
 export interface MergeShipmentsDto {
   source_shipment_ids: string[];
+}
+
+/** POST /shipments/:id/generate-job — OpenAPI GenerateJobFromShipmentDto. */
+export type ShipmentGenerateJobMode = 'HOUSE' | 'DIRECT';
+
+export interface GenerateJobFromShipmentDto {
+  mode: ShipmentGenerateJobMode;
+}
+
+/** Nested on CreateShipmentDto.charges — OpenAPI CreateShipmentChargeDto. */
+export interface CreateShipmentChargeDto {
+  description: string;
+  unit_price: number;
+  charge_code_id?: string;
+  quantity?: number;
+  currency_code?: string;
+  is_cost?: boolean;
+  party_id?: string;
+}
+
+/** POST /shipments/:id/get-charges — pull from quotation / party standards. */
+export interface GetShipmentChargesDto {
+  quotation_id?: string;
+  include_standard_charges?: boolean;
+  [key: string]: unknown;
+}
+
+/** POST /shipments/:id/copy-charges */
+export interface CopyShipmentChargesDto {
+  source_shipment_id?: string;
+  source_job_id?: string;
+  source_quotation_id?: string;
+  [key: string]: unknown;
 }
 
 export const SHIPMENT_STATUSES = [

@@ -156,6 +156,41 @@ export const tenantService = {
   },
 
   /**
+   * GET /tenants/product-modules — catalog for Features `enabled_modules`
+   * (keys such as operations, shipments, documentation, …).
+   */
+  async listProductModules(): Promise<Array<{ key: string; label?: string }>> {
+    try {
+      const res = await superAdminApiClient.get(TENANT_API.productModules);
+      const raw = (res.data as { data?: unknown })?.data ?? res.data;
+      const list = Array.isArray(raw)
+        ? raw
+        : Array.isArray((raw as { modules?: unknown })?.modules)
+          ? (raw as { modules: unknown[] }).modules
+          : Array.isArray((raw as { items?: unknown })?.items)
+            ? (raw as { items: unknown[] }).items
+            : [];
+      return list
+        .map((item) => {
+          if (typeof item === 'string' && item.trim()) {
+            return { key: item.trim(), label: item.trim() };
+          }
+          if (item && typeof item === 'object' && !Array.isArray(item)) {
+            const row = item as Record<string, unknown>;
+            const key = String(row.key ?? row.module ?? row.code ?? row.slug ?? '').trim();
+            if (!key) return null;
+            const label = String(row.label ?? row.name ?? key).trim() || key;
+            return { key, label };
+          }
+          return null;
+        })
+        .filter((row): row is { key: string; label: string } => Boolean(row));
+    } catch {
+      return [];
+    }
+  },
+
+  /**
    * PATCH /tenants/{id}/features
    * Sets quote_requests_bridge and/or enabled_modules (filters permission matrix & reports).
    */

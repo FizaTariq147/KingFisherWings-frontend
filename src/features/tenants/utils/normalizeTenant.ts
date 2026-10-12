@@ -190,6 +190,19 @@ export function normalizeTenant(raw: Record<string, unknown>): Tenant {
       raw.storage_used_gb ?? raw.storage_usage_gb ?? raw.used_storage_gb,
     ),
     enabled_modules: pickEnabledModules(raw),
+    available_modules: (() => {
+      const value = raw.available_modules ?? raw.availableModules;
+      if (!Array.isArray(value)) return undefined;
+      const modules = value
+        .map((item) => {
+          if (typeof item === 'string') return item.trim();
+          const record = asRecord(item);
+          if (!record) return '';
+          return coerceStringField(record.key ?? record.module ?? record.code ?? record.name);
+        })
+        .filter(Boolean);
+      return modules.length ? modules : undefined;
+    })(),
     quote_requests_bridge: pickQuoteRequestsBridge(raw),
   };
 }
