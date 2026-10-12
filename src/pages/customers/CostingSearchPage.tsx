@@ -117,7 +117,7 @@ export default function CostingSearchPage() {
           <button
             type="button"
             onClick={() => navigate(CUSTOMER_SERVICE_PATHS.createJob)}
-            className="bg-[#FF751F] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity"
+            className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-[var(--btn-primary-bg)] px-4 py-1.5 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--btn-primary-ring)] focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-[var(--btn-disabled-opacity,0.45)]"
           >
             Create Shipment
           </button>
@@ -205,7 +205,7 @@ export default function CostingSearchPage() {
                   <SelectInput options={['All']} value="All" onChange={() => undefined} />
                 </FilterField>
               </div>
-              <button type="button" onClick={handleSubmit} className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity mb-0.5">
+              <button type="button" onClick={handleSubmit} className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-[var(--btn-primary-bg)] px-5 py-1.5 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--btn-primary-ring)] focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-[var(--btn-disabled-opacity,0.45)] mb-0.5">
                 <span className="text-[#FF751F]">➜</span>
                 Submit
               </button>

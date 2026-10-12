@@ -1,21 +1,23 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
-import { Wand2, Search, Calendar, ChevronDown, Maximize2 } from 'lucide-react';
-import { useCustomerShipments } from '@/features/customers/hooks/useCustomerService';
+import { Plus, Search, Calendar, ChevronDown, Maximize2 } from 'lucide-react';
 import { useCustomerFilterSelectOptions } from '@/features/customers/hooks/useCustomerServiceFilterOptions';
 import type { CustomerFilterOption } from '@/features/customers/types/customerFilter.types';
-import type { CustomerShipmentFilters } from '@/features/customers/types/customerService.types';
-import { defaultCustomerShipmentFilters } from '@/features/customers/utils/customerServiceDefaults';
-import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
+import { CUSTOMER_SERVICE_PATHS } from '@/features/customers/utils/customerServicePaths';
+import { toggleTableFullscreen } from '@/features/customers/utils/tableFullscreen';
+import { JOB_TYPE_WIZARD_OPTIONS } from '@/features/jobs/constants/job.constants';
+import { useShipments } from '@/features/shipments/hooks/useShipments';
+import { useShipmentsPermissions } from '@/features/shipments/hooks/useShipmentsPermissions';
+import { SHIPMENT_STATUSES } from '@/features/shipments/types/shipment.types';
+import { getErrorMessage } from '@/features/shipments/utils/getErrorMessage';
+import { shipmentDisplayNumber } from '@/features/shipments/utils/normalizeShipment';
+import { isUuid } from '@/lib/isUuid';
 import {
   DATE_RANGE_PRESETS,
   resolveDateRangePreset,
   type DateRangePreset,
 } from '@/features/management/utils/managementFilters';
-import { JOB_STATUSES, JOB_TYPE_WIZARD_OPTIONS } from '@/features/jobs/constants/job.constants';
-import { CUSTOMER_SERVICE_PATHS, customerJobDetailPath } from '@/features/customers/utils/customerServicePaths';
-import { toggleTableFullscreen } from '@/features/customers/utils/tableFullscreen';
 
 interface FilterFieldProps {
   label: string;
@@ -101,11 +103,18 @@ function DateInput({
   );
 }
 
+/**
+ * Customer Service → All Shipments.
+ * Lists GET /shipments records. Create opens the direct shipment wizard
+ * (POST /shipments) — continuum Party→Enquiry→Quotation→Shipment still works
+ * from quotation approve; this path creates a shipment separately.
+ */
 export default function AllShipmentsPage() {
   const navigate = useNavigate();
   const tableRef = useRef<HTMLDivElement>(null);
+  const { canWriteCreate } = useShipmentsPermissions();
   const initialRange = resolveDateRangePreset('this_month');
-  const [rows, setRows] = useState('5');
+  const [rows, setRows] = useState('10');
   const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
   const [fromDate, setFromDate] = useState(initialRange?.from_date ?? '');
   const [toDate, setToDate] = useState(initialRange?.to_date ?? '');
@@ -125,10 +134,10 @@ export default function AllShipmentsPage() {
   const [status, setStatus] = useState('All');
   const [jobType, setJobType] = useState('All');
   const [search, setSearch] = useState('');
-  const [submitted, setSubmitted] = useState(true);
-  const [activeFilters, setActiveFilters] = useState<CustomerShipmentFilters>(() =>
-    defaultCustomerShipmentFilters(),
-  );
+  const [appliedSearch, setAppliedSearch] = useState('');
+  const [appliedStatus, setAppliedStatus] = useState('');
+  const [appliedJobType, setAppliedJobType] = useState('');
+  const [page, setPage] = useState(1);
 
   const applyPreset = (preset: DateRangePreset) => {
     setDatePreset(preset);
@@ -144,49 +153,71 @@ export default function AllShipmentsPage() {
     applyPreset('this_month');
   }, []);
 
-  const query = useCustomerShipments(activeFilters, submitted);
   const filters = useCustomerFilterSelectOptions();
+  const pageSize = Number(rows) || 10;
 
-  const pageSize = Number(rows) || 5;
-  const pageItems = useMemo(() => (query.data ?? []).slice(0, pageSize), [query.data, pageSize]);
+  const query = useShipments({
+    page,
+    limit: pageSize,
+    search: appliedSearch || undefined,
+    status: appliedStatus || undefined,
+    job_type: appliedJobType || undefined,
+    customer_id: isUuid(client) ? client : undefined,
+  });
 
-  const resolveFormDates = () => {
-    if (fromDate || toDate) {
-      return { from_date: fromDate || undefined, to_date: toDate || undefined };
-    }
-    if (datePreset !== 'custom') {
-      const range = resolveDateRangePreset(datePreset);
-      if (range) return range;
-    }
-    return { from_date: undefined, to_date: undefined };
-  };
+  const shipments = query.data?.shipments ?? [];
+  const meta = query.data?.meta;
+
+  const clientSideFiltered = useMemo(() => {
+    return shipments.filter((s) => {
+      if (shipmentNo.trim()) {
+        const no = shipmentDisplayNumber(s).toLowerCase();
+        if (!no.includes(shipmentNo.trim().toLowerCase())) return false;
+      }
+      if (hbl.trim()) {
+        const v = String(s.hbl_number ?? '').toLowerCase();
+        if (!v.includes(hbl.trim().toLowerCase())) return false;
+      }
+      if (mbl.trim()) {
+        const v = String(s.mbl_number ?? '').toLowerCase();
+        if (!v.includes(mbl.trim().toLowerCase())) return false;
+      }
+      if (jobNo.trim()) {
+        const v = String(s.job_number ?? s.job_id ?? '').toLowerCase();
+        if (!v.includes(jobNo.trim().toLowerCase())) return false;
+      }
+      if (origin !== 'All' && isUuid(origin) && s.origin_port_id && s.origin_port_id !== origin) {
+        return false;
+      }
+      if (
+        destination !== 'All' &&
+        isUuid(destination) &&
+        s.dest_port_id &&
+        s.dest_port_id !== destination
+      ) {
+        return false;
+      }
+      return true;
+    });
+  }, [shipments, shipmentNo, hbl, mbl, jobNo, origin, destination]);
 
   const handleSubmit = (event?: FormEvent) => {
     event?.preventDefault();
-    const dates = resolveFormDates();
+    const dates = (() => {
+      if (fromDate || toDate) {
+        return { from_date: fromDate || undefined, to_date: toDate || undefined };
+      }
+      if (datePreset !== 'custom') return resolveDateRangePreset(datePreset) ?? {};
+      return {};
+    })();
     if (dates.from_date && !fromDate) setFromDate(dates.from_date);
     if (dates.to_date && !toDate) setToDate(dates.to_date);
-    setActiveFilters({
-      ...dates,
-      branch_id: branch,
-      client,
-      salesperson_id: salesPerson,
-      department: department !== 'All' ? department : undefined,
-      origin,
-      destination,
-      shipper_id: shipper !== '-Select-' ? shipper : undefined,
-      consignee_id: consignee !== '-Select-' ? consignee : undefined,
-      created_user: createdUser !== 'All' ? createdUser : undefined,
-      shipment_no: shipmentNo || undefined,
-      hbl: hbl || undefined,
-      job_no: jobNo || undefined,
-      mbl: mbl || undefined,
-      status,
-      job_type: jobType,
-      search: search.trim() || undefined,
-      limit: 100,
-    });
-    setSubmitted(true);
+
+    const q = [search.trim(), shipmentNo.trim()].filter(Boolean).join(' ').trim();
+    setAppliedSearch(q);
+    setAppliedStatus(status !== 'All' ? status : '');
+    setAppliedJobType(jobType !== 'All' ? jobType : '');
+    setPage(1);
   };
 
   return (
@@ -194,14 +225,20 @@ export default function AllShipmentsPage() {
       <PageBackLink to="/customers" label="Back to Customers" />
       <div className="bg-white border border-gray-200 rounded-md">
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
-          <h2 className="text-[17px] font-medium text-gray-800">All Shipments</h2>
+          <div>
+            <h2 className="text-[17px] font-medium text-gray-800">All Shipments</h2>
+            <p className="mt-0.5 text-xs text-gray-500">
+              Continuum (Party → Enquiry → Quotation → Shipment → Job) or create a shipment directly.
+            </p>
+          </div>
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => navigate(CUSTOMER_SERVICE_PATHS.createJob)}
-              className="flex items-center gap-1.5 bg-[#FF751F] hover:opacity-90 text-white text-sm px-4 py-1.5 rounded transition-opacity"
+              disabled={!canWriteCreate}
+              onClick={() => navigate(CUSTOMER_SERVICE_PATHS.createShipment)}
+              className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-[var(--btn-primary-bg)] px-4 py-1.5 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--btn-primary-ring)] focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-[var(--btn-disabled-opacity,0.45)]"
             >
-              <Wand2 size={14} />
+              <Plus size={14} />
               Create
             </button>
           </div>
@@ -306,11 +343,19 @@ export default function AllShipmentsPage() {
           </FilterField>
 
           <FilterField label="Shipment Status">
-            <SelectInput options={['All', ...JOB_STATUSES]} value={status} onChange={(e) => setStatus(e.target.value)} />
+            <SelectInput
+              options={['All', ...SHIPMENT_STATUSES]}
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            />
           </FilterField>
 
           <FilterField label="Type">
-            <SelectInput options={['All', ...JOB_TYPE_WIZARD_OPTIONS]} value={jobType} onChange={(e) => setJobType(e.target.value)} />
+            <SelectInput
+              options={['All', ...JOB_TYPE_WIZARD_OPTIONS]}
+              value={jobType}
+              onChange={(e) => setJobType(e.target.value)}
+            />
           </FilterField>
         </form>
 
@@ -327,13 +372,20 @@ export default function AllShipmentsPage() {
               onChange={(e) => setSearch(e.target.value)}
               className="border border-gray-300 rounded px-3 py-1.5 text-sm w-56 focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]"
             />
-            <button type="submit" onClick={handleSubmit} className="bg-gray-100 border border-gray-300 hover:bg-gray-200 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors">
+            <button
+              type="button"
+              onClick={() => handleSubmit()}
+              className="bg-gray-100 border border-gray-300 hover:bg-gray-200 text-sm px-4 py-1.5 rounded text-gray-700 transition-colors"
+            >
               Search
             </button>
             <span className="text-sm text-gray-500 ml-2">Rows</span>
             <select
               value={rows}
-              onChange={(e) => setRows(e.target.value)}
+              onChange={(e) => {
+                setRows(e.target.value);
+                setPage(1);
+              }}
               className="border border-gray-300 rounded px-2 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#FF751F]"
             >
               <option>5</option>
@@ -341,14 +393,14 @@ export default function AllShipmentsPage() {
               <option>25</option>
               <option>50</option>
             </select>
-            <button type="button" className="flex items-center gap-1 border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-600 bg-white">
-              Options
-              <ChevronDown size={12} />
-            </button>
           </div>
 
           <div className="flex items-center gap-2">
-            <button type="button" onClick={() => handleSubmit()} className="flex items-center gap-1.5 bg-[#0A2942] hover:opacity-90 text-white text-sm px-5 py-1.5 rounded transition-opacity">
+            <button
+              type="button"
+              onClick={() => handleSubmit()}
+              className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-[var(--btn-primary-bg)] px-5 py-1.5 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--btn-primary-ring)] focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-[var(--btn-disabled-opacity,0.45)]"
+            >
               <span className="text-[#FF751F]">➜</span>
               Submit
             </button>
@@ -368,13 +420,24 @@ export default function AllShipmentsPage() {
             <div className="flex items-center justify-center h-56 text-sm text-gray-400">Loading shipments…</div>
           ) : query.isError ? (
             <div className="flex items-center justify-center h-56 px-5 text-sm text-red-600 text-center">
-              {getErrorMessage(query.error, 'Could not load shipments.')}
+              {getErrorMessage(query.error) || 'Could not load shipments.'}
             </div>
-          ) : pageItems.length === 0 ? (
+          ) : clientSideFiltered.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-56 px-5 text-center">
               <Search size={40} className="text-gray-300 mb-3" />
               <p className="text-sm text-gray-500">No shipments match your filters.</p>
-              <p className="text-xs text-gray-400 mt-1">Try a wider date range or clear status/type filters.</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Create a shipment directly, or generate one from an approved quotation.
+              </p>
+              {canWriteCreate ? (
+                <button
+                  type="button"
+                  onClick={() => navigate(CUSTOMER_SERVICE_PATHS.createShipment)}
+                  className="mt-3 text-sm font-medium text-[var(--color-primary-700)] underline"
+                >
+                  Open create shipment form
+                </button>
+              ) : null}
             </div>
           ) : (
             <div className="overflow-x-auto" ref={tableRef}>
@@ -383,25 +446,39 @@ export default function AllShipmentsPage() {
                   <tr className="border-b border-gray-200 bg-gray-50">
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Shipment No.</th>
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Client</th>
+                    <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Type</th>
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Origin</th>
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Destination</th>
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Status</th>
-                    <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">ETD</th>
+                    <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Job</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {pageItems.map((item) => (
+                  {clientSideFiltered.map((item) => (
                     <tr
                       key={item.id}
-                      onClick={() => navigate(customerJobDetailPath(item))}
+                      onClick={() => navigate(CUSTOMER_SERVICE_PATHS.shipmentDetail(item.id))}
                       className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
                     >
-                      <td className="px-4 py-2 text-blue-600">{item.shipmentNo}</td>
-                      <td className="px-4 py-2 text-gray-700">{item.client}</td>
-                      <td className="px-4 py-2 text-gray-700">{item.origin}</td>
-                      <td className="px-4 py-2 text-gray-700">{item.destination}</td>
-                      <td className="px-4 py-2 text-gray-700">{item.status}</td>
-                      <td className="px-4 py-2 text-gray-700">{item.etd}</td>
+                      <td className="px-4 py-2 text-blue-600 font-medium">
+                        {shipmentDisplayNumber(item)}
+                      </td>
+                      <td className="px-4 py-2 text-gray-700">
+                        {item.party_name || item.customer_name || '—'}
+                      </td>
+                      <td className="px-4 py-2 text-gray-700">
+                        {item.job_type || item.service_type || '—'}
+                      </td>
+                      <td className="px-4 py-2 text-gray-700">
+                        {item.pol || item.origin_port_name || '—'}
+                      </td>
+                      <td className="px-4 py-2 text-gray-700">
+                        {item.pod || item.dest_port_name || '—'}
+                      </td>
+                      <td className="px-4 py-2 text-gray-700">{item.status || '—'}</td>
+                      <td className="px-4 py-2 text-gray-700">
+                        {item.job_number || (item.job_id ? item.job_id.slice(0, 8) : '—')}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -410,11 +487,31 @@ export default function AllShipmentsPage() {
           )}
         </div>
 
-        {submitted && !query.isLoading && (
-          <div className="px-5 py-3 border-t border-gray-200">
-            <span className="text-xs text-gray-500">{query.data?.length ?? 0} shipment(s)</span>
-          </div>
-        )}
+        <div className="flex items-center justify-between px-5 py-3 border-t border-gray-200">
+          <span className="text-xs text-gray-500">
+            {meta?.total ?? clientSideFiltered.length} shipment(s)
+          </span>
+          {meta && meta.totalPages > 1 ? (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                disabled={page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                className="rounded border border-gray-300 px-3 py-1 text-sm disabled:opacity-40"
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                disabled={page >= meta.totalPages}
+                onClick={() => setPage((p) => p + 1)}
+                className="rounded border border-gray-300 px-3 py-1 text-sm disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   );

@@ -18,6 +18,8 @@ export interface Tenant extends CreateTenantFormValues {
    * Empty/omitted typically means all modules available.
    */
   enabled_modules?: string[];
+  /** Product catalog returned with tenant detail when API provides it. */
+  available_modules?: string[];
   /** Feature flag: quote requests bridge (PATCH /tenants/:id/features). */
   quote_requests_bridge?: boolean;
 }

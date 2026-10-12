@@ -1,3 +1,7 @@
+/**
+ * Ops continuum steps — same sequence for every job type
+ * (Air, Sea FCL/LCL, Land, Road, Courier, Customs, NVOCC, Warehouse, Service, …).
+ */
 export type ContinuumStepKey =
   | 'party'
   | 'enquiry'

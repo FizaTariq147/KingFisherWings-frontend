@@ -4,6 +4,7 @@
  */
 export const TENANT_ENABLED_MODULE_OPTIONS = [
   { key: 'operations', label: 'Operations' },
+  { key: 'shipments', label: 'Shipments' },
   { key: 'sales', label: 'Sales' },
   { key: 'finance', label: 'Finance' },
   { key: 'masters', label: 'Masters' },

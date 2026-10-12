@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, Trash2 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
+import { Modal } from '@/components/ui/Modal';
 import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
@@ -59,6 +60,7 @@ export default function CrmEnquiryCreatePage() {
   const [searchParams] = useSearchParams();
   const mutation = useCreateCrmEnquiry();
   const [stepIndex, setStepIndex] = useState(0);
+  const [finishConfirmOpen, setFinishConfirmOpen] = useState(false);
   const step = ENQUIRY_WIZARD_STEPS[stepIndex]?.key ?? 'ports';
 
   const form = useAppForm<CreateEnquiryFormValues>({
@@ -124,15 +126,20 @@ export default function CrmEnquiryCreatePage() {
       return;
     }
     if (step === 'summary') {
-      void handleValidatedSubmit(async (formValues) => {
-        const item = await mutation.mutateAsync(
-          prepareCrmPayload(formValues) as unknown as CreateEnquiryDto,
-        );
-        navigate(CUSTOMER_SERVICE_PATHS.enquiryDetail(item.id), {
-          state: { enquiryCreated: true },
-        });
-      })();
+      setFinishConfirmOpen(true);
     }
+  };
+
+  const submitEnquiry = () => {
+    void handleValidatedSubmit(async (formValues) => {
+      const item = await mutation.mutateAsync(
+        prepareCrmPayload(formValues) as unknown as CreateEnquiryDto,
+      );
+      setFinishConfirmOpen(false);
+      navigate(CUSTOMER_SERVICE_PATHS.enquiryDetail(item.id), {
+        state: { enquiryCreated: true },
+      });
+    })();
   };
 
   return (
@@ -530,6 +537,31 @@ export default function CrmEnquiryCreatePage() {
           disableNext={step === 'create' && !values.service_type}
         />
       </form>
+
+      <Modal
+        open={finishConfirmOpen}
+        onClose={() => !mutation.isPending && setFinishConfirmOpen(false)}
+        title="Finish enquiry?"
+        footer={
+          <div className="flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={mutation.isPending}
+              onClick={() => setFinishConfirmOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button type="button" disabled={mutation.isPending} onClick={submitEnquiry}>
+              {mutation.isPending ? 'Creating…' : 'OK'}
+            </Button>
+          </div>
+        }
+      >
+        <p className="text-sm text-[var(--color-neutral-600)]">
+          Check all details are correct, then click OK to create this enquiry.
+        </p>
+      </Modal>
     </div>
   );
 }

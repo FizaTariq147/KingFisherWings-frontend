@@ -64,9 +64,10 @@
   --erp-page-gap: 0.75rem;
 
   /* Fresa-inspired operational continuum chrome (Enquiry → Job).
-     Blues track the sidebar primary (#0A2942) — not Fresa's #1E5AA8. */
+     Primary action blue = same navy as sidebar (--color-primary / #0A2942). */
   --fresa-action:        var(--color-primary);
   --fresa-action-hover:  var(--color-primary-600);
+  --fresa-action-active: var(--color-primary-700);
   --fresa-action-soft:   var(--color-primary-50);
   --fresa-header-bg:     var(--color-primary-50);
   --fresa-header-text:   var(--color-primary);
@@ -90,6 +91,56 @@
   --fresa-info-text:     var(--color-info-700);
   --fresa-secondary-bg:  #FFFFFF;
   --fresa-secondary-border: #C9D3DF;
+
+  /* ── Shared button design system (all portals / modules) ──
+     Prefer these tokens (or <Button />) over hardcoded hex colors.
+     Primary = sidebar navy; chrome Back/Report/Edit/Create use fixed swatches. */
+  --btn-primary-bg:           var(--color-primary);
+  --btn-primary-hover:        var(--color-primary-600);
+  --btn-primary-active:       var(--color-primary-700);
+  --btn-primary-text:         #FFFFFF;
+  --btn-primary-ring:         var(--color-primary);
+  --btn-secondary-bg:         var(--fresa-secondary-bg);
+  --btn-secondary-hover:      var(--fresa-page-bg);
+  --btn-secondary-border:     var(--fresa-secondary-border);
+  --btn-secondary-text:       var(--color-neutral-800);
+  --btn-secondary-ring:       var(--color-primary);
+  /* Header chrome Create → Edit → Report → Back (solid, readable on white) */
+  --btn-back-bg:              #99A5A4;
+  --btn-back-hover:           #879391;
+  --btn-back-text:            #FFFFFF;
+  --btn-back-ring:            #99A5A4;
+  --btn-report-bg:            #A855F7;
+  --btn-report-hover:         #7C3AED;
+  --btn-report-text:          #FFFFFF;
+  --btn-report-border:        #7C3AED;
+  --btn-report-ring:          #7C3AED;
+  --btn-edit-bg:              #0EA5E9;
+  --btn-edit-hover:           #0284C7;
+  --btn-edit-text:            #FFFFFF;
+  --btn-edit-border:          #0284C7;
+  --btn-edit-ring:            #0284C7;
+  --btn-create-bg:            #FF751F;
+  --btn-create-hover:         #E8650F;
+  --btn-create-text:          #FFFFFF;
+  --btn-create-border:        #E8650F;
+  --btn-create-ring:          #FF751F;
+  --btn-success-bg:           var(--color-success-500);
+  --btn-success-hover:        var(--color-success-700);
+  --btn-success-text:         #FFFFFF;
+  --btn-success-ring:         var(--color-success-500);
+  --btn-warning-bg:           var(--color-warning-500);
+  --btn-warning-hover:        var(--color-warning-700);
+  --btn-warning-text:         #FFFFFF;
+  --btn-warning-ring:         var(--color-warning-500);
+  --btn-danger-bg:            var(--color-danger-500);
+  --btn-danger-hover:         var(--color-danger-700);
+  --btn-danger-text:          #FFFFFF;
+  --btn-danger-ring:          var(--color-danger-500);
+  --btn-ghost-text:           var(--color-neutral-600);
+  --btn-ghost-hover:          var(--color-neutral-100);
+  --btn-ghost-ring:           var(--color-primary-500);
+  --btn-disabled-opacity:     0.45;
 
   /* Transport modes */
   --color-mode-sea:    #0EA5E9;
@@ -228,4 +279,101 @@ code, kbd, pre, samp {
 }
 .scrollbar-none::-webkit-scrollbar {
   display: none;               /* Chrome, Safari, new Edge */
+}
+
+/* ── Navy detail tabs — horizontal scrollbar matches sidebar chrome ─ */
+.kf-tabs-scroll {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(255, 255, 255, 0.35) rgba(10, 41, 66, 0.85);
+}
+.kf-tabs-scroll::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.kf-tabs-scroll::-webkit-scrollbar-track {
+  background: rgba(6, 27, 44, 0.9);
+}
+.kf-tabs-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+}
+.kf-tabs-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.55);
+}
+.kf-tabs-scroll::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ── Colored action buttons (header chrome + toolbars) ─────────────
+   Create orange · Edit sky · Report violet · Back slate
+   + success / warning / danger for Actions toolbars                 */
+.kf-btn-create,
+button.kf-btn-create {
+  background-color: #FF751F !important;
+  color: #FFFFFF !important;
+  border: 1px solid #E8650F !important;
+  box-shadow: 0 1px 0 rgba(10, 41, 66, 0.12);
+}
+button.kf-btn-create:hover:not(:disabled) {
+  background-color: #E8650F !important;
+}
+.kf-btn-edit,
+button.kf-btn-edit {
+  background-color: #0EA5E9 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #0284C7 !important;
+  box-shadow: 0 1px 0 rgba(10, 41, 66, 0.12);
+}
+button.kf-btn-edit:hover:not(:disabled) {
+  background-color: #0284C7 !important;
+}
+.kf-btn-report,
+button.kf-btn-report {
+  background-color: #A855F7 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #7C3AED !important;
+  box-shadow: 0 1px 0 rgba(10, 41, 66, 0.12);
+}
+button.kf-btn-report:hover:not(:disabled) {
+  background-color: #7C3AED !important;
+}
+.kf-btn-back,
+button.kf-btn-back {
+  background-color: #99A5A4 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #879391 !important;
+  box-shadow: 0 1px 0 rgba(10, 41, 66, 0.12);
+}
+button.kf-btn-back:hover:not(:disabled) {
+  background-color: #879391 !important;
+}
+.kf-btn-success,
+button.kf-btn-success {
+  background-color: #22C55E !important;
+  color: #FFFFFF !important;
+  border: 1px solid #16A34A !important;
+  box-shadow: 0 1px 0 rgba(10, 41, 66, 0.12);
+}
+button.kf-btn-success:hover:not(:disabled) {
+  background-color: #15803D !important;
+}
+.kf-btn-warning,
+button.kf-btn-warning {
+  background-color: #F59E0B !important;
+  color: #FFFFFF !important;
+  border: 1px solid #D97706 !important;
+  box-shadow: 0 1px 0 rgba(10, 41, 66, 0.12);
+}
+button.kf-btn-warning:hover:not(:disabled) {
+  background-color: #B45309 !important;
+}
+.kf-btn-danger,
+button.kf-btn-danger {
+  background-color: #EF4444 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #DC2626 !important;
+  box-shadow: 0 1px 0 rgba(10, 41, 66, 0.12);
+}
+button.kf-btn-danger:hover:not(:disabled) {
+  background-color: #B91C1C !important;
 }

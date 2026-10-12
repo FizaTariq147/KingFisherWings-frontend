@@ -178,12 +178,25 @@ export function normalizeEnquiry(raw: unknown): Enquiry | null {
     quotation_id:
       optional(b.r, 'quotation_id', 'quotationId') ||
       (quotation ? optional(quotation, 'id') : undefined),
+    quotation_number:
+      optional(b.r, 'quotation_number', 'quotationNumber', 'quote_no', 'quoteNo') ||
+      (quotation
+        ? optional(quotation, 'quotation_number', 'quotationNumber', 'quote_no', 'quoteNo', 'number')
+        : undefined),
     shipment_id:
       optional(b.r, 'shipment_id', 'shipmentId') ||
       (shipment ? optional(shipment, 'id') : undefined),
+    shipment_number:
+      optional(b.r, 'shipment_number', 'shipmentNumber', 'shipment_no', 'shipmentNo') ||
+      (shipment
+        ? optional(shipment, 'shipment_number', 'shipmentNumber', 'shipment_no', 'shipmentNo', 'number')
+        : undefined),
     job_id:
       optional(b.r, 'job_id', 'jobId') ||
       (job ? optional(job, 'id') : undefined),
+    job_number:
+      optional(b.r, 'job_number', 'jobNumber', 'job_no', 'jobNo') ||
+      (job ? optional(job, 'job_number', 'jobNumber', 'job_no', 'jobNo', 'number') : undefined),
     actions: normalizeEnquiryActions(
       b.r.actions ?? b.r.action_flags ?? b.r.actionFlags ?? b.r.available_actions,
     ),

@@ -1,4 +1,4 @@
-import { AlertTriangle, Loader2 } from 'lucide-react';
+import { AlertTriangle, Check, Loader2, ThumbsDown, X } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -70,17 +70,17 @@ const CONFIG: Record<
     variant: 'primary',
   },
   'generate-shipment': {
-    title: 'Generate shipment?',
+    title: 'Generate Shipment?',
     description: (label) =>
-      `${label} will create a shipment from this quotation (Fresa continuum).`,
-    confirmLabel: 'Generate shipment',
+      `Generate shipment from ${label}? Click OK to create the shipment.`,
+    confirmLabel: 'OK',
     variant: 'primary',
   },
   'generate-job': {
-    title: 'Generate job?',
+    title: 'Generate Job?',
     description: (label) =>
-      `${label} will create a job from this quotation (Fresa continuum).`,
-    confirmLabel: 'Generate job',
+      `Generate job from ${label}? Click OK to create the job.`,
+    confirmLabel: 'OK',
     variant: 'primary',
   },
   'start-air-ops': {
@@ -182,16 +182,16 @@ export function QuotationConfirmModal({
             />
           </label>
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
+            <Button type="button" variant="secondary" leftIcon={<X />} onClick={onClose} disabled={isPending}>
               Cancel
             </Button>
             <Button
               type="button"
               variant="danger"
+              leftIcon={isPending ? <Loader2 className="animate-spin" /> : <ThumbsDown />}
               disabled={isPending}
               onClick={() => onConfirm({ reason, notes: notes || undefined })}
             >
-              {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
               Mark rejected
             </Button>
           </div>
@@ -220,16 +220,18 @@ export function QuotationConfirmModal({
             />
           </label>
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
+            <Button type="button" variant="secondary" leftIcon={<X />} onClick={onClose} disabled={isPending}>
               Cancel
             </Button>
             <Button
               type="button"
               variant={isReject ? 'danger' : 'primary'}
+              leftIcon={
+                isPending ? <Loader2 className="animate-spin" /> : isReject ? <ThumbsDown /> : <Check />
+              }
               disabled={isPending}
               onClick={() => onConfirm({ comments: comments || undefined })}
             >
-              {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
               {isReject ? 'Reject' : 'Internally approve'}
             </Button>
           </div>
@@ -249,16 +251,16 @@ export function QuotationConfirmModal({
           </p>
         </div>
         <div className="flex justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
+          <Button type="button" variant="secondary" leftIcon={<X />} onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
           <Button
             type="button"
             variant={cfg.variant}
+            leftIcon={isPending ? <Loader2 className="animate-spin" /> : <Check />}
             disabled={isPending}
             onClick={() => onConfirm()}
           >
-            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {cfg.confirmLabel}
           </Button>
         </div>

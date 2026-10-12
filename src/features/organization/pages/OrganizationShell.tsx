@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { appType } from '@/lib/erpTypography';
-import { Building2, CreditCard, Hash } from 'lucide-react';
+import { Building2, CalendarDays, CreditCard, Hash } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppAutoAnimate } from '@/components/motion';
 
@@ -8,6 +8,7 @@ const TABS = [
   { to: '/organization', label: 'Organization Profile', icon: Building2, end: true },
   { to: '/organization/bank-accounts', label: 'Bank Accounts', icon: CreditCard, end: false },
   { to: '/organization/number-formats', label: 'Number Formats', icon: Hash, end: false },
+  { to: '/organization/job-date', label: 'Job date', icon: CalendarDays, end: false },
 ] as const;
 
 export default function OrganizationShell() {

@@ -13,16 +13,22 @@ export const SEARCH_TYPE_LABELS: Record<string, string> = {
   job: 'Jobs',
   quotations: 'Quotations',
   quotation: 'Quotations',
+  enquiries: 'Enquiries',
+  enquiry: 'Enquiries',
+  shipments: 'Shipments',
+  shipment: 'Shipments',
   parties: 'Parties',
   party: 'Parties',
   invoices: 'Invoices',
   invoice: 'Invoices',
 };
 
-/** Swagger `types` example: jobs,quotations,parties,invoices */
+/** Swagger `types` — default all six entity groups when omitted. */
 export const DEFAULT_SEARCH_TYPES: SearchEntityTypeParam[] = [
   'jobs',
   'quotations',
+  'enquiries',
+  'shipments',
   'parties',
   'invoices',
 ];
@@ -33,6 +39,8 @@ export const SEARCH_TYPE_FILTERS: Array<{
 }> = [
   { value: 'jobs', label: 'Jobs' },
   { value: 'quotations', label: 'Quotations' },
+  { value: 'enquiries', label: 'Enquiries' },
+  { value: 'shipments', label: 'Shipments' },
   { value: 'parties', label: 'Parties' },
   { value: 'invoices', label: 'Invoices' },
 ];

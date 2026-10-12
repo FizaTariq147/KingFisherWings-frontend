@@ -1,16 +1,25 @@
 import { useMutation } from '@tanstack/react-query';
 import { jobService } from '../services/job.service';
 import type {
+  ChangeJobStatusDto,
+  CreateJobChargeAttachmentDto,
   CreateJobChargeDto,
   CreateJobNoteDto,
   CreateCustomMilestoneDto,
+  CalculateStorageChargesDto,
+  ConfirmStorageChargesDto,
   GenerateJobDocumentDto,
+  PatchJobDimensionsDto,
+  PutJobGpumDto,
+  ReopenJobDto,
   SchedulePreAlertDto,
   SendPreAlertDto,
   SendWhatsAppStatusDto,
+  StopJobDto,
   UpdateJobChargeDto,
   UpdateJobMilestoneDto,
   UpdateJobNoteDto,
+  UpsertJobPartyReferenceDto,
 } from '../types/job.types';
 import { useInvalidateJobs } from './useJobs';
 
@@ -24,7 +33,52 @@ export function useJobActions(jobId: string) {
     onSuccess: () => invalidate(id),
   });
   const close = useMutation({
-    mutationFn: () => jobService.close(id),
+    mutationFn: (body?: { force?: boolean }) => jobService.close(id, body),
+    onSuccess: () => invalidate(id),
+  });
+  const changeStatus = useMutation({
+    mutationFn: (dto: ChangeJobStatusDto) => jobService.changeStatus(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const reopen = useMutation({
+    mutationFn: (dto?: ReopenJobDto) => jobService.reopen(id, dto ?? {}),
+    onSuccess: () => invalidate(id),
+  });
+  const stop = useMutation({
+    mutationFn: (dto?: StopJobDto) => jobService.stop(id, dto ?? {}),
+    onSuccess: () => invalidate(id),
+  });
+  const upsertClientReference = useMutation({
+    mutationFn: (dto: UpsertJobPartyReferenceDto) =>
+      jobService.upsertClientReference(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const patchDimensions = useMutation({
+    mutationFn: (dto: PatchJobDimensionsDto) => jobService.patchDimensions(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const putGpum = useMutation({
+    mutationFn: (dto: PutJobGpumDto) => jobService.putGpum(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const calculateStorageCharges = useMutation({
+    mutationFn: (dto: CalculateStorageChargesDto) =>
+      jobService.calculateStorageCharges(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const confirmStorageCharges = useMutation({
+    mutationFn: (dto: ConfirmStorageChargesDto) =>
+      jobService.confirmStorageCharges(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const createChargeAttachment = useMutation({
+    mutationFn: ({
+      chargeId,
+      dto,
+    }: {
+      chargeId: string;
+      dto: CreateJobChargeAttachmentDto;
+    }) => jobService.createChargeAttachment(id, chargeId, dto),
     onSuccess: () => invalidate(id),
   });
   const remove = useMutation({
@@ -247,6 +301,15 @@ export function useJobActions(jobId: string) {
   return {
     cancel,
     close,
+    changeStatus,
+    reopen,
+    stop,
+    upsertClientReference,
+    patchDimensions,
+    putGpum,
+    calculateStorageCharges,
+    confirmStorageCharges,
+    createChargeAttachment,
     remove,
     prorateCost,
     sendPreAlert,
@@ -310,6 +373,21 @@ export function useJobLifecycleMutations() {
     close: useMutation({
       mutationFn: (id: string) => jobService.close(id),
       onSuccess: (_d, id) => invalidate(id),
+    }),
+    changeStatus: useMutation({
+      mutationFn: ({ id, dto }: { id: string; dto: ChangeJobStatusDto }) =>
+        jobService.changeStatus(id, dto),
+      onSuccess: (_d, { id }) => invalidate(id),
+    }),
+    reopen: useMutation({
+      mutationFn: ({ id, dto }: { id: string; dto?: ReopenJobDto }) =>
+        jobService.reopen(id, dto ?? {}),
+      onSuccess: (_d, { id }) => invalidate(id),
+    }),
+    stop: useMutation({
+      mutationFn: ({ id, dto }: { id: string; dto?: StopJobDto }) =>
+        jobService.stop(id, dto ?? {}),
+      onSuccess: (_d, { id }) => invalidate(id),
     }),
     remove: useMutation({
       mutationFn: (id: string) => jobService.softDelete(id),

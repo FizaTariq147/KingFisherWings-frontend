@@ -192,7 +192,7 @@ export default function SuperAdminLoginPage(): JSX.Element {
               <button
                 type="submit"
                 disabled={loginMutation.isPending}
-                className="w-full rounded-md bg-[var(--color-primary)] py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
+                className="w-full rounded-sm bg-[var(--btn-primary-bg)] py-2.5 text-sm font-semibold text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--btn-primary-ring)] focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-[var(--btn-disabled-opacity,0.45)]"
               >
                 {loginMutation.isPending ? 'Signing in…' : 'Sign in'}
               </button>
@@ -283,7 +283,7 @@ export default function SuperAdminLoginPage(): JSX.Element {
               <button
                 type="submit"
                 disabled={signupMutation.isPending}
-                className="w-full rounded-md bg-[var(--color-primary)] py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
+                className="w-full rounded-sm bg-[var(--btn-primary-bg)] py-2.5 text-sm font-semibold text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--btn-primary-ring)] focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-[var(--btn-disabled-opacity,0.45)]"
               >
                 {signupMutation.isPending ? 'Creating…' : 'Create platform account'}
               </button>

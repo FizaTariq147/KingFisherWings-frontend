@@ -308,6 +308,40 @@ export const documentationEdiService = {
     downloadBlob('get', DOCUMENTATION_API.edi.downloadSubmission(submissionId), undefined, filename),
 };
 
+/** Documentation All Jobs list + create wizard (OpenAPI). */
+export const documentationJobsService = {
+  async list(params: DocumentationListParams = {}): Promise<ListResult<DocumentationRecord>> {
+    try {
+      return await listResource(DOCUMENTATION_API.jobs.list, params, ['jobs', 'items']);
+    } catch (error) {
+      throw formatDocumentationError(error);
+    }
+  },
+
+  async createWizard(): Promise<Record<string, unknown>> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(DOCUMENTATION_API.jobs.createWizard),
+      );
+      return (unwrapEntity(res.data) as Record<string, unknown>) ?? {};
+    } catch (error) {
+      throw formatDocumentationError(error);
+    }
+  },
+
+  async create(dto: Record<string, unknown>): Promise<DocumentationRecord> {
+    try {
+      return (await mutateRecord(
+        'post',
+        DOCUMENTATION_API.jobs.create,
+        preparePayload(dto),
+      )) as DocumentationRecord;
+    } catch (error) {
+      throw formatDocumentationError(error);
+    }
+  },
+};
+
 export const documentationJobTransferService = {
   async exportJobs(body?: object): Promise<void> {
     try {

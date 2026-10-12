@@ -1,4 +1,14 @@
-import type { Job, JobCharge, JobListParams, JobMilestone, JobNote, AirUldRequest } from '../types/job.types';
+import type {
+  Job,
+  JobActions,
+  JobCharge,
+  JobDetailTab,
+  JobListParams,
+  JobMilestone,
+  JobNote,
+  JobStatusOption,
+  AirUldRequest,
+} from '../types/job.types';
 import type { JobStatus } from '../constants/job.constants';
 import { canonicalizeJobType } from './canonicalizeJobType';
 
@@ -303,7 +313,18 @@ export function normalizeJob(raw: unknown): Job | null {
       pickPortCode(r.dest_port ?? r.destPort) ||
       undefined,
     commodity: pickString(r, 'commodity') || undefined,
+    commodity_description:
+      pickString(r, 'commodity_description', 'commodityDescription') || undefined,
     hs_code: pickString(r, 'hs_code', 'hsCode') || undefined,
+    job_date: pickString(r, 'job_date', 'jobDate') || undefined,
+    client_reference_no:
+      pickString(r, 'client_reference_no', 'clientReferenceNo', 'po_number', 'poNumber') ||
+      undefined,
+    client_reference_type:
+      pickString(r, 'client_reference_type', 'clientReferenceType', 'reference_type') ||
+      undefined,
+    actions: normalizeJobActions(r.actions),
+    tabs: normalizeJobTabs(r.tabs),
     gross_weight: num(r.gross_weight ?? r.grossWeight),
     chargeable_weight: num(r.chargeable_weight ?? r.chargeableWeight),
     volume_cbm: num(r.volume_cbm ?? r.volumeCbm),
@@ -571,6 +592,81 @@ export function normalizeJob(raw: unknown): Job | null {
       ? ((r.bills_of_lading ?? r.billsOfLading) as Job['bills_of_lading'])
       : undefined,
   };
+}
+
+function normalizeJobActions(raw: unknown): JobActions | undefined {
+  const record = asRecord(raw);
+  if (!record) return undefined;
+  const out: JobActions = {};
+  for (const [key, value] of Object.entries(record)) {
+    if (typeof value === 'boolean') out[key] = value;
+    else if (value === 'true' || value === 1 || value === '1') out[key] = true;
+    else if (value === 'false' || value === 0 || value === '0') out[key] = false;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
+function normalizeJobTabs(raw: unknown): JobDetailTab[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const tabs = raw
+    .map((item) => {
+      if (typeof item === 'string' && item.trim()) return { key: item.trim(), label: item.trim() };
+      const rec = asRecord(item);
+      if (!rec) return null;
+      const key = pickString(rec, 'key', 'id', 'name', 'tab');
+      if (!key) return null;
+      return { key, label: pickString(rec, 'label', 'title', 'name') || key };
+    })
+    .filter((t): t is JobDetailTab => Boolean(t));
+  return tabs.length ? tabs : undefined;
+}
+
+/** Normalize GET /jobs/status-options (flat list or Approved/Open/Closed groups). */
+export function normalizeJobStatusOptions(raw: unknown): JobStatusOption[] {
+  const envelope = asRecord(unwrapEntity(raw)) ?? asRecord(raw);
+  const candidates: unknown[] = [];
+  if (Array.isArray(raw)) candidates.push(...raw);
+  if (envelope) {
+    for (const key of ['options', 'items', 'statuses', 'data', 'results']) {
+      if (Array.isArray(envelope[key])) candidates.push(...(envelope[key] as unknown[]));
+    }
+    for (const group of ['Approved', 'Open', 'Closed', 'approved', 'open', 'closed']) {
+      const list = envelope[group];
+      if (Array.isArray(list)) {
+        for (const item of list) {
+          if (typeof item === 'string') {
+            candidates.push({ value: item, label: item, group });
+          } else {
+            const rec = asRecord(item);
+            if (rec) candidates.push({ ...rec, group: rec.group ?? group });
+          }
+        }
+      }
+    }
+  }
+
+  const seen = new Set<string>();
+  const out: JobStatusOption[] = [];
+  for (const item of candidates) {
+    if (typeof item === 'string' && item.trim()) {
+      const value = item.trim().toUpperCase();
+      if (seen.has(value)) continue;
+      seen.add(value);
+      out.push({ value, label: value.replaceAll('_', ' ') });
+      continue;
+    }
+    const rec = asRecord(item);
+    if (!rec) continue;
+    const value = pickString(rec, 'value', 'status', 'code', 'id', 'key').toUpperCase();
+    if (!value || seen.has(value)) continue;
+    seen.add(value);
+    out.push({
+      value,
+      label: pickString(rec, 'label', 'name', 'title') || value.replaceAll('_', ' '),
+      group: pickString(rec, 'group', 'category', 'bucket') || undefined,
+    });
+  }
+  return out;
 }
 
 export function normalizeJobs(items: unknown[]): Job[] {

@@ -121,8 +121,11 @@ export interface Enquiry extends BaseEntity {
   salesperson_name?: string;
   enquiry_number?: string;
   quotation_id?: string;
+  quotation_number?: string;
   shipment_id?: string;
+  shipment_number?: string;
   job_id?: string;
+  job_number?: string;
   actions?: EnquiryActions;
 }
 

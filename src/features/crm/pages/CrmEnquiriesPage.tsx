@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { Plus, Ship } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import {
   EmptyState,
@@ -71,6 +71,7 @@ export default function CrmEnquiriesPage() {
             <Button
               size="sm"
               variant="secondary"
+              leftIcon={<Ship />}
               onClick={() => navigate('/sales/enquiries/new?service_type=SEA_FCL_EXPORT')}
             >
               FCL Export
@@ -78,18 +79,20 @@ export default function CrmEnquiriesPage() {
             <Button
               size="sm"
               variant="secondary"
+              leftIcon={<Ship />}
               onClick={() => navigate('/sales/enquiries/new?service_type=SEA_FCL_IMPORT')}
             >
               FCL Import
             </Button>
-            <button
+            <Button
+              size="sm"
               type="button"
+              variant="create"
+              leftIcon={<Plus />}
               onClick={() => navigate('/sales/enquiries/new')}
-              className={appType.listCreateBtn}
             >
-              <Plus className="h-3.5 w-3.5" />
               Create
-            </button>
+            </Button>
           </div>
         </div>
 

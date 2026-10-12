@@ -23,6 +23,8 @@ function normalizeType(raw: unknown): string {
     .toLowerCase();
   if (t === 'job') return 'jobs';
   if (t === 'quotation') return 'quotations';
+  if (t === 'enquiry') return 'enquiries';
+  if (t === 'shipment') return 'shipments';
   if (t === 'party' || t === 'customer' || t === 'shipper' || t === 'consignee')
     return 'parties';
   if (t === 'invoice') return 'invoices';
@@ -47,6 +49,10 @@ export function resolveSearchHref(
     }
     case 'quotations':
       return `/quotations/${id}`;
+    case 'enquiries':
+      return `/crm/enquiries/${id}`;
+    case 'shipments':
+      return `/operations/shipments/${id}`;
     case 'parties':
       return `/parties/${id}`;
     case 'invoices':
@@ -69,6 +75,18 @@ export function hitTitle(type: string, raw: Record<string, unknown>, id: string)
     return (
       pickString(raw, 'quotation_number', 'quotationNumber', 'number', 'title', 'name') ||
       `Quotation ${id.slice(0, 8)}`
+    );
+  }
+  if (t === 'enquiries') {
+    return (
+      pickString(raw, 'enquiry_number', 'enquiryNumber', 'number', 'title', 'name') ||
+      `Enquiry ${id.slice(0, 8)}`
+    );
+  }
+  if (t === 'shipments') {
+    return (
+      pickString(raw, 'shipment_number', 'shipmentNumber', 'reference', 'number', 'title') ||
+      `Shipment ${id.slice(0, 8)}`
     );
   }
   if (t === 'parties') {
@@ -95,6 +113,16 @@ export function hitSubtitle(type: string, raw: Record<string, unknown>): string 
     if (jobType) parts.push(jobType.replace(/_/g, ' '));
     if (shipper) parts.push(shipper);
   } else if (t === 'quotations') {
+    const customer = pickString(raw, 'customer_name', 'customerName', 'party_name');
+    const jobType = pickString(raw, 'job_type', 'jobType');
+    if (customer) parts.push(customer);
+    if (jobType) parts.push(jobType.replace(/_/g, ' '));
+  } else if (t === 'enquiries') {
+    const customer = pickString(raw, 'customer_name', 'customerName', 'party_name');
+    const status = pickString(raw, 'status');
+    if (customer) parts.push(customer);
+    if (status) parts.push(status);
+  } else if (t === 'shipments') {
     const customer = pickString(raw, 'customer_name', 'customerName', 'party_name');
     const jobType = pickString(raw, 'job_type', 'jobType');
     if (customer) parts.push(customer);

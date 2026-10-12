@@ -80,7 +80,7 @@ export function ListPageTemplate<T>({
                     onClick={() => onStatusChange?.(t.value)}
                     className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${
                       activeStatus === t.value
-                        ? 'bg-[#0A2942] text-white'
+                        ? 'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)]'
                         : 'border border-gray-300 bg-white text-gray-600 hover:bg-gray-50'
                     }`}
                   >

@@ -33,6 +33,16 @@ export interface OrganizationProfile {
   updated_at?: string;
 }
 
+export type JobDateSource = 'ETD_ATD' | 'ETA_ATA' | 'SYSTEM_DATE';
+
+export interface JobDateSettings {
+  job_date_source: JobDateSource | string;
+}
+
+export interface UpdateJobDateSettingsDto {
+  job_date_source: JobDateSource | string;
+}
+
 export interface UpdateOrganizationProfileDto {
   name?: string;
   display_name?: string;

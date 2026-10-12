@@ -125,7 +125,13 @@ export function normalizeShipment(raw: unknown): Shipment | null {
     ...(header ?? {}),
   };
 
-  const id = str(r.id) ?? str(root.id);
+  const id =
+    str(r.id) ??
+    str(root.id) ??
+    str(header?.id) ??
+    str(header?.shipment_id) ??
+    str(asRecord(root.data)?.id) ??
+    str(asRecord(root.data)?.shipment_id);
   if (!id || !isUuid(id)) return null;
 
   const party = asRecord(r.party) ?? asRecord(r.customer);

@@ -99,7 +99,7 @@ export function StepFormTemplate({
               </button>
               <button
                 onClick={goNext}
-                className="flex items-center gap-1.5 rounded-lg bg-brandOrange hover:bg-brandOrange-700 text-white text-sm font-semibold px-5 py-2.5 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-sm bg-[var(--btn-primary-bg)] px-5 py-2.5 text-sm font-semibold text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--btn-primary-ring)] focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-[var(--btn-disabled-opacity,0.45)]"
               >
                 {step === steps.length - 1 ? submitLabel : 'Continue'}
                 {step < steps.length - 1 && <ChevronRight className="h-4 w-4" />}

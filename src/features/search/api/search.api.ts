@@ -7,6 +7,8 @@ export const SEARCH_API = {
 export const SEARCH_ENTITY_TYPES = [
   'jobs',
   'quotations',
+  'enquiries',
+  'shipments',
   'parties',
   'invoices',
 ] as const;

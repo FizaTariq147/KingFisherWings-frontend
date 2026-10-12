@@ -1,9 +1,25 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import {
+  Briefcase,
+  CheckCircle2,
+  Copy,
+  FileText,
+  Pencil,
+  Plane,
+  Plus,
+  Send,
+  Ship,
+  ThumbsDown,
+  ThumbsUp,
+  X,
+} from 'lucide-react';
+import { OperationTypeBadge } from '@/components/erp/OperationTypeBadge';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
+import { erpForm } from '@/lib/erpForm';
 import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
 import { QuotationEmailModal } from '../components/QuotationEmailModal';
 import { QuotationLinesEditor } from '../components/QuotationLinesEditor';
@@ -13,7 +29,7 @@ import { QuotationPdfModal } from '../components/QuotationPdfModal';
 import { QuotationStatusBadge } from '../components/QuotationStatusBadge';
 import { QuotationTotalsSummary } from '../components/QuotationTotalsSummary';
 import { STATUS_LABELS, type LostReason } from '../constants/quotation.constants';
-import { QuotationVendorPassPanel } from '../components/QuotationVendorPassPanel';
+import { QuotationVendorPassModal } from '../components/QuotationVendorPassPanel';
 import {
   useQuotationActions,
   useQuotationPdf,
@@ -57,6 +73,7 @@ import {
   usesGatedFreightQuoteFlow,
   usesModeBookingFormConvertFlow,
 } from '../utils/quotationStatus';
+import { useShipmentsPermissions } from '@/features/shipments/hooks/useShipmentsPermissions';
 
 function statusTone(
   status: string,
@@ -71,6 +88,37 @@ function statusTone(
   return 'slate';
 }
 
+function FresaReadonlyField({
+  label,
+  value,
+  href,
+}: {
+  label: string;
+  value?: string | number | null;
+  href?: string;
+}) {
+  const raw = value == null || value === '' ? '' : String(value).trim();
+  const shown = !raw || isUuid(raw) ? '' : raw;
+  const text = shown || (href ? 'View' : '—');
+  return (
+    <div className="min-w-0">
+      <div className={erpForm.label}>{label}</div>
+      <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[13px] text-[#0f172a]">
+        {href ? (
+          <Link
+            className="truncate font-medium text-[var(--color-primary-700)] hover:underline"
+            to={href}
+          >
+            {text}
+          </Link>
+        ) : (
+          <span className="truncate">{text}</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function QuotationDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
@@ -79,6 +127,7 @@ export default function QuotationDetailPage() {
   const { data: revisions = [] } = useQuotationRevisions(id, Boolean(id));
   const { data: companies = [] } = useTenantCompanies(Boolean(id));
   const actions = useQuotationActions(id);
+  const shipmentPerms = useShipmentsPermissions();
   const remove = useDeleteQuotation();
   const { data: pdfInfo, refetch: refetchPdf } = useQuotationPdf(id, Boolean(id));
   const { confirm, requestConfirm, closeConfirm } = useQuotationConfirmState();
@@ -89,6 +138,13 @@ export default function QuotationDetailPage() {
   const [emailOpen, setEmailOpen] = useState(false);
   const [changeStatusOpen, setChangeStatusOpen] = useState(false);
   const [changeStatusValue, setChangeStatusValue] = useState('VERIFIED');
+  const [vendorPassOpen, setVendorPassOpen] = useState(false);
+  const [generatedLink, setGeneratedLink] = useState<{
+    kind: 'shipment' | 'job';
+    id: string;
+    label: string;
+    href: string;
+  } | null>(null);
   const autoFulfillAttempted = useRef<string | null>(null);
 
   // Surface partial costing failures from create wizard (apply-tariff / lines).
@@ -405,13 +461,15 @@ export default function QuotationDetailPage() {
     status,
   ]);
 
-  const { customerLabel } = useQuotationResolvedLabels(quotation ?? {
-    id: '',
-    customer_id: '',
-    status: 'DRAFT',
-    job_type: 'SEA_EXPORT',
-    currency_code: 'USD',
-  });
+  const { customerLabel, originLabel, destinationLabel } = useQuotationResolvedLabels(
+    quotation ?? {
+      id: '',
+      customer_id: '',
+      status: 'DRAFT',
+      job_type: 'SEA_EXPORT',
+      currency_code: 'USD',
+    },
+  );
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -439,7 +497,7 @@ export default function QuotationDetailPage() {
   const run = async (
     fn: () => Promise<unknown>,
     successMsg?: string,
-    opts?: { skipBookingFormJobGate?: boolean },
+    opts?: { skipBookingFormJobGate?: boolean; stayOnPage?: boolean },
   ) => {
     setActionError(null);
     setActionMessage(null);
@@ -452,17 +510,28 @@ export default function QuotationDetailPage() {
           id: string;
           status?: string;
           job_id?: string;
+          job_number?: string;
           invoice_id?: string;
           shipment_id?: string;
+          shipment_number?: string;
         };
-        // Fresa continuum: navigate to shipment when generate-shipment returns an id.
+        // Fresa continuum: stay on quotation; show Shipment No link (do not auto-navigate).
         if (
+          opts?.stayOnPage &&
           opts?.skipBookingFormJobGate &&
           q.shipment_id &&
           isUuid(q.shipment_id)
         ) {
-          setActionMessage(successMsg || 'Shipment generated.');
-          navigate(`/operations/shipments/${q.shipment_id}`);
+          setActionMessage(
+            successMsg || 'Shipment has been successfully created.',
+          );
+          setGeneratedLink({
+            kind: 'shipment',
+            id: q.shipment_id,
+            label: q.shipment_number?.trim() || q.shipment_id.slice(0, 8),
+            href: `/operations/shipments/${q.shipment_id}`,
+          });
+          void refetch();
           return;
         }
         if (q.id !== id && coerceQuotationStatus(q.status || 'DRAFT') === 'DRAFT') {
@@ -476,8 +545,22 @@ export default function QuotationDetailPage() {
         const invoiceId =
           q.invoice_id ||
           (result as { invoice?: { id?: string } }).invoice?.id;
-        // Fresa generate-job: always open the job when the API returns job_id.
-        if (jobId && opts?.skipBookingFormJobGate) {
+        // Fresa generate-job: stay on quotation; show Job No link.
+        if (jobId && opts?.stayOnPage && opts?.skipBookingFormJobGate) {
+          setActionMessage(successMsg || 'Job has been successfully generated.');
+          setGeneratedLink({
+            kind: 'job',
+            id: String(jobId),
+            label: q.job_number?.trim() || String(jobId).slice(0, 8),
+            href: jobDetailPath({
+              id: String(jobId),
+              job_type: quotation.job_type,
+            }),
+          });
+          void refetch();
+          return;
+        }
+        if (jobId && opts?.skipBookingFormJobGate && !opts?.stayOnPage) {
           setActionMessage(successMsg || 'Job generated.');
           navigate(
             jobDetailPath({
@@ -531,165 +614,46 @@ export default function QuotationDetailPage() {
   const hasJob = Boolean(quotation.job_id && isUuid(quotation.job_id));
   const canVerify = fclActions?.can_verify === true;
   const canApproveVerified = fclActions?.can_approve_verified === true;
+  const isApprovedLike =
+    status === 'APPROVED' || status === 'WON' || status === 'CONVERTED';
+  /** Fresa: Generate Shipment / Job appear once quotation is Approved. */
   const canGenerateShipment =
-    fclActions?.can_generate_shipment === true && !hasShipment;
+    shipmentPerms.canWriteCreate &&
+    !hasShipment &&
+    (fclActions?.can_generate_shipment === true ||
+      (fclActions?.can_generate_shipment !== false && isApprovedLike));
   const canGenerateJobFromQuote =
-    fclActions?.can_generate_job === true && !hasJob;
+    !hasJob &&
+    (fclActions?.can_generate_job === true ||
+      (fclActions?.can_generate_job !== false && isApprovedLike));
 
+  /** Top-right Fresa chrome (Back is DetailPageTemplate onBack). */
   const headerActions = [
-    ...(editable
-      ? [{ label: 'Edit', onClick: () => navigate(`/quotations/${id}/edit`), variant: 'secondary' as const }]
-      : []),
     {
-      label: quotation.actions?.can_copy === false ? 'Duplicate' : 'Copy',
-      onClick: () =>
-        requestConfirm(
-          quotation.actions?.can_copy === false ? 'duplicate' : 'copy',
-          quotation,
-        ),
-      variant: 'secondary' as const,
+      label: 'Create',
+      icon: <Plus />,
+      onClick: () => navigate('/quotations/new'),
+      variant: 'create' as const,
     },
     ...(editable
-      ? [{ label: 'Submit', onClick: () => requestConfirm('submit', quotation), variant: 'primary' as const }]
-      : []),
-    ...(quotation.actions?.can_change_status !== false
       ? [
           {
-            label: 'Change Quote Status',
-            onClick: () => {
-              setChangeStatusValue(
-                canApproveVerified ? 'APPROVED' : canVerify ? 'VERIFIED' : 'APPROVED',
-              );
-              setChangeStatusOpen(true);
-            },
-            variant: 'secondary' as const,
+            label: 'Edit',
+            icon: <Pencil />,
+            onClick: () => navigate(`/quotations/${id}/edit`),
+            variant: 'edit' as const,
           },
         ]
       : []),
-    ...(canVerify
-      ? [
-          {
-            label: 'Verify',
-            onClick: () => requestConfirm('verify', quotation),
-            variant: 'primary' as const,
-          },
-        ]
-      : []),
-    ...(canApproveVerified
-      ? [
-          {
-            label: 'Approve verified',
-            onClick: () => requestConfirm('approve-verified', quotation),
-            variant: 'primary' as const,
-          },
-        ]
-      : []),
-    ...(canStaffInternallyApprove(status) && !canApproveVerified
-      ? [
-          {
-            label: 'Internally approve',
-            onClick: () => requestConfirm('approve', quotation),
-            variant: 'primary' as const,
-          },
-          { label: 'Reject', onClick: () => requestConfirm('reject', quotation), variant: 'danger' as const },
-        ]
-      : []),
-    ...((quotation.actions?.can_send === true ||
-      (quotation.actions?.can_send !== false && canStaffSendToCustomer(status)))
-      ? [{ label: 'Send', onClick: () => requestConfirm('send', quotation), variant: 'primary' as const }]
-      : []),
-    ...(canGenerateShipment
-      ? [
-          {
-            label: 'Generate shipment',
-            onClick: () => requestConfirm('generate-shipment', quotation),
-            variant: 'primary' as const,
-          },
-        ]
-      : []),
-    ...(hasShipment
-      ? [
-          {
-            label: 'Open shipment',
-            onClick: () => navigate(`/operations/shipments/${quotation.shipment_id}`),
-            variant: 'secondary' as const,
-          },
-        ]
-      : []),
-    ...(canGenerateJobFromQuote
-      ? [
-          {
-            label: 'Generate job',
-            onClick: () => requestConfirm('generate-job', quotation),
-            variant: 'primary' as const,
-          },
-        ]
-      : []),
-    ...(canConvertQuotationToJob(status, quotation.job_type, quotation.actions) &&
-    !canGenerateJobFromQuote
-      ? [
-          {
-            label: 'Convert to job',
-            onClick: () => requestConfirm('convert', quotation),
-            variant: 'primary' as const,
-          },
-        ]
-      : []),
-    ...(canStartAirOpsJobFromQuote(status, quotation.job_type, quotation.job_id)
-      ? [
-          {
-            label: 'Start air ops job',
-            onClick: () => requestConfirm('start-air-ops', quotation),
-            variant: 'primary' as const,
-          },
-        ]
-      : []),
-    ...((usesModeBookingFormConvertFlow(quotation.job_type) &&
-      status === 'CONVERTED' &&
-      quotation.job_id) ||
-    (hasJob && !canGenerateJobFromQuote)
-      ? [
-          {
-            label: 'Open job',
-            onClick: () =>
-              navigate(
-                jobDetailPath({
-                  id: quotation.job_id!,
-                  job_type: quotation.job_type,
-                }),
-              ),
-            variant: 'primary' as const,
-          },
-        ]
-      : []),
-    ...(isNvoccQuoteJobType(quotation.job_type) && status === 'APPROVED'
-      ? [
-          {
-            label: 'Continue on NVOCC bookings',
-            onClick: () => navigate('/nvocc/booking-list'),
-            variant: 'primary' as const,
-          },
-        ]
-      : []),
-    { label: 'PDF', onClick: () => setPdfOpen(true), variant: 'secondary' as const },
     {
-      label: 'Reports',
+      label: 'Report',
+      icon: <FileText />,
       onClick: () =>
         navigate(
           `/reports/catalog?family=quotation&context=quotation&quotation_id=${encodeURIComponent(id)}`,
         ),
-      variant: 'secondary' as const,
+      variant: 'report' as const,
     },
-    { label: 'Email', onClick: () => setEmailOpen(true), variant: 'secondary' as const },
-    ...(canArchiveQuotation(status)
-      ? [{ label: 'Archive', onClick: () => requestConfirm('archive', quotation), variant: 'danger' as const }]
-      : []),
-    ...(status === 'DRAFT'
-      ? [{ label: 'Delete', onClick: () => requestConfirm('delete', quotation), variant: 'danger' as const }]
-      : []),
-    ...(canStaffSendToCustomer(status) || status === 'SENT'
-      ? [{ label: 'Expire', onClick: () => requestConfirm('expire', quotation), variant: 'danger' as const }]
-      : []),
   ];
 
   const continuumSteps = buildFclContinuumSteps({
@@ -716,196 +680,504 @@ export default function QuotationDetailPage() {
       : undefined,
   });
 
+  const enquiryHref =
+    quotation.enquiry_id && isUuid(quotation.enquiry_id)
+      ? `/sales/enquiries/${quotation.enquiry_id}`
+      : undefined;
+  const shipmentHref =
+    generatedLink?.kind === 'shipment'
+      ? generatedLink.href
+      : hasShipment && quotation.shipment_id
+        ? `/operations/shipments/${quotation.shipment_id}`
+        : undefined;
+  const jobHref =
+    generatedLink?.kind === 'job'
+      ? generatedLink.href
+      : hasJob && quotation.job_id
+        ? jobDetailPath({ id: quotation.job_id, job_type: quotation.job_type })
+        : undefined;
+
   return (
     <>
-            {(actionError || costingWarningMessage || actionMessage) && (
-        <div className="mb-3 space-y-2">
-          {(actionError || costingWarningMessage) && (
-            <div
-              role="alert"
-              className="rounded-lg border px-3 py-2 text-sm"
-              style={{
-                background: 'var(--color-danger-100)',
-                borderColor: '#FECACA',
-                color: 'var(--color-danger-700)',
-              }}
-            >
-              {actionError || costingWarningMessage}
-            </div>
-          )}
-          {actionMessage && (
-            <div
-              role="status"
-              className="rounded-lg border px-3 py-2 text-sm"
-              style={{
-                background: 'var(--color-success-100)',
-                borderColor: '#BBF7D0',
-                color: 'var(--color-success-700)',
-              }}
-            >
-              {actionMessage}
-            </div>
-          )}
-        </div>
-      )}
-
-      <div className="mb-3 space-y-2">
-        <FclContinuumRail steps={continuumSteps} />
-        <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-[13px]">
-          <span className="font-semibold text-[var(--fresa-header-text,#0A2942)]">Related: </span>
-          {quotation.enquiry_id && isUuid(quotation.enquiry_id) ? (
-            <Link
-              className="mr-3 text-[var(--fresa-action,#0A2942)] hover:underline"
-              to={`/sales/enquiries/${quotation.enquiry_id}`}
-            >
-              Enquiry
-            </Link>
-          ) : null}
-          {hasShipment ? (
-            <Link
-              className="mr-3 text-[var(--fresa-action,#0A2942)] hover:underline"
-              to={`/operations/shipments/${quotation.shipment_id}`}
-            >
-              Shipment
-            </Link>
-          ) : null}
-          {hasJob && quotation.job_id ? (
-            <Link
-              className="mr-3 text-[var(--fresa-action,#0A2942)] hover:underline"
-              to={jobDetailPath({ id: quotation.job_id, job_type: quotation.job_type })}
-            >
-              Job
-            </Link>
-          ) : null}
-          {!quotation.enquiry_id && !hasShipment && !hasJob ? (
-            <span className="text-[#64748b]">No linked records yet</span>
-          ) : null}
-        </div>
-      </div>
-
-      {id ? <QuotationVendorPassPanel quotationId={id} /> : null}
-
-      {quotation && quotation.job_type === 'CUSTOMS_CLEARANCE' ? (
-        <div className="mb-3 rounded-lg border border-teal-200 bg-teal-50/80 p-4 text-sm text-teal-900">
-          <p className="font-medium">Customs Clearance quote</p>
-          <p className="mt-1 text-teal-800/90">
-            Customer accepts → Convert to job → open the job under Customs Clearance Ops (docs →
-            classify → file → duty → clear → invoice → close).{' '}
-            <Link className="underline" to="/customs-clearance">
-              CC hub
-            </Link>
-            {quotation.job_id ? (
-              <>
-                {' · '}
-                <Link
-                  className="underline"
-                  to={`/jobs/customs-clearance/${quotation.job_id}`}
-                >
-                  Open linked job
-                </Link>
-              </>
-            ) : null}
-          </p>
-        </div>
-      ) : null}
-
-            {quotation && isNvoccQuoteJobType(quotation.job_type) ? (
-        <div className="mb-3 space-y-3 rounded-lg border border-gray-200 bg-white p-4">
-          <NvoccSeaExportFlowRail
-            current={seaExportStage}
-            done={(() => {
-              const order: SeaExportStageId[] = [
-                'customer-request',
-                'cs-receive',
-                'quote-sent',
-                'customer-accept',
-                'booking-form',
-                'invoice',
-                'cro-container',
-              ];
-              const idx = order.indexOf(seaExportStage);
-              const map: Partial<Record<SeaExportStageId, boolean>> = {};
-              order.forEach((stageId, i) => {
-                if (i < idx) map[stageId] = true;
-              });
-              return map;
-            })()}
-            band="1-2"
-          />
-          <p className="text-sm text-gray-600">
-            {seaExportHelp.text}{' '}
-            <Link className="underline text-[var(--color-primary-600)]" to={seaExportHelp.href}>
-              {seaExportHelp.linkLabel}
-            </Link>
-            {linkedBookingQuery.isFetching ? (
-              <span className="ml-2 text-xs text-gray-400">Syncing booking…</span>
-            ) : null}
-          </p>
-          {quotation.job_id || linkedBooking?.job_id ? (
-            <button
-              type="button"
-              className="text-sm underline text-[var(--color-primary-600)]"
-              onClick={() =>
-                navigate(
-                  jobDetailPath({
-                    id: (quotation.job_id || linkedBooking?.job_id)!,
-                    job_type: quotation.job_type,
-                  }),
-                )
-              }
-            >
-              Open linked job (Stage 3–4)
-            </button>
-          ) : null}
-        </div>
-      ) : null}
-
-      {quotation && isAirQuoteJobType(quotation.job_type) ? (
-        <div
-          role="note"
-          className="mb-3 rounded-lg border px-3 py-2 text-sm"
-          style={{
-            background: 'var(--color-primary-50, #EFF6FF)',
-            borderColor: 'var(--color-primary-200, #BFDBFE)',
-            color: 'var(--color-neutral-700)',
-          }}
-        >
-          Air freight: after approve there is <strong>no auto job / no invoice</strong>. Customer
-          completes the <strong>booking form in the portal</strong> (BOOKING_FORM_COMPLETE), then
-          staff sends invoice. Use <strong>Start air ops job</strong> when Ops APIs need a job
-          shell. Gate order: CS triage → quote sent → customer accept → booking form → invoice →
-          export/import ops.
-          {quotation.job_id ? (
-            <>
-              {' '}
-              <button
-                type="button"
-                className="underline text-[var(--color-primary-600)]"
-                onClick={() =>
-                  navigate(
-                    jobDetailPath({
-                      id: quotation.job_id!,
-                      job_type: quotation.job_type,
-                    }),
-                  )
-                }
-              >
-                Open linked job
-              </button>
-            </>
-          ) : null}
-        </div>
-      ) : null}
-
       <DetailPageTemplate
+        eyebrow="Quotation details"
         title={title}
-        subtitle={customerLabel}
+        subtitle={
+          <span className="inline-flex flex-wrap items-center gap-2">
+            <OperationTypeBadge code={quotation.job_type} />
+            {customerLabel && customerLabel !== '—' ? <span>{customerLabel}</span> : null}
+          </span>
+        }
         statusLabel={STATUS_LABELS[status] ?? status}
         statusTone={statusTone(status)}
         onBack={() => navigate('/quotations/all')}
         backLabel="All quotations"
         actions={headerActions}
         actionsDisabled={pending}
+        banner={
+          <>
+            {(actionError || costingWarningMessage || actionMessage) && (
+              <div className="space-y-2">
+                {(actionError || costingWarningMessage) && (
+                  <div
+                    role="alert"
+                    className="rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700"
+                  >
+                    {actionError || costingWarningMessage}
+                  </div>
+                )}
+                {actionMessage && (
+                  <div
+                    role="status"
+                    className="rounded-sm border border-green-200 bg-green-50 px-3 py-2 text-[13px] text-green-700"
+                  >
+                    <p>{actionMessage}</p>
+                    {generatedLink?.kind === 'shipment' ? (
+                      <p className="mt-1">
+                        Shipment No:{' '}
+                        <Link className="font-semibold underline" to={generatedLink.href}>
+                          {generatedLink.label}
+                        </Link>
+                      </p>
+                    ) : null}
+                    {generatedLink?.kind === 'job' ? (
+                      <p className="mt-1">
+                        Job No:{' '}
+                        <Link className="font-semibold underline" to={generatedLink.href}>
+                          {generatedLink.label}
+                        </Link>
+                      </p>
+                    ) : null}
+                  </div>
+                )}
+              </div>
+            )}
+            <FclContinuumRail steps={continuumSteps} />
+            <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-[13px]">
+              <span className="font-semibold text-[var(--fresa-header-text,#0A2942)]">Related: </span>
+              {enquiryHref ? (
+                <Link className="mr-3 text-[var(--fresa-action,#0A2942)] hover:underline" to={enquiryHref}>
+                  Enquiry
+                </Link>
+              ) : null}
+              {shipmentHref ? (
+                <Link className="mr-3 text-[var(--fresa-action,#0A2942)] hover:underline" to={shipmentHref}>
+                  Shipment No:{' '}
+                  {generatedLink?.kind === 'shipment'
+                    ? generatedLink.label
+                    : quotation.shipment_number?.trim() || quotation.shipment_id?.slice(0, 8)}
+                </Link>
+              ) : null}
+              {jobHref ? (
+                <Link className="mr-3 text-[var(--fresa-action,#0A2942)] hover:underline" to={jobHref}>
+                  Job No:{' '}
+                  {generatedLink?.kind === 'job'
+                    ? generatedLink.label
+                    : quotation.job_number?.trim() || quotation.job_id?.slice(0, 8)}
+                </Link>
+              ) : null}
+              {!enquiryHref && !shipmentHref && !jobHref ? (
+                <span className="text-[#64748b]">No linked records yet</span>
+              ) : null}
+            </div>
+            {quotation.job_type === 'CUSTOMS_CLEARANCE' ? (
+              <div className="rounded-lg border border-teal-200 bg-teal-50/80 p-4 text-sm text-teal-900">
+                <p className="font-medium">Customs Clearance quote</p>
+                <p className="mt-1 text-teal-800/90">
+                  Customer accepts → Convert to job → open the job under Customs Clearance Ops (docs →
+                  classify → file → duty → clear → invoice → close).{' '}
+                  <Link className="underline" to="/customs-clearance">
+                    CC hub
+                  </Link>
+                  {quotation.job_id ? (
+                    <>
+                      {' · '}
+                      <Link className="underline" to={`/jobs/customs-clearance/${quotation.job_id}`}>
+                        Open linked job
+                      </Link>
+                    </>
+                  ) : null}
+                </p>
+              </div>
+            ) : null}
+            {isNvoccQuoteJobType(quotation.job_type) ? (
+              <div className="space-y-3 rounded-lg border border-gray-200 bg-white p-4">
+                <NvoccSeaExportFlowRail
+                  current={seaExportStage}
+                  done={(() => {
+                    const order: SeaExportStageId[] = [
+                      'customer-request',
+                      'cs-receive',
+                      'quote-sent',
+                      'customer-accept',
+                      'booking-form',
+                      'invoice',
+                      'cro-container',
+                    ];
+                    const idx = order.indexOf(seaExportStage);
+                    const map: Partial<Record<SeaExportStageId, boolean>> = {};
+                    order.forEach((stageId, i) => {
+                      if (i < idx) map[stageId] = true;
+                    });
+                    return map;
+                  })()}
+                  band="1-2"
+                />
+                <p className="text-sm text-gray-600">
+                  {seaExportHelp.text}{' '}
+                  <Link className="underline text-[var(--color-primary-600)]" to={seaExportHelp.href}>
+                    {seaExportHelp.linkLabel}
+                  </Link>
+                  {linkedBookingQuery.isFetching ? (
+                    <span className="ml-2 text-xs text-gray-400">Syncing booking…</span>
+                  ) : null}
+                </p>
+                {quotation.job_id || linkedBooking?.job_id ? (
+                  <button
+                    type="button"
+                    className="text-sm underline text-[var(--color-primary-600)]"
+                    onClick={() =>
+                      navigate(
+                        jobDetailPath({
+                          id: (quotation.job_id || linkedBooking?.job_id)!,
+                          job_type: quotation.job_type,
+                        }),
+                      )
+                    }
+                  >
+                    Open linked job (Stage 3–4)
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
+            {isAirQuoteJobType(quotation.job_type) ? (
+              <div
+                role="note"
+                className="rounded-lg border px-3 py-2 text-sm"
+                style={{
+                  background: 'var(--color-primary-50, #EFF6FF)',
+                  borderColor: 'var(--color-primary-200, #BFDBFE)',
+                  color: 'var(--color-neutral-700)',
+                }}
+              >
+                Air freight: after approve there is <strong>no auto job / no invoice</strong>. Customer
+                completes the <strong>booking form in the portal</strong> (BOOKING_FORM_COMPLETE), then
+                staff sends invoice. Use <strong>Start air ops job</strong> when Ops APIs need a job
+                shell. Gate order: CS triage → quote sent → customer accept → booking form → invoice →
+                export/import ops.
+                {quotation.job_id ? (
+                  <>
+                    {' '}
+                    <button
+                      type="button"
+                      className="underline text-[var(--color-primary-600)]"
+                      onClick={() =>
+                        navigate(
+                          jobDetailPath({
+                            id: quotation.job_id!,
+                            job_type: quotation.job_type,
+                          }),
+                        )
+                      }
+                    >
+                      Open linked job
+                    </button>
+                  </>
+                ) : null}
+              </div>
+            ) : null}
+          </>
+        }
+        detailTitle="Quotation detail"
+        detailSection={
+          <div className="grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-3">
+            <FresaReadonlyField label="Quotation No" value={title} />
+            <FresaReadonlyField
+              label="Client"
+              value={customerLabel}
+              href={
+                quotation.customer_id && isUuid(quotation.customer_id)
+                  ? `/parties/${quotation.customer_id}`
+                  : undefined
+              }
+            />
+            <FresaReadonlyField
+              label="Department"
+              value={quotation.department_name || quotation.job_type?.replaceAll('_', ' ')}
+            />
+            <FresaReadonlyField label="Status" value={STATUS_LABELS[status] ?? status} />
+            <FresaReadonlyField label="Quotation date" value={quotation.quotation_date} />
+            <FresaReadonlyField label="Currency" value={quotation.currency_code} />
+            <FresaReadonlyField label="Enquiry No" value={enquiryHref ? 'View enquiry' : undefined} href={enquiryHref} />
+            <FresaReadonlyField
+              label="Shipment No"
+              value={
+                generatedLink?.kind === 'shipment'
+                  ? generatedLink.label
+                  : quotation.shipment_number || (shipmentHref ? 'View shipment' : undefined)
+              }
+              href={shipmentHref}
+            />
+            <FresaReadonlyField
+              label="Job No"
+              value={
+                generatedLink?.kind === 'job'
+                  ? generatedLink.label
+                  : quotation.job_number || (jobHref ? 'View job' : undefined)
+              }
+              href={jobHref}
+            />
+            <FresaReadonlyField label="Incoterms" value={quotation.incoterm} />
+            <FresaReadonlyField label="Commodity" value={quotation.commodity} />
+            <FresaReadonlyField label="POL" value={originLabel} />
+            <FresaReadonlyField label="POD" value={destinationLabel} />
+            <FresaReadonlyField label="Carrier" value={quotation.carrier_name} />
+            <FresaReadonlyField label="Valid until" value={quotation.valid_until} />
+          </div>
+        }
+        toolbarLabel="Generation actions"
+        toolbar={
+          <>
+            {quotation.actions?.can_change_status !== false ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="warning"
+                leftIcon={<CheckCircle2 />}
+                disabled={pending}
+                onClick={() => {
+                  setChangeStatusValue(
+                    canApproveVerified ? 'APPROVED' : canVerify ? 'VERIFIED' : 'APPROVED',
+                  );
+                  setChangeStatusOpen(true);
+                }}
+              >
+                Change Quote Status
+              </Button>
+            ) : null}
+            {canGenerateShipment ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="report"
+                leftIcon={<Ship />}
+                disabled={pending}
+                onClick={() => requestConfirm('generate-shipment', quotation)}
+              >
+                Generate Shipment
+              </Button>
+            ) : null}
+            {canGenerateJobFromQuote ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="success"
+                leftIcon={<Briefcase />}
+                disabled={pending}
+                onClick={() => requestConfirm('generate-job', quotation)}
+              >
+                Generate Job
+              </Button>
+            ) : null}
+            <Button
+              size="sm"
+              type="button"
+              variant="create"
+              leftIcon={<Copy />}
+              disabled={pending}
+              onClick={() =>
+                requestConfirm(
+                  quotation.actions?.can_copy === false ? 'duplicate' : 'copy',
+                  quotation,
+                )
+              }
+            >
+              {quotation.actions?.can_copy === false ? 'Duplicate' : 'Copy'}
+            </Button>
+            <Button
+              size="sm"
+              type="button"
+              variant="success"
+              leftIcon={<Send />}
+              disabled={pending}
+              onClick={() => setVendorPassOpen(true)}
+            >
+              Send to vendor
+            </Button>
+            {editable ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="primary"
+                leftIcon={<Send />}
+                disabled={pending}
+                onClick={() => requestConfirm('submit', quotation)}
+              >
+                Submit
+              </Button>
+            ) : null}
+            {canVerify ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="edit"
+                leftIcon={<CheckCircle2 />}
+                disabled={pending}
+                onClick={() => requestConfirm('verify', quotation)}
+              >
+                Verify
+              </Button>
+            ) : null}
+            {canApproveVerified ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="success"
+                leftIcon={<ThumbsUp />}
+                disabled={pending}
+                onClick={() => requestConfirm('approve-verified', quotation)}
+              >
+                Approve verified
+              </Button>
+            ) : null}
+            {canStaffInternallyApprove(status) && !canApproveVerified ? (
+              <>
+                <Button
+                  size="sm"
+                  type="button"
+                  variant="success"
+                  leftIcon={<ThumbsUp />}
+                  disabled={pending}
+                  onClick={() => requestConfirm('approve', quotation)}
+                >
+                  Internally approve
+                </Button>
+                <Button
+                  size="sm"
+                  type="button"
+                  variant="danger"
+                  leftIcon={<ThumbsDown />}
+                  disabled={pending}
+                  onClick={() => requestConfirm('reject', quotation)}
+                >
+                  Reject
+                </Button>
+              </>
+            ) : null}
+            {quotation.actions?.can_send === true ||
+            (quotation.actions?.can_send !== false && canStaffSendToCustomer(status)) ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="primary"
+                leftIcon={<Send />}
+                disabled={pending}
+                onClick={() => requestConfirm('send', quotation)}
+              >
+                Send
+              </Button>
+            ) : null}
+            {canConvertQuotationToJob(status, quotation.job_type, quotation.actions) &&
+            !canGenerateJobFromQuote ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="warning"
+                leftIcon={<Briefcase />}
+                disabled={pending}
+                onClick={() => requestConfirm('convert', quotation)}
+              >
+                Convert to job
+              </Button>
+            ) : null}
+            {canStartAirOpsJobFromQuote(status, quotation.job_type, quotation.job_id) ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="success"
+                leftIcon={<Plane />}
+                disabled={pending}
+                onClick={() => requestConfirm('start-air-ops', quotation)}
+              >
+                Start air ops job
+              </Button>
+            ) : null}
+            {isNvoccQuoteJobType(quotation.job_type) && status === 'APPROVED' ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="report"
+                leftIcon={<Ship />}
+                disabled={pending}
+                onClick={() => navigate('/nvocc/booking-list')}
+              >
+                Continue on NVOCC bookings
+              </Button>
+            ) : null}
+            <Button
+              size="sm"
+              type="button"
+              variant="report"
+              leftIcon={<FileText />}
+              disabled={pending}
+              onClick={() => setPdfOpen(true)}
+            >
+              PDF
+            </Button>
+            <Button
+              size="sm"
+              type="button"
+              variant="edit"
+              leftIcon={<Send />}
+              disabled={pending}
+              onClick={() => setEmailOpen(true)}
+            >
+              Email
+            </Button>
+            {canArchiveQuotation(status) ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="danger"
+                leftIcon={<X />}
+                disabled={pending}
+                onClick={() => requestConfirm('archive', quotation)}
+              >
+                Archive
+              </Button>
+            ) : null}
+            {status === 'DRAFT' ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="danger"
+                leftIcon={<X />}
+                disabled={pending}
+                onClick={() => requestConfirm('delete', quotation)}
+              >
+                Delete
+              </Button>
+            ) : null}
+            {canStaffSendToCustomer(status) || status === 'SENT' ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="danger"
+                leftIcon={<X />}
+                disabled={pending}
+                onClick={() => requestConfirm('expire', quotation)}
+              >
+                Expire
+              </Button>
+            ) : null}
+            {!canGenerateShipment && !canGenerateJobFromQuote && isApprovedLike === false ? (
+              <span className="text-[12px] text-[var(--color-neutral-500)]">
+                Approve the quotation (Change Quote Status → Verified → Approved) to unlock Generate
+                Shipment and Generate Job.
+              </span>
+            ) : null}
+          </>
+        }
         sidebar={
           <div className="space-y-4">
             <QuotationStatusBadge status={status} />
@@ -1114,14 +1386,14 @@ export default function QuotationDetailPage() {
             if (kind === 'generate-shipment')
               return run(
                 () => actions.generateShipment.mutateAsync(),
-                'Shipment generated.',
-                { skipBookingFormJobGate: true },
+                'Shipment has been successfully created.',
+                { skipBookingFormJobGate: true, stayOnPage: true },
               );
             if (kind === 'generate-job')
               return run(
                 () => actions.generateJob.mutateAsync(),
-                'Job generated.',
-                { skipBookingFormJobGate: true },
+                'Job has been successfully generated.',
+                { skipBookingFormJobGate: true, stayOnPage: true },
               );
             if (kind === 'archive') return run(() => actions.archive.mutateAsync(), 'Archived.');
             if (kind === 'expire') return run(() => actions.expire.mutateAsync(), 'Expired.');
@@ -1135,6 +1407,16 @@ export default function QuotationDetailPage() {
         />
       )}
 
+      <QuotationVendorPassModal
+        open={vendorPassOpen}
+        quotationId={id}
+        onClose={() => setVendorPassOpen(false)}
+        onSuccess={(msg) => {
+          setActionError(null);
+          setActionMessage(msg);
+        }}
+      />
+
       {changeStatusOpen && (
         <Modal
           open
@@ -1145,13 +1427,15 @@ export default function QuotationDetailPage() {
               <Button
                 type="button"
                 variant="secondary"
+                leftIcon={<X />}
                 disabled={pending}
                 onClick={() => setChangeStatusOpen(false)}
               >
-                Back
+                Cancel
               </Button>
               <Button
                 type="button"
+                leftIcon={<CheckCircle2 />}
                 disabled={pending || !changeStatusValue}
                 onClick={() =>
                   void run(async () => {

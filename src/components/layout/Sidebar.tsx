@@ -61,6 +61,11 @@ interface NavItem {
    * Checked against JWT keys like `wms_module.see` — not hardcoded role lists.
    */
   matrixModule?: string;
+  /**
+   * Alternate Super Admin `enabled_modules` keys — item shows if any key is enabled
+   * (e.g. Shipments when either `shipments` or legacy `operations` is on).
+   */
+  enabledModuleAny?: string[];
   adminOnly?: boolean;
   iconStyle?: NavIconStyle;
   /** Highlight when pathname starts with this prefix (e.g. sub-routes). */
@@ -410,13 +415,19 @@ const OPS_NAV_ITEMS: NavItem[] = [
     label: 'Shipments',
     path: '/operations/shipments',
     Icon: Package,
-    permission: 'menu_documentation',
+    permission: 'shipments.view',
     permissionAny: [
+      'shipments.view',
+      'shipments.create',
+      'shipments.update',
+      'shipments.generate',
+      'shipments.manage',
       'menu_documentation',
       'menu_jobs_sea_export',
       'menu_jobs_sea_import',
     ],
-    matrixModule: 'operations',
+    matrixModule: 'shipments',
+    enabledModuleAny: ['shipments', 'operations'],
   },
   {
     label: 'Barcode scan',
@@ -582,12 +593,27 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
       ...group,
       items: group.items.filter((item) => {
         // Super Admin Features → enabled_modules (applies to Tenant Admin too).
-        if (item.matrixModule && authCtx && !authCtx.hasEnabledModule(item.matrixModule)) {
+        const enabledKeys =
+          item.enabledModuleAny?.length
+            ? item.enabledModuleAny
+            : item.matrixModule
+              ? [item.matrixModule]
+              : [];
+        if (
+          enabledKeys.length > 0 &&
+          authCtx &&
+          !enabledKeys.some((key) => authCtx.hasEnabledModule(key))
+        ) {
           return false;
         }
         if (isTenantAdmin) return true;
         if (item.matrixModule) {
           if (authCtx?.hasMatrixModule(item.matrixModule, 'see')) return true;
+        }
+        if (item.enabledModuleAny?.length) {
+          if (item.enabledModuleAny.some((key) => authCtx?.hasMatrixModule(key, 'see'))) {
+            return true;
+          }
         }
         if (!item.permission && !item.permissionAny && !item.matrixModule) return true;
         if (item.permissionAny?.length) {

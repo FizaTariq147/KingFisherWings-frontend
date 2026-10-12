@@ -15,7 +15,10 @@ const stepClass = (step: ContinuumStep) => {
   return 'text-[var(--color-neutral-500)]';
 };
 
-/** Compact Party → … → Job rail driven by known IDs/status (not fake progress). */
+/**
+ * Compact Party → Enquiry → Quotation → Verified → Approved → Shipment → Job rail.
+ * Used for every job type (not FCL-only).
+ */
 export function FclContinuumRail({
   steps,
   className,
@@ -25,7 +28,7 @@ export function FclContinuumRail({
 }) {
   return (
     <nav
-      aria-label="FCL workflow"
+      aria-label="Ops continuum"
       className={cn(
         'flex flex-wrap items-center gap-1 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2 text-xs',
         className,

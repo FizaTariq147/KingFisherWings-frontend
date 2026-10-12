@@ -59,6 +59,11 @@ export const DOCUMENTATION_API = {
     downloadSubmission: (submissionId: string) =>
       `/documentation/edi/submissions/${submissionId}/download`,
   },
+  jobs: {
+    list: '/documentation/jobs',
+    createWizard: '/documentation/jobs/create-wizard',
+    create: '/documentation/jobs/create',
+  },
   jobTransfer: {
     export: '/documentation/jobs/export',
     import: '/documentation/jobs/import',

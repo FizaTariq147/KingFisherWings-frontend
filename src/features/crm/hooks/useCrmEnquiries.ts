@@ -92,7 +92,8 @@ export const useCopyCrmEnquiry = () => {
 export const useCancelCrmEnquiry = () => {
   const c = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => crmEnquiriesService.cancel(id),
+    mutationFn: ({ id, cancel_reason }: { id: string; cancel_reason: string }) =>
+      crmEnquiriesService.cancel(id, { cancel_reason }),
     onSuccess: invalidate(c),
   });
 };

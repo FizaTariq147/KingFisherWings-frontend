@@ -94,7 +94,7 @@ export function VendorDashboardHeader({
 
             disabled={refreshing}
 
-            className="inline-flex h-9 items-center gap-2 rounded-full bg-[var(--color-primary)] px-4 text-xs font-medium text-white hover:opacity-90 disabled:opacity-60"
+            className="inline-flex h-9 items-center gap-2 rounded-full bg-[var(--btn-primary-bg)] px-4 text-xs font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--btn-primary-ring)] focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-[var(--btn-disabled-opacity,0.45)]"
 
           >
 

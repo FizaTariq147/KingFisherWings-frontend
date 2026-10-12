@@ -29,6 +29,7 @@ import {
 import { normalizeQuotationPdfInfo } from '../utils/normalizeQuotationPdf';
 import { normalizeQuotationDashboardStats } from '../utils/normalizeQuotationDashboard';
 import { quotationTotalAmount } from '../utils/quotationDisplay';
+import { formatShipmentsPermissionError } from '@/features/shipments/utils/shipmentPermissions';
 import type {
   ApprovalDecisionDto,
   CreateOnlineQuoteDto,
@@ -53,6 +54,12 @@ import type {
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   return value as Record<string, unknown>;
+}
+
+function strField(value: unknown): string | undefined {
+  if (value === undefined || value === null) return undefined;
+  const s = String(value).trim();
+  return s || undefined;
 }
 
 function normalizeMeta(
@@ -1112,28 +1119,55 @@ export const quotationService = {
     }
   },
 
-  /** POST /quotations/:id/generate-shipment — Fresa continuum. */
-  async generateShipment(id: string): Promise<Quotation & { shipment_id?: string }> {
+  /** POST /quotations/:id/generate-shipment — Fresa continuum (OpenAPI). */
+  async generateShipment(
+    id: string,
+  ): Promise<Quotation & { shipment_id?: string; shipment_number?: string }> {
     assertId(id);
     try {
       const res = await withGatewayRetry(() =>
         axiosInstance.post<unknown>(QUOTATION_API.generateShipment(id)),
       );
       const shipmentId = extractShipmentIdFromResponse(res.data);
-      const quotation =
-        normalizeQuotation(unwrapEntity(res.data)) ?? (await this.getById(id));
+      const root = asRecord(res.data);
+      const data = asRecord(root?.data) ?? root;
+      const nestedShipment = asRecord(data?.shipment);
+      const shipmentNumber =
+        strField(data?.shipment_number) ??
+        strField(data?.shipmentNumber) ??
+        strField(data?.shipment_no) ??
+        strField(nestedShipment?.shipment_number) ??
+        strField(nestedShipment?.shipmentNumber) ??
+        strField(nestedShipment?.number) ??
+        strField(nestedShipment?.reference);
+      // Always reload quotation by the original id — generate responses may be a bare
+      // shipment entity and must not be treated as a Quotation.
+      let quotation: Quotation;
+      try {
+        quotation = await this.getById(id);
+      } catch {
+        const fromBody = normalizeQuotation(unwrapEntity(res.data));
+        quotation = fromBody?.id === id ? fromBody : ({ id } as Quotation);
+      }
+      const resolvedShipmentId = shipmentId || quotation.shipment_id;
       return {
         ...quotation,
-        ...(shipmentId ? { shipment_id: shipmentId } : {}),
-        ...(quotation.shipment_id ? {} : shipmentId ? { shipment_id: shipmentId } : {}),
+        id,
+        ...(resolvedShipmentId ? { shipment_id: resolvedShipmentId } : {}),
+        ...(shipmentNumber || quotation.shipment_number
+          ? { shipment_number: shipmentNumber || quotation.shipment_number }
+          : {}),
       };
     } catch (error) {
-      throw formatAxiosError(error);
+      const formatted = formatAxiosError(error);
+      throw new Error(formatShipmentsPermissionError(formatted.message));
     }
   },
 
   /** POST /quotations/:id/generate-job — Fresa continuum (distinct from convert-to-job). */
-  async generateJob(id: string): Promise<Quotation & { job_id?: string }> {
+  async generateJob(
+    id: string,
+  ): Promise<Quotation & { job_id?: string; job_number?: string }> {
     assertId(id);
     try {
       const res = await withGatewayRetry(() =>
@@ -1142,11 +1176,24 @@ export const quotationService = {
       const jobId =
         extractJobIdFromConvertResponse(res.data) ||
         extractJobIdFromConvertResponse(unwrapEntity(res.data));
+      const root = asRecord(res.data);
+      const data = asRecord(root?.data) ?? root;
+      const nestedJob = asRecord(data?.job);
+      const jobNumber =
+        strField(data?.job_number) ??
+        strField(data?.jobNumber) ??
+        strField(data?.job_no) ??
+        strField(nestedJob?.job_number) ??
+        strField(nestedJob?.jobNumber) ??
+        strField(nestedJob?.number);
       const quotation =
         normalizeQuotation(unwrapEntity(res.data)) ?? (await this.getById(id));
       return {
         ...quotation,
         ...(jobId ? { job_id: jobId } : {}),
+        ...(jobNumber || quotation.job_number
+          ? { job_number: jobNumber || quotation.job_number }
+          : {}),
       };
     } catch (error) {
       throw formatAxiosError(error);

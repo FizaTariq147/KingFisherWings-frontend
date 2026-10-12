@@ -13,7 +13,7 @@ export default function Forbidden() {
         <button
           type="button"
           onClick={() => navigate('/app/dashboard')}
-          className="bg-[#FF751F] hover:bg-[#FF751F] text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
+          className="inline-flex items-center justify-center rounded-sm bg-[var(--btn-primary-bg)] px-5 py-2.5 text-sm font-medium text-[var(--btn-primary-text)] transition-colors hover:bg-[var(--btn-primary-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--btn-primary-ring)] focus-visible:ring-offset-1"
         >
           Go to Dashboard
         </button>

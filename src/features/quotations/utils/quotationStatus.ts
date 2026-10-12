@@ -119,15 +119,15 @@ export function canConvertQuotationToJob(
   jobType?: string,
   actions?: { can_convert?: boolean } | null,
 ): boolean {
-  // NVOCC / Air: gated booking-form → invoice (no Convert button).
-  if (usesGatedFreightQuoteFlow(jobType)) return false;
-  // Sea/Land/Road/…: convert only after booking-form submit (no manual Convert).
-  if (usesModeBookingFormConvertFlow(jobType)) return false;
-  // Prefer server GET actions flag when present.
+  // Ops continuum (all job types): Approved → Generate Shipment → Job.
+  // Manual "Convert to job" only when the API explicitly allows it.
   if (actions && typeof actions.can_convert === 'boolean') {
     return actions.can_convert;
   }
-  return coerceQuotationStatus(status) === 'APPROVED';
+  // Legacy fallbacks — still block gated / booking-form modes from skipping shipment.
+  if (usesGatedFreightQuoteFlow(jobType)) return false;
+  if (usesModeBookingFormConvertFlow(jobType)) return false;
+  return false;
 }
 
 /** NVOCC + Air use flowchart gates; other modes keep send → approve → convert. */

@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { AlertCircle, Plus, RefreshCw, Upload, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { PageBackLink } from '@/components/ui/PageBackLink';
+import { documentationJobsService } from '@/features/documentation/services/documentation.service';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import { JobFilters } from '../components/JobFilters';
 import { JobTable } from '../components/JobTable';
@@ -17,6 +19,7 @@ import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useJobs } from '../hooks/useJobs';
 import type { Job } from '../types/job.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { normalizeJob } from '../utils/normalizeJob';
 import { jobDetailPath } from '../utils/jobRoute';
 
 export type HubAllJobsVariant = 'nvocc' | 'documentation' | 'management';
@@ -120,7 +123,39 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     ],
   );
 
-  const { data, isLoading, isFetching, isError, error, refetch } = useJobs(listParams);
+  const jobsQuery = useJobs(listParams, { enabled: variant !== 'documentation' });
+  const documentationQuery = useQuery({
+    queryKey: ['documentation', 'jobs', listParams],
+    queryFn: () =>
+      documentationJobsService.list({
+        page: listParams.page,
+        limit: listParams.limit,
+        search: listParams.search,
+        status: listParams.status,
+        order: listParams.order,
+        from_date: listParams.from_date,
+        to_date: listParams.to_date,
+        branch_id: undefined,
+      }),
+    enabled: variant === 'documentation',
+  });
+  const data =
+    variant === 'documentation'
+      ? {
+          jobs: (documentationQuery.data?.items ?? [])
+            .map((row) => normalizeJob(row))
+            .filter((j): j is Job => Boolean(j)),
+          meta: documentationQuery.data?.meta,
+        }
+      : jobsQuery.data;
+  const isLoading =
+    variant === 'documentation' ? documentationQuery.isLoading : jobsQuery.isLoading;
+  const isFetching =
+    variant === 'documentation' ? documentationQuery.isFetching : jobsQuery.isFetching;
+  const isError = variant === 'documentation' ? documentationQuery.isError : jobsQuery.isError;
+  const error = variant === 'documentation' ? documentationQuery.error : jobsQuery.error;
+  const refetch =
+    variant === 'documentation' ? documentationQuery.refetch : jobsQuery.refetch;
   const lifecycle = useJobLifecycleMutations();
   const jobs = data?.jobs ?? [];
   const meta = data?.meta;
@@ -176,9 +211,23 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
               Upload Manifest
             </Button>
           )}
+          {variant === 'documentation' ? (
+            <Button
+              type="button"
+              variant="edit"
+              onClick={() =>
+                void documentationJobsService
+                  .createWizard()
+                  .then(() => navigate('/jobs/new'))
+                  .catch((err) => setActionError(getErrorMessage(err)))
+              }
+            >
+              <Wand2 className="h-4 w-4" />
+              Create wizard
+            </Button>
+          ) : null}
           <Button type="button" onClick={() => navigate(config.createPath)}>
-            <Wand2 className="h-4 w-4 sm:hidden" />
-            <Plus className="h-4 w-4 hidden sm:block" />
+            <Plus className="h-4 w-4" />
             Create
           </Button>
         </div>

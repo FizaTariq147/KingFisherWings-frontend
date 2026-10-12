@@ -249,7 +249,7 @@ export default function UserAccessPage() {
                       <button
                         type="button"
                         onClick={() => navigate(`/admin/users/${user.id}/edit`)}
-                        className="border border-blue-400 rounded px-2 py-1 text-blue-500 hover:bg-blue-50"
+                        className="rounded border border-[var(--btn-secondary-border)] bg-[var(--btn-secondary-bg)] px-2 py-1 text-[var(--btn-primary-bg)] hover:bg-[var(--btn-secondary-hover)]"
                       >
                         <SortIcon size={14} />
                       </button>

@@ -16,6 +16,8 @@ export interface DocumentationListParams {
   order?: string;
   search?: string;
   branch_id?: string;
+  department_id?: string;
+  billing_party_id?: string;
   status?: string;
   from_date?: string;
   to_date?: string;

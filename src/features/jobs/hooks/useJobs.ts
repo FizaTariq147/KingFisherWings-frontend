@@ -14,6 +14,11 @@ export const jobKeys = {
   all: ['tenant', 'jobs'] as const,
   list: (params: JobListParams) => [...jobKeys.all, 'list', params] as const,
   detail: (id: string) => [...jobKeys.all, 'detail', id] as const,
+  detailTab: (id: string, tab: string) => [...jobKeys.all, 'detail-tab', id, tab] as const,
+  statusOptions: (jobId?: string) => [...jobKeys.all, 'status-options', jobId ?? ''] as const,
+  gpum: (id: string) => [...jobKeys.all, 'gpum', id] as const,
+  chargeAttachments: (id: string, chargeId: string) =>
+    [...jobKeys.all, 'charge-attachments', id, chargeId] as const,
   houseJobs: (id: string) => [...jobKeys.all, 'house-jobs', id] as const,
   pnl: (id: string) => [...jobKeys.all, 'pnl', id] as const,
   milestones: (id: string) => [...jobKeys.all, 'milestones', id] as const,
@@ -64,8 +69,37 @@ export function useJob(id: string) {
   const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({
     queryKey: jobKeys.detail(id),
-    queryFn: () => jobService.getById(id),
+    /** Prefer Fresa detail (actions/tabs); falls back to GET /jobs/:id inside service. */
+    queryFn: () => jobService.getDetail(id),
     enabled: Boolean(accessToken) && isUuid(id),
+  });
+}
+
+export function useJobStatusOptions(jobId?: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.statusOptions(jobId),
+    queryFn: () => jobService.getStatusOptions(jobId),
+    enabled: Boolean(accessToken) && enabled,
+    staleTime: 60_000,
+  });
+}
+
+export function useJobDetailTab(id: string, tab: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.detailTab(id, tab),
+    queryFn: () => jobService.getDetailTab(id, tab),
+    enabled: Boolean(accessToken) && isUuid(id) && Boolean(tab.trim()) && enabled,
+  });
+}
+
+export function useJobGpum(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.gpum(id),
+    queryFn: () => jobService.getGpum(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
   });
 }
 

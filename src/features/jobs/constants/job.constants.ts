@@ -48,10 +48,13 @@ export const JOB_TYPE_WIZARD_OPTIONS: JobType[] = [
   'WAREHOUSE',
 ];
 
+/** Aligns with OpenAPI ChangeJobStatusDto / status-options catalog. */
 export const JOB_STATUSES = [
   'ENQUIRY',
   'QUOTATION',
   'BOOKING_CONFIRMED',
+  'APPROVED',
+  'OPEN',
   'IN_PROGRESS',
   'DOCS_PENDING',
   'CUSTOMS_CLEARANCE',
@@ -219,6 +222,8 @@ export const JOB_STATUS_LABELS: Record<JobStatus, string> = {
   ENQUIRY: 'Enquiry',
   QUOTATION: 'Quotation',
   BOOKING_CONFIRMED: 'Booking Confirmed',
+  APPROVED: 'Approved',
+  OPEN: 'Open',
   IN_PROGRESS: 'In Progress',
   DOCS_PENDING: 'Docs Pending',
   CUSTOMS_CLEARANCE: 'Customs Clearance',
@@ -227,3 +232,10 @@ export const JOB_STATUS_LABELS: Record<JobStatus, string> = {
   CANCELLED: 'Cancelled',
   ON_HOLD: 'On Hold',
 };
+
+/** Terminal statuses that support POST /jobs/:id/reopen. */
+export const JOB_REOPENABLE_STATUSES: JobStatus[] = [
+  'COMPLETED',
+  'CANCELLED',
+  'DELIVERED',
+];

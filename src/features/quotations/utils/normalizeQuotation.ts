@@ -348,6 +348,15 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
       str(r.shipment_id) ??
       str(r.shipmentId) ??
       str(asRecord(r.shipment)?.id),
+    shipment_number:
+      str(r.shipment_number) ??
+      str(r.shipmentNumber) ??
+      str(r.shipment_no) ??
+      str(r.shipmentNo) ??
+      str(asRecord(r.shipment)?.shipment_number) ??
+      str(asRecord(r.shipment)?.shipmentNumber) ??
+      str(asRecord(r.shipment)?.number) ??
+      str(asRecord(r.shipment)?.reference),
     enquiry_id:
       str(r.enquiry_id) ??
       str(r.enquiryId) ??

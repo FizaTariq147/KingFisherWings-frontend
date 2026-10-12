@@ -8,6 +8,7 @@ import {
   documentationChargeTemplateService,
   documentationDeliveryOrderService,
   documentationEdiService,
+  documentationJobsService,
   documentationJobTransferService,
   documentationMpciService,
   documentationTrackingService,
@@ -179,6 +180,30 @@ export function useChargeTemplateActions() {
       mutationFn: ({ id, dto }: { id: string; dto: ApplyChargeTemplateDto }) =>
         documentationChargeTemplateService.apply(id, dto),
       onSuccess: invalidate,
+    }),
+  };
+}
+
+export function useDocumentationJobs(params: DocumentationListParams, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: ['documentation', 'jobs', params],
+    queryFn: () => documentationJobsService.list(params),
+    enabled: Boolean(accessToken) && enabled,
+  });
+}
+
+export function useDocumentationJobCreateActions() {
+  const queryClient = useQueryClient();
+  return {
+    createWizard: useMutation({
+      mutationFn: () => documentationJobsService.createWizard(),
+    }),
+    create: useMutation({
+      mutationFn: (dto: Record<string, unknown>) => documentationJobsService.create(dto),
+      onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: ['documentation', 'jobs'] });
+      },
     }),
   };
 }
