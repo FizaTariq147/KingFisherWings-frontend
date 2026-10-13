@@ -14,10 +14,24 @@ function humanValue(value?: string | number | boolean | null): string | number |
   return value;
 }
 
-function Row({ label, value }: { label: string; value?: string | number | boolean | null }) {
+function Row({
+  label,
+  value,
+  hideWhenEmpty = false,
+}: {
+  label: string;
+  value?: string | number | boolean | null;
+  /** When true, omit the row if the customer/ops value is empty. */
+  hideWhenEmpty?: boolean;
+}) {
+  const empty =
+    value == null ||
+    value === '' ||
+    (typeof value === 'string' && !value.trim());
+  if (hideWhenEmpty && empty) return null;
   let display = '—';
   if (typeof value === 'boolean') display = value ? 'Yes' : 'No';
-  else if (value != null && value !== '') display = String(value);
+  else if (!empty) display = String(value);
   return (
     <div className="flex justify-between gap-4 py-1.5 text-sm border-b border-[var(--color-neutral-100)] last:border-0">
       <span className="shrink-0 text-[var(--color-neutral-500)]">{label}</span>
@@ -100,25 +114,55 @@ export function JobOverviewPanel({ job }: { job: Job }) {
         <Row label="Job number" value={jobDisplayNumber(job)} />
         <Row label="Type" value={JOB_TYPE_LABELS[job.job_type] ?? job.job_type} />
         <Row label="Status" value={JOB_STATUS_LABELS[job.status] ?? job.status} />
+        <Row label="Enquiry No" value={humanValue(job.enquiry_number)} hideWhenEmpty />
+        <Row label="Quotation No" value={humanValue(job.quotation_number)} hideWhenEmpty />
+        <Row label="Shipment No" value={humanValue(job.shipment_number)} hideWhenEmpty />
         <Row label="Branch" value={labels.branchLabel} />
-        <Row label="Department" value={humanValue(job.department_id)} />
-        <Row label="Parent job" value={humanValue(job.parent_job_id)} />
-        <Row label="Salesperson" value={labels.salespersonLabel} />
-        <Row label="Ops user" value={humanValue(job.ops_user_id)} />
-        <Row label="ETD" value={formatDate(job.etd) || job.etd} />
-        <Row label="ETA" value={formatDate(job.eta) || job.eta} />
-        <Row label="Incoterms" value={job.incoterms || sea?.incoterms || roadLand?.incoterms} />
-        <Row label="Service scope" value={job.service_scope} />
-        <Row label="Freight terms" value={freightTerms} />
-        <Row label="Tags" value={job.tags?.length ? job.tags.join(', ') : undefined} />
+        <Row label="Department" value={humanValue(job.department_id)} hideWhenEmpty />
+        <Row label="Parent job" value={humanValue(job.parent_job_id)} hideWhenEmpty />
+        <Row
+          label="Salesperson"
+          value={labels.salespersonLabel !== '—' ? labels.salespersonLabel : undefined}
+          hideWhenEmpty
+        />
+        <Row label="Ops user" value={humanValue(job.ops_user_id)} hideWhenEmpty />
+        <Row
+          label={
+            job.client_reference_type?.trim()
+              ? `Client ref (${job.client_reference_type})`
+              : 'Client ref'
+          }
+          value={humanValue(job.client_reference_no)}
+          hideWhenEmpty
+        />
+        <Row label="Currency" value={humanValue(job.currency_code)} hideWhenEmpty />
+        <Row label="ETD" value={formatDate(job.etd) || job.etd} hideWhenEmpty />
+        <Row label="ETA" value={formatDate(job.eta) || job.eta} hideWhenEmpty />
+        <Row label="Job date" value={formatDate(job.job_date) || job.job_date} hideWhenEmpty />
+        <Row
+          label="Incoterms"
+          value={job.incoterms || sea?.incoterms || roadLand?.incoterms}
+          hideWhenEmpty
+        />
+        <Row label="Service scope" value={job.service_scope} hideWhenEmpty />
+        <Row label="Freight terms" value={freightTerms} hideWhenEmpty />
+        <Row
+          label="Commodity description"
+          value={humanValue(job.commodity_description)}
+          hideWhenEmpty
+        />
+        <Row label="Customer remarks" value={humanValue(job.customer_remarks)} hideWhenEmpty />
+        <Row label="Notes" value={humanValue(job.notes)} hideWhenEmpty />
+        <Row label="Tags" value={job.tags?.length ? job.tags.join(', ') : undefined} hideWhenEmpty />
         <Row
           label="Barcode"
           value={
             job.barcode || job.barcode_value || job.courier_details?.barcode_value || undefined
           }
+          hideWhenEmpty
         />
-        <Row label="Created" value={formatDate(job.created_at) || job.created_at} />
-        <Row label="Updated" value={formatDate(job.updated_at) || job.updated_at} />
+        <Row label="Created" value={formatDate(job.created_at) || job.created_at} hideWhenEmpty />
+        <Row label="Updated" value={formatDate(job.updated_at) || job.updated_at} hideWhenEmpty />
       </Section>
 
       <Section title="Parties">

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Ship } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { ListRowEditButton } from '@/components/ui/ListRowEditButton';
 import {
   EmptyState,
   ErrorState,
@@ -170,6 +171,7 @@ export default function CrmEnquiriesPage() {
               <table className={listShell.table}>
                 <thead>
                   <tr>
+                    <th className={`${thClass} w-10`}>{''}</th>
                     <th className={thClass}>Enquiry No</th>
                     <th className={thClass}>Date</th>
                     <th className={thClass}>Department</th>
@@ -182,6 +184,16 @@ export default function CrmEnquiriesPage() {
                 <tbody>
                   {items.map((x) => (
                     <tr key={x.id} className={erpTable.row}>
+                      <td className={tdClass}>
+                        <ListRowEditButton
+                          title="Edit enquiry"
+                          onClick={() =>
+                            navigate(`/sales/enquiries/${x.id}`, {
+                              state: { focusEdit: true },
+                            })
+                          }
+                        />
+                      </td>
                       <td className={tdClass}>
                         <Link
                           className="font-semibold text-[var(--color-primary-700)] hover:underline"

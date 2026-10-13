@@ -2015,4 +2015,40 @@ export const quotationService = {
   normalizeLinesFromQuotation(quotation: Quotation): QuotationLine[] {
     return normalizeQuotationLines(quotation.lines ?? []);
   },
+
+  async getBookingForm(id: string, params?: Record<string, unknown>): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(QUOTATION_API.bookingForm(id), { params }),
+      );
+      return unwrapEntity(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async upsertBookingForm(id: string, body: Record<string, unknown>): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.put(QUOTATION_API.bookingForm(id), body),
+      );
+      return unwrapEntity(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async completeBookingForm(id: string, body: Record<string, unknown> = {}): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(QUOTATION_API.bookingFormComplete(id), body),
+      );
+      return unwrapEntity(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
 };

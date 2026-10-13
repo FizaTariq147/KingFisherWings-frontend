@@ -9,4 +9,6 @@ export const ORGANIZATION_API = {
     `/organization/number-formats/${encodeURIComponent(documentType)}/preview`,
   /** Job date source: ETD_ATD | ETA_ATA | SYSTEM_DATE */
   jobDateSettings: '/organization/settings/job-date',
+  /** Volumetric weight divisor (cm → kg) */
+  dimensionsSettings: '/organization/settings/dimensions',
 } as const;

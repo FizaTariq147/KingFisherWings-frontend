@@ -56,4 +56,7 @@ export const QUOTATION_API = {
   negotiation: (id: string) => `/quotations/${id}/negotiation`,
   negotiationAccept: (id: string) => `/quotations/${id}/negotiation/accept`,
   negotiationReject: (id: string) => `/quotations/${id}/negotiation/reject`,
+  bookingForm: (id: string) => `/quotations/${encodeURIComponent(id)}/booking-form`,
+  bookingFormComplete: (id: string) =>
+    `/quotations/${encodeURIComponent(id)}/booking-form/complete`,
 } as const;

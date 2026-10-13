@@ -831,6 +831,44 @@ export const portalQuotationsService = {
     }
   },
 
+  /** OpenAPI — GET/PUT/POST /portal/quotations/:id/booking-form* (does not replace compliance-form flows). */
+  async getQuotationBookingForm(
+    quotationId: string,
+    params?: Record<string, unknown>,
+  ): Promise<PortalBookingForm> {
+    const res = await portalApiClient.get(PORTAL_QUOTATIONS_API.bookingForm(quotationId), {
+      params,
+    });
+    const form = normalizePortalBookingForm(res.data);
+    return { ...form, quotation_id: quotationId };
+  },
+
+  async upsertQuotationBookingForm(
+    quotationId: string,
+    dto: PortalBookingFormUpsertDto,
+  ): Promise<PortalBookingForm> {
+    const res = await portalApiClient.put(
+      PORTAL_QUOTATIONS_API.bookingForm(quotationId),
+      portalBookingFormToUpsertDto(dto),
+    );
+    const form = normalizePortalBookingForm(res.data);
+    return { ...form, quotation_id: quotationId };
+  },
+
+  async completeQuotationBookingForm(
+    quotationId: string,
+    body: Record<string, unknown> = {},
+  ): Promise<unknown> {
+    const res = await portalApiClient.post(
+      PORTAL_QUOTATIONS_API.bookingFormComplete(quotationId),
+      body,
+    );
+    if (res.data && typeof res.data === 'object' && 'data' in (res.data as object)) {
+      return (res.data as { data: unknown }).data;
+    }
+    return res.data;
+  },
+
   async uploadComplianceDocument(
     opts: {
       bookingId?: string;

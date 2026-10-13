@@ -55,6 +55,9 @@ import {
 } from '../constants/job.constants';
 import { useJobActions } from '../hooks/useJobActions';
 import { useJobConfirmState } from '../hooks/useJobConfirmState';
+import { useCrmEnquiry } from '@/features/crm/hooks/useCrmEnquiries';
+import { useQuotation } from '@/features/quotations/hooks/useQuotations';
+import { useShipment } from '@/features/shipments/hooks/useShipments';
 import { useJobResolvedLabels } from '../hooks/useJobResolvedLabels';
 import { useJob, useJobHouseJobs, useJobStatusOptions } from '../hooks/useJobs';
 import { getErrorMessage } from '../utils/getErrorMessage';
@@ -81,6 +84,25 @@ function isSeaFcl(jobType: string): boolean {
   return jobType === 'SEA_FCL_EXPORT' || jobType === 'SEA_FCL_IMPORT';
 }
 
+/** Prefer a human label; never surface a bare UUID. */
+function displayValue(value?: string | number | null): string {
+  if (value == null || value === '') return '';
+  const raw = String(value).trim();
+  if (!raw || isUuid(raw)) return '';
+  return raw;
+}
+
+function formatDetailDate(value?: string | null): string | undefined {
+  if (!value?.trim()) return undefined;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value.trim();
+  return d.toLocaleDateString(undefined, {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+
 function FresaReadonlyField({
   label,
   value,
@@ -90,8 +112,7 @@ function FresaReadonlyField({
   value?: string | number | null;
   href?: string;
 }) {
-  const raw = value == null || value === '' ? '' : String(value).trim();
-  const shown = !raw || isUuid(raw) ? '' : raw;
+  const shown = displayValue(value);
   const text = shown || (href ? 'View' : '—');
   return (
     <div className="min-w-0">
@@ -112,6 +133,21 @@ function FresaReadonlyField({
   );
 }
 
+/** Only render when the customer/ops value is present (or a continuum link exists). */
+function OptionalFresaField({
+  label,
+  value,
+  href,
+}: {
+  label: string;
+  value?: string | number | null;
+  href?: string;
+}) {
+  const shown = displayValue(value);
+  if (!shown && !href) return null;
+  return <FresaReadonlyField label={label} value={shown || undefined} href={href} />;
+}
+
 export default function JobDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
@@ -124,6 +160,61 @@ export default function JobDetailPage() {
   const { data: job, isLoading, isError, error, refetch } = useJob(id);
   const { data: houseJobs = [] } = useJobHouseJobs(id, Boolean(job && !job.parent_job_id));
   const actions = useJobActions(id);
+
+  // After shipment→job, continuum numbers may live on the linked shipment (or quote/enquiry)
+  // even when GET /jobs/:id only returns IDs.
+  const needsShipmentLink = Boolean(
+    job?.shipment_id &&
+      isUuid(job.shipment_id) &&
+      (!displayValue(job.shipment_number) ||
+        !displayValue(job.enquiry_number) ||
+        !displayValue(job.quotation_number) ||
+        !job.enquiry_id ||
+        !job.quotation_id),
+  );
+  const linkedShipmentQuery = useShipment(needsShipmentLink ? job!.shipment_id! : '');
+  const linkedShipment = linkedShipmentQuery.data;
+
+  const resolvedEnquiryId =
+    (job?.enquiry_id && isUuid(job.enquiry_id) ? job.enquiry_id : undefined) ||
+    (linkedShipment?.enquiry_id && isUuid(linkedShipment.enquiry_id)
+      ? linkedShipment.enquiry_id
+      : undefined);
+  const resolvedQuotationId =
+    (job?.quotation_id && isUuid(job.quotation_id) ? job.quotation_id : undefined) ||
+    (linkedShipment?.quotation_id && isUuid(linkedShipment.quotation_id)
+      ? linkedShipment.quotation_id
+      : undefined);
+  const resolvedShipmentId =
+    job?.shipment_id && isUuid(job.shipment_id) ? job.shipment_id : undefined;
+
+  const needsEnquiryLink = Boolean(
+    resolvedEnquiryId && !displayValue(job?.enquiry_number) && !displayValue(linkedShipment?.enquiry_number),
+  );
+  const needsQuotationLink = Boolean(
+    resolvedQuotationId &&
+      !displayValue(job?.quotation_number) &&
+      !displayValue(linkedShipment?.quotation_number),
+  );
+  const linkedEnquiryQuery = useCrmEnquiry(needsEnquiryLink ? resolvedEnquiryId! : '');
+  const linkedQuotationQuery = useQuotation(needsQuotationLink ? resolvedQuotationId! : '');
+
+  const enquiryNumber =
+    displayValue(job?.enquiry_number) ||
+    displayValue(linkedShipment?.enquiry_number) ||
+    displayValue(linkedEnquiryQuery.data?.enquiry_number) ||
+    '';
+  const quotationNumber =
+    displayValue(job?.quotation_number) ||
+    displayValue(linkedShipment?.quotation_number) ||
+    displayValue(linkedQuotationQuery.data?.quotation_number) ||
+    displayValue(linkedQuotationQuery.data?.quote_no) ||
+    '';
+  const shipmentNumber =
+    displayValue(job?.shipment_number) ||
+    displayValue(linkedShipment?.shipment_number) ||
+    displayValue(linkedShipment?.reference) ||
+    '';
   const { confirm, requestConfirm, closeConfirm } = useJobConfirmState();
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -166,6 +257,11 @@ export default function JobDetailPage() {
     originLabel,
     destinationLabel,
     branchLabel,
+    agentLabel,
+    salespersonLabel,
+    vesselLabel,
+    shippingLineLabel,
+    airlineLabel,
   } = useJobResolvedLabels(
     job ?? {
       id: '',
@@ -197,13 +293,22 @@ export default function JobDetailPage() {
     if (!job) return [];
     const sea = isSeaFcl(job.job_type);
     const isCc = isCcJobType(job.job_type);
+    const overviewJob = {
+      ...job,
+      enquiry_id: resolvedEnquiryId || job.enquiry_id,
+      quotation_id: resolvedQuotationId || job.quotation_id,
+      shipment_id: resolvedShipmentId || job.shipment_id,
+      enquiry_number: enquiryNumber || job.enquiry_number,
+      quotation_number: quotationNumber || job.quotation_number,
+      shipment_number: shipmentNumber || job.shipment_number,
+    };
     return [
       {
         key: 'overview',
         label: 'Overview',
         content: (
           <div className="space-y-4">
-            <JobOverviewPanel job={job} />
+            <JobOverviewPanel job={overviewJob} />
             <JobBarcodePanel job={job} />
           </div>
         ),
@@ -301,7 +406,21 @@ export default function JobDetailPage() {
           ]
         : []),
     ];
-  }, [job, id, houseJobs, prefix, navigate, refetch, highlightInvoiceId]);
+  }, [
+    job,
+    id,
+    houseJobs,
+    prefix,
+    navigate,
+    refetch,
+    highlightInvoiceId,
+    resolvedEnquiryId,
+    resolvedQuotationId,
+    resolvedShipmentId,
+    enquiryNumber,
+    quotationNumber,
+    shipmentNumber,
+  ]);
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -398,23 +517,20 @@ export default function JobDetailPage() {
 
   const continuumSteps = buildFclContinuumSteps({
     partyId: job.shipper_id || job.billing_party_id,
-    enquiryId: job.enquiry_id,
-    quotationId: job.quotation_id,
+    enquiryId: resolvedEnquiryId,
+    quotationId: resolvedQuotationId,
     verified: true,
     approved: true,
-    shipmentId: job.shipment_id,
+    shipmentId: resolvedShipmentId,
     jobId: job.id,
     jobHref: jobDetailPath(job),
   });
 
-  const enquiryHref =
-    job.enquiry_id && isUuid(job.enquiry_id) ? `/sales/enquiries/${job.enquiry_id}` : undefined;
-  const quotationHref =
-    job.quotation_id && isUuid(job.quotation_id) ? `/quotations/${job.quotation_id}` : undefined;
-  const shipmentHref =
-    job.shipment_id && isUuid(job.shipment_id)
-      ? `/operations/shipments/${job.shipment_id}`
-      : undefined;
+  const enquiryHref = resolvedEnquiryId ? `/sales/enquiries/${resolvedEnquiryId}` : undefined;
+  const quotationHref = resolvedQuotationId ? `/quotations/${resolvedQuotationId}` : undefined;
+  const shipmentHref = resolvedShipmentId
+    ? `/operations/shipments/${resolvedShipmentId}`
+    : undefined;
 
   return (
     <>
@@ -465,7 +581,7 @@ export default function JobDetailPage() {
                   className="mr-3 font-medium text-[var(--fresa-action,#0A2942)] hover:underline"
                   to={enquiryHref}
                 >
-                  Enquiry
+                  Enquiry{enquiryNumber ? ` ${enquiryNumber}` : ''}
                 </Link>
               ) : null}
               {quotationHref ? (
@@ -473,7 +589,7 @@ export default function JobDetailPage() {
                   className="mr-3 font-medium text-[var(--fresa-action,#0A2942)] hover:underline"
                   to={quotationHref}
                 >
-                  Quotation
+                  Quotation{quotationNumber ? ` ${quotationNumber}` : ''}
                 </Link>
               ) : null}
               {shipmentHref ? (
@@ -481,7 +597,7 @@ export default function JobDetailPage() {
                   className="mr-3 font-medium text-[var(--fresa-action,#0A2942)] hover:underline"
                   to={shipmentHref}
                 >
-                  Shipment
+                  Shipment{shipmentNumber ? ` ${shipmentNumber}` : ''}
                 </Link>
               ) : null}
               {!enquiryHref && !quotationHref && !shipmentHref ? (
@@ -502,26 +618,118 @@ export default function JobDetailPage() {
                 job.shipper_id && isUuid(job.shipper_id) ? `/parties/${job.shipper_id}` : undefined
               }
             />
-            <FresaReadonlyField label="Consignee" value={consigneeLabel} />
+            <OptionalFresaField label="Consignee" value={consigneeLabel !== '—' ? consigneeLabel : undefined} />
             <FresaReadonlyField label="Department" value={job.job_type?.replaceAll('_', ' ')} />
-            <FresaReadonlyField label="Branch" value={branchLabel} />
+            <OptionalFresaField label="Branch" value={branchLabel !== '—' ? branchLabel : undefined} />
             <FresaReadonlyField label="Status" value={JOB_STATUS_LABELS[job.status] ?? job.status} />
-            <FresaReadonlyField label="Enquiry No" value={enquiryHref ? 'View enquiry' : undefined} href={enquiryHref} />
-            <FresaReadonlyField
-              label="Quotation No"
-              value={quotationHref ? 'View quotation' : undefined}
-              href={quotationHref}
+            {enquiryHref ? (
+              <FresaReadonlyField
+                label="Enquiry No"
+                value={enquiryNumber || 'View enquiry'}
+                href={enquiryHref}
+              />
+            ) : null}
+            {quotationHref ? (
+              <FresaReadonlyField
+                label="Quotation No"
+                value={quotationNumber || 'View quotation'}
+                href={quotationHref}
+              />
+            ) : null}
+            {shipmentHref ? (
+              <FresaReadonlyField
+                label="Shipment No"
+                value={shipmentNumber || 'View shipment'}
+                href={shipmentHref}
+              />
+            ) : null}
+            <OptionalFresaField label="POL" value={originLabel !== '—' ? originLabel : undefined} />
+            <OptionalFresaField
+              label="POD"
+              value={destinationLabel !== '—' ? destinationLabel : undefined}
             />
-            <FresaReadonlyField
-              label="Shipment No"
-              value={shipmentHref ? 'View shipment' : undefined}
-              href={shipmentHref}
+            <OptionalFresaField label="ETD" value={formatDetailDate(job.etd) || job.etd} />
+            <OptionalFresaField label="ETA" value={formatDetailDate(job.eta) || job.eta} />
+            <OptionalFresaField label="Incoterms" value={job.incoterms} />
+            <OptionalFresaField label="Commodity" value={job.commodity} />
+            <OptionalFresaField
+              label="Commodity description"
+              value={job.commodity_description}
             />
-            <FresaReadonlyField label="POL" value={originLabel} />
-            <FresaReadonlyField label="POD" value={destinationLabel} />
-            <FresaReadonlyField label="Incoterms" value={job.incoterms} />
-            <FresaReadonlyField label="Commodity" value={job.commodity} />
-            <FresaReadonlyField label="Currency" value={job.currency_code} />
+            <OptionalFresaField label="Currency" value={job.currency_code} />
+            <OptionalFresaField
+              label={
+                job.client_reference_type?.trim()
+                  ? `Client ref (${job.client_reference_type})`
+                  : 'Client ref'
+              }
+              value={job.client_reference_no}
+            />
+            <OptionalFresaField
+              label="Agent"
+              value={agentLabel !== '—' ? agentLabel : undefined}
+            />
+            <OptionalFresaField
+              label="Salesperson"
+              value={salespersonLabel !== '—' ? salespersonLabel : undefined}
+            />
+            <OptionalFresaField label="HS code" value={job.hs_code} />
+            <OptionalFresaField label="Pieces" value={job.pieces} />
+            <OptionalFresaField label="Gross weight" value={job.gross_weight} />
+            <OptionalFresaField label="Chargeable weight" value={job.chargeable_weight} />
+            <OptionalFresaField label="Volume (CBM)" value={job.volume_cbm} />
+            <OptionalFresaField label="Container count" value={job.container_count} />
+            <OptionalFresaField
+              label="Dangerous goods"
+              value={
+                job.is_dg
+                  ? `Yes${job.dg_class ? ` (${job.dg_class})` : ''}`
+                  : undefined
+              }
+            />
+            <OptionalFresaField
+              label="Airline"
+              value={airlineLabel !== '—' ? airlineLabel : undefined}
+            />
+            <OptionalFresaField label="HAWB" value={job.air_details?.hawb_number} />
+            <OptionalFresaField label="MAWB" value={job.air_details?.mawb_number} />
+            <OptionalFresaField label="Flight" value={job.air_details?.flight_number} />
+            <OptionalFresaField
+              label="Shipping line"
+              value={shippingLineLabel !== '—' ? shippingLineLabel : undefined}
+            />
+            <OptionalFresaField
+              label="Vessel"
+              value={vesselLabel !== '—' ? vesselLabel : undefined}
+            />
+            <OptionalFresaField
+              label="Voyage"
+              value={
+                job.sea_fcl_details?.voyage_number || job.sea_lcl_details?.voyage_number
+              }
+            />
+            <OptionalFresaField
+              label="HBL"
+              value={job.sea_fcl_details?.hbl_number || job.sea_lcl_details?.hbl_number}
+            />
+            <OptionalFresaField
+              label="MBL"
+              value={job.sea_fcl_details?.mbl_number || job.sea_lcl_details?.mbl_number}
+            />
+            <OptionalFresaField
+              label="Carrier booking ref"
+              value={
+                job.sea_fcl_details?.carrier_booking_ref ||
+                job.sea_lcl_details?.carrier_booking_ref
+              }
+            />
+            <OptionalFresaField label="Customer remarks" value={job.customer_remarks} />
+            <OptionalFresaField label="Notes" value={job.notes} />
+            <OptionalFresaField label="Job date" value={formatDetailDate(job.job_date) || job.job_date} />
+            <OptionalFresaField label="Service scope" value={job.service_scope} />
+            <OptionalFresaField label="Cargo category" value={job.cargo_category} />
+            <OptionalFresaField label="Origin door" value={job.origin_door_address} />
+            <OptionalFresaField label="Dest door" value={job.dest_door_address} />
           </div>
         }
         toolbarLabel="Actions"

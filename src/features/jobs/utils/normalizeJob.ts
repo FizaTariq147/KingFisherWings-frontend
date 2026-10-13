@@ -259,17 +259,63 @@ export function normalizeJob(raw: unknown): Job | null {
     department_id: pickString(r, 'department_id', 'departmentId') || undefined,
     parent_job_id: pickString(r, 'parent_job_id', 'parentJobId') || undefined,
     quotation_id:
-      pickString(r, 'quotation_id', 'quotationId') ||
+      pickString(r, 'quotation_id', 'quotationId', 'source_quotation_id', 'sourceQuotationId') ||
       pickString(asRecord(r.quotation) ?? {}, 'id') ||
       undefined,
+    quotation_number:
+      pickString(r, 'quotation_number', 'quotationNumber', 'quote_no', 'quoteNo') ||
+      pickString(
+        asRecord(r.quotation) ?? {},
+        'quotation_number',
+        'quotationNumber',
+        'quote_no',
+        'quoteNo',
+        'number',
+        'reference',
+      ) ||
+      undefined,
     shipment_id:
-      pickString(r, 'shipment_id', 'shipmentId') ||
+      pickString(r, 'shipment_id', 'shipmentId', 'source_shipment_id', 'sourceShipmentId') ||
       pickString(asRecord(r.shipment) ?? {}, 'id') ||
       undefined,
+    shipment_number:
+      pickString(r, 'shipment_number', 'shipmentNumber', 'shipment_no', 'shipmentNo') ||
+      pickString(
+        asRecord(r.shipment) ?? {},
+        'shipment_number',
+        'shipmentNumber',
+        'shipment_no',
+        'shipmentNo',
+        'number',
+        'reference',
+      ) ||
+      undefined,
     enquiry_id:
-      pickString(r, 'enquiry_id', 'enquiryId', 'crm_enquiry_id', 'crmEnquiryId') ||
+      pickString(
+        r,
+        'enquiry_id',
+        'enquiryId',
+        'crm_enquiry_id',
+        'crmEnquiryId',
+        'source_enquiry_id',
+        'sourceEnquiryId',
+      ) ||
       pickString(asRecord(r.enquiry) ?? {}, 'id') ||
       undefined,
+    enquiry_number:
+      pickString(r, 'enquiry_number', 'enquiryNumber', 'enquiry_no', 'enquiryNo') ||
+      pickString(
+        asRecord(r.enquiry) ?? {},
+        'enquiry_number',
+        'enquiryNumber',
+        'enquiry_no',
+        'enquiryNo',
+        'number',
+        'reference',
+      ) ||
+      undefined,
+    currency_code:
+      pickString(r, 'currency_code', 'currencyCode', 'currency')?.toUpperCase() || undefined,
     shipper_id: pickString(r, 'shipper_id', 'shipperId'),
     shipper_name:
       pickString(r, 'shipper_name', 'shipperName') ||

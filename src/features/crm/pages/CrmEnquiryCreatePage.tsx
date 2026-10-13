@@ -153,9 +153,6 @@ export default function CrmEnquiryCreatePage() {
       </button>
       <div className="text-center">
         <h2 className={appType.pageTitle}>Create Enquiry</h2>
-        <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
-          Enquiry Sheet — Department → Port Details → Consignment → Charges → Finish
-        </p>
       </div>
       {mutation.isError ? <CrmAlert>{getErrorMessage(mutation.error)}</CrmAlert> : null}
 

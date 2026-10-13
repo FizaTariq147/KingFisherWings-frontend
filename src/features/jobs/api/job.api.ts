@@ -141,6 +141,14 @@ export const JOB_API = {
 
   containers: (id: string) => `/jobs/${id}/containers`,
   container: (id: string, containerId: string) => `/jobs/${id}/containers/${containerId}`,
+  containersBulk: (id: string) => `/jobs/${id}/containers/bulk`,
+  containersExport: (id: string) => `/jobs/${id}/containers/export`,
+  containersJobDetails: (id: string) => `/jobs/${id}/containers/job-details`,
+  containersSyncFromSubJobs: (id: string) => `/jobs/${id}/containers/sync-from-sub-jobs`,
+  containersUpload: (id: string) => `/jobs/${id}/containers/upload`,
+  containersUploadSample: (id: string) => `/jobs/${id}/containers/upload-sample`,
+  containersUploadConfirm: (id: string) => `/jobs/${id}/containers/upload/confirm`,
+  containersUploadPaste: (id: string) => `/jobs/${id}/containers/upload/paste`,
   containersFill: (id: string) => `/jobs/${id}/containers/fill`,
   containerFill: (id: string, containerId: string) =>
     `/jobs/${id}/containers/${containerId}/fill`,
@@ -150,6 +158,22 @@ export const JOB_API = {
     `/jobs/${id}/containers/${containerId}/split`,
   returnContainer: (id: string, containerId: string) =>
     `/jobs/${id}/containers/${containerId}/return`,
+
+  dimensionLine: (id: string, lineId: string) => `/jobs/${id}/dimensions/${lineId}`,
+  dimensionsBulk: (id: string) => `/jobs/${id}/dimensions/bulk`,
+  dimensionsExport: (id: string) => `/jobs/${id}/dimensions/export`,
+  dimensionsSyncToCargo: (id: string) => `/jobs/${id}/dimensions/sync-to-cargo`,
+  dimensionsUpload: (id: string) => `/jobs/${id}/dimensions/upload`,
+  dimensionsUploadSample: (id: string) => `/jobs/${id}/dimensions/upload-sample`,
+  dimensionsUploadConfirm: (id: string) => `/jobs/${id}/dimensions/upload/confirm`,
+  dimensionsUploadPaste: (id: string) => `/jobs/${id}/dimensions/upload/paste`,
+
+  organizations: (id: string) => `/jobs/${id}/organizations`,
+  organizationByType: (id: string, orgType: string) =>
+    `/jobs/${id}/organizations/${encodeURIComponent(orgType)}`,
+  organizationsCopyFrom: (id: string) => `/jobs/${id}/organizations/copy-from`,
+  organizationsRefreshSnapshots: (id: string) =>
+    `/jobs/${id}/organizations/refresh-snapshots`,
 
   cargo: (id: string) => `/jobs/${id}/cargo`,
   cargoItem: (id: string, cargoId: string) => `/jobs/${id}/cargo/${cargoId}`,
@@ -177,6 +201,7 @@ export const JOB_API = {
   passToVendor: (id: string) => `/jobs/${id}/pass-to-vendor`,
   sendToVendor: (id: string) => `/jobs/${id}/send-to-vendor`,
   /** Live OpenAPI prefers job-offers; vendor-quotes kept as alternate in vendor-job-offers service. */
+  jobOffersList: '/jobs/job-offers',
   vendorOffers: (id: string) => `/jobs/${id}/job-offers`,
   approveVendorOffer: (_id: string, offerId: string) => `/job-offers/${offerId}/approve`,
   disapproveVendorOffer: (_id: string, offerId: string) => `/job-offers/${offerId}/disapprove`,

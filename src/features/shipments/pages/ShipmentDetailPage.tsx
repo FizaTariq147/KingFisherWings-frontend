@@ -1,5 +1,5 @@
-import { useMemo, useRef, useState, type ReactNode } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
   BarChart2,
@@ -151,6 +151,7 @@ type ConfirmKind =
 export default function ShipmentDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const paths = useShipmentPaths();
   const perms = useShipmentsPermissions();
   const query = useShipment(id);
@@ -188,6 +189,9 @@ export default function ShipmentDetailPage() {
     voyage_number: '',
   });
   const [reportPending, setReportPending] = useState(false);
+  const pendingStartEdit = useRef(
+    Boolean((location.state as { startEdit?: boolean } | null)?.startEdit),
+  );
 
   const kpiQuery = useShipmentKpi(id, showKpi);
   const trackingQuery = useShipmentTracking(id, showTracking);
@@ -198,6 +202,32 @@ export default function ShipmentDetailPage() {
   const effectiveTab = tabs.some((t) => t.key === activeTab)
     ? activeTab
     : tabs[0]?.key ?? 'information';
+
+  useEffect(() => {
+    if (!(location.state as { startEdit?: boolean } | null)?.startEdit) return;
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
+
+  useEffect(() => {
+    if (!pendingStartEdit.current || !query.data || !perms.canWriteUpdate) return;
+    pendingStartEdit.current = false;
+    const s = query.data;
+    setEditDraft({
+      commodity: displayValue(s.commodity) || '',
+      cargo_details: displayValue(s.cargo_details) || '',
+      incoterms: displayValue(s.incoterms) || '',
+      freight_payment_type: displayValue(s.freight_payment_type) || '',
+      currency_code: displayValue(s.currency_code) || '',
+      mbl_number: displayValue(s.mbl_number) || '',
+      hbl_number: displayValue(s.hbl_number) || '',
+      vessel_name: displayValue(s.vessel_name) || '',
+      voyage_number: displayValue(s.voyage_number) || '',
+    });
+    setEditing(true);
+    window.requestAnimationFrame(() => {
+      infoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [query.data, perms.canWriteUpdate]);
 
   if (!perms.canReadApi) {
     return (

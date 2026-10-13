@@ -7,6 +7,7 @@ import type {
   BankAccountListParams,
   BankAccountListResult,
   CreateNumberFormatDto,
+  DimensionsSettings,
   JobDateSettings,
   NumberFormat,
   NumberFormatFormValues,
@@ -14,6 +15,7 @@ import type {
   OrganizationProfile,
   OrganizationProfileFormValues,
   TenantBankAccount,
+  UpdateDimensionsSettingsDto,
   UpdateJobDateSettingsDto,
   UpdateNumberFormatDto,
 } from '../types/organization.types';
@@ -294,6 +296,40 @@ export const organizationService = {
           record.job_date_source ?? record.jobDateSource ?? dto.job_date_source,
         ),
       };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /organization/settings/dimensions */
+  async getDimensionsSettings(): Promise<DimensionsSettings> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(ORGANIZATION_API.dimensionsSettings),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        return data as DimensionsSettings;
+      }
+      return {};
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** PATCH /organization/settings/dimensions */
+  async updateDimensionsSettings(
+    dto: UpdateDimensionsSettingsDto,
+  ): Promise<DimensionsSettings> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch(ORGANIZATION_API.dimensionsSettings, dto),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        return data as DimensionsSettings;
+      }
+      return { ...dto };
     } catch (error) {
       throw formatAxiosError(error);
     }

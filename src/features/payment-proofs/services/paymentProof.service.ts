@@ -1,5 +1,6 @@
 import { axiosInstance } from '@/lib/axios';
 import { withGatewayRetry } from '@/lib/wakeApi';
+import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { PAYMENT_PROOF_API } from '../api/paymentProof.api';
 import type {
   ApprovePaymentProofDto,
@@ -75,5 +76,23 @@ export const paymentProofService = {
     const proof = normalizePaymentProof(unwrapEntity(res.data));
     if (!proof) throw new Error('Payment proof not found.');
     return proof;
+  },
+
+  async withdraw(id: string): Promise<void> {
+    await withGatewayRetry(() => axiosInstance.delete(PAYMENT_PROOF_API.byId(id)));
+  },
+
+  async downloadFile(id: string, fallbackName = 'payment-proof'): Promise<void> {
+    const res = await withGatewayRetry(() =>
+      axiosInstance.get(PAYMENT_PROOF_API.file(id), { responseType: 'blob' }),
+    );
+    const blob = res.data instanceof Blob ? res.data : new Blob([res.data]);
+    const cd = res.headers['content-disposition'];
+    let fileName = fallbackName;
+    if (typeof cd === 'string') {
+      const match = /filename\*?=(?:UTF-8''|")?([^";]+)/i.exec(cd);
+      if (match?.[1]) fileName = decodeURIComponent(match[1].replace(/"/g, ''));
+    }
+    triggerBlobDownload(blob, fileName);
   },
 };

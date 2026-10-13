@@ -78,9 +78,6 @@ export default function ShipmentCreatePage() {
       </button>
       <div className="text-center">
         <h2 className={appType.pageTitle}>Create Shipment</h2>
-        <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
-          Direct booking via POST /shipments — or continue from an approved quotation in the continuum.
-        </p>
       </div>
 
       {error ? (

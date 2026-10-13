@@ -33,8 +33,8 @@ export const buttonVariants = cva(
         report: 'kf-btn-report focus-visible:ring-[#7C3AED]',
         /** Header chrome — Edit (sky) */
         edit: 'kf-btn-edit focus-visible:ring-[#0284C7]',
-        /** Header chrome — Create (brand orange) */
-        create: 'kf-btn-create focus-visible:ring-[#FF751F]',
+        /** Create / Add — same navy as sidebar (`--color-sidebar-bg` / #0A2942) */
+        create: 'kf-btn-create focus-visible:ring-[var(--color-sidebar-bg,#0A2942)]',
         success: 'kf-btn-success focus-visible:ring-[#22C55E]',
         warning: 'kf-btn-warning focus-visible:ring-[#F59E0B]',
         danger: 'kf-btn-danger focus-visible:ring-[#EF4444]',
@@ -65,10 +65,11 @@ export const COLORED_BUTTON_STYLE: Record<
   'create' | 'edit' | 'report' | 'back' | 'success' | 'warning' | 'danger' | 'primary',
   CSSProperties
 > = {
+  /** Create / Add — sidebar navy (`--color-sidebar-bg` / #0A2942). */
   create: {
-    backgroundColor: '#FF751F',
+    backgroundColor: '#0A2942',
     color: '#FFFFFF',
-    borderColor: '#E8650F',
+    borderColor: '#061B2C',
     borderWidth: 1,
     borderStyle: 'solid',
   },

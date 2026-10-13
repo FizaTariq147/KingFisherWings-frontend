@@ -19,7 +19,16 @@ export const VENDOR_JOB_OFFERS_API = {
   vendorOffersAlt: (jobId: string) => `/jobs/${encodeURIComponent(jobId)}/vendor-quotes`,
   vendorOffersLegacy: (jobId: string) => `/jobs/${encodeURIComponent(jobId)}/vendor-offers`,
 
+  /** Tenant-wide staff inbox (OpenAPI Job Offers tag). */
+  staffJobOffers: '/job-offers',
   staffOffer: (offerId: string) => `/job-offers/${encodeURIComponent(offerId)}`,
+  staffAcceptOffer: (offerId: string) => `/job-offers/${encodeURIComponent(offerId)}/accept`,
+  staffCounterOffer: (offerId: string) =>
+    `/job-offers/${encodeURIComponent(offerId)}/counter-offer`,
+  staffNegotiateOffer: (offerId: string) =>
+    `/job-offers/${encodeURIComponent(offerId)}/negotiate`,
+  /** Feature-detect list/create without job id in path. */
+  jobsJobOffers: '/jobs/job-offers',
   staffNegotiation: (offerId: string) => `/job-offers/${encodeURIComponent(offerId)}/negotiation`,
   staffReviseAndSend: (offerId: string) =>
     `/job-offers/${encodeURIComponent(offerId)}/revise-and-send`,
@@ -49,6 +58,7 @@ export const VENDOR_JOB_OFFERS_API = {
   vendorNegotiation: (id: string) => `/vendor/quotes/${encodeURIComponent(id)}/negotiation`,
   vendorNegotiationLegacy: (id: string) =>
     `/vendor/job-offers/${encodeURIComponent(id)}/negotiation`,
+  vendorApproveQuote: (id: string) => `/vendor/quotes/${encodeURIComponent(id)}/approve`,
   vendorAccept: (id: string) => `/vendor/quotes/${encodeURIComponent(id)}/accept`,
   vendorAcceptLegacy: (id: string) => `/vendor/job-offers/${encodeURIComponent(id)}/accept`,
   vendorReject: (id: string) => `/vendor/quotes/${encodeURIComponent(id)}/reject`,

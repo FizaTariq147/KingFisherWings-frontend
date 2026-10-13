@@ -79,11 +79,11 @@
   --btn-edit-text: #FFFFFF;
   --btn-edit-border: #0284C7;
   --btn-edit-ring: #0284C7;
-  --btn-create-bg: #FF751F;
-  --btn-create-hover: #E8650F;
+  --btn-create-bg: var(--color-sidebar-bg, #0A2942);
+  --btn-create-hover: var(--color-primary-600, #163E60);
   --btn-create-text: #FFFFFF;
-  --btn-create-border: #E8650F;
-  --btn-create-ring: #FF751F;
+  --btn-create-border: var(--color-primary-900, #061B2C);
+  --btn-create-ring: var(--color-sidebar-bg, #0A2942);
   --btn-success-bg: var(--color-success-500);
   --btn-success-hover: #176F46;
   --btn-success-text: #FFFFFF;
