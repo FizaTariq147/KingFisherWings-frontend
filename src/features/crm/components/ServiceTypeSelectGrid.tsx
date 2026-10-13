@@ -22,9 +22,6 @@ export function ServiceTypeSelectGrid({
       <h3 className="text-center text-base font-semibold text-[var(--color-neutral-800)] sm:text-lg">
         {heading}
       </h3>
-      <p className="text-center text-xs text-[var(--color-neutral-500)]">
-        Choose the department / service for this Enquiry Sheet, then continue to Port Details.
-      </p>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {SERVICE_TYPES.map((serviceType) => {
           const style = JOB_TYPE_CARD_STYLES[serviceType as keyof typeof JOB_TYPE_CARD_STYLES];

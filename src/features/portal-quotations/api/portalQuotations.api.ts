@@ -14,6 +14,10 @@ export const PORTAL_QUOTATIONS_API = {
   /** When live: convert APPROVED quote → job after booking form submit. */
   convertToJob: (id: string) =>
     `/portal/quotations/${encodeURIComponent(id)}/convert-to-job`,
+  bookingForm: (id: string) =>
+    `/portal/quotations/${encodeURIComponent(id)}/booking-form`,
+  bookingFormComplete: (id: string) =>
+    `/portal/quotations/${encodeURIComponent(id)}/booking-form/complete`,
 } as const;
 
 /** Portal — NVOCC Compliance Booking Form (customer 8-step). Air uses PORTAL_SHIPMENTS_API. */

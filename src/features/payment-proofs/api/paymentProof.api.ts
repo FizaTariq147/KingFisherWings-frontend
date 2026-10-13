@@ -1,6 +1,8 @@
 import { PURCHASE_INVOICE_API } from '@/features/purchaseInvoices/api/purchaseInvoice.api';
 
 export const PAYMENT_PROOF_API = {
+  byId: (id: string) => `/payment-proofs/${encodeURIComponent(id)}`,
+  file: (id: string) => `/payment-proofs/${encodeURIComponent(id)}/file`,
   acknowledge: (id: string) => `/payment-proofs/${encodeURIComponent(id)}/acknowledge`,
   approve: (id: string) => `/payment-proofs/${encodeURIComponent(id)}/approve`,
   reject: (id: string) => `/payment-proofs/${encodeURIComponent(id)}/reject`,

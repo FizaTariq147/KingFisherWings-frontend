@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent,
 import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Plus, Search, Calendar, ChevronDown, Maximize2 } from 'lucide-react';
+import { ListRowEditButton } from '@/components/ui/ListRowEditButton';
 import { useCustomerFilterSelectOptions } from '@/features/customers/hooks/useCustomerServiceFilterOptions';
 import type { CustomerFilterOption } from '@/features/customers/types/customerFilter.types';
 import { CUSTOMER_SERVICE_PATHS } from '@/features/customers/utils/customerServicePaths';
@@ -227,9 +228,6 @@ export default function AllShipmentsPage() {
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
           <div>
             <h2 className="text-[17px] font-medium text-gray-800">All Shipments</h2>
-            <p className="mt-0.5 text-xs text-gray-500">
-              Continuum (Party → Enquiry → Quotation → Shipment → Job) or create a shipment directly.
-            </p>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -444,6 +442,7 @@ export default function AllShipmentsPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50">
+                    <th className="px-4 py-2 text-left font-semibold text-[#0A2942] w-10">{''}</th>
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Shipment No.</th>
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Client</th>
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Type</th>
@@ -460,6 +459,19 @@ export default function AllShipmentsPage() {
                       onClick={() => navigate(CUSTOMER_SERVICE_PATHS.shipmentDetail(item.id))}
                       className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
                     >
+                      <td
+                        className="px-4 py-2"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <ListRowEditButton
+                          title="Edit shipment"
+                          onClick={() =>
+                            navigate(CUSTOMER_SERVICE_PATHS.shipmentDetail(item.id), {
+                              state: { startEdit: true },
+                            })
+                          }
+                        />
+                      </td>
                       <td className="px-4 py-2 text-blue-600 font-medium">
                         {shipmentDisplayNumber(item)}
                       </td>

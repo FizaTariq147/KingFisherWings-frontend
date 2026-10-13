@@ -1,4 +1,5 @@
 import { AppFetchBar } from '@/components/motion';
+import { ListRowEditButton } from '@/components/ui/ListRowEditButton';
 import {
   Table,
   TableBody,
@@ -12,7 +13,7 @@ import { isUuid } from '@/lib/isUuid';
 import { useMemo } from 'react';
 import { JOB_TYPE_LABELS } from '../../constants/job.constants';
 import type { Job, PaginationMeta } from '../../types/job.types';
-import { jobDisplayNumber } from '../../utils/jobRoute';
+import { jobDisplayNumber, jobEditable } from '../../utils/jobRoute';
 import { jobPartyLabel, jobRouteLabel, jobScheduleLabel } from '../../utils/jobDisplay';
 import { JobActionMenu } from '../JobActionMenu';
 import { JobStatusBadge } from '../JobStatusBadge';
@@ -65,6 +66,7 @@ export function JobTable({
       <Table className="min-w-[960px]">
         <TableHeader>
           <TableRow className="hover:bg-transparent">
+            <TableHead className="w-10">{' '}</TableHead>
             <TableHead>Job #</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Shipper</TableHead>
@@ -79,13 +81,22 @@ export function JobTable({
         <TableBody>
           {jobs.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={9} className="text-center text-[var(--color-neutral-400)] py-10">
+              <TableCell colSpan={10} className="text-center text-[var(--color-neutral-400)] py-10">
                 {emptyMessage}
               </TableCell>
             </TableRow>
           ) : (
-            jobs.map((j) => (
+            jobs.map((j) => {
+              const canEdit = jobEditable(j.status);
+              return (
               <TableRow key={j.id} className="cursor-pointer">
+                <TableCell>
+                  <ListRowEditButton
+                    disabled={pendingId === j.id || !canEdit}
+                    title={canEdit ? 'Edit job' : 'Job is not editable'}
+                    onClick={() => (canEdit ? onEdit(j) : onView(j))}
+                  />
+                </TableCell>
                 <TableCell>
                   <button
                     type="button"
@@ -120,7 +131,8 @@ export function JobTable({
                   />
                 </TableCell>
               </TableRow>
-            ))
+              );
+            })
           )}
         </TableBody>
       </Table>

@@ -4,6 +4,16 @@ export const ONLINE_PAYMENTS_STRIPE_API = {
   settings: '/payments/stripe/settings',
   rotateWebhook: '/payments/stripe/settings/rotate-webhook',
   reconcile: '/payments/stripe/reconcile',
+  connect: '/payments/stripe/connect',
+  connectOnboardingLink: '/payments/stripe/connect/onboarding-link',
+  connectDashboardLink: '/payments/stripe/connect/dashboard-link',
+  /** Server-only Stripe webhooks — path constants for API coverage. */
+  webhook: '/payments/stripe/webhook',
+  webhookByToken: (token: string) =>
+    `/payments/stripe/webhook/${encodeURIComponent(token)}`,
+  webhookConnectByToken: (token: string) =>
+    `/payments/stripe/webhook/${encodeURIComponent(token)}/connect`,
+  webhookConnect: '/payments/stripe/webhook/connect',
 } as const;
 
 export const ONLINE_PAYMENTS_API = {

@@ -136,10 +136,28 @@ export default function CrmEnquiryDetailPage() {
   const [reportPending, setReportPending] = useState(false);
   const [activeTab, setActiveTab] = useState<EnquiryDetailTab>('show-all');
 
+  const pendingFocusEdit = useRef(
+    Boolean((location.state as { focusEdit?: boolean } | null)?.focusEdit),
+  );
+
   useEffect(() => {
-    if (!(location.state as { enquiryCreated?: boolean } | null)?.enquiryCreated) return;
+    const state = location.state as
+      | { enquiryCreated?: boolean; focusEdit?: boolean }
+      | null;
+    if (!state?.enquiryCreated && !state?.focusEdit) return;
     navigate(location.pathname, { replace: true, state: null });
   }, [location.pathname, location.state, navigate]);
+
+  useEffect(() => {
+    if (!pendingFocusEdit.current || !query.data) return;
+    pendingFocusEdit.current = false;
+    setActiveTab('show-all');
+    window.requestAnimationFrame(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const first = formRef.current?.querySelector<HTMLElement>('input, select, textarea');
+      first?.focus();
+    });
+  }, [query.data]);
 
   const form = useAppForm<UpdateEnquiryFormValues>({
     resolver: zodResolver(updateEnquirySchema) as unknown as Resolver<UpdateEnquiryFormValues>,

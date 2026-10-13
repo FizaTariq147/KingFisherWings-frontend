@@ -49,6 +49,18 @@ export const onlinePaymentsService = {
     const res = await axiosInstance.post(ONLINE_PAYMENTS_STRIPE_API.reconcile, body);
     return unwrap(res.data);
   },
+  async getStripeConnectStatus(params?: Record<string, unknown>) {
+    const res = await axiosInstance.get(ONLINE_PAYMENTS_STRIPE_API.connect, { params });
+    return unwrap(res.data);
+  },
+  async createStripeConnectOnboardingLink(body: Record<string, unknown> = {}) {
+    const res = await axiosInstance.post(ONLINE_PAYMENTS_STRIPE_API.connectOnboardingLink, body);
+    return unwrap(res.data);
+  },
+  async createStripeConnectDashboardLink(body: Record<string, unknown> = {}) {
+    const res = await axiosInstance.post(ONLINE_PAYMENTS_STRIPE_API.connectDashboardLink, body);
+    return unwrap(res.data);
+  },
 
   async listPayments(params: OnlinePaymentListParams = {}) {
     const res = await axiosInstance.get(ONLINE_PAYMENTS_API.list, { params });

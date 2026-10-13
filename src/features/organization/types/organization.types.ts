@@ -43,6 +43,14 @@ export interface UpdateJobDateSettingsDto {
   job_date_source: JobDateSource | string;
 }
 
+/** GET/PATCH /organization/settings/dimensions — volumetric divisor (cm → kg). */
+export interface DimensionsSettings {
+  volumetric_divisor?: number;
+  [key: string]: unknown;
+}
+
+export type UpdateDimensionsSettingsDto = Record<string, unknown>;
+
 export interface UpdateOrganizationProfileDto {
   name?: string;
   display_name?: string;

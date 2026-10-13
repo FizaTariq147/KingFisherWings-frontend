@@ -740,8 +740,12 @@ export interface Job {
   parent_job_id?: string;
   /** Linked continuum records when returned by the API. */
   quotation_id?: string;
+  quotation_number?: string;
   shipment_id?: string;
+  shipment_number?: string;
   enquiry_id?: string;
+  enquiry_number?: string;
+  currency_code?: string;
   shipper_id: string;
   shipper_name?: string;
   consignee_id?: string;

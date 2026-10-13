@@ -90,7 +90,9 @@ function resolveChromeVariant(
   if (key === 'back' || key.startsWith('back ')) return 'back';
   if (key === 'report' || key === 'reports') return 'report';
   if (key === 'edit') return 'edit';
-  if (key === 'create') return 'create';
+  if (key === 'create' || key.startsWith('create ') || key === 'add' || key.startsWith('add ')) {
+    return 'create';
+  }
   return variant ?? 'secondary';
 }
 

@@ -1997,6 +1997,253 @@ export const jobService = {
     );
   },
 
+  /** PUT /jobs/:id/containers/bulk */
+  async bulkUpdateContainers(id: string, body: Record<string, unknown>): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.put(JOB_API.containersBulk(id), body));
+  },
+
+  /** GET /jobs/:id/containers/export — CSV blob */
+  async exportContainers(id: string, params: Record<string, unknown> = {}): Promise<Blob> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.containersExport(id), {
+          params,
+          responseType: 'blob',
+        }),
+      );
+      return res.data as Blob;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** PATCH /jobs/:id/containers/job-details */
+  async patchContainersJobDetails(
+    id: string,
+    body: Record<string, unknown>,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.patch(JOB_API.containersJobDetails(id), body));
+  },
+
+  /** POST /jobs/:id/containers/sync-from-sub-jobs */
+  async syncContainersFromSubJobs(
+    id: string,
+    body: Record<string, unknown> = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.containersSyncFromSubJobs(id), body));
+  },
+
+  /** POST /jobs/:id/containers/upload — multipart; pass FormData from caller */
+  async uploadContainers(
+    id: string,
+    formData: FormData,
+    params: Record<string, unknown> = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.post(JOB_API.containersUpload(id), formData, {
+        params,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }),
+    );
+  },
+
+  /** GET /jobs/:id/containers/upload-sample */
+  async downloadContainersUploadSample(id: string): Promise<Blob> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.containersUploadSample(id), { responseType: 'blob' }),
+      );
+      return res.data as Blob;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /jobs/:id/containers/upload/confirm */
+  async confirmContainersUpload(
+    id: string,
+    body: Record<string, unknown>,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.containersUploadConfirm(id), body));
+  },
+
+  /** POST /jobs/:id/containers/upload/paste */
+  async pasteContainersUpload(
+    id: string,
+    body: Record<string, unknown>,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.containersUploadPaste(id), body));
+  },
+
+  /** PATCH /jobs/:id/dimensions/:lineId */
+  async updateDimensionLine(
+    id: string,
+    lineId: string,
+    body: Record<string, unknown>,
+  ): Promise<unknown> {
+    assertId(id);
+    if (!lineId?.trim()) throw new Error('Invalid dimension line id.');
+    return request(() =>
+      axiosInstance.patch(JOB_API.dimensionLine(id, lineId), body),
+    );
+  },
+
+  /** DELETE /jobs/:id/dimensions/:lineId */
+  async deleteDimensionLine(id: string, lineId: string): Promise<void> {
+    assertId(id);
+    if (!lineId?.trim()) throw new Error('Invalid dimension line id.');
+    return requestVoid(() => axiosInstance.delete(JOB_API.dimensionLine(id, lineId)));
+  },
+
+  /** PUT /jobs/:id/dimensions/bulk */
+  async bulkUpdateDimensions(id: string, body: Record<string, unknown>): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.put(JOB_API.dimensionsBulk(id), body));
+  },
+
+  /** GET /jobs/:id/dimensions/export */
+  async exportDimensions(id: string, params: Record<string, unknown> = {}): Promise<Blob> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.dimensionsExport(id), {
+          params,
+          responseType: 'blob',
+        }),
+      );
+      return res.data as Blob;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /jobs/:id/dimensions/sync-to-cargo */
+  async syncDimensionsToCargo(
+    id: string,
+    body: Record<string, unknown> = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.dimensionsSyncToCargo(id), body));
+  },
+
+  /** POST /jobs/:id/dimensions/upload */
+  async uploadDimensions(
+    id: string,
+    formData: FormData,
+    params: Record<string, unknown> = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.post(JOB_API.dimensionsUpload(id), formData, {
+        params,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }),
+    );
+  },
+
+  /** GET /jobs/:id/dimensions/upload-sample */
+  async downloadDimensionsUploadSample(id: string): Promise<Blob> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.dimensionsUploadSample(id), { responseType: 'blob' }),
+      );
+      return res.data as Blob;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /jobs/:id/dimensions/upload/confirm */
+  async confirmDimensionsUpload(
+    id: string,
+    body: Record<string, unknown>,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.dimensionsUploadConfirm(id), body));
+  },
+
+  /** POST /jobs/:id/dimensions/upload/paste */
+  async pasteDimensionsUpload(
+    id: string,
+    body: Record<string, unknown>,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.dimensionsUploadPaste(id), body));
+  },
+
+  /** GET /jobs/:id/organizations */
+  async listOrganizations(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.organizations(id)));
+  },
+
+  /** POST /jobs/:id/organizations */
+  async addOrganization(id: string, body: Record<string, unknown>): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.organizations(id), body));
+  },
+
+  /** PUT /jobs/:id/organizations/:orgType */
+  async replaceOrganization(
+    id: string,
+    orgType: string,
+    body: Record<string, unknown>,
+  ): Promise<unknown> {
+    assertId(id);
+    if (!orgType?.trim()) throw new Error('Organization type is required.');
+    return request(() =>
+      axiosInstance.put(JOB_API.organizationByType(id, orgType), body),
+    );
+  },
+
+  /** DELETE /jobs/:id/organizations/:orgType */
+  async unlinkOrganization(id: string, orgType: string): Promise<void> {
+    assertId(id);
+    if (!orgType?.trim()) throw new Error('Organization type is required.');
+    return requestVoid(() =>
+      axiosInstance.delete(JOB_API.organizationByType(id, orgType)),
+    );
+  },
+
+  /** POST /jobs/:id/organizations/copy-from */
+  async copyOrganizationsFrom(
+    id: string,
+    body: Record<string, unknown> = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.organizationsCopyFrom(id), body));
+  },
+
+  /** POST /jobs/:id/organizations/refresh-snapshots */
+  async refreshOrganizationSnapshots(
+    id: string,
+    body: Record<string, unknown> = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.post(JOB_API.organizationsRefreshSnapshots(id), body),
+    );
+  },
+
+  /** GET /jobs/job-offers */
+  async listJobOffers(params: Record<string, unknown> = {}): Promise<unknown> {
+    return request(() => axiosInstance.get(JOB_API.jobOffersList, { params }));
+  },
+
+  /** POST /jobs/job-offers */
+  async createJobOffer(body: Record<string, unknown>): Promise<unknown> {
+    return request(() => axiosInstance.post(JOB_API.jobOffersList, body));
+  },
+
   async listCargo(id: string): Promise<unknown[]> {
     assertId(id);
     const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.cargo(id)));

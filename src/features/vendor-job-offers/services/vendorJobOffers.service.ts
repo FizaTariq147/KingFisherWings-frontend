@@ -265,6 +265,84 @@ export const staffVendorJobOffersService = {
     if (isNotFound(lastErr)) throw friendlyUnavailable('Disapprove vendor offer');
     throw lastErr;
   },
+
+  async listTenantOffers(params?: Record<string, unknown>): Promise<VendorJobOffer[]> {
+    const paths = [VENDOR_JOB_OFFERS_API.staffJobOffers, VENDOR_JOB_OFFERS_API.jobsJobOffers];
+    let lastErr: unknown;
+    for (const path of paths) {
+      try {
+        const res = await axiosInstance.get(path, { params });
+        return normalizeVendorJobOfferList(res.data);
+      } catch (err) {
+        lastErr = err;
+        if (!isNotFound(err)) throw err;
+      }
+    }
+    if (isNotFound(lastErr)) return [];
+    throw lastErr;
+  },
+
+  async createOffer(body: Record<string, unknown>): Promise<VendorJobOffer | null> {
+    const paths = [VENDOR_JOB_OFFERS_API.staffJobOffers, VENDOR_JOB_OFFERS_API.jobsJobOffers];
+    let lastErr: unknown;
+    for (const path of paths) {
+      try {
+        const res = await axiosInstance.post(path, body);
+        return normalizeVendorJobOffer(res.data);
+      } catch (err) {
+        lastErr = err;
+        if (!isNotFound(err)) throw err;
+      }
+    }
+    if (isNotFound(lastErr)) throw friendlyUnavailable('Create job offer');
+    throw lastErr;
+  },
+
+  async acceptOffer(offerId: string, body: Record<string, unknown> = {}): Promise<VendorJobOffer | null> {
+    try {
+      const res = await axiosInstance.post(VENDOR_JOB_OFFERS_API.staffAcceptOffer(offerId), body);
+      const offer = normalizeVendorJobOffer(res.data);
+      if (offer && coerceVendorOfferStatus(offer.status) === 'APPROVED') {
+        return fulfillApprovedVendorOffer(offer);
+      }
+      return offer;
+    } catch (err) {
+      if (isNotFound(err)) throw friendlyUnavailable('Accept job offer');
+      throw err;
+    }
+  },
+
+  async counterOfferStaff(
+    offerId: string,
+    body: Record<string, unknown>,
+  ): Promise<VendorJobOffer | null> {
+    try {
+      const res = await axiosInstance.post(
+        VENDOR_JOB_OFFERS_API.staffCounterOffer(offerId),
+        body,
+      );
+      return normalizeVendorJobOffer(res.data);
+    } catch (err) {
+      if (isNotFound(err)) throw friendlyUnavailable('Staff counter-offer');
+      throw err;
+    }
+  },
+
+  async negotiateOffer(
+    offerId: string,
+    body: Record<string, unknown>,
+  ): Promise<VendorJobOffer | null> {
+    try {
+      const res = await axiosInstance.post(
+        VENDOR_JOB_OFFERS_API.staffNegotiateOffer(offerId),
+        body,
+      );
+      return normalizeVendorJobOffer(res.data);
+    } catch (err) {
+      if (isNotFound(err)) throw friendlyUnavailable('Negotiate job offer');
+      throw err;
+    }
+  },
 };
 
 /** Vendor portal — quotes + cost pricing (no customer revenue). */
@@ -514,5 +592,17 @@ export const vendorPortalJobsService = {
       negotiationPricing: detail.negotiationPricing,
       updatedAt: detail.updatedAt,
     };
+  },
+
+  /** POST /vendor/quotes/:id/approve — accept tenant cost offer as-is. */
+  async approveQuote(id: string, body: Record<string, unknown> = {}): Promise<VendorPortalJobDetail> {
+    try {
+      const res = await vendorApiClient.post(VENDOR_JOB_OFFERS_API.vendorApproveQuote(id), body);
+      const detail = normalizeVendorPortalJobDetail(res.data);
+      return detail ?? (await this.getById(id));
+    } catch (err) {
+      if (isNotFound(err)) throw friendlyUnavailable('Approve tenant quote');
+      throw err;
+    }
   },
 };

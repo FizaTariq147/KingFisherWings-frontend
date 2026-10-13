@@ -13,7 +13,7 @@ export const appType = {
   tableHead:
     'text-left font-semibold text-[var(--fresa-header-text,#0A2942)] px-4 py-2.5 whitespace-nowrap text-sm',
   listCreateBtn:
-    'inline-flex items-center gap-1.5 rounded-sm border border-[var(--btn-create-border,#E8E4DC)] bg-[var(--btn-create-bg,#FFFEFB)] px-3 py-1.5 text-[13px] font-medium text-[var(--btn-create-text,var(--color-neutral-800))] transition-colors hover:bg-[var(--btn-create-hover,#F3F1EC)]',
+    'inline-flex items-center gap-1.5 rounded-sm border border-[var(--btn-create-border,#061B2C)] bg-[var(--btn-create-bg,#0A2942)] px-3 py-1.5 text-[13px] font-medium text-[var(--btn-create-text,#FFFFFF)] transition-colors hover:bg-[var(--btn-create-hover,#163E60)]',
 } as const;
 
 export const listShell = {

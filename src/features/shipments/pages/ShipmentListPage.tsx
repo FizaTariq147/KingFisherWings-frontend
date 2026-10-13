@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { ListRowEditButton } from '@/components/ui/ListRowEditButton';
 import {
   EmptyState,
   ErrorState,
@@ -53,9 +54,6 @@ export default function ShipmentListPage() {
         <div className={listShell.header}>
           <div className="min-w-0">
             <h2 className={appType.pageTitle}>Shipments</h2>
-            <p className={appType.pageSubtitle}>
-              Continuum (Party → Enquiry → Quotation → Shipment → Job) or create a shipment directly — all departments.
-            </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {canWriteCreate ? (
@@ -138,6 +136,7 @@ export default function ShipmentListPage() {
               <table className={listShell.table}>
                 <thead>
                   <tr>
+                    <th className={`${erpTable.th} w-10`}>{''}</th>
                     <th className={erpTable.th}>Shipment No</th>
                     <th className={erpTable.th}>Date</th>
                     <th className={erpTable.th}>Department</th>
@@ -155,6 +154,14 @@ export default function ShipmentListPage() {
                       className={`${erpTable.row} cursor-pointer`}
                       onClick={() => navigate(paths.detail(s.id))}
                     >
+                      <td className={erpTable.td} onClick={(e) => e.stopPropagation()}>
+                        <ListRowEditButton
+                          title="Edit shipment"
+                          onClick={() =>
+                            navigate(paths.detail(s.id), { state: { startEdit: true } })
+                          }
+                        />
+                      </td>
                       <td className={erpTable.td}>
                         <span className="font-semibold text-[var(--color-primary-700)]">
                           {shipmentDisplayNumber(s)}

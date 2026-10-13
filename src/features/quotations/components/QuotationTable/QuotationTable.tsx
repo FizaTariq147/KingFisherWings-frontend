@@ -1,4 +1,5 @@
 import { AppFetchBar } from '@/components/motion';
+import { ListRowEditButton } from '@/components/ui/ListRowEditButton';
 import {
   Table,
   TableBody,
@@ -24,6 +25,7 @@ import {
   quotationTotalLabel,
 } from '../../utils/quotationDisplay';
 import { quotationDisplayNumber } from '../../utils/normalizeQuotation';
+import { isQuotationDraftEditable } from '../../utils/quotationStatus';
 import { QuotationActionMenu } from '../QuotationActionMenu';
 import { QuotationStatusBadge } from '../QuotationStatusBadge';
 
@@ -121,6 +123,7 @@ export function QuotationTable({
       <Table className="min-w-[900px]">
         <TableHeader>
           <TableRow className="hover:bg-transparent">
+            <TableHead className="w-10">{' '}</TableHead>
             <TableHead>Quote No</TableHead>
             <TableHead>Customer</TableHead>
             <TableHead>Department</TableHead>
@@ -136,17 +139,26 @@ export function QuotationTable({
         <TableBody>
           {quotations.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={10} className="text-center text-[var(--color-neutral-400)] py-10">
+              <TableCell colSpan={11} className="text-center text-[var(--color-neutral-400)] py-10">
                 {emptyMessage}
               </TableCell>
             </TableRow>
           ) : (
-            quotations.map((q) => (
+            quotations.map((q) => {
+              const canEdit = isQuotationDraftEditable(q.status);
+              return (
               <TableRow
                 key={q.id}
                 className="cursor-pointer"
                 onClick={() => onView(q)}
               >
+                <TableCell onClick={(e) => e.stopPropagation()}>
+                  <ListRowEditButton
+                    disabled={pendingActionId === q.id || !canEdit}
+                    title={canEdit ? 'Edit quotation' : 'Only draft quotations can be edited'}
+                    onClick={() => (canEdit ? onEdit(q) : onView(q))}
+                  />
+                </TableCell>
                 <TableCell>{quotationDisplayNumber(q)}</TableCell>
                 <TableCell>{quotationCustomerLabel(q, partyMap)}</TableCell>
                 <TableCell>
@@ -180,7 +192,8 @@ export function QuotationTable({
                   />
                 </TableCell>
               </TableRow>
-            ))
+              );
+            })
           )}
         </TableBody>
       </Table>

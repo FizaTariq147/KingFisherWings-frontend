@@ -16,7 +16,7 @@ export function FooterStatusBar({ info }: FooterStatusBarProps) {
       </div>
       <div
         className="hidden sm:block flex-1 px-4 py-2.5 text-center text-white truncate"
-        style={{ background: '#FF751F' }}
+        style={{ background: 'var(--color-secondary, #FF751F)' }}
         title={`${info.timestamp} · ${info.timezone}`}
       >
         {info.timestamp} &middot; {info.timezone}

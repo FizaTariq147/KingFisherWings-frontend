@@ -120,11 +120,12 @@
   --btn-edit-text:            #FFFFFF;
   --btn-edit-border:          #0284C7;
   --btn-edit-ring:            #0284C7;
-  --btn-create-bg:            #FF751F;
-  --btn-create-hover:         #E8650F;
+  /* Create / Add — same navy as sidebar background */
+  --btn-create-bg:            var(--color-sidebar-bg, #0A2942);
+  --btn-create-hover:         var(--color-primary-600, #163E60);
   --btn-create-text:          #FFFFFF;
-  --btn-create-border:        #E8650F;
-  --btn-create-ring:          #FF751F;
+  --btn-create-border:        var(--color-primary-900, #061B2C);
+  --btn-create-ring:          var(--color-sidebar-bg, #0A2942);
   --btn-success-bg:           var(--color-success-500);
   --btn-success-hover:        var(--color-success-700);
   --btn-success-text:         #FFFFFF;
@@ -305,17 +306,18 @@ code, kbd, pre, samp {
 }
 
 /* ── Colored action buttons (header chrome + toolbars) ─────────────
-   Create orange · Edit sky · Report violet · Back slate
+   Create/Add = sidebar navy · Edit sky · Report violet · Back slate
    + success / warning / danger for Actions toolbars                 */
 .kf-btn-create,
 button.kf-btn-create {
-  background-color: #FF751F !important;
+  background-color: var(--color-sidebar-bg, #0A2942) !important;
   color: #FFFFFF !important;
-  border: 1px solid #E8650F !important;
+  border: 1px solid var(--color-primary-900, #061B2C) !important;
   box-shadow: 0 1px 0 rgba(10, 41, 66, 0.12);
 }
 button.kf-btn-create:hover:not(:disabled) {
-  background-color: #E8650F !important;
+  background-color: var(--color-primary-600, #163E60) !important;
+  border-color: var(--color-primary-900, #061B2C) !important;
 }
 .kf-btn-edit,
 button.kf-btn-edit {
