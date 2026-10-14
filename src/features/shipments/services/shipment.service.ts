@@ -3,9 +3,9 @@ import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
 import {
   SHIPMENT_API,
-  SHIPMENT_DETAIL_TABS,
-  SHIPMENT_SHOW_ALL_TAB_ALIASES,
   isShipmentShowAllTab,
+  shipmentDetailTabLabel,
+  toApiShipmentDetailTabKey,
 } from '../api/shipment.api';
 import type {
   ChangeShipmentBlStatusDto,
@@ -34,6 +34,29 @@ import { formatShipmentsPermissionError } from '../utils/shipmentPermissions';
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   return value as Record<string, unknown>;
+}
+
+/**
+ * Unwrap KPI / tracking / detail-tab envelopes into the payload the UI should render.
+ * Preserves arrays; merges nested data/content/payload objects.
+ */
+function unwrapShipmentTabPayload(raw: unknown): unknown {
+  const payload = unwrapShipmentPayload(raw);
+  if (Array.isArray(payload)) return payload;
+  if (payload && typeof payload === 'object') {
+    const rec = payload as Record<string, unknown>;
+    const nested =
+      (rec.data && typeof rec.data === 'object' ? rec.data : null) ||
+      (rec.content && typeof rec.content === 'object' ? rec.content : null) ||
+      (rec.payload && typeof rec.payload === 'object' ? rec.payload : null);
+    if (Array.isArray(nested)) return nested;
+    if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
+      return { ...rec, ...(nested as Record<string, unknown>) };
+    }
+    return rec;
+  }
+  if (Array.isArray(raw)) return raw;
+  return asRecord(raw) ?? payload ?? raw ?? {};
 }
 
 function normalizeMeta(
@@ -287,17 +310,19 @@ export const shipmentService = {
     return basic;
   },
 
-  /** GET /shipments/:id/detail/:tab — lazy tab payload. */
+  /** GET /shipments/:id/detail/:tab — lazy tab payload (exact API key, form-ready). */
   async getDetailTab(id: string, tab: string): Promise<Record<string, unknown>> {
     assertId(id);
-    const key = tab.trim();
+    const key = toApiShipmentDetailTabKey(tab);
     if (!key) throw new Error('Tab key is required.');
+
     try {
       const res = await withGatewayRetry(() =>
         axiosInstance.get(SHIPMENT_API.detailTab(id, key)),
       );
-      const payload = unwrapShipmentPayload(res.data);
-      return asRecord(payload) ?? asRecord(res.data) ?? { raw: payload ?? res.data };
+      const unwrapped = unwrapShipmentTabPayload(res.data);
+      if (Array.isArray(unwrapped)) return { items: unwrapped };
+      return asRecord(unwrapped) ?? { value: unwrapped };
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -334,8 +359,9 @@ export const shipmentService = {
   },
 
   /**
-   * Fresa Show All — try dedicated `detail/show-all` keys, then aggregate every
-   * other detail tab + related read APIs (charges, routing, booking-form, BL, AWB).
+   * Show All — only tabs from GET /shipments/:id/detail `tabs` (siblingTabKeys).
+   * Uses exact key for dedicated show_all when present, then aggregates every other
+   * sibling via GET /shipments/:id/detail/:tab. No hardcoded tab inventory.
    */
   async getShowAll(
     id: string,
@@ -358,54 +384,39 @@ export const shipmentService = {
       arrays.push({ key, title, rows });
     };
 
-    // 1) Dedicated Show All endpoint(s)
-    for (const alias of SHIPMENT_SHOW_ALL_TAB_ALIASES) {
+    const normalizedSiblings = Array.from(
+      new Set(
+        siblingTabKeys
+          .map((k) => toApiShipmentDetailTabKey(k))
+          .filter(Boolean),
+      ),
+    );
+
+    // 1) Dedicated Show All tab key from API (exact path segment)
+    const showAllKey = normalizedSiblings.find((k) => isShipmentShowAllTab(k));
+    if (showAllKey) {
       try {
-        const data = await this.getDetailTab(id, alias);
-        pushSection(`api-${alias}`, 'Show All', data);
-        // If backend returned a rich payload, still continue aggregating so we miss nothing.
-        break;
+        const data = await this.getDetailTab(id, showAllKey);
+        pushSection(`api-${showAllKey}`, shipmentDetailTabLabel(showAllKey), data);
       } catch {
-        /* try next alias */
+        /* aggregate siblings below */
       }
     }
 
-    // 2) Core shipment record
-    try {
-      const basic = await this.getById(id);
-      pushSection('shipment', 'Shipment', asRecord(basic) ?? {});
-    } catch {
-      /* ignore */
-    }
-
-    // 3) Every sibling detail tab (skip show-all itself)
-    const tabKeys = Array.from(
-      new Set(
-        [
-          ...siblingTabKeys,
-          ...SHIPMENT_DETAIL_TABS,
-        ]
-          .map((k) => k.trim())
-          .filter((k) => k && !isShipmentShowAllTab(k)),
-      ),
-    );
+    // 2) Every other sibling detail tab
+    const tabKeys = normalizedSiblings.filter((k) => !isShipmentShowAllTab(k));
 
     await Promise.all(
       tabKeys.map(async (tab) => {
         try {
           const data = await this.getDetailTab(id, tab);
-          const title = tab
-            .replace(/[-_]/g, ' ')
-            .replace(/\borgani[sz]ation\b/i, 'Party')
-            .replace(/\b\w/g, (c) => c.toUpperCase());
-          // Split arrays out of tab payloads for table rendering
+          const title = shipmentDetailTabLabel(tab);
           const root = { ...data };
           let pushedChargeLike = false;
           for (const [k, v] of Object.entries(data)) {
             if (!Array.isArray(v)) continue;
             delete root[k];
             const isChargeLike = /charge|line/i.test(k);
-            // Costing tab often returns both `charges` and `lines` — keep one table only
             if (isChargeLike) {
               if (pushedChargeLike) continue;
               pushedChargeLike = true;
@@ -416,49 +427,11 @@ export const shipmentService = {
           }
           pushSection(tab, title, root);
         } catch {
-          /* tab may not exist for this shipment type */
+          /* tab may 404 for this shipment */
         }
       }),
     );
 
-    // 4) Related read APIs — skip when a detail tab already contributed the same list
-    // (costing tab often returns charges/lines; avoid a second identical Charges block)
-    const hasChargeArray = arrays.some((a) =>
-      /charge|costing|lines/i.test(`${a.key} ${a.title}`),
-    );
-    const hasRoutingArray = arrays.some((a) =>
-      /routing|leg/i.test(`${a.key} ${a.title}`),
-    );
-
-    const [charges, legs, bookingForm, bls, awb, kpi, tracking] = await Promise.all([
-      hasChargeArray
-        ? Promise.resolve([] as unknown[])
-        : this.tryGetList(SHIPMENT_API.charges(id), ['items', 'charges', 'lines', 'data']),
-      hasRoutingArray
-        ? Promise.resolve([] as unknown[])
-        : this.routingLegs(id).catch(() => [] as unknown[]),
-      this.tryGetRecord(SHIPMENT_API.bookingForm(id)),
-      this.listBillsOfLading(id).catch(() => [] as unknown[]),
-      this.tryGetRecord(SHIPMENT_API.awb(id)),
-      this.kpi(id).catch(() => null),
-      this.tracking(id).catch(() => null),
-    ]);
-
-    if (!hasChargeArray) pushArray('charges', 'Charges', charges);
-    if (!hasRoutingArray) pushArray('routing-legs', 'Routing legs', legs);
-    if (bookingForm) pushSection('booking-form', 'Booking form', bookingForm);
-    pushArray('bills-of-lading', 'Bills of lading', bls);
-    if (awb) {
-      if (Array.isArray((awb as { items?: unknown }).items)) {
-        pushArray('awb', 'AWB', (awb as { items: unknown[] }).items);
-      } else {
-        pushSection('awb', 'AWB', awb);
-      }
-    }
-    if (kpi) pushSection('kpi', 'KPI', kpi);
-    if (tracking) pushSection('tracking', 'Track & Trace', tracking);
-
-    // Final guard: at most one charge-like table (costing + /charges + lines aliases)
     let keptChargeBlock = false;
     const dedupedArrays = arrays.filter((block) => {
       const isChargeLike = /charge|costing|(^|[^a-z])lines([^a-z]|$)/i.test(
@@ -653,21 +626,21 @@ export const shipmentService = {
     }
   },
 
-  async kpi(id: string): Promise<Record<string, unknown>> {
+  async kpi(id: string): Promise<unknown> {
     assertId(id);
     try {
       const res = await withGatewayRetry(() => axiosInstance.get(SHIPMENT_API.kpi(id)));
-      return asRecord(unwrapShipmentPayload(res.data)) ?? asRecord(res.data) ?? {};
+      return unwrapShipmentTabPayload(res.data);
     } catch (error) {
       throw formatAxiosError(error);
     }
   },
 
-  async tracking(id: string): Promise<Record<string, unknown>> {
+  async tracking(id: string): Promise<unknown> {
     assertId(id);
     try {
       const res = await withGatewayRetry(() => axiosInstance.get(SHIPMENT_API.tracking(id)));
-      return asRecord(unwrapShipmentPayload(res.data)) ?? asRecord(res.data) ?? {};
+      return unwrapShipmentTabPayload(res.data);
     } catch (error) {
       throw formatAxiosError(error);
     }

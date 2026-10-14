@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table';
-import { API_DEFAULTS, API_ENUMS, API_MAX_LENGTH } from '@/lib/api/apiSchema.generated';
+import { API_ENUMS, API_MAX_LENGTH } from '@/lib/api/apiSchema.generated';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import {
@@ -26,6 +26,7 @@ import {
 import { useCustomerPortalBookingForm } from '@/features/portal-admin-inbox/hooks/usePortalAdminInbox';
 import type { PortalBookingFormMessagePayload } from '@/features/portal-quotations/utils/portalBookingFormStorage';
 import { quotationService } from '@/features/quotations/services/quotation.service';
+import { isCustomerPortalQuotation } from '@/features/quotations/utils/isCustomerPortalQuotation';
 import { BookingDocumentUploadList } from '@/features/booking-documents/components/BookingDocumentUploadList';
 import {
   BOOKING_DOCUMENT_KIND_LABELS,
@@ -236,17 +237,18 @@ function emptyParty(kind: BookingFormPartyKind): PartyUi {
   };
 }
 
+/** Blank staff form — no enum defaults / dummy values; fill only from customer portal or user input. */
 function emptyForm(): FormUi {
   return {
     date_of_request: '',
     client_booking_no: '',
     voyage_ref: '',
-    service_scope: SERVICE_SCOPES[0],
+    service_scope: '',
     origin_door_address: '',
     dest_door_address: '',
     commodity: '',
     hs_code: '',
-    cargo_category: CARGO_CATEGORIES[0],
+    cargo_category: '',
     is_dg: false,
     dg_class: '',
     gross_weight_kg: '',
@@ -281,7 +283,7 @@ function emptyForm(): FormUi {
     handling_instructions: '',
     freight_job_id: '',
     stock_lines: [{ sku_code: '', description: '', quantity: '', unit: '', cbm: '' }],
-    direction: API_DEFAULTS.UpsertCustomsClearanceBookingFormDto.direction,
+    direction: '',
     border_or_port: '',
     entry_type: '',
     declaration_type: '',
@@ -303,7 +305,7 @@ function emptyForm(): FormUi {
       },
     ],
     parties: PARTY_KINDS.map(emptyParty),
-    containers: [{ container_type_id: '', iso_size: '', count: '1' }],
+    containers: [{ container_type_id: '', iso_size: '', count: '' }],
     attaches: Object.fromEntries(ATTACH_FLAGS_ALL.map((a) => [a.key, false])),
   };
 }
@@ -400,12 +402,12 @@ function hydrateForm(raw: unknown): FormUi {
     date_of_request: dateInput(r.date_of_request),
     client_booking_no: str(r.client_booking_no),
     voyage_ref: str(r.voyage_ref),
-    service_scope: str(r.service_scope) || base.service_scope,
+    service_scope: str(r.service_scope),
     origin_door_address: str(r.origin_door_address),
     dest_door_address: str(r.dest_door_address),
     commodity: str(r.commodity),
     hs_code: str(r.hs_code),
-    cargo_category: str(r.cargo_category) || base.cargo_category,
+    cargo_category: str(r.cargo_category),
     is_dg: r.is_dg === true,
     dg_class: str(r.dg_class),
     gross_weight_kg: numStr(r.gross_weight_kg),
@@ -440,7 +442,7 @@ function hydrateForm(raw: unknown): FormUi {
     handling_instructions: str(r.handling_instructions),
     freight_job_id: str(r.freight_job_id),
     stock_lines,
-    direction: str(r.direction) || base.direction,
+    direction: str(r.direction),
     border_or_port: str(r.border_or_port),
     entry_type: str(r.entry_type),
     declaration_type: str(r.declaration_type),
@@ -863,6 +865,8 @@ export function ModeBookingFormPanel({
   const linkedQuote = linkedQuoteQuery.data;
   const linkedJobType = String(linkedQuote?.job_type ?? mode).toUpperCase();
   const jobTypePrefix = linkedJobType.split('_')[0];
+  /** Auto-load portal booking only when the linked quotation came from customer portal. */
+  const quoteFromCustomerPortal = isCustomerPortalQuotation(linkedQuote);
 
   const portalBookingQuery = useCustomerPortalBookingForm(
     {
@@ -871,7 +875,7 @@ export function ModeBookingFormPanel({
       quoteNumber: linkedQuote?.quotation_number || linkedQuote?.quote_no,
       jobTypePrefix,
     },
-    Boolean(jobId),
+    Boolean(jobId) && quoteFromCustomerPortal && !linkedQuoteQuery.isLoading,
   );
 
   const [panelMode, setPanelMode] = useState<PanelMode>('list');
@@ -917,7 +921,8 @@ export function ModeBookingFormPanel({
   useEffect(() => {
     if (query.data == null) return;
     if (panelMode === 'list' || panelMode === 'create') return;
-    setForm(hydrateForm(query.data));
+    // Empty API shell → blank form (no invented defaults); real data only.
+    setForm(modeBookingFormIsEmpty(query.data) ? emptyForm() : hydrateForm(query.data));
     setPortalPrefillApplied(false);
   }, [query.data, panelMode]);
 
@@ -934,6 +939,7 @@ export function ModeBookingFormPanel({
   }, [query.data, hasSavedForm]);
 
   useEffect(() => {
+    if (!quoteFromCustomerPortal) return;
     if (panelMode !== 'create' && panelMode !== 'edit') return;
     const payload = portalBookingQuery.data;
     if (!payload || portalPrefillApplied) return;
@@ -950,6 +956,7 @@ export function ModeBookingFormPanel({
       }). Review, then click Save.`,
     );
   }, [
+    quoteFromCustomerPortal,
     panelMode,
     portalBookingQuery.data,
     portalPrefillApplied,
@@ -960,8 +967,9 @@ export function ModeBookingFormPanel({
     mode,
   ]);
 
-  /** When portal form exists and staff form is empty, open create already prefilled. */
+  /** Auto-open create prefilled only when the quotation originated from customer portal. */
   useEffect(() => {
+    if (!quoteFromCustomerPortal) return;
     if (panelMode !== 'list') return;
     if (hasSavedForm) return;
     if (query.isLoading || query.isFetching) return;
@@ -977,6 +985,7 @@ export function ModeBookingFormPanel({
       }). Review, then Save.`,
     );
   }, [
+    quoteFromCustomerPortal,
     panelMode,
     hasSavedForm,
     query.isLoading,
@@ -987,8 +996,9 @@ export function ModeBookingFormPanel({
     mode,
   ]);
 
-  /** Push portal payload onto empty staff booking-form API (idempotent). */
+  /** Push portal payload onto empty staff booking-form API (idempotent; portal quotes only). */
   useEffect(() => {
+    if (!quoteFromCustomerPortal) return;
     if (!jobId || !linkedQuote?.id) return;
     if (query.isLoading || query.isFetching) return;
     if (hasSavedForm) return;
@@ -1016,6 +1026,7 @@ export function ModeBookingFormPanel({
       cancelled = true;
     };
   }, [
+    quoteFromCustomerPortal,
     jobId,
     linkedQuote?.id,
     linkedQuote?.job_type,
@@ -1061,7 +1072,7 @@ export function ModeBookingFormPanel({
   const openCreate = () => {
     setErr(null);
     setMsg(null);
-    const payload = portalBookingQuery.data;
+    const payload = quoteFromCustomerPortal ? portalBookingQuery.data : undefined;
     if (payload) {
       setForm(applyPortal(emptyForm(), payload, true));
       setPortalPrefillApplied(true);
@@ -1073,6 +1084,11 @@ export function ModeBookingFormPanel({
     } else {
       setForm(emptyForm());
       setPortalPrefillApplied(false);
+      setMsg(
+        quoteFromCustomerPortal
+          ? 'No customer portal booking form yet — fields stay blank until the customer submits, or you enter values manually.'
+          : null,
+      );
     }
     setPanelMode('create');
   };
@@ -1080,14 +1096,14 @@ export function ModeBookingFormPanel({
   const openView = () => {
     setErr(null);
     setMsg(null);
-    setForm(hydrateForm(query.data));
+    setForm(modeBookingFormIsEmpty(query.data) ? emptyForm() : hydrateForm(query.data));
     setPanelMode('view');
   };
 
   const openEdit = () => {
     setErr(null);
     setMsg(null);
-    setForm(hydrateForm(query.data));
+    setForm(modeBookingFormIsEmpty(query.data) ? emptyForm() : hydrateForm(query.data));
     setPortalPrefillApplied(false);
     setPanelMode('edit');
   };
@@ -1100,6 +1116,10 @@ export function ModeBookingFormPanel({
   };
 
   const reloadFromPortal = () => {
+    if (!quoteFromCustomerPortal) {
+      setErr('This quotation was not created from the customer portal.');
+      return;
+    }
     const payload = portalBookingQuery.data;
     if (!payload) {
       setErr('No customer portal booking form found for this job / quotation yet.');
@@ -1193,7 +1213,7 @@ export function ModeBookingFormPanel({
           ) : null}
         </div>
 
-        {portalBookingQuery.data && !hasSavedForm ? (
+        {quoteFromCustomerPortal && portalBookingQuery.data && !hasSavedForm ? (
           <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-900">
             Customer portal booking is available
             {portalBookingQuery.data.quoteNumber
@@ -1331,7 +1351,7 @@ export function ModeBookingFormPanel({
         </Button>
       </div>
 
-      {portalBookingQuery.data && !readOnly ? (
+      {quoteFromCustomerPortal && portalBookingQuery.data && !readOnly ? (
         <div className="flex flex-wrap items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50/80 px-3 py-2 text-xs text-emerald-900">
           <span>
             Customer booking form on file
@@ -1386,6 +1406,7 @@ export function ModeBookingFormPanel({
                 value={form.service_scope}
                 onChange={(e) => patch({ service_scope: e.target.value })}
               >
+                <option value="">Select…</option>
                 {SERVICE_SCOPES.map((s) => (
                   <option key={s} value={s}>
                     {s}
@@ -1402,6 +1423,7 @@ export function ModeBookingFormPanel({
               value={form.cargo_category}
               onChange={(e) => patch({ cargo_category: e.target.value })}
             >
+              <option value="">Select…</option>
               {CARGO_CATEGORIES.map((c) => (
                 <option key={c} value={c}>
                   {c}
@@ -2052,6 +2074,7 @@ export function ModeBookingFormPanel({
                 value={form.direction}
                 onChange={(e) => patch({ direction: e.target.value })}
               >
+                <option value="">Select…</option>
                 {CC_DIRECTIONS.map((d) => (
                   <option key={d} value={d}>
                     {d}

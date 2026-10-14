@@ -13,7 +13,7 @@ export const quotationsMenu: MenuTile[] = [
   {
     id: 'online-quote',
     title: 'Online Quote',
-    description: 'Tariff auto-calc online quote widget (POST /quotations/online-quote).',
+    description: 'Tariff auto-calc online quote widget.',
     icon: FileText,
     iconColor: 'bg-violet-500',
     path: '/quotations/online-quote',
@@ -27,6 +27,7 @@ export const quotationsMenu: MenuTile[] = [
     path: '/quotations/service-catalog',
   },
   {
+    id: 'online-tariff-master',
     title: 'Online Tariff Master',
     description: 'To maintain quote charges with sale cost and charges details',
     icon: Image,

@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { AlertCircle, Plus, RefreshCw, Upload, Wand2 } from 'lucide-react';
+import { Plus, RefreshCw, Upload, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { PageBackLink } from '@/components/ui/PageBackLink';
+import { EmptyState, ErrorState } from '@/components/erp';
 import { documentationJobsService } from '@/features/documentation/services/documentation.service';
+import { appType, listShell } from '@/lib/erpTypography';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import { JobFilters } from '../components/JobFilters';
 import { JobTable } from '../components/JobTable';
@@ -184,56 +186,67 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
         : 'Back to Management';
 
   return (
-    <div className="space-y-3">
+    <div className={listShell.page}>
       <PageBackLink to={backTo} label={hubBackLabel} />
-      <div className="bg-white border border-[var(--color-neutral-200)] rounded-md">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-5 py-3 border-b border-[var(--color-neutral-200)]">
-        <div>
-          <h2 className="text-[17px] font-medium text-[var(--color-neutral-800)]">{title}</h2>
-          <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">{config.subtitle}</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button type="button" variant="secondary" onClick={() => refetch()} disabled={isFetching}>
-            <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-          {config.showUploadManifest && (
+      <div className={listShell.card}>
+        <div className={listShell.header}>
+          <div className="min-w-0">
+            <h2 className={appType.pageTitle}>{title}</h2>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="create"
+              size="sm"
+              leftIcon={<Plus />}
+              onClick={() => navigate(config.createPath)}
+            >
+              Create
+            </Button>
+            {config.showUploadManifest ? (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                leftIcon={<Upload />}
+                onClick={() =>
+                  setManifestHint(
+                    'Upload Manifest is not connected to an API yet. Open a job and use the Documents tab.',
+                  )
+                }
+              >
+                Upload Manifest
+              </Button>
+            ) : null}
+            {variant === 'documentation' ? (
+              <Button
+                type="button"
+                variant="edit"
+                size="sm"
+                leftIcon={<Wand2 />}
+                onClick={() =>
+                  void documentationJobsService
+                    .createWizard()
+                    .then(() => navigate('/jobs/new'))
+                    .catch((err) => setActionError(getErrorMessage(err)))
+                }
+              >
+                Create wizard
+              </Button>
+            ) : null}
             <Button
               type="button"
               variant="secondary"
-              onClick={() =>
-                setManifestHint(
-                  'Upload Manifest is not connected to an API yet. Open a job and use the Documents tab.',
-                )
-              }
+              size="sm"
+              leftIcon={<RefreshCw className={isFetching ? 'animate-spin' : undefined} />}
+              onClick={() => refetch()}
+              disabled={isFetching}
             >
-              <Upload className="h-4 w-4" />
-              Upload Manifest
+              Refresh
             </Button>
-          )}
-          {variant === 'documentation' ? (
-            <Button
-              type="button"
-              variant="edit"
-              onClick={() =>
-                void documentationJobsService
-                  .createWizard()
-                  .then(() => navigate('/jobs/new'))
-                  .catch((err) => setActionError(getErrorMessage(err)))
-              }
-            >
-              <Wand2 className="h-4 w-4" />
-              Create wizard
-            </Button>
-          ) : null}
-          <Button type="button" onClick={() => navigate(config.createPath)}>
-            <Plus className="h-4 w-4" />
-            Create
-          </Button>
+          </div>
         </div>
-      </div>
 
-      <div className="p-5 space-y-4">
         <JobFilters
           search={search}
           onSearchChange={setSearch}
@@ -253,30 +266,46 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
           onMastersOnlyChange={setMastersOnly}
         />
 
-        {isError && (
-          <div className="flex items-center gap-2 text-sm text-[var(--color-danger-600)]">
-            <AlertCircle className="h-4 w-4" />
-            {getErrorMessage(error)}
-          </div>
-        )}
-        {actionError && (
-          <div role="alert" className="text-sm text-[var(--color-danger-600)]">
+        {actionError ? (
+          <div
+            role="alert"
+            className="mx-3 mt-2 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700"
+          >
             {actionError}
           </div>
-        )}
-        {actionMessage && (
-          <div role="status" className="text-sm text-[var(--color-success-700)]">
+        ) : null}
+        {actionMessage ? (
+          <div
+            role="status"
+            className="mx-3 mt-2 rounded-sm border border-green-200 bg-green-50 px-3 py-2 text-[13px] text-green-700"
+          >
             {actionMessage}
           </div>
-        )}
-        {manifestHint && (
-          <div role="status" className="text-sm text-[var(--color-neutral-600)]">
+        ) : null}
+        {manifestHint ? (
+          <div
+            role="status"
+            className="mx-3 mt-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2 text-[13px] text-[#64748b]"
+          >
             {manifestHint}
           </div>
-        )}
+        ) : null}
 
-        {isLoading ? (
-          <p className="text-sm text-[var(--color-neutral-400)] py-8 text-center">Loading jobs…</p>
+        {isError ? (
+          <div className="px-3 py-3">
+            <ErrorState
+              message={getErrorMessage(error) || 'Failed to load jobs.'}
+              onRetry={() => refetch()}
+            />
+          </div>
+        ) : isLoading ? (
+          <div className="space-y-1.5 px-3 py-4" aria-busy>
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-8 animate-pulse rounded-sm bg-[#eef2f6]" />
+            ))}
+          </div>
+        ) : jobs.length === 0 ? (
+          <EmptyState title="No jobs found." description={config.subtitle} />
         ) : (
           <JobTable
             jobs={jobs}
@@ -293,7 +322,7 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
         )}
       </div>
 
-      {confirm && (
+      {confirm ? (
         <JobConfirmModal
           open
           action={confirm.action}
@@ -311,8 +340,7 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
             return run(j, () => lifecycle.remove.mutateAsync(j.id), 'Job deleted.');
           }}
         />
-      )}
-      </div>
+      ) : null}
     </div>
   );
 }

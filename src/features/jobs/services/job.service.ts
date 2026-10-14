@@ -31,6 +31,7 @@ import { prepareJobPayload } from '../utils/prepareJobPayload';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { normalizeCode128Value } from '../utils/scannableBarcode';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
+import { toApiDetailTabKey } from '../utils/jobDetailTabs';
 import type {
   AssignCargoToContainerDto,
   AssignLandTruckerDto,
@@ -469,36 +470,21 @@ async function hydrateJobsFromConvertedQuotes(
       status?: string;
     };
 
+    // Only CONVERTED quotes — APPROVED may still have provisional job_id before Generate Job.
     const quoteBatches = await Promise.all(
       typesToHydrate.map(async (job_type) => {
-        const pages = await Promise.allSettled([
-          quotationService.list({
-            page: 1,
-            limit: 100,
-            job_type: job_type as never,
-            order: 'desc',
-          }),
-          quotationService.list({
+        try {
+          const page = await quotationService.list({
             page: 1,
             limit: 100,
             job_type: job_type as never,
             status: 'CONVERTED',
             order: 'desc',
-          }),
-          quotationService.list({
-            page: 1,
-            limit: 100,
-            job_type: job_type as never,
-            status: 'APPROVED',
-            order: 'desc',
-          }),
-        ]);
-        const out: QuoteRow[] = [];
-        for (const p of pages) {
-          if (p.status !== 'fulfilled') continue;
-          for (const q of p.value.quotations) out.push(q);
+          });
+          return page.quotations as QuoteRow[];
+        } catch {
+          return [] as QuoteRow[];
         }
-        return out;
       }),
     );
 
@@ -530,11 +516,9 @@ async function hydrateJobsFromConvertedQuotes(
         const statusTok = String(q.status ?? '')
           .trim()
           .toUpperCase();
-        if (
-          !jobId &&
-          !jobNumber &&
-          (statusTok === 'CONVERTED' || statusTok === 'APPROVED' || statusTok === 'WON')
-        ) {
+        // Continuum: only surface jobs from CONVERTED quotes (post Generate Job / convert).
+        if (statusTok && statusTok !== 'CONVERTED') continue;
+        if (!jobId && !jobNumber && statusTok === 'CONVERTED') {
           try {
             const detail = await quotationService.getById(q.id);
             jobId = String(detail.job_id ?? '').trim();
@@ -884,14 +868,51 @@ export const jobService = {
   },
 
   /**
-   * GET /jobs/:id/detail — Fresa header/tabs/actions; falls back to GET /jobs/:id.
+   * GET /jobs/:id/detail — Fresa header/tabs/actions/links; falls back to GET /jobs/:id.
+   * Merges nested `job` / `header` envelopes so `tabs` + `actions` always land on the Job model.
    */
   async getDetail(id: string): Promise<Job> {
     assertId(id);
     const basic = await this.getById(id);
     try {
       const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.detail(id)));
-      const enriched = normalizeJob(unwrapEntity(res.data) ?? res.data);
+      const root = unwrapEntity(res.data) ?? res.data;
+      const rootRec =
+        root && typeof root === 'object' && !Array.isArray(root)
+          ? (root as Record<string, unknown>)
+          : null;
+      if (!rootRec) return basic;
+
+      const nestedJob =
+        (rootRec.job && typeof rootRec.job === 'object' && !Array.isArray(rootRec.job)
+          ? (rootRec.job as Record<string, unknown>)
+          : null) ||
+        (rootRec.detail && typeof rootRec.detail === 'object' && !Array.isArray(rootRec.detail)
+          ? (rootRec.detail as Record<string, unknown>)
+          : null) ||
+        (rootRec.header && typeof rootRec.header === 'object' && !Array.isArray(rootRec.header)
+          ? (rootRec.header as Record<string, unknown>)
+          : null);
+
+      const merged: Record<string, unknown> = {
+        ...basic,
+        ...(nestedJob ?? {}),
+        // Prefer root-level Fresa chrome fields when present.
+        ...(rootRec.id || nestedJob ? {} : rootRec),
+        id: basic.id,
+        tabs: rootRec.tabs ?? nestedJob?.tabs ?? (basic as Job).tabs,
+        actions: rootRec.actions ?? nestedJob?.actions ?? (basic as Job).actions,
+      };
+      // When job fields live on the root (not nested), fold them in without wiping tabs/actions.
+      if (!nestedJob && rootRec.id) {
+        Object.assign(merged, rootRec, {
+          id: basic.id,
+          tabs: rootRec.tabs ?? merged.tabs,
+          actions: rootRec.actions ?? merged.actions,
+        });
+      }
+
+      const enriched = normalizeJob(merged);
       if (enriched) return { ...basic, ...enriched, id: basic.id };
     } catch (error) {
       const status = (error as { response?: { status?: number } })?.response?.status;
@@ -900,21 +921,32 @@ export const jobService = {
     return basic;
   },
 
-  /** GET /jobs/:id/detail/:tab */
+  /** GET /jobs/:id/detail/:tab — returns the full tab payload object. */
   async getDetailTab(id: string, tab: string): Promise<Record<string, unknown>> {
     assertId(id);
-    const key = tab.trim();
+    const key = toApiDetailTabKey(tab);
     if (!key) throw new Error('Tab key is required.');
     try {
       const res = await withGatewayRetry(() =>
         axiosInstance.get(JOB_API.detailTab(id, key)),
       );
       const payload = unwrapEntity(res.data);
-      const record =
-        payload && typeof payload === 'object' && !Array.isArray(payload)
-          ? (payload as Record<string, unknown>)
-          : null;
-      return record ?? { raw: payload ?? res.data };
+      if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
+        const rec = payload as Record<string, unknown>;
+        // Some gateways wrap as { tab, data } / { content } / { payload }.
+        const nested =
+          (rec.data && typeof rec.data === 'object' && !Array.isArray(rec.data)
+            ? (rec.data as Record<string, unknown>)
+            : null) ||
+          (rec.content && typeof rec.content === 'object' && !Array.isArray(rec.content)
+            ? (rec.content as Record<string, unknown>)
+            : null) ||
+          (rec.payload && typeof rec.payload === 'object' && !Array.isArray(rec.payload)
+            ? (rec.payload as Record<string, unknown>)
+            : null);
+        return nested ? { ...rec, ...nested } : rec;
+      }
+      return { raw: payload ?? res.data };
     } catch (error) {
       throw formatAxiosError(error);
     }

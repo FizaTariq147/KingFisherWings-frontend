@@ -29,7 +29,7 @@ export function shipmentPathsForLocation(pathname: string): {
  * - GET/POST `/shipments` — list & create
  * - GET `/shipments/:id` — basic detail
  * - GET `/shipments/:id/detail` — Fresa header, tabs, actions (detail page)
- * - GET `/shipments/:id/detail/:tab` — lazy tab payload
+ * - GET `/shipments/:id/detail/:tab` — lazy tab payload (tab keys come from detail.tabs)
  * Frontend routes: `/operations/shipments` and `/customer-service/shipments`.
  */
 export const SHIPMENT_API = {
@@ -64,36 +64,34 @@ export const SHIPMENT_API = {
   awb: (id: string) => `/shipments/${id}/awb`,
 } as const;
 
-/** Fresa “Show All” — aggregates every other tab (+ related read APIs) on one page. */
-export const SHIPMENT_SHOW_ALL_TAB = 'show-all' as const;
-
-/** Alternate backend keys for the Show All tab. */
-export const SHIPMENT_SHOW_ALL_TAB_ALIASES = [
-  SHIPMENT_SHOW_ALL_TAB,
-  'show_all',
-  'showAll',
-  'ShowAll',
-] as const;
-
-/** Known Fresa shipment detail tab keys (backend may return a subset). */
-export const SHIPMENT_DETAIL_TABS = [
-  SHIPMENT_SHOW_ALL_TAB,
-  'information',
-  'organization',
-  'dimensions',
-  'planned-containers',
-  'actual-containers',
-  'exchange-rate',
-  'costing',
-  'department',
-  'shipping-bill',
-  'routing',
-  'customs',
-] as const;
-
-export type ShipmentDetailTabKey = (typeof SHIPMENT_DETAIL_TABS)[number];
-
+/** True when the API tab key is the Show All aggregate tab. */
 export function isShipmentShowAllTab(key: string): boolean {
-  const k = key.trim().toLowerCase().replace(/_/g, '-');
-  return k === 'show-all' || k === 'showall';
+  const k = key.trim().toLowerCase().replace(/-/g, '_');
+  return k === 'show_all' || k === 'showall';
+}
+
+/**
+ * Exact path segment for GET /shipments/:id/detail/:tab.
+ * Uses the key from GET /shipments/:id/detail `tabs` as-is (trimmed only).
+ */
+export function toApiShipmentDetailTabKey(tab: string): string {
+  return tab.trim();
+}
+
+/** Display label: prefer API label; continuum Party for organization; else humanize key. */
+export function shipmentDetailTabLabel(key: string, apiLabel?: string): string {
+  const fromApi = apiLabel?.trim();
+  if (fromApi && !isShipmentShowAllTab(fromApi)) {
+    const lower = fromApi.toLowerCase();
+    if (lower === 'organization' || lower === 'organisation') return 'Party';
+    return fromApi;
+  }
+  if (isShipmentShowAllTab(key)) return 'Show All';
+  const norm = key.trim().toLowerCase().replace(/-/g, '_');
+  if (norm === 'organization' || norm === 'organisation') return 'Party';
+  if (norm === 'info' || norm === 'information') return 'Info';
+  return key
+    .trim()
+    .replace(/[-_]+/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 }

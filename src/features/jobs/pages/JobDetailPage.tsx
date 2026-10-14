@@ -18,33 +18,23 @@ import { Modal } from '@/components/ui/Modal';
 import { buildFclContinuumSteps } from '@/features/shared/continuum/buildFclContinuumSteps';
 import { FclContinuumRail } from '@/features/shared/continuum/FclContinuumRail';
 import { erpForm } from '@/lib/erpForm';
-import { JobBillsOfLadingPanel } from '../components/JobBillsOfLadingPanel';
-import { JobCargoPanel } from '../components/JobCargoPanel';
-import { JobChargesPanel } from '../components/JobChargesPanel';
+import { JobDetailApiTabPanel } from '../components/JobDetailApiTabPanel';
+import {
+  JobActionPanelContent,
+  JOB_ACTION_BUTTON_STYLE,
+} from '../components/JobActionPanelContent';
 import { JobConfirmModal } from '../components/JobConfirmModal';
-import { JobContainersPanel } from '../components/JobContainersPanel';
-import { JobDimensionsPanel } from '../components/JobDimensionsPanel/JobDimensionsPanel';
-import { JobDocumentsPanel } from '../components/JobDocumentsPanel';
-import { JobGpumPanel } from '../components/JobGpumPanel/JobGpumPanel';
-import { JobInvoicesPanel } from '../components/JobInvoicesPanel';
-import { JobSeaScansPanel } from '../components/JobSeaScansPanel';
-import { JobLogisticsPanel } from '../components/JobLogisticsPanel';
-import { JobMilestonesPanel } from '../components/JobMilestonesPanel';
-import { JobNotesPanel } from '../components/JobNotesPanel';
-import { JobOpsPanel } from '../components/JobOpsPanel';
-import { JobPartyPanel } from '../components/JobPartyPanel/JobPartyPanel';
-import { JobOverviewPanel } from '../components/JobOverviewPanel';
-import { JobBarcodePanel } from '../components/JobBarcodePanel';
-import { JobPnlPanel } from '../components/JobPnlPanel';
-import { JobStuffingPanel } from '../components/JobStuffingPanel';
-import { JobVendorOffersPanel } from '@/features/vendor-job-offers/components/JobVendorOffersPanel';
-import { CcChecklistPanel } from '@/features/customs-clearance/components/CcChecklistPanel';
-import { CcDeclarationPanel } from '@/features/customs-clearance/components/CcDeclarationPanel';
-import { CcDetailsPanel } from '@/features/customs-clearance/components/CcDetailsPanel';
-import { CcFinancePanel } from '@/features/customs-clearance/components/CcFinancePanel';
-import { CcLinesPanel } from '@/features/customs-clearance/components/CcLinesPanel';
-import { CcQueriesPanel } from '@/features/customs-clearance/components/CcQueriesPanel';
 import { isCcJobType } from '@/features/customs-clearance/constants/ccWorkflow';
+import {
+  defaultJobDetailTabKey,
+  isJobActionPanelKey,
+  isJobDetailTabKey,
+  jobActionPanelLabel,
+  jobDetailTabLabel,
+  normalizeJobDetailTabKey,
+  resolveJobDetailTabs,
+  type JobActionPanelKey,
+} from '../utils/jobDetailTabs';
 import {
   JOB_REOPENABLE_STATUSES,
   JOB_STATUS_LABELS,
@@ -227,6 +217,7 @@ export default function JobDetailPage() {
   const [reopenReason, setReopenReason] = useState('');
   const [stopOpen, setStopOpen] = useState(false);
   const [stopReason, setStopReason] = useState('');
+  const [actionPanel, setActionPanel] = useState<JobActionPanelKey | null>(null);
   const statusOptionsQuery = useJobStatusOptions(id, Boolean(id));
 
   // Keep URL segment aligned with job_type (e.g. converted ROAD_FREIGHT → /jobs/road-freight/:id).
@@ -279,20 +270,60 @@ export default function JobDetailPage() {
     return fromQuery && isUuid(fromQuery) ? fromQuery : undefined;
   }, [location.search, location.state]);
 
-  const defaultTab = useMemo(() => {
+  /** Map legacy tab query aliases → API detail tabs or Actions panels. */
+  const requestedTab = useMemo(() => {
     const fromQuery = new URLSearchParams(location.search).get('tab');
-    if (fromQuery) return fromQuery;
-    const state = location.state as { openTab?: string } | null;
-    if (state?.openTab) return state.openTab;
-    // After quote convert: open Ops for modes with staff booking / air forms.
-    if (job && jobShouldOpenOpsTab(job.job_type)) return 'ops';
-    return undefined;
-  }, [location.search, location.state, job]);
+    const fromState = (location.state as { openTab?: string } | null)?.openTab;
+    return (fromQuery || fromState || '').trim();
+  }, [location.search, location.state]);
 
+  useEffect(() => {
+    if (!requestedTab) {
+      if (highlightInvoiceId) setActionPanel('invoices');
+      return;
+    }
+    const legacy: Record<string, string> = {
+      overview: 'info',
+      info: 'info',
+      information: 'info',
+      ops: 'booking_form',
+      party: 'organization',
+      charges: 'costing',
+    };
+    const mapped = legacy[requestedTab.toLowerCase()] || requestedTab;
+    if (isJobActionPanelKey(mapped)) {
+      setActionPanel(mapped);
+      return;
+    }
+    if (isJobDetailTabKey(mapped)) {
+      setActionPanel(null);
+    }
+  }, [requestedTab, highlightInvoiceId]);
+
+  const defaultTab = useMemo(() => {
+    if (!job) return undefined;
+    if (requestedTab) {
+      const legacy: Record<string, string> = {
+        overview: 'info',
+        info: 'info',
+        information: 'info',
+        ops: 'booking_form',
+        party: 'organization',
+        charges: 'costing',
+      };
+      const mapped = legacy[requestedTab.toLowerCase()] || requestedTab;
+      // Action keys open as popup — keep API detail tabs selected underneath.
+      if (isJobActionPanelKey(mapped)) {
+        return defaultJobDetailTabKey(job, jobShouldOpenOpsTab(job.job_type));
+      }
+      if (isJobDetailTabKey(mapped)) return normalizeJobDetailTabKey(mapped);
+    }
+    return defaultJobDetailTabKey(job, jobShouldOpenOpsTab(job.job_type));
+  }, [job, requestedTab]);
+
+  /** Tabs always come from GET /jobs/:id/detail (+ fallback JOB_DETAIL_TABS). */
   const tabs = useMemo(() => {
     if (!job) return [];
-    const sea = isSeaFcl(job.job_type);
-    const isCc = isCcJobType(job.job_type);
     const overviewJob = {
       ...job,
       enquiry_id: resolvedEnquiryId || job.enquiry_id,
@@ -302,118 +333,22 @@ export default function JobDetailPage() {
       quotation_number: quotationNumber || job.quotation_number,
       shipment_number: shipmentNumber || job.shipment_number,
     };
-    return [
-      {
-        key: 'overview',
-        label: 'Overview',
-        content: (
-          <div className="space-y-4">
-            <JobOverviewPanel job={overviewJob} />
-            <JobBarcodePanel job={job} />
-          </div>
-        ),
-      },
-      { key: 'ops', label: 'Ops / Mode', content: <JobOpsPanel job={job} /> },
-      {
-        key: 'party',
-        label: 'Party',
-        content: <JobPartyPanel job={job} onChanged={() => refetch()} />,
-      },
-      {
-        key: 'dimensions',
-        label: 'Dimensions',
-        content: <JobDimensionsPanel job={job} onChanged={() => refetch()} />,
-      },
-      {
-        key: 'gpum',
-        label: 'GPUM',
-        content: <JobGpumPanel jobId={id} onChanged={() => refetch()} />,
-      },
-      ...(isCc
-        ? [
-            { key: 'cc-details', label: 'CC Details', content: <CcDetailsPanel jobId={id} /> },
-            { key: 'cc-lines', label: 'CC Lines', content: <CcLinesPanel jobId={id} /> },
-            {
-              key: 'cc-checklist',
-              label: 'Checklist',
-              content: <CcChecklistPanel jobId={id} />,
-            },
-            {
-              key: 'cc-declaration',
-              label: 'Declaration',
-              content: <CcDeclarationPanel jobId={id} />,
-            },
-            { key: 'cc-queries', label: 'Queries', content: <CcQueriesPanel jobId={id} /> },
-            { key: 'cc-finance', label: 'CC Finance', content: <CcFinancePanel jobId={id} /> },
-          ]
-        : []),
-      ...(sea
-        ? [
-            { key: 'containers', label: 'Containers', content: <JobContainersPanel jobId={id} /> },
-            { key: 'cargo', label: 'Cargo', content: <JobCargoPanel jobId={id} /> },
-            { key: 'bl', label: 'Bills of lading', content: <JobBillsOfLadingPanel jobId={id} /> },
-            { key: 'stuffing', label: 'Stuffing', content: <JobStuffingPanel jobId={id} /> },
-          ]
-        : []),
-      ...(job.job_type.includes('SEA') || job.job_type.includes('NVOCC')
-        ? [{ key: 'sea-scans', label: 'Sea scans', content: <JobSeaScansPanel jobId={id} /> }]
-        : []),
-      {
-        key: 'charges',
-        label: 'Charges',
-        content: <JobChargesPanel job={job} onChanged={() => refetch()} />,
-      },
-      {
-        key: 'invoices',
-        label: 'Invoices',
-        content: <JobInvoicesPanel jobId={id} job={job} highlightInvoiceId={highlightInvoiceId} />,
-      },
-      { key: 'pnl', label: 'P&L', content: <JobPnlPanel jobId={id} /> },
-      { key: 'milestones', label: 'Milestones', content: <JobMilestonesPanel jobId={id} /> },
-      { key: 'notes', label: 'Notes', content: <JobNotesPanel jobId={id} /> },
-      {
-        key: 'vendor-offers',
-        label: 'Vendor offers',
-        content: <JobVendorOffersPanel jobId={id} currencyCode={job.currency_code} />,
-      },
-      { key: 'documents', label: 'Documents', content: <JobDocumentsPanel jobId={id} jobType={job.job_type} /> },
-      {
-        key: 'logistics',
-        label: 'Logistics',
-        content: <JobLogisticsPanel jobId={id} jobType={job.job_type} />,
-      },
-      ...(houseJobs.length
-        ? [
-            {
-              key: 'house',
-              label: `House jobs (${houseJobs.length})`,
-              content: (
-                <ul className="space-y-2 text-sm">
-                  {houseJobs.map((h) => (
-                    <li key={h.id}>
-                      <button
-                        type="button"
-                        className="underline text-[var(--color-primary-600)]"
-                        onClick={() => navigate(`${prefix}/${h.id}`)}
-                      >
-                        {jobDisplayNumber(h)}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ),
-            },
-          ]
-        : []),
-    ];
+
+    return resolveJobDetailTabs(job).map((t) => ({
+      key: t.key,
+      // Always use FE labels (organization → Party); never surface API "Organization".
+      label: jobDetailTabLabel(t.key),
+      content: (
+        <JobDetailApiTabPanel
+          tabKey={t.key}
+          job={overviewJob}
+          onChanged={() => refetch()}
+        />
+      ),
+    }));
   }, [
     job,
-    id,
-    houseJobs,
-    prefix,
-    navigate,
     refetch,
-    highlightInvoiceId,
     resolvedEnquiryId,
     resolvedQuotationId,
     resolvedShipmentId,
@@ -818,19 +753,86 @@ export default function JobDetailPage() {
                 Delete
               </Button>
             ) : null}
-            {!canChangeStatus &&
-            !canStop &&
-            !canReopen &&
-            !canClose &&
-            !canCancel &&
-            !canDelete ? (
-              <span className="text-[12px] text-[var(--color-neutral-500)]">
-                No actions available for this job status.
-              </span>
-            ) : null}
+            {(
+              [
+                'documents',
+                'invoices',
+                'pnl',
+                'milestones',
+                'notes',
+                'vendor-offers',
+                'logistics',
+                'gpum',
+                ...(isSeaFcl(job.job_type)
+                  ? (['cargo', 'bl', 'stuffing'] as const)
+                  : []),
+                ...(job.job_type.includes('SEA') || job.job_type.includes('NVOCC')
+                  ? (['sea-scans'] as const)
+                  : []),
+                ...(houseJobs.length ? (['house'] as const) : []),
+                ...(isCcJobType(job.job_type)
+                  ? ([
+                      'cc-details',
+                      'cc-lines',
+                      'cc-checklist',
+                      'cc-declaration',
+                      'cc-queries',
+                      'cc-finance',
+                    ] as const)
+                  : []),
+              ] as JobActionPanelKey[]
+            ).map((key) => (
+              <Button
+                key={key}
+                size="sm"
+                type="button"
+                variant="primary"
+                style={{
+                  ...JOB_ACTION_BUTTON_STYLE[key],
+                  borderWidth: 1,
+                  borderStyle: 'solid',
+                }}
+                onClick={() => setActionPanel(key)}
+              >
+                {key === 'house'
+                  ? `House jobs (${houseJobs.length})`
+                  : jobActionPanelLabel(key)}
+              </Button>
+            ))}
           </>
         }
       />
+
+      {actionPanel ? (
+        <Modal
+          open
+          size="xl"
+          title={
+            actionPanel === 'house'
+              ? `House jobs (${houseJobs.length})`
+              : jobActionPanelLabel(actionPanel)
+          }
+          onClose={() => setActionPanel(null)}
+          footer={
+            <Button type="button" size="sm" variant="secondary" onClick={() => setActionPanel(null)}>
+              Close
+            </Button>
+          }
+        >
+          <JobActionPanelContent
+            panel={actionPanel}
+            job={job}
+            jobId={id}
+            houseJobs={houseJobs}
+            highlightInvoiceId={highlightInvoiceId}
+            onOpenHouse={(houseId) => {
+              setActionPanel(null);
+              navigate(`${prefix}/${houseId}`);
+            }}
+          />
+        </Modal>
+      ) : null}
+
       {confirm && (
         <JobConfirmModal
           open

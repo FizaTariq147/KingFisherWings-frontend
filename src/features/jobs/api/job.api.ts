@@ -276,17 +276,31 @@ export const JOB_API = {
   whatsappStatus: (id: string) => `/jobs/${id}/whatsapp/status`,
 } as const;
 
-/** Known Fresa job detail tab keys (backend may return a subset). */
+/**
+ * Job DETAIL_TABS — source of truth matches backend job-detail.service
+ * GET /jobs/:id/detail and GET /jobs/:id/detail/:tab.
+ *
+ * Full: show_all, info, organization, dimensions, planned_container,
+ * actual_container, costing, history, shipments
+ * Thin/stub: department, ex_rate, routing, customs, shipping_bill_boe, booking_form
+ * (GPUM is separate GET/PUT — not a detail tab; lives under Actions.)
+ */
 export const JOB_DETAIL_TABS = [
-  'information',
-  /** Backend path/key; UI label is Party */
+  'show_all',
+  'info',
   'organization',
   'dimensions',
+  'planned_container',
+  'actual_container',
   'costing',
-  'gpum',
   'history',
-  'booking_form',
   'shipments',
+  'department',
+  'ex_rate',
+  'routing',
+  'customs',
+  'shipping_bill_boe',
+  'booking_form',
 ] as const;
 
 export type JobDetailTabKey = (typeof JOB_DETAIL_TABS)[number];

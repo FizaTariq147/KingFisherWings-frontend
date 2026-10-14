@@ -59,7 +59,7 @@ export function useShipmentDetailTab(id: string, tab: string | null) {
   });
 }
 
-/** Fresa Show All — aggregates every detail tab + related GET APIs. */
+/** Show All — aggregates sibling keys from GET /shipments/:id/detail via detail/:tab. */
 export function useShipmentShowAll(id: string, siblingTabKeys: string[], enabled = true) {
   const accessToken = useAuthStore((s) => s.accessToken);
   const { canReadApi } = useShipmentsPermissions();
@@ -204,6 +204,14 @@ export function useUpsertShipmentBookingForm(id: string) {
   return useMutation({
     mutationFn: (body: Record<string, unknown>) =>
       shipmentService.upsertBookingForm(id, body),
+    onSuccess: () => invalidate(id),
+  });
+}
+
+export function useCompleteShipmentBookingForm(id: string) {
+  const invalidate = useInvalidateShipments();
+  return useMutation({
+    mutationFn: () => shipmentService.completeBookingForm(id),
     onSuccess: () => invalidate(id),
   });
 }

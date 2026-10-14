@@ -94,6 +94,11 @@ export function useJobResolvedLabels(job: Job) {
   const { data: vessels = [] } = useMasterOptions('vessels', MASTER_PATHS.vessels, true);
   const { data: airlines = [] } = useMasterOptions('airlines', MASTER_PATHS.airlines, true);
   const { data: branches = [] } = useMasterOptions('branches', MASTER_PATHS.branches, true);
+  const { data: departments = [] } = useMasterOptions(
+    'departments',
+    MASTER_PATHS.departments,
+    true,
+  );
   const { data: truckers = [] } = useMasterOptions('truckers', MASTER_PATHS.truckers, true);
   const { data: courierVendors = [] } = useMasterOptions(
     'courier-vendors',
@@ -122,6 +127,7 @@ export function useJobResolvedLabels(job: Job) {
   const vesselId = job.sea_fcl_details?.vessel_id || job.sea_lcl_details?.vessel_id;
   const containerTypeId = job.container_type_id;
   const branchId = job.branch_id;
+  const departmentId = job.department_id;
   const truckerId =
     job.road_freight_details?.trucker_id || job.land_details?.trucker_id;
   const courierVendorId = job.courier_details?.courier_vendor_id;
@@ -189,6 +195,11 @@ export function useJobResolvedLabels(job: Job) {
     MASTER_PATHS.branches,
     branchId && isUuid(branchId) && !job.branch_name?.trim() ? branchId : '',
   );
+  const { data: department, isLoading: departmentLoading } = useMasterDetail(
+    'departments',
+    MASTER_PATHS.departments,
+    departmentId && isUuid(departmentId) ? departmentId : '',
+  );
   const { data: trucker, isLoading: truckerLoading } = useMasterDetail(
     'truckers',
     MASTER_PATHS.truckers,
@@ -216,6 +227,7 @@ export function useJobResolvedLabels(job: Job) {
   const vesselMap = useMemo(() => buildMasterLabelMap(vessels), [vessels]);
   const airlineMap = useMemo(() => buildMasterLabelMap(airlines), [airlines]);
   const branchMap = useMemo(() => buildMasterLabelMap(branches), [branches]);
+  const departmentMap = useMemo(() => buildMasterLabelMap(departments), [departments]);
   const truckerMap = useMemo(() => buildMasterLabelMap(truckers), [truckers]);
   const courierVendorMap = useMemo(() => buildMasterLabelMap(courierVendors), [courierVendors]);
 
@@ -359,6 +371,18 @@ export function useJobResolvedLabels(job: Job) {
     [branchId, job.branch_name, branchMap, branch, branchLoading],
   );
 
+  const departmentLabel = useMemo(
+    () =>
+      resolveIdLabel(
+        departmentId,
+        (job as { department_name?: string }).department_name,
+        departmentMap,
+        department,
+        departmentLoading,
+      ),
+    [departmentId, job, departmentMap, department, departmentLoading],
+  );
+
   const truckerLabel = useMemo(
     () => resolveIdLabel(truckerId, undefined, truckerMap, trucker, truckerLoading),
     [truckerId, truckerMap, trucker, truckerLoading],
@@ -396,6 +420,7 @@ export function useJobResolvedLabels(job: Job) {
     vesselLabel,
     containerTypeLabel,
     branchLabel,
+    departmentLabel,
     truckerLabel,
     courierVendorLabel,
     salespersonLabel,

@@ -30,11 +30,14 @@ import { erpForm } from '@/lib/erpForm';
 import { isUuid } from '@/lib/isUuid';
 import { cn } from '@/lib/utils';
 import {
-  isShipmentShowAllTab,
-  SHIPMENT_DETAIL_TABS,
-  SHIPMENT_SHOW_ALL_TAB,
+  shipmentDetailTabLabel,
+  toApiShipmentDetailTabKey,
 } from '../api/shipment.api';
-import { ShipmentTabPanel } from '../components/ShipmentTabPanel';
+import { ShipmentBookingFormPanel } from '../components/ShipmentBookingFormPanel';
+import {
+  ShipmentApiPayloadView,
+  ShipmentTabPanel,
+} from '../components/ShipmentTabPanel';
 import { useShipmentPaths } from '../hooks/useShipmentPaths';
 import { useShipmentResolvedLabels } from '../hooks/useShipmentResolvedLabels';
 import {
@@ -94,47 +97,21 @@ function FresaReadonlyField({
   );
 }
 
-function tabLabel(key: string, label?: string): string {
-  if (isShipmentShowAllTab(key) || (label && isShipmentShowAllTab(label))) return 'Show All';
-  const norm = key.trim().toLowerCase().replace(/_/g, '-');
-  const labelNorm = (label || '').trim().toLowerCase().replace(/_/g, '-');
-  if (norm === 'information' || norm === 'info') return 'Info';
-  /** Continuum term is Party (backend tab key may still be organization). */
-  if (
-    norm === 'organization' ||
-    norm === 'organisation' ||
-    labelNorm === 'organization' ||
-    labelNorm === 'organisation'
-  ) {
-    return 'Party';
-  }
-  if (norm === 'planned-containers' || norm === 'planned-consignment') return 'Planned containers';
-  if (norm === 'actual-containers' || norm === 'actual-consignment') return 'Actual containers';
-  return (label || key).trim().replace(/[-_]/g, ' ');
-}
-
-/** Always expose Show All first; keep backend tabs (deduped) then known defaults. */
-function defaultTabs(shipment: Shipment): { key: string; label: string }[] {
-  const fromApi = (shipment.tabs ?? []).map((t) => ({
-    key: t.key,
-    label: tabLabel(t.key, t.label),
-  }));
-  const fallback = SHIPMENT_DETAIL_TABS.map((key) => ({
-    key,
-    label: tabLabel(key),
-  }));
-  const merged = [...fromApi, ...fallback];
+/**
+ * Tabs come only from GET /shipments/:id/detail `tabs`.
+ * Each key is used as-is for GET /shipments/:id/detail/:tab — no hardcoded list.
+ */
+function resolveShipmentTabs(shipment: Shipment): { key: string; label: string }[] {
   const seen = new Set<string>();
-  const tabs: { key: string; label: string }[] = [
-    { key: SHIPMENT_SHOW_ALL_TAB, label: 'Show All' },
-  ];
-  seen.add(SHIPMENT_SHOW_ALL_TAB);
-  for (const t of merged) {
-    const norm = t.key.trim().toLowerCase().replace(/_/g, '-');
-    if (isShipmentShowAllTab(t.key) || seen.has(norm) || seen.has(t.key)) continue;
-    seen.add(norm);
-    seen.add(t.key);
-    tabs.push({ key: t.key, label: t.label });
+  const tabs: { key: string; label: string }[] = [];
+  for (const t of shipment.tabs ?? []) {
+    const key = toApiShipmentDetailTabKey(t.key);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    tabs.push({
+      key,
+      label: shipmentDetailTabLabel(key, t.label),
+    });
   }
   return tabs;
 }
@@ -172,9 +149,11 @@ export default function ShipmentDetailPage() {
   const [statusValue, setStatusValue] = useState('');
   const [blStatusValue, setBlStatusValue] = useState('');
   const [departmentId, setDepartmentId] = useState('');
-  const [activeTab, setActiveTab] = useState<string>(SHIPMENT_SHOW_ALL_TAB);
+  /** Set from first API tab once detail loads — never invent tab keys. */
+  const [activeTab, setActiveTab] = useState<string>('');
   const [showKpi, setShowKpi] = useState(false);
   const [showTracking, setShowTracking] = useState(false);
+  const [showBookingForm, setShowBookingForm] = useState(false);
   const [generateJobMode, setGenerateJobMode] = useState<'HOUSE' | 'DIRECT'>('HOUSE');
   const [editing, setEditing] = useState(false);
   const [editDraft, setEditDraft] = useState({
@@ -198,10 +177,10 @@ export default function ShipmentDetailPage() {
 
   const shipment = query.data;
   const labels = useShipmentResolvedLabels(shipment);
-  const tabs = useMemo(() => (shipment ? defaultTabs(shipment) : []), [shipment]);
+  const tabs = useMemo(() => (shipment ? resolveShipmentTabs(shipment) : []), [shipment]);
   const effectiveTab = tabs.some((t) => t.key === activeTab)
     ? activeTab
-    : tabs[0]?.key ?? 'information';
+    : tabs[0]?.key ?? '';
 
   useEffect(() => {
     if (!(location.state as { startEdit?: boolean } | null)?.startEdit) return;
@@ -531,7 +510,7 @@ export default function ShipmentDetailPage() {
           <FresaReadonlyField label="POD" value={labels.destLabel} />
           <FresaReadonlyField label="ETD" value={shipment.etd} />
           <FresaReadonlyField label="ETA" value={shipment.eta} />
-          <FresaReadonlyField label="Carrier" value={shipment.carrier_name} />
+          <FresaReadonlyField label="Carrier" value={labels.carrierLabel} />
           {shipment.enquiry_id && isUuid(shipment.enquiry_id) ? (
             <FresaReadonlyField
               label="Enquiry No"
@@ -709,7 +688,37 @@ export default function ShipmentDetailPage() {
             {showTracking ? 'Hide Tracking' : 'Track & Trace'}
           </Button>
         )}
+        <Button
+          size="sm"
+          type="button"
+          variant="primary"
+          leftIcon={<FileText />}
+          onClick={() => setShowBookingForm(true)}
+        >
+          Booking form
+        </Button>
       </div>
+
+      {showBookingForm ? (
+        <Modal
+          open
+          size="xl"
+          title="Shipment booking form"
+          onClose={() => setShowBookingForm(false)}
+          footer={
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() => setShowBookingForm(false)}
+            >
+              Close
+            </Button>
+          }
+        >
+          <ShipmentBookingFormPanel shipmentId={id} />
+        </Modal>
+      ) : null}
 
       {showKpi && (
         <section className={erpForm.section}>
@@ -720,9 +729,10 @@ export default function ShipmentDetailPage() {
             ) : kpiQuery.isError ? (
               <p className="text-[13px] text-red-700">{getErrorMessage(kpiQuery.error)}</p>
             ) : (
-              <pre className="overflow-x-auto text-[12px] text-[#334155]">
-                {JSON.stringify(kpiQuery.data ?? {}, null, 2)}
-              </pre>
+              <ShipmentApiPayloadView
+                data={kpiQuery.data ?? {}}
+                emptyMessage="No KPI data returned."
+              />
             )}
           </div>
         </section>
@@ -737,40 +747,49 @@ export default function ShipmentDetailPage() {
             ) : trackingQuery.isError ? (
               <p className="text-[13px] text-red-700">{getErrorMessage(trackingQuery.error)}</p>
             ) : (
-              <pre className="overflow-x-auto text-[12px] text-[#334155]">
-                {JSON.stringify(trackingQuery.data ?? {}, null, 2)}
-              </pre>
+              <ShipmentApiPayloadView
+                data={trackingQuery.data ?? {}}
+                emptyMessage="No tracking data returned."
+              />
             )}
           </div>
         </section>
       )}
 
-      {/* ── Fresa special tabs: Show All | Info | Party | … ── */}
+      {/* Tabs from GET /shipments/:id/detail only — each panel loads detail/:tab */}
       <section className={erpForm.section}>
-        <div className="kf-tabs-scroll flex gap-0 overflow-x-auto border-b border-[var(--color-sidebar-bg,#0A2942)] bg-[var(--color-sidebar-bg,#0A2942)]">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => setActiveTab(tab.key)}
-              className={cn(
-                'shrink-0 border-b-2 px-3.5 py-2.5 text-[12px] font-semibold capitalize transition-colors',
-                effectiveTab === tab.key
-                  ? 'border-white bg-white/15 text-white'
-                  : 'border-transparent text-white/80 hover:bg-white/10 hover:text-white',
-              )}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-        {effectiveTab ? (
-          <ShipmentTabPanel
-            shipmentId={shipment.id}
-            tabKey={effectiveTab}
-            siblingTabKeys={tabs.map((t) => t.key)}
-          />
-        ) : null}
+        {tabs.length === 0 ? (
+          <p className="p-3 text-center text-[13px] text-[#64748b]">
+            No detail tabs returned for this shipment.
+          </p>
+        ) : (
+          <>
+            <div className="kf-tabs-scroll flex gap-0 overflow-x-auto border-b border-[var(--color-sidebar-bg,#0A2942)] bg-[var(--color-sidebar-bg,#0A2942)]">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setActiveTab(tab.key)}
+                  className={cn(
+                    'shrink-0 border-b-2 px-3.5 py-2.5 text-[12px] font-semibold capitalize transition-colors',
+                    effectiveTab === tab.key
+                      ? 'border-white bg-white/15 text-white'
+                      : 'border-transparent text-white/80 hover:bg-white/10 hover:text-white',
+                  )}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            {effectiveTab ? (
+              <ShipmentTabPanel
+                shipmentId={shipment.id}
+                tabKey={effectiveTab}
+                siblingTabKeys={tabs.map((t) => t.key)}
+              />
+            ) : null}
+          </>
+        )}
       </section>
 
       {/* Confirm dialogs */}
