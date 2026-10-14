@@ -31,6 +31,7 @@ import { useJobAirBookingForm, useJob, useUpdateJobAirBookingForm } from '../hoo
 import { useCustomerPortalBookingForm } from '@/features/portal-admin-inbox/hooks/usePortalAdminInbox';
 import type { PortalBookingFormMessagePayload } from '@/features/portal-quotations/utils/portalBookingFormStorage';
 import { quotationService } from '@/features/quotations/services/quotation.service';
+import { isCustomerPortalQuotation } from '@/features/quotations/utils/isCustomerPortalQuotation';
 import {
   AIR_COMMERCIAL_ACTION_ORDER,
   AIR_COMMERCIAL_STAGES,
@@ -299,6 +300,7 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
     staleTime: 30_000,
     retry: 1,
   });
+  const quoteFromCustomerPortal = isCustomerPortalQuotation(linkedQuoteQuery.data);
   const portalBookingQuery = useCustomerPortalBookingForm(
     {
       jobId,
@@ -308,7 +310,9 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
       jobTypePrefix: 'AIR',
       jobNumber: job?.job_number,
     },
-    isExport || isImport,
+    (isExport || isImport) &&
+      quoteFromCustomerPortal &&
+      !linkedQuoteQuery.isLoading,
   );
 
   const [message, setMessage] = useState<string | null>(null);
@@ -409,6 +413,7 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
   }, [airBookingQuery.data, markDone, job?.origin_port_code, job?.dest_port_code]);
 
   useEffect(() => {
+    if (!quoteFromCustomerPortal) return;
     const payload = portalBookingQuery.data;
     if (!payload) return;
     const key = `${payload.quotationId}:${payload.submittedAt || ''}:${payload.mark_complete ? 1 : 0}`;
@@ -425,7 +430,12 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
     setMessage(
       `Autofilled from customer portal (quote ${payload.quoteNumber || payload.quotationId.slice(0, 8)}). Review matching fields, then mark complete.`,
     );
-  }, [portalBookingQuery.data, portalPrefillApplied, portalPrefillKey]);
+  }, [
+    quoteFromCustomerPortal,
+    portalBookingQuery.data,
+    portalPrefillApplied,
+    portalPrefillKey,
+  ]);
 
   const commercialCurrent = firstOpenAirStage(AIR_COMMERCIAL_ACTION_ORDER, isDone);
   const commercialDone = AIR_COMMERCIAL_ACTION_ORDER.every(isDone);

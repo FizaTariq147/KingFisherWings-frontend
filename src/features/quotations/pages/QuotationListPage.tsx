@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
-import { appType } from '@/lib/erpTypography';
+import { appType, listShell } from '@/lib/erpTypography';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { AlertCircle, Plus, RefreshCw, TimerReset } from 'lucide-react';
+import { Plus, RefreshCw, TimerReset } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
+import { EmptyState, ErrorState } from '@/components/erp';
 import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
 import { QuotationFilters } from '../components/QuotationFilters';
 import { QuotationTable } from '../components/QuotationTable';
@@ -18,7 +18,6 @@ import { useQuotationConfirmState } from '../hooks/useQuotationConfirmState';
 import { useExpireDueQuotations, useQuotations } from '../hooks/useQuotations';
 import type { Quotation } from '../types/quotation.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
-import { AppListPanelBody } from '@/components/motion';
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
   const [debounced, setDebounced] = useState(value);
@@ -60,7 +59,6 @@ export default function QuotationListPage() {
     search: debouncedSearch.trim() || undefined,
     status: status === 'all' ? undefined : status,
     job_type: jobType === 'all' ? undefined : jobType,
-    // Opt-in only — Sales All Quotations stays unscoped when these are empty.
     department_id: departmentId || undefined,
     salesperson_id: salespersonId || undefined,
     from_date: fromDate || undefined,
@@ -73,7 +71,6 @@ export default function QuotationListPage() {
   const meta = data?.meta;
   const pendingConvertTried = useRef(false);
 
-  // Booking-form modes: when portal form is already complete, convert APPROVED → job.
   useEffect(() => {
     if (pendingConvertTried.current) return;
     pendingConvertTried.current = true;
@@ -136,44 +133,60 @@ export default function QuotationListPage() {
     }
   };
 
-  return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <button
-            type="button"
-            className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] mb-1"
-            onClick={() => navigate('/quotations')}
-          >
-            ← Back to Quotations
-          </button>
-          <h2 className={appType.pageTitle}>All Quotations</h2>
-          <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-            Search, filter, and manage quotations across statuses.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button type="button" variant="secondary" onClick={() => refetch()} disabled={isFetching}>
-            <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={handleExpireDue}
-            disabled={expireDue.isPending}
-          >
-            <TimerReset className="h-4 w-4" />
-            Expire due
-          </Button>
-          <Button type="button" onClick={() => navigate('/quotations/new')}>
-            <Plus className="h-4 w-4" />
-            Create
-          </Button>
-        </div>
-      </div>
+  const emptyDefault =
+    !debouncedSearch.trim() &&
+    status === 'all' &&
+    jobType === 'all' &&
+    !fromDate &&
+    !toDate;
 
-      <Card className="p-4 space-y-4">
+  return (
+    <div className={listShell.page}>
+      <div className={listShell.card}>
+        <div className={listShell.header}>
+          <div className="min-w-0">
+            <button
+              type="button"
+              className={appType.backLink}
+              onClick={() => navigate('/quotations')}
+            >
+              ← Back to Quotations
+            </button>
+            <h2 className={`${appType.pageTitle} mt-0.5`}>All Quotations</h2>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="create"
+              size="sm"
+              leftIcon={<Plus />}
+              onClick={() => navigate('/quotations/new')}
+            >
+              Create
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              leftIcon={<TimerReset />}
+              onClick={handleExpireDue}
+              disabled={expireDue.isPending}
+            >
+              Expire due
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              leftIcon={<RefreshCw className={isFetching ? 'animate-spin' : undefined} />}
+              onClick={() => refetch()}
+              disabled={isFetching}
+            >
+              Refresh
+            </Button>
+          </div>
+        </div>
+
         <QuotationFilters
           search={search}
           onSearchChange={setSearch}
@@ -193,75 +206,70 @@ export default function QuotationListPage() {
           onOrderChange={setOrder}
         />
 
-        {actionError && (
+        {actionError ? (
           <div
             role="alert"
-            className="flex items-start gap-2 rounded-lg border px-3 py-2 text-sm"
-            style={{
-              background: 'var(--color-danger-100)',
-              borderColor: '#FECACA',
-              color: 'var(--color-danger-700)',
-            }}
+            className="mx-3 mt-2 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700"
           >
-            <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-            <span>{actionError}</span>
+            {actionError}
           </div>
-        )}
-        {actionMessage && (
+        ) : null}
+        {actionMessage ? (
           <div
             role="status"
-            className="rounded-lg border px-3 py-2 text-sm"
-            style={{
-              background: 'var(--color-success-100)',
-              borderColor: '#BBF7D0',
-              color: 'var(--color-success-700)',
-            }}
+            className="mx-3 mt-2 rounded-sm border border-green-200 bg-green-50 px-3 py-2 text-[13px] text-green-700"
           >
             {actionMessage}
           </div>
-        )}
+        ) : null}
 
         {isError ? (
-          <div className="flex flex-col items-start gap-3 py-8">
-            <p className="text-sm text-[var(--color-danger-600)]">
-              {getErrorMessage(error) || 'Failed to load quotations.'}
-            </p>
-            <Button type="button" variant="secondary" onClick={() => refetch()}>
-              Retry
-            </Button>
-          </div>
-        ) : (
-          <AppListPanelBody isLoading={isLoading} isFetching={isFetching}>
-            <QuotationTable
-              quotations={quotations}
-              isFetching={isFetching}
-              meta={meta}
-              onPage={setPage}
-              pendingActionId={pendingActionId}
-              emptyMessage={
-                !debouncedSearch.trim() &&
-                status === 'all' &&
-                jobType === 'all' &&
-                !fromDate &&
-                !toDate
-                  ? 'No quotations visible yet. Ops lists stay empty until a customer has at least one converted quote.'
-                  : 'No quotations found'
-              }
-              onView={(q) => navigate(`/quotations/${q.id}`)}
-              onEdit={(q) => navigate(`/quotations/${q.id}/edit`, { state: { from: `${location.pathname}${location.search}` } })}
-              onDuplicate={(q) => requestConfirm('duplicate', q)}
-              onSubmit={(q) => requestConfirm('submit', q)}
-              onApprove={(q) => requestConfirm('approve', q)}
-              onReject={(q) => requestConfirm('reject', q)}
-              onSend={(q) => requestConfirm('send', q)}
-              onDelete={(q) => requestConfirm('delete', q)}
-              onArchive={(q) => requestConfirm('archive', q)}
+          <div className="px-3 py-3">
+            <ErrorState
+              message={getErrorMessage(error) || 'Failed to load quotations.'}
+              onRetry={() => refetch()}
             />
-          </AppListPanelBody>
+          </div>
+        ) : isLoading ? (
+          <div className="space-y-1.5 px-3 py-4" aria-busy>
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-8 animate-pulse rounded-sm bg-[#eef2f6]" />
+            ))}
+          </div>
+        ) : quotations.length === 0 ? (
+          <EmptyState
+            title={emptyDefault ? 'No quotations visible yet.' : 'No quotations found.'}
+            description={
+              emptyDefault
+                ? 'Ops lists stay empty until a customer has at least one converted quote.'
+                : 'Try adjusting your filters.'
+            }
+          />
+        ) : (
+          <QuotationTable
+            quotations={quotations}
+            isFetching={isFetching}
+            meta={meta}
+            onPage={setPage}
+            pendingActionId={pendingActionId}
+            onView={(q) => navigate(`/quotations/${q.id}`)}
+            onEdit={(q) =>
+              navigate(`/quotations/${q.id}/edit`, {
+                state: { from: `${location.pathname}${location.search}` },
+              })
+            }
+            onDuplicate={(q) => requestConfirm('duplicate', q)}
+            onSubmit={(q) => requestConfirm('submit', q)}
+            onApprove={(q) => requestConfirm('approve', q)}
+            onReject={(q) => requestConfirm('reject', q)}
+            onSend={(q) => requestConfirm('send', q)}
+            onDelete={(q) => requestConfirm('delete', q)}
+            onArchive={(q) => requestConfirm('archive', q)}
+          />
         )}
-      </Card>
+      </div>
 
-      {confirm && (
+      {confirm ? (
         <QuotationConfirmModal
           open
           kind={confirm.kind}
@@ -295,7 +303,7 @@ export default function QuotationListPage() {
             return undefined;
           }}
         />
-      )}
+      ) : null}
     </div>
   );
 }

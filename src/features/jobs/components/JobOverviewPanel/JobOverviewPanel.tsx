@@ -118,14 +118,25 @@ export function JobOverviewPanel({ job }: { job: Job }) {
         <Row label="Quotation No" value={humanValue(job.quotation_number)} hideWhenEmpty />
         <Row label="Shipment No" value={humanValue(job.shipment_number)} hideWhenEmpty />
         <Row label="Branch" value={labels.branchLabel} />
-        <Row label="Department" value={humanValue(job.department_id)} hideWhenEmpty />
+        <Row
+          label="Department"
+          value={labels.departmentLabel !== '—' ? labels.departmentLabel : undefined}
+          hideWhenEmpty
+        />
         <Row label="Parent job" value={humanValue(job.parent_job_id)} hideWhenEmpty />
         <Row
           label="Salesperson"
           value={labels.salespersonLabel !== '—' ? labels.salespersonLabel : undefined}
           hideWhenEmpty
         />
-        <Row label="Ops user" value={humanValue(job.ops_user_id)} hideWhenEmpty />
+        <Row
+          label="Ops user"
+          value={
+            humanValue((job as { ops_user_name?: string }).ops_user_name) ||
+            undefined
+          }
+          hideWhenEmpty
+        />
         <Row
           label={
             job.client_reference_type?.trim()

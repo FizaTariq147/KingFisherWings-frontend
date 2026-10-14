@@ -1,15 +1,10 @@
 import { AppFetchBar } from '@/components/motion';
+import { Button } from '@/components/ui/Button';
 import { ListRowEditButton } from '@/components/ui/ListRowEditButton';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/Table';
+import { OperationTypeBadge } from '@/components/erp';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { isUuid } from '@/lib/isUuid';
+import { erpTable, listShell } from '@/lib/erpTypography';
 import { useMemo } from 'react';
 import { JOB_TYPE_LABELS } from '../../constants/job.constants';
 import type { Job, PaginationMeta } from '../../types/job.types';
@@ -61,106 +56,115 @@ export function JobTable({
   }, [partiesResult?.parties]);
 
   return (
-    <div className="relative space-y-3">
+    <div className="relative">
       <AppFetchBar active={Boolean(isFetching)} className="absolute top-0 left-0 right-0 z-10" />
-      <Table className="min-w-[960px]">
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="w-10">{' '}</TableHead>
-            <TableHead>Job #</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Shipper</TableHead>
-            <TableHead>Consignee</TableHead>
-            <TableHead>Route</TableHead>
-            <TableHead>Commodity</TableHead>
-            <TableHead>ETD / ETA</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="w-12">{' '}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {jobs.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={10} className="text-center text-[var(--color-neutral-400)] py-10">
-                {emptyMessage}
-              </TableCell>
-            </TableRow>
-          ) : (
-            jobs.map((j) => {
-              const canEdit = jobEditable(j.status);
-              return (
-              <TableRow key={j.id} className="cursor-pointer">
-                <TableCell>
-                  <ListRowEditButton
-                    disabled={pendingId === j.id || !canEdit}
-                    title={canEdit ? 'Edit job' : 'Job is not editable'}
-                    onClick={() => (canEdit ? onEdit(j) : onView(j))}
-                  />
-                </TableCell>
-                <TableCell>
-                  <button
-                    type="button"
-                    className="text-left hover:underline"
+      <div className="overflow-x-auto">
+        <table className={listShell.table}>
+          <thead>
+            <tr>
+              <th className={`${erpTable.th} w-10`}>{''}</th>
+              <th className={erpTable.th}>Job No</th>
+              <th className={erpTable.th}>Department</th>
+              <th className={erpTable.th}>Shipper</th>
+              <th className={erpTable.th}>Consignee</th>
+              <th className={erpTable.th}>POL / POD</th>
+              <th className={erpTable.th}>Commodity</th>
+              <th className={erpTable.th}>ETD / ETA</th>
+              <th className={erpTable.th}>Status</th>
+              <th className={`${erpTable.th} w-10`}>{''}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {jobs.length === 0 ? (
+              <tr>
+                <td colSpan={10} className={`${erpTable.td} ${listShell.empty}`}>
+                  {emptyMessage}
+                </td>
+              </tr>
+            ) : (
+              jobs.map((j) => {
+                const canEdit = jobEditable(j.status);
+                return (
+                  <tr
+                    key={j.id}
+                    className={`${erpTable.row} cursor-pointer`}
                     onClick={() => onView(j)}
                   >
-                    {jobDisplayNumber(j)}
-                  </button>
-                </TableCell>
-                <TableCell>{JOB_TYPE_LABELS[j.job_type] ?? j.job_type}</TableCell>
-                <TableCell>{jobPartyLabel(j, 'shipper', partyMap)}</TableCell>
-                <TableCell>{jobPartyLabel(j, 'consignee', partyMap)}</TableCell>
-                <TableCell>{jobRouteLabel(j)}</TableCell>
-                <TableCell>
-                  {j.commodity?.trim() && !isUuid(j.commodity.trim())
-                    ? j.commodity.trim()
-                    : '—'}
-                </TableCell>
-                <TableCell>{jobScheduleLabel(j)}</TableCell>
-                <TableCell>
-                  <JobStatusBadge job={j} />
-                </TableCell>
-                <TableCell>
-                  <JobActionMenu
-                    job={j}
-                    disabled={pendingId === j.id}
-                    onView={onView}
-                    onEdit={onEdit}
-                    onCancel={onCancel}
-                    onClose={onClose}
-                    onDelete={onDelete}
-                  />
-                </TableCell>
-              </TableRow>
-              );
-            })
-          )}
-        </TableBody>
-      </Table>
-      {meta && meta.totalPages > 1 && onPage && (
-        <div className="flex items-center justify-between text-sm text-[var(--color-neutral-500)]">
-          <span>
-            Page {meta.page} of {meta.totalPages} ({meta.total} jobs)
+                    <td className={erpTable.td} onClick={(e) => e.stopPropagation()}>
+                      <ListRowEditButton
+                        disabled={pendingId === j.id || !canEdit}
+                        title={canEdit ? 'Edit job' : 'Job is not editable'}
+                        onClick={() => (canEdit ? onEdit(j) : onView(j))}
+                      />
+                    </td>
+                    <td className={erpTable.td}>
+                      <span className="font-semibold text-[var(--color-primary-700)]">
+                        {jobDisplayNumber(j)}
+                      </span>
+                    </td>
+                    <td className={erpTable.td}>
+                      <OperationTypeBadge code={j.job_type} />
+                      <span className="sr-only">{JOB_TYPE_LABELS[j.job_type] ?? j.job_type}</span>
+                    </td>
+                    <td className={erpTable.td}>{jobPartyLabel(j, 'shipper', partyMap)}</td>
+                    <td className={erpTable.td}>{jobPartyLabel(j, 'consignee', partyMap)}</td>
+                    <td className={erpTable.td}>{jobRouteLabel(j)}</td>
+                    <td className={erpTable.td}>
+                      {j.commodity?.trim() && !isUuid(j.commodity.trim())
+                        ? j.commodity.trim()
+                        : '—'}
+                    </td>
+                    <td className={erpTable.td}>{jobScheduleLabel(j)}</td>
+                    <td className={erpTable.td} onClick={(e) => e.stopPropagation()}>
+                      <JobStatusBadge job={j} />
+                    </td>
+                    <td className={erpTable.td} onClick={(e) => e.stopPropagation()}>
+                      <JobActionMenu
+                        job={j}
+                        disabled={pendingId === j.id}
+                        onView={onView}
+                        onEdit={onEdit}
+                        onCancel={onCancel}
+                        onClose={onClose}
+                        onDelete={onDelete}
+                      />
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {meta && meta.totalPages > 1 && onPage ? (
+        <div className="flex items-center justify-between border-t border-[#d0d7de] px-3 py-2 text-[13px]">
+          <span className="text-[#64748b]">
+            {meta.total} job(s) · Page {meta.page} of {meta.totalPages}
           </span>
           <div className="flex gap-2">
-            <button
-              type="button"
+            <Button
+              size="sm"
+              variant="secondary"
               disabled={meta.page <= 1}
               onClick={() => onPage(meta.page - 1)}
-              className="px-3 py-1 rounded border disabled:opacity-40"
             >
               Previous
-            </button>
-            <button
-              type="button"
+            </Button>
+            <span className="px-2 py-1.5">
+              Page {meta.page} of {meta.totalPages}
+            </span>
+            <Button
+              size="sm"
+              variant="secondary"
               disabled={meta.page >= meta.totalPages}
               onClick={() => onPage(meta.page + 1)}
-              className="px-3 py-1 rounded border disabled:opacity-40"
             >
               Next
-            </button>
+            </Button>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

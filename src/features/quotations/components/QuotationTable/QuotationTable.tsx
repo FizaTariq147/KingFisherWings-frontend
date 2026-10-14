@@ -1,18 +1,13 @@
 import { AppFetchBar } from '@/components/motion';
+import { Button } from '@/components/ui/Button';
 import { ListRowEditButton } from '@/components/ui/ListRowEditButton';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/Table';
+import { OperationTypeBadge } from '@/components/erp';
 import { isUuid } from '@/lib/isUuid';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { useUsers } from '@/features/users/hooks/useUsers';
+import { erpTable, listShell } from '@/lib/erpTypography';
 import { useMemo } from 'react';
 import { JOB_TYPE_LABELS } from '../../constants/quotation.constants';
 import type { PaginationMeta, Quotation } from '../../types/quotation.types';
@@ -118,108 +113,120 @@ export function QuotationTable({
   }, [usersResult?.users]);
 
   return (
-    <div className="relative space-y-3">
+    <div className="relative">
       <AppFetchBar active={Boolean(isFetching)} className="absolute top-0 left-0 right-0 z-10" />
-      <Table className="min-w-[900px]">
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="w-10">{' '}</TableHead>
-            <TableHead>Quote No</TableHead>
-            <TableHead>Customer</TableHead>
-            <TableHead>Department</TableHead>
-            <TableHead>Salesperson</TableHead>
-            <TableHead>Job type</TableHead>
-            <TableHead>Route</TableHead>
-            <TableHead>Valid until</TableHead>
-            <TableHead>Total</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="w-12">{' '}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {quotations.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={11} className="text-center text-[var(--color-neutral-400)] py-10">
-                {emptyMessage}
-              </TableCell>
-            </TableRow>
-          ) : (
-            quotations.map((q) => {
-              const canEdit = isQuotationDraftEditable(q.status);
-              return (
-              <TableRow
-                key={q.id}
-                className="cursor-pointer"
-                onClick={() => onView(q)}
-              >
-                <TableCell onClick={(e) => e.stopPropagation()}>
-                  <ListRowEditButton
-                    disabled={pendingActionId === q.id || !canEdit}
-                    title={canEdit ? 'Edit quotation' : 'Only draft quotations can be edited'}
-                    onClick={() => (canEdit ? onEdit(q) : onView(q))}
-                  />
-                </TableCell>
-                <TableCell>{quotationDisplayNumber(q)}</TableCell>
-                <TableCell>{quotationCustomerLabel(q, partyMap)}</TableCell>
-                <TableCell>
-                  {quotationIdNameLabel(q.department_name, q.department_id, departmentMap)}
-                </TableCell>
-                <TableCell>
-                  {quotationIdNameLabel(q.salesperson_name, q.salesperson_id, userMap)}
-                </TableCell>
-                <TableCell>{JOB_TYPE_LABELS[q.job_type] ?? q.job_type}</TableCell>
-                <TableCell className="max-w-[280px] whitespace-normal break-words">
-                  {quotationRouteLabel(q, portMap)}
-                </TableCell>
-                <TableCell>{formatQuotationDate(q.valid_until)}</TableCell>
-                <TableCell>{quotationTotalLabel(q)}</TableCell>
-                <TableCell onClick={(e) => e.stopPropagation()}>
-                  <QuotationStatusBadge status={q.status} />
-                </TableCell>
-                <TableCell onClick={(e) => e.stopPropagation()}>
-                  <QuotationActionMenu
-                    quotation={q}
-                    disabled={pendingActionId === q.id}
-                    onView={onView}
-                    onEdit={onEdit}
-                    onDuplicate={onDuplicate}
-                    onSubmit={onSubmit}
-                    onApprove={onApprove}
-                    onReject={onReject}
-                    onSend={onSend}
-                    onDelete={onDelete}
-                    onArchive={onArchive}
-                  />
-                </TableCell>
-              </TableRow>
-              );
-            })
-          )}
-        </TableBody>
-      </Table>
+      <div className="overflow-x-auto">
+        <table className={listShell.table}>
+          <thead>
+            <tr>
+              <th className={`${erpTable.th} w-10`}>{''}</th>
+              <th className={erpTable.th}>Quote No</th>
+              <th className={erpTable.th}>Customer</th>
+              <th className={erpTable.th}>Department</th>
+              <th className={erpTable.th}>Salesperson</th>
+              <th className={erpTable.th}>Job type</th>
+              <th className={erpTable.th}>POL / POD</th>
+              <th className={erpTable.th}>Valid until</th>
+              <th className={erpTable.th}>Total</th>
+              <th className={erpTable.th}>Status</th>
+              <th className={`${erpTable.th} w-10`}>{''}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {quotations.length === 0 ? (
+              <tr>
+                <td colSpan={11} className={`${erpTable.td} ${listShell.empty}`}>
+                  {emptyMessage}
+                </td>
+              </tr>
+            ) : (
+              quotations.map((q) => {
+                const canEdit = isQuotationDraftEditable(q.status);
+                return (
+                  <tr
+                    key={q.id}
+                    className={`${erpTable.row} cursor-pointer`}
+                    onClick={() => onView(q)}
+                  >
+                    <td className={erpTable.td} onClick={(e) => e.stopPropagation()}>
+                      <ListRowEditButton
+                        disabled={pendingActionId === q.id || !canEdit}
+                        title={canEdit ? 'Edit quotation' : 'Only draft quotations can be edited'}
+                        onClick={() => (canEdit ? onEdit(q) : onView(q))}
+                      />
+                    </td>
+                    <td className={erpTable.td}>
+                      <span className="font-semibold text-[var(--color-primary-700)]">
+                        {quotationDisplayNumber(q)}
+                      </span>
+                    </td>
+                    <td className={erpTable.td}>{quotationCustomerLabel(q, partyMap)}</td>
+                    <td className={erpTable.td}>
+                      {quotationIdNameLabel(q.department_name, q.department_id, departmentMap)}
+                    </td>
+                    <td className={erpTable.td}>
+                      {quotationIdNameLabel(q.salesperson_name, q.salesperson_id, userMap)}
+                    </td>
+                    <td className={erpTable.td}>
+                      <OperationTypeBadge code={q.job_type} />
+                      <span className="sr-only">{JOB_TYPE_LABELS[q.job_type] ?? q.job_type}</span>
+                    </td>
+                    <td className={`${erpTable.td} max-w-[280px] whitespace-normal break-words`}>
+                      {quotationRouteLabel(q, portMap)}
+                    </td>
+                    <td className={erpTable.td}>{formatQuotationDate(q.valid_until)}</td>
+                    <td className={erpTable.td}>{quotationTotalLabel(q)}</td>
+                    <td className={erpTable.td} onClick={(e) => e.stopPropagation()}>
+                      <QuotationStatusBadge status={q.status} />
+                    </td>
+                    <td className={erpTable.td} onClick={(e) => e.stopPropagation()}>
+                      <QuotationActionMenu
+                        quotation={q}
+                        disabled={pendingActionId === q.id}
+                        onView={onView}
+                        onEdit={onEdit}
+                        onDuplicate={onDuplicate}
+                        onSubmit={onSubmit}
+                        onApprove={onApprove}
+                        onReject={onReject}
+                        onSend={onSend}
+                        onDelete={onDelete}
+                        onArchive={onArchive}
+                      />
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {meta && onPage && meta.totalPages > 1 ? (
-        <div className="flex items-center justify-between text-sm text-[var(--color-neutral-500)]">
-          <span>
-            Page {meta.page} of {meta.totalPages} · {meta.total} total
+        <div className="flex items-center justify-between border-t border-[#d0d7de] px-3 py-2 text-[13px]">
+          <span className="text-[#64748b]">
+            {meta.total} quotation(s) · Page {meta.page} of {meta.totalPages}
           </span>
           <div className="flex gap-2">
-            <button
-              type="button"
+            <Button
+              size="sm"
+              variant="secondary"
               disabled={meta.page <= 1}
               onClick={() => onPage(meta.page - 1)}
-              className="px-3 py-1.5 rounded-md border border-[var(--color-neutral-200)] disabled:opacity-40"
             >
               Previous
-            </button>
-            <button
-              type="button"
+            </Button>
+            <span className="px-2 py-1.5">
+              Page {meta.page} of {meta.totalPages}
+            </span>
+            <Button
+              size="sm"
+              variant="secondary"
               disabled={meta.page >= meta.totalPages}
               onClick={() => onPage(meta.page + 1)}
-              className="px-3 py-1.5 rounded-md border border-[var(--color-neutral-200)] disabled:opacity-40"
             >
               Next
-            </button>
+            </Button>
           </div>
         </div>
       ) : null}

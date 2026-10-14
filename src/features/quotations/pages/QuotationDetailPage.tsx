@@ -622,7 +622,9 @@ export default function QuotationDetailPage() {
     !hasShipment &&
     (fclActions?.can_generate_shipment === true ||
       (fclActions?.can_generate_shipment !== false && isApprovedLike));
+  /** Continuum: Shipment first, then Generate Job (never skip Shipment). */
   const canGenerateJobFromQuote =
+    hasShipment &&
     !hasJob &&
     (fclActions?.can_generate_job === true ||
       (fclActions?.can_generate_job !== false && isApprovedLike));

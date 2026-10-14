@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { appType } from '@/lib/erpTypography';
+import { appType, listShell } from '@/lib/erpTypography';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AlertCircle, Plus, RefreshCw } from 'lucide-react';
+import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import {
-  JobConfirmModal,
-} from '../components/JobConfirmModal';
+import { EmptyState, ErrorState } from '@/components/erp';
+import { JobConfirmModal } from '../components/JobConfirmModal';
 import { JobFilters } from '../components/JobFilters';
 import { JobTable } from '../components/JobTable';
 import {
@@ -21,7 +19,6 @@ import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useJobs } from '../hooks/useJobs';
 import type { Job } from '../types/job.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
-import { AppListPanelBody } from '@/components/motion';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
@@ -107,30 +104,39 @@ export default function JobListPage() {
     }
   };
 
-  return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h2 className={appType.pageTitle}>
-            {segmentConfig.label} Jobs
-          </h2>
-          <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-            Bookings, milestones, charges, and documents.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button type="button" variant="secondary" onClick={() => refetch()} disabled={isFetching}>
-            <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-          <Button type="button" onClick={() => navigate(`${prefix}/new`)}>
-            <Plus className="h-4 w-4" />
-            Create job
-          </Button>
-        </div>
-      </div>
+  const emptyDefault =
+    !debouncedSearch.trim() && !status && !jobType && !fromDate && !toDate && !mastersOnly;
 
-      <Card className="p-4 space-y-4">
+  return (
+    <div className={listShell.page}>
+      <div className={listShell.card}>
+        <div className={listShell.header}>
+          <div className="min-w-0">
+            <h2 className={appType.pageTitle}>{segmentConfig.label} Jobs</h2>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="create"
+              size="sm"
+              leftIcon={<Plus />}
+              onClick={() => navigate(`${prefix}/new`)}
+            >
+              Create
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              leftIcon={<RefreshCw className={isFetching ? 'animate-spin' : undefined} />}
+              onClick={() => refetch()}
+              disabled={isFetching}
+            >
+              Refresh
+            </Button>
+          </div>
+        </div>
+
         <JobFilters
           search={search}
           onSearchChange={setSearch}
@@ -148,49 +154,67 @@ export default function JobListPage() {
           mastersOnly={mastersOnly}
           onMastersOnlyChange={setMastersOnly}
         />
-        {isError && (
-          <div className="flex items-center gap-2 text-sm text-[var(--color-danger-600)]">
-            <AlertCircle className="h-4 w-4" />
-            {getErrorMessage(error)}
-          </div>
-        )}
-        {actionError && (
-          <div role="alert" className="text-sm text-[var(--color-danger-600)]">
+
+        {actionError ? (
+          <div
+            role="alert"
+            className="mx-3 mt-2 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700"
+          >
             {actionError}
           </div>
-        )}
-        {actionMessage && (
-          <div role="status" className="text-sm text-[var(--color-success-700)]">
+        ) : null}
+        {actionMessage ? (
+          <div
+            role="status"
+            className="mx-3 mt-2 rounded-sm border border-green-200 bg-green-50 px-3 py-2 text-[13px] text-green-700"
+          >
             {actionMessage}
           </div>
-        )}
-        <AppListPanelBody isLoading={isLoading} isFetching={isFetching} label="Loading jobs…">
+        ) : null}
+
+        {isError ? (
+          <div className="px-3 py-3">
+            <ErrorState
+              message={getErrorMessage(error) || 'Failed to load jobs.'}
+              onRetry={() => refetch()}
+            />
+          </div>
+        ) : isLoading ? (
+          <div className="space-y-1.5 px-3 py-4" aria-busy>
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-8 animate-pulse rounded-sm bg-[#eef2f6]" />
+            ))}
+          </div>
+        ) : jobs.length === 0 ? (
+          <EmptyState
+            title={emptyDefault ? 'No jobs visible yet.' : 'No jobs found.'}
+            description={
+              emptyDefault
+                ? 'Ops lists stay empty until a customer has at least one converted quote.'
+                : 'Try adjusting your filters.'
+            }
+          />
+        ) : (
           <JobTable
             jobs={jobs}
             isFetching={isFetching}
             meta={meta}
             onPage={setPage}
             pendingId={pendingId}
-            emptyMessage={
-              !debouncedSearch.trim() &&
-              !status &&
-              !jobType &&
-              !fromDate &&
-              !toDate &&
-              !mastersOnly
-                ? 'No jobs visible yet. Ops lists stay empty until a customer has at least one converted quote.'
-                : 'No jobs found'
-            }
             onView={(j) => navigate(`${prefix}/${j.id}`)}
-            onEdit={(j) => navigate(`${prefix}/${j.id}/edit`, { state: { from: `${location.pathname}${location.search}` } })}
+            onEdit={(j) =>
+              navigate(`${prefix}/${j.id}/edit`, {
+                state: { from: `${location.pathname}${location.search}` },
+              })
+            }
             onCancel={(j) => requestConfirm('cancel', j)}
             onClose={(j) => requestConfirm('close', j)}
             onDelete={(j) => requestConfirm('delete', j)}
           />
-        </AppListPanelBody>
-      </Card>
+        )}
+      </div>
 
-      {confirm && (
+      {confirm ? (
         <JobConfirmModal
           open
           action={confirm.action}
@@ -208,7 +232,7 @@ export default function JobListPage() {
             return run(j, () => lifecycle.remove.mutateAsync(j.id), 'Job deleted.');
           }}
         />
-      )}
+      ) : null}
     </div>
   );
 }

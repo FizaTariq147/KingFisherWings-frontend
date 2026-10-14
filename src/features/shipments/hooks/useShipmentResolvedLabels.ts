@@ -61,6 +61,9 @@ export function useShipmentResolvedLabels(shipment: Shipment | null | undefined)
   const needsContainerType =
     Boolean(shipment?.container_type_id && isUuid(shipment.container_type_id)) &&
     !readable(String(shipment?.container_type_name ?? ''));
+  const carrierId = String(shipment?.carrier_id ?? '').trim();
+  const needsCarrier =
+    Boolean(carrierId && isUuid(carrierId)) && !readable(shipment?.carrier_name);
 
   const { data: party, isLoading: partyLoading } = useParty(needsCustomer ? customerId! : '');
   const { data: originPort, isLoading: originLoading } = useMasterDetail(
@@ -87,6 +90,11 @@ export function useShipmentResolvedLabels(shipment: Shipment | null | undefined)
     'container-types',
     MASTER_PATHS['container-types'],
     needsContainerType ? shipment!.container_type_id! : '',
+  );
+  const { data: carrier, isLoading: carrierLoading } = useMasterDetail(
+    'shipping-lines',
+    MASTER_PATHS['shipping-lines'],
+    needsCarrier ? carrierId! : '',
   );
 
   return useMemo(() => {
@@ -129,6 +137,11 @@ export function useShipmentResolvedLabels(shipment: Shipment | null | undefined)
       masterLabel(asRecord(containerType)) ||
       (containerLoading ? 'Loading…' : undefined);
 
+    const carrierLabel =
+      readable(shipment?.carrier_name) ||
+      masterLabel(asRecord(carrier)) ||
+      (carrierLoading ? 'Loading…' : undefined);
+
     return {
       customerLabel,
       originLabel,
@@ -136,6 +149,7 @@ export function useShipmentResolvedLabels(shipment: Shipment | null | undefined)
       departmentLabel,
       branchLabel,
       containerTypeLabel,
+      carrierLabel,
     };
   }, [
     shipment,
@@ -151,5 +165,7 @@ export function useShipmentResolvedLabels(shipment: Shipment | null | undefined)
     branchLoading,
     containerType,
     containerLoading,
+    carrier,
+    carrierLoading,
   ]);
 }

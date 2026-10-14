@@ -16,6 +16,7 @@ import {
 import { useCustomerPortalBookingForm } from '@/features/portal-admin-inbox/hooks/usePortalAdminInbox';
 import type { PortalBookingFormMessagePayload } from '@/features/portal-quotations/utils/portalBookingFormStorage';
 import { quotationService } from '@/features/quotations/services/quotation.service';
+import { isCustomerPortalQuotation } from '@/features/quotations/utils/isCustomerPortalQuotation';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import {
   MasterCodeDatalist,
@@ -631,6 +632,7 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
     retry: 1,
   });
   const linkedQuote = linkedQuoteQuery.data;
+  const quoteFromCustomerPortal = isCustomerPortalQuotation(linkedQuote);
 
   const portalBookingQuery = useCustomerPortalBookingForm(
     {
@@ -640,10 +642,10 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
       jobTypePrefix: 'AIR',
       jobNumber: job?.job_number,
     },
-    Boolean(jobId),
+    Boolean(jobId) && quoteFromCustomerPortal && !linkedQuoteQuery.isLoading,
   );
 
-  const portalPayload = portalBookingQuery.data;
+  const portalPayload = quoteFromCustomerPortal ? portalBookingQuery.data : undefined;
   const customerCompleted = Boolean(portalPayload?.mark_complete);
 
   const apiEmpty = useMemo(
@@ -676,8 +678,9 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
     }
   }, [formQuery.data, customerCompleted, apiEmpty, portalPayload]);
 
-  /** Prefill create/edit from portal — matching customer fields autofill whenever payload is found. */
+  /** Prefill create/edit from portal — only when quotation originated from customer portal. */
   useEffect(() => {
+    if (!quoteFromCustomerPortal) return;
     if (panelMode !== 'create' && panelMode !== 'edit') return;
     if (formQuery.isLoading || formQuery.isFetching) return;
     if (!portalPayload) return;
@@ -698,6 +701,7 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
       }). Review matching fields, then Save.`,
     );
   }, [
+    quoteFromCustomerPortal,
     panelMode,
     portalPrefillApplied,
     portalPrefillKey,
@@ -710,8 +714,9 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
     linkedQuote?.quote_no,
   ]);
 
-  /** Persist portal → staff API when empty (keeps list Completed after customer submit). */
+  /** Persist portal → staff API when empty (portal-originated quotes only). */
   useEffect(() => {
+    if (!quoteFromCustomerPortal) return;
     if (!jobId) return;
     if (apiSyncAttempted.current) return;
     if (formQuery.isLoading || formQuery.isFetching) return;
@@ -735,6 +740,7 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
       cancelled = true;
     };
   }, [
+    quoteFromCustomerPortal,
     jobId,
     apiEmpty,
     formQuery.isLoading,

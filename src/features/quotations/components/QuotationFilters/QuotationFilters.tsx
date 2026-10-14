@@ -1,3 +1,4 @@
+import { FilterBar } from '@/components/erp';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useUsers } from '@/features/users/hooks/useUsers';
@@ -11,8 +12,8 @@ import {
   type QuotationStatus,
 } from '../../constants/quotation.constants';
 
-const selectClass =
-  'h-9 rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm text-[var(--color-neutral-800)] focus:outline-none focus:border-[var(--color-primary-500)]';
+const fieldClass =
+  'h-8 rounded-sm border border-[#c5cdd6] bg-white px-2.5 text-[13px] text-[var(--color-neutral-800)] focus:outline-none focus:border-[var(--color-primary-500)]';
 
 interface QuotationFiltersProps {
   search: string;
@@ -64,20 +65,20 @@ export function QuotationFilters({
   });
 
   return (
-    <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
+    <FilterBar>
       <input
         type="search"
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
-        placeholder="Search quote no, customer…"
+        placeholder="Search quote no…"
         aria-label="Search quotations"
-        className="h-9 w-full lg:w-72 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]"
+        className={`${fieldClass} w-full max-w-md sm:mr-auto`}
       />
       <select
         value={status}
         onChange={(e) => onStatusChange(e.target.value as QuotationStatus | 'all')}
         aria-label="Filter by status"
-        className={selectClass}
+        className={fieldClass}
       >
         <option value="all">All statuses</option>
         {QUOTATION_STATUS_FILTERS.map((s) => (
@@ -90,7 +91,7 @@ export function QuotationFilters({
         value={jobType}
         onChange={(e) => onJobTypeChange(e.target.value as JobType | 'all')}
         aria-label="Filter by job type"
-        className={selectClass}
+        className={fieldClass}
       >
         <option value="all">All job types</option>
         {JOB_TYPES.map((t) => (
@@ -103,7 +104,7 @@ export function QuotationFilters({
         value={departmentId}
         onChange={(e) => onDepartmentIdChange(e.target.value)}
         aria-label="Filter by department"
-        className={selectClass}
+        className={fieldClass}
       >
         <option value="">All departments</option>
         {departments
@@ -118,7 +119,7 @@ export function QuotationFilters({
         value={salespersonId}
         onChange={(e) => onSalespersonIdChange(e.target.value)}
         aria-label="Filter by salesperson"
-        className={selectClass}
+        className={fieldClass}
       >
         <option value="">All salespeople</option>
         {(usersResult?.users ?? [])
@@ -137,24 +138,24 @@ export function QuotationFilters({
         value={fromDate}
         onChange={(e) => onFromDateChange(e.target.value)}
         aria-label="From date"
-        className={selectClass}
+        className={fieldClass}
       />
       <input
         type="date"
         value={toDate}
         onChange={(e) => onToDateChange(e.target.value)}
         aria-label="To date"
-        className={selectClass}
+        className={fieldClass}
       />
       <select
         value={order}
         onChange={(e) => onOrderChange(e.target.value as 'asc' | 'desc')}
         aria-label="Sort order"
-        className={selectClass}
+        className={fieldClass}
       >
         <option value="desc">Newest first</option>
         <option value="asc">Oldest first</option>
       </select>
-    </div>
+    </FilterBar>
   );
 }

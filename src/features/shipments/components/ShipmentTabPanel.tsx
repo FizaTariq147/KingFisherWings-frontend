@@ -8,10 +8,18 @@ import { useShipmentDetailTab, useShipmentShowAll } from '../hooks/useShipments'
 import { getErrorMessage } from '../utils/getErrorMessage';
 
 function formatKey(key: string): string {
-  return key
-    .replace(/(_name|_label|_code)$/i, '')
-    .replace(/[_-]+/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  const norm = key
+    .trim()
+    .replace(/([a-z])([A-Z])/g, '$1_$2')
+    .replace(/[-.\s]+/g, '_')
+    .replace(/(_id|_uuid|_name|_label|_code)$/i, '');
+  if (norm === 'organization' || norm === 'organisation') return 'Party';
+  if (norm === 'information' || norm === 'info') return 'Info';
+  return norm
+    .split('_')
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(' ');
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -35,26 +43,27 @@ const HIDDEN_KEYS = new Set([
   'sections',
 ]);
 
-function isIdKey(key: string): boolean {
-  const k = key.toLowerCase();
-  if (HIDDEN_KEYS.has(k)) return true;
-  if (k === 'uuid' || k.endsWith('_uuid')) return true;
-  return k === 'id' || k.endsWith('_id');
-}
-
 function isUuidish(value: unknown): boolean {
   if (typeof value !== 'string') return false;
   return isUuid(value.trim());
 }
 
-function displayLabelForKey(key: string, data: Record<string, unknown>): string {
+function formatScalar(value: unknown): string {
+  if (value == null || value === '') return '—';
+  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+  if (typeof value === 'number') return String(value);
+  if (typeof value === 'string') {
+    if (isUuid(value.trim())) return '—';
+    return value;
+  }
+  return '—';
+}
+
+function siblingNameLabel(key: string, data: Record<string, unknown>): string {
   const base = key.replace(/(_id|_uuid)$/i, '');
-  const nameKey = `${base}_name`;
-  const labelKey = `${base}_label`;
-  const codeKey = `${base}_code`;
-  const name = data[nameKey] ?? data[labelKey];
+  const name = data[`${base}_name`] ?? data[`${base}_label`];
   if (typeof name === 'string' && name.trim() && !isUuidish(name)) {
-    const code = data[codeKey];
+    const code = data[`${base}_code`];
     if (typeof code === 'string' && code.trim() && !isUuidish(code)) {
       return `${code.trim()} — ${name.trim()}`;
     }
@@ -63,79 +72,14 @@ function displayLabelForKey(key: string, data: Record<string, unknown>): string 
   return '';
 }
 
-/**
- * Build display entries for Show All / tab grids.
- * Shows every scalar field (empty → —); skips raw UUIDs when a name exists.
- */
-function buildDisplayEntries(
-  data: Record<string, unknown>,
-  opts: { includeEmpty?: boolean } = {},
-): Array<[string, string]> {
-  const includeEmpty = opts.includeEmpty ?? true;
-  const keys = Object.keys(data);
-  const skip = new Set<string>();
-  const out: Array<[string, string]> = [];
-
-  for (const key of keys) {
-    if (skip.has(key)) continue;
-
-    if (isIdKey(key)) {
-      if (key.toLowerCase().endsWith('_id')) {
-        const label = displayLabelForKey(key, data);
-        if (label) {
-          const base = key.replace(/_id$/i, '');
-          skip.add(`${base}_name`);
-          skip.add(`${base}_label`);
-          skip.add(`${base}_code`);
-          out.push([formatKey(base), label]);
-        }
-      }
-      continue;
-    }
-
-    const value = data[key];
-    if (typeof value === 'object' && value !== null) continue;
-
-    if (value == null || value === '') {
-      if (includeEmpty) out.push([formatKey(key), '—']);
-      continue;
-    }
-    if (typeof value === 'boolean') {
-      out.push([formatKey(key), value ? 'Yes' : 'No']);
-      continue;
-    }
-    if (typeof value === 'number') {
-      out.push([formatKey(key), String(value)]);
-      continue;
-    }
-    const text = String(value).trim();
-    if (isUuidish(text)) continue;
-    out.push([formatKey(key), text || '—']);
-  }
-
-  return out;
-}
-
-function FieldGrid({
-  data,
-  includeEmpty = true,
-}: {
-  data: Record<string, unknown>;
-  includeEmpty?: boolean;
-}) {
-  const entries = buildDisplayEntries(data, { includeEmpty });
-  if (!entries.length) return null;
+function FormFieldRow({ label, value }: { label: string; value: string }) {
   return (
-    <dl className="grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-3">
-      {entries.map(([label, value], i) => (
-        <div key={`${label}-${i}`}>
-          <dt className="text-[11px] font-semibold uppercase tracking-wide text-[#64748b]">
-            {label}
-          </dt>
-          <dd className="mt-0.5 break-words text-[13px] text-[#0f172a]">{value}</dd>
-        </div>
-      ))}
-    </dl>
+    <div className="grid grid-cols-1 gap-1 border-b border-[#e8edf2] py-2 sm:grid-cols-[minmax(8rem,14rem)_1fr] sm:gap-4">
+      <span className="text-[12px] font-medium text-[#64748b]">{label}</span>
+      <span className="whitespace-pre-wrap break-words text-[13px] font-medium text-[#0f172a]">
+        {value}
+      </span>
+    </div>
   );
 }
 
@@ -146,35 +90,48 @@ function ArrayTable({
 }: {
   rows: unknown[];
   title: string;
-  /** When false, omit inner heading (parent SectionCard already titles the block). */
   showTitle?: boolean;
 }) {
   if (!rows.length) {
     return <p className="text-[13px] text-[#64748b]">No {title.toLowerCase()}.</p>;
   }
+
   const first = asRecord(rows[0]);
   const cols = first
     ? Object.keys(first).filter((k) => {
-        if (isIdKey(k)) return false;
+        const lower = k.toLowerCase();
+        if (HIDDEN_KEYS.has(lower) || lower === 'id' || lower.endsWith('_id') || lower.endsWith('_uuid')) {
+          return false;
+        }
         const sample = first[k];
         if (isUuidish(sample)) return false;
         return sample == null || typeof sample !== 'object';
       })
     : [];
+
   if (!cols.length) {
     return (
-      <div>
+      <div className="space-y-2">
         {showTitle ? (
-          <p className="mb-2 text-[12px] font-semibold text-[var(--fresa-header-text,#0A2942)]">
+          <p className="text-[12px] font-semibold text-[var(--fresa-header-text,#0A2942)]">
             {title}
           </p>
         ) : null}
-        <pre className="overflow-x-auto rounded-sm bg-[#f8fafc] p-2 text-[11px] text-[#334155]">
-          {JSON.stringify(rows, null, 2)}
-        </pre>
+        {rows.map((row, index) => (
+          <div
+            key={index}
+            className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2"
+          >
+            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
+              {title} · {index + 1}
+            </p>
+            <FormFieldsFromPayload data={row} depth={1} />
+          </div>
+        ))}
       </div>
     );
   }
+
   return (
     <div className="overflow-x-auto">
       {showTitle ? (
@@ -197,20 +154,11 @@ function ArrayTable({
             const r = asRecord(row) ?? {};
             return (
               <tr key={i} className={erpTable.row}>
-                {cols.map((c) => {
-                  const raw = r[c];
-                  const shown =
-                    raw == null || raw === ''
-                      ? '—'
-                      : typeof raw === 'object' || isUuidish(raw)
-                        ? '—'
-                        : String(raw);
-                  return (
-                    <td key={c} className={erpTable.td}>
-                      {shown}
-                    </td>
-                  );
-                })}
+                {cols.map((c) => (
+                  <td key={c} className={erpTable.td}>
+                    {formatScalar(r[c])}
+                  </td>
+                ))}
               </tr>
             );
           })}
@@ -218,6 +166,137 @@ function ArrayTable({
       </table>
     </div>
   );
+}
+
+/**
+ * Recursively render any shipment API payload as form fields / tables — never raw JSON.
+ */
+export function FormFieldsFromPayload({
+  data,
+  depth = 0,
+}: {
+  data: unknown;
+  depth?: number;
+}) {
+  if (data == null) {
+    return <p className="text-[13px] text-[#64748b]">—</p>;
+  }
+
+  if (typeof data !== 'object') {
+    return <FormFieldRow label="Value" value={formatScalar(data)} />;
+  }
+
+  if (Array.isArray(data)) {
+    if (!data.length) {
+      return <p className="text-[13px] text-[#64748b]">None</p>;
+    }
+    const allScalar = data.every(
+      (item) => item == null || ['string', 'number', 'boolean'].includes(typeof item),
+    );
+    if (allScalar) {
+      return (
+        <FormFieldRow
+          label="Items"
+          value={data.map((item) => formatScalar(item)).join(', ')}
+        />
+      );
+    }
+    return <ArrayTable rows={data} title="Items" showTitle={depth === 0} />;
+  }
+
+  const rec = data as Record<string, unknown>;
+  const keys = Object.keys(rec);
+  const skip = new Set<string>();
+  const rows: { key: string; label: string; value: string }[] = [];
+  const nested: { key: string; label: string; value: unknown }[] = [];
+  const arrays: { key: string; label: string; rows: unknown[] }[] = [];
+
+  for (const key of keys) {
+    if (skip.has(key) || HIDDEN_KEYS.has(key.toLowerCase())) continue;
+    const lower = key.toLowerCase();
+
+    if (lower.endsWith('_id') || lower.endsWith('_uuid')) {
+      const named = siblingNameLabel(key, rec);
+      if (named) {
+        const base = key.replace(/(_id|_uuid)$/i, '');
+        skip.add(`${base}_name`);
+        skip.add(`${base}_label`);
+        skip.add(`${base}_code`);
+        rows.push({ key, label: formatKey(base), value: named });
+      }
+      continue;
+    }
+
+    const value = rec[key];
+    if (Array.isArray(value)) {
+      if (value.length) {
+        arrays.push({ key, label: formatKey(key), rows: value });
+      }
+      continue;
+    }
+
+    if (value != null && typeof value === 'object') {
+      nested.push({ key, label: formatKey(key), value });
+      continue;
+    }
+
+    if (typeof value === 'string' && isUuid(value.trim())) continue;
+    if (lower.endsWith('_name') || lower.endsWith('_label') || lower.endsWith('_code')) {
+      const base = key.replace(/(_name|_label|_code)$/i, '');
+      if (keys.includes(`${base}_id`) || keys.includes(`${base}_uuid`)) continue;
+    }
+
+    rows.push({ key, label: formatKey(key), value: formatScalar(value) });
+  }
+
+  if (!rows.length && !nested.length && !arrays.length) {
+    return <p className="text-[13px] text-[#64748b]">No fields</p>;
+  }
+
+  return (
+    <div className={depth > 0 ? 'space-y-1' : 'space-y-3'}>
+      {rows.length ? (
+        <div className="space-y-0">
+          {rows.map((row) => (
+            <FormFieldRow key={row.key} label={row.label} value={row.value} />
+          ))}
+        </div>
+      ) : null}
+      {arrays.map((block) => (
+        <ArrayTable key={block.key} rows={block.rows} title={block.label} />
+      ))}
+      {nested.map((block) => (
+        <div key={block.key} className="border-b border-[#e8edf2] py-2 last:border-0">
+          <p className="mb-1 text-[12px] font-semibold text-[var(--fresa-header-text,#0A2942)]">
+            {block.label}
+          </p>
+          <div className="pl-0 sm:pl-2">
+            <FormFieldsFromPayload data={block.value} depth={depth + 1} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Shared renderer for KPI, Track & Trace, and detail/{tab} payloads. */
+export function ShipmentApiPayloadView({
+  data,
+  emptyMessage = 'No data returned.',
+}: {
+  data: unknown;
+  emptyMessage?: string;
+}) {
+  if (data == null) {
+    return <p className="text-[13px] text-[#64748b]">{emptyMessage}</p>;
+  }
+  if (typeof data === 'object' && !Array.isArray(data) && !Object.keys(data as object).length) {
+    return <p className="text-[13px] text-[#64748b]">{emptyMessage}</p>;
+  }
+  if (Array.isArray(data) && !data.length) {
+    return <p className="text-[13px] text-[#64748b]">{emptyMessage}</p>;
+  }
+  return <FormFieldsFromPayload data={data} />;
 }
 
 function SectionCard({
@@ -278,7 +357,7 @@ function ShipmentShowAllPanel({
     <div className="space-y-3 p-3">
       {sections.map((section) => (
         <SectionCard key={section.key} title={section.title}>
-          <FieldGrid data={section.data} includeEmpty />
+          <ShipmentApiPayloadView data={section.data} emptyMessage="No fields for this section." />
         </SectionCard>
       ))}
       {arrays.map((block) => (
@@ -314,66 +393,17 @@ function SingleTabPanel({ shipmentId, tabKey }: { shipmentId: string; tabKey: st
     );
   }
 
-  const data = query.data ?? {};
-  const key = tabKey.toLowerCase().replace(/_/g, '-');
-
-  const containers =
-    (Array.isArray(data.containers) && data.containers) ||
-    (Array.isArray(data.planned_containers) && data.planned_containers) ||
-    (Array.isArray(data.actual_containers) && data.actual_containers) ||
-    (Array.isArray(data.items) &&
-      (key.includes('container') || key.includes('planned') || key.includes('actual')) &&
-      data.items) ||
-    null;
-
-  // Prefer a single charges table — backend may return charges, lines, and/or items.
-  const isCostingTab = key.includes('cost') || key.includes('charge');
-  const charges =
-    (Array.isArray(data.charges) && data.charges) ||
-    (isCostingTab && Array.isArray(data.lines) && data.lines) ||
-    (isCostingTab && Array.isArray(data.items) && data.items) ||
-    null;
-
-  const legs =
-    (Array.isArray(data.legs) && data.legs) ||
-    (Array.isArray(data.routing_legs) && data.routing_legs) ||
-    (Array.isArray(data.items) && key.includes('routing') && data.items) ||
-    null;
-
-  const root = asRecord(data) ?? {};
-  // Strip arrays already rendered as tables from the field grid
-  const scalarRoot = { ...root };
-  for (const k of Object.keys(scalarRoot)) {
-    if (Array.isArray(scalarRoot[k])) delete scalarRoot[k];
-  }
-  // Avoid repeating charge line scalars when the table already shows them
-  if (charges) {
-    delete scalarRoot.charge_count;
-    delete scalarRoot.charges_count;
-    delete scalarRoot.line_count;
-    delete scalarRoot.attachment_count;
-  }
-  const displayEntries = buildDisplayEntries(scalarRoot, { includeEmpty: true });
-
   return (
-    <div className="space-y-3 p-3">
-      {containers ? (
-        <ArrayTable
-          rows={containers}
-          title={key.includes('actual') ? 'Actual containers' : 'Planned containers'}
-        />
-      ) : null}
-      {charges ? <ArrayTable rows={charges} title="Costing / charges" /> : null}
-      {legs ? <ArrayTable rows={legs} title="Routing legs" /> : null}
-      <FieldGrid data={scalarRoot} includeEmpty />
-      {!containers && !charges && !legs && !displayEntries.length ? (
-        <p className="text-center text-[13px] text-[#64748b]">No data for this tab.</p>
-      ) : null}
+    <div className="p-3">
+      <ShipmentApiPayloadView
+        data={query.data ?? {}}
+        emptyMessage="No data for this tab."
+      />
     </div>
   );
 }
 
-/** Lazy-loaded shipment detail tab — Show All aggregates every related API. */
+/** Lazy-loaded shipment detail tab — Show All aggregates sibling detail/{tab} payloads. */
 export function ShipmentTabPanel({
   shipmentId,
   tabKey,
