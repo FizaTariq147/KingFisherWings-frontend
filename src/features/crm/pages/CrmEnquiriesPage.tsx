@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Ship } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -6,26 +6,16 @@ import { ListRowEditButton } from '@/components/ui/ListRowEditButton';
 import {
   EmptyState,
   ErrorState,
-  FilterBar,
   OperationTypeBadge,
 } from '@/components/erp';
 import {
-  CRM_PAGE_SIZE,
-  ENQUIRY_STATUSES,
-  SERVICE_TYPES,
-  crmLabel,
-  type EnquiryStatus,
-  type ServiceType,
-} from '../constants/crm.constants';
+  CrmEnquiryFilters,
+  crmEnquiryFilterDraftToListParams,
+  useCrmEnquiryFilterDraft,
+} from '../components/CrmEnquiryFilters';
 import { useCrmEnquiries } from '../hooks/useCrmEnquiries';
-import { CrmSalespersonSelect } from '../components/CrmFormControls';
 import { CrmStatusBadge } from '../components/CrmStatusBadge';
-import {
-  Pagination,
-  SelectInput,
-  tdClass,
-  thClass,
-} from '../components/CrmUi';
+import { Pagination, tdClass, thClass } from '../components/CrmUi';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { appType, erpTable, listShell } from '@/lib/erpTypography';
 
@@ -40,22 +30,28 @@ function formatDate(iso?: string) {
   });
 }
 
-/** Enquiry Sheet list — Fresa-style dense operational table. */
+/** Enquiry Sheet list — Fresa-style permanently shown search filters. */
 export default function CrmEnquiriesPage() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const [status, setStatus] = useState<EnquiryStatus | ''>('');
-  const [serviceType, setServiceType] = useState<ServiceType | ''>('');
-  const [salesperson, setSalesperson] = useState('');
-  const query = useCrmEnquiries({
-    page,
-    limit: CRM_PAGE_SIZE,
-    status: status || undefined,
-    salesperson_id: salesperson || undefined,
-  });
+  const { draft, setDraft, applied, submit } = useCrmEnquiryFilterDraft();
+
+  useEffect(() => {
+    setPage(1);
+  }, [applied]);
+
+  const listParams = useMemo(() => {
+    const mapped = crmEnquiryFilterDraftToListParams(applied, page);
+    const { service_type: _serviceType, ...apiParams } = mapped;
+    return apiParams;
+  }, [applied, page]);
+
+  const serviceTypeFilter = applied.serviceType;
+
+  const query = useCrmEnquiries(listParams);
 
   const items = (query.data?.items ?? []).filter((x) =>
-    serviceType ? x.service_type === serviceType : true,
+    serviceTypeFilter ? x.service_type === serviceTypeFilter : true,
   );
 
   return (
@@ -97,51 +93,15 @@ export default function CrmEnquiriesPage() {
           </div>
         </div>
 
-        <FilterBar>
-          <div className="flex w-full flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-            <SelectInput
-              className="sm:max-w-[10rem]"
-              value={status}
-              onChange={(e) => {
-                setPage(1);
-                setStatus(e.target.value as EnquiryStatus | '');
-              }}
-            >
-              <option value="">All statuses</option>
-              {ENQUIRY_STATUSES.map((x) => (
-                <option key={x} value={x}>
-                  {crmLabel(x)}
-                </option>
-              ))}
-            </SelectInput>
-            <SelectInput
-              className="sm:max-w-[11rem]"
-              value={serviceType}
-              onChange={(e) => {
-                setPage(1);
-                setServiceType(e.target.value as ServiceType | '');
-              }}
-            >
-              <option value="">All services</option>
-              {SERVICE_TYPES.map((x) => (
-                <option key={x} value={x}>
-                  {crmLabel(x)}
-                </option>
-              ))}
-            </SelectInput>
-            <div className="min-w-[11rem] flex-1 sm:max-w-xs [&_label>span]:sr-only">
-              <CrmSalespersonSelect
-                label="Salesperson"
-                placeholder="All salespeople"
-                value={salesperson}
-                onChange={(v) => {
-                  setPage(1);
-                  setSalesperson(v);
-                }}
-              />
-            </div>
-          </div>
-        </FilterBar>
+        <CrmEnquiryFilters
+          draft={draft}
+          onDraftChange={setDraft}
+          onSubmit={() => {
+            setPage(1);
+            submit();
+          }}
+          isSubmitting={query.isFetching}
+        />
 
         {query.isLoading ? (
           <div className="space-y-1.5 px-4 py-4" aria-busy>
@@ -159,7 +119,7 @@ export default function CrmEnquiriesPage() {
         ) : !items.length ? (
           <EmptyState
             title="No enquiries found."
-            description="No enquiries match your filters."
+            description="Adjust filters and click Submit, or create an enquiry."
             action={{
               label: 'Create Enquiry',
               onClick: () => navigate('/sales/enquiries/new'),
@@ -220,8 +180,12 @@ export default function CrmEnquiriesPage() {
                           ))}
                       </td>
                       <td className={tdClass}>
-                        {[x.origin_port_name || (x.origin_port_id ? x.origin_port_id.slice(0, 6) : null),
-                          x.dest_port_name || (x.dest_port_id ? x.dest_port_id.slice(0, 6) : null)]
+                        {[
+                          x.origin_port_name ||
+                            (x.origin_port_id ? x.origin_port_id.slice(0, 6) : null),
+                          x.dest_port_name ||
+                            (x.dest_port_id ? x.dest_port_id.slice(0, 6) : null),
+                        ]
                           .filter(Boolean)
                           .join(' → ') || '—'}
                       </td>

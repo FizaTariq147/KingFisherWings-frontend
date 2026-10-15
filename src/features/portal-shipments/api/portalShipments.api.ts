@@ -3,6 +3,8 @@ export const PORTAL_SHIPMENTS_API = {
   list: '/portal/shipments',
   lookup: '/portal/shipments/lookup',
   exportCsv: '/portal/shipments/export.csv',
+  /** GET /portal/jobs/:id/costing — customer portal job costing view */
+  jobCosting: (id: string) => `/portal/jobs/${encodeURIComponent(id)}/costing`,
   detail: (id: string) => `/portal/shipments/${encodeURIComponent(id)}`,
   milestones: (id: string) => `/portal/shipments/${encodeURIComponent(id)}/milestones`,
   documents: (id: string) => `/portal/shipments/${encodeURIComponent(id)}/documents`,

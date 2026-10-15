@@ -9,6 +9,7 @@ import { JOB_API } from '../api/job.api';
 import {
   normalizeAirUldRequest,
   normalizeJob,
+  normalizeJobCharges,
   normalizeJobs,
   normalizeJobStatusOptions,
   normalizePaginationMeta,
@@ -31,7 +32,15 @@ import { prepareJobPayload } from '../utils/prepareJobPayload';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { normalizeCode128Value } from '../utils/scannableBarcode';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
-import { toApiDetailTabKey } from '../utils/jobDetailTabs';
+import { jobDetailTabLabel, toApiDetailTabKey } from '../utils/jobDetailTabs';
+
+function jobDetailTabLabelSafe(key: string): string {
+  try {
+    return jobDetailTabLabel(key);
+  } catch {
+    return key.replace(/[-_]+/g, ' ');
+  }
+}
 import type {
   AssignCargoToContainerDto,
   AssignLandTruckerDto,
@@ -47,7 +56,19 @@ import type {
   CreateCourierPodDto,
   CreateDamageReportDto,
   CreateJobCargoDto,
+  CopyJobChargesDto,
   CreateJobChargeDto,
+  CreateJobChargesCompositeDto,
+  CreateJobInvoiceFromCostingDto,
+  GetJobChargesDto,
+  GetJobChargesFromShipmentDto,
+  JobCharge,
+  PatchJobChargeSideDto,
+  PatchJobClosedOverridesDto,
+  ProfitShareAddDto,
+  ProfitSharePreviewDto,
+  ProrateToShipmentsDto,
+  UpsertJobReferencesDto,
   CreateJobContainerDto,
   CreateJobDepositDto,
   CreateJobDocumentDto,
@@ -65,6 +86,7 @@ import type {
   CreateTransportRequestDto,
   FinalizeJobDocumentDto,
   GenerateJobDocumentDto,
+  GenerateJobVoucherDto,
   Job,
   JobChangeStatusResult,
   JobChargeAttachment,
@@ -133,6 +155,13 @@ import type {
   UpdateSeaLclJobDetailDto,
   UpdateStuffingRecordDto,
   UpsertContainerFreeDaysDto,
+  UpsertJobDimensionLineDto,
+  PatchJobDepartmentDto,
+  UpsertJobExchangeRateDto,
+  UpsertJobRoutingLegDto,
+  UpsertJobCustomsRefDto,
+  AddJobOrganizationDto,
+  ReplaceJobOrganizationDto,
 } from '../types/job.types';
 
 function formatAxiosError(error: unknown): Error {
@@ -205,10 +234,13 @@ function buildListQuery(params: JobListParams): Record<string, string | number |
   if (params.salesperson_id) query.salesperson_id = params.salesperson_id;
   if (params.branch_id) query.branch_id = params.branch_id;
   if (params.company_id) query.company_id = params.company_id;
+  if (params.department_id) query.department_id = params.department_id;
+  if (params.created_by) query.created_by = params.created_by;
   if (params.origin_port_id) query.origin_port_id = params.origin_port_id;
   if (params.dest_port_id) query.dest_port_id = params.dest_port_id;
   if (typeof params.masters_only === 'boolean') query.masters_only = params.masters_only;
   if (params.parent_job_id) query.parent_job_id = params.parent_job_id;
+  if (params.date_field) query.date_field = params.date_field;
   if (params.from_date) query.from_date = params.from_date;
   if (params.to_date) query.to_date = params.to_date;
   if (params.container_number) query.container_number = params.container_number;
@@ -869,7 +901,8 @@ export const jobService = {
 
   /**
    * GET /jobs/:id/detail — Fresa header/tabs/actions/links; falls back to GET /jobs/:id.
-   * Merges nested `job` / `header` envelopes so `tabs` + `actions` always land on the Job model.
+   * `tabs` come only from the detail envelope (never from basic GET /jobs/:id).
+   * Each tab key is used for GET /jobs/:id/detail/:tab.
    */
   async getDetail(id: string): Promise<Job> {
     assertId(id);
@@ -881,7 +914,7 @@ export const jobService = {
         root && typeof root === 'object' && !Array.isArray(root)
           ? (root as Record<string, unknown>)
           : null;
-      if (!rootRec) return basic;
+      if (!rootRec) return { ...basic, tabs: undefined };
 
       const nestedJob =
         (rootRec.job && typeof rootRec.job === 'object' && !Array.isArray(rootRec.job)
@@ -894,34 +927,47 @@ export const jobService = {
           ? (rootRec.header as Record<string, unknown>)
           : null);
 
+      const tabsRaw = rootRec.tabs ?? nestedJob?.tabs;
+      const actionsRaw = rootRec.actions ?? nestedJob?.actions;
+
       const merged: Record<string, unknown> = {
         ...basic,
         ...(nestedJob ?? {}),
         // Prefer root-level Fresa chrome fields when present.
         ...(rootRec.id || nestedJob ? {} : rootRec),
         id: basic.id,
-        tabs: rootRec.tabs ?? nestedJob?.tabs ?? (basic as Job).tabs,
-        actions: rootRec.actions ?? nestedJob?.actions ?? (basic as Job).actions,
+        tabs: tabsRaw,
+        actions: actionsRaw,
+        header: rootRec.header ?? nestedJob?.header,
+        links: rootRec.links ?? nestedJob?.links,
       };
       // When job fields live on the root (not nested), fold them in without wiping tabs/actions.
       if (!nestedJob && rootRec.id) {
         Object.assign(merged, rootRec, {
           id: basic.id,
-          tabs: rootRec.tabs ?? merged.tabs,
-          actions: rootRec.actions ?? merged.actions,
+          tabs: rootRec.tabs ?? tabsRaw,
+          actions: rootRec.actions ?? actionsRaw,
         });
       }
 
       const enriched = normalizeJob(merged);
-      if (enriched) return { ...basic, ...enriched, id: basic.id };
+      if (enriched) {
+        return {
+          ...basic,
+          ...enriched,
+          id: basic.id,
+          // Never keep tabs from basic GET /jobs/:id — only detail API.
+          tabs: enriched.tabs,
+        };
+      }
     } catch (error) {
       const status = (error as { response?: { status?: number } })?.response?.status;
       if (status !== 404 && status !== 501) throw formatAxiosError(error);
     }
-    return basic;
+    return { ...basic, tabs: undefined };
   },
 
-  /** GET /jobs/:id/detail/:tab — returns the full tab payload object. */
+  /** GET /jobs/:id/detail/:tab — form-ready payload (exact API tab key). */
   async getDetailTab(id: string, tab: string): Promise<Record<string, unknown>> {
     assertId(id);
     const key = toApiDetailTabKey(tab);
@@ -931,25 +977,114 @@ export const jobService = {
         axiosInstance.get(JOB_API.detailTab(id, key)),
       );
       const payload = unwrapEntity(res.data);
-      if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
+      if (Array.isArray(payload)) return { items: payload };
+      if (payload && typeof payload === 'object') {
         const rec = payload as Record<string, unknown>;
-        // Some gateways wrap as { tab, data } / { content } / { payload }.
         const nested =
-          (rec.data && typeof rec.data === 'object' && !Array.isArray(rec.data)
-            ? (rec.data as Record<string, unknown>)
-            : null) ||
-          (rec.content && typeof rec.content === 'object' && !Array.isArray(rec.content)
-            ? (rec.content as Record<string, unknown>)
-            : null) ||
-          (rec.payload && typeof rec.payload === 'object' && !Array.isArray(rec.payload)
-            ? (rec.payload as Record<string, unknown>)
-            : null);
-        return nested ? { ...rec, ...nested } : rec;
+          (rec.data && typeof rec.data === 'object' ? rec.data : null) ||
+          (rec.content && typeof rec.content === 'object' ? rec.content : null) ||
+          (rec.payload && typeof rec.payload === 'object' ? rec.payload : null);
+        if (Array.isArray(nested)) return { ...rec, items: nested };
+        if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
+          return { ...rec, ...(nested as Record<string, unknown>) };
+        }
+        return rec;
       }
-      return { raw: payload ?? res.data };
+      if (payload != null && payload !== '') return { value: payload };
+      return {};
     } catch (error) {
       throw formatAxiosError(error);
     }
+  },
+
+  /**
+   * Show All — only tabs from GET /jobs/:id/detail `tabs` (siblingTabKeys).
+   * Uses exact key for dedicated show_all when present, then aggregates every other
+   * sibling via GET /jobs/:id/detail/:tab. No hardcoded tab inventory.
+   */
+  async getShowAll(
+    id: string,
+    siblingTabKeys: string[] = [],
+  ): Promise<{
+    sections: Array<{ key: string; title: string; data: Record<string, unknown> }>;
+    arrays: Array<{ key: string; title: string; rows: unknown[] }>;
+  }> {
+    assertId(id);
+
+    const sections: Array<{ key: string; title: string; data: Record<string, unknown> }> = [];
+    const arrays: Array<{ key: string; title: string; rows: unknown[] }> = [];
+
+    const pushSection = (
+      key: string,
+      title: string,
+      data: Record<string, unknown> | null | undefined,
+    ) => {
+      if (!data || !Object.keys(data).length) return;
+      sections.push({ key, title, data });
+    };
+    const pushArray = (key: string, title: string, rows: unknown[]) => {
+      if (!rows.length) return;
+      arrays.push({ key, title, rows });
+    };
+
+    const isShowAll = (k: string) => {
+      const n = k.trim().toLowerCase().replace(/-/g, '_');
+      return n === 'show_all' || n === 'showall';
+    };
+
+    const normalizedSiblings = Array.from(
+      new Set(siblingTabKeys.map((k) => toApiDetailTabKey(k)).filter(Boolean)),
+    );
+
+    const showAllKey = normalizedSiblings.find((k) => isShowAll(k));
+    if (showAllKey) {
+      try {
+        const data = await this.getDetailTab(id, showAllKey);
+        pushSection(`api-${showAllKey}`, jobDetailTabLabelSafe(showAllKey), data);
+      } catch {
+        /* aggregate siblings below */
+      }
+    }
+
+    const tabKeys = normalizedSiblings.filter((k) => !isShowAll(k));
+    await Promise.all(
+      tabKeys.map(async (tab) => {
+        try {
+          const data = await this.getDetailTab(id, tab);
+          const title = jobDetailTabLabelSafe(tab);
+          const root = { ...data };
+          let pushedChargeLike = false;
+          for (const [k, v] of Object.entries(data)) {
+            if (!Array.isArray(v)) continue;
+            delete root[k];
+            const isChargeLike = /charge|line/i.test(k);
+            if (isChargeLike) {
+              if (pushedChargeLike) continue;
+              pushedChargeLike = true;
+              pushArray(`${tab}-charges`, `${title} · Charges`, v);
+              continue;
+            }
+            pushArray(`${tab}-${k}`, `${title} · ${k.replace(/[-_]/g, ' ')}`, v);
+          }
+          pushSection(tab, title, root);
+        } catch {
+          /* tab may 404 for this job */
+        }
+      }),
+    );
+
+    let keptChargeBlock = false;
+    const dedupedArrays = arrays.filter((block) => {
+      const isChargeLike = /charge|costing|(^|[^a-z])lines([^a-z]|$)/i.test(
+        `${block.key} ${block.title}`,
+      );
+      if (!isChargeLike) return true;
+      if (keptChargeBlock) return false;
+      keptChargeBlock = true;
+      return true;
+    });
+
+    return { sections, arrays: dedupedArrays };
   },
 
   /** GET /jobs/status-options — optional job_id for context-aware catalog. */
@@ -1083,10 +1218,90 @@ export const jobService = {
     );
   },
 
-  /** PATCH /jobs/:id/dimensions */
+  /** PATCH /jobs/:id/dimensions — legacy header commodity/HS */
   async patchDimensions(id: string, dto: PatchJobDimensionsDto): Promise<Job> {
     assertId(id);
     return request(() => axiosInstance.patch(JOB_API.dimensions(id), dto), normalizeJob);
+  },
+
+  /** GET /jobs/:id/dimensions — list dimension lines */
+  async listDimensions(id: string): Promise<unknown[]> {
+    assertId(id);
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.dimensions(id)));
+    return unwrapList(res.data).items;
+  },
+
+  /** POST /jobs/:id/dimensions — add dimension line */
+  async addDimensionLine(id: string, dto: UpsertJobDimensionLineDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.dimensions(id), dto));
+  },
+
+  /** PATCH /jobs/:id/department */
+  async patchDepartment(id: string, dto: PatchJobDepartmentDto): Promise<Job> {
+    assertId(id);
+    return request(() => axiosInstance.patch(JOB_API.department(id), dto), normalizeJob);
+  },
+
+  /** POST /jobs/:id/exchange-rates */
+  async upsertExchangeRate(id: string, dto: UpsertJobExchangeRateDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.exchangeRates(id), dto));
+  },
+
+  /** DELETE /jobs/:id/exchange-rates/:rateId */
+  async deleteExchangeRate(id: string, rateId: string): Promise<void> {
+    assertId(id);
+    if (!rateId?.trim()) throw new Error('Exchange rate id is required.');
+    return requestVoid(() => axiosInstance.delete(JOB_API.exchangeRate(id, rateId)));
+  },
+
+  /** POST /jobs/:id/routing-legs */
+  async addRoutingLeg(id: string, dto: UpsertJobRoutingLegDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.routingLegs(id), dto));
+  },
+
+  /** PATCH /jobs/:id/routing-legs/:legId */
+  async updateRoutingLeg(
+    id: string,
+    legId: string,
+    dto: UpsertJobRoutingLegDto,
+  ): Promise<unknown> {
+    assertId(id);
+    if (!legId?.trim()) throw new Error('Routing leg id is required.');
+    return request(() => axiosInstance.patch(JOB_API.routingLeg(id, legId), dto));
+  },
+
+  /** DELETE /jobs/:id/routing-legs/:legId */
+  async deleteRoutingLeg(id: string, legId: string): Promise<void> {
+    assertId(id);
+    if (!legId?.trim()) throw new Error('Routing leg id is required.');
+    return requestVoid(() => axiosInstance.delete(JOB_API.routingLeg(id, legId)));
+  },
+
+  /** POST /jobs/:id/customs-refs */
+  async addCustomsRef(id: string, dto: UpsertJobCustomsRefDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.customsRefs(id), dto));
+  },
+
+  /** PATCH /jobs/:id/customs-refs/:refId */
+  async updateCustomsRef(
+    id: string,
+    refId: string,
+    dto: UpsertJobCustomsRefDto,
+  ): Promise<unknown> {
+    assertId(id);
+    if (!refId?.trim()) throw new Error('Customs ref id is required.');
+    return request(() => axiosInstance.patch(JOB_API.customsRef(id, refId), dto));
+  },
+
+  /** DELETE /jobs/:id/customs-refs/:refId */
+  async deleteCustomsRef(id: string, refId: string): Promise<void> {
+    assertId(id);
+    if (!refId?.trim()) throw new Error('Customs ref id is required.');
+    return requestVoid(() => axiosInstance.delete(JOB_API.customsRef(id, refId)));
   },
 
   /** GET /jobs/:id/gpum */
@@ -1252,16 +1467,20 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.copy(id), body), normalizeJob);
   },
 
-  async listJobShipments(id: string): Promise<unknown> {
+  /** GET /jobs/:id/shipments — list shipments attached to this job */
+  async listJobShipments(id: string): Promise<unknown[]> {
     assertId(id);
-    return request(() => axiosInstance.get(JOB_API.shipments(id)));
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.shipments(id)));
+    return unwrapList(res.data).items;
   },
 
+  /** POST /jobs/:id/shipments — create/link shipment payload on this job */
   async attachJobShipments(id: string, body: Record<string, unknown>): Promise<unknown> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.shipments(id), body));
   },
 
+  /** POST /jobs/:id/shipments/attach — attach existing shipment id(s) */
   async attachExistingJobShipments(
     id: string,
     body: Record<string, unknown>,
@@ -1270,24 +1489,193 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.shipmentsAttach(id), body));
   },
 
-  async pullJobCharges(id: string, body: Record<string, unknown> = {}): Promise<unknown> {
+  /** GET /jobs/:id/vouchers */
+  async listJobVouchers(id: string): Promise<unknown[]> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.getCharges(id), body));
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.vouchers(id)));
+    return unwrapList(res.data).items;
   },
 
-  async copyJobCharges(id: string, body: Record<string, unknown>): Promise<unknown> {
+  /** POST /jobs/:id/vouchers/generate */
+  async generateJobVoucher(id: string, dto: GenerateJobVoucherDto): Promise<unknown> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.copyCharges(id), body));
+    return request(() => axiosInstance.post(JOB_API.vouchersGenerate(id), dto));
   },
 
-  async prorateToShipments(id: string, body: Record<string, unknown> = {}): Promise<unknown> {
+  /** GET /jobs/:id/charges — costing grid */
+  async listJobCharges(id: string): Promise<JobCharge[]> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.prorateToShipments(id), body));
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.charges(id)));
+    return normalizeJobCharges(res.data);
   },
 
-  async cancelProrateToShipments(id: string): Promise<unknown> {
+  /** POST /jobs/:id/charges/composite */
+  async createChargesComposite(
+    id: string,
+    dto: CreateJobChargesCompositeDto,
+  ): Promise<unknown> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.cancelProrate(id)));
+    return request(() => axiosInstance.post(JOB_API.chargesComposite(id), dto));
+  },
+
+  /** PATCH /jobs/:id/charges/:chargeId/sale */
+  async updateChargeSale(
+    id: string,
+    chargeId: string,
+    dto: PatchJobChargeSideDto,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.patch(JOB_API.chargeSale(id, chargeId), dto));
+  },
+
+  /** PATCH /jobs/:id/charges/:chargeId/cost */
+  async updateChargeCost(
+    id: string,
+    chargeId: string,
+    dto: PatchJobChargeSideDto,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.patch(JOB_API.chargeCost(id, chargeId), dto));
+  },
+
+  /** GET /jobs/:id/charges/history */
+  async listChargesHistory(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.chargesHistory(id)));
+  },
+
+  /** GET /jobs/:id/charges/:chargeId/history */
+  async listChargeHistory(id: string, chargeId: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.chargeHistory(id, chargeId)));
+  },
+
+  /** POST /jobs/:id/invoices/sale */
+  async createSaleInvoiceFromJob(
+    id: string,
+    dto: CreateJobInvoiceFromCostingDto = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.invoicesSale(id), dto));
+  },
+
+  /** POST /jobs/:id/invoices/purchase */
+  async createPurchaseInvoiceFromJob(
+    id: string,
+    dto: CreateJobInvoiceFromCostingDto = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.invoicesPurchase(id), dto));
+  },
+
+  /** GET /jobs/:id/pnl/custom-duty */
+  async getPnlCustomDuty(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.pnlCustomDuty(id)));
+  },
+
+  /** POST /jobs/:id/routing-legs/push-to-subjobs */
+  async pushRoutingLegsToSubjobs(
+    id: string,
+    body: Record<string, unknown> = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.post(JOB_API.routingLegsPushToSubjobs(id), body),
+    );
+  },
+
+  /** POST /jobs/:id/containers/push-to-sub-jobs */
+  async pushContainersToSubJobs(
+    id: string,
+    body: Record<string, unknown> = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.post(JOB_API.containersPushToSubJobs(id), body),
+    );
+  },
+
+  /** GET /jobs/:id/references */
+  async getReferences(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.references(id)));
+  },
+
+  /** PUT /jobs/:id/references */
+  async putReferences(id: string, dto: UpsertJobReferencesDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.put(JOB_API.references(id), dto));
+  },
+
+  /** PUT /jobs/:id/references/:type */
+  async putReferenceByType(
+    id: string,
+    type: string,
+    dto: Record<string, unknown>,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.put(JOB_API.referenceByType(id, type), dto),
+    );
+  },
+
+  /** GET /jobs/:id/email-recipients/suggest */
+  async suggestEmailRecipients(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.emailRecipientsSuggest(id)));
+  },
+
+  /** PATCH /jobs/:id/closed-overrides */
+  async patchClosedOverrides(
+    id: string,
+    dto: PatchJobClosedOverridesDto,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.patch(JOB_API.closedOverrides(id), dto));
+  },
+
+  /** POST /jobs/:id/get-charges — quotation / party standard */
+  async pullJobCharges(id: string, dto: GetJobChargesDto = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.getCharges(id), dto));
+  },
+
+  /** POST /jobs/:id/get-job-charges — Fresa Get Job Charges from shipment */
+  async getJobChargesFromShipment(
+    id: string,
+    dto: GetJobChargesFromShipmentDto,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.getJobChargesFromShipment(id), dto));
+  },
+
+  /** POST /jobs/:id/copy-charges */
+  async copyJobCharges(id: string, dto: CopyJobChargesDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.copyCharges(id), dto));
+  },
+
+  /** POST /jobs/:id/profit-share/preview */
+  async profitSharePreview(id: string, dto: ProfitSharePreviewDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.profitSharePreview(id), dto));
+  },
+
+  /** POST /jobs/:id/profit-share/add */
+  async profitShareAdd(id: string, dto: ProfitShareAddDto): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.profitShareAdd(id), dto));
+  },
+
+  async prorateToShipments(id: string, dto: ProrateToShipmentsDto = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.prorateToShipments(id), dto));
+  },
+
+  async cancelProrateToShipments(id: string, body: Record<string, unknown> = {}): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.cancelProrate(id), body));
   },
 
   async queueJobBookingConfirmation(id: string): Promise<unknown> {
@@ -2119,7 +2507,7 @@ export const jobService = {
   async updateDimensionLine(
     id: string,
     lineId: string,
-    body: Record<string, unknown>,
+    body: UpsertJobDimensionLineDto,
   ): Promise<unknown> {
     assertId(id);
     if (!lineId?.trim()) throw new Error('Invalid dimension line id.');
@@ -2213,13 +2601,17 @@ export const jobService = {
   },
 
   /** GET /jobs/:id/organizations */
-  async listOrganizations(id: string): Promise<unknown> {
+  async listOrganizations(id: string): Promise<unknown[]> {
     assertId(id);
-    return request(() => axiosInstance.get(JOB_API.organizations(id)));
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.organizations(id)));
+    return unwrapList(res.data).items;
   },
 
   /** POST /jobs/:id/organizations */
-  async addOrganization(id: string, body: Record<string, unknown>): Promise<unknown> {
+  async addOrganization(
+    id: string,
+    body: AddJobOrganizationDto | Record<string, unknown>,
+  ): Promise<unknown> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.organizations(id), body));
   },
@@ -2228,7 +2620,7 @@ export const jobService = {
   async replaceOrganization(
     id: string,
     orgType: string,
-    body: Record<string, unknown>,
+    body: ReplaceJobOrganizationDto | Record<string, unknown>,
   ): Promise<unknown> {
     assertId(id);
     if (!orgType?.trim()) throw new Error('Organization type is required.');
@@ -2710,6 +3102,8 @@ export const jobService = {
     jobService.generateDocument(id, JOB_API.generateJobCard(id), dto),
   generateJobPnl: (id: string, dto?: GenerateJobDocumentDto) =>
     jobService.generateDocument(id, JOB_API.generateJobPnl(id), dto),
+  generateJobPnlCustomDuty: (id: string, dto?: GenerateJobDocumentDto) =>
+    jobService.generateDocument(id, JOB_API.generateJobPnlCustomDuty(id), dto),
   generateProformaInvoice: (id: string, dto?: GenerateJobDocumentDto) =>
     jobService.generateDocument(id, JOB_API.generateProformaInvoice(id), dto),
   generateDeliveryOrder: (id: string, dto?: GenerateJobDocumentDto) =>

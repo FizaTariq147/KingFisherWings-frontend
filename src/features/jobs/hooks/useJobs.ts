@@ -42,6 +42,20 @@ export const jobKeys = {
     [...jobKeys.all, 'storage-calculation', id, asOf ?? ''] as const,
   airBookingForm: (id: string) => [...jobKeys.all, 'air-booking-form', id] as const,
   airComplianceForm: (id: string) => [...jobKeys.all, 'air-compliance-form', id] as const,
+  organizations: (id: string) => [...jobKeys.all, 'organizations', id] as const,
+  dimensionLines: (id: string) => [...jobKeys.all, 'dimension-lines', id] as const,
+  jobShipments: (id: string) => [...jobKeys.all, 'job-shipments', id] as const,
+  jobVouchers: (id: string) => [...jobKeys.all, 'job-vouchers', id] as const,
+  jobCharges: (id: string) => [...jobKeys.all, 'job-charges', id] as const,
+  jobChargesHistory: (id: string) => [...jobKeys.all, 'job-charges-history', id] as const,
+  jobChargeHistory: (id: string, chargeId: string) =>
+    [...jobKeys.all, 'job-charge-history', id, chargeId] as const,
+  jobPnlCustomDuty: (id: string) => [...jobKeys.all, 'job-pnl-custom-duty', id] as const,
+  jobReferences: (id: string) => [...jobKeys.all, 'job-references', id] as const,
+  jobEmailRecipientsSuggest: (id: string) =>
+    [...jobKeys.all, 'job-email-recipients-suggest', id] as const,
+  chargeAttachments: (id: string, chargeId: string) =>
+    [...jobKeys.all, 'charge-attachments', id, chargeId] as const,
 };
 
 export function useInvalidateJobs() {
@@ -91,6 +105,132 @@ export function useJobDetailTab(id: string, tab: string, enabled = true) {
     queryKey: jobKeys.detailTab(id, tab),
     queryFn: () => jobService.getDetailTab(id, tab),
     enabled: Boolean(accessToken) && isUuid(id) && Boolean(tab.trim()) && enabled,
+  });
+}
+
+/** Show All — aggregates sibling keys from GET /jobs/:id/detail via detail/:tab. */
+export function useJobShowAll(id: string, siblingTabKeys: string[], enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const keys = siblingTabKeys.map((k) => k.trim()).filter(Boolean).sort();
+  return useQuery({
+    queryKey: [...jobKeys.detail(id), 'show-all', keys] as const,
+    queryFn: () => jobService.getShowAll(id, keys),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+    staleTime: 30_000,
+  });
+}
+
+/** GET /jobs/:id/organizations */
+export function useJobOrganizations(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.organizations(id),
+    queryFn: () => jobService.listOrganizations(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/:id/dimensions */
+export function useJobDimensionLines(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.dimensionLines(id),
+    queryFn: () => jobService.listDimensions(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/:id/shipments — shipments attached to this job */
+export function useJobShipmentsList(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.jobShipments(id),
+    queryFn: () => jobService.listJobShipments(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/:id/vouchers — vouchers linked to this job */
+export function useJobVouchersList(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.jobVouchers(id),
+    queryFn: () => jobService.listJobVouchers(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/:id/charges — costing grid */
+export function useJobCharges(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.jobCharges(id),
+    queryFn: () => jobService.listJobCharges(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/:id/charges/history */
+export function useJobChargesHistory(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.jobChargesHistory(id),
+    queryFn: () => jobService.listChargesHistory(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/:id/charges/:chargeId/history */
+export function useJobChargeHistory(id: string, chargeId: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.jobChargeHistory(id, chargeId),
+    queryFn: () => jobService.listChargeHistory(id, chargeId),
+    enabled: Boolean(accessToken) && isUuid(id) && isUuid(chargeId) && enabled,
+  });
+}
+
+/** GET /jobs/:id/charges/:chargeId/attachments */
+export function useJobChargeAttachments(
+  id: string,
+  chargeId: string,
+  enabled = true,
+) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.chargeAttachments(id, chargeId),
+    queryFn: () => jobService.listChargeAttachments(id, chargeId),
+    enabled: Boolean(accessToken) && isUuid(id) && isUuid(chargeId) && enabled,
+  });
+}
+
+/** GET /jobs/:id/pnl/custom-duty */
+export function useJobPnlCustomDuty(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.jobPnlCustomDuty(id),
+    queryFn: () => jobService.getPnlCustomDuty(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/:id/references */
+export function useJobReferences(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.jobReferences(id),
+    queryFn: () => jobService.getReferences(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/:id/email-recipients/suggest */
+export function useJobEmailRecipientsSuggest(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.jobEmailRecipientsSuggest(id),
+    queryFn: () => jobService.suggestEmailRecipients(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
   });
 }
 

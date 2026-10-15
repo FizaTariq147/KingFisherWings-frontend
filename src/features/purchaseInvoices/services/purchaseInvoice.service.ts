@@ -165,6 +165,21 @@ export const purchaseInvoiceService = {
     }
   },
 
+  /** POST /purchase-invoices/from-job/:jobId */
+  async createFromJob(jobId: string): Promise<PurchaseInvoice> {
+    assertId(jobId);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post<unknown>(PURCHASE_INVOICE_API.fromJob(jobId)),
+      );
+      const invoice = normalizePurchaseInvoice(unwrapEntity(res.data));
+      if (!invoice) throw new Error('from-job succeeded but no purchase invoice was returned.');
+      return invoice;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
   async update(id: string, dto: UpdatePurchaseInvoiceDto): Promise<PurchaseInvoice> {
     assertId(id);
     try {

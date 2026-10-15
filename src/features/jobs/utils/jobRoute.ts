@@ -1,6 +1,5 @@
 import type { JobSegmentKey, JobType } from '../constants/job.constants';
 import { JOB_SEGMENTS } from '../constants/job.constants';
-import { jobShouldOpenOpsTab } from '../hooks/useStaffBookingForm';
 import { canonicalizeJobType } from './canonicalizeJobType';
 
 export function segmentFromPath(pathname: string): JobSegmentKey | null {
@@ -39,9 +38,8 @@ export function jobDetailPath(
 ): string {
   const jt = canonicalizeJobType(job.job_type);
   const base = `${jobRoutePrefix(segmentForJobType(jt))}/${job.id}`;
+  // Default opens Show All on JobDetailPage; pass opts.tab for deep-links (e.g. booking_form).
   if (opts?.tab) return `${base}?tab=${encodeURIComponent(opts.tab)}`;
-  // After customer approve → convert: land on Ops so staff booking forms are visible.
-  if (jobShouldOpenOpsTab(jt)) return `${base}?tab=ops`;
   return base;
 }
 

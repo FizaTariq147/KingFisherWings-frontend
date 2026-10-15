@@ -6,17 +6,17 @@ import { isUuid } from '@/lib/isUuid';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
-import { useUsers } from '@/features/users/hooks/useUsers';
 import { erpTable, listShell } from '@/lib/erpTypography';
 import { useMemo } from 'react';
-import { JOB_TYPE_LABELS } from '../../constants/quotation.constants';
 import type { PaginationMeta, Quotation } from '../../types/quotation.types';
 import {
   buildPortLabelMap,
   formatQuotationDate,
   quotationCustomerLabel,
+  quotationDestLabel,
   quotationIdNameLabel,
-  quotationRouteLabel,
+  quotationListDate,
+  quotationOriginLabel,
   quotationTotalLabel,
 } from '../../utils/quotationDisplay';
 import { quotationDisplayNumber } from '../../utils/normalizeQuotation';
@@ -42,6 +42,10 @@ interface QuotationTableProps {
   emptyMessage?: string;
 }
 
+/**
+ * Fresa Quotation list grid (blog Step 3 — Create from this screen).
+ * Columns mirror API list fields; labels resolved from masters (never hardcoded rows).
+ */
 export function QuotationTable({
   quotations,
   isFetching,
@@ -71,12 +75,6 @@ export function QuotationTable({
     party_type: 'CUSTOMER',
     order: 'asc',
   });
-  const { data: usersResult } = useUsers({
-    tenantId: '',
-    page: 1,
-    limit: 100,
-    order: 'asc',
-  });
 
   const portMap = useMemo(() => buildPortLabelMap(ports), [ports]);
   const partyMap = useMemo(() => {
@@ -98,19 +96,6 @@ export function QuotationTable({
     }
     return map;
   }, [departments]);
-  const userMap = useMemo(() => {
-    const map = new Map<string, string>();
-    for (const u of usersResult?.users ?? []) {
-      if (!isUuid(u.id)) continue;
-      const label =
-        u.full_name?.trim() ||
-        [u.first_name, u.last_name].filter(Boolean).join(' ').trim() ||
-        u.email?.trim() ||
-        '';
-      if (label && !isUuid(label)) map.set(u.id, label);
-    }
-    return map;
-  }, [usersResult?.users]);
 
   return (
     <div className="relative">
@@ -120,13 +105,15 @@ export function QuotationTable({
           <thead>
             <tr>
               <th className={`${erpTable.th} w-10`}>{''}</th>
-              <th className={erpTable.th}>Quote No</th>
-              <th className={erpTable.th}>Customer</th>
+              <th className={erpTable.th}>Quotation No</th>
+              <th className={erpTable.th}>Date</th>
               <th className={erpTable.th}>Department</th>
-              <th className={erpTable.th}>Salesperson</th>
-              <th className={erpTable.th}>Job type</th>
-              <th className={erpTable.th}>POL / POD</th>
-              <th className={erpTable.th}>Valid until</th>
+              <th className={erpTable.th}>Customer</th>
+              <th className={erpTable.th}>Origin</th>
+              <th className={erpTable.th}>Destination</th>
+              <th className={erpTable.th}>Incoterm</th>
+              <th className={erpTable.th}>Valid From</th>
+              <th className={erpTable.th}>Valid To</th>
               <th className={erpTable.th}>Total</th>
               <th className={erpTable.th}>Status</th>
               <th className={`${erpTable.th} w-10`}>{''}</th>
@@ -135,13 +122,18 @@ export function QuotationTable({
           <tbody>
             {quotations.length === 0 ? (
               <tr>
-                <td colSpan={11} className={`${erpTable.td} ${listShell.empty}`}>
+                <td colSpan={13} className={`${erpTable.td} ${listShell.empty}`}>
                   {emptyMessage}
                 </td>
               </tr>
             ) : (
               quotations.map((q) => {
                 const canEdit = isQuotationDraftEditable(q.status);
+                const deptName = quotationIdNameLabel(
+                  q.department_name,
+                  q.department_id,
+                  departmentMap,
+                );
                 return (
                   <tr
                     key={q.id}
@@ -160,20 +152,24 @@ export function QuotationTable({
                         {quotationDisplayNumber(q)}
                       </span>
                     </td>
+                    <td className={erpTable.td}>{quotationListDate(q)}</td>
+                    <td className={erpTable.td}>
+                      <div className="flex flex-col gap-0.5">
+                        <OperationTypeBadge code={q.job_type} />
+                        {deptName !== '—' ? (
+                          <span className="text-[12px] text-[#64748b]">{deptName}</span>
+                        ) : null}
+                      </div>
+                    </td>
                     <td className={erpTable.td}>{quotationCustomerLabel(q, partyMap)}</td>
-                    <td className={erpTable.td}>
-                      {quotationIdNameLabel(q.department_name, q.department_id, departmentMap)}
+                    <td className={`${erpTable.td} max-w-[180px] whitespace-normal break-words`}>
+                      {quotationOriginLabel(q, portMap)}
                     </td>
-                    <td className={erpTable.td}>
-                      {quotationIdNameLabel(q.salesperson_name, q.salesperson_id, userMap)}
+                    <td className={`${erpTable.td} max-w-[180px] whitespace-normal break-words`}>
+                      {quotationDestLabel(q, portMap)}
                     </td>
-                    <td className={erpTable.td}>
-                      <OperationTypeBadge code={q.job_type} />
-                      <span className="sr-only">{JOB_TYPE_LABELS[q.job_type] ?? q.job_type}</span>
-                    </td>
-                    <td className={`${erpTable.td} max-w-[280px] whitespace-normal break-words`}>
-                      {quotationRouteLabel(q, portMap)}
-                    </td>
+                    <td className={erpTable.td}>{q.incoterm?.trim() || '—'}</td>
+                    <td className={erpTable.td}>{formatQuotationDate(q.valid_from)}</td>
                     <td className={erpTable.td}>{formatQuotationDate(q.valid_until)}</td>
                     <td className={erpTable.td}>{quotationTotalLabel(q)}</td>
                     <td className={erpTable.td} onClick={(e) => e.stopPropagation()}>

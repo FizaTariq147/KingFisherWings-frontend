@@ -22,6 +22,20 @@ export const JOB_API = {
   organizationClientReference: (id: string) =>
     `/jobs/${id}/organization/client-reference`,
   dimensions: (id: string) => `/jobs/${id}/dimensions`,
+  /** PATCH /jobs/:id/department — Department tab */
+  department: (id: string) => `/jobs/${id}/department`,
+  /** POST /jobs/:id/exchange-rates — Ex Rate tab */
+  exchangeRates: (id: string) => `/jobs/${id}/exchange-rates`,
+  exchangeRate: (id: string, rateId: string) =>
+    `/jobs/${id}/exchange-rates/${encodeURIComponent(rateId)}`,
+  /** GET/POST routing legs — Routing tab */
+  routingLegs: (id: string) => `/jobs/${id}/routing-legs`,
+  routingLeg: (id: string, legId: string) =>
+    `/jobs/${id}/routing-legs/${encodeURIComponent(legId)}`,
+  /** Customs / shipping bill tabs */
+  customsRefs: (id: string) => `/jobs/${id}/customs-refs`,
+  customsRef: (id: string, refId: string) =>
+    `/jobs/${id}/customs-refs/${encodeURIComponent(refId)}`,
   gpum: (id: string) => `/jobs/${id}/gpum`,
   storageChargesCalculate: (id: string) =>
     `/jobs/${id}/containers/storage-charges/calculate`,
@@ -29,12 +43,55 @@ export const JOB_API = {
     `/jobs/${id}/containers/storage-charges/confirm-to-costing`,
   chargeAttachments: (id: string, chargeId: string) =>
     `/jobs/${id}/charges/${chargeId}/attachments`,
+  /** POST /jobs/:id/charges/composite — sale+cost pair */
+  chargesComposite: (id: string) => `/jobs/${id}/charges/composite`,
+  /** PATCH /jobs/:id/charges/:chargeId/sale */
+  chargeSale: (id: string, chargeId: string) =>
+    `/jobs/${id}/charges/${encodeURIComponent(chargeId)}/sale`,
+  /** PATCH /jobs/:id/charges/:chargeId/cost */
+  chargeCost: (id: string, chargeId: string) =>
+    `/jobs/${id}/charges/${encodeURIComponent(chargeId)}/cost`,
+  /** GET /jobs/:id/charges/history */
+  chargesHistory: (id: string) => `/jobs/${id}/charges/history`,
+  /** GET /jobs/:id/charges/:chargeId/history */
+  chargeHistory: (id: string, chargeId: string) =>
+    `/jobs/${id}/charges/${encodeURIComponent(chargeId)}/history`,
+  /** POST /jobs/:id/invoices/sale · /purchase */
+  invoicesSale: (id: string) => `/jobs/${id}/invoices/sale`,
+  invoicesPurchase: (id: string) => `/jobs/${id}/invoices/purchase`,
+  /** GET /jobs/:id/pnl/custom-duty */
+  pnlCustomDuty: (id: string) => `/jobs/${id}/pnl/custom-duty`,
+  /** POST /jobs/:id/documents/job-pnl-custom-duty */
+  generateJobPnlCustomDuty: (id: string) =>
+    `/jobs/${id}/documents/job-pnl-custom-duty`,
+  /** POST /jobs/:id/routing-legs/push-to-subjobs */
+  routingLegsPushToSubjobs: (id: string) =>
+    `/jobs/${id}/routing-legs/push-to-subjobs`,
+  /** POST /jobs/:id/containers/push-to-sub-jobs */
+  containersPushToSubJobs: (id: string) =>
+    `/jobs/${id}/containers/push-to-sub-jobs`,
+  /** GET/PUT /jobs/:id/references · PUT .../references/:type */
+  references: (id: string) => `/jobs/${id}/references`,
+  referenceByType: (id: string, type: string) =>
+    `/jobs/${id}/references/${encodeURIComponent(type)}`,
+  /** GET /jobs/:id/email-recipients/suggest */
+  emailRecipientsSuggest: (id: string) =>
+    `/jobs/${id}/email-recipients/suggest`,
+  /** PATCH /jobs/:id/closed-overrides */
+  closedOverrides: (id: string) => `/jobs/${id}/closed-overrides`,
   shipments: (id: string) => `/jobs/${id}/shipments`,
   shipmentsAttach: (id: string) => `/jobs/${id}/shipments/attach`,
   getCharges: (id: string) => `/jobs/${id}/get-charges`,
+  /** POST /jobs/:id/get-job-charges — Fresa Get Job Charges from shipment */
+  getJobChargesFromShipment: (id: string) => `/jobs/${id}/get-job-charges`,
   copyCharges: (id: string) => `/jobs/${id}/copy-charges`,
+  profitSharePreview: (id: string) => `/jobs/${id}/profit-share/preview`,
+  profitShareAdd: (id: string) => `/jobs/${id}/profit-share/add`,
   prorateToShipments: (id: string) => `/jobs/${id}/prorate-to-shipments`,
   cancelProrate: (id: string) => `/jobs/${id}/cancel-prorate`,
+  /** GET /jobs/:id/vouchers · POST /jobs/:id/vouchers/generate */
+  vouchers: (id: string) => `/jobs/${id}/vouchers`,
+  vouchersGenerate: (id: string) => `/jobs/${id}/vouchers/generate`,
   houseJobs: (id: string) => `/jobs/${id}/house-jobs`,
   subJobs: (id: string) => `/jobs/${id}/sub-jobs`,
   prorateCost: (id: string, chargeCodeId: string) =>
@@ -277,12 +334,8 @@ export const JOB_API = {
 } as const;
 
 /**
- * Job DETAIL_TABS — source of truth matches backend job-detail.service
- * GET /jobs/:id/detail and GET /jobs/:id/detail/:tab.
- *
- * Full: show_all, info, organization, dimensions, planned_container,
- * actual_container, costing, history, shipments
- * Thin/stub: department, ex_rate, routing, customs, shipping_bill_boe, booking_form
+ * Known job detail/{tab} keys (docs reference).
+ * Tab strip on the FE uses only GET /jobs/:id/detail `tabs` — this list is not a fallback.
  * (GPUM is separate GET/PUT — not a detail tab; lives under Actions.)
  */
 export const JOB_DETAIL_TABS = [

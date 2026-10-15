@@ -138,8 +138,20 @@ export function DetailPageTemplate({
     if (!defaultTab) return;
     if (!tabs.some((t) => t.key === defaultTab)) return;
     setActiveTab(defaultTab);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- tabs content may remount; defaultTab drives selection
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-select when defaultTab changes (e.g. Show All on job open)
   }, [defaultTab]);
+
+  // If tabs load/change and current key is gone, fall back to defaultTab or first tab.
+  const tabKeys = tabs.map((t) => t.key).join('\0');
+  useEffect(() => {
+    if (!tabs.length) return;
+    setActiveTab((prev) => {
+      if (prev && tabs.some((t) => t.key === prev)) return prev;
+      if (defaultTab && tabs.some((t) => t.key === defaultTab)) return defaultTab;
+      return tabs[0]?.key;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- keyed by tab key list, not content identity
+  }, [tabKeys, defaultTab]);
 
   const chromeActions = useMemo(() => {
     const list = [...(actions ?? [])];

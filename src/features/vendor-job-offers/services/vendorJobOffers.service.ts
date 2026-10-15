@@ -347,6 +347,12 @@ export const staffVendorJobOffersService = {
 
 /** Vendor portal — quotes + cost pricing (no customer revenue). */
 export const vendorPortalJobsService = {
+  /** GET /vendor/jobs/:id/costing */
+  async getJobCosting(jobId: string): Promise<unknown> {
+    const res = await vendorApiClient.get(VENDOR_JOB_OFFERS_API.jobCosting(jobId));
+    return res.data;
+  },
+
   async list(params: VendorPortalJobListParams = {}): Promise<VendorPortalJobListResult> {
     const paths = [VENDOR_JOB_OFFERS_API.vendorJobs, VENDOR_JOB_OFFERS_API.vendorJobsLegacy];
     let lastErr: unknown;

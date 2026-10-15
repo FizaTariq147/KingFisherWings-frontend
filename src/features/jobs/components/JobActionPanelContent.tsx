@@ -10,6 +10,7 @@ import { JobNotesPanel } from './JobNotesPanel';
 import { JobPnlPanel } from './JobPnlPanel';
 import { JobSeaScansPanel } from './JobSeaScansPanel';
 import { JobStuffingPanel } from './JobStuffingPanel';
+import { JobVouchersPanel } from './JobVouchersPanel';
 import { JobVendorOffersPanel } from '@/features/vendor-job-offers/components/JobVendorOffersPanel';
 import { CcChecklistPanel } from '@/features/customs-clearance/components/CcChecklistPanel';
 import { CcDeclarationPanel } from '@/features/customs-clearance/components/CcDeclarationPanel';
@@ -31,6 +32,7 @@ export const JOB_ACTION_BUTTON_STYLE: Record<JobActionPanelKey, CSSProperties> =
   'vendor-offers': { backgroundColor: '#EC4899', borderColor: '#DB2777', color: '#FFFFFF' },
   logistics: { backgroundColor: '#14B8A6', borderColor: '#0D9488', color: '#FFFFFF' },
   gpum: { backgroundColor: '#6366F1', borderColor: '#4F46E5', color: '#FFFFFF' },
+  vouchers: { backgroundColor: '#0F766E', borderColor: '#115E59', color: '#FFFFFF' },
   cargo: { backgroundColor: '#8B5CF6', borderColor: '#7C3AED', color: '#FFFFFF' },
   bl: { backgroundColor: '#06B6D4', borderColor: '#0891B2', color: '#FFFFFF' },
   stuffing: { backgroundColor: '#84CC16', borderColor: '#65A30D', color: '#FFFFFF' },
@@ -83,6 +85,8 @@ export function JobActionPanelContent({
       return <JobLogisticsPanel jobId={jobId} jobType={job.job_type} />;
     case 'gpum':
       return <JobGpumPanel jobId={jobId} />;
+    case 'vouchers':
+      return <JobVouchersPanel jobId={jobId} job={job} />;
     case 'cargo':
       return <JobCargoPanel jobId={jobId} />;
     case 'bl':

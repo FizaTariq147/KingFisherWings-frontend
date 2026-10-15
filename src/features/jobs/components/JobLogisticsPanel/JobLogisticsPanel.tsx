@@ -23,6 +23,7 @@ import {
 } from '../../schemas/job.schema';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { jobDisplayNumber } from '../../utils/jobRoute';
+import { ApiDataView } from '../ApiDataView';
 
 interface JobLogisticsPanelProps {
   jobId: string;
@@ -129,11 +130,15 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
               >
                 Create storage invoice
               </Button>
-              {airStorageResult != null && (
-                <pre className="sm:col-span-2 text-xs overflow-auto max-h-32">
-                  {JSON.stringify(airStorageResult, null, 2)}
-                </pre>
-              )}
+              {airStorageResult != null ? (
+                <div className="sm:col-span-2">
+                  <ApiDataView
+                    data={airStorageResult}
+                    emptyLabel="No storage result."
+                    maxHeightClass="max-h-40"
+                  />
+                </div>
+              ) : null}
             </div>
           </Card>
 
@@ -142,15 +147,11 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
               <CardTitle>Customs examinations ({customsExaminations.length})</CardTitle>
             </CardHeader>
             <div className="px-4 pb-4 space-y-3">
-              {customsExaminations.length === 0 ? (
-                <p className="text-sm text-[var(--color-neutral-400)]">
-                  No examination records.
-                </p>
-              ) : (
-                <pre className="text-xs overflow-auto max-h-32">
-                  {JSON.stringify(customsExaminations, null, 2)}
-                </pre>
-              )}
+              <ApiDataView
+                data={customsExaminations}
+                emptyLabel="No examination records."
+                maxHeightClass="max-h-40"
+              />
               <div className="grid gap-2 sm:grid-cols-2">
                 <Input
                   type="date"
@@ -295,11 +296,15 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           >
             Calculate CFS storage
           </Button>
-          {cfsResult != null && (
-            <pre className="sm:col-span-2 text-xs overflow-auto max-h-32">
-              {JSON.stringify(cfsResult, null, 2)}
-            </pre>
-          )}
+          {cfsResult != null ? (
+            <div className="sm:col-span-2">
+              <ApiDataView
+                data={cfsResult}
+                emptyLabel="No CFS result."
+                maxHeightClass="max-h-40"
+              />
+            </div>
+          ) : null}
         </div>
       </Card>
 
@@ -417,9 +422,11 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           <CardTitle>Free days</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 space-y-3">
-          <pre className="text-xs overflow-auto max-h-32">
-            {freeDays.length ? JSON.stringify(freeDays, null, 2) : 'No free-days records.'}
-          </pre>
+          <ApiDataView
+            data={freeDays}
+            emptyLabel="No free-days records."
+            maxHeightClass="max-h-40"
+          />
           <div className="grid gap-2 sm:grid-cols-2">
             <Input
               placeholder="Container UUID *"
@@ -475,13 +482,11 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           <CardTitle>Damage reports ({damageReports.length})</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 space-y-3">
-          {damageReports.length === 0 ? (
-            <p className="text-sm text-[var(--color-neutral-400)]">No damage reports.</p>
-          ) : (
-            <pre className="text-xs overflow-auto max-h-32">
-              {JSON.stringify(damageReports, null, 2)}
-            </pre>
-          )}
+          <ApiDataView
+            data={damageReports}
+            emptyLabel="No damage reports."
+            maxHeightClass="max-h-40"
+          />
           <Input
             placeholder="Damage description *"
             value={damageDesc}
@@ -512,11 +517,11 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           <CardTitle>Part deliveries ({partDeliveries.length})</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 space-y-3">
-          {partDeliveries.length > 0 && (
-            <pre className="text-xs overflow-auto max-h-32">
-              {JSON.stringify(partDeliveries, null, 2)}
-            </pre>
-          )}
+          <ApiDataView
+            data={partDeliveries}
+            emptyLabel="No part deliveries."
+            maxHeightClass="max-h-40"
+          />
           <div className="grid gap-2 sm:grid-cols-2">
             <Input
               type="date"
@@ -557,11 +562,7 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           <CardTitle>Proof of delivery ({pods.length})</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 space-y-3">
-          {pods.length > 0 && (
-            <pre className="text-xs overflow-auto max-h-32">
-              {JSON.stringify(pods, null, 2)}
-            </pre>
-          )}
+          <ApiDataView data={pods} emptyLabel="No proof of delivery." maxHeightClass="max-h-40" />
           <Input type="date" value={podDate} onChange={(e) => setPodDate(e.target.value)} />
           <Button
             type="button"

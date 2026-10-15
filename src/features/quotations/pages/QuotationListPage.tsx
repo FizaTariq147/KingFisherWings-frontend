@@ -1,17 +1,19 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { appType, listShell } from '@/lib/erpTypography';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Plus, RefreshCw, TimerReset } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { EmptyState, ErrorState } from '@/components/erp';
 import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
-import { QuotationFilters } from '../components/QuotationFilters';
+import {
+  QuotationFilters,
+  quotationFilterDraftToListParams,
+  useQuotationFilterDraft,
+} from '../components/QuotationFilters';
 import { QuotationTable } from '../components/QuotationTable';
 import {
   DEFAULT_QUOTATION_PAGE_SIZE,
-  type JobType,
   type LostReason,
-  type QuotationStatus,
 } from '../constants/quotation.constants';
 import { useQuotationLifecycleMutations } from '../hooks/useQuotationActions';
 import { useQuotationConfirmState } from '../hooks/useQuotationConfirmState';
@@ -19,26 +21,9 @@ import { useExpireDueQuotations, useQuotations } from '../hooks/useQuotations';
 import type { Quotation } from '../types/quotation.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
-function useDebouncedValue<T>(value: T, delayMs: number): T {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const id = window.setTimeout(() => setDebounced(value), delayMs);
-    return () => window.clearTimeout(id);
-  }, [value, delayMs]);
-  return debounced;
-}
-
 export default function QuotationListPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [search, setSearch] = useState('');
-  const [status, setStatus] = useState<QuotationStatus | 'all'>('all');
-  const [jobType, setJobType] = useState<JobType | 'all'>('all');
-  const [departmentId, setDepartmentId] = useState('');
-  const [salespersonId, setSalespersonId] = useState('');
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
-  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
   const [pendingActionId, setPendingActionId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -46,25 +31,18 @@ export default function QuotationListPage() {
   const { confirm, requestConfirm, closeConfirm } = useQuotationConfirmState();
   const lifecycle = useQuotationLifecycleMutations();
   const expireDue = useExpireDueQuotations();
+  const { draft, setDraft, applied, submit } = useQuotationFilterDraft(
+    DEFAULT_QUOTATION_PAGE_SIZE,
+  );
 
-  const debouncedSearch = useDebouncedValue(search, 300);
+  const listParams = useMemo(
+    () => quotationFilterDraftToListParams(applied, page),
+    [applied, page],
+  );
 
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch, status, jobType, departmentId, salespersonId, fromDate, toDate, order]);
-
-  const listParams = {
-    page,
-    limit: DEFAULT_QUOTATION_PAGE_SIZE,
-    search: debouncedSearch.trim() || undefined,
-    status: status === 'all' ? undefined : status,
-    job_type: jobType === 'all' ? undefined : jobType,
-    department_id: departmentId || undefined,
-    salesperson_id: salespersonId || undefined,
-    from_date: fromDate || undefined,
-    to_date: toDate || undefined,
-    order,
-  };
+  }, [applied]);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuotations(listParams);
   const quotations = data?.quotations ?? [];
@@ -134,11 +112,17 @@ export default function QuotationListPage() {
   };
 
   const emptyDefault =
-    !debouncedSearch.trim() &&
-    status === 'all' &&
-    jobType === 'all' &&
-    !fromDate &&
-    !toDate;
+    !applied.search.trim() &&
+    !applied.quotationNo.trim() &&
+    applied.status === 'all' &&
+    applied.jobType === 'all' &&
+    !applied.departmentId &&
+    !applied.customerId &&
+    !applied.branchId &&
+    !applied.salespersonId &&
+    !applied.originPortId &&
+    !applied.destPortId &&
+    !applied.createdBy;
 
   return (
     <div className={listShell.page}>
@@ -152,7 +136,10 @@ export default function QuotationListPage() {
             >
               ← Back to Quotations
             </button>
-            <h2 className={`${appType.pageTitle} mt-0.5`}>All Quotations</h2>
+            <h2 className={`${appType.pageTitle} mt-0.5`}>Quotations</h2>
+            <p className={appType.pageSubtitle}>
+              Create a new quotation or open an existing one from the list.
+            </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Button
@@ -188,22 +175,13 @@ export default function QuotationListPage() {
         </div>
 
         <QuotationFilters
-          search={search}
-          onSearchChange={setSearch}
-          status={status}
-          onStatusChange={setStatus}
-          jobType={jobType}
-          onJobTypeChange={setJobType}
-          departmentId={departmentId}
-          onDepartmentIdChange={setDepartmentId}
-          salespersonId={salespersonId}
-          onSalespersonIdChange={setSalespersonId}
-          fromDate={fromDate}
-          onFromDateChange={setFromDate}
-          toDate={toDate}
-          onToDateChange={setToDate}
-          order={order}
-          onOrderChange={setOrder}
+          draft={draft}
+          onDraftChange={setDraft}
+          onSubmit={() => {
+            setPage(1);
+            submit();
+          }}
+          isSubmitting={isFetching}
         />
 
         {actionError ? (
@@ -238,11 +216,11 @@ export default function QuotationListPage() {
           </div>
         ) : quotations.length === 0 ? (
           <EmptyState
-            title={emptyDefault ? 'No quotations visible yet.' : 'No quotations found.'}
+            title={emptyDefault ? 'No quotations yet.' : 'No quotations found.'}
             description={
               emptyDefault
-                ? 'Ops lists stay empty until a customer has at least one converted quote.'
-                : 'Try adjusting your filters.'
+                ? 'Click Create to start a new quotation, or adjust filters and Submit.'
+                : 'Try adjusting your filters and click Submit.'
             }
           />
         ) : (

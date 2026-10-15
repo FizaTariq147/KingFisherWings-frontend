@@ -18,11 +18,12 @@ export const appType = {
 
 export const listShell = {
   page: 'space-y-2.5',
-  card: 'bg-white border border-[var(--fresa-border,#C9D3DF)] rounded-sm shadow-none',
+  /** Card chrome aligned with Enquiry Sheet (`border-gray-200 rounded-md`). */
+  card: 'bg-white border border-gray-200 rounded-md shadow-none',
   header:
-    'flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-3 py-2.5 border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)]',
+    'flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-5 py-3 border-b border-gray-200 bg-white',
   toolbar:
-    'flex flex-wrap items-center justify-between gap-2 px-3 py-2 border-b border-[var(--fresa-border,#C9D3DF)] bg-white',
+    'flex flex-wrap items-center justify-between gap-2 px-5 py-2 border-b border-gray-200 bg-white',
   table: 'w-full text-[13px]',
   row: 'border-b border-[#e8edf2] hover:bg-[var(--fresa-row-hover,#F5F9FC)]',
   empty: 'text-center py-10 text-[13px] text-gray-500',
