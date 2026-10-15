@@ -67,6 +67,12 @@ export const portalShipmentsService = {
     return detail;
   },
 
+  /** GET /portal/jobs/:id/costing */
+  async getJobCosting(jobId: string): Promise<unknown> {
+    const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.jobCosting(jobId));
+    return unwrapData(res.data) ?? res.data;
+  },
+
   async milestones(id: string): Promise<PortalMilestone[]> {
     const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.milestones(id));
     return normalizeMilestones(res.data);

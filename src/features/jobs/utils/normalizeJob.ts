@@ -77,16 +77,22 @@ export function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
       (Array.isArray(nested.items) && nested.items) ||
       (Array.isArray(nested.results) && nested.results) ||
       (Array.isArray(nested.jobs) && nested.jobs) ||
+      (Array.isArray(nested.shipments) && nested.shipments) ||
+      (Array.isArray(nested.linked_shipments) && nested.linked_shipments) ||
       (Array.isArray(nested.uld_requests) && nested.uld_requests) ||
       (Array.isArray(nested.requests) && nested.requests) ||
+      (Array.isArray(nested.vouchers) && nested.vouchers) ||
       [];
     return { items: list, meta: nested.meta ?? envelope.meta };
   }
   const topList =
     (Array.isArray(envelope.items) && envelope.items) ||
     (Array.isArray(envelope.results) && envelope.results) ||
+    (Array.isArray(envelope.shipments) && envelope.shipments) ||
+    (Array.isArray(envelope.linked_shipments) && envelope.linked_shipments) ||
     (Array.isArray(envelope.uld_requests) && envelope.uld_requests) ||
     (Array.isArray(envelope.requests) && envelope.requests) ||
+    (Array.isArray(envelope.vouchers) && envelope.vouchers) ||
     [];
   return { items: topList, meta: envelope.meta };
 }
@@ -131,24 +137,60 @@ export function normalizePaginationMeta(
   return { page, limit, total, totalPages };
 }
 
-function normalizeCharge(raw: unknown): JobCharge | null {
+export function normalizeJobCharge(raw: unknown): JobCharge | null {
   const r = asRecord(raw);
-  if (!r || !r.id) return null;
+  if (!r) return null;
+  // Preview rows from get-job-charges may use charge_id / shipment_charge_id
+  const id =
+    str(r.id) ||
+    pickString(r, 'charge_id', 'chargeId', 'shipment_charge_id', 'shipmentChargeId');
+  if (!id) return null;
+  const party = asRecord(r.party);
+  const sale = asRecord(r.sale);
+  const cost = asRecord(r.cost);
+  const unitFromSides =
+    num(sale?.unit_price ?? sale?.unitPrice ?? sale?.amount) ??
+    num(cost?.unit_price ?? cost?.unitPrice ?? cost?.amount);
   return {
-    id: str(r.id),
+    id,
     charge_code_id: pickString(r, 'charge_code_id', 'chargeCodeId'),
-    charge_code: pickString(r, 'charge_code', 'chargeCode'),
-    description: pickString(r, 'description'),
-    quantity: num(r.quantity),
-    unit_price: num(r.unit_price ?? r.unitPrice) ?? 0,
-    currency_code: pickString(r, 'currency_code', 'currencyCode').toUpperCase() || 'AED',
-    exchange_rate: num(r.exchange_rate ?? r.exchangeRate),
+    charge_code: pickString(r, 'charge_code', 'chargeCode', 'code'),
+    description:
+      pickString(r, 'description', 'charge', 'charge_name', 'chargeName', 'name') ||
+      '—',
+    quantity: num(r.quantity ?? r.qty) ?? num(sale?.quantity) ?? num(cost?.quantity),
+    unit_price:
+      num(r.unit_price ?? r.unitPrice ?? r.amount_per_unit ?? r.amountPerUnit) ??
+      unitFromSides ??
+      0,
+    currency_code:
+      pickString(r, 'currency_code', 'currencyCode', 'currency').toUpperCase() ||
+      pickString(sale ?? {}, 'currency_code', 'currencyCode', 'currency').toUpperCase() ||
+      pickString(cost ?? {}, 'currency_code', 'currencyCode', 'currency').toUpperCase() ||
+      'AED',
+    exchange_rate:
+      num(r.exchange_rate ?? r.exchangeRate ?? r.ex_rate ?? r.exRate) ??
+      num(sale?.exchange_rate ?? sale?.exchangeRate) ??
+      num(cost?.exchange_rate ?? cost?.exchangeRate),
     tax_rate_id: pickString(r, 'tax_rate_id', 'taxRateId') || undefined,
     is_cost: bool(r.is_cost ?? r.isCost),
     is_billable: bool(r.is_billable ?? r.isBillable, true),
+    is_provisional: bool(r.is_provisional ?? r.isProvisional),
     party_id: pickString(r, 'party_id', 'partyId') || undefined,
-    line_total: num(r.line_total ?? r.lineTotal),
+    party_name:
+      pickString(r, 'party_name', 'partyName') ||
+      pickString(party ?? {}, 'name', 'party_name') ||
+      undefined,
+    line_total:
+      num(r.line_total ?? r.lineTotal ?? r.sale_amount ?? r.saleAmount ?? r.cost_amount) ??
+      num(sale?.amount ?? sale?.line_total) ??
+      num(cost?.amount ?? cost?.line_total),
   };
+}
+
+export function normalizeJobCharges(raw: unknown): JobCharge[] {
+  const { items } = unwrapList(raw);
+  return items.map(normalizeJobCharge).filter((c): c is JobCharge => Boolean(c));
 }
 
 function normalizeMilestone(raw: unknown): JobMilestone | null {
@@ -219,7 +261,7 @@ export function normalizeJob(raw: unknown): Job | null {
   const houseRaw = r.house_jobs ?? r.houseJobs;
 
   const charges = Array.isArray(chargesRaw)
-    ? chargesRaw.map(normalizeCharge).filter((c): c is JobCharge => Boolean(c))
+    ? chargesRaw.map(normalizeJobCharge).filter((c): c is JobCharge => Boolean(c))
     : undefined;
   const milestones = Array.isArray(milestonesRaw)
     ? milestonesRaw.map(normalizeMilestone).filter((m): m is JobMilestone => Boolean(m))
@@ -643,27 +685,40 @@ export function normalizeJob(raw: unknown): Job | null {
 function normalizeJobActions(raw: unknown): JobActions | undefined {
   const record = asRecord(raw);
   if (!record) return undefined;
-  const out: JobActions = {};
+  const out: JobActions = { raw: record };
   for (const [key, value] of Object.entries(record)) {
     if (typeof value === 'boolean') out[key] = value;
     else if (value === 'true' || value === 1 || value === '1') out[key] = true;
     else if (value === 'false' || value === 0 || value === '0') out[key] = false;
   }
-  return Object.keys(out).length ? out : undefined;
+  const statusList =
+    record.allowed_statuses ?? record.allowedStatuses ?? record.statuses;
+  if (Array.isArray(statusList)) {
+    out.allowed_statuses = statusList
+      .map((s) => (typeof s === 'string' ? s.trim() : ''))
+      .filter(Boolean);
+  }
+  return Object.keys(out).length > 1 || out.allowed_statuses?.length
+    ? out
+    : Object.keys(out).length
+      ? out
+      : undefined;
 }
 
 function normalizeJobTabs(raw: unknown): JobDetailTab[] | undefined {
   if (!Array.isArray(raw)) return undefined;
-  const tabs = raw
-    .map((item) => {
-      if (typeof item === 'string' && item.trim()) return { key: item.trim(), label: item.trim() };
-      const rec = asRecord(item);
-      if (!rec) return null;
-      const key = pickString(rec, 'key', 'id', 'name', 'tab');
-      if (!key) return null;
-      return { key, label: pickString(rec, 'label', 'title', 'name') || key };
-    })
-    .filter((t): t is JobDetailTab => Boolean(t));
+  const tabs: JobDetailTab[] = [];
+  for (const item of raw) {
+    if (typeof item === 'string' && item.trim()) {
+      tabs.push({ key: item.trim(), label: item.trim() });
+      continue;
+    }
+    const rec = asRecord(item);
+    if (!rec) continue;
+    const key = pickString(rec, 'key', 'id', 'name', 'tab');
+    if (!key) continue;
+    tabs.push({ key, label: pickString(rec, 'label', 'title', 'name') || key });
+  }
   return tabs.length ? tabs : undefined;
 }
 

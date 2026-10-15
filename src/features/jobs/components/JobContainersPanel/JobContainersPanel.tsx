@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { useInlineValidation } from '@/lib/validation';
 import { jobService } from '../../services/job.service';
+import { useJobActions } from '../../hooks/useJobActions';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import {
   useJobCargo,
@@ -16,6 +17,7 @@ import {
   splitContainerFormSchema,
 } from '../../schemas/job.schema';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import { ApiDataView } from '../ApiDataView';
 
 interface JobContainersPanelProps {
   jobId: string;
@@ -26,6 +28,7 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
   const { data: fill, refetch: refetchFill } = useJobContainersFill(jobId);
   const { data: cargo = [] } = useJobCargo(jobId);
   const mutations = useJobSubresourceMutations(jobId);
+  const actions = useJobActions(jobId);
   const addValidation = useInlineValidation();
   const assignValidation = useInlineValidation();
   const splitValidation = useInlineValidation();
@@ -131,6 +134,36 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
           <CardTitle>Containers</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 space-y-2 text-sm">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              disabled={actions.syncContainersFromSubJobs.isPending}
+              onClick={() =>
+                void run(
+                  () => actions.syncContainersFromSubJobs.mutateAsync({}),
+                  'Containers synced from sub-jobs.',
+                )
+              }
+            >
+              Sync from sub-jobs
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              disabled={actions.pushContainersToSubJobs.isPending}
+              onClick={() =>
+                void run(
+                  () => actions.pushContainersToSubJobs.mutateAsync({}),
+                  'Containers pushed to sub-jobs.',
+                )
+              }
+            >
+              Push to sub-jobs
+            </Button>
+          </div>
           {containers.length === 0 ? (
             <p className="text-[var(--color-neutral-400)]">No containers.</p>
           ) : (
@@ -228,21 +261,25 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
         <CardHeader>
           <CardTitle>Fill indicators (all)</CardTitle>
         </CardHeader>
-        <pre className="px-4 pb-4 text-xs overflow-auto max-h-40">
-          {fill ? JSON.stringify(fill, null, 2) : '—'}
-        </pre>
+        <div className="px-4 pb-4">
+          <ApiDataView data={fill} emptyLabel="No fill indicators." maxHeightClass="max-h-40" />
+        </div>
       </Card>
 
-      {singleFill != null && (
+      {singleFill != null ? (
         <Card>
           <CardHeader>
             <CardTitle>Selected container fill</CardTitle>
           </CardHeader>
-          <pre className="px-4 pb-4 text-xs overflow-auto max-h-40">
-            {JSON.stringify(singleFill, null, 2)}
-          </pre>
+          <div className="px-4 pb-4">
+            <ApiDataView
+              data={singleFill}
+              emptyLabel="No fill data."
+              maxHeightClass="max-h-40"
+            />
+          </div>
         </Card>
-      )}
+      ) : null}
 
       <Card>
         <CardHeader>

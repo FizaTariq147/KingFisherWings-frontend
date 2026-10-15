@@ -176,7 +176,14 @@ export interface CreateEnquiryDto {
   status?: EnquiryStatus;
 }
 export type UpdateEnquiryDto = Partial<CreateEnquiryDto>;
-export interface EnquiryListParams { page?: number; limit?: number; status?: EnquiryStatus; salesperson_id?: string }
+export interface EnquiryListParams {
+  page?: number;
+  limit?: number;
+  status?: EnquiryStatus;
+  salesperson_id?: string;
+  department_id?: string;
+  search?: string;
+}
 
 export interface Budget extends BaseEntity {
   salesperson_id: string; period_type: PeriodType; period_start: string; target_amount: number;

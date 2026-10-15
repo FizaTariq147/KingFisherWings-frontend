@@ -61,6 +61,11 @@ const GENERATORS = [
   { key: 'pre-alert', label: 'Pre-alert PDF', fn: 'generatePreAlertDoc' as const },
   { key: 'job-card', label: 'Job card', fn: 'generateJobCard' as const },
   { key: 'job-pnl', label: 'Job P&L', fn: 'generateJobPnl' as const },
+  {
+    key: 'job-pnl-custom-duty',
+    label: 'Job P&L (custom duty)',
+    fn: 'generateJobPnlCustomDuty' as const,
+  },
   { key: 'proforma', label: 'Proforma invoice', fn: 'generateProformaInvoice' as const },
   { key: 'delivery-order', label: 'Delivery order', fn: 'generateDeliveryOrder' as const },
   { key: 'pre-can', label: 'Pre-CAN', fn: 'generatePreCan' as const },

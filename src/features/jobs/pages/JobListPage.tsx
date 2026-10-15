@@ -5,14 +5,16 @@ import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { EmptyState, ErrorState } from '@/components/erp';
 import { JobConfirmModal } from '../components/JobConfirmModal';
-import { JobFilters } from '../components/JobFilters';
+import {
+  JobMisFilters,
+  jobMisFilterDraftToListParams,
+  useJobMisFilterDraft,
+} from '../components/JobFilters/JobMisFilters';
 import { JobTable } from '../components/JobTable';
 import {
   DEFAULT_JOB_PAGE_SIZE,
   JOB_SEGMENTS,
   type JobSegmentKey,
-  type JobStatus,
-  type JobType,
 } from '../constants/job.constants';
 import { useJobLifecycleMutations } from '../hooks/useJobActions';
 import { useJobConfirmState } from '../hooks/useJobConfirmState';
@@ -21,15 +23,6 @@ import type { Job } from '../types/job.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 
-function useDebouncedValue<T>(value: T, delayMs: number): T {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const id = window.setTimeout(() => setDebounced(value), delayMs);
-    return () => window.clearTimeout(id);
-  }, [value, delayMs]);
-  return debounced;
-}
-
 export default function JobListPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,48 +30,23 @@ export default function JobListPage() {
   const segment = segmentFromPath(pathname) ?? 'air-export';
   const segmentConfig = JOB_SEGMENTS[segment as JobSegmentKey];
 
-  const [search, setSearch] = useState('');
-  const [status, setStatus] = useState<'' | JobStatus>('');
-  const [jobType, setJobType] = useState<'' | JobType>('');
-  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
-  const [mastersOnly, setMastersOnly] = useState(false);
   const [page, setPage] = useState(1);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const { confirm, requestConfirm, closeConfirm } = useJobConfirmState();
+  const { draft, setDraft, applied, submit } = useJobMisFilterDraft(DEFAULT_JOB_PAGE_SIZE);
 
-  const debouncedSearch = useDebouncedValue(search, 300);
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch, status, jobType, order, fromDate, toDate, mastersOnly, segment]);
+  }, [segment, applied]);
 
   const listParams = useMemo(
-    () => ({
-      page,
-      limit: DEFAULT_JOB_PAGE_SIZE,
-      search: debouncedSearch.trim() || undefined,
-      status: status || undefined,
-      job_type: jobType || undefined,
-      job_types: jobType ? undefined : segmentConfig.jobTypes,
-      order,
-      from_date: fromDate || undefined,
-      to_date: toDate || undefined,
-      masters_only: mastersOnly || undefined,
-    }),
-    [
-      page,
-      debouncedSearch,
-      status,
-      jobType,
-      segmentConfig.jobTypes,
-      order,
-      fromDate,
-      toDate,
-      mastersOnly,
-    ],
+    () =>
+      jobMisFilterDraftToListParams(applied, page, {
+        segmentJobTypes: segmentConfig.jobTypes,
+      }),
+    [applied, page, segmentConfig.jobTypes],
   );
 
   const { data, isLoading, isFetching, isError, error, refetch } = useJobs(listParams);
@@ -103,9 +71,6 @@ export default function JobListPage() {
       setPendingId(null);
     }
   };
-
-  const emptyDefault =
-    !debouncedSearch.trim() && !status && !jobType && !fromDate && !toDate && !mastersOnly;
 
   return (
     <div className={listShell.page}>
@@ -137,22 +102,16 @@ export default function JobListPage() {
           </div>
         </div>
 
-        <JobFilters
-          search={search}
-          onSearchChange={setSearch}
-          status={status}
-          onStatusChange={setStatus}
-          jobType={jobType}
-          onJobTypeChange={setJobType}
+        <JobMisFilters
+          draft={draft}
+          onDraftChange={setDraft}
+          onSubmit={() => {
+            setPage(1);
+            submit();
+          }}
+          isSubmitting={isFetching}
           jobTypeOptions={segmentConfig.jobTypes}
-          order={order}
-          onOrderChange={setOrder}
-          fromDate={fromDate}
-          onFromDateChange={setFromDate}
-          toDate={toDate}
-          onToDateChange={setToDate}
-          mastersOnly={mastersOnly}
-          onMastersOnlyChange={setMastersOnly}
+          jobTypeAllLabel={`All ${segmentConfig.label} types`}
         />
 
         {actionError ? (
@@ -187,12 +146,8 @@ export default function JobListPage() {
           </div>
         ) : jobs.length === 0 ? (
           <EmptyState
-            title={emptyDefault ? 'No jobs visible yet.' : 'No jobs found.'}
-            description={
-              emptyDefault
-                ? 'Ops lists stay empty until a customer has at least one converted quote.'
-                : 'Try adjusting your filters.'
-            }
+            title="No jobs found."
+            description="Adjust filters and click Submit, or create a new job."
           />
         ) : (
           <JobTable

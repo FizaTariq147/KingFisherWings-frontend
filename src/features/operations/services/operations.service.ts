@@ -153,4 +153,170 @@ export const operationsService = {
       throw formatAxiosError(error);
     }
   },
+
+  async listJobNotInvoicedDo(
+    params: OperationsListParams = {},
+  ): Promise<OperationsListResult> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(OPERATIONS_API.jobNotInvoicedDo, {
+          params: queryParams(params),
+        }),
+      );
+      const { items, meta } = unwrapList(res.data);
+      return { items, meta: normalizeMeta(meta, items.length, params), raw: res.data };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async downloadJobNotInvoicedDo(dto: OperationsDashboardQueryDto = {}): Promise<Blob> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(OPERATIONS_API.jobNotInvoicedDoDownload, dto, {
+          responseType: 'blob',
+        }),
+      );
+      return res.data as Blob;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async listJobFinanceReport(
+    params: OperationsListParams = {},
+  ): Promise<OperationsListResult> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(OPERATIONS_API.jobFinanceReport, {
+          params: queryParams(params),
+        }),
+      );
+      const { items, meta } = unwrapList(res.data);
+      return { items, meta: normalizeMeta(meta, items.length, params), raw: res.data };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async downloadJobFinanceReport(dto: OperationsDashboardQueryDto = {}): Promise<Blob> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(OPERATIONS_API.jobFinanceReportDownload, dto, {
+          responseType: 'blob',
+        }),
+      );
+      return res.data as Blob;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async listExceptions(
+    params: OperationsListParams = {},
+  ): Promise<OperationsListResult> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(OPERATIONS_API.exceptions, {
+          params: queryParams(params),
+        }),
+      );
+      const { items, meta } = unwrapList(res.data);
+      return { items, meta: normalizeMeta(meta, items.length, params), raw: res.data };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async downloadExceptions(dto: OperationsDashboardQueryDto = {}): Promise<Blob> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(OPERATIONS_API.exceptionsDownload, dto, {
+          responseType: 'blob',
+        }),
+      );
+      return res.data as Blob;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async listKpiStatus(
+    params: OperationsListParams = {},
+  ): Promise<OperationsListResult> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(OPERATIONS_API.kpiStatus, {
+          params: queryParams(params),
+        }),
+      );
+      const { items, meta } = unwrapList(res.data);
+      return { items, meta: normalizeMeta(meta, items.length, params), raw: res.data };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async downloadKpiStatus(dto: OperationsDashboardQueryDto = {}): Promise<Blob> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(OPERATIONS_API.kpiStatusDownload, dto, {
+          responseType: 'blob',
+        }),
+      );
+      return res.data as Blob;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async listJobListSummary(
+    params: OperationsListParams = {},
+  ): Promise<OperationsListResult> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(OPERATIONS_API.jobListSummary, {
+          params: queryParams(params),
+        }),
+      );
+      const { items, meta } = unwrapList(res.data);
+      return { items, meta: normalizeMeta(meta, items.length, params), raw: res.data };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async downloadJobListSummary(dto: OperationsDashboardQueryDto = {}): Promise<Blob> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(OPERATIONS_API.jobListSummaryDownload, dto, {
+          responseType: 'blob',
+        }),
+      );
+      return res.data as Blob;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /operations/voyage-jobs-shipments */
+  async listVoyageJobsShipments(
+    params: OperationsListParams & {
+      voyage_number?: string;
+      vessel_name?: string;
+    } = {},
+  ): Promise<OperationsListResult> {
+    try {
+      const q = queryParams(params);
+      if (params.voyage_number?.trim()) q.voyage_number = params.voyage_number.trim();
+      if (params.vessel_name?.trim()) q.vessel_name = params.vessel_name.trim();
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(OPERATIONS_API.voyageJobsShipments, { params: q }),
+      );
+      const { items, meta } = unwrapList(res.data);
+      return { items, meta: normalizeMeta(meta, items.length, params), raw: res.data };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
 };

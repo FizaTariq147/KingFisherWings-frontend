@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   CheckCircle2,
+  Copy,
   FileText,
   PauseCircle,
   Pencil,
@@ -24,7 +25,6 @@ import {
   JOB_ACTION_BUTTON_STYLE,
 } from '../components/JobActionPanelContent';
 import { JobConfirmModal } from '../components/JobConfirmModal';
-import { isCcJobType } from '@/features/customs-clearance/constants/ccWorkflow';
 import {
   defaultJobDetailTabKey,
   isJobActionPanelKey,
@@ -32,6 +32,7 @@ import {
   jobActionPanelLabel,
   jobDetailTabLabel,
   normalizeJobDetailTabKey,
+  resolveJobActionPanels,
   resolveJobDetailTabs,
   type JobActionPanelKey,
 } from '../utils/jobDetailTabs';
@@ -51,7 +52,6 @@ import { useShipment } from '@/features/shipments/hooks/useShipments';
 import { useJobResolvedLabels } from '../hooks/useJobResolvedLabels';
 import { useJob, useJobHouseJobs, useJobStatusOptions } from '../hooks/useJobs';
 import { getErrorMessage } from '../utils/getErrorMessage';
-import { jobShouldOpenOpsTab } from '../hooks/useStaffBookingForm';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import {
   jobDetailPath,
@@ -68,10 +68,6 @@ function statusTone(status: string): 'emerald' | 'amber' | 'rose' | 'slate' {
   if (status === 'CANCELLED') return 'rose';
   if (status === 'IN_PROGRESS' || status === 'DOCS_PENDING') return 'amber';
   return 'slate';
-}
-
-function isSeaFcl(jobType: string): boolean {
-  return jobType === 'SEA_FCL_EXPORT' || jobType === 'SEA_FCL_IMPORT';
 }
 
 /** Prefer a human label; never surface a bare UUID. */
@@ -218,7 +214,10 @@ export default function JobDetailPage() {
   const [stopOpen, setStopOpen] = useState(false);
   const [stopReason, setStopReason] = useState('');
   const [actionPanel, setActionPanel] = useState<JobActionPanelKey | null>(null);
-  const statusOptionsQuery = useJobStatusOptions(id, Boolean(id));
+  const statusOptionsQuery = useJobStatusOptions(
+    id,
+    Boolean(id) && job?.actions?.can_status_options !== false,
+  );
 
   // Keep URL segment aligned with job_type (e.g. converted ROAD_FREIGHT → /jobs/road-freight/:id).
   useEffect(() => {
@@ -302,26 +301,36 @@ export default function JobDetailPage() {
 
   const defaultTab = useMemo(() => {
     if (!job) return undefined;
+    const available = resolveJobDetailTabs(job);
+    const availableKeys = new Set(available.map((t) => t.key));
+    const pick = (key: string | undefined) =>
+      key && availableKeys.has(key) ? key : defaultJobDetailTabKey(job);
+
     if (requestedTab) {
       const legacy: Record<string, string> = {
         overview: 'info',
         info: 'info',
         information: 'info',
+        showall: 'show_all',
+        show_all: 'show_all',
         ops: 'booking_form',
         party: 'organization',
         charges: 'costing',
       };
       const mapped = legacy[requestedTab.toLowerCase()] || requestedTab;
-      // Action keys open as popup — keep API detail tabs selected underneath.
+      // Action keys open as popup — keep Show All (or API default) underneath.
       if (isJobActionPanelKey(mapped)) {
-        return defaultJobDetailTabKey(job, jobShouldOpenOpsTab(job.job_type));
+        return pick(defaultJobDetailTabKey(job));
       }
-      if (isJobDetailTabKey(mapped)) return normalizeJobDetailTabKey(mapped);
+      if (isJobDetailTabKey(mapped)) {
+        return pick(normalizeJobDetailTabKey(mapped));
+      }
     }
-    return defaultJobDetailTabKey(job, jobShouldOpenOpsTab(job.job_type));
+    // Opening a job always lands on Show All when the API returns that tab.
+    return pick(defaultJobDetailTabKey(job));
   }, [job, requestedTab]);
 
-  /** Tabs always come from GET /jobs/:id/detail (+ fallback JOB_DETAIL_TABS). */
+  /** Tabs only from GET /jobs/:id/detail `tabs` → each loads detail/:tab. */
   const tabs = useMemo(() => {
     if (!job) return [];
     const overviewJob = {
@@ -334,15 +343,17 @@ export default function JobDetailPage() {
       shipment_number: shipmentNumber || job.shipment_number,
     };
 
-    return resolveJobDetailTabs(job).map((t) => ({
+    const resolved = resolveJobDetailTabs(job);
+    const siblingTabKeys = resolved.map((t) => t.key);
+    return resolved.map((t) => ({
       key: t.key,
-      // Always use FE labels (organization → Party); never surface API "Organization".
-      label: jobDetailTabLabel(t.key),
+      label: t.label || jobDetailTabLabel(t.key),
       content: (
         <JobDetailApiTabPanel
           tabKey={t.key}
           job={overviewJob}
           onChanged={() => refetch()}
+          siblingTabKeys={siblingTabKeys}
         />
       ),
     }));
@@ -373,8 +384,12 @@ export default function JobDetailPage() {
     );
   }
 
-  const editable = jobEditable(job.status);
-  const canDelete = job.status === 'COMPLETED' || job.status === 'CANCELLED';
+  const editable =
+    job.actions?.can_edit === false ? false : jobEditable(job.status);
+  const canDelete =
+    job.actions?.can_delete === true ||
+    (job.actions?.can_delete !== false &&
+      (job.status === 'COMPLETED' || job.status === 'CANCELLED'));
   const fclActions = job.actions;
   const canChangeStatus = fclActions?.can_change_status !== false;
   const canStop =
@@ -389,13 +404,23 @@ export default function JobDetailPage() {
       JOB_REOPENABLE_STATUSES.includes(job.status as JobStatus));
   const canClose = fclActions?.can_close !== false && editable;
   const canCancel = fclActions?.can_cancel !== false && editable;
-  const statusCatalog =
-    statusOptionsQuery.data?.length
-      ? statusOptionsQuery.data
-      : JOB_STATUSES.map((s) => ({
-          value: s,
-          label: JOB_STATUS_LABELS[s] ?? s,
-        }));
+  const canCopy = fclActions?.can_copy !== false;
+  const actionPanels = resolveJobActionPanels(job, {
+    houseJobsCount: houseJobs.length,
+  });
+  const statusCatalog = (() => {
+    if (fclActions?.allowed_statuses?.length) {
+      return fclActions.allowed_statuses.map((s) => ({
+        value: s,
+        label: JOB_STATUS_LABELS[s as JobStatus] ?? s,
+      }));
+    }
+    if (statusOptionsQuery.data?.length) return statusOptionsQuery.data;
+    return JOB_STATUSES.map((s) => ({
+      value: s,
+      label: JOB_STATUS_LABELS[s] ?? s,
+    }));
+  })();
 
   const run = async (fn: () => Promise<unknown>, successMsg: string, navigateAway?: boolean) => {
     setActionError(null);
@@ -741,6 +766,26 @@ export default function JobDetailPage() {
                 Cancel job
               </Button>
             ) : null}
+            {canCopy ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="edit"
+                leftIcon={<Copy />}
+                disabled={pending || actions.copy.isPending}
+                onClick={() =>
+                  void run(async () => {
+                    const copied = await actions.copy.mutateAsync();
+                    if (copied?.id && isUuid(copied.id)) {
+                      navigate(jobDetailPath(copied));
+                    }
+                    return copied;
+                  }, 'Job copied.')
+                }
+              >
+                Copy
+              </Button>
+            ) : null}
             {canDelete ? (
               <Button
                 size="sm"
@@ -753,35 +798,7 @@ export default function JobDetailPage() {
                 Delete
               </Button>
             ) : null}
-            {(
-              [
-                'documents',
-                'invoices',
-                'pnl',
-                'milestones',
-                'notes',
-                'vendor-offers',
-                'logistics',
-                'gpum',
-                ...(isSeaFcl(job.job_type)
-                  ? (['cargo', 'bl', 'stuffing'] as const)
-                  : []),
-                ...(job.job_type.includes('SEA') || job.job_type.includes('NVOCC')
-                  ? (['sea-scans'] as const)
-                  : []),
-                ...(houseJobs.length ? (['house'] as const) : []),
-                ...(isCcJobType(job.job_type)
-                  ? ([
-                      'cc-details',
-                      'cc-lines',
-                      'cc-checklist',
-                      'cc-declaration',
-                      'cc-queries',
-                      'cc-finance',
-                    ] as const)
-                  : []),
-              ] as JobActionPanelKey[]
-            ).map((key) => (
+            {actionPanels.map((key) => (
               <Button
                 key={key}
                 size="sm"

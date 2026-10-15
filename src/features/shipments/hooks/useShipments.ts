@@ -6,7 +6,10 @@ import type {
   ChangeShipmentBlStatusDto,
   ChangeShipmentDepartmentDto,
   ChangeShipmentStatusDto,
+  CopyShipmentChargesDto,
+  CreateShipmentChargeDto,
   CreateShipmentDto,
+  GetShipmentChargesDto,
   MergeShipmentsDto,
   ShipmentListParams,
   GenerateJobFromShipmentDto,
@@ -229,4 +232,91 @@ export function useShipmentEdi(id: string) {
       shipmentService.edi(id, args.action, args.body),
     onSuccess: () => invalidate(id),
   });
+}
+
+export function useSwitchShipmentBl(id: string) {
+  const invalidate = useInvalidateShipments();
+  return useMutation({
+    mutationFn: (body?: Record<string, unknown>) =>
+      shipmentService.switchBl(id, body ?? {}),
+    onSuccess: () => invalidate(id),
+  });
+}
+
+export function useShipmentAwb(id: string, enabled = false) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const { canReadApi } = useShipmentsPermissions();
+  return useQuery({
+    queryKey: [...shipmentKeys.detail(id), 'awb'] as const,
+    queryFn: () => shipmentService.getAwb(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled && canReadApi,
+  });
+}
+
+export function useShipmentBillsOfLading(id: string, enabled = false) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const { canReadApi } = useShipmentsPermissions();
+  return useQuery({
+    queryKey: [...shipmentKeys.detail(id), 'bills-of-lading'] as const,
+    queryFn: () => shipmentService.listBillsOfLading(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled && canReadApi,
+  });
+}
+
+export function useQueueShipmentHbl(id: string) {
+  return useMutation({
+    mutationFn: () => shipmentService.queueHblDocument(id),
+  });
+}
+
+/** GET /shipments/:id/charges */
+export function useShipmentCharges(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const { canReadApi } = useShipmentsPermissions();
+  return useQuery({
+    queryKey: [...shipmentKeys.detail(id), 'charges'] as const,
+    queryFn: () => shipmentService.listCharges(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled && canReadApi,
+  });
+}
+
+/** CRUD mutations for /shipments/:id/charges */
+export function useShipmentChargeMutations(id: string) {
+  const invalidate = useInvalidateShipments();
+  const after = () => invalidate(id);
+  return {
+    create: useMutation({
+      mutationFn: (dto: CreateShipmentChargeDto) => shipmentService.addCharge(id, dto),
+      onSuccess: after,
+    }),
+    createComposite: useMutation({
+      mutationFn: (body: Record<string, unknown>) =>
+        shipmentService.addCompositeCharges(id, body),
+      onSuccess: after,
+    }),
+    update: useMutation({
+      mutationFn: ({
+        chargeId,
+        dto,
+      }: {
+        chargeId: string;
+        dto: Record<string, unknown>;
+      }) => shipmentService.updateCharge(id, chargeId, dto),
+      onSuccess: after,
+    }),
+    remove: useMutation({
+      mutationFn: (chargeId: string) => shipmentService.deleteCharge(id, chargeId),
+      onSuccess: after,
+    }),
+    pullCharges: useMutation({
+      mutationFn: (dto: GetShipmentChargesDto = {}) =>
+        shipmentService.pullCharges(id, dto),
+      onSuccess: after,
+    }),
+    copyCharges: useMutation({
+      mutationFn: (dto: CopyShipmentChargesDto) =>
+        shipmentService.copyCharges(id, dto),
+      onSuccess: after,
+    }),
+  };
 }

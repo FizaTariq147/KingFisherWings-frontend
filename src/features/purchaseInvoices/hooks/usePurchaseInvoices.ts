@@ -56,6 +56,15 @@ export function useCreatePurchaseInvoice() {
   });
 }
 
+/** POST /purchase-invoices/from-job/:jobId */
+export function useCreatePurchaseInvoiceFromJob() {
+  const invalidate = useInvalidatePurchaseInvoices();
+  return useMutation({
+    mutationFn: (jobId: string) => purchaseInvoiceService.createFromJob(jobId),
+    onSuccess: (inv) => invalidate(inv.id),
+  });
+}
+
 export function useUpdatePurchaseInvoice(id: string) {
   const queryClient = useQueryClient();
   return useMutation({

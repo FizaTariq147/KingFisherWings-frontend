@@ -8,6 +8,8 @@ import { JOB_API } from '@/features/jobs/api/job.api';
  * Staff POST /jobs/job-offers/:quoteId/approve|disapprove (and vendor-quotes aliases)
  */
 export const VENDOR_JOB_OFFERS_API = {
+  /** GET /vendor/jobs/:id/costing — vendor portal job costing view */
+  jobCosting: (jobId: string) => `/vendor/jobs/${encodeURIComponent(jobId)}/costing`,
   /** Preferred */
   sendToVendor: (jobId: string) => `/jobs/${encodeURIComponent(jobId)}/send-to-vendor`,
   passToVendor: JOB_API.passToVendor,

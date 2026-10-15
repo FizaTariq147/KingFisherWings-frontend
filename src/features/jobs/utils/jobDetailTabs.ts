@@ -1,4 +1,5 @@
-import { JOB_DETAIL_TABS, type JobDetailTabKey } from '../api/job.api';
+import { isCcJobType } from '@/features/customs-clearance/constants/ccWorkflow';
+import type { JobDetailTabKey } from '../api/job.api';
 import type { Job, JobDetailTab } from '../types/job.types';
 
 export function jobDetailTabLabel(key: string): string {
@@ -39,8 +40,16 @@ export function jobDetailTabLabel(key: string): string {
   }
 }
 
+/** True when the API tab key is the Show All aggregate tab. */
+export function isJobShowAllTab(key: string): boolean {
+  const k = key.trim().toLowerCase().replace(/-/g, '_');
+  return k === 'show_all' || k === 'showall';
+}
+
 /**
- * Map FE / legacy aliases → exact backend DETAIL_TABS key.
+ * Exact path segment for GET /jobs/:id/detail/:tab.
+ * Prefer the key from GET /jobs/:id/detail `tabs` as-is (trimmed + light aliases only).
+ * URL legacy aliases (ops→booking_form, charges→costing) stay in JobDetailPage only.
  */
 export function toApiDetailTabKey(value: string): string {
   const norm = value.trim().toLowerCase().replace(/-/g, '_');
@@ -66,30 +75,13 @@ export function toApiDetailTabKey(value: string): string {
   ) {
     return 'actual_container';
   }
-  if (norm === 'costing' || norm === 'charges') return 'costing';
-  if (norm === 'history' || norm === 'audit') return 'history';
-  if (norm === 'shipments' || norm === 'shipment') return 'shipments';
-  if (norm === 'department' || norm === 'dept') return 'department';
   if (norm === 'ex_rate' || norm === 'exchange_rate' || norm === 'exrate') {
     return 'ex_rate';
   }
-  if (norm === 'routing' || norm === 'route') return 'routing';
-  if (
-    norm === 'customs' ||
-    norm === 'customs_sb_boe' ||
-    norm === 'customs_shipping_bill'
-  ) {
-    return 'customs';
-  }
-  if (
-    norm === 'shipping_bill_boe' ||
-    norm === 'shipping_bill' ||
-    norm === 'boe'
-  ) {
-    return 'shipping_bill_boe';
-  }
-  if (norm === 'booking_form' || norm === 'ops') return 'booking_form';
+  if (norm === 'shipping_bill' || norm === 'boe') return 'shipping_bill_boe';
+  if (norm === 'dept') return 'department';
 
+  // Pass through unknown API keys unchanged (backend is source of truth).
   return norm;
 }
 
@@ -103,6 +95,7 @@ export const JOB_ACTION_PANEL_KEYS = [
   'vendor-offers',
   'logistics',
   'gpum',
+  'vouchers',
   'cargo',
   'bl',
   'stuffing',
@@ -122,9 +115,10 @@ export function isJobActionPanelKey(value: string): value is JobActionPanelKey {
   return (JOB_ACTION_PANEL_KEYS as readonly string[]).includes(value);
 }
 
+/** True for any detail/{tab} key (not an Actions-toolbar panel). */
 export function isJobDetailTabKey(value: string): boolean {
   const key = toApiDetailTabKey(value);
-  return (JOB_DETAIL_TABS as readonly string[]).includes(key);
+  return Boolean(key) && !isJobActionPanelKey(key);
 }
 
 export function normalizeJobDetailTabKey(value: string): string {
@@ -149,6 +143,8 @@ export function jobActionPanelLabel(key: JobActionPanelKey): string {
       return 'Logistics';
     case 'gpum':
       return 'GPUM';
+    case 'vouchers':
+      return 'Vouchers';
     case 'cargo':
       return 'Cargo';
     case 'bl':
@@ -176,42 +172,156 @@ export function jobActionPanelLabel(key: JobActionPanelKey): string {
   }
 }
 
+/** Action-panel → GET /jobs/:id/detail `actions` can_* flags (OpenAPI Fresa chrome). */
+const JOB_ACTION_PANEL_FLAGS: Record<JobActionPanelKey, string[]> = {
+  documents: ['can_documents', 'can_docs', 'can_document'],
+  invoices: ['can_invoices', 'can_invoice'],
+  pnl: ['can_pnl', 'can_profit_loss'],
+  milestones: ['can_milestones', 'can_milestone'],
+  notes: ['can_notes', 'can_note'],
+  'vendor-offers': ['can_vendor_offers', 'can_vendor_offers_panel', 'can_job_offers'],
+  logistics: ['can_logistics'],
+  gpum: ['can_gpum'],
+  vouchers: ['can_vouchers', 'can_voucher'],
+  cargo: ['can_cargo'],
+  bl: ['can_bl', 'can_bills_of_lading', 'can_bl_entry'],
+  stuffing: ['can_stuffing'],
+  'sea-scans': ['can_sea_scans', 'can_sea_scan'],
+  house: ['can_house', 'can_house_jobs'],
+  'cc-details': ['can_cc_details', 'can_cc'],
+  'cc-lines': ['can_cc_lines'],
+  'cc-checklist': ['can_cc_checklist'],
+  'cc-declaration': ['can_cc_declaration'],
+  'cc-queries': ['can_cc_queries'],
+  'cc-finance': ['can_cc_finance'],
+};
+
+function actionFlagTrue(
+  actions: Record<string, unknown> | undefined,
+  flags: string[],
+): boolean | undefined {
+  if (!actions) return undefined;
+  for (const f of flags) {
+    const v = actions[f];
+    if (typeof v === 'boolean') return v;
+  }
+  return undefined;
+}
+
+/** Heuristic Actions panels when detail.actions omits (or only partially covers) can_* flags. */
+function heuristicJobActionPanels(
+  job: Job,
+  houseCount: number,
+): JobActionPanelKey[] {
+  const jobType = job.job_type || '';
+  const out: JobActionPanelKey[] = [
+    'documents',
+    'invoices',
+    'pnl',
+    'milestones',
+    'notes',
+    'vendor-offers',
+    'logistics',
+    'gpum',
+    'vouchers',
+  ];
+  if (
+    jobType === 'SEA_FCL_EXPORT' ||
+    jobType === 'SEA_FCL_IMPORT' ||
+    jobType === 'SEA_LCL_EXPORT' ||
+    jobType === 'SEA_LCL_IMPORT' ||
+    jobType.includes('NVOCC')
+  ) {
+    out.push('cargo', 'bl');
+  }
+  if (jobType === 'SEA_FCL_EXPORT' || jobType === 'SEA_FCL_IMPORT') {
+    out.push('stuffing');
+  }
+  if (jobType.includes('SEA') || jobType.includes('NVOCC')) {
+    out.push('sea-scans');
+  }
+  if (houseCount > 0) out.push('house');
+  if (isCcJobType(jobType)) {
+    out.push(
+      'cc-details',
+      'cc-lines',
+      'cc-checklist',
+      'cc-declaration',
+      'cc-queries',
+      'cc-finance',
+    );
+  }
+  return out;
+}
+
 /**
- * Resolve tab strip from GET /jobs/:id/detail `tabs` + full DETAIL_TABS fallback.
- * Always normalize to backend keys; Party label for organization.
+ * Actions toolbar panels — prefer GET /jobs/:id/detail `actions` can_* flags.
+ * When the detail envelope only sets a subset of panel flags, merge with heuristics
+ * so missing flags do not hide OpenAPI-backed panels (explicit false still hides).
+ */
+export function resolveJobActionPanels(
+  job: Job,
+  opts: { houseJobsCount?: number } = {},
+): JobActionPanelKey[] {
+  const actions = job.actions as Record<string, unknown> | undefined;
+  const houseCount = opts.houseJobsCount ?? 0;
+  const heuristic = heuristicJobActionPanels(job, houseCount);
+  const heuristicSet = new Set(heuristic);
+
+  const out: JobActionPanelKey[] = [];
+  for (const key of JOB_ACTION_PANEL_KEYS) {
+    if (key === 'house' && houseCount <= 0) continue;
+    const flag = actionFlagTrue(actions, JOB_ACTION_PANEL_FLAGS[key]);
+    if (flag === false) continue;
+    if (flag === true || heuristicSet.has(key)) out.push(key);
+  }
+  return out;
+}
+
+/**
+ * Tab strip = only keys from GET /jobs/:id/detail `tabs`.
+ * Each key is passed as-is (normalized) to GET /jobs/:id/detail/:tab — no hardcoded fallback.
  */
 export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
-  const known = new Set<string>(JOB_DETAIL_TABS as readonly string[]);
+  const apiTabs = job.tabs;
+  if (!apiTabs?.length) return [];
+
   const seen = new Set<string>();
   const out: JobDetailTab[] = [];
 
-  const push = (rawKey: string) => {
-    const key = toApiDetailTabKey(rawKey);
-    if (!known.has(key) || seen.has(key)) return;
-    if (isJobActionPanelKey(key)) return;
+  for (const t of apiTabs) {
+    if (!t?.key) continue;
+    const key = toApiDetailTabKey(t.key);
+    if (!key || seen.has(key) || isJobActionPanelKey(key)) continue;
     seen.add(key);
-    out.push({ key, label: jobDetailTabLabel(key) });
-  };
-
-  for (const t of job.tabs ?? []) {
-    if (t?.key) push(t.key);
-  }
-  for (const key of JOB_DETAIL_TABS) {
-    push(key);
+    const apiLabel = t.label?.trim();
+    const lower = apiLabel?.toLowerCase() ?? '';
+    const label =
+      apiLabel && lower !== 'organization' && lower !== 'organisation'
+        ? apiLabel
+        : jobDetailTabLabel(key);
+    out.push({ key, label });
   }
 
   return out;
 }
 
+/**
+ * Default tab when opening a job: Show All (GET /jobs/:id/detail/show_all).
+ * Falls back to info, then first API tab. Optional preferBookingForm for deep-links.
+ */
 export function defaultJobDetailTabKey(
   job: Job,
-  preferBookingForm: boolean,
+  preferBookingForm = false,
 ): JobDetailTabKey | string {
   const tabs = resolveJobDetailTabs(job);
+  if (!tabs.length) return '';
   if (preferBookingForm) {
     const booking = tabs.find((t) => toApiDetailTabKey(t.key) === 'booking_form');
     if (booking) return booking.key;
   }
+  const showAll = tabs.find((t) => isJobShowAllTab(t.key));
+  if (showAll) return showAll.key;
   const info = tabs.find((t) => toApiDetailTabKey(t.key) === 'info');
-  return info?.key ?? tabs[0]?.key ?? 'info';
+  return info?.key ?? tabs[0]!.key;
 }

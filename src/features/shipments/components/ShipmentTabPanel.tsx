@@ -4,8 +4,10 @@ import { erpForm } from '@/lib/erpForm';
 import { erpTable } from '@/lib/erpTypography';
 import { isUuid } from '@/lib/isUuid';
 import { isShipmentShowAllTab } from '../api/shipment.api';
-import { useShipmentDetailTab, useShipmentShowAll } from '../hooks/useShipments';
+import { useShipment, useShipmentDetailTab, useShipmentShowAll } from '../hooks/useShipments';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { isShipmentCostingTab } from '../utils/normalizeShipmentCharges';
+import { ShipmentChargesPanel } from './ShipmentChargesPanel';
 
 function formatKey(key: string): string {
   const norm = key
@@ -41,6 +43,11 @@ const HIDDEN_KEYS = new Set([
   'header',
   'links',
   'sections',
+  // Backend stub metadata — not for end-user display
+  'path_hints',
+  'pathhints',
+  'hints',
+  'path_hint',
 ]);
 
 function isUuidish(value: unknown): boolean {
@@ -419,5 +426,45 @@ export function ShipmentTabPanel({
       <ShipmentShowAllPanel shipmentId={shipmentId} siblingTabKeys={siblingTabKeys} />
     );
   }
+  /** Costing tab — interactive Fresa panel (only when API returns a costing tab key). */
+  if (isShipmentCostingTab(tabKey)) {
+    return <ShipmentCostingTabPanel shipmentId={shipmentId} />;
+  }
   return <SingleTabPanel shipmentId={shipmentId} tabKey={tabKey} />;
+}
+
+function ShipmentCostingTabPanel({ shipmentId }: { shipmentId: string }) {
+  const shipmentQuery = useShipment(shipmentId);
+  const shipment = shipmentQuery.data;
+
+  if (shipmentQuery.isLoading && !shipment) {
+    return (
+      <div className="space-y-1.5 p-3" aria-busy>
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="h-8 animate-pulse rounded-sm bg-[var(--fresa-action-soft,#E9EEF2)]"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (!shipment) {
+    return (
+      <div className="p-3">
+        <ErrorState
+          message={getErrorMessage(shipmentQuery.error) || 'Shipment not loaded.'}
+          onRetry={() => void shipmentQuery.refetch()}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <ShipmentChargesPanel
+      shipment={shipment}
+      onChanged={() => void shipmentQuery.refetch()}
+    />
+  );
 }

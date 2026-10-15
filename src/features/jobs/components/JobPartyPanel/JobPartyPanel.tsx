@@ -1,12 +1,45 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { isUuid } from '@/lib/isUuid';
 import { useJobActions } from '../../hooks/useJobActions';
-import { useJobDetailTab } from '../../hooks/useJobs';
+import { useJobOrganizations, useJobDetailTab } from '../../hooks/useJobs';
+import { useJobTabResourceMutations } from '../../hooks/useJobTabResources';
 import type { Job } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
-/** Party tab — backend route remains GET/PATCH …/organization/* */
+const ORG_TYPES = [
+  'CLIENT',
+  'SHIPPER',
+  'CONSIGNEE',
+  'NOTIFY',
+  'BILLING_PARTY',
+  'AGENT',
+  'CARRIER',
+] as const;
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  return value as Record<string, unknown>;
+}
+
+function orgRows(raw: unknown): Record<string, unknown>[] {
+  if (Array.isArray(raw)) {
+    return raw.map(asRecord).filter((r): r is Record<string, unknown> => Boolean(r));
+  }
+  const rec = asRecord(raw);
+  if (!rec) return [];
+  for (const key of ['items', 'organizations', 'data', 'results']) {
+    if (Array.isArray(rec[key])) {
+      return (rec[key] as unknown[])
+        .map(asRecord)
+        .filter((r): r is Record<string, unknown> => Boolean(r));
+    }
+  }
+  return [];
+}
+
+/** Party tab — organizations CRUD + client reference. */
 export function JobPartyPanel({
   job,
   onChanged,
@@ -15,93 +48,279 @@ export function JobPartyPanel({
   onChanged?: () => void;
 }) {
   const actions = useJobActions(job.id);
+  const resources = useJobTabResourceMutations(job.id);
   const tabQuery = useJobDetailTab(job.id, 'organization');
+  const orgsQuery = useJobOrganizations(job.id);
+
   const [referenceType, setReferenceType] = useState(
     job.client_reference_type || 'PO_NUMBER',
   );
   const [referenceNo, setReferenceNo] = useState(job.client_reference_no || '');
   const [partyRole, setPartyRole] = useState('CLIENT');
+  const [orgType, setOrgType] = useState<string>('SHIPPER');
+  const [partyId, setPartyId] = useState('');
+  const [replacePartyId, setReplacePartyId] = useState('');
+  const [copyFromJobId, setCopyFromJobId] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const save = async () => {
+  const rows = useMemo(() => orgRows(orgsQuery.data), [orgsQuery.data]);
+
+  const run = async (fn: () => Promise<unknown>, success: string) => {
     setError(null);
     setMsg(null);
     try {
-      await actions.upsertClientReference.mutateAsync({
-        party_role: partyRole,
-        reference_type: referenceType,
-        reference_no: referenceNo.trim(),
-        ...(job.shipper_id ? { party_id: job.shipper_id } : {}),
-      });
-      setMsg('Client reference saved.');
+      await fn();
+      setMsg(success);
       onChanged?.();
       void tabQuery.refetch();
+      void orgsQuery.refetch();
     } catch (err) {
       setError(getErrorMessage(err));
     }
   };
 
-  const tabData = tabQuery.data;
-  const attachmentCount =
-    tabData && typeof tabData.attachment_count === 'number'
-      ? tabData.attachment_count
-      : undefined;
+  const saveReference = () =>
+    void run(
+      () =>
+        actions.upsertClientReference.mutateAsync({
+          party_role: partyRole,
+          reference_type: referenceType,
+          reference_no: referenceNo.trim(),
+          ...(job.shipper_id ? { party_id: job.shipper_id } : {}),
+        }),
+      'Client reference saved.',
+    );
+
+  const pending =
+    actions.upsertClientReference.isPending ||
+    resources.addOrganization.isPending ||
+    resources.replaceOrganization.isPending ||
+    resources.unlinkOrganization.isPending ||
+    resources.copyOrganizationsFrom.isPending ||
+    resources.refreshOrganizationSnapshots.isPending;
 
   return (
-    <div className="space-y-3 text-sm">
+    <div className="space-y-4 text-sm">
       {error ? <p className="text-[var(--color-danger-600)]">{error}</p> : null}
       {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
-      {tabQuery.isLoading ? (
-        <p className="text-[var(--color-neutral-400)]">Loading party…</p>
-      ) : null}
-      {attachmentCount != null ? (
-        <p className="text-[12px] text-[var(--color-neutral-500)]">
-          Related refs / attachments: {attachmentCount}
+
+      <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
+        <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
+          Organizations · GET/POST /organizations
         </p>
-      ) : null}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <label className="block">
-          <span className="mb-1 block text-[12px] font-medium text-[#334155]">Party role</span>
-          <select
-            className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
-            value={partyRole}
-            onChange={(e) => setPartyRole(e.target.value)}
-          >
-            {['CLIENT', 'SHIPPER', 'CONSIGNEE', 'BILLING_PARTY', 'AGENT'].map((r) => (
-              <option key={r} value={r}>
-                {r.replaceAll('_', ' ')}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block">
-          <span className="mb-1 block text-[12px] font-medium text-[#334155]">Reference type</span>
-          <select
-            className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
-            value={referenceType}
-            onChange={(e) => setReferenceType(e.target.value)}
-          >
-            <option value="PO_NUMBER">PO Number</option>
-            <option value="CUSTOMER_REF">Customer Ref</option>
-            <option value="OTHER">Other</option>
-          </select>
-        </label>
-        <Input
-          label="Reference No"
-          value={referenceNo}
-          onChange={(e) => setReferenceNo(e.target.value)}
-        />
-      </div>
-      <Button
-        type="button"
-        size="sm"
-        variant="edit"
-        disabled={!referenceNo.trim() || actions.upsertClientReference.isPending}
-        onClick={() => void save()}
-      >
-        {actions.upsertClientReference.isPending ? 'Saving…' : 'Save client reference'}
-      </Button>
+        {orgsQuery.isLoading ? (
+          <p className="text-[13px] text-[#64748b]">Loading organizations…</p>
+        ) : rows.length === 0 ? (
+          <p className="text-[13px] text-[#64748b]">No organizations linked.</p>
+        ) : (
+          <ul className="space-y-2">
+            {rows.map((row, i) => {
+              const type = String(row.org_type ?? row.type ?? row.role ?? '—');
+              const name = String(
+                row.party_name ?? row.name ?? row.display_name ?? '',
+              ).trim();
+              const pid = String(row.party_id ?? row.id ?? '').trim();
+              return (
+                <li
+                  key={`${type}-${pid || i}`}
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-[#e8edf2] bg-white px-2.5 py-2"
+                >
+                  <div className="min-w-0">
+                    <p className="font-medium text-[#0f172a]">{type}</p>
+                    <p className="truncate text-[12px] text-[#64748b]">
+                      {name || (isUuid(pid) ? pid.slice(0, 8) : pid) || '—'}
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="danger"
+                    disabled={pending || !type || type === '—'}
+                    onClick={() =>
+                      void run(
+                        () => resources.unlinkOrganization.mutateAsync(type),
+                        `Unlinked ${type}.`,
+                      )
+                    }
+                  >
+                    Unlink
+                  </Button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+          <label className="block">
+            <span className="mb-1 block text-[12px] font-medium text-[#334155]">Org type</span>
+            <select
+              className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+              value={orgType}
+              onChange={(e) => setOrgType(e.target.value)}
+            >
+              {ORG_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {t.replaceAll('_', ' ')}
+                </option>
+              ))}
+            </select>
+          </label>
+          <Input
+            label="Party ID (UUID)"
+            value={partyId}
+            onChange={(e) => setPartyId(e.target.value)}
+          />
+          <div className="flex items-end">
+            <Button
+              type="button"
+              size="sm"
+              variant="create"
+              disabled={pending || !orgType.trim() || !isUuid(partyId.trim())}
+              onClick={() =>
+                void run(
+                  () =>
+                    resources.addOrganization.mutateAsync({
+                      org_type: orgType.trim(),
+                      party_id: partyId.trim(),
+                    }),
+                  'Organization added.',
+                )
+              }
+            >
+              Add organization
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+          <Input
+            label="Replace party ID"
+            value={replacePartyId}
+            onChange={(e) => setReplacePartyId(e.target.value)}
+          />
+          <div className="flex items-end gap-2 sm:col-span-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="edit"
+              disabled={pending || !orgType.trim() || !isUuid(replacePartyId.trim())}
+              onClick={() =>
+                void run(
+                  () =>
+                    resources.replaceOrganization.mutateAsync({
+                      orgType: orgType.trim(),
+                      dto: { party_id: replacePartyId.trim() },
+                    }),
+                  `Replaced ${orgType}.`,
+                )
+              }
+            >
+              Replace type
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              disabled={pending}
+              onClick={() =>
+                void run(
+                  () => resources.refreshOrganizationSnapshots.mutateAsync({}),
+                  'Snapshots refreshed.',
+                )
+              }
+            >
+              Refresh snapshots
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+          <Input
+            label="Copy from job ID"
+            value={copyFromJobId}
+            onChange={(e) => setCopyFromJobId(e.target.value)}
+          />
+          <div className="flex items-end sm:col-span-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="report"
+              disabled={pending || (copyFromJobId.trim() !== '' && !isUuid(copyFromJobId.trim()))}
+              onClick={() =>
+                void run(
+                  () =>
+                    resources.copyOrganizationsFrom.mutateAsync({
+                      ...(isUuid(copyFromJobId.trim())
+                        ? { source_job_id: copyFromJobId.trim() }
+                        : {}),
+                      overwrite: true,
+                    }),
+                  'Organizations copied.',
+                )
+              }
+            >
+              Copy from parent / source
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
+        <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
+          Client reference · PATCH /organization/client-reference
+        </p>
+        {tabQuery.isLoading ? (
+          <p className="text-[13px] text-[#64748b]">Loading party…</p>
+        ) : null}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <label className="block">
+            <span className="mb-1 block text-[12px] font-medium text-[#334155]">Party role</span>
+            <select
+              className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+              value={partyRole}
+              onChange={(e) => setPartyRole(e.target.value)}
+            >
+              {['CLIENT', 'SHIPPER', 'CONSIGNEE', 'BILLING_PARTY', 'AGENT'].map((r) => (
+                <option key={r} value={r}>
+                  {r.replaceAll('_', ' ')}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block">
+            <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+              Reference type
+            </span>
+            <select
+              className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+              value={referenceType}
+              onChange={(e) => setReferenceType(e.target.value)}
+            >
+              {['PO_NUMBER', 'CUSTOMER_REF', 'OTHER'].map((r) => (
+                <option key={r} value={r}>
+                  {r.replaceAll('_', ' ')}
+                </option>
+              ))}
+            </select>
+          </label>
+          <Input
+            label="Reference no"
+            value={referenceNo}
+            onChange={(e) => setReferenceNo(e.target.value)}
+          />
+        </div>
+        <Button
+          type="button"
+          size="sm"
+          variant="edit"
+          disabled={pending || !referenceNo.trim()}
+          onClick={saveReference}
+        >
+          Save client reference
+        </Button>
+      </section>
     </div>
   );
 }

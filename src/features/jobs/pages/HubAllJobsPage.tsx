@@ -8,12 +8,15 @@ import { EmptyState, ErrorState } from '@/components/erp';
 import { documentationJobsService } from '@/features/documentation/services/documentation.service';
 import { appType, listShell } from '@/lib/erpTypography';
 import { JobConfirmModal } from '../components/JobConfirmModal';
-import { JobFilters } from '../components/JobFilters';
+import {
+  JobMisFilters,
+  jobMisFilterDraftToListParams,
+  useJobMisFilterDraft,
+} from '../components/JobFilters/JobMisFilters';
 import { JobTable } from '../components/JobTable';
 import {
   DEFAULT_JOB_PAGE_SIZE,
   JOB_TYPES,
-  type JobStatus,
   type JobType,
 } from '../constants/job.constants';
 import { useJobLifecycleMutations } from '../hooks/useJobActions';
@@ -28,20 +31,10 @@ export type HubAllJobsVariant = 'nvocc' | 'documentation' | 'management';
 
 const NVOCC_JOB_TYPES: JobType[] = ['NVOCC_EXPORT', 'NVOCC_IMPORT'];
 
-function useDebouncedValue<T>(value: T, delayMs: number): T {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const id = window.setTimeout(() => setDebounced(value), delayMs);
-    return () => window.clearTimeout(id);
-  }, [value, delayMs]);
-  return debounced;
-}
-
 function variantConfig(variant: HubAllJobsVariant) {
   if (variant === 'nvocc') {
     return {
       jobTypes: NVOCC_JOB_TYPES as JobType[],
-      /** Client-side type filter after fetch (NVOCC-only hub). */
       filterJobTypes: NVOCC_JOB_TYPES as JobType[],
       jobTypeFilterLabel: 'All NVOCC types',
       createPath: '/jobs/new?job_type=NVOCC_EXPORT',
@@ -52,7 +45,7 @@ function variantConfig(variant: HubAllJobsVariant) {
   if (variant === 'documentation') {
     return {
       jobTypes: [...JOB_TYPES],
-      filterJobTypes: undefined,
+      filterJobTypes: undefined as JobType[] | undefined,
       jobTypeFilterLabel: 'All job types',
       createPath: '/jobs/new',
       showUploadManifest: true,
@@ -61,7 +54,7 @@ function variantConfig(variant: HubAllJobsVariant) {
   }
   return {
     jobTypes: [...JOB_TYPES],
-    filterJobTypes: undefined,
+    filterJobTypes: undefined as JobType[] | undefined,
     jobTypeFilterLabel: 'All job types',
     createPath: '/jobs/new',
     showUploadManifest: false,
@@ -80,49 +73,24 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
   const navigate = useNavigate();
   const config = variantConfig(variant);
 
-  const [search, setSearch] = useState('');
-  const [status, setStatus] = useState<'' | JobStatus>('');
-  const [jobType, setJobType] = useState<'' | JobType>('');
-  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
-  const [mastersOnly, setMastersOnly] = useState(false);
   const [page, setPage] = useState(1);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [manifestHint, setManifestHint] = useState<string | null>(null);
   const { confirm, requestConfirm, closeConfirm } = useJobConfirmState();
+  const { draft, setDraft, applied, submit } = useJobMisFilterDraft(DEFAULT_JOB_PAGE_SIZE);
 
-  const debouncedSearch = useDebouncedValue(search, 300);
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch, status, jobType, order, fromDate, toDate, mastersOnly, variant]);
+  }, [variant, applied]);
 
   const listParams = useMemo(
-    () => ({
-      page,
-      limit: DEFAULT_JOB_PAGE_SIZE,
-      search: debouncedSearch.trim() || undefined,
-      status: status || undefined,
-      job_type: jobType || undefined,
-      job_types: !jobType ? config.filterJobTypes : undefined,
-      order,
-      from_date: fromDate || undefined,
-      to_date: toDate || undefined,
-      masters_only: mastersOnly || undefined,
-    }),
-    [
-      page,
-      debouncedSearch,
-      status,
-      jobType,
-      config.jobTypes,
-      order,
-      fromDate,
-      toDate,
-      mastersOnly,
-    ],
+    () =>
+      jobMisFilterDraftToListParams(applied, page, {
+        segmentJobTypes: config.filterJobTypes,
+      }),
+    [applied, page, config.filterJobTypes],
   );
 
   const jobsQuery = useJobs(listParams, { enabled: variant !== 'documentation' });
@@ -137,7 +105,8 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
         order: listParams.order,
         from_date: listParams.from_date,
         to_date: listParams.to_date,
-        branch_id: undefined,
+        branch_id: listParams.branch_id,
+        department_id: listParams.department_id,
       }),
     enabled: variant === 'documentation',
   });
@@ -192,8 +161,9 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
         <div className={listShell.header}>
           <div className="min-w-0">
             <h2 className={appType.pageTitle}>{title}</h2>
+            <p className={appType.pageSubtitle}>{config.subtitle}</p>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             <Button
               type="button"
               variant="create"
@@ -247,23 +217,16 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
           </div>
         </div>
 
-        <JobFilters
-          search={search}
-          onSearchChange={setSearch}
-          status={status}
-          onStatusChange={setStatus}
-          jobType={jobType}
-          onJobTypeChange={setJobType}
+        <JobMisFilters
+          draft={draft}
+          onDraftChange={setDraft}
+          onSubmit={() => {
+            setPage(1);
+            submit();
+          }}
+          isSubmitting={isFetching}
           jobTypeOptions={config.jobTypes}
           jobTypeAllLabel={config.jobTypeFilterLabel}
-          order={order}
-          onOrderChange={setOrder}
-          fromDate={fromDate}
-          onFromDateChange={setFromDate}
-          toDate={toDate}
-          onToDateChange={setToDate}
-          mastersOnly={mastersOnly}
-          onMastersOnlyChange={setMastersOnly}
         />
 
         {actionError ? (
@@ -305,7 +268,10 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
             ))}
           </div>
         ) : jobs.length === 0 ? (
-          <EmptyState title="No jobs found." description={config.subtitle} />
+          <EmptyState
+            title="No jobs found."
+            description="Adjust filters and click Submit, or create a new job."
+          />
         ) : (
           <JobTable
             jobs={jobs}

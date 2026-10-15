@@ -334,4 +334,38 @@ export const organizationService = {
       throw formatAxiosError(error);
     }
   },
+
+  /** GET /organization/settings/job-create */
+  async getJobCreateSettings(): Promise<Record<string, unknown>> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(ORGANIZATION_API.jobCreateSettings),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        return data as Record<string, unknown>;
+      }
+      return {};
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** PATCH /organization/settings/job-create */
+  async updateJobCreateSettings(
+    dto: Record<string, unknown>,
+  ): Promise<Record<string, unknown>> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch(ORGANIZATION_API.jobCreateSettings, dto),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        return data as Record<string, unknown>;
+      }
+      return { ...dto };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
 };

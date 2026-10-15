@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -6,45 +6,38 @@ import { ListRowEditButton } from '@/components/ui/ListRowEditButton';
 import {
   EmptyState,
   ErrorState,
-  FilterBar,
   OperationTypeBadge,
   StatusBadge,
 } from '@/components/erp';
 import { appType, erpTable, listShell } from '@/lib/erpTypography';
 import {
-  JOB_TYPES,
-  JOB_TYPE_LABELS,
-} from '@/features/jobs/constants/job.constants';
+  ShipmentFilters,
+  shipmentFilterDraftToListParams,
+  useShipmentFilterDraft,
+} from '../components/ShipmentFilters';
 import { useShipmentPaths } from '../hooks/useShipmentPaths';
 import { useShipments } from '../hooks/useShipments';
 import { useShipmentsPermissions } from '../hooks/useShipmentsPermissions';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { shipmentDisplayNumber } from '../utils/normalizeShipment';
 
-function useDebouncedValue<T>(value: T, delayMs: number): T {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const id = window.setTimeout(() => setDebounced(value), delayMs);
-    return () => window.clearTimeout(id);
-  }, [value, delayMs]);
-  return debounced;
-}
-
 export default function ShipmentListPage() {
   const navigate = useNavigate();
   const paths = useShipmentPaths();
   const { canReadApi, canWriteCreate } = useShipmentsPermissions();
-  const [search, setSearch] = useState('');
-  const [jobType, setJobType] = useState('');
   const [page, setPage] = useState(1);
-  const debouncedSearch = useDebouncedValue(search, 300);
+  const { draft, setDraft, applied, submit } = useShipmentFilterDraft(20);
 
-  const { data, isLoading, isFetching, isError, error, refetch } = useShipments({
-    page,
-    limit: 20,
-    search: debouncedSearch.trim() || undefined,
-    job_type: jobType || undefined,
-  });
+  useEffect(() => {
+    setPage(1);
+  }, [applied]);
+
+  const listParams = useMemo(
+    () => shipmentFilterDraftToListParams(applied, page),
+    [applied, page],
+  );
+
+  const { data, isLoading, isFetching, isError, error, refetch } = useShipments(listParams);
   const shipments = data?.shipments ?? [];
   const meta = data?.meta;
 
@@ -80,33 +73,15 @@ export default function ShipmentListPage() {
           </div>
         </div>
 
-        <FilterBar>
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            placeholder="Search shipment no…"
-            className="h-8 w-full max-w-md rounded-sm border border-[#c5cdd6] px-2.5 text-[13px] sm:mr-auto"
-          />
-          <select
-            value={jobType}
-            onChange={(e) => {
-              setJobType(e.target.value);
-              setPage(1);
-            }}
-            className="h-8 rounded-sm border border-[#c5cdd6] px-2.5 text-[13px]"
-          >
-            <option value="">All departments</option>
-            {JOB_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {JOB_TYPE_LABELS[type]}
-              </option>
-            ))}
-          </select>
-        </FilterBar>
+        <ShipmentFilters
+          draft={draft}
+          onDraftChange={setDraft}
+          onSubmit={() => {
+            setPage(1);
+            submit();
+          }}
+          isSubmitting={isFetching}
+        />
 
         {!canReadApi ? (
           <div className="px-3 pb-4">
@@ -128,7 +103,7 @@ export default function ShipmentListPage() {
         ) : shipments.length === 0 ? (
           <EmptyState
             title="No shipments found."
-            description="Create a shipment directly, or generate one from an approved quotation."
+            description="Adjust filters and click Submit, or create a shipment."
           />
         ) : (
           <>

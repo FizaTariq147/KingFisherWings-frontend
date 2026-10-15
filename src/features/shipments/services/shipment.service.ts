@@ -168,6 +168,8 @@ function buildListQuery(params: ShipmentListParams): Record<string, string | num
   if (params.quotation_id && isUuid(params.quotation_id)) {
     query.quotation_id = params.quotation_id;
   }
+  if (params.voyage_number?.trim()) query.voyage_number = params.voyage_number.trim();
+  if (params.vessel_name?.trim()) query.vessel_name = params.vessel_name.trim();
   return query;
 }
 
@@ -293,21 +295,66 @@ export const shipmentService = {
   },
 
   /**
-   * Shipment detail — OpenAPI GET /shipments/:id, enriched with GET /shipments/:id/detail
-   * (tabs, actions) when available.
+   * Shipment detail — OpenAPI GET /shipments/:id, enriched with GET /shipments/:id/detail.
+   * `tabs` come only from the detail envelope (never invented / hardcoded).
+   * Each tab key is used as-is for GET /shipments/:id/detail/:tab.
    */
   async getDetail(id: string): Promise<Shipment> {
     assertId(id);
     const basic = await this.getById(id);
     try {
       const res = await withGatewayRetry(() => axiosInstance.get(SHIPMENT_API.detail(id)));
-      const enriched = normalizeShipment(unwrapShipmentPayload(res.data) ?? res.data);
-      if (enriched) return { ...basic, ...enriched, id: basic.id };
+      const outer = asRecord(res.data);
+      const root =
+        asRecord(unwrapShipmentPayload(res.data)) ??
+        asRecord(res.data) ??
+        null;
+      if (!root) return { ...basic, tabs: undefined };
+
+      const nestedShipment =
+        asRecord(root.shipment) ??
+        asRecord(root.detail) ??
+        asRecord(root.header) ??
+        null;
+
+      // Prefer tabs/actions on the detail envelope (root or outer), not basic GET.
+      const tabsRaw =
+        root.tabs ??
+        nestedShipment?.tabs ??
+        outer?.tabs ??
+        asRecord(outer?.data)?.tabs;
+      const actionsRaw =
+        root.actions ??
+        nestedShipment?.actions ??
+        outer?.actions ??
+        asRecord(outer?.data)?.actions;
+
+      const merged: Record<string, unknown> = {
+        ...basic,
+        ...(nestedShipment ?? {}),
+        ...root,
+        id: basic.id,
+        tabs: tabsRaw,
+        actions: actionsRaw ?? root.actions,
+        header: root.header ?? nestedShipment?.header ?? outer?.header,
+        links: root.links ?? nestedShipment?.links ?? outer?.links,
+      };
+
+      const enriched = normalizeShipment(merged);
+      if (enriched) {
+        return {
+          ...basic,
+          ...enriched,
+          id: basic.id,
+          // Never keep tabs from basic GET /shipments/:id — only detail API.
+          tabs: enriched.tabs,
+        };
+      }
     } catch (error) {
       const err = formatAxiosError(error);
       if (!/404|not found/i.test(err.message)) throw err;
     }
-    return basic;
+    return { ...basic, tabs: undefined };
   },
 
   /** GET /shipments/:id/detail/:tab — lazy tab payload (exact API key, form-ready). */
@@ -664,11 +711,12 @@ export const shipmentService = {
   },
 
   /** GET /shipments/:id/charges — list sale/cost lines. */
-  async listCharges(id: string): Promise<unknown> {
+  async listCharges(id: string) {
     assertId(id);
     try {
+      const { normalizeShipmentCharges } = await import('../utils/normalizeShipmentCharges');
       const res = await withGatewayRetry(() => axiosInstance.get(SHIPMENT_API.charges(id)));
-      return unwrapShipmentPayload(res.data) ?? res.data;
+      return normalizeShipmentCharges(unwrapShipmentPayload(res.data) ?? res.data);
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -706,6 +754,103 @@ export const shipmentService = {
     try {
       const res = await withGatewayRetry(() =>
         axiosInstance.post(SHIPMENT_API.copyCharges(id), dto),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /shipments/:id/charges/composite */
+  async addCompositeCharges(
+    id: string,
+    body: Record<string, unknown>,
+  ): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(SHIPMENT_API.chargesComposite(id), body),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** PATCH /shipments/:id/charges/:chargeId */
+  async updateCharge(
+    id: string,
+    chargeId: string,
+    dto: Record<string, unknown>,
+  ): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch(SHIPMENT_API.charge(id, chargeId), dto),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** DELETE /shipments/:id/charges/:chargeId */
+  async deleteCharge(id: string, chargeId: string): Promise<void> {
+    assertId(id);
+    try {
+      await withGatewayRetry(() =>
+        axiosInstance.delete(SHIPMENT_API.charge(id, chargeId)),
+      );
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /shipments/:id/dimensions */
+  async addDimensions(id: string, body: Record<string, unknown>): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(SHIPMENT_API.dimensions(id), body),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /shipments/:id/customs-refs */
+  async addCustomsRefs(id: string, body: Record<string, unknown>): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(SHIPMENT_API.customsRefs(id), body),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /shipments/:id/exchange-rates */
+  async addExchangeRates(id: string, body: Record<string, unknown>): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(SHIPMENT_API.exchangeRates(id), body),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /shipments/:id/organizations */
+  async addOrganizations(id: string, body: Record<string, unknown>): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(SHIPMENT_API.organizations(id), body),
       );
       return unwrapShipmentPayload(res.data) ?? res.data;
     } catch (error) {

@@ -20,6 +20,10 @@ export interface ShipmentActions {
   can_tracking?: boolean;
   can_bl_entry?: boolean;
   can_awb?: boolean;
+  can_booking_form?: boolean;
+  can_hbl_document?: boolean;
+  /** EDI action path segments when provided by backend. */
+  allowed_edi_actions?: string[];
   /** Permitted status values when provided by backend. */
   allowed_statuses?: string[];
   allowed_bl_statuses?: string[];
@@ -101,6 +105,9 @@ export interface ShipmentListParams {
   party_id?: string;
   job_id?: string;
   quotation_id?: string;
+  /** GET /shipments?voyage_number=&vessel_name= */
+  voyage_number?: string;
+  vessel_name?: string;
 }
 
 export interface ShipmentListResult {

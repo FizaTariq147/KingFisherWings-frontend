@@ -55,8 +55,15 @@ export const SHIPMENT_API = {
   routingLegs: (id: string) => `/shipments/${id}/routing-legs`,
   routingLegById: (id: string, legId: string) => `/shipments/${id}/routing-legs/${legId}`,
   charges: (id: string) => `/shipments/${id}/charges`,
+  charge: (id: string, chargeId: string) =>
+    `/shipments/${id}/charges/${encodeURIComponent(chargeId)}`,
+  chargesComposite: (id: string) => `/shipments/${id}/charges/composite`,
   getCharges: (id: string) => `/shipments/${id}/get-charges`,
   copyCharges: (id: string) => `/shipments/${id}/copy-charges`,
+  dimensions: (id: string) => `/shipments/${id}/dimensions`,
+  customsRefs: (id: string) => `/shipments/${id}/customs-refs`,
+  exchangeRates: (id: string) => `/shipments/${id}/exchange-rates`,
+  organizations: (id: string) => `/shipments/${id}/organizations`,
   documentBookingConfirmation: (id: string) =>
     `/shipments/${id}/documents/booking-confirmation`,
   documentHbl: (id: string) => `/shipments/${id}/documents/hbl`,

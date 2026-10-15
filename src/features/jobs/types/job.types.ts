@@ -29,10 +29,14 @@ export interface JobListParams {
   salesperson_id?: string;
   branch_id?: string;
   company_id?: string;
+  department_id?: string;
+  created_by?: string;
   origin_port_id?: string;
   dest_port_id?: string;
   masters_only?: boolean;
   parent_job_id?: string;
+  /** OpenAPI: etd | eta | atd | ata — which date from_date/to_date apply to. */
+  date_field?: 'etd' | 'eta' | 'atd' | 'ata';
   from_date?: string;
   to_date?: string;
   order?: 'asc' | 'desc';
@@ -535,6 +539,7 @@ export interface JobCharge {
   is_billable?: boolean;
   is_provisional?: boolean;
   party_id?: string;
+  party_name?: string;
   line_total?: number;
 }
 
@@ -645,9 +650,33 @@ export interface JobActions {
   can_cancel?: boolean;
   can_edit?: boolean;
   can_delete?: boolean;
+  can_copy?: boolean;
   can_gpum?: boolean;
   can_status_options?: boolean;
-  [key: string]: boolean | undefined;
+  can_documents?: boolean;
+  can_invoices?: boolean;
+  can_pnl?: boolean;
+  can_milestones?: boolean;
+  can_notes?: boolean;
+  can_vendor_offers?: boolean;
+  can_logistics?: boolean;
+  can_cargo?: boolean;
+  can_bl?: boolean;
+  can_stuffing?: boolean;
+  can_sea_scans?: boolean;
+  can_vouchers?: boolean;
+  can_house?: boolean;
+  can_house_jobs?: boolean;
+  can_cc_details?: boolean;
+  can_cc_lines?: boolean;
+  can_cc_checklist?: boolean;
+  can_cc_declaration?: boolean;
+  can_cc_queries?: boolean;
+  can_cc_finance?: boolean;
+  /** Permitted status values when provided by backend. */
+  allowed_statuses?: string[];
+  raw?: Record<string, unknown>;
+  [key: string]: boolean | string[] | Record<string, unknown> | undefined;
 }
 
 export interface JobDetailTab {
@@ -686,6 +715,125 @@ export interface UpsertJobPartyReferenceDto {
 export interface PatchJobDimensionsDto {
   commodity_description?: string;
   hs_code?: string;
+}
+
+/** POST /jobs/:id/organizations — AddJobOrganizationDto */
+export interface AddJobOrganizationDto {
+  org_type: string;
+  party_id?: string;
+  create_party?: Record<string, unknown>;
+  is_primary_customer?: boolean;
+}
+
+/** PUT /jobs/:id/organizations/:orgType */
+export interface ReplaceJobOrganizationDto {
+  party_id?: string;
+  create_party?: Record<string, unknown>;
+  is_primary_customer?: boolean;
+}
+
+/** POST /jobs/:id/organizations/copy-from */
+export interface CopyJobOrganizationsDto {
+  source_job_id?: string;
+  overwrite?: boolean;
+}
+
+/** POST /jobs/:id/dimensions — UpsertJobDimensionLineDto */
+export interface UpsertJobDimensionLineDto {
+  line_no?: number;
+  length_unit?: string;
+  length?: number;
+  width?: number;
+  height?: number;
+  no_of_pcs?: number;
+  package_type?: string;
+  g_weight?: number;
+  g_weight_unit?: string;
+  v_weight?: number;
+  v_weight_unit?: string;
+  n_weight?: number;
+  n_weight_unit?: string;
+  total_weight?: number;
+  total_weight_unit?: string;
+  volume?: number;
+  volume_unit?: string;
+  hs_code?: string;
+  dimension_type?: string;
+  quantity?: number;
+  currency_code?: string;
+  goods_value?: number;
+  total_value?: number;
+  [key: string]: unknown;
+}
+
+export type UpdateJobDimensionLineDto = UpsertJobDimensionLineDto;
+
+/** PUT /jobs/:id/dimensions/bulk */
+export interface BulkJobDimensionsDto {
+  lines: UpsertJobDimensionLineDto[];
+  replace_all?: boolean;
+  sync_to_cargo?: boolean;
+}
+
+/** POST /jobs/:id/dimensions/upload/confirm */
+export interface ConfirmDimensionUploadDto {
+  lines: UpsertJobDimensionLineDto[];
+  replace_all?: boolean;
+}
+
+/** POST /jobs/:id/dimensions/upload/paste */
+export interface PasteDimensionUploadDto {
+  content: string;
+  confirm?: boolean;
+  replace_all?: boolean;
+}
+
+/** POST /jobs/:id/dimensions/sync-to-cargo */
+export interface SyncDimensionsToCargoDto {
+  line_ids?: string[];
+  prune_orphans?: boolean;
+}
+
+/** PATCH /jobs/:id/department */
+export interface PatchJobDepartmentDto {
+  branch_id?: string;
+  company_id?: string;
+  department_id?: string;
+  salesperson_id?: string;
+}
+
+/** POST /jobs/:id/exchange-rates */
+export interface UpsertJobExchangeRateDto {
+  currency_code: string;
+  exchange_rate: number;
+  effective_date?: string;
+  source?: string;
+  apply_to_charges?: boolean;
+}
+
+/** POST/PATCH /jobs/:id/routing-legs */
+export interface UpsertJobRoutingLegDto {
+  leg_sequence?: number;
+  transport_mode?: string;
+  port_id?: string;
+  origin_port_id?: string;
+  dest_port_id?: string;
+  etd?: string;
+  eta?: string;
+  carrier_id?: string;
+  vessel_name?: string;
+  voyage_number?: string;
+}
+
+/** POST/PATCH /jobs/:id/customs-refs */
+export interface UpsertJobCustomsRefDto {
+  sb_number?: string;
+  boe_number?: string;
+  customs_house?: string;
+  customs_status?: string;
+  filed_at?: string;
+  cleared_at?: string;
+  remarks?: string;
 }
 
 export interface JobGpumLineDto {
@@ -840,6 +988,127 @@ export interface CreateJobChargeDto {
 
 export type UpdateJobChargeDto = Partial<CreateJobChargeDto>;
 
+/** POST /jobs/:id/get-charges — pull quotation / party standard charges */
+export interface GetJobChargesDto {
+  from_quotation?: boolean;
+  from_party_standard?: boolean;
+}
+
+/** POST /jobs/:id/get-job-charges — Fresa Get Job Charges from shipment */
+export interface GetJobChargesFromShipmentDto {
+  type: 'SHIPMENT';
+  shipment_id: string;
+  charge_ids?: string[];
+  confirm?: boolean;
+}
+
+/** POST /jobs/:id/copy-charges */
+export interface CopyJobChargesDto {
+  from_job_id?: string;
+  from_shipment_id?: string;
+  from_quotation_id?: string;
+  copy_sale?: boolean;
+  copy_cost?: boolean;
+}
+
+/** POST /jobs/:id/profit-share/preview */
+export interface ProfitSharePreviewDto {
+  charge_code_id: string;
+}
+
+/** POST /jobs/:id/profit-share/add */
+export interface ProfitShareAddDto {
+  charge_code_id: string;
+  profit_share_percent: number;
+  profit_share_agent_id: string;
+  profit_share_account_id?: string;
+  description?: string;
+}
+
+/** POST /jobs/:id/prorate-to-shipments */
+export interface ProrateToShipmentsDto {
+  charge_code_id?: string;
+  job_charge_id?: string;
+}
+
+/** POST /jobs/:id/charges/composite — OpenAPI CompositeJobChargeDto */
+export interface ChargeSectionDto {
+  line_no?: number;
+  charge_code_id: string;
+  unit?: string;
+  remarks?: string;
+  description: string;
+  quantity?: number;
+  pp_cc?: 'PP' | 'CC';
+  ofd_type?: string;
+}
+
+export interface SaleSectionDto {
+  bill_to?: string;
+  amount?: number;
+  qty?: number;
+  dr_cr?: 'DR' | 'CR';
+  tax_amount?: number;
+  remarks?: string;
+  currency?: string;
+  fcy_amount?: number;
+  tax_group_code?: string;
+  tax_rate_id?: string;
+  ex_rate?: number;
+  taxable_amount?: number;
+  gross_profit?: number;
+  editable?: boolean;
+}
+
+export interface CostSectionDto {
+  vendor?: string;
+  declaration_no?: string;
+  dr_cr?: 'DR' | 'CR';
+  amount?: number;
+  reference_no?: string;
+  declaration_date?: string;
+  currency?: string;
+  fcy_amount?: number;
+  date?: string;
+  ex_rate?: number;
+  tax_amount?: number;
+  remarks?: string;
+  editable?: boolean;
+}
+
+export interface CreateJobChargesCompositeDto {
+  charge: ChargeSectionDto;
+  sale?: SaleSectionDto;
+  cost?: CostSectionDto;
+  is_provisional?: boolean;
+}
+
+/** PATCH /jobs/:id/charges/:chargeId/sale | /cost */
+export type PatchJobChargeSideDto = Partial<CreateJobChargeDto> &
+  Partial<SaleSectionDto> &
+  Partial<CostSectionDto>;
+
+/** POST /jobs/:id/invoices/sale | /purchase */
+export type CreateJobInvoiceFromCostingDto = {
+  charge_ids?: string[];
+  party_id?: string;
+  invoice_date?: string;
+  currency_code?: string;
+  notes?: string;
+} & Record<string, unknown>;
+
+/** PUT /jobs/:id/references · PUT .../references/:type */
+export type UpsertJobReferencesDto = {
+  references?: Record<string, string>;
+} & Record<string, unknown>;
+
+/** PATCH /jobs/:id/closed-overrides */
+export type PatchJobClosedOverridesDto = {
+  allow_charge_edit?: boolean;
+  allow_document_regen?: boolean;
+  reason?: string;
+} & Record<string, unknown>;
+
 export interface CreateJobNoteDto {
   note: string;
   is_private?: boolean;
@@ -979,6 +1248,27 @@ export interface SchedulePreAlertDto {
 export interface SendWhatsAppStatusDto {
   to_phone: string;
   message: string;
+}
+
+/** POST /jobs/:id/vouchers/generate — GenerateJobVoucherDto */
+export interface GenerateJobVoucherDto {
+  voucher_type:
+    | 'JOURNAL'
+    | 'BANK_PAYMENT'
+    | 'CASH_PAYMENT'
+    | 'BANK_RECEIPT'
+    | 'CASH_RECEIPT'
+    | 'CONTRA'
+    | 'PURCHASE_INVOICE'
+    | 'PURCHASE_CREDIT_NOTE'
+    | 'OPENING_BALANCE'
+    | 'RECURRING'
+    | string;
+  charge_ids: string[];
+  side?: 'SALE' | 'COST' | string;
+  narration?: string;
+  currency_code?: string;
+  auto_post?: boolean;
 }
 
 export interface SubmitLclSiDto {

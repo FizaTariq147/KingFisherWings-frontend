@@ -88,6 +88,20 @@ function normalizeActions(raw: unknown): ShipmentActions | undefined {
     can_tracking: flag('can_tracking', 'canTracking', 'tracking'),
     can_bl_entry: flag('can_bl_entry', 'canBlEntry', 'bl_entry', 'bills_of_lading'),
     can_awb: flag('can_awb', 'canAwb', 'awb'),
+    can_booking_form: flag(
+      'can_booking_form',
+      'canBookingForm',
+      'booking_form',
+    ),
+    can_hbl_document: flag(
+      'can_hbl_document',
+      'canHblDocument',
+      'can_hbl',
+      'hbl_document',
+    ),
+    allowed_edi_actions: stringList(
+      r.allowed_edi_actions ?? r.allowedEdiActions ?? r.edi_actions,
+    ),
     allowed_statuses: stringList(r.allowed_statuses ?? r.allowedStatuses ?? r.statuses),
     allowed_bl_statuses: stringList(
       r.allowed_bl_statuses ?? r.allowedBlStatuses ?? r.bl_statuses,
@@ -145,10 +159,13 @@ export function normalizeShipment(raw: unknown): Shipment | null {
     normalizeActions(r.actions ?? r.action_flags ?? r.actionFlags) ??
     normalizeActions(root.actions ?? asRecord(root.data)?.actions);
 
+  // Tabs only from detail envelope — never invent keys.
   const tabs =
     normalizeTabs(root.tabs) ??
     normalizeTabs(asRecord(root.data)?.tabs) ??
-    normalizeTabs(r.tabs);
+    normalizeTabs(header?.tabs) ??
+    normalizeTabs(r.tabs) ??
+    normalizeTabs(asRecord(root.shipment)?.tabs);
 
   return {
     ...r,

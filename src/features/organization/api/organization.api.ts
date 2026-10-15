@@ -11,4 +11,6 @@ export const ORGANIZATION_API = {
   jobDateSettings: '/organization/settings/job-date',
   /** Volumetric weight divisor (cm → kg) */
   dimensionsSettings: '/organization/settings/dimensions',
+  /** GET/PATCH /organization/settings/job-create — create wizard defaults */
+  jobCreateSettings: '/organization/settings/job-create',
 } as const;

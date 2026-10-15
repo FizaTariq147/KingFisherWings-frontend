@@ -1,15 +1,27 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { jobService } from '../services/job.service';
 import type {
   ChangeJobStatusDto,
   CreateJobChargeAttachmentDto,
   CreateJobChargeDto,
+  CreateJobChargesCompositeDto,
+  CreateJobInvoiceFromCostingDto,
   CreateJobNoteDto,
   CreateCustomMilestoneDto,
   CalculateStorageChargesDto,
   ConfirmStorageChargesDto,
+  CopyJobChargesDto,
   GenerateJobDocumentDto,
+  GenerateJobVoucherDto,
+  GetJobChargesDto,
+  GetJobChargesFromShipmentDto,
+  PatchJobChargeSideDto,
+  PatchJobClosedOverridesDto,
   PatchJobDimensionsDto,
+  ProfitShareAddDto,
+  ProfitSharePreviewDto,
+  ProrateToShipmentsDto,
+  UpsertJobReferencesDto,
   PutJobGpumDto,
   ReopenJobDto,
   SchedulePreAlertDto,
@@ -21,11 +33,12 @@ import type {
   UpdateJobNoteDto,
   UpsertJobPartyReferenceDto,
 } from '../types/job.types';
-import { useInvalidateJobs } from './useJobs';
+import { jobKeys, useInvalidateJobs } from './useJobs';
 
 /** Detail-page lifecycle actions for a single job. */
 export function useJobActions(jobId: string) {
   const invalidate = useInvalidateJobs();
+  const queryClient = useQueryClient();
   const id = jobId;
 
   const cancel = useMutation({
@@ -85,8 +98,116 @@ export function useJobActions(jobId: string) {
     mutationFn: () => jobService.softDelete(id),
     onSuccess: () => invalidate(id),
   });
+  const copy = useMutation({
+    mutationFn: (body?: Record<string, unknown>) =>
+      jobService.copyJob(id, body ?? {}),
+    onSuccess: () => invalidate(),
+  });
   const prorateCost = useMutation({
     mutationFn: (chargeCodeId: string) => jobService.prorateCost(id, chargeCodeId),
+    onSuccess: () => invalidate(id),
+  });
+  const invalidateCharges = () => {
+    invalidate(id);
+    void queryClient.invalidateQueries({ queryKey: jobKeys.jobCharges(id) });
+  };
+  const pullJobCharges = useMutation({
+    mutationFn: (dto: GetJobChargesDto = {}) => jobService.pullJobCharges(id, dto),
+    onSuccess: invalidateCharges,
+  });
+  const getJobChargesFromShipment = useMutation({
+    mutationFn: (dto: GetJobChargesFromShipmentDto) =>
+      jobService.getJobChargesFromShipment(id, dto),
+    onSuccess: invalidateCharges,
+  });
+  const copyJobCharges = useMutation({
+    mutationFn: (dto: CopyJobChargesDto) => jobService.copyJobCharges(id, dto),
+    onSuccess: invalidateCharges,
+  });
+  const profitSharePreview = useMutation({
+    mutationFn: (dto: ProfitSharePreviewDto) => jobService.profitSharePreview(id, dto),
+  });
+  const profitShareAdd = useMutation({
+    mutationFn: (dto: ProfitShareAddDto) => jobService.profitShareAdd(id, dto),
+    onSuccess: invalidateCharges,
+  });
+  const prorateToShipments = useMutation({
+    mutationFn: (dto: ProrateToShipmentsDto = {}) =>
+      jobService.prorateToShipments(id, dto),
+    onSuccess: invalidateCharges,
+  });
+  const cancelProrateToShipments = useMutation({
+    mutationFn: (body: Record<string, unknown> = {}) =>
+      jobService.cancelProrateToShipments(id, body),
+    onSuccess: invalidateCharges,
+  });
+  const createChargesComposite = useMutation({
+    mutationFn: (dto: CreateJobChargesCompositeDto) =>
+      jobService.createChargesComposite(id, dto),
+    onSuccess: invalidateCharges,
+  });
+  const updateChargeSale = useMutation({
+    mutationFn: ({
+      chargeId,
+      dto,
+    }: {
+      chargeId: string;
+      dto: PatchJobChargeSideDto;
+    }) => jobService.updateChargeSale(id, chargeId, dto),
+    onSuccess: invalidateCharges,
+  });
+  const updateChargeCost = useMutation({
+    mutationFn: ({
+      chargeId,
+      dto,
+    }: {
+      chargeId: string;
+      dto: PatchJobChargeSideDto;
+    }) => jobService.updateChargeCost(id, chargeId, dto),
+    onSuccess: invalidateCharges,
+  });
+  const createSaleInvoiceFromJob = useMutation({
+    mutationFn: (dto: CreateJobInvoiceFromCostingDto = {}) =>
+      jobService.createSaleInvoiceFromJob(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const createPurchaseInvoiceFromJob = useMutation({
+    mutationFn: (dto: CreateJobInvoiceFromCostingDto = {}) =>
+      jobService.createPurchaseInvoiceFromJob(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const pushRoutingLegsToSubjobs = useMutation({
+    mutationFn: (body: Record<string, unknown> = {}) =>
+      jobService.pushRoutingLegsToSubjobs(id, body),
+    onSuccess: () => invalidate(id),
+  });
+  const pushContainersToSubJobs = useMutation({
+    mutationFn: (body: Record<string, unknown> = {}) =>
+      jobService.pushContainersToSubJobs(id, body),
+    onSuccess: () => invalidate(id),
+  });
+  const syncContainersFromSubJobs = useMutation({
+    mutationFn: (body?: Record<string, unknown>) =>
+      jobService.syncContainersFromSubJobs(id, body),
+    onSuccess: () => invalidate(id),
+  });
+  const putReferences = useMutation({
+    mutationFn: (dto: UpsertJobReferencesDto) => jobService.putReferences(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const putReferenceByType = useMutation({
+    mutationFn: ({ type, dto }: { type: string; dto: Record<string, unknown> }) =>
+      jobService.putReferenceByType(id, type, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const patchClosedOverrides = useMutation({
+    mutationFn: (dto: PatchJobClosedOverridesDto) =>
+      jobService.patchClosedOverrides(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const generateJobPnlCustomDuty = useMutation({
+    mutationFn: (dto?: GenerateJobDocumentDto) =>
+      jobService.generateJobPnlCustomDuty(id, dto),
     onSuccess: () => invalidate(id),
   });
   const sendPreAlert = useMutation({
@@ -100,6 +221,13 @@ export function useJobActions(jobId: string) {
   const sendWhatsAppStatus = useMutation({
     mutationFn: (dto: SendWhatsAppStatusDto) => jobService.sendWhatsAppStatus(id, dto),
     onSuccess: () => invalidate(id),
+  });
+  const generateVoucher = useMutation({
+    mutationFn: (dto: GenerateJobVoucherDto) => jobService.generateJobVoucher(id, dto),
+    onSuccess: () => {
+      invalidate(id);
+      void queryClient.invalidateQueries({ queryKey: jobKeys.jobVouchers(id) });
+    },
   });
 
   const generateHawb = useMutation({
@@ -311,10 +439,31 @@ export function useJobActions(jobId: string) {
     confirmStorageCharges,
     createChargeAttachment,
     remove,
+    copy,
     prorateCost,
+    pullJobCharges,
+    getJobChargesFromShipment,
+    copyJobCharges,
+    profitSharePreview,
+    profitShareAdd,
+    prorateToShipments,
+    cancelProrateToShipments,
+    createChargesComposite,
+    updateChargeSale,
+    updateChargeCost,
+    createSaleInvoiceFromJob,
+    createPurchaseInvoiceFromJob,
+    pushRoutingLegsToSubjobs,
+    pushContainersToSubJobs,
+    syncContainersFromSubJobs,
+    putReferences,
+    putReferenceByType,
+    patchClosedOverrides,
+    generateJobPnlCustomDuty,
     sendPreAlert,
     schedulePreAlert,
     sendWhatsAppStatus,
+    generateVoucher,
     generateHawb,
     generateMawb,
     generateHawbDraftGated,
@@ -398,19 +547,50 @@ export function useJobLifecycleMutations() {
 
 export function useJobChargeMutations(jobId: string) {
   const invalidate = useInvalidateJobs();
+  const queryClient = useQueryClient();
+  const after = () => {
+    invalidate(jobId);
+    void queryClient.invalidateQueries({ queryKey: jobKeys.jobCharges(jobId) });
+    void queryClient.invalidateQueries({ queryKey: jobKeys.jobChargesHistory(jobId) });
+  };
   return {
     create: useMutation({
       mutationFn: (dto: CreateJobChargeDto) => jobService.createCharge(jobId, dto),
-      onSuccess: () => invalidate(jobId),
+      onSuccess: after,
+    }),
+    createComposite: useMutation({
+      mutationFn: (dto: CreateJobChargesCompositeDto) =>
+        jobService.createChargesComposite(jobId, dto),
+      onSuccess: after,
     }),
     update: useMutation({
       mutationFn: ({ chargeId, dto }: { chargeId: string; dto: UpdateJobChargeDto }) =>
         jobService.updateCharge(jobId, chargeId, dto),
-      onSuccess: () => invalidate(jobId),
+      onSuccess: after,
+    }),
+    updateSale: useMutation({
+      mutationFn: ({
+        chargeId,
+        dto,
+      }: {
+        chargeId: string;
+        dto: PatchJobChargeSideDto;
+      }) => jobService.updateChargeSale(jobId, chargeId, dto),
+      onSuccess: after,
+    }),
+    updateCost: useMutation({
+      mutationFn: ({
+        chargeId,
+        dto,
+      }: {
+        chargeId: string;
+        dto: PatchJobChargeSideDto;
+      }) => jobService.updateChargeCost(jobId, chargeId, dto),
+      onSuccess: after,
     }),
     remove: useMutation({
       mutationFn: (chargeId: string) => jobService.deleteCharge(jobId, chargeId),
-      onSuccess: () => invalidate(jobId),
+      onSuccess: after,
     }),
   };
 }

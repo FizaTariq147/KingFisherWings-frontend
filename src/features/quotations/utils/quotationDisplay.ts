@@ -77,11 +77,11 @@ export function parseCustomerRouteFromNotes(text?: string): {
   return { origin, dest };
 }
 
-/**
- * Dynamic origin → destination for list/detail.
- * Uses API port fields first, then master lookup, then customer notes.
- */
-export function quotationRouteLabel(q: Quotation, portMap?: PortLabelMap): string {
+/** Resolve origin / destination from API fields (+ notes fallback). */
+export function quotationOriginDestLabels(
+  q: Quotation,
+  portMap?: PortLabelMap,
+): { origin: string; dest: string } {
   const map = portMap ?? new Map();
   let origin = formatQuotationPortSide(
     q.origin_port_code,
@@ -102,8 +102,30 @@ export function quotationRouteLabel(q: Quotation, portMap?: PortLabelMap): strin
     if (!dest && fromNotes.dest) dest = fromNotes.dest;
   }
 
-  if (!origin && !dest) return '—';
-  return `${origin || '—'} → ${dest || '—'}`;
+  return { origin: origin || '—', dest: dest || '—' };
+}
+
+/**
+ * Dynamic origin → destination for list/detail.
+ * Uses API port fields first, then master lookup, then customer notes.
+ */
+export function quotationRouteLabel(q: Quotation, portMap?: PortLabelMap): string {
+  const { origin, dest } = quotationOriginDestLabels(q, portMap);
+  if (origin === '—' && dest === '—') return '—';
+  return `${origin} → ${dest}`;
+}
+
+export function quotationOriginLabel(q: Quotation, portMap?: PortLabelMap): string {
+  return quotationOriginDestLabels(q, portMap).origin;
+}
+
+export function quotationDestLabel(q: Quotation, portMap?: PortLabelMap): string {
+  return quotationOriginDestLabels(q, portMap).dest;
+}
+
+/** List date: quotation_date from API, else created_at. */
+export function quotationListDate(q: Quotation): string {
+  return formatQuotationDate(q.quotation_date || q.created_at);
 }
 
 export function quotationTotalAmount(q: Quotation): number | undefined {

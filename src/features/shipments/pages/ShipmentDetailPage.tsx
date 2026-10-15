@@ -10,13 +10,16 @@ import {
   ExternalLink,
   FileCheck,
   FileText,
+  GitMerge,
   Layers,
   MapPin,
   Pencil,
   Plus,
+  Radio,
   RefreshCw,
   Save,
   Split,
+  SwitchCamera,
   X,
 } from 'lucide-react';
 import { OperationTypeBadge, StatusBadge } from '@/components/erp';
@@ -30,6 +33,7 @@ import { erpForm } from '@/lib/erpForm';
 import { isUuid } from '@/lib/isUuid';
 import { cn } from '@/lib/utils';
 import {
+  isShipmentShowAllTab,
   shipmentDetailTabLabel,
   toApiShipmentDetailTabKey,
 } from '../api/shipment.api';
@@ -46,12 +50,18 @@ import {
   useChangeShipmentStatus,
   useCopyShipment,
   useGenerateShipmentJob,
+  useMergeShipments,
   useQueueShipmentBookingConfirmation,
+  useQueueShipmentHbl,
   useShipment,
+  useShipmentAwb,
+  useShipmentBillsOfLading,
   useShipmentCreateSubmaster,
+  useShipmentEdi,
   useShipmentKpi,
   useShipmentTracking,
   useSplitShipment,
+  useSwitchShipmentBl,
   useUpdateShipment,
 } from '../hooks/useShipments';
 import { useShipmentsPermissions } from '../hooks/useShipmentsPermissions';
@@ -98,13 +108,16 @@ function FresaReadonlyField({
 }
 
 /**
- * Tabs come only from GET /shipments/:id/detail `tabs`.
- * Each key is used as-is for GET /shipments/:id/detail/:tab — no hardcoded list.
+ * Tab strip = only keys from GET /shipments/:id/detail `tabs`.
+ * Each key is passed as-is to GET /shipments/:id/detail/:tab — no fallback list.
  */
 function resolveShipmentTabs(shipment: Shipment): { key: string; label: string }[] {
+  const apiTabs = shipment.tabs;
+  if (!apiTabs?.length) return [];
+
   const seen = new Set<string>();
   const tabs: { key: string; label: string }[] = [];
-  for (const t of shipment.tabs ?? []) {
+  for (const t of apiTabs) {
     const key = toApiShipmentDetailTabKey(t.key);
     if (!key || seen.has(key)) continue;
     seen.add(key);
@@ -120,6 +133,9 @@ type ConfirmKind =
   | 'generate-job'
   | 'copy'
   | 'split'
+  | 'merge'
+  | 'switch-bl'
+  | 'edi'
   | 'create-submaster'
   | 'change-status'
   | 'change-bl-status'
@@ -136,7 +152,11 @@ export default function ShipmentDetailPage() {
   const copyShipment = useCopyShipment(id);
   const updateShipment = useUpdateShipment(id);
   const queueBookingConfirmation = useQueueShipmentBookingConfirmation(id);
+  const queueHbl = useQueueShipmentHbl(id);
   const splitShipment = useSplitShipment(id);
+  const mergeShipments = useMergeShipments(id);
+  const switchBl = useSwitchShipmentBl(id);
+  const shipmentEdi = useShipmentEdi(id);
   const changeStatus = useChangeShipmentStatus(id);
   const changeBlStatus = useChangeShipmentBlStatus(id);
   const changeDepartment = useChangeShipmentDepartment(id);
@@ -154,7 +174,12 @@ export default function ShipmentDetailPage() {
   const [showKpi, setShowKpi] = useState(false);
   const [showTracking, setShowTracking] = useState(false);
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const [showAwb, setShowAwb] = useState(false);
+  const [showBlEntry, setShowBlEntry] = useState(false);
   const [generateJobMode, setGenerateJobMode] = useState<'HOUSE' | 'DIRECT'>('HOUSE');
+  const [mergeSourceIds, setMergeSourceIds] = useState('');
+  const [ediAction, setEdiAction] = useState('');
+  const [switchBlNumber, setSwitchBlNumber] = useState('');
   const [editing, setEditing] = useState(false);
   const [editDraft, setEditDraft] = useState({
     commodity: '',
@@ -174,13 +199,19 @@ export default function ShipmentDetailPage() {
 
   const kpiQuery = useShipmentKpi(id, showKpi);
   const trackingQuery = useShipmentTracking(id, showTracking);
+  const awbQuery = useShipmentAwb(id, showAwb);
+  const blEntryQuery = useShipmentBillsOfLading(id, showBlEntry);
 
   const shipment = query.data;
   const labels = useShipmentResolvedLabels(shipment);
   const tabs = useMemo(() => (shipment ? resolveShipmentTabs(shipment) : []), [shipment]);
+  const defaultTabKey = useMemo(() => {
+    const showAll = tabs.find((t) => isShipmentShowAllTab(t.key));
+    return showAll?.key ?? tabs[0]?.key ?? '';
+  }, [tabs]);
   const effectiveTab = tabs.some((t) => t.key === activeTab)
     ? activeTab
-    : tabs[0]?.key ?? '';
+    : defaultTabKey;
 
   useEffect(() => {
     if (!(location.state as { startEdit?: boolean } | null)?.startEdit) return;
@@ -271,9 +302,20 @@ export default function ShipmentDetailPage() {
   const canChangeDepartment =
     perms.canWriteUpdate && actions?.can_change_department !== false;
   const canSplit = perms.canWriteUpdate && actions?.can_split === true;
+  const canMerge = perms.canWriteUpdate && actions?.can_merge === true;
+  const canSwitchBl = perms.canWriteUpdate && actions?.can_switch_bl === true;
+  const canEdi = perms.canWriteUpdate && actions?.can_edi === true;
   const canSubmaster = perms.canWriteGenerate && actions?.can_create_submaster === true;
   const canKpi = perms.canView && actions?.can_kpi !== false;
   const canTracking = perms.canView && actions?.can_tracking !== false;
+  const canBlEntry = perms.canView && actions?.can_bl_entry === true;
+  const canAwb = perms.canView && actions?.can_awb === true;
+  const canBookingForm = perms.canView && actions?.can_booking_form !== false;
+  const canHblDoc =
+    perms.canWriteGenerate && hasJob && actions?.can_hbl_document === true;
+  const ediActionOptions = actions?.allowed_edi_actions?.length
+    ? actions.allowed_edi_actions
+    : [];
 
   const statusOptions = actions?.allowed_statuses?.length
     ? actions.allowed_statuses
@@ -300,7 +342,11 @@ export default function ShipmentDetailPage() {
     copyShipment.isPending ||
     updateShipment.isPending ||
     queueBookingConfirmation.isPending ||
+    queueHbl.isPending ||
     splitShipment.isPending ||
+    mergeShipments.isPending ||
+    switchBl.isPending ||
+    shipmentEdi.isPending ||
     changeStatus.isPending ||
     changeBlStatus.isPending ||
     changeDepartment.isPending ||
@@ -654,6 +700,36 @@ export default function ShipmentDetailPage() {
             Split
           </Button>
         )}
+        {canMerge && (
+          <Button
+            size="sm"
+            type="button"
+            variant="warning"
+            leftIcon={<GitMerge />}
+            disabled={anyPending}
+            onClick={() => {
+              setMergeSourceIds('');
+              setConfirmKind('merge');
+            }}
+          >
+            Merge
+          </Button>
+        )}
+        {canSwitchBl && (
+          <Button
+            size="sm"
+            type="button"
+            variant="primary"
+            leftIcon={<SwitchCamera />}
+            disabled={anyPending}
+            onClick={() => {
+              setSwitchBlNumber(displayValue(shipment.hbl_number) || '');
+              setConfirmKind('switch-bl');
+            }}
+          >
+            Switch BL
+          </Button>
+        )}
         {canSubmaster && (
           <Button
             size="sm"
@@ -664,6 +740,21 @@ export default function ShipmentDetailPage() {
             onClick={() => setConfirmKind('create-submaster')}
           >
             Create Submaster
+          </Button>
+        )}
+        {canEdi && (
+          <Button
+            size="sm"
+            type="button"
+            variant="report"
+            leftIcon={<Radio />}
+            disabled={anyPending}
+            onClick={() => {
+              setEdiAction(ediActionOptions[0] || '');
+              setConfirmKind('edi');
+            }}
+          >
+            EDI
           </Button>
         )}
         {canKpi && (
@@ -688,15 +779,56 @@ export default function ShipmentDetailPage() {
             {showTracking ? 'Hide Tracking' : 'Track & Trace'}
           </Button>
         )}
-        <Button
-          size="sm"
-          type="button"
-          variant="primary"
-          leftIcon={<FileText />}
-          onClick={() => setShowBookingForm(true)}
-        >
-          Booking form
-        </Button>
+        {canBlEntry && (
+          <Button
+            size="sm"
+            type="button"
+            variant="primary"
+            leftIcon={<FileCheck />}
+            onClick={() => setShowBlEntry((v) => !v)}
+          >
+            {showBlEntry ? 'Hide BL Entry' : 'BL Entry'}
+          </Button>
+        )}
+        {canAwb && (
+          <Button
+            size="sm"
+            type="button"
+            variant="primary"
+            leftIcon={<FileText />}
+            onClick={() => setShowAwb((v) => !v)}
+          >
+            {showAwb ? 'Hide AWB' : 'AWB'}
+          </Button>
+        )}
+        {canHblDoc && (
+          <Button
+            size="sm"
+            type="button"
+            variant="success"
+            leftIcon={<FileCheck />}
+            disabled={anyPending}
+            onClick={() =>
+              void run(async () => {
+                await queueHbl.mutateAsync();
+                setActionMessage('HBL document queued (POST /shipments/:id/documents/hbl).');
+              })
+            }
+          >
+            Queue HBL
+          </Button>
+        )}
+        {canBookingForm ? (
+          <Button
+            size="sm"
+            type="button"
+            variant="primary"
+            leftIcon={<FileText />}
+            onClick={() => setShowBookingForm(true)}
+          >
+            Booking form
+          </Button>
+        ) : null}
       </div>
 
       {showBookingForm ? (
@@ -750,6 +882,42 @@ export default function ShipmentDetailPage() {
               <ShipmentApiPayloadView
                 data={trackingQuery.data ?? {}}
                 emptyMessage="No tracking data returned."
+              />
+            )}
+          </div>
+        </section>
+      )}
+
+      {showBlEntry && (
+        <section className={erpForm.section}>
+          <div className={erpForm.sectionHeader}>Bills of lading</div>
+          <div className={erpForm.sectionBody}>
+            {blEntryQuery.isLoading ? (
+              <p className="text-[13px] text-[#64748b]">Loading BL entry…</p>
+            ) : blEntryQuery.isError ? (
+              <p className="text-[13px] text-red-700">{getErrorMessage(blEntryQuery.error)}</p>
+            ) : (
+              <ShipmentApiPayloadView
+                data={blEntryQuery.data ?? []}
+                emptyMessage="No bills of lading returned."
+              />
+            )}
+          </div>
+        </section>
+      )}
+
+      {showAwb && (
+        <section className={erpForm.section}>
+          <div className={erpForm.sectionHeader}>AWB</div>
+          <div className={erpForm.sectionBody}>
+            {awbQuery.isLoading ? (
+              <p className="text-[13px] text-[#64748b]">Loading AWB…</p>
+            ) : awbQuery.isError ? (
+              <p className="text-[13px] text-red-700">{getErrorMessage(awbQuery.error)}</p>
+            ) : (
+              <ShipmentApiPayloadView
+                data={awbQuery.data ?? {}}
+                emptyMessage="No AWB data returned."
               />
             )}
           </div>
@@ -868,6 +1036,171 @@ export default function ShipmentDetailPage() {
             })
           }
         />
+      )}
+
+      {confirmKind === 'merge' && (
+        <Modal
+          open
+          onClose={() => !mergeShipments.isPending && setConfirmKind(null)}
+          title="Merge shipments"
+          footer={
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="back"
+                leftIcon={<ArrowLeft />}
+                disabled={mergeShipments.isPending}
+                onClick={() => setConfirmKind(null)}
+              >
+                Back
+              </Button>
+              <Button
+                type="button"
+                leftIcon={<GitMerge />}
+                disabled={
+                  mergeShipments.isPending ||
+                  !mergeSourceIds
+                    .split(/[\s,;]+/)
+                    .map((s) => s.trim())
+                    .filter((s) => isUuid(s)).length
+                }
+                onClick={() =>
+                  void run(async () => {
+                    const source_shipment_ids = mergeSourceIds
+                      .split(/[\s,;]+/)
+                      .map((s) => s.trim())
+                      .filter((s) => isUuid(s));
+                    await mergeShipments.mutateAsync({ source_shipment_ids });
+                    setActionMessage('Shipments merged.');
+                  })
+                }
+              >
+                {mergeShipments.isPending ? 'Merging…' : 'Merge'}
+              </Button>
+            </div>
+          }
+        >
+          <label className="block text-[13px]">
+            <span className={erpForm.label}>
+              Source shipment IDs (UUIDs, comma or space separated)
+            </span>
+            <textarea
+              className={erpForm.input}
+              rows={3}
+              value={mergeSourceIds}
+              onChange={(e) => setMergeSourceIds(e.target.value)}
+              placeholder="uuid-1, uuid-2"
+            />
+          </label>
+        </Modal>
+      )}
+
+      {confirmKind === 'switch-bl' && (
+        <Modal
+          open
+          onClose={() => !switchBl.isPending && setConfirmKind(null)}
+          title="Switch BL"
+          footer={
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="back"
+                leftIcon={<ArrowLeft />}
+                disabled={switchBl.isPending}
+                onClick={() => setConfirmKind(null)}
+              >
+                Back
+              </Button>
+              <Button
+                type="button"
+                leftIcon={<SwitchCamera />}
+                disabled={switchBl.isPending}
+                onClick={() =>
+                  void run(async () => {
+                    await switchBl.mutateAsync({
+                      ...(switchBlNumber.trim()
+                        ? { switched_from_bl_number: switchBlNumber.trim() }
+                        : {}),
+                    });
+                    setActionMessage('Switch BL submitted.');
+                  })
+                }
+              >
+                {switchBl.isPending ? 'Submitting…' : 'Switch BL'}
+              </Button>
+            </div>
+          }
+        >
+          <label className="block text-[13px]">
+            <span className={erpForm.label}>Original BL number (optional)</span>
+            <input
+              className={erpForm.input}
+              value={switchBlNumber}
+              onChange={(e) => setSwitchBlNumber(e.target.value)}
+              placeholder="Switched-from BL number"
+            />
+          </label>
+        </Modal>
+      )}
+
+      {confirmKind === 'edi' && (
+        <Modal
+          open
+          onClose={() => !shipmentEdi.isPending && setConfirmKind(null)}
+          title="EDI action"
+          footer={
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="back"
+                leftIcon={<ArrowLeft />}
+                disabled={shipmentEdi.isPending}
+                onClick={() => setConfirmKind(null)}
+              >
+                Back
+              </Button>
+              <Button
+                type="button"
+                leftIcon={<Radio />}
+                disabled={shipmentEdi.isPending || !ediAction.trim()}
+                onClick={() =>
+                  void run(async () => {
+                    await shipmentEdi.mutateAsync({ action: ediAction.trim() });
+                    setActionMessage(`EDI action “${ediAction.trim()}” submitted.`);
+                  })
+                }
+              >
+                {shipmentEdi.isPending ? 'Sending…' : 'Send EDI'}
+              </Button>
+            </div>
+          }
+        >
+          <label className="block text-[13px]">
+            <span className={erpForm.label}>
+              EDI action (POST /shipments/:id/edi/{'{action}'})
+            </span>
+            {ediActionOptions.length ? (
+              <select
+                className={erpForm.input}
+                value={ediAction}
+                onChange={(e) => setEdiAction(e.target.value)}
+              >
+                {ediActionOptions.map((a) => (
+                  <option key={a} value={a}>
+                    {a}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                className={erpForm.input}
+                value={ediAction}
+                onChange={(e) => setEdiAction(e.target.value)}
+                placeholder="e.g. submit, send, cancel"
+              />
+            )}
+          </label>
+        </Modal>
       )}
 
       {confirmKind === 'create-submaster' && (

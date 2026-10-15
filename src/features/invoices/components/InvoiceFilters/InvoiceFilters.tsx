@@ -1,4 +1,22 @@
+import { useEffect, useState } from 'react';
 import {
+  EnquirySheetDateInput,
+  EnquirySheetDatePresetSelect,
+  EnquirySheetFilterField,
+  EnquirySheetFilterGrid,
+  EnquirySheetSearchToolbar,
+  EnquirySheetSelect,
+  EnquirySheetTextInput,
+} from '@/components/erp';
+import { useParties } from '@/features/parties/hooks/useParties';
+import { isUuid } from '@/lib/isUuid';
+import {
+  DATE_RANGE_PRESETS,
+  resolveDateRangePreset,
+  type DateRangePreset,
+} from '@/features/management/utils/managementFilters';
+import {
+  DEFAULT_INVOICE_PAGE_SIZE,
   INVOICE_STATUSES,
   INVOICE_STATUS_LABELS,
   INVOICE_TYPES,
@@ -6,85 +24,247 @@ import {
   type InvoiceStatus,
   type InvoiceType,
 } from '../../constants/invoice.constants';
+import type { InvoiceListParams } from '../../types/invoice.types';
 
-const selectClass =
-  'h-9 rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm text-[var(--color-neutral-800)] focus:outline-none focus:border-[var(--color-primary-500)]';
-
-interface InvoiceFiltersProps {
-  search: string;
-  onSearchChange: (value: string) => void;
-  status: InvoiceStatus | 'all';
-  onStatusChange: (value: InvoiceStatus | 'all') => void;
-  invoiceType: InvoiceType | 'all';
-  onInvoiceTypeChange: (value: InvoiceType | 'all') => void;
+export type InvoiceFilterDraft = {
+  datePreset: DateRangePreset;
   fromDate: string;
-  onFromDateChange: (value: string) => void;
   toDate: string;
-  onToDateChange: (value: string) => void;
+  partyId: string;
+  jobId: string;
+  invoiceNo: string;
+  status: InvoiceStatus | 'all';
+  invoiceType: InvoiceType | 'all';
+  search: string;
+  rows: number;
+};
+
+export function defaultInvoiceFilterDraft(
+  limit = DEFAULT_INVOICE_PAGE_SIZE,
+): InvoiceFilterDraft {
+  const range = resolveDateRangePreset('this_month');
+  return {
+    datePreset: 'this_month',
+    fromDate: range?.from_date ?? '',
+    toDate: range?.to_date ?? '',
+    partyId: '',
+    jobId: '',
+    invoiceNo: '',
+    status: 'all',
+    invoiceType: 'all',
+    search: '',
+    rows: limit,
+  };
 }
 
+/** Map filter draft → GET /invoices OpenAPI query params. */
+export function invoiceFilterDraftToListParams(
+  draft: InvoiceFilterDraft,
+  page = 1,
+): InvoiceListParams {
+  const search = draft.search.trim() || draft.invoiceNo.trim() || undefined;
+  return {
+    page,
+    limit: draft.rows,
+    search,
+    status: draft.status === 'all' ? undefined : draft.status,
+    invoice_type: draft.invoiceType === 'all' ? undefined : draft.invoiceType,
+    party_id: draft.partyId || undefined,
+    job_id: draft.jobId && isUuid(draft.jobId) ? draft.jobId : undefined,
+    from_date: draft.fromDate || undefined,
+    to_date: draft.toDate || undefined,
+  };
+}
+
+interface InvoiceFiltersProps {
+  draft: InvoiceFilterDraft;
+  onDraftChange: (next: InvoiceFilterDraft) => void;
+  onSubmit: () => void;
+  isSubmitting?: boolean;
+}
+
+/**
+ * Enquiry Sheet / Quotation–style filters for finance invoices.
+ * Options from parties API; params match GET /invoices.
+ */
 export function InvoiceFilters({
-  search,
-  onSearchChange,
-  status,
-  onStatusChange,
-  invoiceType,
-  onInvoiceTypeChange,
-  fromDate,
-  onFromDateChange,
-  toDate,
-  onToDateChange,
+  draft,
+  onDraftChange,
+  onSubmit,
+  isSubmitting,
 }: InvoiceFiltersProps) {
+  const patch = (partial: Partial<InvoiceFilterDraft>) =>
+    onDraftChange({ ...draft, ...partial });
+
+  const applyPreset = (preset: DateRangePreset) => {
+    if (preset === 'custom') {
+      patch({ datePreset: preset });
+      return;
+    }
+    const range = resolveDateRangePreset(preset);
+    patch({
+      datePreset: preset,
+      fromDate: range?.from_date ?? '',
+      toDate: range?.to_date ?? '',
+    });
+  };
+
+  const { data: partiesResult } = useParties({
+    page: 1,
+    limit: 100,
+    party_type: 'CUSTOMER',
+    order: 'asc',
+  });
+
+  const allOpt = { value: '', label: 'All' };
+  const partyOptions = [
+    allOpt,
+    ...(partiesResult?.parties ?? [])
+      .filter((p) => isUuid(p.id))
+      .map((p) => ({
+        value: p.id,
+        label: [p.code, p.name].filter(Boolean).join(' — ') || p.id.slice(0, 8),
+      })),
+  ];
+  const statusOptions = [
+    { value: 'all', label: 'All' },
+    ...INVOICE_STATUSES.map((s) => ({ value: s, label: INVOICE_STATUS_LABELS[s] })),
+  ];
+  const typeOptions = [
+    { value: 'all', label: 'All' },
+    ...INVOICE_TYPES.map((t) => ({ value: t, label: INVOICE_TYPE_LABELS[t] })),
+  ];
+
   return (
-    <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
-      <input
-        type="search"
-        value={search}
-        onChange={(e) => onSearchChange(e.target.value)}
-        placeholder="Search invoice no, party…"
-        aria-label="Search invoices"
-        className="h-9 w-full lg:w-72 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]"
-      />
-      <select
-        value={status}
-        onChange={(e) => onStatusChange(e.target.value as InvoiceStatus | 'all')}
-        aria-label="Filter by status"
-        className={selectClass}
-      >
-        <option value="all">All statuses</option>
-        {INVOICE_STATUSES.map((s) => (
-          <option key={s} value={s}>
-            {INVOICE_STATUS_LABELS[s]}
-          </option>
-        ))}
-      </select>
-      <select
-        value={invoiceType}
-        onChange={(e) => onInvoiceTypeChange(e.target.value as InvoiceType | 'all')}
-        aria-label="Filter by invoice type"
-        className={selectClass}
-      >
-        <option value="all">All types</option>
-        {INVOICE_TYPES.map((t) => (
-          <option key={t} value={t}>
-            {INVOICE_TYPE_LABELS[t]}
-          </option>
-        ))}
-      </select>
-      <input
-        type="date"
-        value={fromDate}
-        onChange={(e) => onFromDateChange(e.target.value)}
-        aria-label="From date"
-        className={selectClass}
-      />
-      <input
-        type="date"
-        value={toDate}
-        onChange={(e) => onToDateChange(e.target.value)}
-        aria-label="To date"
-        className={selectClass}
+    <div>
+      <EnquirySheetFilterGrid>
+        <EnquirySheetFilterField label="Date Range">
+          <div className="flex gap-2">
+            <div className="w-24 shrink-0">
+              <EnquirySheetSelect
+                options={[{ value: 'invoice', label: 'Invoice' }]}
+                value="invoice"
+                onChange={() => undefined}
+              />
+            </div>
+            <EnquirySheetDatePresetSelect
+              value={draft.datePreset}
+              options={DATE_RANGE_PRESETS.map((p) => ({
+                value: p.value,
+                label: p.label,
+              }))}
+              onChange={(v) => applyPreset(v as DateRangePreset)}
+            />
+          </div>
+        </EnquirySheetFilterField>
+
+        <EnquirySheetFilterField label="From Date">
+          <EnquirySheetDateInput
+            value={draft.fromDate}
+            onChange={(e) => patch({ fromDate: e.target.value, datePreset: 'custom' })}
+          />
+        </EnquirySheetFilterField>
+
+        <EnquirySheetFilterField label="To Date">
+          <EnquirySheetDateInput
+            value={draft.toDate}
+            onChange={(e) => patch({ toDate: e.target.value, datePreset: 'custom' })}
+          />
+        </EnquirySheetFilterField>
+
+        <EnquirySheetFilterField label="Client">
+          <EnquirySheetSelect
+            options={partyOptions}
+            value={draft.partyId}
+            onChange={(e) => patch({ partyId: e.target.value })}
+          />
+        </EnquirySheetFilterField>
+
+        <EnquirySheetFilterField label="Invoice Type">
+          <EnquirySheetSelect
+            options={typeOptions}
+            value={draft.invoiceType}
+            onChange={(e) =>
+              patch({ invoiceType: e.target.value as InvoiceType | 'all' })
+            }
+          />
+        </EnquirySheetFilterField>
+
+        <EnquirySheetFilterField label="Invoice Status">
+          <EnquirySheetSelect
+            options={statusOptions}
+            value={draft.status}
+            onChange={(e) =>
+              patch({ status: e.target.value as InvoiceStatus | 'all' })
+            }
+          />
+        </EnquirySheetFilterField>
+
+        <EnquirySheetFilterField label="Invoice No">
+          <EnquirySheetTextInput
+            value={draft.invoiceNo}
+            onChange={(e) => patch({ invoiceNo: e.target.value })}
+          />
+        </EnquirySheetFilterField>
+
+        <EnquirySheetFilterField label="Job Id">
+          <EnquirySheetTextInput
+            value={draft.jobId}
+            onChange={(e) => patch({ jobId: e.target.value.trim() })}
+            placeholder="Optional job UUID"
+          />
+        </EnquirySheetFilterField>
+      </EnquirySheetFilterGrid>
+
+      <EnquirySheetSearchToolbar
+        search={draft.search}
+        onSearchChange={(search) => patch({ search })}
+        rows={draft.rows}
+        onRowsChange={(rows) => patch({ rows })}
+        onSubmit={onSubmit}
+        isSubmitting={isSubmitting}
+        rowOptions={[5, 10, 20, 25, 50, 100]}
       />
     </div>
   );
+}
+
+export function useInvoiceFilterDraft(initialLimit = DEFAULT_INVOICE_PAGE_SIZE) {
+  const [draft, setDraft] = useState<InvoiceFilterDraft>(() =>
+    defaultInvoiceFilterDraft(initialLimit),
+  );
+  const [applied, setApplied] = useState<InvoiceFilterDraft>(() =>
+    defaultInvoiceFilterDraft(initialLimit),
+  );
+
+  useEffect(() => {
+    const range = resolveDateRangePreset('this_month');
+    if (!range) return;
+    setDraft((prev) => ({
+      ...prev,
+      datePreset: 'this_month',
+      fromDate: range.from_date,
+      toDate: range.to_date,
+    }));
+    setApplied((prev) => ({
+      ...prev,
+      datePreset: 'this_month',
+      fromDate: range.from_date,
+      toDate: range.to_date,
+    }));
+  }, []);
+
+  const submit = () => {
+    let next = draft;
+    if (!draft.fromDate && !draft.toDate && draft.datePreset !== 'custom') {
+      const range = resolveDateRangePreset(draft.datePreset);
+      if (range) {
+        next = { ...draft, fromDate: range.from_date, toDate: range.to_date };
+        setDraft(next);
+      }
+    }
+    setApplied(next);
+  };
+
+  return { draft, setDraft, applied, submit };
 }
