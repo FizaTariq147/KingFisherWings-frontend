@@ -99,7 +99,7 @@ export function JobDimensionsPanel({
 
       <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
         <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
-          Header · PATCH /dimensions
+          Header
         </p>
         <Input
           label="Commodity description"
@@ -129,7 +129,7 @@ export function JobDimensionsPanel({
 
       <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
         <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
-          Lines · GET/POST /dimensions · PATCH/DELETE /dimensions/:lineId
+          Lines
         </p>
         {linesQuery.isLoading ? (
           <p className="text-[13px] text-[#64748b]">Loading dimension lines…</p>
@@ -324,7 +324,7 @@ export function JobDimensionsPanel({
         </div>
         <label className="block">
           <span className="mb-1 block text-[12px] font-medium text-[#334155]">
-            Paste EDI / CSV · POST /dimensions/upload/paste
+            Paste EDI / CSV
           </span>
           <textarea
             className="min-h-[4.5rem] w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 py-2 text-[13px]"

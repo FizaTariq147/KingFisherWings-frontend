@@ -12,7 +12,12 @@ import { Input } from '@/components/ui/Input';
 import { JOB_DOCUMENT_TYPES } from '../../constants/job.constants';
 import { useJobActions } from '../../hooks/useJobActions';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
-import { useJob, useJobDocumentGenerationStatus, useJobDocuments } from '../../hooks/useJobs';
+import {
+  useJob,
+  useJobDocumentGenerationStatus,
+  useJobDocuments,
+  useJobEmailRecipientsSuggest,
+} from '../../hooks/useJobs';
 import { JobDocumentGenerationStatusCard } from '../JobDocumentGenerationStatusCard';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { resolveJobDocumentPdfMeta } from '../../utils/jobDocumentPdfMeta';
@@ -104,6 +109,7 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
   const isAirImport = jobType === 'AIR_IMPORT';
   const { data: job } = useJob(jobId);
   const { data: documents = [], refetch } = useJobDocuments(jobId);
+  const emailSuggestQuery = useJobEmailRecipientsSuggest(jobId, true);
   const accessToken = useAuthStore((s) => s.accessToken);
   const user = useAuthStore((s) => s.user);
   const tenantId = resolveSessionTenantIdFromAuth({ accessToken, user });
@@ -387,6 +393,74 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
           >
             Register
           </Button>
+        </div>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Email recipients (suggest)</CardTitle>
+        </CardHeader>
+        <div className="px-4 pb-4 space-y-2 text-sm">
+          {emailSuggestQuery.isLoading ? (
+            <p className="text-[var(--color-neutral-400)]">Loading suggested To / CC…</p>
+          ) : emailSuggestQuery.isError ? (
+            <p className="text-[var(--color-danger-600)]">
+              {getErrorMessage(emailSuggestQuery.error)}
+            </p>
+          ) : (
+            (() => {
+              const raw = emailSuggestQuery.data;
+              const rec =
+                raw && typeof raw === 'object' && !Array.isArray(raw)
+                  ? (raw as Record<string, unknown>)
+                  : null;
+              const toList = Array.isArray(rec?.to)
+                ? (rec!.to as unknown[]).map(String)
+                : Array.isArray(rec?.to_emails)
+                  ? (rec!.to_emails as unknown[]).map(String)
+                  : typeof rec?.to === 'string'
+                    ? [rec.to]
+                    : [];
+              const ccList = Array.isArray(rec?.cc)
+                ? (rec!.cc as unknown[]).map(String)
+                : Array.isArray(rec?.cc_emails)
+                  ? (rec!.cc_emails as unknown[]).map(String)
+                  : typeof rec?.cc === 'string'
+                    ? [rec.cc]
+                    : [];
+              if (toList.length === 0 && ccList.length === 0) {
+                return (
+                  <p className="text-[var(--color-neutral-400)]">
+                    No party contact emails suggested yet.
+                  </p>
+                );
+              }
+              return (
+                <div className="space-y-2">
+                  <p>
+                    <span className="font-medium">To: </span>
+                    {toList.join(', ') || '—'}
+                  </p>
+                  <p>
+                    <span className="font-medium">CC: </span>
+                    {ccList.join(', ') || '—'}
+                  </p>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      if (toList[0]) setPreAlertEmail(toList[0]);
+                      if (ccList.length) setImportNoticeCc(ccList.join(', '));
+                      setMessage('Suggested recipients applied to pre-alert / notice fields.');
+                    }}
+                  >
+                    Apply to send fields
+                  </Button>
+                </div>
+              );
+            })()
+          )}
         </div>
       </Card>
 

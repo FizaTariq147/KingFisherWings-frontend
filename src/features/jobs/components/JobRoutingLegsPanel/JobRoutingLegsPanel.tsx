@@ -80,10 +80,6 @@ export function JobRoutingLegsPanel({
     <div className="space-y-3 text-sm">
       {error ? <p className="text-[var(--color-danger-600)]">{error}</p> : null}
       {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
-      <p className="text-[12px] text-[#64748b]">
-        POST /jobs/:id/routing-legs · PATCH/DELETE /jobs/:id/routing-legs/:legId ·
-        POST …/push-to-subjobs
-      </p>
       <Button
         type="button"
         size="sm"

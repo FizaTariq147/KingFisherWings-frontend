@@ -87,6 +87,8 @@ export interface Shipment {
   actions?: ShipmentActions;
   /** From GET /shipments/:id/detail when present. */
   tabs?: ShipmentDetailTab[];
+  path_hints?: string[];
+  ops_continuum?: Record<string, unknown>;
   header?: Record<string, unknown>;
   links?: Record<string, unknown>;
   sections?: Record<string, unknown>;
@@ -256,3 +258,8 @@ export const SHIPMENT_BL_STATUSES = [
   'SEAWAY',
   'CANCELLED',
 ] as const;
+
+/** OpenAPI GenerateShipmentEdiDto — same enum as job EDI */
+export type GenerateShipmentEdiDto = {
+  edi_type: string;
+};

@@ -12,7 +12,7 @@ export function Table({ children, className }: { children: React.ReactNode; clas
 
 export function TableHeader({ children }: { children: React.ReactNode }) {
   return (
-    <thead className="bg-[var(--color-neutral-50)] border-b border-[var(--color-neutral-200)]">
+    <thead className="border-b border-[var(--color-primary-700,#163E60)] bg-[var(--color-primary,#0A2942)]">
       {children}
     </thead>
   );
@@ -41,7 +41,7 @@ export function TableRow({ children, selected, className }: {
 export function TableHead({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <th className={cn(
-      'px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutral-600)] uppercase tracking-wide',
+      'px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-white',
       className
     )}>
       {children}

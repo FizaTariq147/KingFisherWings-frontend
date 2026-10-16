@@ -412,6 +412,21 @@ const OPS_NAV_ITEMS: NavItem[] = [
     matrixModule: 'transport',
   },
   {
+    label: 'Ops reports',
+    path: '/operations/reports',
+    Icon: FileText,
+    permission: 'menu_documentation',
+    permissionAny: [
+      'menu_documentation',
+      'menu_finance',
+      'menu_jobs_sea_export',
+      'menu_jobs_sea_import',
+      'menu_jobs_air_export',
+    ],
+    matrixModule: 'operations',
+    enabledModuleAny: ['shipments', 'operations', 'finance'],
+  },
+  {
     label: 'Shipments',
     path: '/operations/shipments',
     Icon: Package,

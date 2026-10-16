@@ -11,6 +11,8 @@ import SessionManagementPage from '../pages/settings/SessionManagementPage'
 import SettingsMenuPage from '../pages/settings/SettingsMenuPage'
 import LoginSecurityPage from '../pages/settings/LoginSecurityPage'
 import TransportRequestsPage from '../features/transport/pages/TransportRequestsPage'
+import OperationsReportsHubPage from '../features/operations/pages/OperationsReportsHubPage'
+import OperationsReportPage from '../features/operations/pages/OperationsReportPage'
 import PublicApiAdminPage from '../features/public-api-admin/pages/PublicApiAdminPage'
 import TenantBillingPage from '../features/tenant-platform-billing/pages/TenantBillingPage'
 import TenantPlatformInvoiceDetailPage from '../features/tenant-platform-billing/pages/TenantPlatformInvoiceDetailPage'
@@ -746,6 +748,8 @@ export const router = createBrowserRouter([
           { path: '/settings/billing/payments/:id', element: <TenantPlatformPaymentDetailPage /> },
           { path: '/settings/tools', element: <StaffToolsPage /> },
           { path: '/operations/transport-requests', element: <TransportRequestsPage /> },
+          { path: '/operations/reports', element: <OperationsReportsHubPage /> },
+          { path: '/operations/reports/:reportKey', element: <OperationsReportPage /> },
           { path: '/operations/shipments', element: <ShipmentListPage /> },
           { path: '/operations/shipments/new', element: <ShipmentCreatePage /> },
           { path: '/operations/shipments/:id', element: <ShipmentDetailPage /> },

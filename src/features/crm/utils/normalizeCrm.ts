@@ -1,4 +1,5 @@
 import type { Budget, CallLog, Campaign, CampaignTemplate, DashboardOverview, Enquiry, FollowUp, Lead, Subscriber } from '../types/crm.types';
+import { pickDetailHints } from '@/features/shared/continuum/normalizeDetailHints';
 import { asRecord } from './crmUnwrap';
 
 const string = (record: Record<string, unknown>, ...keys: string[]) => {
@@ -200,6 +201,7 @@ export function normalizeEnquiry(raw: unknown): Enquiry | null {
     actions: normalizeEnquiryActions(
       b.r.actions ?? b.r.action_flags ?? b.r.actionFlags ?? b.r.available_actions,
     ),
+    ...pickDetailHints(b.r),
   };
 }
 export function normalizeBudget(raw: unknown): Budget | null {

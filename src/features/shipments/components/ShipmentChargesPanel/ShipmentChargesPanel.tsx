@@ -140,7 +140,7 @@ export function ShipmentChargesPanel({
   };
 
   return (
-    <div className="space-y-4 p-3">
+    <div className="kf-section-enter space-y-4 p-3">
       {error ? (
         <p className="text-sm text-[var(--color-danger-600)]">{error}</p>
       ) : null}
@@ -149,7 +149,7 @@ export function ShipmentChargesPanel({
       ) : null}
 
       {/* Fresa Costing toolbar — same chrome as job Costing */}
-      <div className="flex flex-wrap gap-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-toolbar-bg,#EEF3F9)] px-3 py-2.5">
+      <div className="kf-section-ambient flex flex-wrap gap-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-3 py-2.5">
         <Button type="button" size="sm" variant="create" onClick={() => setDialog('add')}>
           + Add
         </Button>
@@ -181,8 +181,8 @@ export function ShipmentChargesPanel({
         padding="none"
         className="border-[var(--fresa-border,#C9D3DF)] shadow-none overflow-hidden"
       >
-        <CardHeader className="mb-0 border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-thead-bg,#E9EEF2)] px-4 py-2.5">
-          <CardTitle className="text-[var(--fresa-header-text,#0A2942)]">
+        <CardHeader className="mb-0 border-b border-[var(--fresa-border,#C9D3DF)] bg-white px-4 py-2.5">
+          <CardTitle className="text-[#0f172a]">
             Costing
           </CardTitle>
         </CardHeader>

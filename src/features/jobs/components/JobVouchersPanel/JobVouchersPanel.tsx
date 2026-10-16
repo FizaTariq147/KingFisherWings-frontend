@@ -101,7 +101,6 @@ export function JobVouchersPanel({ jobId, job }: JobVouchersPanelProps) {
           <CardTitle>Linked vouchers ({vouchers.length})</CardTitle>
         </CardHeader>
         <div className="space-y-2 px-4 pb-4">
-          <p className="text-[12px] text-[#64748b]">GET /jobs/:id/vouchers</p>
           {listQuery.isLoading ? (
             <p className="text-[#64748b]">Loading vouchers…</p>
           ) : vouchers.length === 0 ? (
@@ -135,9 +134,6 @@ export function JobVouchersPanel({ jobId, job }: JobVouchersPanelProps) {
           <CardTitle>Generate voucher from charges</CardTitle>
         </CardHeader>
         <div className="grid gap-2 px-4 pb-4 sm:grid-cols-2">
-          <p className="sm:col-span-2 text-[12px] text-[#64748b]">
-            POST /jobs/:id/vouchers/generate
-          </p>
           <label className="block text-[12px] font-medium text-[#64748b]">
             Voucher type
             <select

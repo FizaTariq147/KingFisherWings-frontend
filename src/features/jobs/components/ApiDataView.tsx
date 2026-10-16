@@ -5,13 +5,29 @@ function asRecord(value: unknown): Record<string, unknown> | null {
   return value as Record<string, unknown>;
 }
 
+function tryParseJsonString(value: string): unknown | null {
+  const trimmed = value.trim();
+  if (!trimmed.startsWith('[') && !trimmed.startsWith('{')) return null;
+  try {
+    return JSON.parse(trimmed) as unknown;
+  } catch {
+    return null;
+  }
+}
+
 function formatCell(value: unknown): string {
   if (value == null || value === '') return '—';
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
   if (typeof value === 'number') {
     return Number.isFinite(value) ? value.toLocaleString() : '—';
   }
-  if (typeof value === 'string') return value.trim() || '—';
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (!trimmed) return '—';
+    const parsed = tryParseJsonString(trimmed);
+    if (parsed != null) return formatCell(parsed);
+    return trimmed;
+  }
   if (Array.isArray(value)) {
     if (value.length === 0) return '—';
     if (value.every((v) => v == null || ['string', 'number', 'boolean'].includes(typeof v))) {
@@ -44,7 +60,18 @@ function unwrapList(raw: unknown): unknown[] {
   if (Array.isArray(raw)) return raw;
   const rec = asRecord(raw);
   if (!rec) return [];
-  for (const key of ['items', 'data', 'results', 'rows', 'lines', 'charges', 'history']) {
+  for (const key of [
+    'items',
+    'data',
+    'results',
+    'rows',
+    'lines',
+    'charges',
+    'history',
+    'containers',
+    'portions',
+    'split_portions',
+  ]) {
     if (Array.isArray(rec[key])) return rec[key] as unknown[];
   }
   return [];
@@ -58,6 +85,12 @@ function preferredColumns(rows: Record<string, unknown>[]): string[] {
     'charge',
     'charge_code',
     'description',
+    'consignee_id',
+    'packages',
+    'gross_weight',
+    'measurement',
+    'commodity',
+    'marks_numbers',
     'container_number',
     'event',
     'action',
@@ -116,6 +149,20 @@ export function ApiDataView({
 }: ApiDataViewProps) {
   if (data == null) {
     return <p className="text-sm text-[var(--color-neutral-400)]">{emptyLabel}</p>;
+  }
+
+  if (typeof data === 'string') {
+    const parsed = tryParseJsonString(data);
+    if (parsed != null) {
+      return (
+        <ApiDataView
+          data={parsed}
+          emptyLabel={emptyLabel}
+          className={className}
+          maxHeightClass={maxHeightClass}
+        />
+      );
+    }
   }
 
   const list = unwrapList(data);

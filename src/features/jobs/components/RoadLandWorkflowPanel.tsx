@@ -121,8 +121,8 @@ function RoadLandWorkflowPanelInner({ job, mode }: { job: Job; mode: RoadLandMod
         <div className="space-y-3 px-4 pb-4">
           <p className="text-xs text-[var(--color-neutral-400)]">
             {isRoad
-              ? 'PATCH …/road-freight-details · assign/pickup/border/POD under /jobs/:id/road-freight/*'
-              : 'PATCH …/land-details · assign/pickup/border/POD under /jobs/:id/land/*'}
+              ? 'Road freight: assign trucker, pickup, border crossing, and POD.'
+              : 'Land freight: assign trucker, pickup, border crossing, and POD.'}
           </p>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             <label className="flex flex-col gap-1 text-xs">

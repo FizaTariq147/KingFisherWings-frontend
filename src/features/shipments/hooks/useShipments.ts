@@ -26,6 +26,9 @@ export const shipmentKeys = {
     [...shipmentKeys.all, 'detail', id, 'tab', tab] as const,
   kpi: (id: string) => [...shipmentKeys.all, 'kpi', id] as const,
   tracking: (id: string) => [...shipmentKeys.all, 'tracking', id] as const,
+  ediTypes: (id: string) => [...shipmentKeys.all, 'edi-types', id] as const,
+  ediSubmissions: (id: string) =>
+    [...shipmentKeys.all, 'edi-submissions', id] as const,
 };
 
 export function useShipments(params: ShipmentListParams) {
@@ -231,6 +234,50 @@ export function useShipmentEdi(id: string) {
     mutationFn: (args: { action: string; body?: Record<string, unknown> }) =>
       shipmentService.edi(id, args.action, args.body),
     onSuccess: () => invalidate(id),
+  });
+}
+
+/** GET /shipments/:id/edi/types */
+export function useShipmentEdiTypes(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const { canReadApi } = useShipmentsPermissions();
+  return useQuery({
+    queryKey: shipmentKeys.ediTypes(id),
+    queryFn: () => shipmentService.listEdiTypes(id),
+    enabled: Boolean(accessToken) && isUuid(id) && canReadApi && enabled,
+  });
+}
+
+/** GET /shipments/:id/edi/submissions */
+export function useShipmentEdiSubmissions(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const { canReadApi } = useShipmentsPermissions();
+  return useQuery({
+    queryKey: shipmentKeys.ediSubmissions(id),
+    queryFn: () => shipmentService.listEdiSubmissions(id),
+    enabled: Boolean(accessToken) && isUuid(id) && canReadApi && enabled,
+  });
+}
+
+/** POST /shipments/:id/edi/generate { edi_type } */
+export function useGenerateShipmentEdi(id: string) {
+  const invalidate = useInvalidateShipments();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: { edi_type: string }) => shipmentService.generateEdi(id, dto),
+    onSuccess: () => {
+      invalidate(id);
+      void queryClient.invalidateQueries({ queryKey: shipmentKeys.ediSubmissions(id) });
+      void queryClient.invalidateQueries({ queryKey: shipmentKeys.ediTypes(id) });
+    },
+  });
+}
+
+/** GET /shipments/:id/edi/submissions/:submissionId/download */
+export function useDownloadShipmentEdiSubmission(id: string) {
+  return useMutation({
+    mutationFn: (submissionId: string) =>
+      shipmentService.downloadEdiSubmission(id, submissionId),
   });
 }
 

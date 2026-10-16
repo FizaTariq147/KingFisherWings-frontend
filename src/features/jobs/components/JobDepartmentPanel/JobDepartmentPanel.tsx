@@ -45,7 +45,6 @@ export function JobDepartmentPanel({
     <div className="space-y-3 text-sm">
       {error ? <p className="text-[var(--color-danger-600)]">{error}</p> : null}
       {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
-      <p className="text-[12px] text-[#64748b]">PATCH /jobs/:id/department</p>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <Input label="Company ID" value={companyId} onChange={(e) => setCompanyId(e.target.value)} />
         <Input label="Branch ID" value={branchId} onChange={(e) => setBranchId(e.target.value)} />

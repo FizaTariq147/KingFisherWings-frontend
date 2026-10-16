@@ -193,6 +193,8 @@ export interface Quotation {
   status_history?: QuotationStatusHistoryEntry[];
   approvals?: QuotationApproval[];
   actions?: QuotationActions;
+  path_hints?: string[];
+  ops_continuum?: Record<string, unknown>;
 }
 
 export type CreateQuotationDto = CreateQuotationFormValues;

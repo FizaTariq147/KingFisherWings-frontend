@@ -1,4 +1,5 @@
 import { isUuid } from '@/lib/isUuid';
+import { pickDetailHints } from '@/features/shared/continuum/normalizeDetailHints';
 import type { Shipment, ShipmentActions, ShipmentDetailTab } from '../types/shipment.types';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -242,6 +243,7 @@ export function normalizeShipment(raw: unknown): Shipment | null {
     updated_at: str(r.updated_at) ?? str(r.updatedAt),
     actions,
     tabs,
+    ...pickDetailHints(root),
     header: header ?? undefined,
     links: asRecord(root.links) ?? asRecord(asRecord(root.data)?.links) ?? undefined,
     sections:

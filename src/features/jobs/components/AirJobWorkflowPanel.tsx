@@ -810,10 +810,9 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
             <div className="rounded-md border border-sky-200 bg-sky-50 p-3 space-y-2">
               <p className="text-sm font-medium text-sky-900">Now: CUSTOMER_ACCEPTED</p>
               <p className="text-xs text-sky-800">
-                Customer must accept in the portal (
-                <code className="text-[10px]">POST /portal/shipments/:id/accept</code>
-                ). That sets <strong>CUSTOMER_ACCEPTED</strong> on the server. A local continue
-                click alone will not unlock Send invoice (API still rejects jumps from QUOTE_SENT).
+                Customer must accept in the portal. That sets{' '}
+                <strong>CUSTOMER_ACCEPTED</strong> on the server. A local continue click alone
+                will not unlock Send invoice (API still rejects jumps from QUOTE_SENT).
               </p>
               <Button
                 type="button"
@@ -1120,8 +1119,8 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
               <p className="text-sm font-medium text-emerald-900">Now: INVOICE_SENT</p>
               <p className="text-xs text-emerald-800">
                 Invoice is generated automatically when the booking form is marked complete. Use
-                this only if auto-invoice failed — creates/reuses a draft invoice, then{' '}
-                <code>POST /jobs/:id/air/send-invoice</code>. Job needs a shipper party.
+                this only if auto-invoice failed — creates/reuses a draft invoice, then sends it.
+                Job needs a shipper party.
               </p>
               {lastInvoiceId ? (
                 <p className="text-xs text-emerald-900">
@@ -1177,8 +1176,8 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
               <div className="rounded-md border border-violet-200 bg-violet-50 p-3 space-y-3">
                 <p className="text-sm font-medium text-violet-900">ULD / air pallet (removed)</p>
                 <p className="text-xs text-violet-800">
-                  <code className="text-[10px]">GET/POST /jobs/:id/air/uld-requests</code> is no
-                  longer available. Mark these flowchart steps done to continue export ops.
+                  ULD / air pallet request APIs are no longer available. Mark these flowchart
+                  steps done to continue export ops.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <Button

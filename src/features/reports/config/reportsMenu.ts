@@ -4,6 +4,7 @@ import {
   BarChart2,
   Barcode,
   Boxes,
+  ClipboardList,
   FileEdit,
   FileStack,
 } from 'lucide-react';
@@ -106,11 +107,22 @@ export const reportsCatalogTile: MenuTile = {
  * Job-level PDFs (HAWB/HBL/stuffing/courier) stay on the job documents panel.
  * Vendor portal has disputes admin only (no dedicated reports hub).
  */
+const reportsOpsTile: MenuTile = {
+  id: 'operations-reports',
+  title: 'Operations reports',
+  description:
+    'DO not invoiced, job finance, exceptions, KPI status, job list summary, voyage list.',
+  icon: ClipboardList,
+  iconColor: 'bg-teal-500',
+  path: '/operations/reports',
+};
+
 export const reportsMenu: MenuTile[] = dedupeByPath([
   withSection(reportsCatalogTile, 'Catalogue'),
   withSection(reportsQuotationTile, 'Module reports'),
   withSection(reportsSalesTile, 'Module reports'),
   withSection(reportsCsTile, 'Module reports'),
+  withSection(reportsOpsTile, 'Module reports'),
   withSection(reportsHrTile, 'Module reports'),
   withSection(reportsMisTile, 'Module reports'),
   withSection(reportsNvoccTile, 'Module reports'),

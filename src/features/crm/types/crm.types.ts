@@ -127,6 +127,8 @@ export interface Enquiry extends BaseEntity {
   job_id?: string;
   job_number?: string;
   actions?: EnquiryActions;
+  path_hints?: string[];
+  ops_continuum?: Record<string, unknown>;
 }
 
 export interface CreateEnquiryDto {

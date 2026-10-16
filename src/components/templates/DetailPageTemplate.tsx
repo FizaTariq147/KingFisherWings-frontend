@@ -70,6 +70,13 @@ interface DetailPageTemplateProps {
   showChromeBack?: boolean;
   /** Hide the text PageBackLink above the header (Fresa chrome Back is enough). */
   hidePageBackLink?: boolean;
+  /** Extra root classes. */
+  className?: string;
+  /**
+   * When true, only the detail summary form shrinks (responsive) for the Ops
+   * continuum rail. Actions toolbar and tab panels stay full width.
+   */
+  reserveContinuumRail?: boolean;
 }
 
 const TONE_VARIANT: Record<
@@ -127,7 +134,10 @@ export function DetailPageTemplate({
   backLabel = 'Back',
   showChromeBack = true,
   hidePageBackLink = true,
+  className = '',
+  reserveContinuumRail = false,
 }: DetailPageTemplateProps) {
+  const formPad = reserveContinuumRail ? 'kf-ops-continuum-form-pad' : '';
   const navigate = useNavigate();
   const initialKey =
     (defaultTab && tabs.some((t) => t.key === defaultTab) ? defaultTab : undefined) ||
@@ -173,7 +183,9 @@ export function DetailPageTemplate({
   }, [actions, showChromeBack, onBack, backTo, navigate]);
 
   return (
-    <div className="space-y-2.5 bg-[var(--fresa-page-bg,#F4F6F9)] -mx-1 px-1 pb-4">
+    <div
+      className={`space-y-2.5 bg-[var(--fresa-page-bg,#F4F6F9)] -mx-1 px-1 pb-4 ${className}`.trim()}
+    >
       {!hidePageBackLink ? (
         <PageBackLink to={backTo} label={backLabel} onClick={onBack} className="mb-1" />
       ) : null}
@@ -221,15 +233,15 @@ export function DetailPageTemplate({
 
       {/* Detail summary strip */}
       {detailSection ? (
-        <section className={erpForm.section}>
+        <section className={`${erpForm.section} ${formPad}`.trim()}>
           <div className={erpForm.sectionHeader}>{detailTitle}</div>
           <div className={erpForm.sectionBody}>{detailSection}</div>
         </section>
       ) : null}
 
-      {/* Actions / generation toolbar — below detail */}
+      {/* Actions / generation toolbar — always full width (never continuum-padded) */}
       {toolbar ? (
-        <div className={`${erpForm.toolbar} print:hidden`}>
+        <div className={`${erpForm.toolbar} w-full max-w-none print:hidden`}>
           <p className="mr-1 w-full text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)] sm:mr-2 sm:w-auto">
             {toolbarLabel}
           </p>
@@ -237,7 +249,7 @@ export function DetailPageTemplate({
         </div>
       ) : null}
 
-      {/* Tabs */}
+      {/* Tabs + Actions-related toolbars stay full width (no continuum pad). */}
       <section className={erpForm.section}>
         <div className="kf-tabs-scroll flex gap-0 overflow-x-auto border-b border-[var(--color-sidebar-bg,#0A2942)] bg-[var(--color-sidebar-bg,#0A2942)]">
           {tabs.map((t) => (

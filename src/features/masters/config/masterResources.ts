@@ -1407,13 +1407,19 @@ export const MASTER_RESOURCES: Record<MasterResourceKey, MasterResourceConfig> =
     supportsDelete: true,
     createOnly: true,
     columns: [
-      { key: 'entity_type', label: 'Type' },
-      { key: 'entity_id', label: 'Entity', mono: true },
+      { key: 'kind', label: 'Kind' },
+      { key: 'target_key', label: 'Target', mono: true },
       { key: 'label', label: 'Label' },
     ],
     fields: [
-      { name: 'entity_type', label: 'Entity type', type: 'text', required: true },
-      { name: 'entity_id', label: 'Entity ID', type: 'text', required: true, mono: true },
+      { name: 'kind', label: 'Kind', type: 'text', required: true },
+      {
+        name: 'target_key',
+        label: 'Target key',
+        type: 'text',
+        required: true,
+        mono: true,
+      },
       { name: 'label', label: 'Label', type: 'text' },
     ],
   },
