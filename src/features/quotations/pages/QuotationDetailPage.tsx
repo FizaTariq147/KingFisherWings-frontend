@@ -52,6 +52,8 @@ import { useCustomerPortalBookingForm } from '@/features/portal-admin-inbox/hook
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import { buildFclContinuumSteps } from '@/features/shared/continuum/buildFclContinuumSteps';
 import { FclContinuumRail } from '@/features/shared/continuum/FclContinuumRail';
+import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggle';
+import { OpsContinuumRail } from '@/features/ops-activity';
 import { isUuid } from '@/lib/isUuid';
 import {
   isAwaitingCustomerDecision,
@@ -662,19 +664,8 @@ export default function QuotationDetailPage() {
     partyId: quotation.customer_id,
     enquiryId: quotation.enquiry_id,
     quotationId: quotation.id,
-    verified:
-      Boolean(fclActions?.can_approve_verified) ||
-      status === 'INTERNALLY_APPROVED' ||
-      status === 'APPROVED' ||
-      status === 'CONVERTED' ||
-      hasShipment ||
-      hasJob,
-    approved:
-      status === 'APPROVED' ||
-      status === 'CONVERTED' ||
-      status === 'WON' ||
-      hasShipment ||
-      hasJob,
+    quotationStatus: status,
+    verified: Boolean(fclActions?.can_approve_verified) || undefined,
     shipmentId: quotation.shipment_id,
     jobId: quotation.job_id,
     jobHref: quotation.job_id
@@ -701,7 +692,21 @@ export default function QuotationDetailPage() {
 
   return (
     <>
+      <OpsContinuumRail
+        entityType="QUOTATION"
+        entityId={quotation.id}
+        pathHints={quotation.path_hints}
+        opsContinuum={quotation.ops_continuum}
+        actions={quotation.actions as Record<string, unknown> | undefined}
+        links={{
+          enquiryId: quotation.enquiry_id,
+          quotationId: quotation.id,
+          shipmentId: quotation.shipment_id,
+          jobId: quotation.job_id,
+        }}
+      />
       <DetailPageTemplate
+        reserveContinuumRail
         eyebrow="Quotation details"
         title={title}
         subtitle={
@@ -754,7 +759,14 @@ export default function QuotationDetailPage() {
                 )}
               </div>
             )}
-            <FclContinuumRail steps={continuumSteps} />
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <FclContinuumRail steps={continuumSteps} className="flex-1" />
+              <FavouriteToggle
+                kind="quotation"
+                targetKey={quotation.id}
+                label={title}
+              />
+            </div>
             <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-[13px]">
               <span className="font-semibold text-[var(--fresa-header-text,#0A2942)]">Related: </span>
               {enquiryHref ? (

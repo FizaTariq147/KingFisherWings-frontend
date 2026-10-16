@@ -673,6 +673,69 @@ export const shipmentService = {
     }
   },
 
+  /** GET /shipments/:id/edi/types */
+  async listEdiTypes(id: string): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(SHIPMENT_API.ediTypes(id)),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /shipments/:id/edi/generate { edi_type } */
+  async generateEdi(
+    id: string,
+    dto: { edi_type: string },
+  ): Promise<unknown> {
+    assertId(id);
+    if (!String(dto.edi_type ?? '').trim()) {
+      throw new Error('EDI type is required.');
+    }
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(SHIPMENT_API.ediGenerate(id), {
+          edi_type: String(dto.edi_type).trim(),
+        }),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /shipments/:id/edi/submissions */
+  async listEdiSubmissions(id: string): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(SHIPMENT_API.ediSubmissions(id)),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /shipments/:id/edi/submissions/:submissionId/download */
+  async downloadEdiSubmission(id: string, submissionId: string): Promise<unknown> {
+    assertId(id);
+    if (!submissionId.trim()) throw new Error('Invalid EDI submission id.');
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(
+          SHIPMENT_API.ediSubmissionDownload(id, submissionId.trim()),
+        ),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
   async kpi(id: string): Promise<unknown> {
     assertId(id);
     try {

@@ -3,7 +3,11 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useJobActions } from '../../hooks/useJobActions';
-import { useJobOrganizations, useJobDetailTab } from '../../hooks/useJobs';
+import {
+  useJobOrganizations,
+  useJobDetailTab,
+  useJobReferences,
+} from '../../hooks/useJobs';
 import { useJobTabResourceMutations } from '../../hooks/useJobTabResources';
 import type { Job } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
@@ -15,7 +19,17 @@ const ORG_TYPES = [
   'NOTIFY',
   'BILLING_PARTY',
   'AGENT',
+  'OVERSEAS_AGENT',
   'CARRIER',
+] as const;
+
+const REFERENCE_TYPES = [
+  'PO_NUMBER',
+  'CUSTOMER_REF',
+  'SABER',
+  'RA_CODE',
+  'ISF',
+  'OTHER',
 ] as const;
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -51,12 +65,15 @@ export function JobPartyPanel({
   const resources = useJobTabResourceMutations(job.id);
   const tabQuery = useJobDetailTab(job.id, 'organization');
   const orgsQuery = useJobOrganizations(job.id);
+  const refsQuery = useJobReferences(job.id);
 
   const [referenceType, setReferenceType] = useState(
     job.client_reference_type || 'PO_NUMBER',
   );
   const [referenceNo, setReferenceNo] = useState(job.client_reference_no || '');
   const [partyRole, setPartyRole] = useState('CLIENT');
+  const [typedRefType, setTypedRefType] = useState<string>('SABER');
+  const [typedRefValue, setTypedRefValue] = useState('');
   const [orgType, setOrgType] = useState<string>('SHIPPER');
   const [partyId, setPartyId] = useState('');
   const [replacePartyId, setReplacePartyId] = useState('');
@@ -75,10 +92,36 @@ export function JobPartyPanel({
       onChanged?.();
       void tabQuery.refetch();
       void orgsQuery.refetch();
+      void refsQuery.refetch();
     } catch (err) {
       setError(getErrorMessage(err));
     }
   };
+
+  const typedRefRows = useMemo(() => {
+    const raw = refsQuery.data;
+    if (!raw) return [] as { type: string; value: string }[];
+    if (Array.isArray(raw)) {
+      return raw
+        .map((r) => {
+          const rec = asRecord(r);
+          if (!rec) return null;
+          const type = String(rec.type ?? rec.reference_type ?? '').trim();
+          const value = String(
+            rec.value ?? rec.reference_no ?? rec.reference_number ?? '',
+          ).trim();
+          if (!type && !value) return null;
+          return { type: type || '—', value: value || '—' };
+        })
+        .filter((r): r is { type: string; value: string } => Boolean(r));
+    }
+    const rec = asRecord(raw);
+    if (!rec) return [];
+    const refs = asRecord(rec.references) ?? rec;
+    return Object.entries(refs)
+      .filter(([, v]) => typeof v === 'string' || typeof v === 'number')
+      .map(([type, value]) => ({ type, value: String(value) }));
+  }, [refsQuery.data]);
 
   const saveReference = () =>
     void run(
@@ -94,6 +137,7 @@ export function JobPartyPanel({
 
   const pending =
     actions.upsertClientReference.isPending ||
+    actions.putReferenceByType.isPending ||
     resources.addOrganization.isPending ||
     resources.replaceOrganization.isPending ||
     resources.unlinkOrganization.isPending ||
@@ -107,7 +151,7 @@ export function JobPartyPanel({
 
       <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
         <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
-          Organizations · GET/POST /organizations
+          Organizations
         </p>
         {orgsQuery.isLoading ? (
           <p className="text-[13px] text-[#64748b]">Loading organizations…</p>
@@ -269,7 +313,7 @@ export function JobPartyPanel({
 
       <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
         <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
-          Client reference · PATCH /organization/client-reference
+          Client reference
         </p>
         {tabQuery.isLoading ? (
           <p className="text-[13px] text-[#64748b]">Loading party…</p>
@@ -282,11 +326,13 @@ export function JobPartyPanel({
               value={partyRole}
               onChange={(e) => setPartyRole(e.target.value)}
             >
-              {['CLIENT', 'SHIPPER', 'CONSIGNEE', 'BILLING_PARTY', 'AGENT'].map((r) => (
-                <option key={r} value={r}>
-                  {r.replaceAll('_', ' ')}
-                </option>
-              ))}
+              {['CLIENT', 'SHIPPER', 'CONSIGNEE', 'BILLING_PARTY', 'AGENT', 'OVERSEAS_AGENT'].map(
+                (r) => (
+                  <option key={r} value={r}>
+                    {r.replaceAll('_', ' ')}
+                  </option>
+                ),
+              )}
             </select>
           </label>
           <label className="block">
@@ -298,7 +344,7 @@ export function JobPartyPanel({
               value={referenceType}
               onChange={(e) => setReferenceType(e.target.value)}
             >
-              {['PO_NUMBER', 'CUSTOMER_REF', 'OTHER'].map((r) => (
+              {REFERENCE_TYPES.map((r) => (
                 <option key={r} value={r}>
                   {r.replaceAll('_', ' ')}
                 </option>
@@ -320,6 +366,70 @@ export function JobPartyPanel({
         >
           Save client reference
         </Button>
+      </section>
+
+      <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
+        <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
+          Typed references (SABER / RA / ISF)
+        </p>
+        {refsQuery.isLoading ? (
+          <p className="text-[13px] text-[#64748b]">Loading references…</p>
+        ) : typedRefRows.length === 0 ? (
+          <p className="text-[13px] text-[#64748b]">No typed references yet.</p>
+        ) : (
+          <ul className="space-y-1">
+            {typedRefRows.map((row) => (
+              <li
+                key={`${row.type}-${row.value}`}
+                className="rounded-sm border border-[#e8edf2] bg-white px-2.5 py-1.5 text-[13px]"
+              >
+                <span className="font-medium">{row.type}</span>
+                <span className="ml-2 text-[#64748b]">{row.value}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+          <label className="block">
+            <span className="mb-1 block text-[12px] font-medium text-[#334155]">Type</span>
+            <select
+              className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+              value={typedRefType}
+              onChange={(e) => setTypedRefType(e.target.value)}
+            >
+              {REFERENCE_TYPES.map((r) => (
+                <option key={r} value={r}>
+                  {r.replaceAll('_', ' ')}
+                </option>
+              ))}
+            </select>
+          </label>
+          <Input
+            label="Value"
+            value={typedRefValue}
+            onChange={(e) => setTypedRefValue(e.target.value)}
+          />
+          <div className="flex items-end">
+            <Button
+              type="button"
+              size="sm"
+              variant="create"
+              disabled={pending || !typedRefType.trim() || !typedRefValue.trim()}
+              onClick={() =>
+                void run(
+                  () =>
+                    actions.putReferenceByType.mutateAsync({
+                      type: typedRefType.trim(),
+                      dto: { value: typedRefValue.trim(), reference_no: typedRefValue.trim() },
+                    }),
+                  `${typedRefType} saved.`,
+                ).then(() => setTypedRefValue(''))
+              }
+            >
+              Upsert reference
+            </Button>
+          </div>
+        </div>
       </section>
     </div>
   );

@@ -29,6 +29,9 @@ import { appType } from '@/lib/erpTypography';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import { buildFclContinuumSteps } from '@/features/shared/continuum/buildFclContinuumSteps';
 import { FclContinuumRail } from '@/features/shared/continuum/FclContinuumRail';
+import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggle';
+import { OpsContinuumRail } from '@/features/ops-activity';
+import { GenerateEdiPanel } from '@/features/shared/edi/GenerateEdiPanel';
 import { erpForm } from '@/lib/erpForm';
 import { isUuid } from '@/lib/isUuid';
 import { cn } from '@/lib/utils';
@@ -57,7 +60,10 @@ import {
   useShipmentAwb,
   useShipmentBillsOfLading,
   useShipmentCreateSubmaster,
-  useShipmentEdi,
+  useDownloadShipmentEdiSubmission,
+  useGenerateShipmentEdi,
+  useShipmentEdiSubmissions,
+  useShipmentEdiTypes,
   useShipmentKpi,
   useShipmentTracking,
   useSplitShipment,
@@ -156,7 +162,8 @@ export default function ShipmentDetailPage() {
   const splitShipment = useSplitShipment(id);
   const mergeShipments = useMergeShipments(id);
   const switchBl = useSwitchShipmentBl(id);
-  const shipmentEdi = useShipmentEdi(id);
+  const generateShipmentEdi = useGenerateShipmentEdi(id);
+  const downloadShipmentEdi = useDownloadShipmentEdiSubmission(id);
   const changeStatus = useChangeShipmentStatus(id);
   const changeBlStatus = useChangeShipmentBlStatus(id);
   const changeDepartment = useChangeShipmentDepartment(id);
@@ -178,7 +185,6 @@ export default function ShipmentDetailPage() {
   const [showBlEntry, setShowBlEntry] = useState(false);
   const [generateJobMode, setGenerateJobMode] = useState<'HOUSE' | 'DIRECT'>('HOUSE');
   const [mergeSourceIds, setMergeSourceIds] = useState('');
-  const [ediAction, setEdiAction] = useState('');
   const [switchBlNumber, setSwitchBlNumber] = useState('');
   const [editing, setEditing] = useState(false);
   const [editDraft, setEditDraft] = useState({
@@ -201,6 +207,11 @@ export default function ShipmentDetailPage() {
   const trackingQuery = useShipmentTracking(id, showTracking);
   const awbQuery = useShipmentAwb(id, showAwb);
   const blEntryQuery = useShipmentBillsOfLading(id, showBlEntry);
+  const shipmentEdiTypesQuery = useShipmentEdiTypes(id, confirmKind === 'edi');
+  const shipmentEdiSubmissionsQuery = useShipmentEdiSubmissions(
+    id,
+    confirmKind === 'edi',
+  );
 
   const shipment = query.data;
   const labels = useShipmentResolvedLabels(shipment);
@@ -304,7 +315,8 @@ export default function ShipmentDetailPage() {
   const canSplit = perms.canWriteUpdate && actions?.can_split === true;
   const canMerge = perms.canWriteUpdate && actions?.can_merge === true;
   const canSwitchBl = perms.canWriteUpdate && actions?.can_switch_bl === true;
-  const canEdi = perms.canWriteUpdate && actions?.can_edi === true;
+  const canEdi =
+    perms.canWriteUpdate && (actions == null || actions.can_edi !== false);
   const canSubmaster = perms.canWriteGenerate && actions?.can_create_submaster === true;
   const canKpi = perms.canView && actions?.can_kpi !== false;
   const canTracking = perms.canView && actions?.can_tracking !== false;
@@ -313,9 +325,6 @@ export default function ShipmentDetailPage() {
   const canBookingForm = perms.canView && actions?.can_booking_form !== false;
   const canHblDoc =
     perms.canWriteGenerate && hasJob && actions?.can_hbl_document === true;
-  const ediActionOptions = actions?.allowed_edi_actions?.length
-    ? actions.allowed_edi_actions
-    : [];
 
   const statusOptions = actions?.allowed_statuses?.length
     ? actions.allowed_statuses
@@ -346,7 +355,8 @@ export default function ShipmentDetailPage() {
     splitShipment.isPending ||
     mergeShipments.isPending ||
     switchBl.isPending ||
-    shipmentEdi.isPending ||
+    generateShipmentEdi.isPending ||
+    downloadShipmentEdi.isPending ||
     changeStatus.isPending ||
     changeBlStatus.isPending ||
     changeDepartment.isPending ||
@@ -524,7 +534,30 @@ export default function ShipmentDetailPage() {
         </div>
       </div>
 
-      <FclContinuumRail steps={continuum} />
+      <OpsContinuumRail
+        entityType="SHIPMENT"
+        entityId={shipment.id}
+        pathHints={shipment.path_hints}
+        opsContinuum={
+          shipment.ops_continuum as Record<string, unknown> | undefined
+        }
+        actions={shipment.actions as Record<string, unknown> | undefined}
+        links={{
+          enquiryId: shipment.enquiry_id,
+          quotationId: shipment.quotation_id,
+          shipmentId: shipment.id,
+          jobId: shipment.job_id,
+        }}
+      />
+
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <FclContinuumRail steps={continuum} className="flex-1" />
+        <FavouriteToggle
+          kind="shipment"
+          targetKey={shipment.id}
+          label={shipmentDisplayNumber(shipment)}
+        />
+      </div>
 
       {actionError && (
         <div role="alert" className="rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700">
@@ -538,7 +571,7 @@ export default function ShipmentDetailPage() {
       )}
 
       {/* ── Shipment detail (key fields) ── */}
-      <section ref={infoRef} className={erpForm.section}>
+      <section ref={infoRef} className={`${erpForm.section} kf-ops-continuum-form-pad`}>
         <div className={erpForm.sectionHeader}>Shipment detail</div>
         <div className={`${erpForm.sectionBody} grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-3`}>
           <FresaReadonlyField label="Shipment No" value={shipmentDisplayNumber(shipment)} />
@@ -605,7 +638,7 @@ export default function ShipmentDetailPage() {
       </section>
 
       {/* ── Actions toolbar (below Shipment detail) ── */}
-      <div className={erpForm.toolbar}>
+      <div className={`${erpForm.toolbar} w-full max-w-none`}>
         <p className="mr-1 w-full text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)] sm:mr-2 sm:w-auto">
           Actions
         </p>
@@ -749,12 +782,9 @@ export default function ShipmentDetailPage() {
             variant="report"
             leftIcon={<Radio />}
             disabled={anyPending}
-            onClick={() => {
-              setEdiAction(ediActionOptions[0] || '');
-              setConfirmKind('edi');
-            }}
+            onClick={() => setConfirmKind('edi')}
           >
-            EDI
+            Generate EDI
           </Button>
         )}
         {canKpi && (
@@ -1146,60 +1176,45 @@ export default function ShipmentDetailPage() {
       {confirmKind === 'edi' && (
         <Modal
           open
-          onClose={() => !shipmentEdi.isPending && setConfirmKind(null)}
-          title="EDI action"
+          onClose={() =>
+            !generateShipmentEdi.isPending &&
+            !downloadShipmentEdi.isPending &&
+            setConfirmKind(null)
+          }
+          title="Generate EDI"
+          size="lg"
           footer={
             <div className="flex justify-end gap-2">
               <Button
                 type="button"
                 variant="back"
                 leftIcon={<ArrowLeft />}
-                disabled={shipmentEdi.isPending}
                 onClick={() => setConfirmKind(null)}
               >
                 Back
               </Button>
-              <Button
-                type="button"
-                leftIcon={<Radio />}
-                disabled={shipmentEdi.isPending || !ediAction.trim()}
-                onClick={() =>
-                  void run(async () => {
-                    await shipmentEdi.mutateAsync({ action: ediAction.trim() });
-                    setActionMessage(`EDI action “${ediAction.trim()}” submitted.`);
-                  })
-                }
-              >
-                {shipmentEdi.isPending ? 'Sending…' : 'Send EDI'}
-              </Button>
             </div>
           }
         >
-          <label className="block text-[13px]">
-            <span className={erpForm.label}>
-              EDI action (POST /shipments/:id/edi/{'{action}'})
-            </span>
-            {ediActionOptions.length ? (
-              <select
-                className={erpForm.input}
-                value={ediAction}
-                onChange={(e) => setEdiAction(e.target.value)}
-              >
-                {ediActionOptions.map((a) => (
-                  <option key={a} value={a}>
-                    {a}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                className={erpForm.input}
-                value={ediAction}
-                onChange={(e) => setEdiAction(e.target.value)}
-                placeholder="e.g. submit, send, cancel"
-              />
-            )}
-          </label>
+          <GenerateEdiPanel
+            typesRaw={shipmentEdiTypesQuery.data}
+            typesLoading={shipmentEdiTypesQuery.isLoading}
+            submissionsRaw={shipmentEdiSubmissionsQuery.data}
+            submissionsLoading={shipmentEdiSubmissionsQuery.isLoading}
+            generatePending={generateShipmentEdi.isPending}
+            downloadPending={downloadShipmentEdi.isPending}
+            onGenerate={async (edi_type) => {
+              await generateShipmentEdi.mutateAsync({ edi_type });
+              setActionMessage(`EDI “${edi_type}” generated.`);
+            }}
+            onDownload={(submissionId) =>
+              downloadShipmentEdi.mutateAsync(submissionId)
+            }
+            onChanged={() => {
+              void shipmentEdiSubmissionsQuery.refetch();
+              void query.refetch();
+            }}
+          />
         </Modal>
       )}
 

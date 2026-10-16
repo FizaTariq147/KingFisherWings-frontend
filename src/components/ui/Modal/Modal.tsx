@@ -11,7 +11,7 @@ interface ModalProps {
   title: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   /** Use `nested` when this dialog opens over another modal. */
   layer?: 'base' | 'nested';
 }
@@ -21,6 +21,8 @@ const sizeMap = {
   md: 'max-w-lg',
   lg: 'max-w-2xl',
   xl: 'max-w-4xl',
+  /** Wide ERP calculator / costing dialogs (Fresa-style) */
+  full: 'max-w-[min(96vw,72rem)]',
 };
 
 let openModalCount = 0;
@@ -81,7 +83,10 @@ export function Modal({
       />
       <div
         className={cn(
-          'relative z-10 flex w-full max-h-[min(88vh,40rem)] flex-col overflow-hidden rounded-xl bg-white shadow-xl',
+          'relative z-10 flex w-full flex-col overflow-hidden rounded-xl bg-white shadow-xl',
+          size === 'full'
+            ? 'max-h-[min(94vh,56rem)]'
+            : 'max-h-[min(88vh,40rem)]',
           sizeMap[size],
         )}
         role="dialog"

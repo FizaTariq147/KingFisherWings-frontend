@@ -33,6 +33,10 @@ export const OPS_ACTIVITY_API = {
     `${opsEntityBase('/ops', entityType, entityId)}/tags`,
   tag: (entityType: string, entityId: string, tagId: string) =>
     `${opsEntityBase('/ops', entityType, entityId)}/tags/${encodeURIComponent(tagId)}`,
+  comments: (entityType: string, entityId: string) =>
+    `${opsEntityBase('/ops', entityType, entityId)}/comments`,
+  comment: (entityType: string, entityId: string, commentId: string) =>
+    `${opsEntityBase('/ops', entityType, entityId)}/comments/${encodeURIComponent(commentId)}`,
 } as const;
 
 /** Customer portal — shared continuum attachments. */

@@ -7,6 +7,7 @@ import { JobInvoicesPanel } from './JobInvoicesPanel';
 import { JobLogisticsPanel } from './JobLogisticsPanel';
 import { JobMilestonesPanel } from './JobMilestonesPanel';
 import { JobNotesPanel } from './JobNotesPanel';
+import { OpsContinuumPanel } from '@/features/ops-activity';
 import { JobPnlPanel } from './JobPnlPanel';
 import { JobSeaScansPanel } from './JobSeaScansPanel';
 import { JobStuffingPanel } from './JobStuffingPanel';
@@ -29,6 +30,7 @@ export const JOB_ACTION_BUTTON_STYLE: Record<JobActionPanelKey, CSSProperties> =
   pnl: { backgroundColor: '#A855F7', borderColor: '#7C3AED', color: '#FFFFFF' },
   milestones: { backgroundColor: '#22C55E', borderColor: '#16A34A', color: '#FFFFFF' },
   notes: { backgroundColor: '#F59E0B', borderColor: '#D97706', color: '#FFFFFF' },
+  'ops-continuum': { backgroundColor: '#334155', borderColor: '#1E293B', color: '#FFFFFF' },
   'vendor-offers': { backgroundColor: '#EC4899', borderColor: '#DB2777', color: '#FFFFFF' },
   logistics: { backgroundColor: '#14B8A6', borderColor: '#0D9488', color: '#FFFFFF' },
   gpum: { backgroundColor: '#6366F1', borderColor: '#4F46E5', color: '#FFFFFF' },
@@ -79,6 +81,8 @@ export function JobActionPanelContent({
       return <JobMilestonesPanel jobId={jobId} />;
     case 'notes':
       return <JobNotesPanel jobId={jobId} />;
+    case 'ops-continuum':
+      return <OpsContinuumPanel entityType="JOB" entityId={jobId} />;
     case 'vendor-offers':
       return <JobVendorOffersPanel jobId={jobId} currencyCode={job.currency_code} />;
     case 'logistics':

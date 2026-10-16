@@ -20,7 +20,9 @@ import {
   TIMEZONE_OPTIONS,
 } from '../../constants/organization.constants';
 import {
+  useJobCreateSettings,
   useOrganizationProfile,
+  useUpdateJobCreateSettings,
   useUpdateOrganizationProfile,
 } from '../../hooks/useOrganizationProfile';
 import { updateOrganizationProfileSchema } from '../../schemas/organization.schema';
@@ -55,8 +57,13 @@ const EMPTY: OrganizationProfileFormValues = {
 export default function OrganizationProfilePage() {
   const { data, isLoading, isFetching, isError, error, refetch } = useOrganizationProfile();
   const updateProfile = useUpdateOrganizationProfile();
+  const jobCreateSettings = useJobCreateSettings(true);
+  const updateJobCreate = useUpdateJobCreateSettings();
   const [success, setSuccess] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [jobCreateMsg, setJobCreateMsg] = useState<string | null>(null);
+  const allowCreateParty =
+    jobCreateSettings.data?.allow_create_party_from_job !== false;
   const prevLocaleRef = useRef<LocaleCatalog | null>(null);
   const skipLocaleApply = useRef(true);
 
@@ -379,6 +386,50 @@ export default function OrganizationProfilePage() {
               />
             </div>
           </div>
+        </div>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Job create settings</CardTitle>
+        </CardHeader>
+        <div className="space-y-3 px-1 pb-1">
+          {jobCreateMsg ? (
+            <p className="text-sm text-[var(--color-success-700)]">{jobCreateMsg}</p>
+          ) : null}
+          {jobCreateSettings.isError ? (
+            <p className="text-sm text-[var(--color-danger-600)]">
+              Could not load job-create settings.
+            </p>
+          ) : null}
+          <label className="flex items-start gap-3 text-sm">
+            <input
+              type="checkbox"
+              className="mt-1"
+              checked={allowCreateParty}
+              disabled={
+                jobCreateSettings.isLoading || updateJobCreate.isPending
+              }
+              onChange={(e) => {
+                setJobCreateMsg(null);
+                void updateJobCreate
+                  .mutateAsync({ allow_create_party_from_job: e.target.checked })
+                  .then(() => setJobCreateMsg('Job create setting saved.'))
+                  .catch(() =>
+                    setJobCreateMsg(null),
+                  );
+              }}
+            />
+            <span>
+              <span className="font-medium text-[var(--color-neutral-800)]">
+                Allow create party from job
+              </span>
+              <span className="mt-0.5 block text-xs text-[var(--color-neutral-500)]">
+                When off, inline party create on the job organizations tab is blocked unless the
+                user has parties.create.
+              </span>
+            </span>
+          </label>
         </div>
       </Card>
     </form>

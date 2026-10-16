@@ -1,8 +1,10 @@
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { isUuid } from '@/lib/isUuid';
+import { erpTable } from '@/lib/erpTypography';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { useShipment, useShipments } from '@/features/shipments/hooks/useShipments';
 import { useJobDetailTab, useJobShipmentsList, useJobShowAll } from '../hooks/useJobs';
 import { useJobTabResourceMutations } from '../hooks/useJobTabResources';
 import type { Job } from '../types/job.types';
@@ -42,12 +44,31 @@ function humanizeFieldLabel(key: string): string {
     .join(' ');
 }
 
+function tryParseJsonString(value: string): unknown | null {
+  const trimmed = value.trim();
+  if (!trimmed.startsWith('[') && !trimmed.startsWith('{')) return null;
+  try {
+    return JSON.parse(trimmed) as unknown;
+  } catch {
+    return null;
+  }
+}
+
 function formatFormScalar(value: unknown): string {
   if (value == null || value === '') return '—';
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
   if (typeof value === 'number') return String(value);
   if (typeof value === 'string') {
     if (isUuid(value.trim())) return '—';
+    const parsed = tryParseJsonString(value);
+    if (parsed != null && typeof parsed === 'object') {
+      if (Array.isArray(parsed)) {
+        return parsed.length
+          ? `${parsed.length} item${parsed.length === 1 ? '' : 's'}`
+          : '—';
+      }
+      return `${Object.keys(parsed as object).length} fields`;
+    }
     return value;
   }
   return '—';
@@ -64,25 +85,36 @@ function FormFieldRow({ label, value }: { label: string; value: string }) {
   );
 }
 
+/** Normalized (lowercase, no _/-) keys stripped from detail form payloads. */
 const HIDDEN_DETAIL_KEYS = new Set([
   'raw',
   'id',
-  'job_id',
-  'tenant_id',
-  'company_id',
-  'created_by',
-  'updated_by',
-  'deleted_at',
+  'jobid',
+  'tenantid',
+  'companyid',
+  'createdby',
+  'updatedby',
+  'deletedat',
   'actions',
   'tabs',
   'header',
   'links',
-  // Backend stub metadata — not for end-user display
-  'path_hints',
+  // Continuum / hints — right rail only, never on detail form
   'pathhints',
+  'pathhint',
   'hints',
-  'path_hint',
+  'opscontinuum',
+  'continuum',
+  'canopscontinuum',
 ]);
+
+function normalizeDetailKey(key: string): string {
+  return key.trim().toLowerCase().replace(/[-_\s]/g, '');
+}
+
+function isHiddenDetailKey(key: string): boolean {
+  return HIDDEN_DETAIL_KEYS.has(normalizeDetailKey(key));
+}
 
 function siblingNameLabel(key: string, data: Record<string, unknown>): string {
   const base = key.replace(/(_id|_uuid)$/i, '');
@@ -155,7 +187,7 @@ function FormFieldsFromPayload({
   const nested: { key: string; label: string; value: unknown }[] = [];
 
   for (const key of keys) {
-    if (skip.has(key) || HIDDEN_DETAIL_KEYS.has(key.toLowerCase())) continue;
+    if (skip.has(key) || isHiddenDetailKey(key)) continue;
     const lower = key.toLowerCase();
 
     if (lower.endsWith('_id') || lower.endsWith('_uuid')) {
@@ -170,7 +202,13 @@ function FormFieldsFromPayload({
       continue;
     }
 
-    const value = rec[key];
+    let value = rec[key];
+    if (typeof value === 'string') {
+      const parsed = tryParseJsonString(value);
+      if (parsed != null && typeof parsed === 'object') {
+        value = parsed;
+      }
+    }
     if (Array.isArray(value)) {
       if (value.length) nested.push({ key, label: humanizeFieldLabel(key), value });
       continue;
@@ -227,7 +265,7 @@ function detailPayloadHasRenderableFields(data: unknown, depth = 0): boolean {
   const keys = Object.keys(rec);
   const skip = new Set<string>();
   for (const key of keys) {
-    if (skip.has(key) || HIDDEN_DETAIL_KEYS.has(key.toLowerCase())) continue;
+    if (skip.has(key) || isHiddenDetailKey(key)) continue;
     const lower = key.toLowerCase();
     if (lower.endsWith('_id') || lower.endsWith('_uuid')) {
       if (siblingNameLabel(key, rec)) return true;
@@ -282,7 +320,7 @@ function CompleteDetailTabPayload({
   }
   const visibleKeys =
     data && typeof data === 'object' && !Array.isArray(data)
-      ? Object.keys(data).filter((k) => !HIDDEN_DETAIL_KEYS.has(k.toLowerCase()))
+      ? Object.keys(data).filter((k) => !isHiddenDetailKey(k))
       : [];
   if (data == null || (typeof data === 'object' && !Array.isArray(data) && !visibleKeys.length)) {
     return (
@@ -355,23 +393,43 @@ function JobHistoryPanel({
 function shipmentRowsFromUnknown(raw: unknown): Record<string, unknown>[] {
   if (Array.isArray(raw)) {
     return raw
-      .map((row) =>
-        row && typeof row === 'object' && !Array.isArray(row)
-          ? (row as Record<string, unknown>)
-          : null,
-      )
+      .map((row) => {
+        if (typeof row === 'string' && isUuid(row.trim())) {
+          return { id: row.trim() };
+        }
+        if (row && typeof row === 'object' && !Array.isArray(row)) {
+          return row as Record<string, unknown>;
+        }
+        return null;
+      })
       .filter((r): r is Record<string, unknown> => Boolean(r));
   }
   if (raw && typeof raw === 'object') {
     const rec = raw as Record<string, unknown>;
     for (const key of ['shipments', 'items', 'data', 'results', 'linked_shipments']) {
-      if (Array.isArray(rec[key])) return shipmentRowsFromUnknown(rec[key]);
+      const val = rec[key];
+      if (Array.isArray(val)) return shipmentRowsFromUnknown(val);
+      // Nested envelope e.g. { data: { shipments: [...] } }
+      if (val && typeof val === 'object' && !Array.isArray(val)) {
+        const nested = shipmentRowsFromUnknown(val);
+        if (nested.length) return nested;
+      }
+    }
+    // Single shipment object
+    if (rec.id || rec.shipment_id || rec.shipment_number) {
+      return [rec];
     }
   }
   return [];
 }
 
-/** Shipments tab — GET /jobs/:id/shipments (+ attach) with detail/shipments fallback. */
+/**
+ * Shipments tab — API-only merge (no hardcode):
+ * 1) GET /jobs/:id/shipments
+ * 2) GET /jobs/:id/detail/shipments
+ * 3) GET /shipments?job_id= (jobs created from a shipment)
+ * 4) Linked shipment_id on GET /jobs/:id when present
+ */
 function JobShipmentsTabPanel({
   job,
   tabData,
@@ -382,26 +440,70 @@ function JobShipmentsTabPanel({
   onChanged?: () => void;
 }) {
   const listQuery = useJobShipmentsList(job.id);
+  const byJobQuery = useShipments({
+    page: 1,
+    limit: 200,
+    job_id: job.id,
+  });
+  // When job was created from a shipment, detail may only expose shipment_id.
+  const linkedId =
+    job.shipment_id && isUuid(job.shipment_id) ? job.shipment_id : '';
+  const linkedQuery = useShipment(linkedId);
   const resources = useJobTabResourceMutations(job.id);
   const [attachId, setAttachId] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const fromApi = shipmentRowsFromUnknown(listQuery.data);
-  const fromTab = shipmentRowsFromUnknown(tabData);
-  const rows =
-    fromApi.length > 0
-      ? fromApi
-      : fromTab.length > 0
-        ? fromTab
-        : job.shipment_id && isUuid(job.shipment_id)
-          ? [
-              {
-                id: job.shipment_id,
-                shipment_number: job.shipment_number,
-              },
-            ]
-          : [];
+  const rows = useMemo(() => {
+    const merged = new Map<string, Record<string, unknown>>();
+    const push = (row: Record<string, unknown>) => {
+      const sid = String(row.id ?? row.shipment_id ?? '').trim();
+      const key =
+        sid ||
+        String(
+          row.shipment_number ?? row.shipmentNumber ?? row.reference ?? '',
+        ).trim() ||
+        JSON.stringify(row);
+      const prev = merged.get(key);
+      merged.set(key, prev ? { ...prev, ...row } : row);
+    };
+    for (const row of shipmentRowsFromUnknown(listQuery.data)) push(row);
+    for (const row of shipmentRowsFromUnknown(tabData)) push(row);
+    for (const s of byJobQuery.data?.shipments ?? []) {
+      push({
+        id: s.id,
+        shipment_number: s.shipment_number,
+        status: s.status,
+        shipment_type: s.job_type,
+        hbl_number: s.hbl_number,
+        job_id: s.job_id,
+      });
+    }
+    if (linkedQuery.data) {
+      const s = linkedQuery.data;
+      push({
+        id: s.id,
+        shipment_number: s.shipment_number,
+        status: s.status,
+        shipment_type: s.job_type,
+        hbl_number: s.hbl_number,
+        job_id: s.job_id,
+      });
+    } else if (linkedId) {
+      push({
+        id: linkedId,
+        shipment_number: job.shipment_number,
+      });
+    }
+    return Array.from(merged.values());
+  }, [
+    listQuery.data,
+    tabData,
+    byJobQuery.data?.shipments,
+    linkedQuery.data,
+    linkedId,
+    job.shipment_number,
+  ]);
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
     setError(null);
@@ -410,20 +512,32 @@ function JobShipmentsTabPanel({
       await fn();
       setMsg(success);
       onChanged?.();
-      void listQuery.refetch();
+      void Promise.all([
+        listQuery.refetch(),
+        byJobQuery.refetch(),
+        linkedId ? linkedQuery.refetch() : Promise.resolve(),
+      ]);
     } catch (err) {
       setError(getErrorMessage(err));
     }
   };
 
+  const loading =
+    listQuery.isLoading ||
+    byJobQuery.isLoading ||
+    (Boolean(linkedId) && linkedQuery.isLoading);
+
   return (
     <div className="space-y-3 text-[13px]">
       {error ? <p className="text-[var(--color-danger-600)]">{error}</p> : null}
       {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
-      <p className="text-[12px] text-[#64748b]">
-        GET /jobs/:id/shipments · POST /jobs/:id/shipments/attach
-      </p>
-      {listQuery.isLoading ? (
+      {(listQuery.isError || byJobQuery.isError) && rows.length === 0 ? (
+        <p className="text-[var(--color-danger-600)]">
+          {getErrorMessage(listQuery.error ?? byJobQuery.error) ||
+            'Could not load shipments.'}
+        </p>
+      ) : null}
+      {loading ? (
         <p className="text-[#64748b]">Loading shipments…</p>
       ) : rows.length === 0 ? (
         <p className="text-[#64748b]">
@@ -432,37 +546,66 @@ function JobShipmentsTabPanel({
             : 'No linked shipments.'}
         </p>
       ) : (
-        <ul className="space-y-2">
-          {rows.map((rec, i) => {
-            const sid = String(rec.id ?? '').trim();
-            const number =
-              String(
-                rec.shipment_number ?? rec.shipmentNumber ?? rec.reference ?? '',
-              ).trim() || (sid ? sid.slice(0, 8) : `Shipment ${i + 1}`);
-            return (
-              <li
-                key={sid || i}
-                className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2"
-              >
-                {sid && isUuid(sid) ? (
-                  <Link
-                    className="font-medium text-[var(--color-primary-700)] hover:underline"
-                    to={`/operations/shipments/${sid}`}
+        <div className="overflow-x-auto rounded-sm border border-[var(--fresa-border,#C9D3DF)]">
+          <table className="min-w-full text-left text-[13px]">
+            <thead>
+              <tr>
+                <th className={erpTable.th}>Shipment</th>
+                <th className={erpTable.th}>Status</th>
+                <th className={erpTable.th}>Type</th>
+                <th className={erpTable.th}>BL / ref</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((rec, i) => {
+                const sid = String(rec.id ?? rec.shipment_id ?? '').trim();
+                const number =
+                  String(
+                    rec.shipment_number ??
+                      rec.shipmentNumber ??
+                      rec.reference ??
+                      '',
+                  ).trim() || (sid ? sid.slice(0, 8) : `Shipment ${i + 1}`);
+                const status = String(rec.status ?? rec.shipment_status ?? '').trim();
+                const type = String(
+                  rec.shipment_type ?? rec.job_type ?? rec.mode ?? '',
+                ).trim();
+                const bl = String(
+                  rec.hbl_number ??
+                    rec.mbl_number ??
+                    rec.bl_number ??
+                    rec.house_bl ??
+                    rec.master_bl ??
+                    '',
+                ).trim();
+                return (
+                  <tr
+                    key={sid || i}
+                    className="border-t border-[var(--fresa-border,#C9D3DF)] bg-white"
                   >
-                    {number}
-                  </Link>
-                ) : (
-                  <span className="font-medium">{number}</span>
-                )}
-                {rec.status != null ? (
-                  <span className="ml-2 text-[12px] text-[#64748b]">
-                    {String(rec.status)}
-                  </span>
-                ) : null}
-              </li>
-            );
-          })}
-        </ul>
+                    <td className="px-3 py-2">
+                      {sid && isUuid(sid) ? (
+                        <Link
+                          className="font-medium text-[var(--color-primary-700)] hover:underline"
+                          to={`/operations/shipments/${sid}`}
+                        >
+                          {number}
+                        </Link>
+                      ) : (
+                        <span className="font-medium">{number}</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-2 text-[#64748b]">{status || '—'}</td>
+                    <td className="px-3 py-2 text-[#64748b]">
+                      {type ? type.replaceAll('_', ' ') : '—'}
+                    </td>
+                    <td className="px-3 py-2 text-[#64748b]">{bl || '—'}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
       <div className="flex flex-wrap items-end gap-2">
         <Input
@@ -590,8 +733,7 @@ function InteractiveTabBody({
     return (
       <div className="space-y-3">
         <p className="text-[12px] text-[#64748b]">
-          {key === 'planned_container' ? 'Planned containers' : 'Actual containers'} ·{' '}
-          GET /jobs/:id/containers
+          {key === 'planned_container' ? 'Planned containers' : 'Actual containers'}
         </p>
         <JobContainersPanel jobId={job.id} />
       </div>
@@ -656,7 +798,9 @@ function SingleJobDetailTabPanel({
   // Shipments tab uses GET /jobs/:id/shipments — never mirror empty detail/shipments.
   // Other interactive tabs: only show detail/{tab} when it has real fields (not "No fields").
   const showApiEnvelope =
-    apiKey === 'shipments'
+    apiKey === 'shipments' ||
+    apiKey === 'planned_container' ||
+    apiKey === 'actual_container'
       ? false
       : hasInteractive
         ? tabQuery.isError ||

@@ -6,6 +6,7 @@ import type {
   CreateJobChargeDto,
   CreateJobChargesCompositeDto,
   CreateJobInvoiceFromCostingDto,
+  GenerateJobEdiDto,
   CreateJobNoteDto,
   CreateCustomMilestoneDto,
   CalculateStorageChargesDto,
@@ -92,7 +93,25 @@ export function useJobActions(jobId: string) {
       chargeId: string;
       dto: CreateJobChargeAttachmentDto;
     }) => jobService.createChargeAttachment(id, chargeId, dto),
-    onSuccess: () => invalidate(id),
+    onSuccess: () => {
+      invalidate(id);
+      void queryClient.invalidateQueries({ queryKey: jobKeys.jobCharges(id) });
+    },
+  });
+  const uploadChargeAttachmentFile = useMutation({
+    mutationFn: ({
+      chargeId,
+      file,
+      side,
+    }: {
+      chargeId: string;
+      file: File;
+      side?: CreateJobChargeAttachmentDto['side'];
+    }) => jobService.uploadChargeAttachmentFile(id, chargeId, file, side),
+    onSuccess: () => {
+      invalidate(id);
+      void queryClient.invalidateQueries({ queryKey: jobKeys.jobCharges(id) });
+    },
   });
   const remove = useMutation({
     mutationFn: () => jobService.softDelete(id),
@@ -175,6 +194,28 @@ export function useJobActions(jobId: string) {
     mutationFn: (dto: CreateJobInvoiceFromCostingDto = {}) =>
       jobService.createPurchaseInvoiceFromJob(id, dto),
     onSuccess: () => invalidate(id),
+  });
+  const generateBulkPurchaseInvoice = useMutation({
+    mutationFn: (dto: CreateJobInvoiceFromCostingDto = {}) =>
+      jobService.generateBulkPurchaseInvoice(id, dto),
+    onSuccess: () => {
+      invalidate(id);
+      void queryClient.invalidateQueries({
+        queryKey: jobKeys.purchaseBulkPreview(id),
+      });
+    },
+  });
+  const generateJobEdi = useMutation({
+    mutationFn: (dto: GenerateJobEdiDto) => jobService.generateJobEdi(id, dto),
+    onSuccess: () => {
+      invalidate(id);
+      void queryClient.invalidateQueries({ queryKey: jobKeys.ediSubmissions(id) });
+      void queryClient.invalidateQueries({ queryKey: jobKeys.ediTypes(id) });
+    },
+  });
+  const downloadJobEdiSubmission = useMutation({
+    mutationFn: (submissionId: string) =>
+      jobService.downloadJobEdiSubmission(id, submissionId),
   });
   const pushRoutingLegsToSubjobs = useMutation({
     mutationFn: (body: Record<string, unknown> = {}) =>
@@ -438,6 +479,7 @@ export function useJobActions(jobId: string) {
     calculateStorageCharges,
     confirmStorageCharges,
     createChargeAttachment,
+    uploadChargeAttachmentFile,
     remove,
     copy,
     prorateCost,
@@ -453,6 +495,9 @@ export function useJobActions(jobId: string) {
     updateChargeCost,
     createSaleInvoiceFromJob,
     createPurchaseInvoiceFromJob,
+    generateBulkPurchaseInvoice,
+    generateJobEdi,
+    downloadJobEdiSubmission,
     pushRoutingLegsToSubjobs,
     pushContainersToSubJobs,
     syncContainersFromSubJobs,

@@ -892,8 +892,7 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
               Air compliance / booking form
             </h3>
             <p className="text-xs text-[var(--color-neutral-400)]">
-              Saved forms for this job ·{' '}
-              <code className="text-[10px]">/jobs/:id/air/compliance-form</code>
+              Saved forms for this job
               <span className="mt-1 block">
                 Status: <strong>Completed</strong> when the customer submits the portal booking
                 form (or staff marks complete) · <strong>Draft</strong> after Save without
@@ -1023,9 +1022,7 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
                 : 'Edit air compliance form'}
           </h3>
           <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
-            Staff <code className="text-[10px]">/jobs/:id/air/compliance-form</code>
-            {' · '}
-            autofilled from customer portal when available
+            Autofilled from customer portal when available
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

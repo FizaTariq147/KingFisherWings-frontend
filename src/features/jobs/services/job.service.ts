@@ -1014,16 +1014,42 @@ export const jobService = {
     const sections: Array<{ key: string; title: string; data: Record<string, unknown> }> = [];
     const arrays: Array<{ key: string; title: string; rows: unknown[] }> = [];
 
+    const isMetaField = (k: string) => {
+      const n = k.trim().toLowerCase().replace(/[-_\s]/g, '');
+      return (
+        n === 'opscontinuum' ||
+        n === 'continuum' ||
+        n === 'pathhints' ||
+        n === 'pathhint' ||
+        n === 'hints' ||
+        n === 'canopscontinuum'
+      );
+    };
+
+    const stripMetaFields = (
+      data: Record<string, unknown> | null | undefined,
+    ): Record<string, unknown> | null => {
+      if (!data) return null;
+      const out: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(data)) {
+        if (isMetaField(k)) continue;
+        out[k] = v;
+      }
+      return Object.keys(out).length ? out : null;
+    };
+
     const pushSection = (
       key: string,
       title: string,
       data: Record<string, unknown> | null | undefined,
     ) => {
-      if (!data || !Object.keys(data).length) return;
-      sections.push({ key, title, data });
+      if (isMetaField(key) || isMetaField(title)) return;
+      const cleaned = stripMetaFields(data);
+      if (!cleaned || !Object.keys(cleaned).length) return;
+      sections.push({ key, title, data: cleaned });
     };
     const pushArray = (key: string, title: string, rows: unknown[]) => {
-      if (!rows.length) return;
+      if (!rows.length || isMetaField(key)) return;
       arrays.push({ key, title, rows });
     };
 
@@ -1046,7 +1072,9 @@ export const jobService = {
       }
     }
 
-    const tabKeys = normalizedSiblings.filter((k) => !isShowAll(k));
+    const isMetaTab = isMetaField;
+
+    const tabKeys = normalizedSiblings.filter((k) => !isShowAll(k) && !isMetaTab(k));
     await Promise.all(
       tabKeys.map(async (tab) => {
         try {
@@ -1375,16 +1403,19 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.storageChargesConfirm(id), dto));
   },
 
-  /** GET /jobs/:id/charges/:chargeId/attachments */
+  /** GET /jobs/:id/charges/:chargeId/attachments?side=SALE|COST|CHARGE */
   async listChargeAttachments(
     id: string,
     chargeId: string,
+    side: 'SALE' | 'COST' | 'CHARGE' = 'CHARGE',
   ): Promise<JobChargeAttachment[]> {
     assertId(id);
     if (!isUuid(chargeId)) throw new Error('Invalid charge id.');
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.get(JOB_API.chargeAttachments(id, chargeId)),
+        axiosInstance.get(JOB_API.chargeAttachments(id, chargeId), {
+          params: { side },
+        }),
       );
       const data = unwrapEntity(res.data) ?? res.data;
       const list =
@@ -1421,6 +1452,72 @@ export const jobService = {
     } catch (error) {
       throw formatAxiosError(error);
     }
+  },
+
+  /** POST multipart /jobs/:id/documents/{documentType}/upload */
+  async uploadJobTypedDocument(
+    id: string,
+    documentType: string,
+    file: File,
+  ): Promise<Record<string, unknown>> {
+    assertId(id);
+    const type = documentType.trim();
+    if (!type) throw new Error('Document type is required.');
+    const form = new FormData();
+    form.append('file', file);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.documentTypeUpload(id, type), form, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      return data && typeof data === 'object' && !Array.isArray(data)
+        ? (data as Record<string, unknown>)
+        : {};
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** Upload file then POST charge attachment metadata (OpenAPI CreateJobChargeAttachmentDto). */
+  async uploadChargeAttachmentFile(
+    id: string,
+    chargeId: string,
+    file: File,
+    side: CreateJobChargeAttachmentDto['side'] = 'CHARGE',
+  ): Promise<JobChargeAttachment> {
+    const uploaded = await this.uploadJobTypedDocument(id, 'OTHER', file);
+    const file_name =
+      String(uploaded.file_name ?? uploaded.fileName ?? file.name).trim() || file.name;
+    const file_url = String(
+      uploaded.file_url ?? uploaded.fileUrl ?? uploaded.url ?? uploaded.download_url ?? '',
+    ).trim();
+    if (!file_url) {
+      throw new Error('Upload succeeded but no file URL was returned.');
+    }
+    const file_size = Number.isFinite(Number(uploaded.file_size ?? uploaded.fileSize))
+      ? Number(uploaded.file_size ?? uploaded.fileSize)
+      : file.size;
+    const mime_type =
+      (typeof uploaded.mime_type === 'string' && uploaded.mime_type) ||
+      (typeof uploaded.mimeType === 'string' && uploaded.mimeType) ||
+      file.type ||
+      undefined;
+    const s3_key =
+      typeof uploaded.s3_key === 'string'
+        ? uploaded.s3_key
+        : typeof uploaded.s3Key === 'string'
+          ? uploaded.s3Key
+          : undefined;
+    return this.createChargeAttachment(id, chargeId, {
+      file_name,
+      file_url,
+      s3_key,
+      file_size,
+      mime_type,
+      side,
+    });
   },
 
   /** POST /jobs/:id/charges/:chargeId/attachments */
@@ -1467,11 +1564,31 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.copy(id), body), normalizeJob);
   },
 
-  /** GET /jobs/:id/shipments — list shipments attached to this job */
+  /** GET /jobs/:id/shipments — list shipments attached to this job (all API rows). */
   async listJobShipments(id: string): Promise<unknown[]> {
     assertId(id);
     const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.shipments(id)));
-    return unwrapList(res.data).items;
+    const { items } = unwrapList(res.data);
+    if (items.length) {
+      return items.map((row) => {
+        if (typeof row === 'string' && isUuid(row.trim())) return { id: row.trim() };
+        return row;
+      });
+    }
+    // Some builds return a single shipment object when the job was created from a shipment.
+    const raw = unwrapEntity(res.data) ?? res.data;
+    if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+      const single = raw as Record<string, unknown>;
+      if (single.id || single.shipment_id || single.shipment_number) {
+        return [single];
+      }
+      // Nested { shipments: [...] } under entity
+      for (const key of ['shipments', 'linked_shipments', 'items', 'results']) {
+        const nested = single[key];
+        if (Array.isArray(nested) && nested.length) return nested;
+      }
+    }
+    return [];
   },
 
   /** POST /jobs/:id/shipments — create/link shipment payload on this job */
@@ -1566,6 +1683,65 @@ export const jobService = {
   ): Promise<unknown> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.invoicesPurchase(id), dto));
+  },
+
+  /** GET /jobs/:id/invoices/purchase/bulk — Fresa bulk PI preview */
+  async previewBulkPurchaseInvoice(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.invoicesPurchaseBulk(id)));
+  },
+
+  /** POST /jobs/:id/invoices/purchase/bulk — one DRAFT PI per vendor + currency */
+  async generateBulkPurchaseInvoice(
+    id: string,
+    dto: CreateJobInvoiceFromCostingDto = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.post(JOB_API.invoicesPurchaseBulk(id), dto),
+    );
+  },
+
+  /** GET /jobs/:id/edi/types */
+  async listJobEdiTypes(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.ediTypes(id)));
+  },
+
+  /** POST /jobs/:id/edi/generate */
+  async generateJobEdi(
+    id: string,
+    dto: import('../types/job.types').GenerateJobEdiDto,
+  ): Promise<unknown> {
+    assertId(id);
+    if (!String(dto.edi_type ?? '').trim()) {
+      throw new Error('EDI type is required.');
+    }
+    return request(() =>
+      axiosInstance.post(JOB_API.ediGenerate(id), {
+        edi_type: String(dto.edi_type).trim(),
+      }),
+    );
+  },
+
+  /** GET /jobs/:id/edi/submissions */
+  async listJobEdiSubmissions(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.ediSubmissions(id)));
+  },
+
+  /** GET /jobs/:id/edi/submissions/:submissionId/download */
+  async downloadJobEdiSubmission(
+    id: string,
+    submissionId: string,
+  ): Promise<unknown> {
+    assertId(id);
+    if (!isUuid(submissionId) && !submissionId.trim()) {
+      throw new Error('Invalid EDI submission id.');
+    }
+    return request(() =>
+      axiosInstance.get(JOB_API.ediSubmissionDownload(id, submissionId.trim())),
+    );
   },
 
   /** GET /jobs/:id/pnl/custom-duty */
@@ -1666,6 +1842,25 @@ export const jobService = {
   async profitShareAdd(id: string, dto: ProfitShareAddDto): Promise<unknown> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.profitShareAdd(id), dto));
+  },
+
+  /** GET /jobs/:id/profit-share/calculator */
+  async getProfitShareCalculator(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.profitShareCalculator(id)));
+  },
+
+  /** GET /jobs/:id/profit-share/accounts?search= */
+  async listProfitShareAccounts(
+    id: string,
+    params: { search?: string } = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.get(JOB_API.profitShareAccounts(id), {
+        params: params.search?.trim() ? { search: params.search.trim() } : undefined,
+      }),
+    );
   },
 
   async prorateToShipments(id: string, dto: ProrateToShipmentsDto = {}): Promise<unknown> {

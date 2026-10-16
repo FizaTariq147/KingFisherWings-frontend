@@ -81,7 +81,39 @@ function queryParams(params: OperationsListParams): Record<string, string | numb
   if (params.to_date) q.to_date = params.to_date;
   if (params.branch_id) q.branch_id = params.branch_id;
   if (params.status) q.status = params.status;
+  if (params.job_type?.trim()) q.job_type = params.job_type.trim();
+  if (params.date_basis?.trim()) q.date_basis = params.date_basis.trim();
+  if (params.group_by?.trim()) q.group_by = params.group_by.trim();
+  if (params.voyage_number?.trim()) q.voyage_number = params.voyage_number.trim();
+  if (params.vessel_name?.trim()) q.vessel_name = params.vessel_name.trim();
   return q;
+}
+
+function extractTotals(raw: unknown): Record<string, unknown> | undefined {
+  const envelope = asRecord(raw);
+  if (!envelope) return undefined;
+  const direct = asRecord(envelope.totals);
+  if (direct) return direct;
+  const data = asRecord(envelope.data);
+  const nested = data ? asRecord(data.totals) : null;
+  if (nested) return nested;
+  const keys = [
+    'uninvoiced_amount',
+    'jobs',
+    'job_count',
+    'revenue',
+    'cost',
+    'gp',
+    'total_revenue',
+    'total_cost',
+    'total_gp',
+  ];
+  const picked: Record<string, unknown> = {};
+  for (const k of keys) {
+    if (envelope[k] != null) picked[k] = envelope[k];
+    else if (data && data[k] != null) picked[k] = data[k];
+  }
+  return Object.keys(picked).length ? picked : undefined;
 }
 
 export const operationsService = {
@@ -164,7 +196,12 @@ export const operationsService = {
         }),
       );
       const { items, meta } = unwrapList(res.data);
-      return { items, meta: normalizeMeta(meta, items.length, params), raw: res.data };
+      return {
+        items,
+        meta: normalizeMeta(meta, items.length, params),
+        totals: extractTotals(res.data),
+        raw: res.data,
+      };
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -193,7 +230,12 @@ export const operationsService = {
         }),
       );
       const { items, meta } = unwrapList(res.data);
-      return { items, meta: normalizeMeta(meta, items.length, params), raw: res.data };
+      return {
+        items,
+        meta: normalizeMeta(meta, items.length, params),
+        totals: extractTotals(res.data),
+        raw: res.data,
+      };
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -222,7 +264,12 @@ export const operationsService = {
         }),
       );
       const { items, meta } = unwrapList(res.data);
-      return { items, meta: normalizeMeta(meta, items.length, params), raw: res.data };
+      return {
+        items,
+        meta: normalizeMeta(meta, items.length, params),
+        totals: extractTotals(res.data),
+        raw: res.data,
+      };
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -251,7 +298,12 @@ export const operationsService = {
         }),
       );
       const { items, meta } = unwrapList(res.data);
-      return { items, meta: normalizeMeta(meta, items.length, params), raw: res.data };
+      return {
+        items,
+        meta: normalizeMeta(meta, items.length, params),
+        totals: extractTotals(res.data),
+        raw: res.data,
+      };
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -280,7 +332,12 @@ export const operationsService = {
         }),
       );
       const { items, meta } = unwrapList(res.data);
-      return { items, meta: normalizeMeta(meta, items.length, params), raw: res.data };
+      return {
+        items,
+        meta: normalizeMeta(meta, items.length, params),
+        totals: extractTotals(res.data),
+        raw: res.data,
+      };
     } catch (error) {
       throw formatAxiosError(error);
     }

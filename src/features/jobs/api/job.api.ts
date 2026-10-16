@@ -59,6 +59,14 @@ export const JOB_API = {
   /** POST /jobs/:id/invoices/sale · /purchase */
   invoicesSale: (id: string) => `/jobs/${id}/invoices/sale`,
   invoicesPurchase: (id: string) => `/jobs/${id}/invoices/purchase`,
+  /** GET/POST /jobs/:id/invoices/purchase/bulk — Fresa bulk PI preview + generate */
+  invoicesPurchaseBulk: (id: string) => `/jobs/${id}/invoices/purchase/bulk`,
+  /** GET /jobs/:id/edi/types · POST generate · GET submissions · GET download */
+  ediTypes: (id: string) => `/jobs/${id}/edi/types`,
+  ediGenerate: (id: string) => `/jobs/${id}/edi/generate`,
+  ediSubmissions: (id: string) => `/jobs/${id}/edi/submissions`,
+  ediSubmissionDownload: (id: string, submissionId: string) =>
+    `/jobs/${id}/edi/submissions/${encodeURIComponent(submissionId)}/download`,
   /** GET /jobs/:id/pnl/custom-duty */
   pnlCustomDuty: (id: string) => `/jobs/${id}/pnl/custom-duty`,
   /** POST /jobs/:id/documents/job-pnl-custom-duty */
@@ -87,6 +95,10 @@ export const JOB_API = {
   copyCharges: (id: string) => `/jobs/${id}/copy-charges`,
   profitSharePreview: (id: string) => `/jobs/${id}/profit-share/preview`,
   profitShareAdd: (id: string) => `/jobs/${id}/profit-share/add`,
+  /** GET /jobs/:id/profit-share/calculator — weights + pieces for Profit Share modal */
+  profitShareCalculator: (id: string) => `/jobs/${id}/profit-share/calculator`,
+  /** GET /jobs/:id/profit-share/accounts?search= — postable COA for profit_share_account_id */
+  profitShareAccounts: (id: string) => `/jobs/${id}/profit-share/accounts`,
   prorateToShipments: (id: string) => `/jobs/${id}/prorate-to-shipments`,
   cancelProrate: (id: string) => `/jobs/${id}/cancel-prorate`,
   /** GET /jobs/:id/vouchers · POST /jobs/:id/vouchers/generate */
@@ -274,6 +286,9 @@ export const JOB_API = {
     `/jobs/${id}/stuffing-records/${recordId}`,
 
   documents: (id: string) => `/jobs/${id}/documents`,
+  /** POST multipart — typed job document upload (returns file_url / s3_key). */
+  documentTypeUpload: (id: string, documentType: string) =>
+    `/jobs/${id}/documents/${encodeURIComponent(documentType)}/upload`,
   document: (id: string, documentId: string) => `/jobs/${id}/documents/${documentId}`,
   finalizeDocument: (id: string, documentId: string) =>
     `/jobs/${id}/documents/${documentId}/finalize`,

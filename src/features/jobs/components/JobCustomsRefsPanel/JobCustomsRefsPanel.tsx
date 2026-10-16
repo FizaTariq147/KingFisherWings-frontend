@@ -77,9 +77,6 @@ export function JobCustomsRefsPanel({
     <div className="space-y-3 text-sm">
       {error ? <p className="text-[var(--color-danger-600)]">{error}</p> : null}
       {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
-      <p className="text-[12px] text-[#64748b]">
-        POST /jobs/:id/customs-refs · PATCH/DELETE /jobs/:id/customs-refs/:refId
-      </p>
 
       {tabQuery.isLoading ? (
         <p className="text-[13px] text-[#64748b]">Loading customs refs…</p>

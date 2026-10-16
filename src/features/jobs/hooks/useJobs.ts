@@ -56,6 +56,14 @@ export const jobKeys = {
     [...jobKeys.all, 'job-email-recipients-suggest', id] as const,
   chargeAttachments: (id: string, chargeId: string) =>
     [...jobKeys.all, 'charge-attachments', id, chargeId] as const,
+  profitShareCalculator: (id: string) =>
+    [...jobKeys.all, 'profit-share-calculator', id] as const,
+  profitShareAccounts: (id: string, search: string) =>
+    [...jobKeys.all, 'profit-share-accounts', id, search] as const,
+  purchaseBulkPreview: (id: string) =>
+    [...jobKeys.all, 'purchase-bulk-preview', id] as const,
+  ediTypes: (id: string) => [...jobKeys.all, 'edi-types', id] as const,
+  ediSubmissions: (id: string) => [...jobKeys.all, 'edi-submissions', id] as const,
 };
 
 export function useInvalidateJobs() {
@@ -190,16 +198,17 @@ export function useJobChargeHistory(id: string, chargeId: string, enabled = true
   });
 }
 
-/** GET /jobs/:id/charges/:chargeId/attachments */
+/** GET /jobs/:id/charges/:chargeId/attachments?side= */
 export function useJobChargeAttachments(
   id: string,
   chargeId: string,
   enabled = true,
+  side: 'SALE' | 'COST' | 'CHARGE' = 'CHARGE',
 ) {
   const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({
-    queryKey: jobKeys.chargeAttachments(id, chargeId),
-    queryFn: () => jobService.listChargeAttachments(id, chargeId),
+    queryKey: [...jobKeys.chargeAttachments(id, chargeId), side] as const,
+    queryFn: () => jobService.listChargeAttachments(id, chargeId, side),
     enabled: Boolean(accessToken) && isUuid(id) && isUuid(chargeId) && enabled,
   });
 }
@@ -230,6 +239,63 @@ export function useJobEmailRecipientsSuggest(id: string, enabled = true) {
   return useQuery({
     queryKey: jobKeys.jobEmailRecipientsSuggest(id),
     queryFn: () => jobService.suggestEmailRecipients(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/:id/profit-share/calculator */
+export function useProfitShareCalculator(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.profitShareCalculator(id),
+    queryFn: () => jobService.getProfitShareCalculator(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/:id/profit-share/accounts?search= */
+export function useProfitShareAccounts(
+  id: string,
+  search = '',
+  enabled = true,
+) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.profitShareAccounts(id, search.trim()),
+    queryFn: () =>
+      jobService.listProfitShareAccounts(id, {
+        search: search.trim() || undefined,
+      }),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/:id/invoices/purchase/bulk */
+export function useJobBulkPurchasePreview(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.purchaseBulkPreview(id),
+    queryFn: () => jobService.previewBulkPurchaseInvoice(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/:id/edi/types */
+export function useJobEdiTypes(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.ediTypes(id),
+    queryFn: () => jobService.listJobEdiTypes(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/:id/edi/submissions */
+export function useJobEdiSubmissions(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.ediSubmissions(id),
+    queryFn: () => jobService.listJobEdiSubmissions(id),
     enabled: Boolean(accessToken) && isUuid(id) && enabled,
   });
 }

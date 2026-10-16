@@ -137,6 +137,62 @@ export function normalizePaginationMeta(
   return { page, limit, total, totalPages };
 }
 
+function normalizeChargeSide(
+  raw: Record<string, unknown> | null,
+  side: 'sale' | 'cost',
+): JobCharge['sale'] | undefined {
+  if (!raw) return undefined;
+  const bill =
+    pickString(raw, 'bill_to', 'billTo', 'party_id', 'partyId') || undefined;
+  const vendor =
+    pickString(raw, 'vendor', 'vendor_id', 'vendorId', 'party_id', 'partyId') ||
+    undefined;
+  const party = asRecord(raw.party ?? raw.bill_to_party ?? raw.vendor_party);
+  return {
+    bill_to: side === 'sale' ? bill : undefined,
+    bill_to_name:
+      side === 'sale'
+        ? pickString(raw, 'bill_to_name', 'billToName', 'party_name', 'partyName') ||
+          pickString(party ?? {}, 'name') ||
+          undefined
+        : undefined,
+    vendor: side === 'cost' ? vendor : undefined,
+    vendor_name:
+      side === 'cost'
+        ? pickString(raw, 'vendor_name', 'vendorName', 'party_name', 'partyName') ||
+          pickString(party ?? {}, 'name') ||
+          undefined
+        : undefined,
+    amount: num(raw.amount ?? raw.local_amount ?? raw.localAmount),
+    qty: num(raw.qty ?? raw.quantity),
+    amount_per_qty: num(
+      raw.amount_per_qty ?? raw.amountPerQty ?? raw.unit_price ?? raw.unitPrice,
+    ),
+    currency:
+      pickString(raw, 'currency', 'currency_code', 'currencyCode').toUpperCase() ||
+      undefined,
+    ex_rate: num(raw.ex_rate ?? raw.exRate ?? raw.exchange_rate ?? raw.exchangeRate),
+    fcy_amount: num(raw.fcy_amount ?? raw.fcyAmount),
+    local_amount: num(raw.local_amount ?? raw.localAmount ?? raw.amount),
+    tax_amount: num(raw.tax_amount ?? raw.taxAmount),
+    tax_group_code:
+      pickString(raw, 'tax_group_code', 'taxGroupCode') || undefined,
+    tax_rate_id: pickString(raw, 'tax_rate_id', 'taxRateId') || undefined,
+    taxable_amount: num(raw.taxable_amount ?? raw.taxableAmount),
+    dr_cr: pickString(raw, 'dr_cr', 'drCr') || undefined,
+    remarks: pickString(raw, 'remarks') || undefined,
+    gross_profit: num(raw.gross_profit ?? raw.grossProfit),
+    editable:
+      raw.editable === undefined && raw.Editable === undefined
+        ? undefined
+        : bool(raw.editable ?? raw.Editable, true),
+    attachment_count:
+      num(raw.attachment_count ?? raw.attachmentCount) ?? undefined,
+    voucher_no:
+      pickString(raw, 'voucher_no', 'voucherNo', 'voucher_number') || undefined,
+  };
+}
+
 export function normalizeJobCharge(raw: unknown): JobCharge | null {
   const r = asRecord(raw);
   if (!r) return null;
@@ -146,19 +202,37 @@ export function normalizeJobCharge(raw: unknown): JobCharge | null {
     pickString(r, 'charge_id', 'chargeId', 'shipment_charge_id', 'shipmentChargeId');
   if (!id) return null;
   const party = asRecord(r.party);
+  const chargeSec = asRecord(r.charge);
   const sale = asRecord(r.sale);
   const cost = asRecord(r.cost);
+  const saleView = normalizeChargeSide(sale, 'sale');
+  const costView = normalizeChargeSide(cost, 'cost');
   const unitFromSides =
     num(sale?.unit_price ?? sale?.unitPrice ?? sale?.amount) ??
     num(cost?.unit_price ?? cost?.unitPrice ?? cost?.amount);
+  const saleAmt =
+    num(r.sale_amount ?? r.saleAmount) ??
+    saleView?.local_amount ??
+    saleView?.amount;
+  const costAmt =
+    num(r.cost_amount ?? r.costAmount) ??
+    costView?.local_amount ??
+    costView?.amount;
   return {
     id,
-    charge_code_id: pickString(r, 'charge_code_id', 'chargeCodeId'),
+    charge_code_id:
+      pickString(r, 'charge_code_id', 'chargeCodeId') ||
+      pickString(chargeSec ?? {}, 'charge_code_id', 'chargeCodeId'),
     charge_code: pickString(r, 'charge_code', 'chargeCode', 'code'),
     description:
       pickString(r, 'description', 'charge', 'charge_name', 'chargeName', 'name') ||
+      pickString(chargeSec ?? {}, 'description', 'name', 'charge_name', 'chargeName') ||
       '—',
-    quantity: num(r.quantity ?? r.qty) ?? num(sale?.quantity) ?? num(cost?.quantity),
+    quantity:
+      num(r.quantity ?? r.qty) ??
+      num(chargeSec?.quantity) ??
+      num(sale?.quantity) ??
+      num(cost?.quantity),
     unit_price:
       num(r.unit_price ?? r.unitPrice ?? r.amount_per_unit ?? r.amountPerUnit) ??
       unitFromSides ??
@@ -175,16 +249,59 @@ export function normalizeJobCharge(raw: unknown): JobCharge | null {
     tax_rate_id: pickString(r, 'tax_rate_id', 'taxRateId') || undefined,
     is_cost: bool(r.is_cost ?? r.isCost),
     is_billable: bool(r.is_billable ?? r.isBillable, true),
-    is_provisional: bool(r.is_provisional ?? r.isProvisional),
-    party_id: pickString(r, 'party_id', 'partyId') || undefined,
+    is_provisional: bool(
+      r.is_provisional ?? r.isProvisional ?? chargeSec?.is_provisional,
+    ),
+    party_id:
+      pickString(r, 'party_id', 'partyId') ||
+      saleView?.bill_to ||
+      costView?.vendor ||
+      undefined,
     party_name:
       pickString(r, 'party_name', 'partyName') ||
       pickString(party ?? {}, 'name', 'party_name') ||
+      saleView?.bill_to_name ||
+      costView?.vendor_name ||
       undefined,
     line_total:
-      num(r.line_total ?? r.lineTotal ?? r.sale_amount ?? r.saleAmount ?? r.cost_amount) ??
-      num(sale?.amount ?? sale?.line_total) ??
-      num(cost?.amount ?? cost?.line_total),
+      num(r.line_total ?? r.lineTotal) ?? saleAmt ?? costAmt,
+    line_no: num(r.line_no ?? r.lineNo),
+    unit: pickString(r, 'unit') || undefined,
+    pp_cc:
+      pickString(r, 'pp_cc', 'ppCc', 'freight') ||
+      pickString(chargeSec ?? {}, 'pp_cc', 'ppCc') ||
+      undefined,
+    ofd_type:
+      pickString(r, 'ofd_type', 'ofdType') ||
+      pickString(chargeSec ?? {}, 'ofd_type', 'ofdType') ||
+      undefined,
+    remarks:
+      pickString(r, 'remarks') ||
+      pickString(chargeSec ?? {}, 'remarks') ||
+      undefined,
+    sale_tax_amount:
+      num(r.sale_tax_amount ?? r.saleTaxAmount) ?? saleView?.tax_amount,
+    cost_tax_amount:
+      num(r.cost_tax_amount ?? r.costTaxAmount) ?? costView?.tax_amount,
+    sale_dr_cr: pickString(r, 'sale_dr_cr', 'saleDrCr') || saleView?.dr_cr || undefined,
+    cost_dr_cr: pickString(r, 'cost_dr_cr', 'costDrCr') || costView?.dr_cr || undefined,
+    gross_profit:
+      num(r.gross_profit ?? r.grossProfit ?? r.gp) ??
+      (saleAmt != null && costAmt != null ? saleAmt - costAmt : undefined),
+    prorated_status:
+      pickString(r, 'prorated_status', 'proratedStatus', 'prorate_status') || undefined,
+    attachment_count: num(r.attachment_count ?? r.attachmentCount) ?? undefined,
+    history_count: num(r.history_count ?? r.historyCount) ?? undefined,
+    sale_voucher_no:
+      pickString(r, 'sale_voucher_no', 'saleVoucherNo') ||
+      saleView?.voucher_no ||
+      undefined,
+    cost_voucher_no:
+      pickString(r, 'cost_voucher_no', 'costVoucherNo') ||
+      costView?.voucher_no ||
+      undefined,
+    sale: saleView,
+    cost: costView,
   };
 }
 
@@ -412,6 +529,11 @@ export function normalizeJob(raw: unknown): Job | null {
       pickString(r, 'client_reference_type', 'clientReferenceType', 'reference_type') ||
       undefined,
     actions: normalizeJobActions(r.actions),
+    path_hints: normalizePathHints(r.path_hints ?? r.pathHints),
+    ops_continuum: (() => {
+      const rec = asRecord(r.ops_continuum ?? r.opsContinuum);
+      return rec && Object.keys(rec).length ? rec : undefined;
+    })(),
     tabs: normalizeJobTabs(r.tabs),
     gross_weight: num(r.gross_weight ?? r.grossWeight),
     chargeable_weight: num(r.chargeable_weight ?? r.chargeableWeight),
@@ -703,6 +825,23 @@ function normalizeJobActions(raw: unknown): JobActions | undefined {
     : Object.keys(out).length
       ? out
       : undefined;
+}
+
+function normalizePathHints(raw: unknown): string[] | undefined {
+  if (!raw) return undefined;
+  if (Array.isArray(raw)) {
+    const hints = raw
+      .map((h) => (typeof h === 'string' ? h.trim() : ''))
+      .filter(Boolean);
+    return hints.length ? hints : undefined;
+  }
+  const rec = asRecord(raw);
+  if (!rec) return undefined;
+  const hints = Object.keys(rec).filter((k) => {
+    const v = rec[k];
+    return v === true || v === 'true' || typeof v === 'string';
+  });
+  return hints.length ? hints : undefined;
 }
 
 function normalizeJobTabs(raw: unknown): JobDetailTab[] | undefined {

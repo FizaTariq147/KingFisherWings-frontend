@@ -10,6 +10,7 @@ import { normalizeNegotiationPricing } from './normalizeQuotationExtended';
 import { coerceQuotationStatus, usesModeBookingFormConvertFlow } from './quotationStatus';
 import { resolveCustomerFacingQuoteStatus } from './customerQuoteDecision';
 import { isRememberedQuotationConverted } from './quotationConvertedMemory';
+import { pickDetailHints } from '@/features/shared/continuum/normalizeDetailHints';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -394,6 +395,7 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     actions: normalizeQuotationActions(
       r.actions ?? r.action_flags ?? r.actionFlags ?? r.available_actions,
     ),
+    ...pickDetailHints(r),
   };
 }
 

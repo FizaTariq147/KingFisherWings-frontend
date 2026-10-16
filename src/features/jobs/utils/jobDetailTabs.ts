@@ -2,6 +2,18 @@ import { isCcJobType } from '@/features/customs-clearance/constants/ccWorkflow';
 import type { JobDetailTabKey } from '../api/job.api';
 import type { Job, JobDetailTab } from '../types/job.types';
 
+/** API metadata tabs — never shown in detail form / Show All (right rail owns continuum). */
+export function isOpsContinuumMetaTab(key: string): boolean {
+  const n = key.trim().toLowerCase().replace(/[-_\s]/g, '');
+  return (
+    n === 'opscontinuum' ||
+    n === 'continuum' ||
+    n === 'pathhints' ||
+    n === 'pathhint' ||
+    n === 'hints'
+  );
+}
+
 export function jobDetailTabLabel(key: string): string {
   const api = toApiDetailTabKey(key);
   switch (api) {
@@ -92,6 +104,8 @@ export const JOB_ACTION_PANEL_KEYS = [
   'pnl',
   'milestones',
   'notes',
+  /** @deprecated Use OpsContinuumRail (right-side icons) instead of Actions toolbar. */
+  'ops-continuum',
   'vendor-offers',
   'logistics',
   'gpum',
@@ -112,7 +126,9 @@ export const JOB_ACTION_PANEL_KEYS = [
 export type JobActionPanelKey = (typeof JOB_ACTION_PANEL_KEYS)[number];
 
 export function isJobActionPanelKey(value: string): value is JobActionPanelKey {
-  return (JOB_ACTION_PANEL_KEYS as readonly string[]).includes(value);
+  if ((JOB_ACTION_PANEL_KEYS as readonly string[]).includes(value)) return true;
+  const n = value.trim().toLowerCase().replace(/_/g, '-');
+  return (JOB_ACTION_PANEL_KEYS as readonly string[]).includes(n);
 }
 
 /** True for any detail/{tab} key (not an Actions-toolbar panel). */
@@ -137,6 +153,8 @@ export function jobActionPanelLabel(key: JobActionPanelKey): string {
       return 'Milestones';
     case 'notes':
       return 'Notes';
+    case 'ops-continuum':
+      return 'Ops continuum';
     case 'vendor-offers':
       return 'Vendor offers';
     case 'logistics':
@@ -179,6 +197,12 @@ const JOB_ACTION_PANEL_FLAGS: Record<JobActionPanelKey, string[]> = {
   pnl: ['can_pnl', 'can_profit_loss'],
   milestones: ['can_milestones', 'can_milestone'],
   notes: ['can_notes', 'can_note'],
+  'ops-continuum': [
+    'can_ops_continuum',
+    'can_continuum',
+    'can_comments',
+    'can_follow_ups',
+  ],
   'vendor-offers': ['can_vendor_offers', 'can_vendor_offers_panel', 'can_job_offers'],
   logistics: ['can_logistics'],
   gpum: ['can_gpum'],
@@ -270,6 +294,8 @@ export function resolveJobActionPanels(
 
   const out: JobActionPanelKey[] = [];
   for (const key of JOB_ACTION_PANEL_KEYS) {
+    // Continuum lives on the fixed right-side icon rail, not the Actions toolbar.
+    if (key === 'ops-continuum') continue;
     if (key === 'house' && houseCount <= 0) continue;
     const flag = actionFlagTrue(actions, JOB_ACTION_PANEL_FLAGS[key]);
     if (flag === false) continue;
@@ -292,7 +318,9 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
   for (const t of apiTabs) {
     if (!t?.key) continue;
     const key = toApiDetailTabKey(t.key);
-    if (!key || seen.has(key) || isJobActionPanelKey(key)) continue;
+    if (!key || seen.has(key) || isJobActionPanelKey(key) || isOpsContinuumMetaTab(key)) {
+      continue;
+    }
     seen.add(key);
     const apiLabel = t.label?.trim();
     const lower = apiLabel?.toLowerCase() ?? '';

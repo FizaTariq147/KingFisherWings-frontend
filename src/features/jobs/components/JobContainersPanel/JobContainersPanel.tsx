@@ -35,14 +35,18 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [singleFill, setSingleFill] = useState<unknown>(null);
+  const [syncIncludeHouses, setSyncIncludeHouses] = useState(true);
+  const [syncSubJobOnly, setSyncSubJobOnly] = useState(false);
+  const [syncRollupHeader, setSyncRollupHeader] = useState(true);
   const [containerTypeId, setContainerTypeId] = useState('');
   const [containerNumber, setContainerNumber] = useState('');
   const [sealNumber, setSealNumber] = useState('');
   const [assignCargoId, setAssignCargoId] = useState('');
   const [assignContainerId, setAssignContainerId] = useState('');
-  const [splitJson, setSplitJson] = useState(
-    '[{"consignee_id":"","packages":0,"gross_weight":0}]',
-  );
+  const [splitContainerId, setSplitContainerId] = useState('');
+  const [splitPortions, setSplitPortions] = useState<
+    { consignee_id: string; packages: string; gross_weight: string }[]
+  >([{ consignee_id: '', packages: '', gross_weight: '' }]);
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
     setError(null);
@@ -96,16 +100,14 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
   };
 
   const splitContainer = async () => {
-    let portions: unknown;
-    try {
-      portions = JSON.parse(splitJson);
-    } catch {
-      splitValidation.setFormError('Split portions must be valid JSON');
-      return;
-    }
+    const portions = splitPortions.map((row) => ({
+      consignee_id: row.consignee_id.trim() || undefined,
+      packages: row.packages.trim() ? Number(row.packages) : undefined,
+      gross_weight: row.gross_weight.trim() ? Number(row.gross_weight) : undefined,
+    }));
     const ok = await splitValidation.runValidated(
       splitContainerFormSchema,
-      { container_id: assignContainerId, portions },
+      { container_id: splitContainerId, portions },
       async (dto) => {
         await mutations.splitContainer.mutateAsync({
           containerId: dto.container_id,
@@ -134,6 +136,32 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
           <CardTitle>Containers</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 space-y-2 text-sm">
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="inline-flex items-center gap-1.5 text-xs text-[var(--color-neutral-600)]">
+              <input
+                type="checkbox"
+                checked={syncIncludeHouses}
+                onChange={(e) => setSyncIncludeHouses(e.target.checked)}
+              />
+              Include houses
+            </label>
+            <label className="inline-flex items-center gap-1.5 text-xs text-[var(--color-neutral-600)]">
+              <input
+                type="checkbox"
+                checked={syncSubJobOnly}
+                onChange={(e) => setSyncSubJobOnly(e.target.checked)}
+              />
+              Sub-job only
+            </label>
+            <label className="inline-flex items-center gap-1.5 text-xs text-[var(--color-neutral-600)]">
+              <input
+                type="checkbox"
+                checked={syncRollupHeader}
+                onChange={(e) => setSyncRollupHeader(e.target.checked)}
+              />
+              Roll up header
+            </label>
+          </div>
           <div className="flex flex-wrap gap-2">
             <Button
               type="button"
@@ -142,7 +170,12 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
               disabled={actions.syncContainersFromSubJobs.isPending}
               onClick={() =>
                 void run(
-                  () => actions.syncContainersFromSubJobs.mutateAsync({}),
+                  () =>
+                    actions.syncContainersFromSubJobs.mutateAsync({
+                      include_houses: syncIncludeHouses,
+                      is_sub_job_only: syncSubJobOnly,
+                      rollup_header: syncRollupHeader,
+                    }),
                   'Containers synced from sub-jobs.',
                 )
               }
@@ -156,7 +189,11 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
               disabled={actions.pushContainersToSubJobs.isPending}
               onClick={() =>
                 void run(
-                  () => actions.pushContainersToSubJobs.mutateAsync({}),
+                  () =>
+                    actions.pushContainersToSubJobs.mutateAsync({
+                      include_houses: syncIncludeHouses,
+                      is_sub_job_only: syncSubJobOnly,
+                    }),
                   'Containers pushed to sub-jobs.',
                 )
               }
@@ -400,51 +437,120 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
         <CardHeader>
           <CardTitle>Split container</CardTitle>
         </CardHeader>
-        <div className="px-4 pb-4 space-y-2">
-          <select
-            className={`h-9 w-full rounded-md border px-3 text-sm ${
-              splitValidation.fieldError('container_id')
-                ? 'border-[var(--color-danger-500)]'
-                : 'border-[var(--color-neutral-200)]'
-            }`}
-            value={assignContainerId}
-            onChange={(e) => {
-              setAssignContainerId(e.target.value);
-              splitValidation.clearField('container_id');
-            }}
-          >
-            <option value="">Select container…</option>
-            {containers.map((raw) => {
-              const c = raw as { id: string; container_number?: string };
-              return (
-                <option key={c.id} value={c.id}>
-                  {c.container_number || c.id.slice(0, 8)}
-                </option>
-              );
-            })}
-          </select>
-          {splitValidation.fieldError('container_id') && (
-            <p className="text-xs text-[var(--color-danger-500)]">
-              {splitValidation.fieldError('container_id')}
+        <div className="px-4 pb-4 space-y-3">
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+              Container
+            </label>
+            <select
+              className={`h-9 w-full rounded-md border px-3 text-sm ${
+                splitValidation.fieldError('container_id')
+                  ? 'border-[var(--color-danger-500)]'
+                  : 'border-[var(--color-neutral-200)]'
+              }`}
+              value={splitContainerId}
+              onChange={(e) => {
+                setSplitContainerId(e.target.value);
+                splitValidation.clearField('container_id');
+              }}
+            >
+              <option value="">Select container…</option>
+              {containers.map((raw) => {
+                const c = raw as { id: string; container_number?: string };
+                return (
+                  <option key={c.id} value={c.id}>
+                    {c.container_number || c.id.slice(0, 8)}
+                  </option>
+                );
+              })}
+            </select>
+            {splitValidation.fieldError('container_id') && (
+              <p className="text-xs text-[var(--color-danger-500)]">
+                {splitValidation.fieldError('container_id')}
+              </p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-[var(--color-neutral-600)]">
+              Split portions
             </p>
-          )}
-          <textarea
-            className={`w-full min-h-[80px] rounded-md border px-3 py-2 text-xs font-mono ${
-              splitValidation.fieldError('portions')
-                ? 'border-[var(--color-danger-500)]'
-                : 'border-[var(--color-neutral-200)]'
-            }`}
-            value={splitJson}
-            onChange={(e) => {
-              setSplitJson(e.target.value);
-              splitValidation.clearField('portions');
-            }}
-          />
-          {splitValidation.fieldError('portions') && (
-            <p className="text-xs text-[var(--color-danger-500)]">
-              {splitValidation.fieldError('portions')}
-            </p>
-          )}
+            {splitPortions.map((row, index) => (
+              <div
+                key={`split-row-${index}`}
+                className="grid gap-2 rounded-md border border-[var(--color-neutral-200)] bg-white p-2 sm:grid-cols-[1fr_6rem_6rem_auto]"
+              >
+                <Input
+                  label={index === 0 ? 'Consignee ID' : undefined}
+                  placeholder="Consignee UUID (optional)"
+                  value={row.consignee_id}
+                  onChange={(e) => {
+                    const next = [...splitPortions];
+                    next[index] = { ...next[index], consignee_id: e.target.value };
+                    setSplitPortions(next);
+                    splitValidation.clearField('portions');
+                  }}
+                />
+                <Input
+                  label={index === 0 ? 'Packages' : undefined}
+                  type="number"
+                  min={0}
+                  placeholder="0"
+                  value={row.packages}
+                  onChange={(e) => {
+                    const next = [...splitPortions];
+                    next[index] = { ...next[index], packages: e.target.value };
+                    setSplitPortions(next);
+                    splitValidation.clearField('portions');
+                  }}
+                />
+                <Input
+                  label={index === 0 ? 'Gross wt' : undefined}
+                  type="number"
+                  min={0}
+                  step="0.001"
+                  placeholder="0"
+                  value={row.gross_weight}
+                  onChange={(e) => {
+                    const next = [...splitPortions];
+                    next[index] = { ...next[index], gross_weight: e.target.value };
+                    setSplitPortions(next);
+                    splitValidation.clearField('portions');
+                  }}
+                />
+                <div className="flex items-end">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="danger"
+                    disabled={splitPortions.length <= 1}
+                    onClick={() =>
+                      setSplitPortions((rows) => rows.filter((_, i) => i !== index))
+                    }
+                  >
+                    Remove
+                  </Button>
+                </div>
+              </div>
+            ))}
+            {splitValidation.fieldError('portions') && (
+              <p className="text-xs text-[var(--color-danger-500)]">
+                {splitValidation.fieldError('portions')}
+              </p>
+            )}
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() =>
+                setSplitPortions((rows) => [
+                  ...rows,
+                  { consignee_id: '', packages: '', gross_weight: '' },
+                ])
+              }
+            >
+              Add portion
+            </Button>
+          </div>
           <Button type="button" onClick={() => void splitContainer()}>
             Split container
           </Button>

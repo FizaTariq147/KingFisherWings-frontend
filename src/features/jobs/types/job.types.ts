@@ -525,6 +525,33 @@ export type StaffBookingFormMode =
   | 'WAREHOUSE'
   | 'CUSTOMS_CLEARANCE';
 
+/** Sale / Cost side snapshot when returned on charge lines or composite rows */
+export interface JobChargeSideView {
+  bill_to?: string;
+  bill_to_name?: string;
+  vendor?: string;
+  vendor_name?: string;
+  amount?: number;
+  qty?: number;
+  amount_per_qty?: number;
+  currency?: string;
+  ex_rate?: number;
+  fcy_amount?: number;
+  local_amount?: number;
+  tax_amount?: number;
+  tax_group_code?: string;
+  tax_rate_id?: string;
+  taxable_amount?: number;
+  dr_cr?: 'DR' | 'CR' | string;
+  remarks?: string;
+  gross_profit?: number;
+  /** From JobCostingSaleSideResponseDto / CostSide — drives Edit column. */
+  editable?: boolean;
+  /** Per-side attachment count when API returns it; else use line attachment_count. */
+  attachment_count?: number;
+  voucher_no?: string;
+}
+
 export interface JobCharge {
   id: string;
   charge_code_id: string;
@@ -541,6 +568,26 @@ export interface JobCharge {
   party_id?: string;
   party_name?: string;
   line_total?: number;
+  /** Fresa costing grid extras when API returns them */
+  line_no?: number;
+  unit?: string;
+  pp_cc?: 'PP' | 'CC' | string;
+  ofd_type?: string;
+  remarks?: string;
+  sale_tax_amount?: number;
+  cost_tax_amount?: number;
+  sale_dr_cr?: string;
+  cost_dr_cr?: string;
+  gross_profit?: number;
+  prorated_status?: string;
+  /** JobCostingGridLineDto.attachment_count */
+  attachment_count?: number;
+  /** JobCostingGridLineDto.history_count — revision lines */
+  history_count?: number;
+  sale_voucher_no?: string;
+  cost_voucher_no?: string;
+  sale?: JobChargeSideView;
+  cost?: JobChargeSideView;
 }
 
 export interface JobMilestone {
@@ -648,6 +695,8 @@ export interface JobActions {
   can_stop?: boolean;
   can_close?: boolean;
   can_cancel?: boolean;
+  /** Real jobs.closed_delivery.edit permission when job is closed */
+  can_edit_closed_delivery?: boolean;
   can_edit?: boolean;
   can_delete?: boolean;
   can_copy?: boolean;
@@ -859,12 +908,15 @@ export interface ConfirmStorageChargesDto {
   line_keys?: number[];
 }
 
+export type JobChargeAttachmentSide = 'CHARGE' | 'SALE' | 'COST';
+
 export interface CreateJobChargeAttachmentDto {
   file_name: string;
   file_url: string;
   s3_key?: string;
   file_size?: number;
   mime_type?: string;
+  side?: JobChargeAttachmentSide;
 }
 
 export interface JobChargeAttachment {
@@ -874,6 +926,7 @@ export interface JobChargeAttachment {
   s3_key?: string;
   file_size?: number;
   mime_type?: string;
+  side?: JobChargeAttachmentSide | string;
   created_at?: string;
 }
 
@@ -936,6 +989,10 @@ export interface Job {
   updated_at?: string;
   /** From GET /jobs/:id/detail */
   actions?: JobActions;
+  /** GET /jobs/:id/detail path_hints — ops report / sync deep-links */
+  path_hints?: string[];
+  /** GET /jobs/:id/detail ops continuum summary / badges */
+  ops_continuum?: Record<string, unknown>;
   tabs?: JobDetailTab[];
   client_reference_no?: string;
   client_reference_type?: string;
@@ -1025,6 +1082,26 @@ export interface ProfitShareAddDto {
   description?: string;
 }
 
+/** GET /jobs/:id/profit-share/calculator */
+export interface ProfitShareCalculator {
+  gross_weight?: number;
+  net_weight?: number;
+  volume_cbm?: number;
+  chargeable_weight?: number;
+  pieces?: number;
+  shipment_numbers?: string[];
+  shipment_no?: string;
+  raw?: Record<string, unknown>;
+}
+
+/** GET /jobs/:id/profit-share/accounts — postable COA row */
+export interface ProfitShareAccountOption {
+  id: string;
+  code?: string;
+  name?: string;
+  label?: string;
+}
+
 /** POST /jobs/:id/prorate-to-shipments */
 export interface ProrateToShipmentsDto {
   charge_code_id?: string;
@@ -1088,7 +1165,7 @@ export type PatchJobChargeSideDto = Partial<CreateJobChargeDto> &
   Partial<SaleSectionDto> &
   Partial<CostSectionDto>;
 
-/** POST /jobs/:id/invoices/sale | /purchase */
+/** POST /jobs/:id/invoices/sale | /purchase | /purchase/bulk — OpenAPI JobInvoiceFromChargesDto */
 export type CreateJobInvoiceFromCostingDto = {
   charge_ids?: string[];
   party_id?: string;
@@ -1097,15 +1174,53 @@ export type CreateJobInvoiceFromCostingDto = {
   notes?: string;
 } & Record<string, unknown>;
 
+/** OpenAPI GenerateJobEdiDto / GenerateShipmentEdiDto */
+export const JOB_EDI_TYPES = [
+  'BAYAN_MASTER',
+  'BAYAN_HOUSE',
+  'CCN_FWB',
+  'CCN_FHL',
+  'CGM',
+  'EQO_DUBAI',
+  'EQO_OMAN',
+  'IAL',
+  'MPCI',
+] as const;
+
+export type JobEdiType = (typeof JOB_EDI_TYPES)[number];
+
+export interface GenerateJobEdiDto {
+  edi_type: JobEdiType | string;
+}
+
+export interface JobEdiTypeOption {
+  code: string;
+  label: string;
+  description?: string;
+}
+
+export interface JobEdiSubmission {
+  id: string;
+  edi_type?: string;
+  status?: string;
+  file_name?: string;
+  created_at?: string;
+  raw?: Record<string, unknown>;
+}
+
 /** PUT /jobs/:id/references · PUT .../references/:type */
 export type UpsertJobReferencesDto = {
   references?: Record<string, string>;
 } & Record<string, unknown>;
 
-/** PATCH /jobs/:id/closed-overrides */
+/** PATCH /jobs/:id/closed-overrides — allowlisted fields when closed + permission */
 export type PatchJobClosedOverridesDto = {
-  allow_charge_edit?: boolean;
-  allow_document_regen?: boolean;
+  delivery_date?: string;
+  actual_delivery_date?: string;
+  do_remarks?: string;
+  return_to_terminal?: string;
+  load_onboard?: string;
+  commodity_note?: string;
   reason?: string;
 } & Record<string, unknown>;
 

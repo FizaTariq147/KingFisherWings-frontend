@@ -8,6 +8,7 @@ import { useShipment, useShipmentDetailTab, useShipmentShowAll } from '../hooks/
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { isShipmentCostingTab } from '../utils/normalizeShipmentCharges';
 import { ShipmentChargesPanel } from './ShipmentChargesPanel';
+import { ShipmentDepartmentPanel } from './ShipmentDepartmentPanel';
 
 function formatKey(key: string): string {
   const norm = key
@@ -410,6 +411,11 @@ function SingleTabPanel({ shipmentId, tabKey }: { shipmentId: string; tabKey: st
   );
 }
 
+function isShipmentDepartmentTab(tabKey: string): boolean {
+  const norm = tabKey.trim().toLowerCase().replace(/-/g, '_');
+  return norm === 'department' || norm === 'departments';
+}
+
 /** Lazy-loaded shipment detail tab — Show All aggregates sibling detail/{tab} payloads. */
 export function ShipmentTabPanel({
   shipmentId,
@@ -430,7 +436,46 @@ export function ShipmentTabPanel({
   if (isShipmentCostingTab(tabKey)) {
     return <ShipmentCostingTabPanel shipmentId={shipmentId} />;
   }
+  if (isShipmentDepartmentTab(tabKey)) {
+    return <ShipmentDepartmentTabPanel shipmentId={shipmentId} />;
+  }
   return <SingleTabPanel shipmentId={shipmentId} tabKey={tabKey} />;
+}
+
+function ShipmentDepartmentTabPanel({ shipmentId }: { shipmentId: string }) {
+  const shipmentQuery = useShipment(shipmentId);
+  const shipment = shipmentQuery.data;
+
+  if (shipmentQuery.isLoading && !shipment) {
+    return (
+      <div className="space-y-1.5 p-3" aria-busy>
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="h-8 animate-pulse rounded-sm bg-[var(--fresa-action-soft,#E9EEF2)]"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (!shipment) {
+    return (
+      <div className="p-3">
+        <ErrorState
+          message={getErrorMessage(shipmentQuery.error) || 'Shipment not loaded.'}
+          onRetry={() => void shipmentQuery.refetch()}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <ShipmentDepartmentPanel
+      shipment={shipment}
+      onChanged={() => void shipmentQuery.refetch()}
+    />
+  );
 }
 
 function ShipmentCostingTabPanel({ shipmentId }: { shipmentId: string }) {

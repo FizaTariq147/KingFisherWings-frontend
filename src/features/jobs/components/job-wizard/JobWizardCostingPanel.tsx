@@ -125,9 +125,8 @@ export function JobWizardCostingPanel({
         <div>
           <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Charges</h3>
           <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
-            Draft charge lines now. After the job header is created they are saved with{' '}
-            <span className="font-mono">POST /jobs/:id/charges</span>. You can still edit charges on
-            the job detail Charges tab.
+            Draft charge lines now. After the job header is created they are saved automatically.
+            You can still edit charges on the job detail Costing tab.
           </p>
         </div>
         <Button type="button" variant="secondary" onClick={openAddForm}>

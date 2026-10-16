@@ -16,8 +16,8 @@ const stepClass = (step: ContinuumStep) => {
 };
 
 /**
- * Compact Party → Enquiry → Quotation → Verified → Approved → Shipment → Job rail.
- * Used for every job type (not FCL-only).
+ * Compact Enquiry → Quotation → Verified → Approved → Shipment → Job rail
+ * (optional Party prefix). Shared across every detail page in the lifecycle.
  */
 export function FclContinuumRail({
   steps,
@@ -28,7 +28,7 @@ export function FclContinuumRail({
 }) {
   return (
     <nav
-      aria-label="Ops continuum"
+      aria-label="Lifecycle"
       className={cn(
         'flex flex-wrap items-center gap-1 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2 text-xs',
         className,

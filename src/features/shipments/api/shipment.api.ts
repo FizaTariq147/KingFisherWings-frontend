@@ -49,7 +49,14 @@ export const SHIPMENT_API = {
   merge: (id: string) => `/shipments/${id}/merge`,
   switchBl: (id: string) => `/shipments/${id}/switch-bl`,
   createSubmaster: (id: string) => `/shipments/${id}/create-submaster`,
+  /** Legacy action-style EDI (kept for older backends). Prefer typed EDI below. */
   edi: (id: string, action: string) => `/shipments/${id}/edi/${encodeURIComponent(action)}`,
+  /** GET /shipments/:id/edi/types · POST generate · GET submissions · GET download */
+  ediTypes: (id: string) => `/shipments/${id}/edi/types`,
+  ediGenerate: (id: string) => `/shipments/${id}/edi/generate`,
+  ediSubmissions: (id: string) => `/shipments/${id}/edi/submissions`,
+  ediSubmissionDownload: (id: string, submissionId: string) =>
+    `/shipments/${id}/edi/submissions/${encodeURIComponent(submissionId)}/download`,
   kpi: (id: string) => `/shipments/${id}/kpi`,
   tracking: (id: string) => `/shipments/${id}/tracking`,
   routingLegs: (id: string) => `/shipments/${id}/routing-legs`,

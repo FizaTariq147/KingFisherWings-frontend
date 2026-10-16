@@ -11,7 +11,7 @@ export const appType = {
     'text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] transition-colors',
   body: 'text-sm text-gray-700',
   tableHead:
-    'text-left font-semibold text-[var(--fresa-header-text,#0A2942)] px-4 py-2.5 whitespace-nowrap text-sm',
+    'text-left font-semibold text-white px-4 py-2.5 whitespace-nowrap text-sm bg-[var(--color-primary,#0A2942)]',
   listCreateBtn:
     'inline-flex items-center gap-1.5 rounded-sm border border-[var(--btn-create-border,#061B2C)] bg-[var(--btn-create-bg,#0A2942)] px-3 py-1.5 text-[13px] font-medium text-[var(--btn-create-text,#FFFFFF)] transition-colors hover:bg-[var(--btn-create-hover,#163E60)]',
 } as const;
@@ -30,7 +30,7 @@ export const listShell = {
 } as const;
 
 export const erpTable = {
-  th: 'text-left font-semibold text-[var(--fresa-header-text,#0A2942)] px-3 py-2 whitespace-nowrap text-[11px] uppercase tracking-wide border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-thead-bg,#E9EEF2)]',
+  th: 'text-left font-semibold text-white px-3 py-2 whitespace-nowrap text-[11px] uppercase tracking-wide border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--color-primary,#0A2942)]',
   td: 'px-3 py-1.5 text-[13px] text-[#334155] align-middle',
   row: 'border-b border-[#e8edf2] hover:bg-[var(--fresa-row-hover,#F5F9FC)]',
 } as const;

@@ -37,6 +37,39 @@ function appendFormFields(form: FormData, fields?: Record<string, unknown>) {
   }
 }
 
+/** Keep only OpenAPI-allowed keys (forbid whitelist extras that cause 400). */
+function pickDto(
+  body: Record<string, unknown>,
+  keys: readonly string[],
+): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const key of keys) {
+    const v = body[key];
+    if (v === undefined || v === null) continue;
+    if (typeof v === 'string' && !v.trim() && key !== 'notes') continue;
+    out[key] = typeof v === 'string' ? v.trim() : v;
+  }
+  return out;
+}
+
+const COMMENT_KEYS = ['body'] as const;
+const FOLLOW_UP_KEYS = ['due_date', 'subject', 'notes', 'owner_id'] as const;
+const REFERENCE_KEYS = ['ref_type', 'ref_value', 'notes'] as const;
+const TAG_KEYS = ['tag'] as const;
+const LINK_KEYS = ['title', 'url'] as const;
+const COMPLAINT_KEYS = ['subject', 'body'] as const;
+const COMPLAINT_PATCH_KEYS = ['status'] as const;
+const ATTACHMENT_KEYS = [
+  'file_name',
+  'storage_key',
+  'file_url',
+  'mime_type',
+  'size_bytes',
+  'notes',
+  'visible_to_customer',
+  'visible_to_vendor',
+] as const;
+
 export const opsActivityService = {
   async listAttachments(entityType: string, entityId: string, params?: Record<string, unknown>) {
     const res = await withGatewayRetry(() =>
@@ -50,8 +83,12 @@ export const opsActivityService = {
     entityId: string,
     body: Record<string, unknown>,
   ) {
+    const payload = pickDto(body, ATTACHMENT_KEYS);
     const res = await withGatewayRetry(() =>
-      axiosInstance.post(OPS_ACTIVITY_API.attachments(entityType, entityId), body),
+      axiosInstance.post(
+        OPS_ACTIVITY_API.attachments(entityType, entityId),
+        payload,
+      ),
     );
     return unwrap(res.data);
   },
@@ -103,8 +140,12 @@ export const opsActivityService = {
   },
 
   async addComplaint(entityType: string, entityId: string, body: Record<string, unknown>) {
+    const payload = pickDto(body, COMPLAINT_KEYS);
     const res = await withGatewayRetry(() =>
-      axiosInstance.post(OPS_ACTIVITY_API.complaints(entityType, entityId), body),
+      axiosInstance.post(
+        OPS_ACTIVITY_API.complaints(entityType, entityId),
+        payload,
+      ),
     );
     return unwrap(res.data);
   },
@@ -115,10 +156,11 @@ export const opsActivityService = {
     complaintId: string,
     body: Record<string, unknown>,
   ) {
+    const payload = pickDto(body, COMPLAINT_PATCH_KEYS);
     const res = await withGatewayRetry(() =>
       axiosInstance.patch(
         OPS_ACTIVITY_API.complaint(entityType, entityId, complaintId),
-        body,
+        payload,
       ),
     );
     return unwrap(res.data);
@@ -132,8 +174,12 @@ export const opsActivityService = {
   },
 
   async createFollowUp(entityType: string, entityId: string, body: Record<string, unknown>) {
+    const payload = pickDto(body, FOLLOW_UP_KEYS);
     const res = await withGatewayRetry(() =>
-      axiosInstance.post(OPS_ACTIVITY_API.followUps(entityType, entityId), body),
+      axiosInstance.post(
+        OPS_ACTIVITY_API.followUps(entityType, entityId),
+        payload,
+      ),
     );
     return unwrap(res.data);
   },
@@ -152,9 +198,10 @@ export const opsActivityService = {
     return asList(res.data);
   },
 
-  async toggleLike(entityType: string, entityId: string, body: Record<string, unknown> = {}) {
+  async toggleLike(entityType: string, entityId: string, _body: Record<string, unknown> = {}) {
+    // POST /likes/toggle — no request body in OpenAPI
     const res = await withGatewayRetry(() =>
-      axiosInstance.post(OPS_ACTIVITY_API.likesToggle(entityType, entityId), body),
+      axiosInstance.post(OPS_ACTIVITY_API.likesToggle(entityType, entityId)),
     );
     return unwrap(res.data);
   },
@@ -167,8 +214,9 @@ export const opsActivityService = {
   },
 
   async addLink(entityType: string, entityId: string, body: Record<string, unknown>) {
+    const payload = pickDto(body, LINK_KEYS);
     const res = await withGatewayRetry(() =>
-      axiosInstance.post(OPS_ACTIVITY_API.links(entityType, entityId), body),
+      axiosInstance.post(OPS_ACTIVITY_API.links(entityType, entityId), payload),
     );
     return unwrap(res.data);
   },
@@ -181,8 +229,12 @@ export const opsActivityService = {
   },
 
   async addReference(entityType: string, entityId: string, body: Record<string, unknown>) {
+    const payload = pickDto(body, REFERENCE_KEYS);
     const res = await withGatewayRetry(() =>
-      axiosInstance.post(OPS_ACTIVITY_API.references(entityType, entityId), body),
+      axiosInstance.post(
+        OPS_ACTIVITY_API.references(entityType, entityId),
+        payload,
+      ),
     );
     return unwrap(res.data);
   },
@@ -195,8 +247,9 @@ export const opsActivityService = {
   },
 
   async addTag(entityType: string, entityId: string, body: Record<string, unknown>) {
+    const payload = pickDto(body, TAG_KEYS);
     const res = await withGatewayRetry(() =>
-      axiosInstance.post(OPS_ACTIVITY_API.tags(entityType, entityId), body),
+      axiosInstance.post(OPS_ACTIVITY_API.tags(entityType, entityId), payload),
     );
     return unwrap(res.data);
   },
@@ -204,6 +257,46 @@ export const opsActivityService = {
   async removeTag(entityType: string, entityId: string, tagId: string) {
     await withGatewayRetry(() =>
       axiosInstance.delete(OPS_ACTIVITY_API.tag(entityType, entityId, tagId)),
+    );
+  },
+
+  async listComments(entityType: string, entityId: string, params?: Record<string, unknown>) {
+    const res = await withGatewayRetry(() =>
+      axiosInstance.get(OPS_ACTIVITY_API.comments(entityType, entityId), { params }),
+    );
+    return asList(res.data);
+  },
+
+  async addComment(entityType: string, entityId: string, body: Record<string, unknown>) {
+    const payload = pickDto(body, COMMENT_KEYS);
+    const res = await withGatewayRetry(() =>
+      axiosInstance.post(
+        OPS_ACTIVITY_API.comments(entityType, entityId),
+        payload,
+      ),
+    );
+    return unwrap(res.data);
+  },
+
+  async patchComment(
+    entityType: string,
+    entityId: string,
+    commentId: string,
+    body: Record<string, unknown>,
+  ) {
+    const payload = pickDto(body, COMMENT_KEYS);
+    const res = await withGatewayRetry(() =>
+      axiosInstance.patch(
+        OPS_ACTIVITY_API.comment(entityType, entityId, commentId),
+        payload,
+      ),
+    );
+    return unwrap(res.data);
+  },
+
+  async deleteComment(entityType: string, entityId: string, commentId: string) {
+    await withGatewayRetry(() =>
+      axiosInstance.delete(OPS_ACTIVITY_API.comment(entityType, entityId, commentId)),
     );
   },
 };

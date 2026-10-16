@@ -21,6 +21,8 @@ import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { buildFclContinuumSteps } from '@/features/shared/continuum/buildFclContinuumSteps';
 import { FclContinuumRail } from '@/features/shared/continuum/FclContinuumRail';
+import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggle';
+import { OpsContinuumRail } from '@/features/ops-activity';
 import { isUuid } from '@/lib/isUuid';
 import { cn } from '@/lib/utils';
 import { useAppForm } from '@/lib/validation';
@@ -269,8 +271,7 @@ export default function CrmEnquiryDetailPage() {
     partyId: enquiry.party_id,
     enquiryId: enquiry.id,
     quotationId: enquiry.quotation_id,
-    verified: false,
-    approved: status === 'QUOTED' || status === 'BOOKED',
+    enquiryStatus: status,
     shipmentId: enquiry.shipment_id,
     jobId: enquiry.job_id,
     jobHref: enquiry.job_id
@@ -552,7 +553,24 @@ export default function CrmEnquiryDetailPage() {
         </div>
       </div>
 
-      <FclContinuumRail steps={continuum} />
+      <OpsContinuumRail
+        entityType="ENQUIRY"
+        entityId={id}
+        pathHints={enquiry.path_hints}
+        opsContinuum={enquiry.ops_continuum}
+        actions={enquiry.actions as Record<string, unknown> | undefined}
+        links={{
+          enquiryId: enquiry.id,
+          quotationId: enquiry.quotation_id,
+          shipmentId: enquiry.shipment_id,
+          jobId: enquiry.job_id,
+        }}
+      />
+
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <FclContinuumRail steps={continuum} className="flex-1" />
+        <FavouriteToggle kind="enquiry" targetKey={id} label={titleRef} />
+      </div>
 
       {(actionError || update.isError) && (
         <CrmAlert>{actionError || getErrorMessage(update.error)}</CrmAlert>
@@ -600,7 +618,7 @@ export default function CrmEnquiryDetailPage() {
       )}
 
       {/* Enquiry detail — key fields (like Shipment detail) */}
-      <section className={erpForm.section}>
+      <section className={`${erpForm.section} kf-ops-continuum-form-pad`}>
         <div className={erpForm.sectionHeader}>Enquiry detail</div>
         <div className={`${erpForm.sectionBody} grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-3`}>
           <FresaReadonlyField label="Enquiry No" value={enquiry.enquiry_number || titleRef} />
@@ -632,7 +650,7 @@ export default function CrmEnquiryDetailPage() {
       </section>
 
       {/* Generation actions — below Enquiry detail (same pattern as shipment) */}
-      <div className={`${erpForm.toolbar} print:hidden`}>
+      <div className={`${erpForm.toolbar} w-full max-w-none print:hidden`}>
         <p className="mr-1 w-full text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)] sm:mr-2 sm:w-auto">
           Generation actions
         </p>

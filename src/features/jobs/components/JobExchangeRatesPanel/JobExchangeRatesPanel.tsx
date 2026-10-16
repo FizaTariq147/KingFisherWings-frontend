@@ -64,9 +64,6 @@ export function JobExchangeRatesPanel({
     <div className="space-y-3 text-sm">
       {error ? <p className="text-[var(--color-danger-600)]">{error}</p> : null}
       {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
-      <p className="text-[12px] text-[#64748b]">
-        POST /jobs/:id/exchange-rates · DELETE /jobs/:id/exchange-rates/:rateId
-      </p>
 
       {tabQuery.isLoading ? (
         <p className="text-[13px] text-[#64748b]">Loading exchange rates…</p>

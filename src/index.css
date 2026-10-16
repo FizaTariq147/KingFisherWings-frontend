@@ -74,7 +74,7 @@
   --fresa-border:        #C9D3DF;
   --fresa-page-bg:       #F4F6F9;
   --fresa-toolbar-bg:    #EEF3F9;
-  --fresa-thead-bg:      var(--color-primary-50);
+  --fresa-thead-bg:      var(--color-primary);
   --fresa-row-hover:     #F5F9FC;
   /* Status / semantic (Fresa operational palette) */
   --fresa-success:       var(--color-success-500);
@@ -282,6 +282,25 @@ code, kbd, pre, samp {
   display: none;               /* Chrome, Safari, new Edge */
 }
 
+/* Detail form / tabs only — reserve space for fixed Ops continuum rail (responsive) */
+.kf-ops-continuum-form-pad {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding-bottom: 5.5rem; /* mobile: rail sits at bottom */
+}
+@media (min-width: 640px) {
+  .kf-ops-continuum-form-pad {
+    padding-bottom: 0;
+    /* shrink form width; clamp keeps it usable on tablet → desktop */
+    padding-right: clamp(4.75rem, 11vw, 7rem);
+  }
+}
+@media (min-width: 1280px) {
+  .kf-ops-continuum-form-pad {
+    padding-right: 7rem;
+  }
+}
+
 /* ── Navy detail tabs — horizontal scrollbar matches sidebar chrome ─ */
 .kf-tabs-scroll {
   scrollbar-width: thin; /* Firefox */
@@ -378,4 +397,165 @@ button.kf-btn-danger {
 }
 button.kf-btn-danger:hover:not(:disabled) {
   background-color: #B91C1C !important;
+}
+
+/* ── ERP section ambient motion (Costing / Fresa panels) ─────────── */
+@keyframes kf-ambient-drift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes kf-section-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kf-sale-glow {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 0 rgba(255, 117, 31, 0);
+  }
+  50% {
+    box-shadow: inset 0 0 24px 0 rgba(255, 117, 31, 0.12);
+  }
+}
+
+@keyframes kf-cost-glow {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 0 rgba(14, 165, 233, 0);
+  }
+  50% {
+    box-shadow: inset 0 0 24px 0 rgba(14, 165, 233, 0.14);
+  }
+}
+
+@keyframes kf-band-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+/** Soft drifting navy/sky wash behind toolbars */
+.kf-section-ambient {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-image: linear-gradient(
+    120deg,
+    #eef3f9 0%,
+    #f5f9fc 35%,
+    #e8f4fb 65%,
+    #eef3f9 100%
+  );
+  background-size: 220% 220%;
+  animation: kf-ambient-drift 14s ease-in-out infinite;
+}
+
+.kf-section-ambient::before {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: -20%;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 45% 40% at 15% 30%, rgba(14, 165, 233, 0.1), transparent 60%),
+    radial-gradient(ellipse 40% 35% at 85% 70%, rgba(255, 117, 31, 0.08), transparent 55%);
+  animation: kf-ambient-drift 18s ease-in-out infinite reverse;
+}
+
+.kf-section-ambient > * {
+  position: relative;
+  z-index: 1;
+}
+
+/** Panels that appear after a toolbar action */
+.kf-section-enter {
+  animation: kf-section-rise 0.35s ease-out both;
+}
+
+/** Sale / Cost modal & band atmospheres */
+.kf-ambient-sale {
+  background-image: linear-gradient(135deg, #fff7ed 0%, #ffe8cc 45%, #fff4e6 100%);
+  background-size: 180% 180%;
+  animation: kf-ambient-drift 10s ease-in-out infinite, kf-sale-glow 4.5s ease-in-out infinite;
+}
+
+.kf-ambient-cost {
+  background-image: linear-gradient(135deg, #f0f9ff 0%, #d9f1fb 45%, #e8f7fc 100%);
+  background-size: 180% 180%;
+  animation: kf-ambient-drift 10s ease-in-out infinite, kf-cost-glow 4.5s ease-in-out infinite;
+}
+
+/** Totals strip — slow sale/cost shimmer behind the grid */
+.kf-totals-ambient {
+  position: relative;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+.kf-totals-ambient::before {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 232, 204, 0.55) 0%,
+    rgba(255, 255, 255, 0.2) 40%,
+    rgba(217, 241, 251, 0.55) 100%
+  );
+  background-size: 200% 100%;
+  animation: kf-band-shimmer 8s linear infinite;
+}
+
+.kf-totals-ambient > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kf-section-ambient,
+  .kf-section-ambient::before,
+  .kf-ambient-sale,
+  .kf-ambient-cost,
+  .kf-totals-ambient::before,
+  .kf-section-enter {
+    animation: none !important;
+  }
+
+  .kf-section-ambient {
+    background-image: none;
+    background-color: var(--fresa-toolbar-bg, #eef3f9);
+  }
+
+  .kf-section-ambient::before,
+  .kf-totals-ambient::before {
+    display: none;
+  }
+
+  .kf-ambient-sale {
+    background-image: none;
+    background-color: #fff7ed;
+  }
+
+  .kf-ambient-cost {
+    background-image: none;
+    background-color: #f0f9ff;
+  }
 }

@@ -7,6 +7,7 @@ import {
   PauseCircle,
   Pencil,
   Plus,
+  Radio,
   RefreshCw,
   RotateCcw,
   Trash2,
@@ -18,6 +19,9 @@ import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { buildFclContinuumSteps } from '@/features/shared/continuum/buildFclContinuumSteps';
 import { FclContinuumRail } from '@/features/shared/continuum/FclContinuumRail';
+import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggle';
+import { OpsContinuumRail } from '@/features/ops-activity';
+import { GenerateEdiPanel } from '@/features/shared/edi/GenerateEdiPanel';
 import { erpForm } from '@/lib/erpForm';
 import { JobDetailApiTabPanel } from '../components/JobDetailApiTabPanel';
 import {
@@ -50,7 +54,13 @@ import { useCrmEnquiry } from '@/features/crm/hooks/useCrmEnquiries';
 import { useQuotation } from '@/features/quotations/hooks/useQuotations';
 import { useShipment } from '@/features/shipments/hooks/useShipments';
 import { useJobResolvedLabels } from '../hooks/useJobResolvedLabels';
-import { useJob, useJobHouseJobs, useJobStatusOptions } from '../hooks/useJobs';
+import {
+  useJob,
+  useJobEdiSubmissions,
+  useJobEdiTypes,
+  useJobHouseJobs,
+  useJobStatusOptions,
+} from '../hooks/useJobs';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import {
@@ -146,6 +156,9 @@ export default function JobDetailPage() {
   const { data: job, isLoading, isError, error, refetch } = useJob(id);
   const { data: houseJobs = [] } = useJobHouseJobs(id, Boolean(job && !job.parent_job_id));
   const actions = useJobActions(id);
+  const [ediOpen, setEdiOpen] = useState(false);
+  const jobEdiTypesQuery = useJobEdiTypes(id, ediOpen);
+  const jobEdiSubmissionsQuery = useJobEdiSubmissions(id, ediOpen);
 
   // After shipment→job, continuum numbers may live on the linked shipment (or quote/enquiry)
   // even when GET /jobs/:id only returns IDs.
@@ -211,6 +224,13 @@ export default function JobDetailPage() {
   const [reopenOpen, setReopenOpen] = useState(false);
   const [reopenStatus, setReopenStatus] = useState('IN_PROGRESS');
   const [reopenReason, setReopenReason] = useState('');
+  const [closedOverridesOpen, setClosedOverridesOpen] = useState(false);
+  const [closedDeliveryDate, setClosedDeliveryDate] = useState('');
+  const [closedDoRemarks, setClosedDoRemarks] = useState('');
+  const [closedReturnToTerminal, setClosedReturnToTerminal] = useState('');
+  const [closedLoadOnboard, setClosedLoadOnboard] = useState('');
+  const [closedCommodityNote, setClosedCommodityNote] = useState('');
+  const [closedOverrideReason, setClosedOverrideReason] = useState('');
   const [stopOpen, setStopOpen] = useState(false);
   const [stopReason, setStopReason] = useState('');
   const [actionPanel, setActionPanel] = useState<JobActionPanelKey | null>(null);
@@ -402,6 +422,14 @@ export default function JobDetailPage() {
     fclActions?.can_reopen === true ||
     (fclActions?.can_reopen !== false &&
       JOB_REOPENABLE_STATUSES.includes(job.status as JobStatus));
+  const isClosedJob =
+    job.status === 'COMPLETED' ||
+    job.status === 'DELIVERED' ||
+    Boolean((job as { is_closed?: boolean }).is_closed);
+  const canEditClosedDelivery =
+    isClosedJob &&
+    (fclActions?.can_edit_closed_delivery === true ||
+      fclActions?.can_edit_closed_delivery !== false);
   const canClose = fclActions?.can_close !== false && editable;
   const canCancel = fclActions?.can_cancel !== false && editable;
   const canCopy = fclActions?.can_copy !== false;
@@ -494,7 +522,21 @@ export default function JobDetailPage() {
 
   return (
     <>
+      <OpsContinuumRail
+        entityType="JOB"
+        entityId={job.id}
+        pathHints={job.path_hints}
+        opsContinuum={job.ops_continuum}
+        actions={job.actions as Record<string, unknown> | undefined}
+        links={{
+          enquiryId: resolvedEnquiryId,
+          quotationId: resolvedQuotationId,
+          shipmentId: resolvedShipmentId,
+          jobId: job.id,
+        }}
+      />
       <DetailPageTemplate
+        reserveContinuumRail
         eyebrow="Job details"
         title={jobDisplayNumber(job)}
         subtitle={
@@ -533,7 +575,14 @@ export default function JobDetailPage() {
                 )}
               </div>
             )}
-            <FclContinuumRail steps={continuumSteps} />
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <FclContinuumRail steps={continuumSteps} className="flex-1" />
+              <FavouriteToggle
+                kind="job"
+                targetKey={job.id}
+                label={jobDisplayNumber(job)}
+              />
+            </div>
             <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-[13px]">
               <span className="font-semibold text-[var(--fresa-header-text,#0A2942)]">Related: </span>
               {enquiryHref ? (
@@ -742,6 +791,49 @@ export default function JobDetailPage() {
                 Reopen
               </Button>
             ) : null}
+            {canEditClosedDelivery ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="edit"
+                leftIcon={<Pencil />}
+                disabled={pending || actions.patchClosedOverrides.isPending}
+                onClick={() => {
+                  setClosedDeliveryDate('');
+                  setClosedDoRemarks('');
+                  setClosedReturnToTerminal('');
+                  setClosedLoadOnboard('');
+                  setClosedCommodityNote('');
+                  setClosedOverrideReason('');
+                  setClosedOverridesOpen(true);
+                }}
+              >
+                Closed overrides
+              </Button>
+            ) : null}
+            <Button
+              size="sm"
+              type="button"
+              variant="report"
+              leftIcon={<Radio />}
+              disabled={pending}
+              onClick={() => setEdiOpen(true)}
+            >
+              Generate EDI
+            </Button>
+            {(job.path_hints?.includes('job_not_invoiced_do') ||
+              job.path_hints?.includes('job_finance_report') ||
+              !job.path_hints?.length) && (
+              <Button
+                size="sm"
+                type="button"
+                variant="report"
+                leftIcon={<FileText />}
+                onClick={() => navigate('/operations/reports')}
+              >
+                Ops reports
+              </Button>
+            )}
             {canClose ? (
               <Button
                 size="sm"
@@ -938,6 +1030,125 @@ export default function JobDetailPage() {
         </Modal>
       ) : null}
 
+      {closedOverridesOpen ? (
+        <Modal
+          open
+          onClose={() => !pending && setClosedOverridesOpen(false)}
+          title="Closed job overrides"
+          footer={
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={pending}
+                onClick={() => setClosedOverridesOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="edit"
+                disabled={pending}
+                onClick={() =>
+                  void run(async () => {
+                    await actions.patchClosedOverrides.mutateAsync({
+                      ...(closedDeliveryDate.trim()
+                        ? { delivery_date: closedDeliveryDate.trim() }
+                        : {}),
+                      ...(closedDoRemarks.trim()
+                        ? { do_remarks: closedDoRemarks.trim() }
+                        : {}),
+                      ...(closedReturnToTerminal.trim()
+                        ? { return_to_terminal: closedReturnToTerminal.trim() }
+                        : {}),
+                      ...(closedLoadOnboard.trim()
+                        ? { load_onboard: closedLoadOnboard.trim() }
+                        : {}),
+                      ...(closedCommodityNote.trim()
+                        ? { commodity_note: closedCommodityNote.trim() }
+                        : {}),
+                      ...(closedOverrideReason.trim()
+                        ? { reason: closedOverrideReason.trim() }
+                        : {}),
+                    });
+                    setClosedOverridesOpen(false);
+                  }, 'Closed overrides saved.')
+                }
+              >
+                {pending ? 'Saving…' : 'Save overrides'}
+              </Button>
+            </div>
+          }
+        >
+          <p className="mb-3 text-[12px] text-[#64748b]">
+            Allowlisted fields only while the job remains closed (delivery dates, DO remarks,
+            return-to-terminal, load-onboard, commodity note).
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block text-[13px]">
+              <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                Delivery date
+              </span>
+              <input
+                type="date"
+                className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={closedDeliveryDate}
+                onChange={(e) => setClosedDeliveryDate(e.target.value)}
+              />
+            </label>
+            <label className="block text-[13px] sm:col-span-2">
+              <span className="mb-1 block text-[12px] font-medium text-[#334155]">DO remarks</span>
+              <input
+                className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={closedDoRemarks}
+                onChange={(e) => setClosedDoRemarks(e.target.value)}
+              />
+            </label>
+            <label className="block text-[13px]">
+              <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                Return to terminal
+              </span>
+              <input
+                className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={closedReturnToTerminal}
+                onChange={(e) => setClosedReturnToTerminal(e.target.value)}
+              />
+            </label>
+            <label className="block text-[13px]">
+              <span className="mb-1 block text-[12px] font-medium text-[#334155]">Load onboard</span>
+              <input
+                className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={closedLoadOnboard}
+                onChange={(e) => setClosedLoadOnboard(e.target.value)}
+              />
+            </label>
+            <label className="block text-[13px] sm:col-span-2">
+              <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                Commodity note
+              </span>
+              <input
+                className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={closedCommodityNote}
+                onChange={(e) => setClosedCommodityNote(e.target.value)}
+              />
+            </label>
+            <label className="block text-[13px] sm:col-span-2">
+              <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                Reason (optional)
+              </span>
+              <input
+                className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={closedOverrideReason}
+                onChange={(e) => setClosedOverrideReason(e.target.value)}
+                maxLength={500}
+              />
+            </label>
+          </div>
+        </Modal>
+      ) : null}
+
       {reopenOpen ? (
         <Modal
           open
@@ -1048,6 +1259,50 @@ export default function JobDetailPage() {
               maxLength={500}
             />
           </label>
+        </Modal>
+      ) : null}
+
+      {ediOpen ? (
+        <Modal
+          open
+          onClose={() =>
+            !actions.generateJobEdi.isPending &&
+            !actions.downloadJobEdiSubmission.isPending &&
+            setEdiOpen(false)
+          }
+          title="Generate EDI"
+          size="lg"
+          footer={
+            <div className="flex justify-end">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                onClick={() => setEdiOpen(false)}
+              >
+                Close
+              </Button>
+            </div>
+          }
+        >
+          <GenerateEdiPanel
+            typesRaw={jobEdiTypesQuery.data}
+            typesLoading={jobEdiTypesQuery.isLoading}
+            submissionsRaw={jobEdiSubmissionsQuery.data}
+            submissionsLoading={jobEdiSubmissionsQuery.isLoading}
+            generatePending={actions.generateJobEdi.isPending}
+            downloadPending={actions.downloadJobEdiSubmission.isPending}
+            onGenerate={(edi_type) =>
+              actions.generateJobEdi.mutateAsync({ edi_type })
+            }
+            onDownload={(submissionId) =>
+              actions.downloadJobEdiSubmission.mutateAsync(submissionId)
+            }
+            onChanged={() => {
+              void jobEdiSubmissionsQuery.refetch();
+              void refetch();
+            }}
+          />
         </Modal>
       ) : null}
     </>
