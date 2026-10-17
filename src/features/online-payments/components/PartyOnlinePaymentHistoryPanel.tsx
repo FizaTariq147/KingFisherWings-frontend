@@ -22,7 +22,7 @@ export function PartyOnlinePaymentHistoryPanel({
 }: PartyOnlinePaymentHistoryPanelProps) {
   const type = partyType.toUpperCase();
   const isCustomer = type === 'CUSTOMER';
-  const isVendor = type === 'VENDOR';
+  const isVendor = type === 'VENDOR' || type === 'SUPPLIER';
   const enabled = isCustomer || isVendor;
 
   const customerHistory = useCustomerPaymentHistory(partyId, { page: 1, limit: 20 }, isCustomer);
@@ -32,7 +32,7 @@ export function PartyOnlinePaymentHistoryPanel({
   if (!enabled) {
     return (
       <Card className="p-4 text-sm text-[var(--color-neutral-500)]">
-        Online payment history is available for customer and vendor parties.
+        Online payment history is available for customer, vendor, and supplier parties.
       </Card>
     );
   }

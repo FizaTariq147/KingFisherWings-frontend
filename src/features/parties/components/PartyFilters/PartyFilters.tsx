@@ -1,11 +1,11 @@
 import {
   CREDIT_STATUSES,
   CREDIT_STATUS_LABELS,
-  PARTY_TYPES,
-  PARTY_TYPE_LABELS,
   type CreditStatus,
   type PartyType,
 } from '../../constants/party.constants';
+import { usePartyTypes } from '../../hooks/useParties';
+import { resolvePartyTypeOptions } from '../../utils/resolvePartyTypeOptions';
 import type { TenantCompanyOption } from '@/features/users/hooks/useTenantCompanies';
 
 interface PartyFiltersProps {
@@ -35,6 +35,9 @@ export function PartyFilters({
   order,
   onOrderChange,
 }: PartyFiltersProps) {
+  const typesQuery = usePartyTypes(true);
+  const partyTypeOptions = resolvePartyTypeOptions(typesQuery.data);
+
   const selectClass =
     'h-9 rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm text-[var(--color-neutral-800)] focus:outline-none focus:border-[var(--color-primary-500)]';
 
@@ -56,9 +59,9 @@ export function PartyFilters({
         className={selectClass}
       >
         <option value="all">All types</option>
-        {PARTY_TYPES.map((t) => (
-          <option key={t} value={t}>
-            {PARTY_TYPE_LABELS[t]}
+        {partyTypeOptions.map(({ code, label }) => (
+          <option key={code} value={code}>
+            {label}
           </option>
         ))}
       </select>

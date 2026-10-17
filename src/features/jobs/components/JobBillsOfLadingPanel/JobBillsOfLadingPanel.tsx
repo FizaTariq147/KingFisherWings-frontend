@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import { useJobBillsOfLading } from '../../hooks/useJobs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
@@ -47,48 +48,61 @@ export function JobBillsOfLadingPanel({ jobId }: JobBillsOfLadingPanelProps) {
                 is_surrendered?: boolean;
               };
               return (
-                <div
-                  key={b.id}
-                  className="flex flex-wrap items-center justify-between gap-2 border-b py-2"
-                >
-                  <div>
-                    <p className="font-medium">
-                      {b.bl_type || 'BL'} {b.bl_number || b.id.slice(0, 8)}
-                    </p>
-                    <p className="text-xs text-[var(--color-neutral-400)]">
-                      Original: {b.is_original ? 'Yes' : 'No'} · Surrendered:{' '}
-                      {b.is_surrendered ? 'Yes' : 'No'}
-                    </p>
+                <div key={b.id} className="space-y-2 border-b py-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <p className="font-medium">
+                        {b.bl_type || 'BL'} {b.bl_number || b.id.slice(0, 8)}
+                      </p>
+                      <p className="text-xs text-[var(--color-neutral-400)]">
+                        Original: {b.is_original ? 'Yes' : 'No'} · Surrendered:{' '}
+                        {b.is_surrendered ? 'Yes' : 'No'}
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="secondary"
+                        onClick={() =>
+                          run(() =>
+                            mutations.updateBl.mutateAsync({
+                              blId: b.id,
+                              dto: { is_original: true },
+                            }),
+                          )
+                        }
+                      >
+                        Mark original
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="danger"
+                        onClick={() => run(() => mutations.deleteBl.mutateAsync(b.id))}
+                      >
+                        Remove
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="secondary"
-                      onClick={() =>
-                        run(() =>
-                          mutations.updateBl.mutateAsync({
-                            blId: b.id,
-                            dto: { is_original: true },
-                          }),
-                        )
-                      }
-                    >
-                      Mark original
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="danger"
-                      onClick={() => run(() => mutations.deleteBl.mutateAsync(b.id))}
-                    >
-                      Remove
-                    </Button>
-                  </div>
+                  <SectionAttachmentsPanel
+                    entity="jobs"
+                    entityId={jobId}
+                    section="bills_of_lading"
+                    recordId={b.id}
+                    title="BL files"
+                    compact
+                  />
                 </div>
               );
             })
           )}
+          <SectionAttachmentsPanel
+            entity="jobs"
+            entityId={jobId}
+            section="bills_of_lading"
+            compact
+          />
         </div>
       </Card>
       <Card>

@@ -556,7 +556,7 @@ export default function CrmEnquiryDetailPage() {
       <OpsContinuumRail
         entityType="ENQUIRY"
         entityId={id}
-        pathHints={enquiry.path_hints}
+        pathHints={['ops_continuum']}
         opsContinuum={enquiry.ops_continuum}
         actions={enquiry.actions as Record<string, unknown> | undefined}
         links={{
@@ -729,6 +729,11 @@ export default function CrmEnquiryDetailPage() {
             Cancel enquiry
           </Button>
         )}
+        {!canGenerateShipment && !canGenerateJob && hasQuotation && !hasShipment ? (
+          <span className="text-[12px] text-[var(--color-neutral-500)]">
+            Generate Shipment / Job unlock after the linked quotation is Approved.
+          </span>
+        ) : null}
         {!canCopy &&
         !canGenerateQuotation &&
         !canGenerateShipment &&

@@ -72,9 +72,9 @@ const STEPS_CONVERT: readonly Step[] = [
   },
   {
     id: 'invoice-sent',
-    label: 'Job created',
+    label: 'Forwarder ops',
     owner: 'SYSTEM',
-    detail: 'Quotation converts to a job after you submit',
+    detail: 'Your forwarder generates shipment and job',
   },
 ] as const;
 

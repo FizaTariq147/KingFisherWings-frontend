@@ -76,13 +76,30 @@ async function downloadBlob(
   path: string,
   body?: object,
   filename = 'download.bin',
+  accept?: string,
 ): Promise<void> {
+  const headers = accept ? { Accept: accept } : undefined;
   const res = await withGatewayRetry(() =>
     method === 'get'
-      ? axiosInstance.get(path, { responseType: 'blob' })
-      : axiosInstance.post(path, body, { responseType: 'blob' }),
+      ? axiosInstance.get(path, { responseType: 'blob', headers })
+      : axiosInstance.post(path, body, { responseType: 'blob', headers }),
   );
-  triggerBlobDownload(res.data as Blob, filename);
+  let blob = res.data as Blob;
+  const contentType = String(res.headers?.['content-type'] ?? blob.type ?? '').toLowerCase();
+  if (contentType.includes('pdf') && !blob.type?.includes('pdf')) {
+    blob = new Blob([blob], { type: 'application/pdf' });
+  }
+  const cd = res.headers?.['content-disposition'];
+  let outName = filename;
+  if (typeof cd === 'string') {
+    const match = /filename\*?=(?:UTF-8''|")?([^\";]+)/i.exec(cd);
+    const fromHeader = match?.[1]?.trim().replace(/"/g, '');
+    if (fromHeader) outName = decodeURIComponent(fromHeader);
+  }
+  if (contentType.includes('pdf') && !/\.pdf$/i.test(outName)) {
+    outName = `${outName.replace(/\.[^.]+$/, '') || 'edi-submission'}.pdf`;
+  }
+  triggerBlobDownload(blob, outName);
 }
 
 async function uploadFile(path: string, file: File): Promise<Record<string, unknown>> {
@@ -304,8 +321,15 @@ export const documentationEdiService = {
   ialGenerate: (jobId: string) => mutateRecord('post', DOCUMENTATION_API.edi.ial.generate(jobId)),
   ialSubmit: (jobId: string) => mutateRecord('post', DOCUMENTATION_API.edi.ial.submit(jobId)),
 
-  downloadSubmission: (submissionId: string, filename = 'edi-submission.txt') =>
-    downloadBlob('get', DOCUMENTATION_API.edi.downloadSubmission(submissionId), undefined, filename),
+  /** GET /documentation/edi/submissions/:submissionId/download — Bearer PDF stream. */
+  downloadSubmission: (submissionId: string, filename = 'edi-submission.pdf') =>
+    downloadBlob(
+      'get',
+      DOCUMENTATION_API.edi.downloadSubmission(submissionId),
+      undefined,
+      filename,
+      'application/pdf, application/json, */*',
+    ),
 };
 
 /** Documentation All Jobs list + create wizard (OpenAPI). */

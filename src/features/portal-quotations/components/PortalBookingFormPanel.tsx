@@ -1242,15 +1242,14 @@ export function PortalBookingFormPanel({
         jobType: quote.jobType,
       })
       .then(() => {
-        const modeConvert = usesModeBookingFormConvertFlow(quote.jobType);
         const message = complete
-          ? modeConvert
-            ? 'Booking form submitted — quotation converts to a job.'
-            : linked
-              ? 'Booking form submitted. Your forwarder can complete Ops and send the invoice.'
-              : isAir
-                ? 'Booking form submitted to your forwarder. They will link it to the air shipment and send the invoice.'
-                : 'Booking form submitted to your forwarder. They will link it to the NVOCC booking and send the invoice.'
+          ? linked
+            ? 'Booking form submitted. Your forwarder can complete Ops (Generate Shipment → Generate Job).'
+            : isAir
+              ? 'Booking form submitted to your forwarder. They will link it to the air shipment and continue ops.'
+              : usesModeBookingFormConvertFlow(quote.jobType)
+                ? 'Booking form submitted — your forwarder has been notified and will generate the shipment and job.'
+                : 'Booking form submitted to your forwarder. They will link it to the NVOCC booking and continue ops.'
           : 'Booking form draft saved.';
         setMsg(message);
         if (complete) {
@@ -1359,8 +1358,8 @@ export function PortalBookingFormPanel({
           <p className="mt-1 text-sm text-emerald-800">
             {usesModeBookingFormConvertFlow(quote.jobType)
               ? isWarehouse
-                ? 'Thanks — your quotation converts to a job. Warehouse ops (ASN / GRN / GDO) continue on the staff side.'
-                : 'Thanks — your quotation converts to a job.'
+                ? 'Thanks — your forwarder has been notified. Warehouse ops (ASN / GRN / GDO) continue on the staff side.'
+                : 'Thanks — your forwarder has been notified. They will generate the shipment and job.'
               : invoiceAlreadySent
                 ? isAir
                   ? 'Booking form is complete and your invoice has been sent. Air export / import ops continue on the shipment.'

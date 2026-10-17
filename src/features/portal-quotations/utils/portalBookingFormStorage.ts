@@ -274,7 +274,7 @@ export function formatBookingFormMessageBody(opts: {
     `consent_accepted: ${dto.consent_accepted ? 'Yes' : 'No'}`,
     '',
     'Customer filled this form in the portal after quote approval.',
-    'Ops: quotation converts to a job after this submission (Sea/Land/Road/Courier/Warehouse/Customs), or load into staff booking-form / NVOCC send-invoice for gated modes.',
+    'Ops: customer approved — continue Generate Shipment → confirm/approve → Generate Job (or NVOCC/Air gated invoice flow).',
     '',
     PORTAL_BOOKING_FORM_JSON_START,
     JSON.stringify(payload),

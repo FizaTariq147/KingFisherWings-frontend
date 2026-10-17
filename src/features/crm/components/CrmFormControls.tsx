@@ -144,6 +144,8 @@ export function CrmPartySelect({
   required,
   allowEmpty = true,
   placeholder = 'Select party…',
+  /** Defaults to CUSTOMER; pass VENDOR / AGENT / etc. for org role selects. */
+  partyType = 'CUSTOMER',
 }: {
   label?: string;
   value: string;
@@ -152,11 +154,12 @@ export function CrmPartySelect({
   required?: boolean;
   allowEmpty?: boolean;
   placeholder?: string;
+  partyType?: string;
 }) {
   const { data, isLoading, isError } = useParties({
     page: 1,
     limit: 100,
-    party_type: 'CUSTOMER',
+    party_type: partyType,
     order: 'asc',
   });
   const parties = (data?.parties ?? []).filter((p) => isUuid(p.id));

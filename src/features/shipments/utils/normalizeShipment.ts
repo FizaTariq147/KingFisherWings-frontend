@@ -28,8 +28,45 @@ function bool(value: unknown): boolean | undefined {
 
 function stringList(value: unknown): string[] | undefined {
   if (!Array.isArray(value)) return undefined;
-  const list = value.map((v) => str(v)).filter((v): v is string => Boolean(v));
+  const list: string[] = [];
+  const seen = new Set<string>();
+  for (const item of value) {
+    if (typeof item === 'string' || typeof item === 'number') {
+      const s = str(item);
+      if (s && !seen.has(s)) {
+        seen.add(s);
+        list.push(s);
+      }
+      continue;
+    }
+    const rec = asRecord(item);
+    if (!rec) continue;
+    const s =
+      str(rec.value) ??
+      str(rec.code) ??
+      str(rec.status) ??
+      str(rec.key) ??
+      str(rec.id) ??
+      str(rec.name);
+    if (s && !seen.has(s)) {
+      seen.add(s);
+      list.push(s);
+    }
+  }
   return list.length ? list : undefined;
+}
+
+/** Read a status/BL option list from actions using the given keys (API aliases). */
+function pickAllowedStatusList(
+  actionsRec: Record<string, unknown> | null | undefined,
+  keys: string[],
+): string[] | undefined {
+  if (!actionsRec) return undefined;
+  for (const key of keys) {
+    const list = stringList(actionsRec[key]);
+    if (list?.length) return list;
+  }
+  return undefined;
 }
 
 function normalizeTabs(raw: unknown): ShipmentDetailTab[] | undefined {
@@ -103,10 +140,23 @@ function normalizeActions(raw: unknown): ShipmentActions | undefined {
     allowed_edi_actions: stringList(
       r.allowed_edi_actions ?? r.allowedEdiActions ?? r.edi_actions,
     ),
-    allowed_statuses: stringList(r.allowed_statuses ?? r.allowedStatuses ?? r.statuses),
-    allowed_bl_statuses: stringList(
-      r.allowed_bl_statuses ?? r.allowedBlStatuses ?? r.bl_statuses,
-    ),
+    allowed_statuses: pickAllowedStatusList(r, [
+      'allowed_statuses',
+      'allowedStatuses',
+      'statuses',
+      'status_options',
+      'statusOptions',
+      'available_statuses',
+      'availableStatuses',
+    ]),
+    allowed_bl_statuses: pickAllowedStatusList(r, [
+      'allowed_bl_statuses',
+      'allowedBlStatuses',
+      'bl_statuses',
+      'blStatuses',
+      'bl_status_options',
+      'blStatusOptions',
+    ]),
     raw: r,
   };
 }
@@ -158,9 +208,44 @@ export function normalizeShipment(raw: unknown): Shipment | null {
   const company = asRecord(r.company);
   const salesperson = asRecord(r.salesperson);
 
-  const actions =
+  let actions =
     normalizeActions(r.actions ?? r.action_flags ?? r.actionFlags) ??
     normalizeActions(root.actions ?? asRecord(root.data)?.actions);
+
+  // Some detail payloads put status catalogs on the envelope, not only under actions.
+  if (actions && !actions.allowed_statuses?.length) {
+    const fromEnvelope = pickAllowedStatusList(
+      { ...root, ...r, ...(asRecord(root.data) ?? {}) },
+      [
+        'allowed_statuses',
+        'allowedStatuses',
+        'statuses',
+        'status_options',
+        'statusOptions',
+        'available_statuses',
+        'availableStatuses',
+      ],
+    );
+    if (fromEnvelope?.length) {
+      actions = { ...actions, allowed_statuses: fromEnvelope };
+    }
+  }
+  if (actions && !actions.allowed_bl_statuses?.length) {
+    const fromEnvelope = pickAllowedStatusList(
+      { ...root, ...r, ...(asRecord(root.data) ?? {}) },
+      [
+        'allowed_bl_statuses',
+        'allowedBlStatuses',
+        'bl_statuses',
+        'blStatuses',
+        'bl_status_options',
+        'blStatusOptions',
+      ],
+    );
+    if (fromEnvelope?.length) {
+      actions = { ...actions, allowed_bl_statuses: fromEnvelope };
+    }
+  }
 
   // Tabs only from detail envelope — never invent keys.
   const tabs =

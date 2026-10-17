@@ -22,6 +22,7 @@ import { FclContinuumRail } from '@/features/shared/continuum/FclContinuumRail';
 import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggle';
 import { OpsContinuumRail } from '@/features/ops-activity';
 import { GenerateEdiPanel } from '@/features/shared/edi/GenerateEdiPanel';
+import { EntitySectionFilesPanel } from '@/features/shared/section-attachments';
 import { erpForm } from '@/lib/erpForm';
 import { JobDetailApiTabPanel } from '../components/JobDetailApiTabPanel';
 import {
@@ -323,7 +324,11 @@ export default function JobDetailPage() {
   const defaultTab = useMemo(() => {
     if (!job) return undefined;
     const available = resolveJobDetailTabs(job);
-    const availableKeys = new Set(available.map((t) => t.key));
+    const availableKeys = new Set([
+      ...available.map((t) => t.key),
+      'section-files',
+      'section_files',
+    ]);
     const pick = (key: string | undefined) =>
       key && availableKeys.has(key) ? key : defaultJobDetailTabKey(job);
 
@@ -337,11 +342,16 @@ export default function JobDetailPage() {
         ops: 'booking_form',
         party: 'organization',
         charges: 'costing',
+        'section-files': 'section-files',
+        section_files: 'section-files',
       };
       const mapped = legacy[requestedTab.toLowerCase()] || requestedTab;
       // Action keys open as popup — keep Show All (or API default) underneath.
       if (isJobActionPanelKey(mapped)) {
         return pick(defaultJobDetailTabKey(job));
+      }
+      if (mapped === 'section-files' || mapped === 'section_files') {
+        return 'section-files';
       }
       if (isJobDetailTabKey(mapped)) {
         return pick(normalizeJobDetailTabKey(mapped));
@@ -351,7 +361,7 @@ export default function JobDetailPage() {
     return pick(defaultJobDetailTabKey(job));
   }, [job, requestedTab]);
 
-  /** Tabs only from GET /jobs/:id/detail `tabs` → each loads detail/:tab. */
+  /** API detail tabs + frontend Section files hub (same as quotation). */
   const tabs = useMemo(() => {
     if (!job) return [];
     const overviewJob = {
@@ -366,7 +376,7 @@ export default function JobDetailPage() {
 
     const resolved = resolveJobDetailTabs(job);
     const siblingTabKeys = resolved.map((t) => t.key);
-    return resolved.map((t) => ({
+    const apiTabs = resolved.map((t) => ({
       key: t.key,
       label: t.label || jobDetailTabLabel(t.key),
       content: (
@@ -378,6 +388,20 @@ export default function JobDetailPage() {
         />
       ),
     }));
+    return [
+      ...apiTabs,
+      {
+        key: 'section-files',
+        label: 'Section files',
+        content: (
+          <EntitySectionFilesPanel
+            entity="jobs"
+            entityId={job.id}
+            title="Section files"
+          />
+        ),
+      },
+    ];
   }, [
     job,
     refetch,
@@ -526,7 +550,7 @@ export default function JobDetailPage() {
       <OpsContinuumRail
         entityType="JOB"
         entityId={job.id}
-        pathHints={job.path_hints}
+        pathHints={['ops_continuum']}
         opsContinuum={job.ops_continuum}
         actions={job.actions as Record<string, unknown> | undefined}
         links={{
@@ -944,6 +968,12 @@ export default function JobDetailPage() {
             jobId={id}
             houseJobs={houseJobs}
             highlightInvoiceId={highlightInvoiceId}
+            lifecycleLinks={{
+              enquiryId: resolvedEnquiryId,
+              quotationId: resolvedQuotationId,
+              shipmentId: resolvedShipmentId,
+              jobId: job.id,
+            }}
             onOpenHouse={(houseId) => {
               setActionPanel(null);
               navigate(`${prefix}/${houseId}`);

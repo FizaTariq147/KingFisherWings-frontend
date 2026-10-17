@@ -151,8 +151,8 @@ export function usesGatedFreightQuoteFlow(jobType?: string): boolean {
 
 /**
  * Sea FCL/LCL, Land, Road Freight, Courier, Warehouse, Customs Clearance:
- * customer approve leaves quote APPROVED; convert → job runs only after the
- * customer submits the portal booking form (or staff completes booking-form).
+ * customer approve leaves quote APPROVED; staff continuum Generate Shipment →
+ * Generate Job creates ops entities. Portal booking form is data capture only.
  * Air / NVOCC stay on the gated invoice flow (usesGatedFreightQuoteFlow).
  */
 export function usesModeBookingFormConvertFlow(jobType?: string): boolean {
@@ -191,13 +191,11 @@ export function usesModeBookingFormConvertFlow(jobType?: string): boolean {
 }
 
 /**
- * True when customer approve must not run convert-to-job + draft invoice.
- * NVOCC / Air are gated; booking-form modes wait for booking-form submit.
+ * Customer accept and staff negotiation-accept only set APPROVED — never auto
+ * create shipment/job. Staff continuum: Generate Shipment → Generate Job.
  */
-export function skipsAutoConvertOnApprove(jobType?: string): boolean {
-  return (
-    usesGatedFreightQuoteFlow(jobType) || usesModeBookingFormConvertFlow(jobType)
-  );
+export function skipsAutoConvertOnApprove(_jobType?: string): boolean {
+  return true;
 }
 
 /**

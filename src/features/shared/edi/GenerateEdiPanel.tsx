@@ -70,16 +70,22 @@ export function GenerateEdiPanel({
     setDownloadingId(row.id);
     try {
       const raw = await onDownload(row.id);
-      const fileBase =
+      const base =
         row.file_name ||
         `${(row.edi_type || 'edi').toLowerCase()}-${row.id.slice(0, 8)}`;
+      const fileBase =
+        row.mime_type?.includes('pdf') || !/\.\w+$/i.test(base)
+          ? /\.pdf$/i.test(base)
+            ? base
+            : `${base.replace(/\.[^.]+$/, '')}.pdf`
+          : base;
       await saveEdiDownload(raw, fileBase);
-      setMsg(`Downloaded ${row.edi_type || 'EDI'} file.`);
+      setMsg(`Downloaded ${row.edi_type || 'EDI'} PDF.`);
     } catch (err) {
       const message = getErrorMessage(err);
       setError(
-        /failed to fetch/i.test(message)
-          ? 'Download failed (network). The EDI file URL could not be reached — retry, or regenerate the EDI.'
+        /failed to fetch|cors|external file url/i.test(message)
+          ? 'Download failed. EDI must stream as a PDF from the API (Bearer) — retry or regenerate.'
           : message,
       );
     } finally {

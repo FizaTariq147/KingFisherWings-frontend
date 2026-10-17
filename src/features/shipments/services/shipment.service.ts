@@ -720,7 +720,10 @@ export const shipmentService = {
     }
   },
 
-  /** GET /shipments/:id/edi/submissions/:submissionId/download — file blob or download-URL JSON. */
+  /**
+   * GET /shipments/:id/edi/submissions/:submissionId/download
+   * Streams application/pdf (Content-Disposition: attachment) with Bearer — not an S3 URL.
+   */
   async downloadEdiSubmission(id: string, submissionId: string): Promise<Blob | unknown> {
     assertId(id);
     if (!submissionId.trim()) throw new Error('Invalid EDI submission id.');
@@ -734,8 +737,7 @@ export const shipmentService = {
           {
             responseType: 'blob',
             headers: {
-              Accept:
-                'application/xml, text/xml, application/edi-x12, text/plain, application/json, */*',
+              Accept: 'application/pdf, application/json, */*',
             },
           },
         ),

@@ -1,5 +1,7 @@
 export const PARTY_API = {
   list: '/parties',
+  /** Party types for create/select dropdowns (includes Vendor). */
+  types: '/parties/types',
   byId: (id: string) => `/parties/${id}`,
   creditStatus: (id: string) => `/parties/${id}/credit-status`,
   contacts: (id: string) => `/parties/${id}/contacts`,

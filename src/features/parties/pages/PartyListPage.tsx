@@ -96,7 +96,7 @@ export default function PartyListPage() {
         <div>
           <h2 className={appType.pageTitle}>Parties</h2>
           <p className={appType.pageSubtitle}>
-            Any party can have Users Portal and Vendor Portal logins from the party detail page.
+            Portal tabs follow party type: Vendor/Supplier get Vendor Portal; others get Users Portal.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

@@ -51,10 +51,11 @@ export const SHIPMENT_API = {
   createSubmaster: (id: string) => `/shipments/${id}/create-submaster`,
   /** Legacy action-style EDI (kept for older backends). Prefer typed EDI below. */
   edi: (id: string, action: string) => `/shipments/${id}/edi/${encodeURIComponent(action)}`,
-  /** GET /shipments/:id/edi/types · POST generate · GET submissions · GET download */
+  /** GET /shipments/:id/edi/types · POST generate · GET submissions · GET download (PDF stream) */
   ediTypes: (id: string) => `/shipments/${id}/edi/types`,
   ediGenerate: (id: string) => `/shipments/${id}/edi/generate`,
   ediSubmissions: (id: string) => `/shipments/${id}/edi/submissions`,
+  /** Bearer PDF attachment — not an S3 URL. */
   ediSubmissionDownload: (id: string, submissionId: string) =>
     `/shipments/${id}/edi/submissions/${encodeURIComponent(submissionId)}/download`,
   kpi: (id: string) => `/shipments/${id}/kpi`,
@@ -104,6 +105,7 @@ export function shipmentDetailTabLabel(key: string, apiLabel?: string): string {
   const norm = key.trim().toLowerCase().replace(/-/g, '_');
   if (norm === 'organization' || norm === 'organisation') return 'Party';
   if (norm === 'info' || norm === 'information') return 'Info';
+  if (norm === 'section_files' || norm === 'sectionfiles') return 'Section files';
   return key
     .trim()
     .replace(/[-_]+/g, ' ')

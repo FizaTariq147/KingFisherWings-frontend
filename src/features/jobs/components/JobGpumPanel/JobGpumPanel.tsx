@@ -1,29 +1,52 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useJobActions } from '../../hooks/useJobActions';
-import { useJobGpum } from '../../hooks/useJobs';
-import type { JobGpumLineDto } from '../../types/job.types';
+import { useJobGpum, useJobLookupsDropdowns } from '../../hooks/useJobs';
+import type { JobGpumLineDto, JobLookupNamedOption } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
-const emptyLine = (): JobGpumLineDto => ({ user_id: '', gp_percent: 0 });
+const emptyLine = (): JobGpumLineDto => ({ employee_name: '', gp_percent: 0 });
+
+function employeeOptionLabel(opt: JobLookupNamedOption): string {
+  if (opt.email && opt.name && opt.email !== opt.name) {
+    return `${opt.name} (${opt.email})`;
+  }
+  return opt.name || opt.email || '';
+}
 
 export function JobGpumPanel({ jobId, onChanged }: { jobId: string; onChanged?: () => void }) {
   const query = useJobGpum(jobId);
+  const lookupsQuery = useJobLookupsDropdowns(true);
   const actions = useJobActions(jobId);
   const [rows, setRows] = useState<JobGpumLineDto[]>([emptyLine()]);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!query.data?.length) return;
+    const allocations = query.data?.allocations;
+    if (!allocations?.length) return;
     setRows(
-      query.data.map((r) => ({
-        user_id: r.user_id,
+      allocations.map((r) => ({
+        employee_name: r.employee_name,
         gp_percent: r.gp_percent,
       })),
     );
   }, [query.data]);
+
+  const employees = useMemo(() => {
+    const fromGpum = query.data?.employees ?? [];
+    const fromLookups = lookupsQuery.data?.employees ?? [];
+    const byKey = new Map<string, JobLookupNamedOption>();
+    for (const opt of [...fromGpum, ...fromLookups]) {
+      const key = (opt.name || opt.email || '').trim().toLowerCase();
+      if (!key) continue;
+      if (!byKey.has(key)) byKey.set(key, opt);
+    }
+    return Array.from(byKey.values()).sort((a, b) =>
+      employeeOptionLabel(a).localeCompare(employeeOptionLabel(b)),
+    );
+  }, [query.data?.employees, lookupsQuery.data?.employees]);
 
   const total = rows.reduce((sum, r) => sum + (Number(r.gp_percent) || 0), 0);
 
@@ -32,12 +55,12 @@ export function JobGpumPanel({ jobId, onChanged }: { jobId: string; onChanged?: 
     setMsg(null);
     const allocations = rows
       .map((r) => ({
-        user_id: r.user_id.trim(),
+        employee_name: r.employee_name.trim(),
         gp_percent: Number(r.gp_percent),
       }))
-      .filter((r) => r.user_id);
+      .filter((r) => r.employee_name);
     if (!allocations.length) {
-      setError('Add at least one user allocation.');
+      setError('Add at least one employee allocation.');
       return;
     }
     if (Math.abs(allocations.reduce((s, r) => s + r.gp_percent, 0) - 100) > 0.01) {
@@ -62,20 +85,38 @@ export function JobGpumPanel({ jobId, onChanged }: { jobId: string; onChanged?: 
         <p className="text-[var(--color-neutral-400)]">Loading GPUM…</p>
       ) : null}
       <p className="text-[12px] text-[var(--color-neutral-500)]">
-        Gross profit user mix — allocations must total 100% (currently {total.toFixed(1)}%).
+        Gross profit user mix — pick employee name/email (no UUIDs). Allocations must total 100%
+        (currently {total.toFixed(1)}%).
       </p>
       <div className="space-y-2">
         {rows.map((row, index) => (
           <div key={index} className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-            <Input
-              label="User id"
-              value={row.user_id}
-              onChange={(e) =>
-                setRows((prev) =>
-                  prev.map((r, i) => (i === index ? { ...r, user_id: e.target.value } : r)),
-                )
-              }
-            />
+            <label className="block space-y-1">
+              <span className="text-[11px] font-medium text-[var(--color-neutral-600)]">
+                Employee
+              </span>
+              <select
+                className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
+                value={row.employee_name}
+                onChange={(e) =>
+                  setRows((prev) =>
+                    prev.map((r, i) =>
+                      i === index ? { ...r, employee_name: e.target.value } : r,
+                    ),
+                  )
+                }
+              >
+                <option value="">Select…</option>
+                {employees.map((opt) => {
+                  const value = opt.name || opt.email || '';
+                  return (
+                    <option key={`${value}-${opt.email ?? ''}`} value={value}>
+                      {employeeOptionLabel(opt)}
+                    </option>
+                  );
+                })}
+              </select>
+            </label>
             <Input
               label="GP %"
               type="number"
@@ -103,7 +144,12 @@ export function JobGpumPanel({ jobId, onChanged }: { jobId: string; onChanged?: 
         ))}
       </div>
       <div className="flex flex-wrap gap-2">
-        <Button type="button" size="sm" variant="create" onClick={() => setRows((p) => [...p, emptyLine()])}>
+        <Button
+          type="button"
+          size="sm"
+          variant="create"
+          onClick={() => setRows((p) => [...p, emptyLine()])}
+        >
           Add row
         </Button>
         <Button

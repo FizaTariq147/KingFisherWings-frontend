@@ -10,18 +10,14 @@ import {
 } from '../../hooks/useJobs';
 import { useJobTabResourceMutations } from '../../hooks/useJobTabResources';
 import type { Job } from '../../types/job.types';
+import { usePartyTypes } from '@/features/parties/hooks/useParties';
+import { resolvePartyTypeOptions } from '@/features/parties/utils/resolvePartyTypeOptions';
+import { JOB_ORG_TYPES, JOB_PARTY_ROLES } from '@/features/shared/organizations/orgTypes';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
-const ORG_TYPES = [
-  'CLIENT',
-  'SHIPPER',
-  'CONSIGNEE',
-  'NOTIFY',
-  'BILLING_PARTY',
-  'AGENT',
-  'OVERSEAS_AGENT',
-  'CARRIER',
-] as const;
+/** Matches AddJobOrganizationDto.org_type (includes Vendor). */
+const ORG_TYPES = JOB_ORG_TYPES;
+const PARTY_ROLES = JOB_PARTY_ROLES;
 
 const REFERENCE_TYPES = [
   'PO_NUMBER',
@@ -78,9 +74,14 @@ export function JobPartyPanel({
   const [partyId, setPartyId] = useState('');
   const [replacePartyId, setReplacePartyId] = useState('');
   const [copyFromJobId, setCopyFromJobId] = useState('');
+  const [createPartyType, setCreatePartyType] = useState('VENDOR');
+  const [createCode, setCreateCode] = useState('');
+  const [createName, setCreateName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
+  const typesQuery = usePartyTypes(true);
+  const partyTypeOptions = resolvePartyTypeOptions(typesQuery.data);
   const rows = useMemo(() => orgRows(orgsQuery.data), [orgsQuery.data]);
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
@@ -238,6 +239,65 @@ export function JobPartyPanel({
           </div>
         </div>
 
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-4">
+          <label className="block">
+            <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+              Or create party type
+            </span>
+            <select
+              className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+              value={createPartyType}
+              onChange={(e) => setCreatePartyType(e.target.value)}
+            >
+              {partyTypeOptions.map(({ code, label }) => (
+                <option key={code} value={code}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <Input
+            label="New party code"
+            value={createCode}
+            onChange={(e) => setCreateCode(e.target.value)}
+          />
+          <Input
+            label="New party name"
+            value={createName}
+            onChange={(e) => setCreateName(e.target.value)}
+          />
+          <div className="flex items-end">
+            <Button
+              type="button"
+              size="sm"
+              variant="create"
+              disabled={
+                pending ||
+                !orgType.trim() ||
+                !createPartyType.trim() ||
+                createCode.trim().length < 1 ||
+                createName.trim().length < 2
+              }
+              onClick={() =>
+                void run(async () => {
+                  await resources.addOrganization.mutateAsync({
+                    org_type: orgType.trim(),
+                    create_party: {
+                      party_type: createPartyType.trim(),
+                      code: createCode.trim(),
+                      name: createName.trim(),
+                    },
+                  });
+                  setCreateCode('');
+                  setCreateName('');
+                }, 'Party created and organization linked.')
+              }
+            >
+              Create & link
+            </Button>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           <Input
             label="Replace party ID"
@@ -326,13 +386,11 @@ export function JobPartyPanel({
               value={partyRole}
               onChange={(e) => setPartyRole(e.target.value)}
             >
-              {['CLIENT', 'SHIPPER', 'CONSIGNEE', 'BILLING_PARTY', 'AGENT', 'OVERSEAS_AGENT'].map(
-                (r) => (
-                  <option key={r} value={r}>
-                    {r.replaceAll('_', ' ')}
-                  </option>
-                ),
-              )}
+              {PARTY_ROLES.map((r) => (
+                <option key={r} value={r}>
+                  {r.replaceAll('_', ' ')}
+                </option>
+              ))}
             </select>
           </label>
           <label className="block">

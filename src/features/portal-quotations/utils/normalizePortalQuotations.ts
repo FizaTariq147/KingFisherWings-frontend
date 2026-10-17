@@ -260,7 +260,10 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
         can_accept: flag('can_accept', 'canAccept', 'accept'),
         can_reject: flag('can_reject', 'canReject', 'reject'),
         can_counter_offer: flag('can_counter_offer', 'canCounterOffer', 'counter_offer'),
-        can_convert: flag('can_convert', 'canConvert', 'convert'),
+        // Portal never exposes generate/convert — staff continuum only.
+        can_convert: false,
+        can_generate_shipment: false,
+        can_generate_job: false,
         can_send: flag('can_send', 'canSend'),
         can_revise_and_send: flag('can_revise_and_send', 'canReviseAndSend'),
         can_negotiation_accept: flag('can_negotiation_accept', 'canNegotiationAccept'),

@@ -218,9 +218,9 @@ export default function PortalQuoteDetailPage() {
           <p className="text-xs text-[var(--color-neutral-500)]">
             {commercialComplete
               ? modeConvert
-                ? 'Commercial steps are complete. Your quotation has been converted to a job.'
+                ? 'Commercial steps are complete. Your forwarder will generate the shipment and job.'
                 : 'Commercial steps are complete. Your invoice is ready in Invoices.'
-              : `Follow the highlighted step: accept the quote, complete the booking form, then your forwarder sends the invoice${
+              : `Follow the highlighted step: accept the quote, complete the booking form, then your forwarder continues ops${
                   isAir ? ' — air export / import ops unlock after that.' : '.'
                 }`}
           </p>
@@ -320,11 +320,11 @@ export default function PortalQuoteDetailPage() {
       {gatedCommercial && formSubmitted && !commercialComplete ? (
         <PortalPanel padded className="border-sky-200 bg-sky-50/60">
           <h2 className="text-sm font-semibold text-sky-900">
-            {modeConvert ? 'Next: Job created' : 'Next: Invoice (INVOICE_SENT)'}
+            {modeConvert ? 'Next: Forwarder ops' : 'Next: Invoice (INVOICE_SENT)'}
           </h2>
           <p className="mt-1 text-sm text-sky-800">
             {modeConvert
-              ? 'Booking form is complete. Your quotation converts to a job (Sea / Land / Road / Courier / Warehouse / Customs). Refresh if the job number is not listed yet.'
+              ? 'Booking form is complete. Your forwarder will generate the shipment and job (Sea / Land / Road / Courier / Warehouse / Customs).'
               : `Booking form is complete (BOOKING_FORM_COMPLETE). Your forwarder will send the invoice next${
                   isAir ? ', then AIR_EXPORT or AIR_IMPORT operations begin.' : '.'
                 }`}

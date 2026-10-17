@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { useInlineValidation } from '@/lib/validation';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import { useJobStuffingRecords } from '../../hooks/useJobs';
@@ -70,47 +71,60 @@ export function JobStuffingPanel({ jobId }: JobStuffingPanelProps) {
                 notes?: string;
               };
               return (
-                <div
-                  key={r.id}
-                  className="flex items-center justify-between gap-2 border-b py-2"
-                >
-                  <div>
-                    <p className="font-medium">{r.supervisor_name}</p>
-                    <p className="text-xs text-[var(--color-neutral-400)]">
-                      {r.stuffing_date} {r.notes ? `· ${r.notes}` : ''}
-                    </p>
+                <div key={r.id} className="space-y-2 border-b py-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <div>
+                      <p className="font-medium">{r.supervisor_name}</p>
+                      <p className="text-xs text-[var(--color-neutral-400)]">
+                        {r.stuffing_date} {r.notes ? `· ${r.notes}` : ''}
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="secondary"
+                        onClick={() =>
+                          run(() =>
+                            mutations.updateStuffing.mutateAsync({
+                              recordId: r.id,
+                              dto: { notes: r.notes || 'Updated' },
+                            }),
+                          )
+                        }
+                      >
+                        Touch update
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="danger"
+                        onClick={() =>
+                          run(() => mutations.deleteStuffing.mutateAsync(r.id))
+                        }
+                      >
+                        Remove
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="secondary"
-                      onClick={() =>
-                        run(() =>
-                          mutations.updateStuffing.mutateAsync({
-                            recordId: r.id,
-                            dto: { notes: r.notes || 'Updated' },
-                          }),
-                        )
-                      }
-                    >
-                      Touch update
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="danger"
-                      onClick={() =>
-                        run(() => mutations.deleteStuffing.mutateAsync(r.id))
-                      }
-                    >
-                      Remove
-                    </Button>
-                  </div>
+                  <SectionAttachmentsPanel
+                    entity="jobs"
+                    entityId={jobId}
+                    section="stuffing_records"
+                    recordId={r.id}
+                    title="Stuffing files"
+                    compact
+                  />
                 </div>
               );
             })
           )}
+          <SectionAttachmentsPanel
+            entity="jobs"
+            entityId={jobId}
+            section="stuffing_records"
+            compact
+          />
         </div>
       </Card>
       <Card>

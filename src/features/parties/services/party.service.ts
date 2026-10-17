@@ -5,6 +5,7 @@ import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
 import { postShareEmail, type ShareEmailDto, type ShareEmailResult } from '@/features/shared/share-email';
 import { PARTY_API } from '../api/party.api';
+import { PARTY_TYPES as PARTY_TYPES_FALLBACK } from '../constants/party.constants';
 import { normalizeParties, normalizeParty, normalizePartyAddress, normalizePartyContact } from '../utils/normalizeParty';
 import {
   prepareAddressPayload,
@@ -130,7 +131,61 @@ function buildListQuery(params: PartyListParams): Record<string, string | number
   return query;
 }
 
+function normalizePartyTypeList(raw: unknown): string[] {
+  const items: unknown[] = Array.isArray(raw)
+    ? raw
+    : (() => {
+        const rec = asRecord(raw);
+        if (!rec) return [];
+        for (const key of ['types', 'items', 'data', 'results', 'party_types']) {
+          if (Array.isArray(rec[key])) return rec[key] as unknown[];
+          const nested = asRecord(rec[key]);
+          if (nested) {
+            for (const nk of ['types', 'items', 'data', 'results']) {
+              if (Array.isArray(nested[nk])) return nested[nk] as unknown[];
+            }
+          }
+        }
+        return [];
+      })();
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const row of items) {
+    const code =
+      typeof row === 'string'
+        ? row.trim().toUpperCase()
+        : String(
+            asRecord(row)?.code ??
+              asRecord(row)?.value ??
+              asRecord(row)?.type ??
+              asRecord(row)?.party_type ??
+              asRecord(row)?.name ??
+              '',
+          )
+            .trim()
+            .toUpperCase()
+            .replace(/[\s-]+/g, '_');
+    if (!code || seen.has(code)) continue;
+    seen.add(code);
+    out.push(code);
+  }
+  return out;
+}
+
 export const partyService = {
+  /** GET /parties/types — create/select catalogs (includes Vendor). */
+  async listTypes(): Promise<string[]> {
+    try {
+      const res = await withGatewayRetry(() => axiosInstance.get(PARTY_API.types));
+      const types = normalizePartyTypeList(res.data);
+      // Always ensure VENDOR is present even if an older API omits it.
+      if (!types.includes('VENDOR')) types.push('VENDOR');
+      return types.length ? types : [...PARTY_TYPES_FALLBACK];
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
   async list(params: PartyListParams = {}): Promise<PartyListResult> {
     try {
       const res = await withGatewayRetry(() =>

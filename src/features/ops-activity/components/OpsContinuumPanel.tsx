@@ -16,6 +16,12 @@ import {
   useOpsTags,
 } from '../hooks/useOpsActivity';
 import type { OpsContinuumTab, OpsEntityType } from '../types/opsActivity.types';
+import {
+  buildOpsLifecycleLinks,
+  opsLifecycleHostLabel,
+  resolveOpsContinuumEntity,
+  type OpsLifecycleLinks,
+} from '../utils/resolveOpsContinuumEntity';
 
 const TABS: { key: OpsContinuumTab; label: string }[] = [
   { key: 'comments', label: 'Comments' },
@@ -71,6 +77,8 @@ export function OpsContinuumPanel({
   defaultTab = 'comments',
   hideTabBar = false,
   compact = false,
+  opsContinuum,
+  links: lifecycleLinks,
 }: {
   entityType: OpsEntityType;
   entityId: string;
@@ -80,7 +88,28 @@ export function OpsContinuumPanel({
   hideTabBar?: boolean;
   /** Skip outer card chrome when embedded in a modal. */
   compact?: boolean;
+  /** Detail ops_continuum — used for explicit root_entity_* sync host. */
+  opsContinuum?: Record<string, unknown> | null;
+  /** Lifecycle ids so continuum hosts on earliest entity across the flow. */
+  links?: OpsLifecycleLinks | null;
 }) {
+  const host = useMemo(
+    () =>
+      resolveOpsContinuumEntity({
+        entityType,
+        entityId,
+        opsContinuum,
+        links: lifecycleLinks,
+      }),
+    [entityType, entityId, opsContinuum, lifecycleLinks],
+  );
+  const hostEntityType = host.entityType;
+  const hostEntityId = host.entityId;
+  const normalizedLinks = useMemo(
+    () => buildOpsLifecycleLinks(lifecycleLinks),
+    [lifecycleLinks],
+  );
+
   const [tab, setTab] = useState<OpsContinuumTab>(defaultTab);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -105,16 +134,20 @@ export function OpsContinuumPanel({
   const [attachName, setAttachName] = useState('');
   const [attachUrl, setAttachUrl] = useState('');
 
-  const commentsQ = useOpsComments(entityType, entityId, tab === 'comments');
-  const followUpsQ = useOpsFollowUps(entityType, entityId, tab === 'follow-ups');
-  const attachmentsQ = useOpsAttachments(entityType, entityId, tab === 'attachments');
-  const referencesQ = useOpsReferences(entityType, entityId, tab === 'references');
-  const tagsQ = useOpsTags(entityType, entityId, tab === 'tags');
-  const linksQ = useOpsLinks(entityType, entityId, tab === 'links');
-  const likesQ = useOpsLikes(entityType, entityId, tab === 'likes');
-  const complaintsQ = useOpsComplaints(entityType, entityId, tab === 'complaints');
-  const historyQ = useOpsHistory(entityType, entityId, tab === 'history');
-  const mutations = useOpsActivityMutations(entityType, entityId);
+  const commentsQ = useOpsComments(hostEntityType, hostEntityId, tab === 'comments');
+  const followUpsQ = useOpsFollowUps(hostEntityType, hostEntityId, tab === 'follow-ups');
+  const attachmentsQ = useOpsAttachments(
+    hostEntityType,
+    hostEntityId,
+    tab === 'attachments',
+  );
+  const referencesQ = useOpsReferences(hostEntityType, hostEntityId, tab === 'references');
+  const tagsQ = useOpsTags(hostEntityType, hostEntityId, tab === 'tags');
+  const linksQ = useOpsLinks(hostEntityType, hostEntityId, tab === 'links');
+  const likesQ = useOpsLikes(hostEntityType, hostEntityId, tab === 'likes');
+  const complaintsQ = useOpsComplaints(hostEntityType, hostEntityId, tab === 'complaints');
+  const historyQ = useOpsHistory(hostEntityType, hostEntityId, tab === 'history');
+  const mutations = useOpsActivityMutations(hostEntityType, hostEntityId);
 
   const toRows = (data: unknown): Record<string, unknown>[] => {
     if (!Array.isArray(data)) return [];
@@ -171,6 +204,10 @@ export function OpsContinuumPanel({
 
         {error ? <p className="text-sm text-[var(--color-danger-600)]">{error}</p> : null}
         {msg ? <p className="text-sm text-[var(--color-success-700)]">{msg}</p> : null}
+
+        <p className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-2.5 py-1.5 text-[11px] text-[#475569]">
+          {opsLifecycleHostLabel(host)}
+        </p>
 
         {tab === 'comments' ? (
           <div className="space-y-3">
@@ -559,6 +596,62 @@ export function OpsContinuumPanel({
 
         {tab === 'links' ? (
           <div className="space-y-3">
+            {(normalizedLinks.enquiryId ||
+              normalizedLinks.quotationId ||
+              normalizedLinks.shipmentId ||
+              normalizedLinks.jobId) && (
+              <div className="space-y-1.5 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
+                  Lifecycle
+                </p>
+                <ul className="space-y-1 text-[12px] text-[#334155]">
+                  {normalizedLinks.enquiryId ? (
+                    <li>
+                      Enquiry ·{' '}
+                      <a
+                        className="text-[var(--color-primary-700)] hover:underline"
+                        href={`/sales/enquiries/${normalizedLinks.enquiryId}`}
+                      >
+                        {normalizedLinks.enquiryId.slice(0, 8)}…
+                      </a>
+                    </li>
+                  ) : null}
+                  {normalizedLinks.quotationId ? (
+                    <li>
+                      Quotation ·{' '}
+                      <a
+                        className="text-[var(--color-primary-700)] hover:underline"
+                        href={`/quotations/${normalizedLinks.quotationId}`}
+                      >
+                        {normalizedLinks.quotationId.slice(0, 8)}…
+                      </a>
+                    </li>
+                  ) : null}
+                  {normalizedLinks.shipmentId ? (
+                    <li>
+                      Shipment ·{' '}
+                      <a
+                        className="text-[var(--color-primary-700)] hover:underline"
+                        href={`/operations/shipments/${normalizedLinks.shipmentId}`}
+                      >
+                        {normalizedLinks.shipmentId.slice(0, 8)}…
+                      </a>
+                    </li>
+                  ) : null}
+                  {normalizedLinks.jobId ? (
+                    <li>
+                      Job ·{' '}
+                      <a
+                        className="text-[var(--color-primary-700)] hover:underline"
+                        href={`/jobs/${normalizedLinks.jobId}`}
+                      >
+                        {normalizedLinks.jobId.slice(0, 8)}…
+                      </a>
+                    </li>
+                  ) : null}
+                </ul>
+              </div>
+            )}
             <RowList
               loading={linksQ.isLoading}
               empty="No links."

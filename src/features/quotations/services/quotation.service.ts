@@ -1220,27 +1220,15 @@ export const quotationService = {
 
   async markWon(id: string): Promise<ConvertToJobResult | Quotation> {
     assertId(id);
-    // Backend blocks staff mark-won (400). Use portal accept or negotiation accept → auto job.
+    // Backend blocks staff mark-won (400). Customer accept / negotiation accept → APPROVED only.
     try {
       await postAction(QUOTATION_API.markWon(id));
-      const quotation = await this.getById(id);
-      const {
-        skipsAutoConvertOnApprove,
-        usesModeBookingFormConvertFlow,
-      } = await import('../utils/quotationStatus');
-      // NVOCC/Air gated + Sea/Land/Road booking-form modes: approve only — never convert here.
-      if (skipsAutoConvertOnApprove(quotation.job_type)) {
-        return quotation;
-      }
-      if (usesModeBookingFormConvertFlow(quotation.job_type)) {
-        return quotation;
-      }
-      return await this.convertToJob(id);
+      return await this.getById(id);
     } catch (error) {
       const status = (error as { response?: { status?: number } })?.response?.status;
       if (status === 400) {
         throw new Error(
-          'Mark won is blocked for staff. The customer must accept the quote (or accept their counter-offer via Negotiation) to convert to a job.',
+          'Mark won is blocked for staff. The customer must accept the quote (or accept their counter-offer via Negotiation). Then use Generate Shipment → Generate Job.',
         );
       }
       throw formatAxiosError(error);
@@ -1248,51 +1236,12 @@ export const quotationService = {
   },
 
   /**
-   * When portal already set APPROVED, staff ERP auto-creates job + draft invoice
-   * for **standard + booking-form** modes.
-   * NVOCC / Air: no-op (gated booking-form → send-invoice → convert on booking/job).
+   * APPROVED only — never auto-creates shipment/job.
+   * Staff continuum: Generate Shipment → confirm/approve shipment → Generate Job.
    */
   async fulfillApprovedQuotation(id: string): Promise<ConvertToJobResult | Quotation> {
     assertId(id);
-    const quotation = await this.getById(id);
-    const {
-      canConvertQuotationToJob,
-      coerceQuotationStatus,
-      usesGatedFreightQuoteFlow,
-      usesModeBookingFormConvertFlow,
-    } = await import('../utils/quotationStatus');
-    const status = coerceQuotationStatus(quotation.status);
-
-    // Hard stop: never convert / never draft-invoice for gated freight quotes.
-    if (usesGatedFreightQuoteFlow(quotation.job_type)) {
-      return quotation;
-    }
-
-    if (quotation.job_id || status === 'CONVERTED') {
-      if (quotation.job_id && !quotation.invoice_id) {
-        try {
-          const invoiceId = await ensureDraftInvoiceForJob(quotation.job_id);
-          return invoiceId ? { ...quotation, invoice_id: invoiceId } : quotation;
-        } catch {
-          return quotation;
-        }
-      }
-      return quotation;
-    }
-    if (
-      status !== 'APPROVED' &&
-      !canConvertQuotationToJob(status, quotation.job_type, quotation.actions)
-    ) {
-      return quotation;
-    }
-    // Booking-form modes: convert only after customer (or staff) booking form is complete.
-    if (usesModeBookingFormConvertFlow(quotation.job_type)) {
-      const formDone = await isCustomerPortalBookingFormComplete(quotation);
-      if (!formDone) return quotation;
-      return this.convertAfterCustomerBookingForm(id);
-    }
-    const converted = await this.convertToJob(id);
-    return converted;
+    return this.getById(id);
   },
 
   /**
@@ -1331,37 +1280,13 @@ export const quotationService = {
   },
 
   /**
-   * Staff: scan APPROVED booking-form quotes and convert any whose portal
-   * (or staff) booking form is already complete. Call from quotations list / refresh.
+   * No longer auto-converts. Staff continuum: Generate Shipment → Generate Job.
+   * Kept for callers that still import this helper.
    */
-  async convertPendingAfterBookingForms(limit = 50): Promise<{ converted: number; ids: string[] }> {
-    const { usesModeBookingFormConvertFlow, coerceQuotationStatus } = await import(
-      '../utils/quotationStatus'
-    );
-    const { quotations } = await this.list({
-      page: 1,
-      limit,
-      status: 'APPROVED',
-      order: 'desc',
-    });
-    const ids: string[] = [];
-    for (const q of quotations) {
-      if (!usesModeBookingFormConvertFlow(q.job_type)) continue;
-      if (coerceQuotationStatus(q.status) !== 'APPROVED') continue;
-      if (q.job_id && isUuid(q.job_id)) continue;
-      try {
-        const formDone = await isCustomerPortalBookingFormComplete(q);
-        if (!formDone) continue;
-        await this.convertToJob(q.id, { afterCustomerBookingForm: true });
-        await syncPortalBookingFormAfterConvert(
-          (await this.getById(q.id)) as ConvertToJobResult | Quotation,
-        );
-        ids.push(q.id);
-      } catch {
-        /* skip one quote; continue batch */
-      }
-    }
-    return { converted: ids.length, ids };
+  async convertPendingAfterBookingForms(
+    _limit = 50,
+  ): Promise<{ converted: number; ids: string[] }> {
+    return { converted: 0, ids: [] };
   },
 
   /**

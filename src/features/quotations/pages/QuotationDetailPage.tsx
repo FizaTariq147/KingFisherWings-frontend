@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -54,6 +54,7 @@ import { buildFclContinuumSteps } from '@/features/shared/continuum/buildFclCont
 import { FclContinuumRail } from '@/features/shared/continuum/FclContinuumRail';
 import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggle';
 import { OpsContinuumRail } from '@/features/ops-activity';
+import { EntitySectionFilesPanel } from '@/features/shared/section-attachments';
 import { isUuid } from '@/lib/isUuid';
 import {
   isAwaitingCustomerDecision,
@@ -147,7 +148,6 @@ export default function QuotationDetailPage() {
     label: string;
     href: string;
   } | null>(null);
-  const autoFulfillAttempted = useRef<string | null>(null);
 
   // Surface partial costing failures from create wizard (apply-tariff / lines).
   const costingWarnings = (location.state as { costingWarnings?: string[] } | null)?.costingWarnings;
@@ -350,118 +350,7 @@ export default function QuotationDetailPage() {
     };
   }, [linkedBooking, seaExportStage, status, bookingHref]);
 
-  // Customer Approved → auto job+invoice ONLY for modes that do not use booking-form convert.
-  // Sea/Land/Road/Courier/Warehouse/Customs: wait for booking-form submit (never auto here).
-  // NVOCC / Air: never auto-convert and never auto-create a job shell.
-  useEffect(() => {
-    if (!quotation || !id) return;
-    if (status !== 'APPROVED') return;
-    if (
-      usesGatedFreightQuoteFlow(quotation.job_type) ||
-      usesModeBookingFormConvertFlow(quotation.job_type) ||
-      isAirQuoteJobType(quotation.job_type) ||
-      isNvoccQuoteJobType(quotation.job_type)
-    ) {
-      return;
-    }
-    if (actions.fulfillApproved.isPending || pending) return;
-    if (quotation.job_id && quotation.invoice_id) return;
-    if (autoFulfillAttempted.current === id) return;
-
-    autoFulfillAttempted.current = id;
-    setActionError(null);
-    void actions.fulfillApproved
-      .mutateAsync()
-      .then((result) => {
-        const jobId =
-          result && typeof result === 'object' && 'job_id' in result
-            ? String((result as { job_id?: string }).job_id ?? '')
-            : '';
-        const invoiceId =
-          result && typeof result === 'object' && 'invoice_id' in result
-            ? String((result as { invoice_id?: string }).invoice_id ?? '')
-            : '';
-        if (jobId || invoiceId) {
-          setActionMessage(
-            invoiceId
-              ? 'Quote approved — job and draft customer invoice created automatically.'
-              : 'Quote approved — job created. Draft invoice may still be pending.',
-          );
-        }
-        void refetch();
-      })
-      .catch((err) => {
-        autoFulfillAttempted.current = null;
-        setActionError(
-          getErrorMessage(err) ||
-            'Could not auto-create job/invoice from approved quote. Use Convert to job.',
-        );
-      });
-  }, [
-    actions.fulfillApproved,
-    id,
-    pending,
-    quotation,
-    refetch,
-    status,
-  ]);
-
-  // Same-tab: customer submitted portal booking form → convert to job (only after form).
-  useEffect(() => {
-    if (!id || !usesModeBookingFormConvertFlow(quotation?.job_type)) return;
-    const onFormComplete = (ev: Event) => {
-      const detail = (ev as CustomEvent<{ quotationId?: string }>).detail;
-      if (detail?.quotationId && detail.quotationId !== id) return;
-      void (async () => {
-        try {
-          const { quotationService } = await import('../services/quotation.service');
-          await quotationService.convertAfterCustomerBookingForm(id);
-          setActionMessage(
-            'Booking form submitted — quotation converted to job and draft invoice created.',
-          );
-          void refetch();
-          void portalBookingQuery.refetch();
-        } catch (err) {
-          setActionError(
-            getErrorMessage(err) ||
-              'Booking form saved, but convert to job failed. Refresh or retry from Ops.',
-          );
-        }
-      })();
-    };
-    window.addEventListener('kfw-customer-booking-form-complete', onFormComplete);
-    return () => window.removeEventListener('kfw-customer-booking-form-complete', onFormComplete);
-  }, [id, portalBookingQuery, quotation?.job_type, refetch]);
-
-  // Cross-session: APPROVED booking-form quote with completed portal form → convert once.
-  useEffect(() => {
-    if (!quotation || !id) return;
-    if (status !== 'APPROVED') return;
-    if (!usesModeBookingFormConvertFlow(quotation.job_type)) return;
-    if (quotation.job_id) return;
-    if (autoFulfillAttempted.current === `bf:${id}`) return;
-    if (portalBookingQuery.data?.mark_complete !== true) return;
-
-    autoFulfillAttempted.current = `bf:${id}`;
-    void (async () => {
-      try {
-        const { quotationService } = await import('../services/quotation.service');
-        await quotationService.convertAfterCustomerBookingForm(id);
-        setActionMessage(
-          'Booking form complete — quotation converted to job and draft invoice created.',
-        );
-        void refetch();
-      } catch {
-        autoFulfillAttempted.current = null;
-      }
-    })();
-  }, [
-    id,
-    portalBookingQuery.data?.mark_complete,
-    quotation,
-    refetch,
-    status,
-  ]);
+  // APPROVED only — staff continuum Generate Shipment → Generate Job (no auto create).
 
   const { customerLabel, originLabel, destinationLabel } = useQuotationResolvedLabels(
     quotation ?? {
@@ -578,11 +467,11 @@ export default function QuotationDetailPage() {
           void refetch();
           return;
         }
-        // Booking-form modes: stay APPROVED until customer portal form → convert.
+        // Booking-form modes: stay APPROVED until staff continuum Generate Shipment → Job.
         if (jobId && usesModeBookingFormConvertFlow(quotation.job_type)) {
           setActionMessage(
             successMsg ||
-              'Approved — waiting for the customer portal booking form, then the quotation converts to a job.',
+              'Approved — use Generate Shipment, then Generate Job when the continuum allows.',
           );
           void refetch();
           return;
@@ -618,18 +507,17 @@ export default function QuotationDetailPage() {
   const canApproveVerified = fclActions?.can_approve_verified === true;
   const isApprovedLike =
     status === 'APPROVED' || status === 'WON' || status === 'CONVERTED';
-  /** Fresa: Generate Shipment / Job appear once quotation is Approved. */
+  /**
+   * Backend gates Generate Shipment / Job on APPROVED (not VERIFIED).
+   * Show buttons only when actions.can_generate_* is explicitly true.
+   */
   const canGenerateShipment =
     shipmentPerms.canWriteCreate &&
     !hasShipment &&
-    (fclActions?.can_generate_shipment === true ||
-      (fclActions?.can_generate_shipment !== false && isApprovedLike));
-  /** Continuum: Shipment first, then Generate Job (never skip Shipment). */
+    fclActions?.can_generate_shipment === true;
+  /** Continuum: Shipment first, then Generate Job when API allows. */
   const canGenerateJobFromQuote =
-    hasShipment &&
-    !hasJob &&
-    (fclActions?.can_generate_job === true ||
-      (fclActions?.can_generate_job !== false && isApprovedLike));
+    !hasJob && fclActions?.can_generate_job === true;
 
   /** Top-right Fresa chrome (Back is DetailPageTemplate onBack). */
   const headerActions = [
@@ -695,7 +583,7 @@ export default function QuotationDetailPage() {
       <OpsContinuumRail
         entityType="QUOTATION"
         entityId={quotation.id}
-        pathHints={quotation.path_hints}
+        pathHints={['ops_continuum']}
         opsContinuum={quotation.ops_continuum}
         actions={quotation.actions as Record<string, unknown> | undefined}
         links={{
@@ -839,11 +727,11 @@ export default function QuotationDetailPage() {
                   color: 'var(--color-neutral-700)',
                 }}
               >
-                Air freight: after approve there is <strong>no auto job / no invoice</strong>. Customer
-                completes the <strong>booking form in the portal</strong> (BOOKING_FORM_COMPLETE), then
-                staff sends invoice. Use <strong>Start air ops job</strong> when Ops APIs need a job
-                shell. Gate order: CS triage → quote sent → customer accept → booking form → invoice →
-                export/import ops.
+                Air freight: customer accept sets <strong>APPROVED only</strong> (no auto shipment/job).
+                Customer completes the <strong>booking form in the portal</strong>, then staff sends
+                invoice. Prefer continuum <strong>Generate Shipment → Generate Job</strong>, or{' '}
+                <strong>Start air ops job</strong> when Ops APIs need a shell. Gate order: CS triage →
+                quote sent → customer accept → booking form → invoice → export/import ops.
                 {quotation.job_id ? (
                   <>
                     {' '}
@@ -1188,10 +1076,15 @@ export default function QuotationDetailPage() {
                 Expire
               </Button>
             ) : null}
-            {!canGenerateShipment && !canGenerateJobFromQuote && isApprovedLike === false ? (
+            {!canGenerateShipment && !canGenerateJobFromQuote ? (
               <span className="text-[12px] text-[var(--color-neutral-500)]">
-                Approve the quotation (Change Quote Status → Verified → Approved) to unlock Generate
-                Shipment and Generate Job.
+                {status === 'VERIFIED'
+                  ? 'Quotation is Verified — set status to Approved to unlock Generate Shipment / Job.'
+                  : isApprovedLike
+                    ? hasShipment && hasJob
+                      ? 'Shipment and job already linked.'
+                      : 'Generate Shipment / Job is not available for this quotation yet.'
+                    : 'Approve the quotation (Verified → Approved) to unlock Generate Shipment and Generate Job.'}
               </span>
             ) : null}
           </>
@@ -1227,6 +1120,17 @@ export default function QuotationDetailPage() {
             key: 'overview',
             label: 'Overview',
             content: <QuotationOverviewPanel quotation={quotation} />,
+          },
+          {
+            key: 'section-files',
+            label: 'Section files',
+            content: (
+              <EntitySectionFilesPanel
+                entity="quotations"
+                entityId={quotation.id}
+                title="Section files"
+              />
+            ),
           },
           {
             key: 'charges',
@@ -1339,9 +1243,7 @@ export default function QuotationDetailPage() {
                   ? isNvoccQuoteJobType(quotation.job_type)
                     ? 'Approved only — no job created. Customer fills booking form in portal, then send invoice on NVOCC Bookings → CRO.'
                     : 'Approved only — no job created. Customer fills booking form in portal, then send invoice on Air Ops (Start air ops job if needed).'
-                  : usesModeBookingFormConvertFlow(quotation.job_type)
-                    ? 'Approved only — waiting for the customer to complete the portal booking form, then the quotation converts to a job.'
-                    : 'Approved — job and draft customer invoice created.',
+                  : 'Approved only — no shipment/job created. Next: Generate Shipment → confirm/approve → Generate Job.',
               );
             if (kind === 'mark-lost' && extra?.reason)
               return run(

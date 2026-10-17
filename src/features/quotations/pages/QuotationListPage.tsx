@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { appType, listShell } from '@/lib/erpTypography';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Plus, RefreshCw, TimerReset } from 'lucide-react';
@@ -47,31 +47,6 @@ export default function QuotationListPage() {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuotations(listParams);
   const quotations = data?.quotations ?? [];
   const meta = data?.meta;
-  const pendingConvertTried = useRef(false);
-
-  useEffect(() => {
-    if (pendingConvertTried.current) return;
-    pendingConvertTried.current = true;
-    let cancelled = false;
-    void (async () => {
-      try {
-        const { quotationService } = await import('../services/quotation.service');
-        const result = await quotationService.convertPendingAfterBookingForms();
-        if (!cancelled && result.converted > 0) {
-          setActionMessage(
-            `Converted ${result.converted} quotation(s) to job after booking form complete.`,
-          );
-          void refetch();
-        }
-      } catch {
-        /* non-fatal */
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [refetch]);
-
   const runAction = async (q: Quotation, action: () => Promise<unknown>) => {
     setActionError(null);
     setActionMessage(null);

@@ -56,6 +56,7 @@ export function JobActionPanelContent({
   houseJobs,
   highlightInvoiceId,
   onOpenHouse,
+  lifecycleLinks,
 }: {
   panel: JobActionPanelKey;
   job: Job;
@@ -63,6 +64,13 @@ export function JobActionPanelContent({
   houseJobs: Job[];
   highlightInvoiceId?: string;
   onOpenHouse: (houseJobId: string) => void;
+  /** Prefer resolved enquiry/quotation/shipment ids from Job detail. */
+  lifecycleLinks?: {
+    enquiryId?: string | null;
+    quotationId?: string | null;
+    shipmentId?: string | null;
+    jobId?: string | null;
+  };
 }) {
   switch (panel) {
     case 'documents':
@@ -82,7 +90,19 @@ export function JobActionPanelContent({
     case 'notes':
       return <JobNotesPanel jobId={jobId} />;
     case 'ops-continuum':
-      return <OpsContinuumPanel entityType="JOB" entityId={jobId} />;
+      return (
+        <OpsContinuumPanel
+          entityType="JOB"
+          entityId={jobId}
+          opsContinuum={job.ops_continuum}
+          links={{
+            enquiryId: lifecycleLinks?.enquiryId ?? job.enquiry_id,
+            quotationId: lifecycleLinks?.quotationId ?? job.quotation_id,
+            shipmentId: lifecycleLinks?.shipmentId ?? job.shipment_id,
+            jobId: lifecycleLinks?.jobId ?? job.id ?? jobId,
+          }}
+        />
+      );
     case 'vendor-offers':
       return <JobVendorOffersPanel jobId={jobId} currencyCode={job.currency_code} />;
     case 'logistics':

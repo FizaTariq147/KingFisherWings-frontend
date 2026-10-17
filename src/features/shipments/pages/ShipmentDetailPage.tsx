@@ -32,6 +32,7 @@ import { FclContinuumRail } from '@/features/shared/continuum/FclContinuumRail';
 import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggle';
 import { OpsContinuumRail } from '@/features/ops-activity';
 import { GenerateEdiPanel } from '@/features/shared/edi/GenerateEdiPanel';
+import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { erpForm } from '@/lib/erpForm';
 import { isUuid } from '@/lib/isUuid';
 import { cn } from '@/lib/utils';
@@ -114,16 +115,14 @@ function FresaReadonlyField({
 }
 
 /**
- * Tab strip = only keys from GET /shipments/:id/detail `tabs`.
- * Each key is passed as-is to GET /shipments/:id/detail/:tab — no fallback list.
+ * Tab strip = keys from GET /shipments/:id/detail `tabs`, plus frontend Section files
+ * (same hub pattern as quotation).
  */
 function resolveShipmentTabs(shipment: Shipment): { key: string; label: string }[] {
   const apiTabs = shipment.tabs;
-  if (!apiTabs?.length) return [];
-
   const seen = new Set<string>();
   const tabs: { key: string; label: string }[] = [];
-  for (const t of apiTabs) {
+  for (const t of apiTabs ?? []) {
     const key = toApiShipmentDetailTabKey(t.key);
     if (!key || seen.has(key)) continue;
     seen.add(key);
@@ -131,6 +130,9 @@ function resolveShipmentTabs(shipment: Shipment): { key: string; label: string }
       key,
       label: shipmentDetailTabLabel(key, t.label),
     });
+  }
+  if (!seen.has('section-files') && !seen.has('section_files')) {
+    tabs.push({ key: 'section-files', label: 'Section files' });
   }
   return tabs;
 }
@@ -301,10 +303,11 @@ export default function ShipmentDetailPage() {
   const jobType = shipment.job_type || shipment.service_type || 'SEA_FCL_EXPORT';
   const hasJob = Boolean(shipment.job_id && isUuid(shipment.job_id));
   const actions = shipment.actions;
+  /** Backend gates Generate Job via actions.can_generate_job (status rules live on API). */
   const canGenerateJob =
     perms.canWriteGenerate &&
     !hasJob &&
-    (actions == null ? true : actions.can_generate_job === true);
+    actions?.can_generate_job === true;
   const canCopy = perms.canWriteCreate && actions?.can_copy !== false;
   const canChangeStatus = perms.canWriteUpdate && actions?.can_change_status !== false;
   const canChangeBl =
@@ -326,6 +329,11 @@ export default function ShipmentDetailPage() {
   const canHblDoc =
     perms.canWriteGenerate && hasJob && actions?.can_hbl_document === true;
 
+  /**
+   * Prefer detail `actions.allowed_*` when the API sends them.
+   * Otherwise use the OpenAPI change-status / change-bl-status enums
+   * (detail often omits allowed_* — that was leaving only the current value).
+   */
   const statusOptions = actions?.allowed_statuses?.length
     ? actions.allowed_statuses
     : [...SHIPMENT_STATUSES];
@@ -537,7 +545,7 @@ export default function ShipmentDetailPage() {
       <OpsContinuumRail
         entityType="SHIPMENT"
         entityId={shipment.id}
-        pathHints={shipment.path_hints}
+        pathHints={['ops_continuum']}
         opsContinuum={
           shipment.ops_continuum as Record<string, unknown> | undefined
         }
@@ -663,6 +671,12 @@ export default function ShipmentDetailPage() {
           >
             Generate Job
           </Button>
+        ) : !hasJob ? (
+          <span className="text-[12px] text-[var(--color-neutral-500)]">
+            {shipment.status
+              ? `Generate Job is not available while status is ${shipment.status.replaceAll('_', ' ')}.`
+              : 'Generate Job is not available for this shipment yet.'}
+          </span>
         ) : null}
         {canChangeStatus && (
           <Button
@@ -670,9 +684,13 @@ export default function ShipmentDetailPage() {
             type="button"
             variant="warning"
             leftIcon={<RefreshCw />}
-            disabled={anyPending}
+            disabled={anyPending || statusOptions.length === 0}
             onClick={() => {
-              setStatusValue(shipment.status || statusOptions[0] || 'BOOKED');
+              setStatusValue(
+                shipment.status && statusOptions.includes(shipment.status)
+                  ? shipment.status
+                  : statusOptions[0] ?? '',
+              );
               setConfirmKind('change-status');
             }}
           >
@@ -687,7 +705,11 @@ export default function ShipmentDetailPage() {
             leftIcon={<FileCheck />}
             disabled={anyPending}
             onClick={() => {
-              setBlStatusValue(shipment.bl_status || blOptions[0] || 'DRAFT');
+              setBlStatusValue(
+                shipment.bl_status && blOptions.includes(shipment.bl_status)
+                  ? shipment.bl_status
+                  : blOptions[0] ?? '',
+              );
               setConfirmKind('change-bl-status');
             }}
           >
@@ -932,6 +954,13 @@ export default function ShipmentDetailPage() {
                 emptyMessage="No bills of lading returned."
               />
             )}
+            <div className="mt-3">
+              <SectionAttachmentsPanel
+                entity="shipments"
+                entityId={shipment.id}
+                section="bills_of_lading"
+              />
+            </div>
           </div>
         </section>
       )}
@@ -983,7 +1012,13 @@ export default function ShipmentDetailPage() {
               <ShipmentTabPanel
                 shipmentId={shipment.id}
                 tabKey={effectiveTab}
-                siblingTabKeys={tabs.map((t) => t.key)}
+                siblingTabKeys={tabs
+                  .map((t) => t.key)
+                  .filter(
+                    (k) =>
+                      k !== 'section-files' &&
+                      k !== 'section_files',
+                  )}
               />
             ) : null}
           </>
@@ -1274,11 +1309,17 @@ export default function ShipmentDetailPage() {
               value={statusValue}
               onChange={(e) => setStatusValue(e.target.value)}
             >
-              {statusOptions.map((s) => (
-                <option key={s} value={s}>
-                  {s}
+              {statusOptions.length === 0 ? (
+                <option value="" disabled>
+                  No statuses returned by API
                 </option>
-              ))}
+              ) : (
+                statusOptions.map((s) => (
+                  <option key={s} value={s}>
+                    {s.replaceAll('_', ' ')}
+                  </option>
+                ))
+              )}
             </select>
           </label>
         </Modal>

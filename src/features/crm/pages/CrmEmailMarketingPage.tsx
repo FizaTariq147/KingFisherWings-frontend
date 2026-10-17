@@ -4,8 +4,20 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { useAppForm } from '@/lib/validation';
+import { usePartyTypes } from '@/features/parties/hooks/useParties';
+import { resolvePartyTypeOptions } from '@/features/parties/utils/resolvePartyTypeOptions';
 import { CrmCountryField } from '../components/CrmFormControls';
-import { CrmAlert, CrmEmpty, CrmPageHeader, Field, TextArea, TextInput, tdClass, thClass } from '../components/CrmUi';
+import {
+  CrmAlert,
+  CrmEmpty,
+  CrmPageHeader,
+  Field,
+  SelectInput,
+  TextArea,
+  TextInput,
+  tdClass,
+  thClass,
+} from '../components/CrmUi';
 import { CrmStatusBadge } from '../components/CrmStatusBadge';
 import {
   useCreateCrmCampaign,
@@ -67,6 +79,8 @@ export default function CrmEmailMarketingPage() {
   const addCampaign = useCreateCrmCampaign();
   const schedule = useScheduleCrmCampaign();
   const send = useSendCrmCampaign();
+  const typesQuery = usePartyTypes(true);
+  const partyTypeOptions = resolvePartyTypeOptions(typesQuery.data);
 
   const subscriberForm = useAppForm<CreateSubscriberFormValues>({
     resolver: zodResolver(createSubscriberSchema) as unknown as Resolver<CreateSubscriberFormValues>,
@@ -285,7 +299,14 @@ export default function CrmEmailMarketingPage() {
                   <TextInput type="datetime-local" {...campaignForm.register('scheduled_at')} />
                 </Field>
                 <Field label="Party type filter" error={campErr('filter_party_type')}>
-                  <TextInput {...campaignForm.register('filter_party_type')} />
+                  <SelectInput {...campaignForm.register('filter_party_type')}>
+                    <option value="">All types</option>
+                    {partyTypeOptions.map(({ code, label }) => (
+                      <option key={code} value={code}>
+                        {label}
+                      </option>
+                    ))}
+                  </SelectInput>
                 </Field>
                 <CrmCountryField
                   label="Country filter"

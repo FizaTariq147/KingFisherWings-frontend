@@ -56,6 +56,7 @@ export const DOCUMENTATION_API = {
       generate: (jobId: string) => `/documentation/edi/ial/jobs/${jobId}/generate`,
       submit: (jobId: string) => `/documentation/edi/ial/jobs/${jobId}/submit`,
     },
+    /** Bearer PDF attachment (printable EDI) — not an S3 URL. */
     downloadSubmission: (submissionId: string) =>
       `/documentation/edi/submissions/${submissionId}/download`,
   },

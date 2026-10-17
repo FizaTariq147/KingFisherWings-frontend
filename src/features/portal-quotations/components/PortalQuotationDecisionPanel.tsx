@@ -23,42 +23,35 @@ function acceptSuccessMessage(
   quote: PortalQuotationDetail,
   isNegotiating: boolean,
   hasCounter: boolean,
-  result?: PortalQuotationDetail,
+  _result?: PortalQuotationDetail,
 ): string {
   const jt = String(
     quote.jobType ?? (quote.raw as { job_type?: string } | undefined)?.job_type ?? '',
   )
     .toUpperCase()
     .replace(/[\s-]+/g, '_');
-  const statusConverted =
-    (result?.status || '').toUpperCase().replace(/\s+/g, '_') === 'CONVERTED';
-  // Mode booking-form quotes convert only after form submit — ignore provisional job_id.
-  const converted = usesModeBookingFormConvertFlow(jt)
-    ? statusConverted
-    : statusConverted || Boolean(result?.jobId || result?.convertedJobNumber);
+  const needsBookingForm =
+    jt.startsWith('NVOCC') ||
+    jt.startsWith('AIR') ||
+    usesModeBookingFormConvertFlow(jt);
   if (jt.startsWith('NVOCC')) {
     return hasCounter && isNegotiating
-      ? 'Approved at the forwarder’s offer. Complete the booking form below — Ops will finish the booking from your details.'
-      : 'Quotation approved. Complete the booking form below; Ops (admin / sales) will finish booking from your details.';
+      ? 'Approved at the forwarder’s offer — they have been notified. Complete the booking form below when available.'
+      : 'Quotation approved — your forwarder has been notified. Complete the booking form below when available.';
   }
   if (jt.startsWith('AIR')) {
     return hasCounter && isNegotiating
-      ? 'Approved at the forwarder’s offer. Complete the air booking form below — Ops will finish the booking from your details.'
-      : 'Quotation approved. Complete the air booking form below; Ops (admin / sales) will finish booking from your details.';
+      ? 'Approved at the forwarder’s offer — they have been notified. Complete the air booking form below when available.'
+      : 'Quotation approved — your forwarder has been notified. Complete the air booking form below when available.';
   }
-  if (usesModeBookingFormConvertFlow(jt)) {
+  if (needsBookingForm) {
     return hasCounter && isNegotiating
-      ? 'Approved at the forwarder’s offer. Complete the booking form below — your quotation converts to a job after you submit it.'
-      : 'Quotation approved. Complete the booking form below — your quotation converts to a job after you submit it.';
-  }
-  if (converted) {
-    return hasCounter && isNegotiating
-      ? 'Quotation approved at the forwarder’s offer and converted to a job.'
-      : 'Quotation approved and converted to a job.';
+      ? 'Approved at the forwarder’s offer — they have been notified. Complete the booking form below when available.'
+      : 'Quotation approved — your forwarder has been notified. Complete the booking form below when available.';
   }
   return hasCounter && isNegotiating
-    ? 'Quotation approved at the forwarder’s offer (your counter was not applied).'
-    : 'Quotation approved. Your forwarder will proceed with booking.';
+    ? 'Quotation approved at the forwarder’s offer (your counter was not applied). Your forwarder has been notified.'
+    : 'Quotation approved — your forwarder has been notified. They will generate the shipment and job.';
 }
 
 interface PortalQuotationDecisionPanelProps {

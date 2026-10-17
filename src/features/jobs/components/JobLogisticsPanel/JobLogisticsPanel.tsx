@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { parseWithFieldErrors } from '@/lib/validation';
 import { CUSTOMS_EXAMINATION_RESULTS, CUSTOMS_STATUSES } from '../../constants/job.constants';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
@@ -268,6 +269,13 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           >
             Update customs status
           </Button>
+          <SectionAttachmentsPanel
+            entity="jobs"
+            entityId={jobId}
+            section="customs_status"
+            compact
+            className="mt-3 w-full"
+          />
         </div>
       </Card>
 
@@ -305,6 +313,14 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
               />
             </div>
           ) : null}
+          <div className="sm:col-span-2">
+            <SectionAttachmentsPanel
+              entity="jobs"
+              entityId={jobId}
+              section="cfs_storage"
+              compact
+            />
+          </div>
         </div>
       </Card>
 
@@ -333,6 +349,14 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           >
             Link transhipment
           </Button>
+          <div className="sm:col-span-2">
+            <SectionAttachmentsPanel
+              entity="jobs"
+              entityId={jobId}
+              section="transhipment_link"
+              compact
+            />
+          </div>
         </div>
       </Card>
 
@@ -354,24 +378,34 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
               return (
                 <div
                   key={d.id}
-                  className="flex items-center justify-between gap-2 text-sm border-b border-[var(--color-neutral-100)] py-2"
+                  className="space-y-2 border-b border-[var(--color-neutral-100)] py-2"
                 >
-                  <span>
-                    {d.deposit_type} · {d.deposit_amount} {d.currency_code || ''}
-                  </span>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="danger"
-                    onClick={() =>
-                      run(async () => {
-                        await mutations.deleteDeposit.mutateAsync(d.id);
-                        refetchDeposits();
-                      }, 'Deposit removed.')
-                    }
-                  >
-                    Remove
-                  </Button>
+                  <div className="flex items-center justify-between gap-2 text-sm">
+                    <span>
+                      {d.deposit_type} · {d.deposit_amount} {d.currency_code || ''}
+                    </span>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="danger"
+                      onClick={() =>
+                        run(async () => {
+                          await mutations.deleteDeposit.mutateAsync(d.id);
+                          refetchDeposits();
+                        }, 'Deposit removed.')
+                      }
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                  <SectionAttachmentsPanel
+                    entity="jobs"
+                    entityId={jobId}
+                    section="deposits"
+                    recordId={d.id}
+                    title="Deposit files"
+                    compact
+                  />
                 </div>
               );
             })
@@ -414,6 +448,12 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           >
             Add deposit
           </Button>
+          <SectionAttachmentsPanel
+            entity="jobs"
+            entityId={jobId}
+            section="deposits"
+            compact
+          />
         </div>
       </Card>
 
@@ -474,6 +514,12 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
               Recalculate
             </Button>
           </div>
+          <SectionAttachmentsPanel
+            entity="jobs"
+            entityId={jobId}
+            section="free_days"
+            compact
+          />
         </div>
       </Card>
 
@@ -509,6 +555,12 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           >
             Add damage report
           </Button>
+          <SectionAttachmentsPanel
+            entity="jobs"
+            entityId={jobId}
+            section="damage_reports"
+            compact
+          />
         </div>
       </Card>
 
@@ -554,6 +606,12 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           >
             Add part delivery
           </Button>
+          <SectionAttachmentsPanel
+            entity="jobs"
+            entityId={jobId}
+            section="part_deliveries"
+            compact
+          />
         </div>
       </Card>
 
@@ -580,6 +638,12 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           >
             Add POD
           </Button>
+          <SectionAttachmentsPanel
+            entity="jobs"
+            entityId={jobId}
+            section="pods"
+            compact
+          />
         </div>
       </Card>
 
@@ -611,6 +675,14 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           >
             Create payment request
           </Button>
+          <div className="sm:col-span-2">
+            <SectionAttachmentsPanel
+              entity="jobs"
+              entityId={jobId}
+              section="payment_requests"
+              compact
+            />
+          </div>
         </div>
       </Card>
 
@@ -648,6 +720,12 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           >
             Create sub-job
           </Button>
+          <SectionAttachmentsPanel
+            entity="jobs"
+            entityId={jobId}
+            section="sub_jobs"
+            compact
+          />
         </div>
       </Card>
     </div>
