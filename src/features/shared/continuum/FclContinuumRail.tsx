@@ -30,7 +30,8 @@ export function FclContinuumRail({
     <nav
       aria-label="Lifecycle"
       className={cn(
-        'flex flex-wrap items-center gap-1 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2 text-xs',
+        // Keep continuum compact — do not stretch full page width.
+        'flex w-full max-w-xl flex-wrap items-center gap-1 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-2.5 py-1.5 text-[11px]',
         className,
       )}
     >

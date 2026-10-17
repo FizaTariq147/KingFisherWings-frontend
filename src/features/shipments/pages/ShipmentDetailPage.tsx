@@ -550,15 +550,6 @@ export default function ShipmentDetailPage() {
         }}
       />
 
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <FclContinuumRail steps={continuum} className="flex-1" />
-        <FavouriteToggle
-          kind="shipment"
-          targetKey={shipment.id}
-          label={shipmentDisplayNumber(shipment)}
-        />
-      </div>
-
       {actionError && (
         <div role="alert" className="rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700">
           {actionError}
@@ -637,6 +628,15 @@ export default function ShipmentDetailPage() {
         ) : null}
       </section>
 
+      <div className="flex flex-wrap items-center gap-2">
+        <FclContinuumRail steps={continuum} />
+        <FavouriteToggle
+          kind="shipment"
+          targetKey={shipment.id}
+          label={shipmentDisplayNumber(shipment)}
+        />
+      </div>
+
       {/* ── Actions toolbar (below Shipment detail) ── */}
       <div className={`${erpForm.toolbar} w-full max-w-none`}>
         <p className="mr-1 w-full text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)] sm:mr-2 sm:w-auto">
@@ -683,7 +683,7 @@ export default function ShipmentDetailPage() {
           <Button
             size="sm"
             type="button"
-            variant="primary"
+            variant="create"
             leftIcon={<FileCheck />}
             disabled={anyPending}
             onClick={() => {
@@ -713,7 +713,7 @@ export default function ShipmentDetailPage() {
           <Button
             size="sm"
             type="button"
-            variant="edit"
+            variant="success"
             leftIcon={<Copy />}
             disabled={anyPending}
             onClick={() => setConfirmKind('copy')}
@@ -752,7 +752,7 @@ export default function ShipmentDetailPage() {
           <Button
             size="sm"
             type="button"
-            variant="primary"
+            variant="warning"
             leftIcon={<SwitchCamera />}
             disabled={anyPending}
             onClick={() => {
@@ -791,7 +791,7 @@ export default function ShipmentDetailPage() {
           <Button
             size="sm"
             type="button"
-            variant="primary"
+            variant="success"
             leftIcon={<BarChart2 />}
             onClick={() => setShowKpi((v) => !v)}
           >
@@ -813,7 +813,7 @@ export default function ShipmentDetailPage() {
           <Button
             size="sm"
             type="button"
-            variant="primary"
+            variant="create"
             leftIcon={<FileCheck />}
             onClick={() => setShowBlEntry((v) => !v)}
           >
@@ -824,7 +824,7 @@ export default function ShipmentDetailPage() {
           <Button
             size="sm"
             type="button"
-            variant="primary"
+            variant="warning"
             leftIcon={<FileText />}
             onClick={() => setShowAwb((v) => !v)}
           >
@@ -852,7 +852,7 @@ export default function ShipmentDetailPage() {
           <Button
             size="sm"
             type="button"
-            variant="primary"
+            variant="report"
             leftIcon={<FileText />}
             onClick={() => setShowBookingForm(true)}
           >

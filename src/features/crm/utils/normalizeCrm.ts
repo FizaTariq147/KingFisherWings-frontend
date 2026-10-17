@@ -120,6 +120,23 @@ export function normalizeEnquiry(raw: unknown): Enquiry | null {
     party_name: partyName || optional(b.r, 'party_name', 'partyName'),
     lead_name: leadName || optional(b.r, 'lead_name', 'leadName'),
     salesperson_name: salespersonName || optional(b.r, 'salesperson_name', 'salespersonName'),
+    company_name:
+      optional(b.r, 'company_name', 'companyName') ||
+      (asRecord(b.r.company) ? string(asRecord(b.r.company)!, 'name', 'code') : undefined),
+    branch_name:
+      optional(b.r, 'branch_name', 'branchName') ||
+      (asRecord(b.r.branch) ? string(asRecord(b.r.branch)!, 'name', 'code') : undefined),
+    department_name:
+      optional(b.r, 'department_name', 'departmentName') ||
+      (asRecord(b.r.department) ? string(asRecord(b.r.department)!, 'name', 'code') : undefined),
+    shipper_name:
+      optional(b.r, 'shipper_name', 'shipperName') ||
+      (asRecord(b.r.shipper) ? string(asRecord(b.r.shipper)!, 'name', 'party_name', 'display_name') : undefined),
+    consignee_name:
+      optional(b.r, 'consignee_name', 'consigneeName') ||
+      (asRecord(b.r.consignee)
+        ? string(asRecord(b.r.consignee)!, 'name', 'party_name', 'display_name')
+        : undefined),
     enquiry_number: optional(b.r, 'enquiry_number', 'enquiryNumber', 'enquiry_no', 'enquiryNo', 'reference'),
     service_type: string(b.r, 'service_type', 'serviceType') as Enquiry['service_type'],
     currency_code: string(b.r, 'currency_code', 'currencyCode'),

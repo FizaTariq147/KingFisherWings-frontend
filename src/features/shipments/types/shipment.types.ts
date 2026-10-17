@@ -55,6 +55,10 @@ export interface Shipment {
   job_number?: string;
   department_id?: string;
   department_name?: string;
+  company_id?: string;
+  company_name?: string;
+  salesperson_id?: string;
+  salesperson_name?: string;
   branch_id?: string;
   branch_name?: string;
   origin_port_id?: string;

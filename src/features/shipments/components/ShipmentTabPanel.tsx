@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { ErrorState } from '@/components/erp';
 import { erpForm } from '@/lib/erpForm';
 import { erpTable } from '@/lib/erpTypography';
+import { JobContainersPanel } from '@/features/jobs/components/JobContainersPanel';
 import { isUuid } from '@/lib/isUuid';
 import { isShipmentShowAllTab } from '../api/shipment.api';
 import { useShipment, useShipmentDetailTab, useShipmentShowAll } from '../hooks/useShipments';
@@ -67,6 +68,24 @@ function formatScalar(value: unknown): string {
   return '—';
 }
 
+function nestedEntityLabel(value: unknown): string {
+  const row = asRecord(value);
+  if (!row) return '';
+  const code = readableScalar(row.code ?? row.un_locode ?? row.unLocode);
+  const name = readableScalar(
+    row.name ?? row.display_name ?? row.displayName ?? row.full_name ?? row.fullName,
+  );
+  if (code && name) return `${code} — ${name}`;
+  return name || code || '';
+}
+
+function readableScalar(value: unknown): string {
+  if (typeof value !== 'string') return '';
+  const t = value.trim();
+  if (!t || isUuidish(t)) return '';
+  return t;
+}
+
 function siblingNameLabel(key: string, data: Record<string, unknown>): string {
   const base = key.replace(/(_id|_uuid)$/i, '');
   const name = data[`${base}_name`] ?? data[`${base}_label`];
@@ -77,6 +96,8 @@ function siblingNameLabel(key: string, data: Record<string, unknown>): string {
     }
     return name.trim();
   }
+  const nested = nestedEntityLabel(data[base]);
+  if (nested) return nested;
   return '';
 }
 
@@ -244,6 +265,19 @@ export function FormFieldsFromPayload({
     }
 
     if (value != null && typeof value === 'object') {
+      const entityLabel = nestedEntityLabel(value);
+      if (entityLabel) {
+        // Backend MasterLabelService nested { id, name, code } — show name, not UUID dump.
+        if (keys.includes(`${key}_id`) || keys.includes(`${key}_uuid`)) {
+          skip.add(`${key}_id`);
+          skip.add(`${key}_uuid`);
+          skip.add(`${key}_name`);
+          skip.add(`${key}_label`);
+          skip.add(`${key}_code`);
+        }
+        rows.push({ key, label: formatKey(key), value: entityLabel });
+        continue;
+      }
       nested.push({ key, label: formatKey(key), value });
       continue;
     }
@@ -252,6 +286,7 @@ export function FormFieldsFromPayload({
     if (lower.endsWith('_name') || lower.endsWith('_label') || lower.endsWith('_code')) {
       const base = key.replace(/(_name|_label|_code)$/i, '');
       if (keys.includes(`${base}_id`) || keys.includes(`${base}_uuid`)) continue;
+      if (asRecord(rec[base]) && nestedEntityLabel(rec[base])) continue;
     }
 
     rows.push({ key, label: formatKey(key), value: formatScalar(value) });
@@ -416,6 +451,17 @@ function isShipmentDepartmentTab(tabKey: string): boolean {
   return norm === 'department' || norm === 'departments';
 }
 
+/** Planned/Actual container tabs — containers live on the linked job (`GET /jobs/:id/containers`). */
+function isShipmentContainerTab(tabKey: string): boolean {
+  const norm = tabKey.trim().toLowerCase().replace(/-/g, '_');
+  return (
+    norm === 'planned_container' ||
+    norm === 'actual_container' ||
+    norm === 'containers' ||
+    norm === 'container'
+  );
+}
+
 /** Lazy-loaded shipment detail tab — Show All aggregates sibling detail/{tab} payloads. */
 export function ShipmentTabPanel({
   shipmentId,
@@ -439,7 +485,76 @@ export function ShipmentTabPanel({
   if (isShipmentDepartmentTab(tabKey)) {
     return <ShipmentDepartmentTabPanel shipmentId={shipmentId} />;
   }
+  if (isShipmentContainerTab(tabKey)) {
+    return <ShipmentContainersTabPanel shipmentId={shipmentId} tabKey={tabKey} />;
+  }
   return <SingleTabPanel shipmentId={shipmentId} tabKey={tabKey} />;
+}
+
+function ShipmentContainersTabPanel({
+  shipmentId,
+  tabKey,
+}: {
+  shipmentId: string;
+  tabKey: string;
+}) {
+  const shipmentQuery = useShipment(shipmentId);
+  const shipment = shipmentQuery.data;
+  const jobId = shipment?.job_id?.trim() ?? '';
+  const norm = tabKey.trim().toLowerCase().replace(/-/g, '_');
+  const title =
+    norm === 'actual_container'
+      ? 'Actual containers'
+      : norm === 'planned_container'
+        ? 'Planned containers'
+        : 'Containers';
+
+  if (shipmentQuery.isLoading && !shipment) {
+    return (
+      <div className="space-y-1.5 p-3" aria-busy>
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="h-8 animate-pulse rounded-sm bg-[var(--fresa-action-soft,#E9EEF2)]"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (!shipment) {
+    return (
+      <div className="p-3">
+        <ErrorState
+          message={getErrorMessage(shipmentQuery.error) || 'Shipment not loaded.'}
+          onRetry={() => void shipmentQuery.refetch()}
+        />
+      </div>
+    );
+  }
+
+  if (!isUuid(jobId)) {
+    return (
+      <div className="space-y-2 p-3">
+        <p className="text-[12px] font-semibold text-[var(--fresa-header-text,#0A2942)]">
+          {title}
+        </p>
+        <p className="text-[13px] text-[#64748b]">
+          Containers are managed on the linked job. Generate a job from this shipment first,
+          then use Planned / Actual Container.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3 p-3">
+      <p className="text-[12px] text-[#64748b]">
+        {title} · linked job containers (`GET /jobs/:id/containers`)
+      </p>
+      <JobContainersPanel jobId={jobId} />
+    </div>
+  );
 }
 
 function ShipmentDepartmentTabPanel({ shipmentId }: { shipmentId: string }) {

@@ -237,6 +237,9 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
     status: normalizeStatus(r.status, id, r),
     company_id:
       pickStr(r, 'company_id', 'companyId') ?? pickStr(nestedCompany ?? {}, 'id'),
+    company_name:
+      pickStr(r, 'company_name', 'companyName') ??
+      pickStr(nestedCompany ?? {}, 'name', 'code'),
     job_type: pickJobType(r),
     customer_id,
     customer_name:
@@ -248,6 +251,9 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
       ([str(nestedSales?.first_name), str(nestedSales?.last_name)].filter(Boolean).join(' ') ||
         str(nestedSales?.name)),
     branch_id: pickStr(r, 'branch_id', 'branchId'),
+    branch_name:
+      pickStr(r, 'branch_name', 'branchName') ??
+      pickStr(asRecord(r.branch) ?? {}, 'name', 'code'),
     department_id:
       pickStr(r, 'department_id', 'departmentId') ?? pickStr(nestedDepartment ?? {}, 'id'),
     department_name:

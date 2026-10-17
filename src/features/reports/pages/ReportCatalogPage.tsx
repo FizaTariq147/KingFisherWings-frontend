@@ -48,6 +48,7 @@ import { LeftoverFormatBrowseStrip } from '../components/ReportCatalog/LeftoverF
 import { LeftoverFormatAutoPdf } from '../components/ReportCatalog/LeftoverFormatAutoPdf';
 import { CatalogReportAutoPdf } from '../components/ReportCatalog/CatalogReportAutoPdf';
 import { ReportGeneratePanel } from '../components/ReportCatalog/ReportGeneratePanel';
+import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggle';
 import { Button } from '@/components/ui/Button';
 import {
   useImportReportTemplates,
@@ -1218,13 +1219,25 @@ export default function ReportCatalogPage() {
       ) : null}
 
       {selected ? (
-        <ReportGeneratePanel
-          template={selected}
-          context={reportContext}
-          discoveryMode
-          omitClientPreview
-          onClose={() => patchParams({ code: null }, false)}
-        />
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--color-neutral-200)] bg-white px-4 py-2.5">
+            <p className="min-w-0 truncate text-sm font-medium text-[var(--color-neutral-800)]">
+              {selected.name}
+            </p>
+            <FavouriteToggle
+              kind="report_template"
+              targetKey={selected.code}
+              label={selected.name}
+            />
+          </div>
+          <ReportGeneratePanel
+            template={selected}
+            context={reportContext}
+            discoveryMode
+            omitClientPreview
+            onClose={() => patchParams({ code: null }, false)}
+          />
+        </div>
       ) : null}
 
       {(jobId || quotationId || invoiceId || partyId) && (

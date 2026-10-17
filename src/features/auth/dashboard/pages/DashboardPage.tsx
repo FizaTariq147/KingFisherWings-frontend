@@ -13,6 +13,7 @@ import { ActiveShipmentsPanel } from '../components/ActiveShipmentsPanel';
 import { PendingQuotationsPanel, TodaysTasksPanel } from '../components/PendingQuotationsPanel';
 import { RecentInvoicesPanel, ReceivablesAgingPanel } from '../components/RecentInvoicesPanel';
 import { RevenueVsTargetPanel, TradeLanePanel } from '../components/RevenuePanels';
+import { FavouritesPanel } from '../components/FavouritesPanel';
 import { LiveActivityPanel, ReportsHubPanel, TeamWorkloadPanel } from '../components/LowerPanels';
 import { useDashboardPeriod } from '../hooks/useDashboardPeriod';
 import { useCrmReportQuery } from '../hooks/useCrmReportQuery';
@@ -259,6 +260,7 @@ export function DashboardPage() {
           />
         </div>
 
+        <FavouritesPanel />
         <ReportsHubPanel />
       </div>
     </div>

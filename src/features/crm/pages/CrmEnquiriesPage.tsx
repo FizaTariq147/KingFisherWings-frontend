@@ -167,25 +167,10 @@ export default function CrmEnquiriesPage() {
                         <OperationTypeBadge code={x.service_type} />
                       </td>
                       <td className={tdClass}>
-                        {x.party_name ||
-                          (x.party_id ? (
-                            <Link
-                              className="text-[var(--fresa-action,#0A2942)] hover:underline"
-                              to={`/parties/${x.party_id}`}
-                            >
-                              {x.party_id.slice(0, 8)}
-                            </Link>
-                          ) : (
-                            x.lead_name || '—'
-                          ))}
+                        {x.party_name || x.lead_name || '—'}
                       </td>
                       <td className={tdClass}>
-                        {[
-                          x.origin_port_name ||
-                            (x.origin_port_id ? x.origin_port_id.slice(0, 6) : null),
-                          x.dest_port_name ||
-                            (x.dest_port_id ? x.dest_port_id.slice(0, 6) : null),
-                        ]
+                        {[x.origin_port_name, x.dest_port_name]
                           .filter(Boolean)
                           .join(' → ') || '—'}
                       </td>

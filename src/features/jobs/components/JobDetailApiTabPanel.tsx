@@ -1,5 +1,6 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { OpsContinuumPanel } from '@/features/ops-activity';
 import { isUuid } from '@/lib/isUuid';
 import { erpTable } from '@/lib/erpTypography';
 import { Button } from '@/components/ui/Button';
@@ -116,6 +117,24 @@ function isHiddenDetailKey(key: string): boolean {
   return HIDDEN_DETAIL_KEYS.has(normalizeDetailKey(key));
 }
 
+function nestedEntityLabel(value: unknown): string {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return '';
+  const row = value as Record<string, unknown>;
+  const codeRaw = row.code ?? row.un_locode ?? row.unLocode;
+  const nameRaw =
+    row.name ?? row.display_name ?? row.displayName ?? row.full_name ?? row.fullName;
+  const code =
+    typeof codeRaw === 'string' && codeRaw.trim() && !isUuid(codeRaw.trim())
+      ? codeRaw.trim()
+      : '';
+  const name =
+    typeof nameRaw === 'string' && nameRaw.trim() && !isUuid(nameRaw.trim())
+      ? nameRaw.trim()
+      : '';
+  if (code && name) return `${code} — ${name}`;
+  return name || code;
+}
+
 function siblingNameLabel(key: string, data: Record<string, unknown>): string {
   const base = key.replace(/(_id|_uuid)$/i, '');
   const name = data[`${base}_name`] ?? data[`${base}_label`];
@@ -126,7 +145,7 @@ function siblingNameLabel(key: string, data: Record<string, unknown>): string {
     }
     return name.trim();
   }
-  return '';
+  return nestedEntityLabel(data[base]);
 }
 
 /**
@@ -214,6 +233,18 @@ function FormFieldsFromPayload({
       continue;
     }
     if (value != null && typeof value === 'object') {
+      const entityLabel = nestedEntityLabel(value);
+      if (entityLabel) {
+        if (keys.includes(`${key}_id`) || keys.includes(`${key}_uuid`)) {
+          skip.add(`${key}_id`);
+          skip.add(`${key}_uuid`);
+          skip.add(`${key}_name`);
+          skip.add(`${key}_label`);
+          skip.add(`${key}_code`);
+        }
+        rows.push({ key, label: humanizeFieldLabel(key), value: entityLabel });
+        continue;
+      }
       nested.push({ key, label: humanizeFieldLabel(key), value });
       continue;
     }
@@ -221,10 +252,12 @@ function FormFieldsFromPayload({
     if (typeof value === 'string' && isUuid(value.trim())) continue;
     if (lower.endsWith('_name') || lower.endsWith('_label') || lower.endsWith('_code')) {
       // Prefer showing once via the matching *_id branch above when present.
-      const idKey = `${key.replace(/(_name|_label|_code)$/i, '')}_id`;
-      if (keys.includes(idKey) || keys.includes(`${key.replace(/(_name|_label|_code)$/i, '')}_uuid`)) {
+      const base = key.replace(/(_name|_label|_code)$/i, '');
+      const idKey = `${base}_id`;
+      if (keys.includes(idKey) || keys.includes(`${base}_uuid`)) {
         continue;
       }
+      if (nestedEntityLabel(rec[base])) continue;
     }
 
     rows.push({ key, label: humanizeFieldLabel(key), value: formatFormScalar(value) });
@@ -251,43 +284,6 @@ function FormFieldsFromPayload({
       ))}
     </div>
   );
-}
-
-/** True when detail/{tab} has something FormFieldsFromPayload would actually render. */
-function detailPayloadHasRenderableFields(data: unknown, depth = 0): boolean {
-  if (data == null) return false;
-  if (typeof data !== 'object') return true;
-  if (Array.isArray(data)) {
-    if (!data.length) return false;
-    return data.some((item) => detailPayloadHasRenderableFields(item, depth + 1));
-  }
-  const rec = data as Record<string, unknown>;
-  const keys = Object.keys(rec);
-  const skip = new Set<string>();
-  for (const key of keys) {
-    if (skip.has(key) || isHiddenDetailKey(key)) continue;
-    const lower = key.toLowerCase();
-    if (lower.endsWith('_id') || lower.endsWith('_uuid')) {
-      if (siblingNameLabel(key, rec)) return true;
-      continue;
-    }
-    const value = rec[key];
-    if (Array.isArray(value)) {
-      if (value.length && detailPayloadHasRenderableFields(value, depth + 1)) return true;
-      continue;
-    }
-    if (value != null && typeof value === 'object') {
-      if (detailPayloadHasRenderableFields(value, depth + 1)) return true;
-      continue;
-    }
-    if (typeof value === 'string' && isUuid(value.trim())) continue;
-    if (lower.endsWith('_name') || lower.endsWith('_label') || lower.endsWith('_code')) {
-      const base = key.replace(/(_name|_label|_code)$/i, '');
-      if (keys.includes(`${base}_id`) || keys.includes(`${base}_uuid`)) continue;
-    }
-    if (value != null && value !== '') return true;
-  }
-  return false;
 }
 
 /** Full GET /jobs/:id/detail/:tab payload as form fields (never raw JSON). */
@@ -342,52 +338,17 @@ function CompleteDetailTabPayload({
   );
 }
 
-function JobHistoryPanel({
-  jobId,
-  tabData,
-}: {
-  jobId: string;
-  tabData?: Record<string, unknown> | null;
-}) {
-  const rows = Array.isArray(tabData?.items)
-    ? (tabData!.items as unknown[])
-    : Array.isArray(tabData?.history)
-      ? (tabData!.history as unknown[])
-      : Array.isArray(tabData?.entries)
-        ? (tabData!.entries as unknown[])
-        : null;
-
-  if (rows?.length) {
-    return (
-      <ul className="space-y-2 text-[13px]">
-        {rows.map((row, i) => {
-          const rec =
-            row && typeof row === 'object' && !Array.isArray(row)
-              ? (row as Record<string, unknown>)
-              : null;
-          const label =
-            (rec &&
-              String(
-                rec.summary ?? rec.message ?? rec.action ?? rec.event ?? rec.status ?? '',
-              ).trim()) ||
-            (typeof row === 'string' ? row : 'History entry');
-          const when = rec
-            ? String(rec.created_at ?? rec.timestamp ?? rec.at ?? '').trim()
-            : '';
-          return (
-            <li
-              key={`${jobId}-hist-${i}`}
-              className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2"
-            >
-              <p className="font-medium text-[#0f172a]">{label}</p>
-              {when ? <p className="mt-0.5 text-[12px] text-[#64748b]">{when}</p> : null}
-            </li>
-          );
-        })}
-      </ul>
-    );
-  }
-  return null;
+/** History tab — GET /ops/JOB/:id/history (same source as Ops continuum History). */
+function JobHistoryPanel({ jobId }: { jobId: string }) {
+  return (
+    <OpsContinuumPanel
+      entityType="JOB"
+      entityId={jobId}
+      defaultTab="history"
+      hideTabBar
+      compact
+    />
+  );
 }
 
 function shipmentRowsFromUnknown(raw: unknown): Record<string, unknown>[] {
@@ -700,7 +661,7 @@ function JobShowAllPanel({
 
 /**
  * Interactive workspace for known DETAIL_TABS keys.
- * Every tab also loads GET /jobs/:id/detail/:tab (CompleteDetailTabPayload / Show All).
+ * Known tabs render dedicated UI only — no raw API envelope underneath.
  */
 function InteractiveTabBody({
   tabKey,
@@ -743,7 +704,7 @@ function InteractiveTabBody({
     return <JobChargesPanel job={job} onChanged={onChanged} />;
   }
   if (key === 'history') {
-    return <JobHistoryPanel jobId={job.id} tabData={tabData} />;
+    return <JobHistoryPanel jobId={job.id} />;
   }
   if (key === 'booking_form') {
     return <JobOpsPanel job={job} />;
@@ -795,17 +756,8 @@ function SingleJobDetailTabPanel({
     'shipping_bill_boe',
   ].includes(apiKey);
 
-  // Shipments tab uses GET /jobs/:id/shipments — never mirror empty detail/shipments.
-  // Other interactive tabs: only show detail/{tab} when it has real fields (not "No fields").
-  const showApiEnvelope =
-    apiKey === 'shipments' ||
-    apiKey === 'planned_container' ||
-    apiKey === 'actual_container'
-      ? false
-      : hasInteractive
-        ? tabQuery.isError ||
-          (!tabQuery.isLoading && detailPayloadHasRenderableFields(tabQuery.data))
-        : true;
+  // Interactive tabs own the UI — never dump raw detail/{tab} API envelopes underneath.
+  const showApiEnvelope = !hasInteractive;
 
   return (
     <div className="space-y-4">
@@ -819,9 +771,9 @@ function SingleJobDetailTabPanel({
         <CompleteDetailTabPayload
           tab={apiKey}
           data={tabQuery.data}
-          isLoading={!hasInteractive && tabQuery.isLoading}
+          isLoading={tabQuery.isLoading}
           isError={tabQuery.isError}
-          title={hasInteractive ? `API · ${jobDetailTabLabel(apiKey)}` : jobDetailTabLabel(apiKey)}
+          title={jobDetailTabLabel(apiKey)}
         />
       ) : null}
     </div>

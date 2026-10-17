@@ -957,6 +957,10 @@ export interface Job {
   salesperson_id?: string;
   salesperson_name?: string;
   branch_name?: string;
+  company_name?: string;
+  department_name?: string;
+  billing_party_name?: string;
+  ops_user_name?: string;
   ops_user_id?: string;
   origin_port_id?: string;
   dest_port_id?: string;

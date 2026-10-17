@@ -720,17 +720,29 @@ export const shipmentService = {
     }
   },
 
-  /** GET /shipments/:id/edi/submissions/:submissionId/download */
-  async downloadEdiSubmission(id: string, submissionId: string): Promise<unknown> {
+  /** GET /shipments/:id/edi/submissions/:submissionId/download — file blob or download-URL JSON. */
+  async downloadEdiSubmission(id: string, submissionId: string): Promise<Blob | unknown> {
     assertId(id);
     if (!submissionId.trim()) throw new Error('Invalid EDI submission id.');
     try {
+      const { resolveEdiDownloadPayload } = await import(
+        '@/features/shared/edi/normalizeEdi'
+      );
       const res = await withGatewayRetry(() =>
         axiosInstance.get(
           SHIPMENT_API.ediSubmissionDownload(id, submissionId.trim()),
+          {
+            responseType: 'blob',
+            headers: {
+              Accept:
+                'application/xml, text/xml, application/edi-x12, text/plain, application/json, */*',
+            },
+          },
         ),
       );
-      return unwrapShipmentPayload(res.data) ?? res.data;
+      const blob = res.data as Blob;
+      const contentType = String(res.headers?.['content-type'] ?? blob.type ?? '');
+      return resolveEdiDownloadPayload(blob, contentType);
     } catch (error) {
       throw formatAxiosError(error);
     }

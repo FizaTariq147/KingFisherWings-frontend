@@ -282,22 +282,22 @@ code, kbd, pre, samp {
   display: none;               /* Chrome, Safari, new Edge */
 }
 
-/* Detail form / tabs only — reserve space for fixed Ops continuum rail (responsive) */
+/* Detail form only — slim pad for compact Ops continuum icon rail */
 .kf-ops-continuum-form-pad {
   box-sizing: border-box;
   max-width: 100%;
-  padding-bottom: 5.5rem; /* mobile: rail sits at bottom */
+  padding-bottom: 4.5rem; /* mobile: rail sits at bottom */
 }
 @media (min-width: 640px) {
   .kf-ops-continuum-form-pad {
     padding-bottom: 0;
-    /* shrink form width; clamp keeps it usable on tablet → desktop */
-    padding-right: clamp(4.75rem, 11vw, 7rem);
+    /* Compact icon rail (~2.75rem) — only detail summary shrinks; Actions/tabs stay full width */
+    padding-right: 3.25rem;
   }
 }
 @media (min-width: 1280px) {
   .kf-ops-continuum-form-pad {
-    padding-right: 7rem;
+    padding-right: 3.5rem;
   }
 }
 

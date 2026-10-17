@@ -759,41 +759,6 @@ export default function QuotationDetailPage() {
                 )}
               </div>
             )}
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <FclContinuumRail steps={continuumSteps} className="flex-1" />
-              <FavouriteToggle
-                kind="quotation"
-                targetKey={quotation.id}
-                label={title}
-              />
-            </div>
-            <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-[13px]">
-              <span className="font-semibold text-[var(--fresa-header-text,#0A2942)]">Related: </span>
-              {enquiryHref ? (
-                <Link className="mr-3 text-[var(--fresa-action,#0A2942)] hover:underline" to={enquiryHref}>
-                  Enquiry
-                </Link>
-              ) : null}
-              {shipmentHref ? (
-                <Link className="mr-3 text-[var(--fresa-action,#0A2942)] hover:underline" to={shipmentHref}>
-                  Shipment No:{' '}
-                  {generatedLink?.kind === 'shipment'
-                    ? generatedLink.label
-                    : quotation.shipment_number?.trim() || quotation.shipment_id?.slice(0, 8)}
-                </Link>
-              ) : null}
-              {jobHref ? (
-                <Link className="mr-3 text-[var(--fresa-action,#0A2942)] hover:underline" to={jobHref}>
-                  Job No:{' '}
-                  {generatedLink?.kind === 'job'
-                    ? generatedLink.label
-                    : quotation.job_number?.trim() || quotation.job_id?.slice(0, 8)}
-                </Link>
-              ) : null}
-              {!enquiryHref && !shipmentHref && !jobHref ? (
-                <span className="text-[#64748b]">No linked records yet</span>
-              ) : null}
-            </div>
             {quotation.job_type === 'CUSTOMS_CLEARANCE' ? (
               <div className="rounded-lg border border-teal-200 bg-teal-50/80 p-4 text-sm text-teal-900">
                 <p className="font-medium">Customs Clearance quote</p>
@@ -949,6 +914,45 @@ export default function QuotationDetailPage() {
             <FresaReadonlyField label="Valid until" value={quotation.valid_until} />
           </div>
         }
+        afterDetail={
+          <>
+            <div className="flex flex-wrap items-center gap-2">
+              <FclContinuumRail steps={continuumSteps} />
+              <FavouriteToggle
+                kind="quotation"
+                targetKey={quotation.id}
+                label={title}
+              />
+            </div>
+            <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-[13px]">
+              <span className="font-semibold text-[var(--fresa-header-text,#0A2942)]">Related: </span>
+              {enquiryHref ? (
+                <Link className="mr-3 text-[var(--fresa-action,#0A2942)] hover:underline" to={enquiryHref}>
+                  Enquiry
+                </Link>
+              ) : null}
+              {shipmentHref ? (
+                <Link className="mr-3 text-[var(--fresa-action,#0A2942)] hover:underline" to={shipmentHref}>
+                  Shipment No:{' '}
+                  {generatedLink?.kind === 'shipment'
+                    ? generatedLink.label
+                    : quotation.shipment_number?.trim() || quotation.shipment_id?.slice(0, 8)}
+                </Link>
+              ) : null}
+              {jobHref ? (
+                <Link className="mr-3 text-[var(--fresa-action,#0A2942)] hover:underline" to={jobHref}>
+                  Job No:{' '}
+                  {generatedLink?.kind === 'job'
+                    ? generatedLink.label
+                    : quotation.job_number?.trim() || quotation.job_id?.slice(0, 8)}
+                </Link>
+              ) : null}
+              {!enquiryHref && !shipmentHref && !jobHref ? (
+                <span className="text-[#64748b]">No linked records yet</span>
+              ) : null}
+            </div>
+          </>
+        }
         toolbarLabel="Generation actions"
         toolbar={
           <>
@@ -1022,7 +1026,7 @@ export default function QuotationDetailPage() {
               <Button
                 size="sm"
                 type="button"
-                variant="primary"
+                variant="create"
                 leftIcon={<Send />}
                 disabled={pending}
                 onClick={() => requestConfirm('submit', quotation)}
@@ -1034,7 +1038,7 @@ export default function QuotationDetailPage() {
               <Button
                 size="sm"
                 type="button"
-                variant="edit"
+                variant="warning"
                 leftIcon={<CheckCircle2 />}
                 disabled={pending}
                 onClick={() => requestConfirm('verify', quotation)}
@@ -1083,7 +1087,7 @@ export default function QuotationDetailPage() {
               <Button
                 size="sm"
                 type="button"
-                variant="primary"
+                variant="report"
                 leftIcon={<Send />}
                 disabled={pending}
                 onClick={() => requestConfirm('send', quotation)}
@@ -1141,7 +1145,7 @@ export default function QuotationDetailPage() {
             <Button
               size="sm"
               type="button"
-              variant="edit"
+              variant="create"
               leftIcon={<Send />}
               disabled={pending}
               onClick={() => setEmailOpen(true)}
