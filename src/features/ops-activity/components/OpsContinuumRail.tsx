@@ -32,7 +32,7 @@ const TAB_META: Record<
   comments: {
     label: 'Comments',
     Icon: MessageSquare,
-    style: { backgroundColor: '#0EA5E9', borderColor: '#0284C7', color: '#FFFFFF' },
+    style: { backgroundColor: '#14B8A6', borderColor: '#0D9488', color: '#FFFFFF' },
   },
   'follow-ups': {
     label: 'Follow-ups',
@@ -137,9 +137,9 @@ export function OpsContinuumRail({
     <>
       <aside
         aria-label="Ops continuum"
-        className={`pointer-events-none fixed bottom-6 right-3 z-40 flex flex-col items-end gap-2 sm:bottom-auto sm:top-28 ${className}`}
+        className={`pointer-events-none fixed bottom-6 right-2 z-40 flex flex-col items-end gap-2 sm:bottom-auto sm:top-28 ${className}`}
       >
-        <div className="pointer-events-auto flex max-h-[min(70vh,32rem)] flex-col gap-1.5 overflow-y-auto rounded-md border border-[var(--fresa-border,#C9D3DF)] bg-white/95 p-1.5 shadow-md backdrop-blur-sm">
+        <div className="pointer-events-auto flex max-h-[min(70vh,32rem)] w-11 flex-col gap-1 overflow-y-auto rounded-md border border-[var(--fresa-border,#C9D3DF)] bg-white/95 p-1 shadow-md backdrop-blur-sm">
           {tabs.map((tab) => {
             const meta = TAB_META[tab];
             const Icon = meta.Icon;
@@ -151,7 +151,7 @@ export function OpsContinuumRail({
                 type="button"
                 title={`${meta.label}${count != null ? ` (${count})` : ''}`}
                 aria-label={`${meta.label}${count != null ? `, ${count}` : ''}`}
-                className="relative flex w-[4.75rem] flex-col items-center gap-0.5 rounded-sm border px-1 py-1.5 text-white shadow-sm transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
+                className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border text-white shadow-sm transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
                 style={{
                   ...meta.style,
                   borderWidth: 1,
@@ -160,13 +160,10 @@ export function OpsContinuumRail({
                 }}
                 onClick={() => setActive(tab)}
               >
-                <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-white px-1 text-[9px] font-bold leading-none text-[var(--fresa-header-text,#0A2942)] shadow-sm ring-1 ring-black/10">
+                <span className="absolute -right-1 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-white px-0.5 text-[8px] font-bold leading-none text-[var(--fresa-header-text,#0A2942)] shadow-sm ring-1 ring-black/10">
                   {countLabel}
                 </span>
-                <Icon className="h-4 w-4 shrink-0" aria-hidden />
-                <span className="max-w-full truncate text-[9px] font-semibold leading-tight tracking-wide">
-                  {meta.label}
-                </span>
+                <Icon className="h-5 w-5 shrink-0" aria-hidden />
               </button>
             );
           })}

@@ -6,7 +6,10 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
+import { PartyForm } from '@/features/parties/components/PartyForm';
 import { useCreateParty, useParties } from '@/features/parties/hooks/useParties';
+import { partyVendorService } from '@/features/parties/services/partyVendor.service';
+import type { CreatePartyFormValues } from '@/features/parties/types/party.types';
 import { NegotiationPricingCard } from '@/features/quotations/components/NegotiationPricingCard';
 import {
   getNegotiationSettlement,
@@ -53,12 +56,15 @@ function offerStatusVariant(
 function StaffOfferRow({
   jobId,
   offer,
+  vendorDisplayName,
   busy,
   onBusyError,
   onBusySuccess,
 }: {
   jobId: string;
   offer: VendorJobOffer;
+  /** Resolved party name when API only returns vendor_party_id. */
+  vendorDisplayName?: string;
   busy: boolean;
   onBusyError: (msg: string) => void;
   onBusySuccess: (msg: string) => void;
@@ -112,12 +118,22 @@ function StaffOfferRow({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="min-w-0">
           <div className="text-sm font-semibold truncate">
-            {offer.vendorPartyName || offer.vendorPartyId || offer.id}
+            {vendorDisplayName ||
+              (offer.vendorPartyName && !isUuid(offer.vendorPartyName)
+                ? offer.vendorPartyName
+                : null) ||
+              'Vendor offer'}
           </div>
           <div className="text-xs text-[var(--color-neutral-500)]">
             {[
               formatVendorMoney(offer.costTotal ?? offer.totalAmount, offer.currencyCode),
-              offer.updatedAt ? `Updated ${offer.updatedAt}` : null,
+              offer.updatedAt
+                ? `Updated ${
+                    Number.isFinite(Date.parse(offer.updatedAt))
+                      ? new Date(offer.updatedAt).toLocaleString()
+                      : offer.updatedAt
+                  }`
+                : null,
             ]
               .filter(Boolean)
               .join(' · ')}
@@ -147,7 +163,11 @@ function StaffOfferRow({
         }}
       />
 
-      <VendorOfferNegotiationTimeline events={events} isLoading={timelineLoading} />
+      <VendorOfferNegotiationTimeline
+        events={events}
+        isLoading={timelineLoading}
+        currencyCode={offer.currencyCode}
+      />
 
       {closed ? (
         <p className="text-xs text-[var(--color-neutral-600)]">
@@ -357,6 +377,12 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
     party_type: 'SUPPLIER',
     order: 'asc',
   });
+  /** Broader lookup so offer rows resolve names even if party type differs. */
+  const allPartiesLookupQuery = useParties({
+    page: 1,
+    limit: 200,
+    order: 'asc',
+  });
   const vendorPartiesResult = vendorPartiesQuery.data;
   const supplierPartiesResult = supplierPartiesQuery.data;
 
@@ -367,7 +393,7 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
       byId.set(p.id, {
         id: p.id,
         kind: 'VENDOR',
-        label: [p.code, p.name, 'Vendor'].filter(Boolean).join(' — ') || p.id,
+        label: [p.code, p.name].filter(Boolean).join(' — ') || p.name || p.id,
       });
     }
     for (const p of supplierPartiesResult?.parties ?? []) {
@@ -375,7 +401,7 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
       byId.set(p.id, {
         id: p.id,
         kind: 'SUPPLIER',
-        label: [p.code, p.name, 'Supplier'].filter(Boolean).join(' — ') || p.id,
+        label: [p.code, p.name].filter(Boolean).join(' — ') || p.name || p.id,
       });
     }
     return Array.from(byId.values()).sort((a, b) => {
@@ -390,11 +416,28 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
   const [msg, setMsg] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [addPartyOpen, setAddPartyOpen] = useState(false);
-  const [newPartyName, setNewPartyName] = useState('');
-  const [newPartyCode, setNewPartyCode] = useState('');
-  const [newPartyType, setNewPartyType] = useState<'VENDOR' | 'SUPPLIER'>('VENDOR');
+  const [portalInvitePending, setPortalInvitePending] = useState(false);
+  const [tempPortalPassword, setTempPortalPassword] = useState<string | null>(null);
+  const [partyFormKey, setPartyFormKey] = useState(0);
 
-  const busy = passToVendor.isPending || isFetching || createParty.isPending;
+  const partyById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const p of allPartiesLookupQuery.data?.parties ?? []) {
+      if (!isUuid(p.id)) continue;
+      const label = [p.code, p.name].filter(Boolean).join(' — ') || p.name;
+      if (label && !isUuid(label)) map.set(p.id, label);
+    }
+    for (const p of vendorParties) {
+      if (!map.has(p.id)) map.set(p.id, p.label);
+    }
+    return map;
+  }, [allPartiesLookupQuery.data?.parties, vendorParties]);
+
+  const busy =
+    passToVendor.isPending ||
+    isFetching ||
+    createParty.isPending ||
+    portalInvitePending;
 
   const handlePass = () => {
     if (!isUuid(vendorPartyId)) {
@@ -432,38 +475,61 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
       .catch((err) => setActionError(getServerErrorMessage(err)));
   };
 
-  const submitNewParty = () => {
-    const name = newPartyName.trim();
-    if (name.length < 2) {
-      setActionError('Enter a vendor party name (min 2 characters).');
-      return;
-    }
-    const code =
-      newPartyCode.trim() ||
-      name
-        .toUpperCase()
-        .replace(/[^A-Z0-9]+/g, '')
-        .slice(0, 12) ||
-      `V${Date.now().toString().slice(-8)}`;
+  const closeAddPartyModal = () => {
+    if (createParty.isPending || portalInvitePending) return;
+    setAddPartyOpen(false);
+    setTempPortalPassword(null);
+    setPartyFormKey((k) => k + 1);
+  };
+
+  const handleCreatePartyFromModal = async (
+    values: CreatePartyFormValues,
+  ) => {
     setActionError(null);
-    void createParty
-      .mutateAsync({
-        party_type: newPartyType,
-        name,
-        code,
-        currency_code: currencyCode?.trim() || 'AED',
-        is_active: true,
-      })
-      .then(async (party) => {
-        setVendorPartyId(party.id);
-        setAddPartyOpen(false);
-        setMsg(`Vendor party “${party.name}” created.`);
-        await Promise.all([
-          vendorPartiesQuery.refetch(),
-          supplierPartiesQuery.refetch(),
-        ]);
-      })
-      .catch((err) => setActionError(getServerErrorMessage(err)));
+    setTempPortalPassword(null);
+    const party = await createParty.mutateAsync(values);
+    setVendorPartyId(party.id);
+
+    let portalNote = '';
+    let tempPw: string | null = null;
+    const inviteEmail = String(values.email ?? '').trim().toLowerCase();
+    if (values.portal_access && inviteEmail) {
+      setPortalInvitePending(true);
+      try {
+        const created = await partyVendorService.createUser(party.id, {
+          party_id: party.id,
+          email: inviteEmail,
+          full_name: party.name,
+          phone: values.phone?.trim() || undefined,
+          send_email: true,
+          invite_mode: true,
+        });
+        if (created.temporaryPassword) {
+          tempPw = created.temporaryPassword;
+          portalNote = ' Vendor portal invite created.';
+        } else {
+          portalNote = ' Vendor portal invite sent.';
+        }
+      } catch (err) {
+        portalNote = ` Party created, but portal invite failed: ${getServerErrorMessage(err)}`;
+      } finally {
+        setPortalInvitePending(false);
+      }
+    }
+
+    setMsg(`Vendor party “${party.name}” created.${portalNote}`);
+    await Promise.all([
+      vendorPartiesQuery.refetch(),
+      supplierPartiesQuery.refetch(),
+      allPartiesLookupQuery.refetch(),
+    ]);
+
+    if (tempPw) {
+      setTempPortalPassword(tempPw);
+    } else {
+      setAddPartyOpen(false);
+      setPartyFormKey((k) => k + 1);
+    }
   };
 
   return (
@@ -477,67 +543,64 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
 
       <Modal
         open={addPartyOpen}
-        size="md"
-        title="Add vendor party"
-        onClose={() => !createParty.isPending && setAddPartyOpen(false)}
+        size="full"
+        title="Create party"
+        onClose={closeAddPartyModal}
         footer={
-          <>
-            <Button
-              type="button"
-              size="sm"
-              variant="secondary"
-              disabled={createParty.isPending}
-              onClick={() => setAddPartyOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant="create"
-              disabled={createParty.isPending || newPartyName.trim().length < 2}
-              onClick={submitNewParty}
-            >
-              {createParty.isPending ? 'Creating…' : 'Create party'}
-            </Button>
-          </>
+          tempPortalPassword ? (
+            <div className="flex justify-end">
+              <Button type="button" size="sm" variant="secondary" onClick={closeAddPartyModal}>
+                Done
+              </Button>
+            </div>
+          ) : undefined
         }
       >
-        <div className="space-y-3">
-          <p className="text-xs text-[var(--color-neutral-500)]">
-            Creates via <code className="text-[10px]">POST /parties</code>, then selects the
-            new party for this offer.
-          </p>
-          <label className="block space-y-1">
-            <span className="text-xs font-medium text-[var(--color-neutral-600)]">
-              Party type
-            </span>
-            <select
-              className="w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
-              value={newPartyType}
-              onChange={(e) =>
-                setNewPartyType(e.target.value === 'SUPPLIER' ? 'SUPPLIER' : 'VENDOR')
-              }
-              disabled={createParty.isPending}
+        <div className="max-h-[min(78vh,720px)] space-y-3 overflow-y-auto pr-1">
+          {tempPortalPassword ? (
+            <div
+              role="status"
+              className="rounded-md border border-[var(--color-secondary-100)] bg-[var(--color-secondary-50)] px-3 py-2 text-sm"
             >
-              <option value="VENDOR">Vendor</option>
-              <option value="SUPPLIER">Supplier</option>
-            </select>
-          </label>
-          <Input
-            label="Name"
-            value={newPartyName}
-            onChange={(e) => setNewPartyName(e.target.value)}
-            disabled={createParty.isPending}
-            placeholder="Vendor company name"
-          />
-          <Input
-            label="Code (optional)"
-            value={newPartyCode}
-            onChange={(e) => setNewPartyCode(e.target.value)}
-            disabled={createParty.isPending}
-            placeholder="Auto from name if blank"
-          />
+              Temporary vendor portal password (share once):{' '}
+              <span className="font-mono font-semibold">{tempPortalPassword}</span>
+              <button
+                type="button"
+                className="ml-3 text-xs underline text-[var(--color-primary)]"
+                onClick={() => void navigator.clipboard.writeText(tempPortalPassword)}
+              >
+                Copy
+              </button>
+            </div>
+          ) : (
+            <>
+              <p className="text-xs text-[var(--color-neutral-500)]">
+                Same create-party wizard as Parties. On save, the new party is selected for this
+                vendor offer. Enable <strong>Portal access</strong> and set an email to invite a
+                vendor portal login.
+              </p>
+              <PartyForm
+                key={partyFormKey}
+                mode="create"
+                layout="wizard"
+                isSubmitting={createParty.isPending || portalInvitePending}
+                defaultValues={{
+                  party_type: 'VENDOR',
+                  currency_code: currencyCode?.trim() || 'AED',
+                  portal_access: true,
+                }}
+                onCancel={closeAddPartyModal}
+                onSubmit={async (values) => {
+                  try {
+                    await handleCreatePartyFromModal(values as CreatePartyFormValues);
+                  } catch (err) {
+                    setActionError(getServerErrorMessage(err));
+                    throw err;
+                  }
+                }}
+              />
+            </>
+          )}
         </div>
       </Modal>
 
@@ -580,9 +643,8 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
                 aria-label="Add vendor party"
                 disabled={busy}
                 onClick={() => {
-                  setNewPartyName('');
-                  setNewPartyCode('');
-                  setNewPartyType('VENDOR');
+                  setTempPortalPassword(null);
+                  setPartyFormKey((k) => k + 1);
                   setAddPartyOpen(true);
                 }}
                 className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[var(--color-primary-600)] text-white hover:bg-[var(--color-primary-700)] disabled:opacity-50"
@@ -591,17 +653,17 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
               </button>
             </div>
             <p className="text-[11px] text-[var(--color-neutral-500)]">
-              Need a full party form?{' '}
+              Use + for the create-party wizard in this panel, or{' '}
               <Link
                 className="font-medium underline"
                 to="/parties/new"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Open create party
+                open Parties
               </Link>
-            </p>
-          </div>
+              .
+            </p>          </div>
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[var(--color-neutral-600)]">
               Vendor price / cost offer{currencyCode ? ` (${currencyCode})` : ''}
@@ -656,16 +718,24 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
               No vendor offers yet. Pass this job with a seeded cost to start negotiation.
             </p>
           ) : (
-            offers.map((offer) => (
-              <StaffOfferRow
-                key={offer.id}
-                jobId={jobId}
-                offer={offer}
-                busy={busy}
-                onBusyError={setActionError}
-                onBusySuccess={setMsg}
-              />
-            ))
+            offers.map((offer) => {
+              const resolvedName =
+                (offer.vendorPartyName && !isUuid(offer.vendorPartyName)
+                  ? offer.vendorPartyName
+                  : null) ||
+                (offer.vendorPartyId ? partyById.get(offer.vendorPartyId) : undefined);
+              return (
+                <StaffOfferRow
+                  key={offer.id}
+                  jobId={jobId}
+                  offer={offer}
+                  vendorDisplayName={resolvedName}
+                  busy={busy}
+                  onBusyError={setActionError}
+                  onBusySuccess={setMsg}
+                />
+              );
+            })
           )}
           <Button
             type="button"

@@ -7,6 +7,7 @@ import { CRM_API } from '../api/crm.api';
 import type { CreateEnquiryDto, Enquiry, EnquiryListParams, ListResult, UpdateEnquiryDto } from '../types/crm.types';
 import { normalizeEnquiry, normalizeMany } from '../utils/normalizeCrm';
 import { asRecord, formatAxiosError, normalizeMeta, queryParams, unwrapEntity, unwrapList } from '../utils/crmUnwrap';
+import { enrichEnquiriesWithDisplayNames } from '@/features/customers/utils/resolveCustomerDisplayNames';
 import { prepareCrmPayload } from '../utils/prepareCrmPayload';
 
 /** Dig a related entity id out of generate-* / convert responses. */
@@ -145,7 +146,9 @@ export const crmEnquiriesService = {
         axiosInstance.get(CRM_API.enquiries, { params: queryParams(params) }),
       );
       const raw = unwrapList(res.data, ['enquiries']);
-      const items = normalizeMany(raw.items, normalizeEnquiry);
+      const items = await enrichEnquiriesWithDisplayNames(
+        normalizeMany(raw.items, normalizeEnquiry),
+      );
       return { items, meta: normalizeMeta(raw.meta, items.length, params) };
     } catch (error) {
       throw formatAxiosError(error);

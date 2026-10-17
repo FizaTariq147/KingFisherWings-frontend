@@ -28,14 +28,18 @@ export function useFavouriteCheck(
   enabled = true,
 ) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const apiKind = kind.trim().toLowerCase();
+  /** Reports use stable template `code` (not UUID); entities use UUID target_key. */
+  const keyOk =
+    Boolean(targetKey.trim()) &&
+    (apiKind === 'report' ||
+      apiKind === 'report_template' ||
+      apiKind === 'menu' ||
+      isUuid(targetKey));
   return useQuery({
     queryKey: favouritesKeys.check(kind, targetKey),
     queryFn: () => favouritesService.check(kind, targetKey),
-    enabled:
-      Boolean(accessToken) &&
-      Boolean(kind.trim()) &&
-      isUuid(targetKey) &&
-      enabled,
+    enabled: Boolean(accessToken) && Boolean(kind.trim()) && keyOk && enabled,
   });
 }
 

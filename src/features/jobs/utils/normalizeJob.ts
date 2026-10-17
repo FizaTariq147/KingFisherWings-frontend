@@ -486,6 +486,10 @@ export function normalizeJob(raw: unknown): Job | null {
       pickRelationName(r.consignee ?? r.consignee_party ?? r.consigneeParty) ||
       undefined,
     billing_party_id: pickString(r, 'billing_party_id', 'billingPartyId') || undefined,
+    billing_party_name:
+      pickString(r, 'billing_party_name', 'billingPartyName') ||
+      pickRelationName(r.billing_party ?? r.billingParty) ||
+      undefined,
     agent_id: pickString(r, 'agent_id', 'agentId') || undefined,
     agent_name:
       pickString(r, 'agent_name', 'agentName') ||
@@ -498,7 +502,17 @@ export function normalizeJob(raw: unknown): Job | null {
       undefined,
     branch_name:
       pickString(r, 'branch_name', 'branchName') || pickRelationName(r.branch) || undefined,
+    company_name:
+      pickString(r, 'company_name', 'companyName') || pickRelationName(r.company) || undefined,
+    department_name:
+      pickString(r, 'department_name', 'departmentName') ||
+      pickRelationName(r.department) ||
+      undefined,
     ops_user_id: pickString(r, 'ops_user_id', 'opsUserId') || undefined,
+    ops_user_name:
+      pickString(r, 'ops_user_name', 'opsUserName') ||
+      pickRelationName(r.ops_user ?? r.opsUser) ||
+      undefined,
     origin_port_id: pickString(r, 'origin_port_id', 'originPortId') || undefined,
     dest_port_id: pickString(r, 'dest_port_id', 'destPortId') || undefined,
     origin_port_code:

@@ -7,7 +7,7 @@ import type { JobEdiSubmission, JobEdiTypeOption } from '@/features/jobs/types/j
 import {
   normalizeEdiSubmissions,
   normalizeEdiTypeOptions,
-  openEdiDownload,
+  saveEdiDownload,
 } from './normalizeEdi';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 
@@ -70,10 +70,18 @@ export function GenerateEdiPanel({
     setDownloadingId(row.id);
     try {
       const raw = await onDownload(row.id);
-      openEdiDownload(raw);
-      setMsg(`Download ready for ${row.edi_type || row.id.slice(0, 8)}.`);
+      const fileBase =
+        row.file_name ||
+        `${(row.edi_type || 'edi').toLowerCase()}-${row.id.slice(0, 8)}`;
+      await saveEdiDownload(raw, fileBase);
+      setMsg(`Downloaded ${row.edi_type || 'EDI'} file.`);
     } catch (err) {
-      setError(getErrorMessage(err));
+      const message = getErrorMessage(err);
+      setError(
+        /failed to fetch/i.test(message)
+          ? 'Download failed (network). The EDI file URL could not be reached — retry, or regenerate the EDI.'
+          : message,
+      );
     } finally {
       setDownloadingId(null);
     }

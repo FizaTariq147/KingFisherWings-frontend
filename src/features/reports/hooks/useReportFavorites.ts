@@ -1,47 +1,51 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
+import {
+  useFavouritesList,
+  useFavouritesMutations,
+} from '@/features/favourites/hooks/useFavourites';
 
-const STORAGE_KEY = 'kfg-report-catalog-favorites';
-
-function readFavorites(): string[] {
-  try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
-    return parsed.map(String).filter(Boolean);
-  } catch {
-    return [];
-  }
-}
-
-function writeFavorites(codes: string[]) {
-  try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(codes));
-  } catch {
-    /* ignore quota */
-  }
-}
-
-/** Session-scoped favorites by stable template `code` (works across live + FRESA discovery). */
+/**
+ * Report catalogue favorites via GET/POST /favourites (kind=report_template).
+ * `target_key` is the stable template `code` (not a UUID).
+ */
 export function useReportFavorites() {
-  const [favorites, setFavorites] = useState<string[]>(() => readFavorites());
+  const list = useFavouritesList(true);
+  const { toggle } = useFavouritesMutations();
 
-  useEffect(() => {
-    writeFavorites(favorites);
-  }, [favorites]);
+  const favorites = useMemo(() => {
+    const items = list.data ?? [];
+    return items
+      .filter((f) => {
+        const kind = f.kind.trim().toLowerCase();
+        return kind === 'report_template' || kind === 'report';
+      })
+      .map((f) => f.target_key.trim())
+      .filter(Boolean);
+  }, [list.data]);
 
   const isFavorite = useCallback(
-    (code: string) => favorites.includes(code),
+    (code: string) => favorites.includes(code.trim()),
     [favorites],
   );
 
-  const toggleFavorite = useCallback((code: string) => {
-    const key = code.trim();
-    if (!key) return;
-    setFavorites((prev) =>
-      prev.includes(key) ? prev.filter((c) => c !== key) : [...prev, key],
-    );
-  }, []);
+  const toggleFavorite = useCallback(
+    (code: string, label?: string) => {
+      const key = code.trim();
+      if (!key) return;
+      void toggle.mutateAsync({
+        kind: 'report_template',
+        target_key: key,
+        ...(label?.trim() ? { label: label.trim() } : {}),
+      });
+    },
+    [toggle],
+  );
 
-  return { favorites, isFavorite, toggleFavorite };
+  return {
+    favorites,
+    isFavorite,
+    toggleFavorite,
+    isLoading: list.isLoading,
+    isPending: toggle.isPending,
+  };
 }

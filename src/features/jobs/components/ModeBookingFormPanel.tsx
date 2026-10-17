@@ -35,11 +35,20 @@ import {
   missingMandatoryBookingDocs,
 } from '@/features/booking-documents/constants/bookingDocumentKinds';
 import {
+  extractBookingFormDocuments,
+  mergeJobDocumentsIntoBooking,
+  type BookingFormDocumentMeta,
+} from '@/features/booking-documents/utils/bookingFormDocuments';
+import { useFileDownload } from '@/features/files/hooks/useFileDownload';
+import { useAuthStore } from '@/store/authStore';
+import {
   staffBookingFormApiLabel,
   useStaffBookingForm,
   useStaffBookingFormActions,
 } from '../hooks/useStaffBookingForm';
 import { useJobs } from '../hooks/useJobs';
+import { jobService } from '../services/job.service';
+import { resolveJobDocumentFileUrl } from '../utils/resolveJobDocumentFileUrl';
 import type {
   BookingFormPartyDto,
   BookingFormPartyKind,
@@ -824,7 +833,18 @@ export function ModeBookingFormPanel({
   const query = useStaffBookingForm(jobId, mode);
   const { save, complete, uploadDocument } = useStaffBookingFormActions(jobId, mode);
   const [uploadedDocKinds, setUploadedDocKinds] = useState<Set<string>>(() => new Set());
+  const [docMetaByKind, setDocMetaByKind] = useState<Record<string, BookingFormDocumentMeta>>(
+    {},
+  );
   const [uploadingKind, setUploadingKind] = useState<string | null>(null);
+  const tenantId = useAuthStore((s) => s.user?.tenantId);
+  const { downloadStoredFile } = useFileDownload();
+  const jobDocumentsQuery = useQuery({
+    queryKey: ['jobs', jobId, 'documents', 'booking-form'],
+    queryFn: () => jobService.listDocuments(jobId),
+    enabled: Boolean(jobId),
+    staleTime: 30_000,
+  });
   const { data: containerTypes = [] } = useMasterOptions(
     'container-types',
     MASTER_PATHS['container-types'],
@@ -917,6 +937,21 @@ export function ModeBookingFormPanel({
       overwrite,
       jobTypeOverride: linkedQuote?.job_type || mode,
     });
+
+  useEffect(() => {
+    const fromForm = extractBookingFormDocuments(
+      query.data && typeof query.data === 'object'
+        ? (query.data as Record<string, unknown>)
+        : undefined,
+    );
+    const merged = mergeJobDocumentsIntoBooking(
+      jobDocumentsQuery.data ?? [],
+      fromForm.byKind,
+    );
+    for (const kind of fromForm.kinds) merged.kinds.add(kind);
+    setUploadedDocKinds(merged.kinds);
+    setDocMetaByKind(merged.byKind);
+  }, [query.data, jobDocumentsQuery.data]);
 
   useEffect(() => {
     if (query.data == null) return;
@@ -2455,6 +2490,24 @@ export function ModeBookingFormPanel({
               uploadingKind={uploadingKind}
               disabled={readOnly || save.isPending || complete.isPending}
               requiredKinds={new Set(MANDATORY_BOOKING_DOCUMENT_KINDS)}
+              existingByKind={Object.fromEntries(
+                Object.entries(docMetaByKind).map(([kind, meta]) => {
+                  const url = resolveJobDocumentFileUrl(meta, tenantId);
+                  return [
+                    kind,
+                    {
+                      fileName: meta.file_name,
+                      onDownload: url
+                        ? () => {
+                            void downloadStoredFile(url, {
+                              displayName: meta.file_name || kind,
+                            });
+                          }
+                        : undefined,
+                    },
+                  ];
+                }),
+              )}
               onUpload={async (kind, file) => {
                 setUploadingKind(kind);
                 try {
@@ -2463,6 +2516,14 @@ export function ModeBookingFormPanel({
                     file,
                   });
                   setUploadedDocKinds((prev) => new Set(prev).add(kind));
+                  setDocMetaByKind((prev) => ({
+                    ...prev,
+                    [kind]: {
+                      kind,
+                      file_name: file.name,
+                    },
+                  }));
+                  void jobDocumentsQuery.refetch();
                   setForm((prev) => {
                     const attaches = { ...prev.attaches };
                     if (kind === 'commercial_invoice') attaches.attach_commercial_invoice = true;

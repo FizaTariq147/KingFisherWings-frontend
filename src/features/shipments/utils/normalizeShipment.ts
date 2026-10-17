@@ -155,6 +155,8 @@ export function normalizeShipment(raw: unknown): Shipment | null {
   const job = asRecord(r.job);
   const department = asRecord(r.department);
   const branch = asRecord(r.branch);
+  const company = asRecord(r.company);
+  const salesperson = asRecord(r.salesperson);
 
   const actions =
     normalizeActions(r.actions ?? r.action_flags ?? r.actionFlags) ??
@@ -212,13 +214,37 @@ export function normalizeShipment(raw: unknown): Shipment | null {
       str(r.department_name) ??
       str(r.departmentName) ??
       (department ? str(department.name) : undefined),
+    company_id: pickNestedId(r.company_id, r.companyId, company),
+    company_name:
+      str(r.company_name) ??
+      str(r.companyName) ??
+      (company ? str(company.name) : undefined),
+    salesperson_id: pickNestedId(r.salesperson_id, r.salespersonId, salesperson),
+    salesperson_name:
+      str(r.salesperson_name) ??
+      str(r.salespersonName) ??
+      (salesperson
+        ? str(salesperson.full_name) ??
+          str(salesperson.fullName) ??
+          str(salesperson.name) ??
+          ([str(salesperson.first_name), str(salesperson.last_name)]
+            .filter(Boolean)
+            .join(' ') ||
+            undefined)
+        : undefined),
     branch_id: pickNestedId(r.branch_id, r.branchId, branch),
     branch_name:
       str(r.branch_name) ?? str(r.branchName) ?? (branch ? str(branch.name) : undefined),
     origin_port_id: str(r.origin_port_id) ?? str(r.originPortId),
     dest_port_id: str(r.dest_port_id) ?? str(r.destPortId),
-    origin_port_name: str(r.origin_port_name) ?? str(r.originPortName),
-    dest_port_name: str(r.dest_port_name) ?? str(r.destPortName),
+    origin_port_name:
+      str(r.origin_port_name) ??
+      str(r.originPortName) ??
+      (asRecord(r.origin_port) ? str(asRecord(r.origin_port)!.name) : undefined),
+    dest_port_name:
+      str(r.dest_port_name) ??
+      str(r.destPortName) ??
+      (asRecord(r.dest_port) ? str(asRecord(r.dest_port)!.name) : undefined),
     por: str(r.por) ?? str(r.place_of_receipt) ?? str(r.placeOfReceipt),
     pol: str(r.pol) ?? str(r.port_of_loading) ?? str(r.portOfLoading),
     pod: str(r.pod) ?? str(r.port_of_discharge) ?? str(r.portOfDischarge),

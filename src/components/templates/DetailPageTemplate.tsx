@@ -55,6 +55,8 @@ interface DetailPageTemplateProps {
    */
   detailSection?: ReactNode;
   detailTitle?: string;
+  /** After detail summary (e.g. continuum / related) — before Actions toolbar. */
+  afterDetail?: ReactNode;
   /**
    * Generation / special actions toolbar — rendered below detailSection, above tabs.
    */
@@ -126,6 +128,7 @@ export function DetailPageTemplate({
   banner,
   detailSection,
   detailTitle = 'Detail',
+  afterDetail,
   toolbar,
   toolbarLabel = 'Actions',
   sidebar,
@@ -238,6 +241,8 @@ export function DetailPageTemplate({
           <div className={erpForm.sectionBody}>{detailSection}</div>
         </section>
       ) : null}
+
+      {afterDetail ? <div className="space-y-2.5">{afterDetail}</div> : null}
 
       {/* Actions / generation toolbar — always full width (never continuum-padded) */}
       {toolbar ? (

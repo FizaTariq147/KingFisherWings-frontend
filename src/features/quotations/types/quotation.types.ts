@@ -103,12 +103,14 @@ export interface Quotation {
   /** Raw status from the API before portal-decision overlay — used for polling/gates. */
   api_status?: QuotationStatus;
   company_id?: string;
+  company_name?: string;
   job_type: JobType;
   customer_id: string;
   customer_name?: string;
   salesperson_id?: string;
   salesperson_name?: string;
   branch_id?: string;
+  branch_name?: string;
   department_id?: string;
   department_name?: string;
   carrier_id?: string;

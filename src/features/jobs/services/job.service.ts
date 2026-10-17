@@ -1074,7 +1074,18 @@ export const jobService = {
 
     const isMetaTab = isMetaField;
 
-    const tabKeys = normalizedSiblings.filter((k) => !isShowAll(k) && !isMetaTab(k));
+    /** Skip interactive tabs — their dedicated panels own the UX (not UUID dumps). */
+    const skipShowAllTabs = new Set([
+      'costing',
+      'history',
+      'planned_container',
+      'actual_container',
+      'booking_form',
+      'shipments',
+    ]);
+    const tabKeys = normalizedSiblings.filter(
+      (k) => !isShowAll(k) && !isMetaTab(k) && !skipShowAllTabs.has(k),
+    );
     await Promise.all(
       tabKeys.map(async (tab) => {
         try {
@@ -1730,18 +1741,34 @@ export const jobService = {
     return request(() => axiosInstance.get(JOB_API.ediSubmissions(id)));
   },
 
-  /** GET /jobs/:id/edi/submissions/:submissionId/download */
+  /** GET /jobs/:id/edi/submissions/:submissionId/download — file blob or download-URL JSON. */
   async downloadJobEdiSubmission(
     id: string,
     submissionId: string,
-  ): Promise<unknown> {
+  ): Promise<Blob | unknown> {
     assertId(id);
     if (!isUuid(submissionId) && !submissionId.trim()) {
       throw new Error('Invalid EDI submission id.');
     }
-    return request(() =>
-      axiosInstance.get(JOB_API.ediSubmissionDownload(id, submissionId.trim())),
-    );
+    try {
+      const { resolveEdiDownloadPayload } = await import(
+        '@/features/shared/edi/normalizeEdi'
+      );
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.ediSubmissionDownload(id, submissionId.trim()), {
+          responseType: 'blob',
+          headers: {
+            Accept:
+              'application/xml, text/xml, application/edi-x12, text/plain, application/json, */*',
+          },
+        }),
+      );
+      const blob = res.data as Blob;
+      const contentType = String(res.headers?.['content-type'] ?? blob.type ?? '');
+      return resolveEdiDownloadPayload(blob, contentType);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
   },
 
   /** GET /jobs/:id/pnl/custom-duty */

@@ -23,29 +23,29 @@ import type { Job } from '../types/job.types';
 import type { JobActionPanelKey } from '../utils/jobDetailTabs';
 import { jobDisplayNumber } from '../utils/jobRoute';
 
-/** Distinct solid colors for every Actions toolbar button. */
+/** Distinct solid colors for every Actions toolbar button (no sky/blue fills). */
 export const JOB_ACTION_BUTTON_STYLE: Record<JobActionPanelKey, CSSProperties> = {
-  documents: { backgroundColor: '#0EA5E9', borderColor: '#0284C7', color: '#FFFFFF' },
+  documents: { backgroundColor: '#14B8A6', borderColor: '#0D9488', color: '#FFFFFF' },
   invoices: { backgroundColor: '#0A2942', borderColor: '#061B2C', color: '#FFFFFF' },
   pnl: { backgroundColor: '#A855F7', borderColor: '#7C3AED', color: '#FFFFFF' },
   milestones: { backgroundColor: '#22C55E', borderColor: '#16A34A', color: '#FFFFFF' },
   notes: { backgroundColor: '#F59E0B', borderColor: '#D97706', color: '#FFFFFF' },
   'ops-continuum': { backgroundColor: '#334155', borderColor: '#1E293B', color: '#FFFFFF' },
   'vendor-offers': { backgroundColor: '#EC4899', borderColor: '#DB2777', color: '#FFFFFF' },
-  logistics: { backgroundColor: '#14B8A6', borderColor: '#0D9488', color: '#FFFFFF' },
-  gpum: { backgroundColor: '#6366F1', borderColor: '#4F46E5', color: '#FFFFFF' },
-  vouchers: { backgroundColor: '#0F766E', borderColor: '#115E59', color: '#FFFFFF' },
-  cargo: { backgroundColor: '#8B5CF6', borderColor: '#7C3AED', color: '#FFFFFF' },
-  bl: { backgroundColor: '#06B6D4', borderColor: '#0891B2', color: '#FFFFFF' },
+  logistics: { backgroundColor: '#0F766E', borderColor: '#115E59', color: '#FFFFFF' },
+  gpum: { backgroundColor: '#8B5CF6', borderColor: '#7C3AED', color: '#FFFFFF' },
+  vouchers: { backgroundColor: '#65A30D', borderColor: '#4D7C0F', color: '#FFFFFF' },
+  cargo: { backgroundColor: '#D97706', borderColor: '#B45309', color: '#FFFFFF' },
+  bl: { backgroundColor: '#F97316', borderColor: '#EA580C', color: '#FFFFFF' },
   stuffing: { backgroundColor: '#84CC16', borderColor: '#65A30D', color: '#FFFFFF' },
-  'sea-scans': { backgroundColor: '#F97316', borderColor: '#EA580C', color: '#FFFFFF' },
+  'sea-scans': { backgroundColor: '#EA580C', borderColor: '#C2410C', color: '#FFFFFF' },
   house: { backgroundColor: '#64748B', borderColor: '#475569', color: '#FFFFFF' },
   'cc-details': { backgroundColor: '#10B981', borderColor: '#059669', color: '#FFFFFF' },
   'cc-lines': { backgroundColor: '#0D9488', borderColor: '#0F766E', color: '#FFFFFF' },
   'cc-checklist': { backgroundColor: '#059669', borderColor: '#047857', color: '#FFFFFF' },
-  'cc-declaration': { backgroundColor: '#2563EB', borderColor: '#1D4ED8', color: '#FFFFFF' },
-  'cc-queries': { backgroundColor: '#7C3AED', borderColor: '#6D28D9', color: '#FFFFFF' },
-  'cc-finance': { backgroundColor: '#DB2777', borderColor: '#BE185D', color: '#FFFFFF' },
+  'cc-declaration': { backgroundColor: '#7C3AED', borderColor: '#6D28D9', color: '#FFFFFF' },
+  'cc-queries': { backgroundColor: '#DB2777', borderColor: '#BE185D', color: '#FFFFFF' },
+  'cc-finance': { backgroundColor: '#BE185D', borderColor: '#9D174D', color: '#FFFFFF' },
 };
 
 /** Same panels that used to live as Job detail tabs — opened from Actions popups. */

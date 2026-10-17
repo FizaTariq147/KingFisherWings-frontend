@@ -167,7 +167,7 @@ export default function ShipmentListPage() {
                           .join(' → ') || '—'}
                       </td>
                       <td className={erpTable.td}>
-                        {s.job_number || (s.job_id ? s.job_id.slice(0, 8) : '—')}
+                        {s.job_number || '—'}
                       </td>
                     </tr>
                   ))}

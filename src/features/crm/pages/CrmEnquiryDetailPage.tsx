@@ -567,11 +567,6 @@ export default function CrmEnquiryDetailPage() {
         }}
       />
 
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <FclContinuumRail steps={continuum} className="flex-1" />
-        <FavouriteToggle kind="enquiry" targetKey={id} label={titleRef} />
-      </div>
-
       {(actionError || update.isError) && (
         <CrmAlert>{actionError || getErrorMessage(update.error)}</CrmAlert>
       )}
@@ -649,6 +644,11 @@ export default function CrmEnquiryDetailPage() {
         </div>
       </section>
 
+      <div className="flex flex-wrap items-center gap-2">
+        <FclContinuumRail steps={continuum} />
+        <FavouriteToggle kind="enquiry" targetKey={id} label={titleRef} />
+      </div>
+
       {/* Generation actions — below Enquiry detail (same pattern as shipment) */}
       <div className={`${erpForm.toolbar} w-full max-w-none print:hidden`}>
         <p className="mr-1 w-full text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)] sm:mr-2 sm:w-auto">
@@ -670,7 +670,7 @@ export default function CrmEnquiryDetailPage() {
           <Button
             size="sm"
             type="button"
-            variant="edit"
+            variant="create"
             leftIcon={<FileText />}
             disabled={anyActionPending}
             onClick={() => setConfirmKind('generate-quotation')}

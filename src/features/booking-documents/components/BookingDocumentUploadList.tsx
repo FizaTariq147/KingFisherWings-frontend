@@ -4,6 +4,11 @@ import {
   type PortalBookingDocumentKind,
 } from '../constants/bookingDocumentKinds';
 
+export interface BookingDocumentExistingFile {
+  fileName?: string;
+  onDownload?: () => void;
+}
+
 export interface BookingDocumentUploadListProps {
   kinds: readonly PortalBookingDocumentKind[];
   uploadedKinds: ReadonlySet<string>;
@@ -17,6 +22,8 @@ export interface BookingDocumentUploadListProps {
   requiredKinds?: ReadonlySet<string>;
   /** Called whenever a file is chosen (before / instead of remote upload when staged). */
   onFileSelected?: (kind: PortalBookingDocumentKind, file: File) => void;
+  /** Customer/admin-uploaded docs already on file — show Download when present. */
+  existingByKind?: Partial<Record<string, BookingDocumentExistingFile>>;
 }
 
 function formatFileLabel(file: File | undefined | null): string {
@@ -37,6 +44,7 @@ export function BookingDocumentUploadList({
   allRequired,
   requiredKinds,
   onFileSelected,
+  existingByKind,
 }: BookingDocumentUploadListProps) {
   const baseId = useId();
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -93,9 +101,12 @@ export function BookingDocumentUploadList({
         const uploaded = uploadedKinds.has(kind);
         const busy = uploadingKind === kind;
         const file = selectedFiles[kind];
+        const existing = existingByKind?.[kind];
         const inputId = `${baseId}-${kind}`;
         const statusText = uploaded
-          ? 'Uploaded'
+          ? existing?.fileName
+            ? `On file · ${existing.fileName}`
+            : 'Uploaded'
           : busy
             ? 'Uploading…'
             : file
@@ -129,6 +140,15 @@ export function BookingDocumentUploadList({
               </div>
 
               <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">
+                {uploaded && existing?.onDownload ? (
+                  <button
+                    type="button"
+                    className="inline-flex h-9 shrink-0 items-center rounded-md border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 text-xs font-medium text-[var(--fresa-header-text,#0A2942)] hover:bg-[var(--fresa-page-bg,#F4F6F9)]"
+                    onClick={() => existing.onDownload?.()}
+                  >
+                    Download
+                  </button>
+                ) : null}
                 <input
                   ref={(el) => {
                     inputRefs.current[kind] = el;
@@ -181,10 +201,14 @@ export function BookingDocumentUploadList({
                 </label>
                 <span
                   className="min-w-0 max-w-[220px] truncate text-xs text-[var(--color-neutral-600)]"
-                  title={file?.name || (uploaded ? 'Uploaded' : undefined)}
+                  title={
+                    file?.name ||
+                    existing?.fileName ||
+                    (uploaded ? 'Uploaded' : undefined)
+                  }
                 >
                   {uploaded && !file
-                    ? 'File uploaded'
+                    ? existing?.fileName || 'File uploaded'
                     : formatFileLabel(file)}
                 </span>
               </div>

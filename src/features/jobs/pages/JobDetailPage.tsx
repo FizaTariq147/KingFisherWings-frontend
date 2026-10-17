@@ -267,6 +267,7 @@ export default function JobDetailPage() {
     originLabel,
     destinationLabel,
     branchLabel,
+    departmentLabel,
     agentLabel,
     salespersonLabel,
     vesselLabel,
@@ -554,67 +555,26 @@ export default function JobDetailPage() {
         onBack={() => navigate(prefix)}
         backLabel={`${segmentLabel} jobs`}
         banner={
-          <>
-            {(actionError || costingWarningMessage || actionMessage) && (
-              <div className="space-y-2">
-                {(actionError || costingWarningMessage) && (
-                  <div
-                    role="alert"
-                    className="rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700"
-                  >
-                    {actionError || costingWarningMessage}
-                  </div>
-                )}
-                {actionMessage && (
-                  <div
-                    role="status"
-                    className="rounded-sm border border-green-200 bg-green-50 px-3 py-2 text-[13px] text-green-700"
-                  >
-                    {actionMessage}
-                  </div>
-                )}
-              </div>
-            )}
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <FclContinuumRail steps={continuumSteps} className="flex-1" />
-              <FavouriteToggle
-                kind="job"
-                targetKey={job.id}
-                label={jobDisplayNumber(job)}
-              />
+          (actionError || costingWarningMessage || actionMessage) ? (
+            <div className="space-y-2">
+              {(actionError || costingWarningMessage) && (
+                <div
+                  role="alert"
+                  className="rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700"
+                >
+                  {actionError || costingWarningMessage}
+                </div>
+              )}
+              {actionMessage && (
+                <div
+                  role="status"
+                  className="rounded-sm border border-green-200 bg-green-50 px-3 py-2 text-[13px] text-green-700"
+                >
+                  {actionMessage}
+                </div>
+              )}
             </div>
-            <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-[13px]">
-              <span className="font-semibold text-[var(--fresa-header-text,#0A2942)]">Related: </span>
-              {enquiryHref ? (
-                <Link
-                  className="mr-3 font-medium text-[var(--fresa-action,#0A2942)] hover:underline"
-                  to={enquiryHref}
-                >
-                  Enquiry{enquiryNumber ? ` ${enquiryNumber}` : ''}
-                </Link>
-              ) : null}
-              {quotationHref ? (
-                <Link
-                  className="mr-3 font-medium text-[var(--fresa-action,#0A2942)] hover:underline"
-                  to={quotationHref}
-                >
-                  Quotation{quotationNumber ? ` ${quotationNumber}` : ''}
-                </Link>
-              ) : null}
-              {shipmentHref ? (
-                <Link
-                  className="mr-3 font-medium text-[var(--fresa-action,#0A2942)] hover:underline"
-                  to={shipmentHref}
-                >
-                  Shipment{shipmentNumber ? ` ${shipmentNumber}` : ''}
-                </Link>
-              ) : null}
-              {!enquiryHref && !quotationHref && !shipmentHref ? (
-                <span className="text-[#64748b]">No linked continuum records</span>
-              ) : null}
-              <span className="text-[#64748b]"> · {job.job_type?.replaceAll('_', ' ')}</span>
-            </div>
-          </>
+          ) : null
         }
         detailTitle="Job detail"
         detailSection={
@@ -628,7 +588,14 @@ export default function JobDetailPage() {
               }
             />
             <OptionalFresaField label="Consignee" value={consigneeLabel !== '—' ? consigneeLabel : undefined} />
-            <FresaReadonlyField label="Department" value={job.job_type?.replaceAll('_', ' ')} />
+            <FresaReadonlyField
+              label="Department"
+              value={
+                departmentLabel !== '—'
+                  ? departmentLabel
+                  : job.job_type?.replaceAll('_', ' ')
+              }
+            />
             <OptionalFresaField label="Branch" value={branchLabel !== '—' ? branchLabel : undefined} />
             <FresaReadonlyField label="Status" value={JOB_STATUS_LABELS[job.status] ?? job.status} />
             {enquiryHref ? (
@@ -741,6 +708,49 @@ export default function JobDetailPage() {
             <OptionalFresaField label="Dest door" value={job.dest_door_address} />
           </div>
         }
+        afterDetail={
+          <>
+            <div className="flex flex-wrap items-center gap-2">
+              <FclContinuumRail steps={continuumSteps} />
+              <FavouriteToggle
+                kind="job"
+                targetKey={job.id}
+                label={jobDisplayNumber(job)}
+              />
+            </div>
+            <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-[13px]">
+              <span className="font-semibold text-[var(--fresa-header-text,#0A2942)]">Related: </span>
+              {enquiryHref ? (
+                <Link
+                  className="mr-3 font-medium text-[var(--fresa-action,#0A2942)] hover:underline"
+                  to={enquiryHref}
+                >
+                  Enquiry{enquiryNumber ? ` ${enquiryNumber}` : ''}
+                </Link>
+              ) : null}
+              {quotationHref ? (
+                <Link
+                  className="mr-3 font-medium text-[var(--fresa-action,#0A2942)] hover:underline"
+                  to={quotationHref}
+                >
+                  Quotation{quotationNumber ? ` ${quotationNumber}` : ''}
+                </Link>
+              ) : null}
+              {shipmentHref ? (
+                <Link
+                  className="mr-3 font-medium text-[var(--fresa-action,#0A2942)] hover:underline"
+                  to={shipmentHref}
+                >
+                  Shipment{shipmentNumber ? ` ${shipmentNumber}` : ''}
+                </Link>
+              ) : null}
+              {!enquiryHref && !quotationHref && !shipmentHref ? (
+                <span className="text-[#64748b]">No linked continuum records</span>
+              ) : null}
+              <span className="text-[#64748b]"> · {job.job_type?.replaceAll('_', ' ')}</span>
+            </div>
+          </>
+        }
         toolbarLabel="Actions"
         toolbar={
           <>
@@ -764,7 +774,7 @@ export default function JobDetailPage() {
               <Button
                 size="sm"
                 type="button"
-                variant="edit"
+                variant="warning"
                 leftIcon={<PauseCircle />}
                 disabled={pending || actions.stop.isPending}
                 onClick={() => {
@@ -795,7 +805,7 @@ export default function JobDetailPage() {
               <Button
                 size="sm"
                 type="button"
-                variant="edit"
+                variant="create"
                 leftIcon={<Pencil />}
                 disabled={pending || actions.patchClosedOverrides.isPending}
                 onClick={() => {
@@ -862,7 +872,7 @@ export default function JobDetailPage() {
               <Button
                 size="sm"
                 type="button"
-                variant="edit"
+                variant="success"
                 leftIcon={<Copy />}
                 disabled={pending || actions.copy.isPending}
                 onClick={() =>
@@ -895,7 +905,7 @@ export default function JobDetailPage() {
                 key={key}
                 size="sm"
                 type="button"
-                variant="primary"
+                variant="secondary"
                 style={{
                   ...JOB_ACTION_BUTTON_STYLE[key],
                   borderWidth: 1,
