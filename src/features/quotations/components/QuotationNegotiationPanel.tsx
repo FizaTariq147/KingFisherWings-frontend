@@ -334,8 +334,9 @@ export function QuotationNegotiationPanel({
         <div className="rounded-md border border-[var(--color-secondary-200)] bg-[var(--color-secondary-50)]/40 p-3 space-y-3">
           <p className="text-sm font-medium">Respond to customer counter-offer</p>
           <p className="text-xs text-[var(--color-neutral-500)]">
-            Accept applies the customer&apos;s proposed total and auto-converts to a job. Reject
-            clears or continues negotiation. Revise-and-send (below) sends a new tenant offer
+            Accept applies the customer&apos;s proposed total and sets APPROVED only (no shipment
+            or job). Next: Generate Shipment → confirm/approve → Generate Job. Reject clears or
+            continues negotiation. Revise-and-send (below) sends a new tenant offer
             (CUSTOMER_REVIEW). Staff mark-won / mark-lost are blocked.
           </p>
           {pendingCustomerTotal != null ? (
@@ -377,7 +378,7 @@ export function QuotationNegotiationPanel({
                       actions.acceptCounterOffer.mutateAsync(
                         acceptComments.trim() ? { comments: acceptComments.trim() } : {},
                       ),
-                    'Counter-offer accepted — quotation converts to a job automatically.',
+                    'Counter-offer accepted — quotation APPROVED. Use Generate Shipment, then Generate Job.',
                   )
                 }
               >

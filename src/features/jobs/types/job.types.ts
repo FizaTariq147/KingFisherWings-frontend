@@ -755,7 +755,16 @@ export interface StopJobDto {
 }
 
 export interface UpsertJobPartyReferenceDto {
-  party_role?: 'CLIENT' | 'SHIPPER' | 'CONSIGNEE' | 'BILLING_PARTY' | 'AGENT' | string;
+  party_role?:
+    | 'CLIENT'
+    | 'SHIPPER'
+    | 'CONSIGNEE'
+    | 'NOTIFY'
+    | 'BILLING_PARTY'
+    | 'AGENT'
+    | 'OVERSEAS_AGENT'
+    | 'VENDOR'
+    | string;
   party_id?: string;
   reference_type: 'PO_NUMBER' | 'CUSTOMER_REF' | 'OTHER' | string;
   reference_no: string;
@@ -843,12 +852,32 @@ export interface SyncDimensionsToCargoDto {
   prune_orphans?: boolean;
 }
 
-/** PATCH /jobs/:id/department */
+/** PATCH /jobs/:id/department — prefer *_name fields from lookups dropdowns. */
 export interface PatchJobDepartmentDto {
+  company_name?: string;
+  branch_name?: string;
+  department_name?: string;
+  salesperson_name?: string;
+  /** @deprecated Prefer *_name — kept for older payloads */
   branch_id?: string;
   company_id?: string;
   department_id?: string;
   salesperson_id?: string;
+}
+
+/** GET /jobs/lookups/dropdowns */
+export interface JobLookupNamedOption {
+  name: string;
+  code?: string;
+  email?: string;
+}
+
+export interface JobLookupsDropdowns {
+  companies: JobLookupNamedOption[];
+  branches: JobLookupNamedOption[];
+  departments: JobLookupNamedOption[];
+  salespeople: JobLookupNamedOption[];
+  employees: JobLookupNamedOption[];
 }
 
 /** POST /jobs/:id/exchange-rates */
@@ -885,18 +914,30 @@ export interface UpsertJobCustomsRefDto {
   remarks?: string;
 }
 
+/** PUT /jobs/:id/gpum — employee_name is full name or email from dropdown. */
 export interface JobGpumLineDto {
-  user_id: string;
+  employee_name: string;
   gp_percent: number;
+  /** @deprecated Prefer employee_name */
+  user_id?: string;
 }
 
 export interface PutJobGpumDto {
   allocations: JobGpumLineDto[];
 }
 
-export interface JobGpumAllocation extends JobGpumLineDto {
-  user_name?: string;
+export interface JobGpumAllocation {
+  employee_name: string;
+  gp_percent: number;
   id?: string;
+  /** @deprecated Prefer employee_name */
+  user_id?: string;
+  user_name?: string;
+}
+
+export interface JobGpumResult {
+  allocations: JobGpumAllocation[];
+  employees: JobLookupNamedOption[];
 }
 
 export interface CalculateStorageChargesDto {
@@ -1208,6 +1249,10 @@ export interface JobEdiSubmission {
   edi_type?: string;
   status?: string;
   file_name?: string;
+  /** Generate/list now return application/pdf for printable EDI download. */
+  mime_type?: string;
+  /** Relative download path when present (Bearer blob — not an S3 URL). */
+  download?: string;
   created_at?: string;
   raw?: Record<string, unknown>;
 }

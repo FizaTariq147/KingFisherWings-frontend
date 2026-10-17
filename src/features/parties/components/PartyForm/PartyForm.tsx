@@ -17,14 +17,12 @@ import { axiosInstance } from '@/lib/axios';
 import { useAppForm } from '@/lib/validation';
 import { QuotationWizardNav } from '@/features/quotations/components/quotation-wizard';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
-import {
-  PARTY_TYPES,
-  PARTY_TYPE_LABELS,
-} from '../../constants/party.constants';
 import type { PartyType } from '../../constants/party.constants';
+import { usePartyTypes } from '../../hooks/useParties';
 import { createPartySchema, updatePartySchema } from '../../schemas/party.schema';
 import type { CreatePartyFormValues, UpdatePartyFormValues } from '../../types/party.types';
 import { loadPartyCurrencyOptions } from '../../utils/partyCurrencyOptions';
+import { resolvePartyTypeOptions } from '../../utils/resolvePartyTypeOptions';
 import { PartyTypeSelectGrid, PartyWizardStepper } from '../party-wizard';
 
 const selectClass =
@@ -88,6 +86,8 @@ export function PartyForm({
   const [step, setStep] = useState(0);
   const schema = mode === 'create' ? createPartySchema : updatePartySchema;
   const { data: companies = [] } = useTenantCompanies(true);
+  const typesQuery = usePartyTypes(true);
+  const partyTypeOptions = resolvePartyTypeOptions(typesQuery.data);
 
   const { data: currencies = [] } = useQuery({
     queryKey: ['tenant', 'parties', 'currency-options'],
@@ -447,9 +447,9 @@ export function PartyForm({
           <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1 sm:col-span-2">
             Party type *
             <select className={selectClass} {...register('party_type')}>
-              {PARTY_TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {PARTY_TYPE_LABELS[t]}
+              {partyTypeOptions.map(({ code, label }) => (
+                <option key={code} value={code}>
+                  {label}
                 </option>
               ))}
             </select>

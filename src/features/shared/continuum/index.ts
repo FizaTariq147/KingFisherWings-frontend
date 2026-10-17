@@ -25,3 +25,5 @@ export {
   normalizePathHints,
   pickDetailHints,
 } from './normalizeDetailHints';
+
+export { filterGenerationPathHints } from './filterGenerationPathHints';

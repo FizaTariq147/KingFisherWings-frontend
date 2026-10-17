@@ -47,6 +47,8 @@ export function jobDetailTabLabel(key: string): string {
       return 'Shipping bill / BOE';
     case 'booking_form':
       return 'Booking form';
+    case 'section_files':
+      return 'Section files';
     default:
       return key.replaceAll('_', ' ');
   }

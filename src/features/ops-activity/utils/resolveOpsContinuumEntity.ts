@@ -27,12 +27,45 @@ function isUuidLike(value: string): boolean {
   );
 }
 
+function uuidOrNull(value: unknown): string | null {
+  const s = String(value ?? '').trim();
+  return s && isUuidLike(s) ? s : null;
+}
+
+/** Normalize lifecycle ids from detail pages (ignores empty / non-UUID). */
+export function buildOpsLifecycleLinks(
+  links?: OpsLifecycleLinks | null,
+): OpsLifecycleLinks {
+  return {
+    enquiryId: uuidOrNull(links?.enquiryId),
+    quotationId: uuidOrNull(links?.quotationId),
+    shipmentId: uuidOrNull(links?.shipmentId),
+    jobId: uuidOrNull(links?.jobId),
+  };
+}
+
+export function opsLifecycleHostLabel(host: {
+  entityType: OpsEntityType;
+  entityId: string;
+}): string {
+  const label =
+    host.entityType === 'ENQUIRY'
+      ? 'Enquiry'
+      : host.entityType === 'QUOTATION'
+        ? 'Quotation'
+        : host.entityType === 'SHIPMENT'
+          ? 'Shipment'
+          : 'Job';
+  return `${label} continuum (synced across Enquiry → Quotation → Shipment → Job)`;
+}
+
 /**
  * Resolve which /ops/:entityType/:entityId host to use so continuum stays
  * synced across Enquiry → Quotation → Shipment → Job.
  *
  * Priority:
- * 1. Explicit root from detail `ops_continuum` payload
+ * 1. Explicit sync root from detail `ops_continuum.root_entity_*` only
+ *    (plain entity_type/entity_id often means "this page", not the shared root)
  * 2. Earliest lifecycle entity that exists (Enquiry → Quotation → Shipment → Job)
  * 3. Current page entity
  */
@@ -45,18 +78,10 @@ export function resolveOpsContinuumEntity(opts: {
   const continuum = asRecord(opts.opsContinuum);
   if (continuum) {
     const rootTypeRaw = String(
-      continuum.root_entity_type ??
-        continuum.rootEntityType ??
-        continuum.entity_type ??
-        continuum.entityType ??
-        '',
+      continuum.root_entity_type ?? continuum.rootEntityType ?? '',
     ).trim();
     const rootId = String(
-      continuum.root_entity_id ??
-        continuum.rootEntityId ??
-        continuum.entity_id ??
-        continuum.entityId ??
-        '',
+      continuum.root_entity_id ?? continuum.rootEntityId ?? '',
     ).trim();
     const mapped = rootTypeRaw ? mapEntityType(rootTypeRaw) : null;
     if (mapped && isUuidLike(rootId)) {
@@ -64,19 +89,20 @@ export function resolveOpsContinuumEntity(opts: {
     }
   }
 
-  const links = opts.links;
-  if (links?.enquiryId && isUuidLike(String(links.enquiryId))) {
-    return { entityType: 'ENQUIRY', entityId: String(links.enquiryId) };
+  const links = buildOpsLifecycleLinks(opts.links);
+  if (links.enquiryId) {
+    return { entityType: 'ENQUIRY', entityId: links.enquiryId };
   }
-  if (links?.quotationId && isUuidLike(String(links.quotationId))) {
-    return { entityType: 'QUOTATION', entityId: String(links.quotationId) };
+  if (links.quotationId) {
+    return { entityType: 'QUOTATION', entityId: links.quotationId };
   }
-  if (links?.shipmentId && isUuidLike(String(links.shipmentId))) {
-    return { entityType: 'SHIPMENT', entityId: String(links.shipmentId) };
+  if (links.shipmentId) {
+    return { entityType: 'SHIPMENT', entityId: links.shipmentId };
   }
-  if (links?.jobId && isUuidLike(String(links.jobId))) {
-    return { entityType: 'JOB', entityId: String(links.jobId) };
+  if (links.jobId) {
+    return { entityType: 'JOB', entityId: links.jobId };
   }
 
-  return { entityType: opts.entityType, entityId: opts.entityId };
+  const currentId = uuidOrNull(opts.entityId) ?? String(opts.entityId ?? '').trim();
+  return { entityType: opts.entityType, entityId: currentId };
 }

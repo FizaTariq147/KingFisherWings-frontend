@@ -11,7 +11,10 @@ export const PORTAL_QUOTATIONS_API = {
   counterOffer: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/counter-offer`,
   negotiation: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/negotiation`,
   pdf: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/pdf`,
-  /** When live: convert APPROVED quote → job after booking form submit. */
+  /**
+   * Staff continuum owns job creation (Generate Shipment → Generate Job).
+   * Portal customers must not call this — accept only sets APPROVED.
+   */
   convertToJob: (id: string) =>
     `/portal/quotations/${encodeURIComponent(id)}/convert-to-job`,
   bookingForm: (id: string) =>

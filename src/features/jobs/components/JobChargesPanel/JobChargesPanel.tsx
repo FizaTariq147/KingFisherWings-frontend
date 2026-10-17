@@ -1164,7 +1164,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     }
     if (!isUuid(psAgentId.trim())) {
       setError(
-        'Select Profit Share Agent (must be Carrier, Agent, or Supplier).',
+        'Select Profit Share Agent (must be Carrier, Agent, Supplier, or Vendor).',
       );
       return;
     }
@@ -2686,8 +2686,8 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                 ))}
               </select>
               <span className="mt-1 block text-[11px] text-[var(--color-neutral-500)]">
-                Note: Profit Share Agent must be a Carrier, Agent, or Supplier. A/C
-                uses postable COA id as profit_share_account_id.
+                Note: Profit Share Agent must be a Carrier, Agent, Supplier, or Vendor.
+                A/C uses postable COA id as profit_share_account_id.
               </span>
             </label>
             <label className="block text-sm sm:col-span-2">

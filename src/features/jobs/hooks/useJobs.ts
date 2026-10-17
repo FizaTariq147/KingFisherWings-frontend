@@ -16,6 +16,7 @@ export const jobKeys = {
   detail: (id: string) => [...jobKeys.all, 'detail', id] as const,
   detailTab: (id: string, tab: string) => [...jobKeys.all, 'detail-tab', id, tab] as const,
   statusOptions: (jobId?: string) => [...jobKeys.all, 'status-options', jobId ?? ''] as const,
+  lookupsDropdowns: [...(['tenant', 'jobs'] as const), 'lookups-dropdowns'] as const,
   gpum: (id: string) => [...jobKeys.all, 'gpum', id] as const,
   chargeAttachments: (id: string, chargeId: string) =>
     [...jobKeys.all, 'charge-attachments', id, chargeId] as const,
@@ -297,6 +298,16 @@ export function useJobEdiSubmissions(id: string, enabled = true) {
     queryKey: jobKeys.ediSubmissions(id),
     queryFn: () => jobService.listJobEdiSubmissions(id),
     enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+export function useJobLookupsDropdowns(enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.lookupsDropdowns,
+    queryFn: () => jobService.getLookupsDropdowns(),
+    enabled: Boolean(accessToken) && enabled,
+    staleTime: 60_000,
   });
 }
 

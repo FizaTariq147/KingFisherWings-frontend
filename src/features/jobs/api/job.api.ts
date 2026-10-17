@@ -5,6 +5,8 @@ export const JOB_API = {
   teamWorkload: '/jobs/team-workload',
   /** Catalog (Approved / Open / Closed labels); optional ?job_id= */
   statusOptions: '/jobs/status-options',
+  /** Name dropdowns for department / GPUM (no UUIDs in UI). */
+  lookupsDropdowns: '/jobs/lookups/dropdowns',
   byBarcode: (code: string) => `/jobs/by-barcode/${encodeURIComponent(code)}`,
   scan: '/jobs/scan',
   byId: (id: string) => `/jobs/${id}`,
@@ -61,10 +63,11 @@ export const JOB_API = {
   invoicesPurchase: (id: string) => `/jobs/${id}/invoices/purchase`,
   /** GET/POST /jobs/:id/invoices/purchase/bulk — Fresa bulk PI preview + generate */
   invoicesPurchaseBulk: (id: string) => `/jobs/${id}/invoices/purchase/bulk`,
-  /** GET /jobs/:id/edi/types · POST generate · GET submissions · GET download */
+  /** GET /jobs/:id/edi/types · POST generate · GET submissions · GET download (PDF stream) */
   ediTypes: (id: string) => `/jobs/${id}/edi/types`,
   ediGenerate: (id: string) => `/jobs/${id}/edi/generate`,
   ediSubmissions: (id: string) => `/jobs/${id}/edi/submissions`,
+  /** Bearer PDF attachment — not an S3 URL. */
   ediSubmissionDownload: (id: string, submissionId: string) =>
     `/jobs/${id}/edi/submissions/${encodeURIComponent(submissionId)}/download`,
   /** GET /jobs/:id/pnl/custom-duty */

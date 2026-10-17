@@ -234,13 +234,8 @@ export function usePortalQuotation(id: string) {
     staleTime: 0,
     refetchInterval: (query) => {
       const status = query.state.data?.status;
-      // Poll while waiting for customer decision, or until convert/job appears after approve.
+      // Poll while waiting for customer decision. Accept is APPROVED-only (no auto job).
       if (status && isAwaitingCustomerDecision(status)) return 5_000;
-      const raw = String(status ?? '').toUpperCase();
-      if (raw === 'APPROVED' || raw === 'WON' || raw === 'ACCEPTED') {
-        const jobId = query.state.data?.jobId;
-        if (!jobId) return 5_000;
-      }
       return false;
     },
     refetchIntervalInBackground: false,

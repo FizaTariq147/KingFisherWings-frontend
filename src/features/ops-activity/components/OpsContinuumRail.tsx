@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/Button';
 import { useOpsContinuumCounts } from '../hooks/useOpsContinuumCounts';
 import { OpsContinuumPanel } from './OpsContinuumPanel';
 import {
+  opsLifecycleHostLabel,
   resolveOpsContinuumEntity,
   type OpsLifecycleLinks,
 } from '../utils/resolveOpsContinuumEntity';
@@ -83,9 +84,9 @@ function formatCount(n: number | null): string {
 }
 
 /**
- * Fresa-style right-side colorful icon rail for /ops/:entityType/:entityId continuum.
- * Button set comes from detail path_hints / ops_continuum / can_* (fallback: all endpoints).
- * Counts come from live list endpoints (and optional ops_continuum count fields).
+ * Fresa-style right-side colorful icon rail for /ops continuum.
+ * Always shows every continuum action. Activity hosts on the earliest lifecycle
+ * entity (Enquiry → Quotation → Shipment → Job) so comments/etc. stay synced.
  */
 export function OpsContinuumRail({
   entityType,
@@ -124,6 +125,7 @@ export function OpsContinuumRail({
       }),
     [pathHints, opsContinuum, actions],
   );
+  const hostLabel = opsLifecycleHostLabel(host);
   const counts = useOpsContinuumCounts(host.entityType, host.entityId, {
     enabled: Boolean(host.entityId) && tabs.length > 0,
     opsContinuum,
@@ -189,9 +191,12 @@ export function OpsContinuumRail({
             </Button>
           }
         >
+          <p className="mb-2 text-[11px] text-[#64748b]">{hostLabel}</p>
           <OpsContinuumPanel
-            entityType={host.entityType}
-            entityId={host.entityId}
+            entityType={entityType}
+            entityId={entityId}
+            opsContinuum={opsContinuum}
+            links={links}
             defaultTab={active}
             hideTabBar
             compact

@@ -338,12 +338,19 @@ function CompleteDetailTabPayload({
   );
 }
 
-/** History tab — GET /ops/JOB/:id/history (same source as Ops continuum History). */
-function JobHistoryPanel({ jobId }: { jobId: string }) {
+/** History tab — same lifecycle-hosted continuum History as the right rail. */
+function JobHistoryPanel({ job }: { job: Job }) {
   return (
     <OpsContinuumPanel
       entityType="JOB"
-      entityId={jobId}
+      entityId={job.id}
+      opsContinuum={job.ops_continuum}
+      links={{
+        enquiryId: job.enquiry_id,
+        quotationId: job.quotation_id,
+        shipmentId: job.shipment_id,
+        jobId: job.id,
+      }}
       defaultTab="history"
       hideTabBar
       compact
@@ -704,7 +711,7 @@ function InteractiveTabBody({
     return <JobChargesPanel job={job} onChanged={onChanged} />;
   }
   if (key === 'history') {
-    return <JobHistoryPanel jobId={job.id} />;
+    return <JobHistoryPanel job={job} />;
   }
   if (key === 'booking_form') {
     return <JobOpsPanel job={job} />;

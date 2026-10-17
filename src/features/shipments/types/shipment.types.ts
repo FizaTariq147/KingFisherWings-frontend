@@ -246,14 +246,24 @@ export interface CopyShipmentChargesDto {
   [key: string]: unknown;
 }
 
+/**
+ * OpenAPI ChangeShipmentStatusDto.status enum — full Change Status catalog
+ * when detail `actions.allowed_statuses` is omitted.
+ */
 export const SHIPMENT_STATUSES = [
   'BOOKED',
+  'CONFIRMED',
+  'APPROVED',
   'IN_PROGRESS',
   'COMPLETED',
   'CANCELLED',
   'ON_HOLD',
 ] as const;
 
+/**
+ * OpenAPI ChangeShipmentBlStatusDto.bl_status enum — full Change BL Status catalog
+ * when detail `actions.allowed_bl_statuses` is omitted.
+ */
 export const SHIPMENT_BL_STATUSES = [
   'DRAFT',
   'ORIGINAL',

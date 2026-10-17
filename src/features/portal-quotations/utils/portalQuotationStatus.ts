@@ -72,22 +72,9 @@ export function applyPortalCustomerDecisionStatus(
   }
   if (isCustomerDisapprovedStatus(current) || current === 'EXPIRED') return detail;
 
-  const jt = String(detail.jobType ?? detail.raw?.job_type ?? detail.raw?.jobType ?? '')
-    .toUpperCase()
-    .replace(/[\s-]+/g, '_');
-
-  // Mode booking-form quotes stay APPROVED until the customer submits the form
-  // (OpenAPI: convert-to-job after booking form is complete). Do not flip to
-  // CONVERTED just because a provisional job_id / shell exists.
-  if (usesModeBookingFormConvertFlow(jt)) {
-    if (current === 'CONVERTED') return { ...detail, status: 'CONVERTED' };
-    return { ...detail, status: 'APPROVED' };
-  }
-
-  // Non–booking-form modes may convert on accept → CONVERTED when job exists.
-  if (current === 'CONVERTED' || detail.jobId || detail.convertedJobNumber) {
-    return { ...detail, status: 'CONVERTED' };
-  }
+  // OpenAPI: customer accept → APPROVED only (no auto shipment/job).
+  // Never flip to CONVERTED from a provisional job_id / shell.
+  if (current === 'CONVERTED') return { ...detail, status: 'CONVERTED' };
   return { ...detail, status: 'APPROVED' };
 }
 
@@ -235,22 +222,19 @@ export function portalQuoteStatusMessage(
     const jt = String(detail?.jobType ?? detail?.raw?.job_type ?? '')
       .toUpperCase()
       .replace(/[\s-]+/g, '_');
-    if (usesModeBookingFormConvertFlow(jt)) {
-      if (s === 'CONVERTED') {
-        return 'You approved this quotation and submitted the booking form — it is converted to a job.';
-      }
-      return 'You approved this quotation. Complete the booking form below — it converts to a job after you submit.';
+    const needsBookingForm =
+      jt.startsWith('AIR') ||
+      jt.startsWith('NVOCC') ||
+      usesModeBookingFormConvertFlow(jt);
+    if (s === 'CONVERTED' || detail?.jobId || detail?.convertedJobNumber) {
+      return needsBookingForm
+        ? 'You approved this quotation. Your forwarder is handling the next ops steps.'
+        : 'You approved this quotation. Your forwarder will proceed with booking.';
     }
-    if (detail?.jobId || detail?.convertedJobNumber || s === 'CONVERTED') {
-      if (jt.startsWith('AIR') || jt.startsWith('NVOCC')) {
-        return 'You approved this quotation. Complete the booking form below next.';
-      }
-      return 'You approved this quotation — it is converted to a job.';
+    if (needsBookingForm) {
+      return 'You approved this quotation — your forwarder has been notified. Complete the booking form below when available.';
     }
-    if (jt.startsWith('AIR') || jt.startsWith('NVOCC')) {
-      return 'You approved this quotation. Complete the booking form below next.';
-    }
-    return 'You approved this quotation.';
+    return 'You approved this quotation — your forwarder has been notified. They will generate the shipment and job.';
   }
   if (isCustomerDisapprovedStatus(s) || s === 'REJECTED' || s === 'DISAPPROVED') {
     return 'This quotation was rejected.';

@@ -17,9 +17,21 @@ import type {
 export const partyKeys = {
   all: ['tenant', 'parties'] as const,
   list: (params: PartyListParams) => [...partyKeys.all, 'list', params] as const,
+  types: [...(['tenant', 'parties'] as const), 'types'] as const,
   detail: (id: string) => [...partyKeys.all, 'detail', id] as const,
   history: (id: string) => [...partyKeys.all, 'history', id] as const,
 };
+
+/** GET /parties/types — includes Vendor for create/select catalogs. */
+export function usePartyTypes(enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: partyKeys.types,
+    queryFn: () => partyService.listTypes(),
+    enabled: Boolean(accessToken) && enabled,
+    staleTime: 5 * 60_000,
+  });
+}
 
 export function useParties(params: PartyListParams) {
   const accessToken = useAuthStore((s) => s.accessToken);

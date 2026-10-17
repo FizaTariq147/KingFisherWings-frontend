@@ -8,8 +8,10 @@ import { isShipmentShowAllTab } from '../api/shipment.api';
 import { useShipment, useShipmentDetailTab, useShipmentShowAll } from '../hooks/useShipments';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { isShipmentCostingTab } from '../utils/normalizeShipmentCharges';
+import { EntitySectionFilesPanel } from '@/features/shared/section-attachments';
 import { ShipmentChargesPanel } from './ShipmentChargesPanel';
 import { ShipmentDepartmentPanel } from './ShipmentDepartmentPanel';
+import { ShipmentPartyPanel } from './ShipmentPartyPanel';
 
 function formatKey(key: string): string {
   const norm = key
@@ -451,6 +453,16 @@ function isShipmentDepartmentTab(tabKey: string): boolean {
   return norm === 'department' || norm === 'departments';
 }
 
+function isShipmentOrganizationTab(tabKey: string): boolean {
+  const norm = tabKey.trim().toLowerCase().replace(/-/g, '_');
+  return norm === 'organization' || norm === 'organisation' || norm === 'party';
+}
+
+function isShipmentSectionFilesTab(tabKey: string): boolean {
+  const norm = tabKey.trim().toLowerCase().replace(/-/g, '_');
+  return norm === 'section_files' || norm === 'sectionfiles';
+}
+
 /** Planned/Actual container tabs — containers live on the linked job (`GET /jobs/:id/containers`). */
 function isShipmentContainerTab(tabKey: string): boolean {
   const norm = tabKey.trim().toLowerCase().replace(/-/g, '_');
@@ -484,6 +496,20 @@ export function ShipmentTabPanel({
   }
   if (isShipmentDepartmentTab(tabKey)) {
     return <ShipmentDepartmentTabPanel shipmentId={shipmentId} />;
+  }
+  if (isShipmentOrganizationTab(tabKey)) {
+    return <ShipmentPartyPanel shipmentId={shipmentId} />;
+  }
+  if (isShipmentSectionFilesTab(tabKey)) {
+    return (
+      <div className="p-3">
+        <EntitySectionFilesPanel
+          entity="shipments"
+          entityId={shipmentId}
+          title="Section files"
+        />
+      </div>
+    );
   }
   if (isShipmentContainerTab(tabKey)) {
     return <ShipmentContainersTabPanel shipmentId={shipmentId} tabKey={tabKey} />;

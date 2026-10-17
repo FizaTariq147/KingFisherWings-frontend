@@ -73,7 +73,7 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
         <div>
           <CardTitle>Users Portal</CardTitle>
           <p className="text-xs text-[var(--color-neutral-400)] mt-1 font-normal">
-            Available for every party type. Does not change party type.
+            For non-vendor party types (Customer, Agent, etc.).
           </p>
         </div>
         <Button type="button" size="sm" onClick={() => setOpen(true)}>

@@ -90,7 +90,6 @@ import type {
   Job,
   JobChangeStatusResult,
   JobChargeAttachment,
-  JobGpumAllocation,
   JobListParams,
   JobListResult,
   JobPnl,
@@ -1276,10 +1275,73 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.dimensions(id), dto));
   },
 
+  /** GET /jobs/lookups/dropdowns — name/code (and email) options for department & GPUM. */
+  async getLookupsDropdowns(): Promise<
+    import('../types/job.types').JobLookupsDropdowns
+  > {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.lookupsDropdowns),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      const rec =
+        data && typeof data === 'object' && !Array.isArray(data)
+          ? (data as Record<string, unknown>)
+          : {};
+      const mapNamed = (raw: unknown): import('../types/job.types').JobLookupNamedOption[] => {
+        if (!Array.isArray(raw)) return [];
+        const out: import('../types/job.types').JobLookupNamedOption[] = [];
+        for (const row of raw) {
+          if (!row || typeof row !== 'object') continue;
+          const r = row as Record<string, unknown>;
+          const name = String(r.name ?? r.full_name ?? r.fullName ?? '').trim();
+          const email = String(r.email ?? '').trim();
+          const code = String(r.code ?? '').trim();
+          const label = name || email;
+          if (!label) continue;
+          out.push({
+            name: label,
+            ...(code ? { code } : {}),
+            ...(email ? { email } : {}),
+          });
+        }
+        return out;
+      };
+      return {
+        companies: mapNamed(rec.companies ?? rec.company),
+        branches: mapNamed(rec.branches ?? rec.branch),
+        departments: mapNamed(rec.departments ?? rec.department),
+        salespeople: mapNamed(
+          rec.salespeople ?? rec.salesperson ?? rec.sales_people,
+        ),
+        employees: mapNamed(rec.employees ?? rec.employee),
+      };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
   /** PATCH /jobs/:id/department */
   async patchDepartment(id: string, dto: PatchJobDepartmentDto): Promise<Job> {
     assertId(id);
-    return request(() => axiosInstance.patch(JOB_API.department(id), dto), normalizeJob);
+    const payload: Record<string, unknown> = {};
+    for (const key of [
+      'company_name',
+      'branch_name',
+      'department_name',
+      'salesperson_name',
+      'company_id',
+      'branch_id',
+      'department_id',
+      'salesperson_id',
+    ] as const) {
+      const v = dto[key];
+      if (typeof v === 'string' && v.trim()) payload[key] = v.trim();
+    }
+    return request(
+      () => axiosInstance.patch(JOB_API.department(id), payload),
+      normalizeJob,
+    );
   },
 
   /** POST /jobs/:id/exchange-rates */
@@ -1343,53 +1405,96 @@ export const jobService = {
     return requestVoid(() => axiosInstance.delete(JOB_API.customsRef(id, refId)));
   },
 
-  /** GET /jobs/:id/gpum */
-  async getGpum(id: string): Promise<JobGpumAllocation[]> {
+  /** GET /jobs/:id/gpum — allocations + employees dropdown. */
+  async getGpum(id: string): Promise<import('../types/job.types').JobGpumResult> {
     assertId(id);
     try {
       const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.gpum(id)));
       const data = unwrapEntity(res.data) ?? res.data;
+      const rec =
+        data && typeof data === 'object' && !Array.isArray(data)
+          ? (data as Record<string, unknown>)
+          : null;
       const list =
         (Array.isArray(data) && data) ||
-        (data &&
-          typeof data === 'object' &&
-          Array.isArray((data as { allocations?: unknown }).allocations) &&
-          (data as { allocations: unknown[] }).allocations) ||
-        (data &&
-          typeof data === 'object' &&
-          Array.isArray((data as { items?: unknown }).items) &&
-          (data as { items: unknown[] }).items) ||
+        (rec && Array.isArray(rec.allocations) && rec.allocations) ||
+        (rec && Array.isArray(rec.items) && rec.items) ||
         [];
-      return list
+      const allocations = (list as unknown[])
         .map((row) => {
           if (!row || typeof row !== 'object') return null;
           const r = row as Record<string, unknown>;
-          const userId = String(r.user_id ?? r.userId ?? '').trim();
+          const employeeName = String(
+            r.employee_name ??
+              r.employeeName ??
+              r.user_name ??
+              r.userName ??
+              r.email ??
+              r.user_id ??
+              r.userId ??
+              '',
+          ).trim();
           const gp = Number(r.gp_percent ?? r.gpPercent);
-          if (!userId || !Number.isFinite(gp)) return null;
+          if (!employeeName || !Number.isFinite(gp)) return null;
           return {
-            user_id: userId,
+            employee_name: employeeName,
             gp_percent: gp,
-            user_name:
-              typeof r.user_name === 'string'
-                ? r.user_name
-                : typeof r.userName === 'string'
-                  ? r.userName
-                  : undefined,
             id: typeof r.id === 'string' ? r.id : undefined,
-          } satisfies JobGpumAllocation;
+          } satisfies import('../types/job.types').JobGpumAllocation;
         })
-        .filter((x): x is JobGpumAllocation => Boolean(x));
+        .filter(
+          (x): x is import('../types/job.types').JobGpumAllocation => Boolean(x),
+        );
+
+      const mapEmployees = (raw: unknown) => {
+        if (!Array.isArray(raw)) return [];
+        const out: import('../types/job.types').JobLookupNamedOption[] = [];
+        for (const row of raw) {
+          if (!row || typeof row !== 'object') continue;
+          const r = row as Record<string, unknown>;
+          const name = String(r.name ?? r.full_name ?? r.fullName ?? '').trim();
+          const email = String(r.email ?? '').trim();
+          const label = name || email;
+          if (!label) continue;
+          out.push({ name: label, ...(email ? { email } : {}) });
+        }
+        return out;
+      };
+
+      let employees = mapEmployees(rec?.employees ?? rec?.employee);
+      if (!employees.length) {
+        try {
+          const lookups = await this.getLookupsDropdowns();
+          employees = lookups.employees;
+        } catch {
+          /* optional fallback */
+        }
+      }
+
+      return { allocations, employees };
     } catch (error) {
       throw formatAxiosError(error);
     }
   },
 
-  /** PUT /jobs/:id/gpum — allocations must total 100%. */
-  async putGpum(id: string, dto: PutJobGpumDto): Promise<JobGpumAllocation[]> {
+  /** PUT /jobs/:id/gpum — allocations must total 100%; use employee_name. */
+  async putGpum(
+    id: string,
+    dto: PutJobGpumDto,
+  ): Promise<import('../types/job.types').JobGpumResult> {
     assertId(id);
     try {
-      await withGatewayRetry(() => axiosInstance.put(JOB_API.gpum(id), dto));
+      const allocations = (dto.allocations ?? [])
+        .map((row) => ({
+          employee_name: String(
+            row.employee_name ?? row.user_id ?? '',
+          ).trim(),
+          gp_percent: Number(row.gp_percent),
+        }))
+        .filter((row) => row.employee_name && Number.isFinite(row.gp_percent));
+      await withGatewayRetry(() =>
+        axiosInstance.put(JOB_API.gpum(id), { allocations }),
+      );
       return this.getGpum(id);
     } catch (error) {
       throw formatAxiosError(error);
@@ -1741,7 +1846,10 @@ export const jobService = {
     return request(() => axiosInstance.get(JOB_API.ediSubmissions(id)));
   },
 
-  /** GET /jobs/:id/edi/submissions/:submissionId/download — file blob or download-URL JSON. */
+  /**
+   * GET /jobs/:id/edi/submissions/:submissionId/download
+   * Streams application/pdf (Content-Disposition: attachment) with Bearer — not an S3 URL.
+   */
   async downloadJobEdiSubmission(
     id: string,
     submissionId: string,
@@ -1758,8 +1866,7 @@ export const jobService = {
         axiosInstance.get(JOB_API.ediSubmissionDownload(id, submissionId.trim()), {
           responseType: 'blob',
           headers: {
-            Accept:
-              'application/xml, text/xml, application/edi-x12, text/plain, application/json, */*',
+            Accept: 'application/pdf, application/json, */*',
           },
         }),
       );

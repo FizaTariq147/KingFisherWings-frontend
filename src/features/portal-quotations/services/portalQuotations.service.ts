@@ -42,10 +42,6 @@ import {
 import { portalMessagesService } from '@/features/portal-messages/services/portalMessages.service';
 import { isUuid } from '@/lib/isUuid';
 import {
-  skipsAutoConvertOnApprove,
-  usesModeBookingFormConvertFlow,
-} from '@/features/quotations/utils/quotationStatus';
-import {
   normalizePortalEstimate,
   normalizePortalServiceCatalog,
   normalizePortalCostingOptions,
@@ -57,45 +53,8 @@ import { rememberCustomerQuoteDecision } from '@/features/quotations/utils/custo
 import { normalizeNegotiationTimeline } from '@/features/quotations/utils/normalizeQuotationExtended';
 import type { NegotiationTimeline } from '@/features/quotations/types/quotationExtended.types';
 
-/**
- * After customer approve: convert quote → job only for modes that do not use a
- * booking form and are not gated. Booking-form modes convert on form submit;
- * NVOCC / Air stay on gated booking/shipment accept flow.
- */
-async function tryConvertQuotationAfterCustomerApprove(opts: {
-  quotationId: string;
-  jobType?: string;
-}): Promise<boolean> {
-  if (skipsAutoConvertOnApprove(opts.jobType)) return false;
-  if (!opts.quotationId || !isUuid(opts.quotationId)) return false;
-  try {
-    await portalApiClient.post(PORTAL_QUOTATIONS_API.convertToJob(opts.quotationId), {});
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * After portal booking form mark_complete: ask backend to convert quote → job
- * when approve-time convert did not already create the job.
- */
-async function tryConvertQuotationAfterBookingForm(opts: {
-  quotationId: string;
-  jobType?: string;
-}): Promise<boolean> {
-  if (!usesModeBookingFormConvertFlow(opts.jobType)) return false;
-  if (!opts.quotationId || !isUuid(opts.quotationId)) return false;
-  try {
-    await portalApiClient.post(PORTAL_QUOTATIONS_API.convertToJob(opts.quotationId), {});
-    return true;
-  } catch {
-    return false;
-  }
-}
 import type { ApiPeriodQuery } from '@/lib/apiPeriod';
 import { periodQueryParams } from '@/lib/apiPeriod';
-import { asRecord, pickString, unwrapData } from '@/features/portal-shared/normalize';
 
 /** NVOCC → /portal/bookings/:id ; Air → /portal/shipments/:id (OpenAPI air compliance). */
 function resolveComplianceTarget(opts: {
@@ -133,26 +92,6 @@ function compliancePaths(kind: 'booking' | 'shipment') {
         submit: PORTAL_BOOKINGS_API.complianceFormSubmit,
         document: PORTAL_BOOKINGS_API.complianceDocument,
       };
-}
-
-function extractLinkedIdFromUnknown(raw: unknown): string | undefined {
-  const data = asRecord(unwrapData(raw)) ?? asRecord(raw) ?? {};
-  return (
-    pickString(
-      data.booking_id,
-      data.bookingId,
-      data.nvocc_booking_id,
-      data.nvoccBookingId,
-      data.job_id,
-      data.jobId,
-      data.shipment_id,
-      data.shipmentId,
-      data.id,
-      asRecord(data.booking)?.id,
-      asRecord(data.job)?.id,
-      asRecord(data.shipment)?.id,
-    ) || undefined
-  );
 }
 
 function isComplianceNotFoundError(error: unknown): boolean {
@@ -205,74 +144,29 @@ export const portalQuotationsService = {
   },
 
   async accept(id: string, dto: { message?: string } = {}): Promise<PortalQuotationDetail> {
-    // OpenAPI PortalQuotationAcceptDto — optional message; send {} so validators get a JSON body.
+    // OpenAPI: sets APPROVED + notifies staff. No shipment/job created.
     await portalApiClient.post(PORTAL_QUOTATIONS_API.accept(id), dto);
     // Always re-fetch: POST often echoes the prior open status.
-    let fresh = await this.getById(id);
+    const fresh = await this.getById(id);
     const jt = String(fresh.jobType ?? fresh.raw?.job_type ?? '').toUpperCase();
     const isAir = isAirJobType(jt) || jt.startsWith('AIR');
 
     let bookingId = fresh.bookingId;
     let jobId = fresh.jobId;
 
-    if (isAir) {
-      // POST /portal/shipments/:id/accept → CUSTOMER_ACCEPTED (unlocks compliance form).
-      const unlockCandidates = [jobId, id].filter(
-        (v, i, arr): v is string => Boolean(v) && isUuid(v) && arr.indexOf(v) === i,
-      );
-      for (const candidate of unlockCandidates) {
-        try {
-          const res = await portalApiClient.post(PORTAL_SHIPMENTS_API.accept(candidate));
-          const fromBody = extractLinkedIdFromUnknown(res.data);
-          if (fromBody && isUuid(fromBody)) jobId = fromBody;
-          else if (!jobId) jobId = candidate;
-          break;
-        } catch {
-          /* try next candidate */
-        }
+    // Best-effort unlock of an *existing* booking/shipment compliance form only.
+    // Accept never creates shipment/job — skip when no linked id yet.
+    if (isAir && jobId && isUuid(jobId)) {
+      try {
+        await portalApiClient.post(PORTAL_SHIPMENTS_API.accept(jobId));
+      } catch {
+        /* optional unlock */
       }
-    } else {
-      // Unlock NVOCC compliance form when a real booking id is known.
-      const unlockCandidates = [bookingId, id].filter(
-        (v, i, arr): v is string => Boolean(v) && isUuid(v) && arr.indexOf(v) === i,
-      );
-      for (const candidate of unlockCandidates) {
-        try {
-          const res = await portalApiClient.post(PORTAL_BOOKINGS_API.accept(candidate));
-          const fromBody = extractLinkedIdFromUnknown(res.data);
-          if (fromBody && isUuid(fromBody)) bookingId = fromBody;
-          else if (!bookingId) bookingId = candidate;
-          break;
-        } catch {
-          /* try next candidate */
-        }
-      }
-    }
-
-    // Re-fetch in case accept attached booking_id / job_id on the quotation.
-    try {
-      fresh = await this.getById(id);
-      if (fresh.bookingId) bookingId = fresh.bookingId;
-      if (fresh.jobId) jobId = fresh.jobId;
-    } catch {
-      /* keep prior */
-    }
-
-    // Convert on approve only when the mode is not booking-form gated and not NVOCC/Air.
-    // Sea/Land/Road/… wait for booking-form submit (tryConvertQuotationAfterBookingForm).
-    if (!jobId && !skipsAutoConvertOnApprove(jt)) {
-      const converted = await tryConvertQuotationAfterCustomerApprove({
-        quotationId: id,
-        jobType: jt,
-      });
-      if (converted) {
-        try {
-          fresh = await this.getById(id);
-          if (fresh.bookingId) bookingId = fresh.bookingId;
-          if (fresh.jobId) jobId = fresh.jobId;
-        } catch {
-          /* keep prior */
-        }
+    } else if (!isAir && bookingId && isUuid(bookingId)) {
+      try {
+        await portalApiClient.post(PORTAL_BOOKINGS_API.accept(bookingId));
+      } catch {
+        /* optional unlock */
       }
     }
 
@@ -586,17 +480,10 @@ export const portalQuotationsService = {
         body,
         job_id: opts.jobId && isUuid(opts.jobId) ? opts.jobId : undefined,
       });
-      const draft = writePortalBookingFormDraft(opts.quotationId, dto, {
+      return writePortalBookingFormDraft(opts.quotationId, dto, {
         quoteNumber: opts.quoteNumber,
         jobType: opts.jobType,
       });
-      if (dto.mark_complete) {
-        await tryConvertQuotationAfterBookingForm({
-          quotationId: opts.quotationId,
-          jobType: opts.jobType,
-        });
-      }
-      return draft;
     };
 
     // Live OpenAPI has no /portal/.../warehouse/booking-form — keep full
@@ -709,44 +596,11 @@ export const portalQuotationsService = {
             /* still best-effort */
           }
         }
-        const draft = writePortalBookingFormDraft(
+        return writePortalBookingFormDraft(
           opts.quotationId,
           { ...dto, mark_complete: true },
           { quoteNumber: mirrorQuoteNumber, jobType: mirrorJobType },
         );
-        await tryConvertQuotationAfterBookingForm({
-          quotationId: opts.quotationId,
-          jobType: mirrorJobType,
-        });
-        // After convert, re-mirror with job_id if it was missing earlier.
-        try {
-          const after = await this.getById(opts.quotationId);
-          const jobIdAfter = after.jobId?.trim();
-          if (jobIdAfter && isUuid(jobIdAfter) && jobIdAfter !== mirrorJobId) {
-            const quoteLabel = after.number || mirrorQuoteNumber || opts.quotationId.slice(0, 8);
-            const payloadOpts = {
-              quotationId: opts.quotationId,
-              quoteNumber: after.number || mirrorQuoteNumber,
-              jobType: after.jobType || mirrorJobType,
-              jobId: jobIdAfter,
-              bookingId: mirrorBookingId || after.bookingId,
-              dto: { ...dto, mark_complete: true },
-            };
-            await portalMessagesService.create({
-              subject: bookingFormInboxSubject({
-                quoteLabel,
-                quotationId: opts.quotationId,
-                bookingId: mirrorBookingId || after.bookingId,
-                jobId: jobIdAfter,
-              }),
-              body: formatBookingFormMessageBodyCompact(payloadOpts),
-              job_id: jobIdAfter,
-            });
-          }
-        } catch {
-          /* optional second mirror */
-        }
-        return draft;
       }
 
       await portalApiClient.put(paths.form(target.id), {

@@ -85,12 +85,23 @@ export function normalizeEdiSubmissions(raw: unknown): JobEdiSubmission[] {
     if (!rec) continue;
     const id = String(rec.id ?? rec.submission_id ?? '').trim();
     if (!id) continue;
+    const mime =
+      String(rec.mime_type ?? rec.mimeType ?? rec.content_type ?? '').trim() ||
+      undefined;
+    let fileName =
+      String(rec.file_name ?? rec.fileName ?? rec.filename ?? '').trim() ||
+      undefined;
+    if (fileName && mime?.includes('pdf') && !/\.pdf$/i.test(fileName)) {
+      fileName = `${fileName.replace(/\.[^.]+$/, '')}.pdf`;
+    }
     out.push({
       id,
       edi_type: String(rec.edi_type ?? rec.type ?? rec.code ?? '').trim() || undefined,
       status: String(rec.status ?? '').trim() || undefined,
-      file_name:
-        String(rec.file_name ?? rec.fileName ?? rec.filename ?? '').trim() ||
+      file_name: fileName,
+      mime_type: mime || 'application/pdf',
+      download:
+        String(rec.download ?? rec.download_path ?? rec.downloadPath ?? '').trim() ||
         undefined,
       created_at:
         String(rec.created_at ?? rec.createdAt ?? rec.submitted_at ?? '').trim() ||
@@ -163,16 +174,26 @@ function pickEdiFileName(raw: unknown, fallback: string): string {
       ).trim()
     : '';
   const name = fromRec || fallback;
-  if (/\.(xml|edi|txt|json)$/i.test(name)) return name;
-  return `${name.replace(/\.[^.]+$/, '') || 'edi-submission'}.xml`;
+  if (/\.(pdf|xml|edi|txt|json)$/i.test(name)) return name;
+  return `${name.replace(/\.[^.]+$/, '') || 'edi-submission'}.pdf`;
 }
 
 function ensureDownloadName(name: string, blob: Blob): string {
   const type = (blob.type || '').toLowerCase();
-  if (/\.(xml|edi|txt|json)$/i.test(name)) return name;
-  if (type.includes('json')) return `${name}.json`;
-  if (type.includes('xml') || type.includes('text')) return `${name}.xml`;
-  return `${name}.xml`;
+  const base = name.replace(/\.[^.]+$/, '') || 'edi-submission';
+  if (type.includes('pdf') || /\.pdf$/i.test(name)) {
+    return /\.pdf$/i.test(name) ? name : `${base}.pdf`;
+  }
+  if (/\.(xml|edi|txt|json|pdf)$/i.test(name)) return name;
+  if (type.includes('json')) return `${base}.json`;
+  if (type.includes('xml') || type.includes('text')) return `${base}.xml`;
+  // Printable EDI download is PDF by default (API streams application/pdf).
+  return `${base}.pdf`;
+}
+
+function blobLooksLikePdf(blob: Blob): boolean {
+  const type = (blob.type || '').toLowerCase();
+  return type.includes('pdf');
 }
 
 /**
@@ -230,8 +251,12 @@ export function toAuthenticatedEdiRequestUrl(url: string): string | null {
   return null;
 }
 
-async function blobFromUrl(url: string, hops = 0): Promise<Blob> {
-  if (hops > 3) {
+/**
+ * Fetch EDI only via authenticated API paths (Bearer). Never anonymous S3/R2 —
+ * those caused CORS; download endpoints now stream application/pdf.
+ */
+async function blobFromAuthenticatedEdiUrl(url: string, hops = 0): Promise<Blob> {
+  if (hops > 2) {
     throw new Error('EDI download URL redirected too many times.');
   }
   if (!isSafeHttpUrl(url) && !url.startsWith('/')) {
@@ -247,76 +272,86 @@ async function blobFromUrl(url: string, hops = 0): Promise<Blob> {
   }
 
   const authUrl = toAuthenticatedEdiRequestUrl(url);
-  if (authUrl) {
-    const res = await withGatewayRetry(() =>
-      axiosInstance.get(authUrl, { responseType: 'blob' }),
+  if (!authUrl) {
+    throw new Error(
+      'EDI download must use the API submission download path (Bearer PDF), not an external file URL.',
     );
-    const blob = res.data as Blob;
-    const contentType = String(
-      res.headers?.['content-type'] ?? blob.type ?? '',
-    ).toLowerCase();
-    // Nested JSON URL envelope — unwrap a few levels max.
-    if (
-      blob instanceof Blob &&
-      blob.size > 0 &&
-      blob.size < 16_384 &&
-      (contentType.includes('json') || contentType.includes('text/plain'))
-    ) {
-      const text = await blob.text();
-      const trimmed = text.trim();
-      if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
-        try {
-          const parsed = JSON.parse(trimmed) as unknown;
-          const nestedUrl = pickEdiDownloadUrl(parsed);
-          const nestedAuth = nestedUrl
-            ? toAuthenticatedEdiRequestUrl(nestedUrl)
-            : null;
-          if (
-            nestedUrl &&
-            nestedUrl !== url &&
-            nestedAuth !== authUrl
-          ) {
-            return blobFromUrl(nestedUrl, hops + 1);
-          }
-          const inline = pickEdiInlineContent(parsed);
-          if (inline) {
-            const looksJson = inline.startsWith('{') || inline.startsWith('[');
-            return new Blob([inline], {
-              type: looksJson ? 'application/json' : 'application/xml',
-            });
-          }
-        } catch {
-          /* fall through */
-        }
-        return new Blob([text], { type: contentType || 'application/json' });
-      }
-      if (trimmed.startsWith('<')) {
-        return new Blob([trimmed], { type: 'application/xml' });
-      }
-      return new Blob([text], { type: contentType || 'application/octet-stream' });
-    }
-    return blob;
   }
 
-  // Presigned external URL (R2/S3) — anonymous fetch, no Bearer.
-  try {
-    const res = await fetch(url, { method: 'GET', credentials: 'omit' });
-    if (!res.ok) throw new Error(`EDI download failed (${res.status}).`);
-    return await res.blob();
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : 'EDI download failed.';
-    if (/failed to fetch|networkerror|cors/i.test(msg)) {
-      throw new Error(
-        'EDI file URL could not be fetched (network/CORS). Try again or ask support to stream the file from the API.',
-      );
-    }
-    throw err instanceof Error ? err : new Error(msg);
+  const res = await withGatewayRetry(() =>
+    axiosInstance.get(authUrl, {
+      responseType: 'blob',
+      headers: {
+        Accept: 'application/pdf, application/json, */*',
+      },
+    }),
+  );
+  const blob = res.data as Blob;
+  const contentType = String(
+    res.headers?.['content-type'] ?? blob.type ?? '',
+  ).toLowerCase();
+
+  if (contentType.includes('pdf') || blobLooksLikePdf(blob)) {
+    return blob.type?.includes('pdf')
+      ? blob
+      : new Blob([blob], { type: 'application/pdf' });
   }
+
+  // Small JSON error / legacy envelope — do not chase external S3 URLs.
+  if (
+    blob instanceof Blob &&
+    blob.size > 0 &&
+    blob.size < 16_384 &&
+    (contentType.includes('json') || contentType.includes('text/plain') || !contentType)
+  ) {
+    const text = await blob.text();
+    const trimmed = text.trim();
+    if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(trimmed) as unknown;
+        const errRec = asRecord(parsed);
+        const message = errRec
+          ? String(
+              Array.isArray(errRec.message)
+                ? errRec.message.join('; ')
+                : errRec.message ?? errRec.error ?? '',
+            ).trim()
+          : '';
+        if (message) throw new Error(message);
+
+        const nestedUrl = pickEdiDownloadUrl(parsed);
+        const nestedAuth = nestedUrl
+          ? toAuthenticatedEdiRequestUrl(nestedUrl)
+          : null;
+        if (
+          nestedAuth &&
+          nestedAuth !== authUrl &&
+          /\/edi\/submissions\//i.test(nestedAuth)
+        ) {
+          return blobFromAuthenticatedEdiUrl(nestedAuth, hops + 1);
+        }
+        if (nestedUrl && !nestedAuth) {
+          throw new Error(
+            'EDI download returned an external file URL. Use GET …/edi/submissions/:id/download (PDF stream).',
+          );
+        }
+      } catch (err) {
+        if (err instanceof Error) throw err;
+      }
+      return new Blob([text], { type: contentType || 'application/json' });
+    }
+    if (trimmed.startsWith('%PDF')) {
+      return new Blob([trimmed], { type: 'application/pdf' });
+    }
+  }
+
+  return blob;
 }
 
 /**
- * Normalize a download endpoint response (blob or JSON) into Blob | URL envelope | inline content.
- * Used by job/shipment EDI download services.
+ * Normalize a download endpoint response into a Blob.
+ * API streams application/pdf with Content-Disposition: attachment —
+ * do not chase JSON download_url / S3 links.
  */
 export async function resolveEdiDownloadPayload(
   blob: Blob,
@@ -326,27 +361,38 @@ export async function resolveEdiDownloadPayload(
     contentTypeHeader ?? blob.type ?? '',
   ).toLowerCase();
 
+  if (contentType.includes('pdf') || blobLooksLikePdf(blob)) {
+    return blob.type?.includes('pdf')
+      ? blob
+      : new Blob([blob], { type: 'application/pdf' });
+  }
+
+  // Only probe small payloads for JSON errors / legacy envelopes.
   if (
-    contentType.includes('json') ||
-    contentType.includes('text/plain') ||
-    contentType.includes('octet-stream') ||
-    !contentType
+    blob.size > 0 &&
+    blob.size < 16_384 &&
+    (contentType.includes('json') ||
+      contentType.includes('text/plain') ||
+      contentType.includes('octet-stream') ||
+      !contentType)
   ) {
     try {
       const text = await blob.text();
       const trimmed = text.trim();
+      if (trimmed.startsWith('%PDF')) {
+        return new Blob([trimmed], { type: 'application/pdf' });
+      }
       if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
         return JSON.parse(trimmed) as unknown;
       }
       if (trimmed.startsWith('<')) {
         return new Blob([trimmed], { type: 'application/xml' });
       }
-      // Rebuild — blob was consumed.
       return new Blob([text], {
         type: contentType || 'application/octet-stream',
       });
     } catch {
-      /* fall through — return original only if still usable */
+      /* fall through */
     }
   }
 
@@ -358,21 +404,29 @@ export async function resolveEdiDownloadPayload(
 }
 
 /**
- * Save EDI payload as a file download (never open XML in a browser tab —
- * that shows the “no style information” tree view).
+ * Save EDI download as a file. Prefer PDF streamed from
+ * GET …/edi/submissions/:id/download (Bearer). Never open in a tab.
  */
 export async function saveEdiDownload(
   raw: unknown,
-  fallbackName = 'edi-submission.xml',
+  fallbackName = 'edi-submission.pdf',
 ): Promise<void> {
   if (raw instanceof Blob) {
     // Error JSON sometimes arrives as a small application/json blob.
     if (raw.size > 0 && raw.size < 4096) {
       const type = (raw.type || '').toLowerCase();
-      if (type.includes('json') || !type) {
+      if (type.includes('json') || (!type && !blobLooksLikePdf(raw))) {
         try {
           const text = await raw.text();
           const trimmed = text.trim();
+          if (trimmed.startsWith('%PDF')) {
+            const pdfBlob = new Blob([trimmed], { type: 'application/pdf' });
+            triggerBlobDownload(
+              pdfBlob,
+              ensureDownloadName(pickEdiFileName(null, fallbackName), pdfBlob),
+            );
+            return;
+          }
           if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
             const parsed = JSON.parse(trimmed) as unknown;
             const errRec = asRecord(parsed);
@@ -403,16 +457,21 @@ export async function saveEdiDownload(
         }
       }
     }
+    const fileBlob =
+      blobLooksLikePdf(raw as Blob) && !(raw as Blob).type?.includes('pdf')
+        ? new Blob([raw as Blob], { type: 'application/pdf' })
+        : (raw as Blob);
     triggerBlobDownload(
-      raw as Blob,
-      ensureDownloadName(pickEdiFileName(null, fallbackName), raw as Blob),
+      fileBlob,
+      ensureDownloadName(pickEdiFileName(null, fallbackName), fileBlob),
     );
     return;
   }
 
   const url = pickEdiDownloadUrl(raw);
   if (url) {
-    const blob = await blobFromUrl(url);
+    // Only authenticated API download paths — never S3/R2 (CORS).
+    const blob = await blobFromAuthenticatedEdiUrl(url);
     triggerBlobDownload(
       blob,
       ensureDownloadName(pickEdiFileName(raw, fallbackName), blob),
@@ -436,7 +495,6 @@ export async function saveEdiDownload(
   // Last resort: object payloads (e.g. EdiMessage) as a downloadable file.
   if (raw && typeof raw === 'object') {
     const rec = asRecord(raw);
-    // Prefer XML-looking serialization when keys look like EDI message fields.
     const looksEdiMessage =
       rec &&
       ('JobNumber' in rec ||
@@ -444,7 +502,6 @@ export async function saveEdiDownload(
         'edi_type' in rec ||
         'MblNumber' in rec);
     if (looksEdiMessage) {
-      // Build simple XML if the API returned a parsed EdiMessage object.
       const xml = objectToSimpleXml(rec, 'EdiMessage');
       const blob = new Blob([xml], { type: 'application/xml' });
       triggerBlobDownload(
@@ -458,7 +515,7 @@ export async function saveEdiDownload(
     });
     triggerBlobDownload(
       blob,
-      pickEdiFileName(raw, fallbackName).replace(/\.xml$/i, '.json'),
+      pickEdiFileName(raw, fallbackName).replace(/\.(xml|pdf)$/i, '.json'),
     );
     return;
   }
