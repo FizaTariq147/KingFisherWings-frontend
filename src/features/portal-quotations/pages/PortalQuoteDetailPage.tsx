@@ -358,11 +358,11 @@ export default function PortalQuoteDetailPage() {
         />
       ) : null}
 
-      {data.convertedJobNumber ? (
+      {data.convertedJobNumber || data.jobId ? (
         <PortalPanel padded className="text-sm">
           <p>
-            <span className="text-[var(--color-neutral-500)]">Converted to job: </span>
-            <strong>{data.convertedJobNumber}</strong>
+            <span className="text-[var(--color-neutral-500)]">Job reference: </span>
+            <strong>{data.convertedJobNumber || data.jobId}</strong>
           </p>
         </PortalPanel>
       ) : null}

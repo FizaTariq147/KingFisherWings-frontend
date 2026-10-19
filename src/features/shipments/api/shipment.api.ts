@@ -96,7 +96,7 @@ export function toApiShipmentDetailTabKey(tab: string): string {
 /** Display label: prefer API label; continuum Party for organization; else humanize key. */
 export function shipmentDetailTabLabel(key: string, apiLabel?: string): string {
   const fromApi = apiLabel?.trim();
-  if (fromApi && !isShipmentShowAllTab(fromApi)) {
+  if (fromApi && !isShipmentShowAllTab(fromApi) && !/[_-]/.test(fromApi)) {
     const lower = fromApi.toLowerCase();
     if (lower === 'organization' || lower === 'organisation') return 'Party';
     return fromApi;
@@ -106,8 +106,9 @@ export function shipmentDetailTabLabel(key: string, apiLabel?: string): string {
   if (norm === 'organization' || norm === 'organisation') return 'Party';
   if (norm === 'info' || norm === 'information') return 'Info';
   if (norm === 'section_files' || norm === 'sectionfiles') return 'Section files';
-  return key
+  return (fromApi && /[_-]/.test(fromApi) ? fromApi : key)
     .trim()
     .replace(/[-_]+/g, ' ')
+    .replace(/\s+/g, ' ')
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }

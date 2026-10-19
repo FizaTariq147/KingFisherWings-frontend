@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -14,6 +14,7 @@ import {
   useOperationsMutations,
   useVoyageJobsShipments,
 } from '../hooks/useOperations';
+import { getOperationsReportByKey } from '../config/operationsReports';
 import type { OperationsListParams, OperationsReportKey } from '../types/operations.types';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 
@@ -36,7 +37,7 @@ const REPORT_META: Record<
   }
 > = {
   'job-not-invoiced-do': {
-    title: 'Job not invoiced against DO',
+    title: getOperationsReportByKey('job-not-invoiced-do')?.title ?? 'Job not invoiced (DO)',
     showDateBasis: true,
     dateBasisOptions: [
       { value: 'do_issued', label: 'DO issued' },
@@ -46,7 +47,7 @@ const REPORT_META: Record<
     downloadKey: 'downloadJobNotInvoicedDo',
   },
   'job-finance-report': {
-    title: 'Job finance by shipment date',
+    title: getOperationsReportByKey('job-finance-report')?.title ?? 'Job finance by shipment date',
     showDateBasis: true,
     dateBasisOptions: [
       { value: 'shipment_date', label: 'Shipment date' },
@@ -57,17 +58,17 @@ const REPORT_META: Record<
     downloadKey: 'downloadJobFinanceReport',
   },
   exceptions: {
-    title: 'Exceptions',
+    title: getOperationsReportByKey('exceptions')?.title ?? 'Exceptions',
     showJobType: true,
     downloadKey: 'downloadExceptions',
   },
   'kpi-status': {
-    title: 'KPI status',
+    title: getOperationsReportByKey('kpi-status')?.title ?? 'KPI status',
     showJobType: true,
     downloadKey: 'downloadKpiStatus',
   },
   'job-list-summary': {
-    title: 'Job list summary',
+    title: getOperationsReportByKey('job-list-summary')?.title ?? 'Job list summary',
     showDateBasis: true,
     dateBasisOptions: [
       { value: 'job_date', label: 'Job date' },
@@ -78,11 +79,11 @@ const REPORT_META: Record<
     downloadKey: 'downloadJobListSummary',
   },
   'voyage-jobs-shipments': {
-    title: 'Voyage jobs & shipments',
+    title: getOperationsReportByKey('voyage-jobs-shipments')?.title ?? 'Voyage jobs & shipments',
     showVoyage: true,
   },
   'closed-job-report': {
-    title: 'Closed job report',
+    title: getOperationsReportByKey('closed-job-report')?.title ?? 'Closed job report',
     downloadKey: 'downloadClosedJobReport',
   },
 };
@@ -190,6 +191,18 @@ export default function OperationsReportPage() {
   const [page, setPage] = useState(1);
   const [dlError, setDlError] = useState<string | null>(null);
 
+  // Reset report-specific filters when switching screens (same component, new :reportKey).
+  useEffect(() => {
+    if (!meta) return;
+    setDateBasis(meta.dateBasisOptions?.[0]?.value ?? 'job_date');
+    setGroupBy('');
+    setVoyageNumber('');
+    setVesselName('');
+    setJobType('');
+    setPage(1);
+    setDlError(null);
+  }, [key, meta]);
+
   const { data: branches = [] } = useMasterOptions('branches', MASTER_PATHS.branches, true);
   const mutations = useOperationsMutations();
 
@@ -200,11 +213,16 @@ export default function OperationsReportPage() {
       from_date: fromDate || undefined,
       to_date: toDate || undefined,
       branch_id: branchId || undefined,
-      job_type: jobType || undefined,
-      date_basis: dateBasis as OperationsListParams['date_basis'],
-      group_by: (groupBy || undefined) as OperationsListParams['group_by'],
-      voyage_number: voyageNumber.trim() || undefined,
-      vessel_name: vesselName.trim() || undefined,
+      job_type: meta?.showJobType && jobType ? jobType : undefined,
+      date_basis: meta?.showDateBasis
+        ? (dateBasis as OperationsListParams['date_basis'])
+        : undefined,
+      group_by:
+        meta?.showGroupBy && groupBy
+          ? (groupBy as OperationsListParams['group_by'])
+          : undefined,
+      voyage_number: meta?.showVoyage ? voyageNumber.trim() || undefined : undefined,
+      vessel_name: meta?.showVoyage ? vesselName.trim() || undefined : undefined,
     }),
     [
       page,
@@ -216,6 +234,7 @@ export default function OperationsReportPage() {
       groupBy,
       voyageNumber,
       vesselName,
+      meta,
     ],
   );
 
@@ -272,13 +291,14 @@ export default function OperationsReportPage() {
         from_date: fromDate,
         to_date: toDate,
         branch_id: branchId || undefined,
-        job_type: jobType || undefined,
-        date_basis: dateBasis || undefined,
-        group_by: groupBy || undefined,
+        job_type: meta.showJobType && jobType ? jobType : undefined,
+        date_basis: meta.showDateBasis ? dateBasis || undefined : undefined,
+        group_by: meta.showGroupBy && groupBy ? groupBy : undefined,
         format: 'xlsx' as const,
       };
       const blob = await mutations[meta.downloadKey].mutateAsync(dto);
-      triggerBlobDownload(blob, `${key}.xlsx`);
+      const formatCode = getOperationsReportByKey(key)?.formatCode;
+      triggerBlobDownload(blob, `${formatCode || key}.xlsx`);
     } catch (err) {
       setDlError(getErrorMessage(err));
     }
@@ -288,12 +308,34 @@ export default function OperationsReportPage() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <Link
-            to="/operations/reports"
-            className="text-xs text-[var(--color-primary-700)] hover:underline"
-          >
-            ← Operations reports
-          </Link>
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            <Link
+              to="/operations/reports"
+              className="text-[var(--color-primary-700)] hover:underline"
+            >
+              ← Operations reports
+            </Link>
+            <span className="text-[var(--color-neutral-300)]">·</span>
+            <Link
+              to="/reports"
+              className="text-[var(--color-primary-700)] hover:underline"
+            >
+              Reports
+            </Link>
+            {getOperationsReportByKey(key)?.formatCode ? (
+              <>
+                <span className="text-[var(--color-neutral-300)]">·</span>
+                <Link
+                  to={`/reports/catalog?code=${encodeURIComponent(
+                    getOperationsReportByKey(key)!.formatCode!,
+                  )}`}
+                  className="text-[var(--color-primary-700)] hover:underline"
+                >
+                  Format catalogue
+                </Link>
+              </>
+            ) : null}
+          </div>
           <h1 className="mt-1 text-lg font-semibold text-[var(--color-neutral-900)]">
             {meta.title}
           </h1>

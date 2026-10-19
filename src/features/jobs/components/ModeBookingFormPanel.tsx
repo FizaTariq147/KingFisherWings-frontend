@@ -36,6 +36,7 @@ import {
 } from '@/features/booking-documents/constants/bookingDocumentKinds';
 import {
   extractBookingFormDocuments,
+  extractUploadResponseMeta,
   mergeJobDocumentsIntoBooking,
   type BookingFormDocumentMeta,
 } from '@/features/booking-documents/utils/bookingFormDocuments';
@@ -885,8 +886,12 @@ export function ModeBookingFormPanel({
   const linkedQuote = linkedQuoteQuery.data;
   const linkedJobType = String(linkedQuote?.job_type ?? mode).toUpperCase();
   const jobTypePrefix = linkedJobType.split('_')[0];
-  /** Auto-load portal booking only when the linked quotation came from customer portal. */
-  const quoteFromCustomerPortal = isCustomerPortalQuotation(linkedQuote);
+  /**
+   * Look up portal booking whenever a linked quote exists (continuum Generate Job
+   * keeps quote APPROVED). Prefer portal-origin quotes; still try inbox match.
+   */
+  const mayHavePortalBooking =
+    Boolean(linkedQuote?.id) || isCustomerPortalQuotation(linkedQuote);
 
   const portalBookingQuery = useCustomerPortalBookingForm(
     {
@@ -895,8 +900,11 @@ export function ModeBookingFormPanel({
       quoteNumber: linkedQuote?.quotation_number || linkedQuote?.quote_no,
       jobTypePrefix,
     },
-    Boolean(jobId) && quoteFromCustomerPortal && !linkedQuoteQuery.isLoading,
+    Boolean(jobId) && mayHavePortalBooking && !linkedQuoteQuery.isLoading,
   );
+  /** Prefill when quote is portal-origin OR inbox already has a booking payload. */
+  const quoteFromCustomerPortal =
+    isCustomerPortalQuotation(linkedQuote) || Boolean(portalBookingQuery.data);
 
   const [panelMode, setPanelMode] = useState<PanelMode>('list');
   const [form, setForm] = useState<FormUi>(emptyForm);
@@ -944,22 +952,30 @@ export function ModeBookingFormPanel({
         ? (query.data as Record<string, unknown>)
         : undefined,
     );
+    const fromPortal = extractBookingFormDocuments(
+      portalBookingQuery.data && typeof portalBookingQuery.data === 'object'
+        ? (portalBookingQuery.data as Record<string, unknown>)
+        : undefined,
+    );
+    const seed = { ...fromPortal.byKind, ...fromForm.byKind };
     const merged = mergeJobDocumentsIntoBooking(
       jobDocumentsQuery.data ?? [],
-      fromForm.byKind,
+      seed,
     );
     for (const kind of fromForm.kinds) merged.kinds.add(kind);
+    for (const kind of fromPortal.kinds) merged.kinds.add(kind);
     setUploadedDocKinds(merged.kinds);
     setDocMetaByKind(merged.byKind);
-  }, [query.data, jobDocumentsQuery.data]);
+  }, [query.data, jobDocumentsQuery.data, portalBookingQuery.data]);
 
+  // Hydrate only when entering view/edit — do not wipe in-progress admin edits on refetch.
   useEffect(() => {
     if (query.data == null) return;
     if (panelMode === 'list' || panelMode === 'create') return;
-    // Empty API shell → blank form (no invented defaults); real data only.
     setForm(modeBookingFormIsEmpty(query.data) ? emptyForm() : hydrateForm(query.data));
     setPortalPrefillApplied(false);
-  }, [query.data, panelMode]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally ignore query.data refetches
+  }, [panelMode]);
 
   useEffect(() => {
     const savedForm = query.data as ModeBookingForm | undefined;
@@ -979,10 +995,8 @@ export function ModeBookingFormPanel({
     const payload = portalBookingQuery.data;
     if (!payload || portalPrefillApplied) return;
     if (query.isLoading || query.isFetching) return;
-    if (panelMode === 'edit' && !modeBookingFormIsEmpty(query.data)) {
-      setPortalPrefillApplied(true);
-      return;
-    }
+    // Edit: fill only empty fields from portal so admin can complete the rest.
+    // Create: overwrite with portal payload.
     setForm((prev) => applyPortal(prev, payload, panelMode === 'create'));
     setPortalPrefillApplied(true);
     setMsg(
@@ -2493,15 +2507,31 @@ export function ModeBookingFormPanel({
               existingByKind={Object.fromEntries(
                 Object.entries(docMetaByKind).map(([kind, meta]) => {
                   const url = resolveJobDocumentFileUrl(meta, tenantId);
+                  const label =
+                    BOOKING_DOCUMENT_KIND_LABELS[
+                      kind as keyof typeof BOOKING_DOCUMENT_KIND_LABELS
+                    ] || kind;
+                  const fileName = meta.file_name || (url || meta.id ? label : undefined);
+                  const canDownload = Boolean(url || meta.id);
                   return [
                     kind,
                     {
-                      fileName: meta.file_name,
-                      onDownload: url
+                      fileName,
+                      onDownload: canDownload
                         ? () => {
-                            void downloadStoredFile(url, {
-                              displayName: meta.file_name || kind,
-                            });
+                            if (url) {
+                              void downloadStoredFile(url, {
+                                displayName: fileName || label,
+                              });
+                              return;
+                            }
+                            if (meta.id) {
+                              void jobService
+                                .downloadJobDocument(jobId, meta.id, fileName || label)
+                                .catch((err) => {
+                                  setErr(getErrorMessage(err));
+                                });
+                            }
                           }
                         : undefined,
                     },
@@ -2511,17 +2541,15 @@ export function ModeBookingFormPanel({
               onUpload={async (kind, file) => {
                 setUploadingKind(kind);
                 try {
-                  await uploadDocument.mutateAsync({
+                  const uploaded = await uploadDocument.mutateAsync({
                     kind: kind as (typeof MODE_BOOKING_FORM_DOCUMENT_KINDS)[number],
                     file,
                   });
+                  const meta = extractUploadResponseMeta(kind, uploaded, file.name);
                   setUploadedDocKinds((prev) => new Set(prev).add(kind));
                   setDocMetaByKind((prev) => ({
                     ...prev,
-                    [kind]: {
-                      kind,
-                      file_name: file.name,
-                    },
+                    [kind]: meta,
                   }));
                   void jobDocumentsQuery.refetch();
                   setForm((prev) => {

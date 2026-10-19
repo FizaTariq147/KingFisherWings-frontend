@@ -7,6 +7,7 @@ import type {
   CreateJobChargesCompositeDto,
   CreateJobInvoiceFromCostingDto,
   GenerateJobEdiDto,
+  JobInvoiceFormSaveDto,
   CreateJobNoteDto,
   CreateCustomMilestoneDto,
   CalculateStorageChargesDto,
@@ -93,9 +94,12 @@ export function useJobActions(jobId: string) {
       chargeId: string;
       dto: CreateJobChargeAttachmentDto;
     }) => jobService.createChargeAttachment(id, chargeId, dto),
-    onSuccess: () => {
+    onSuccess: (_data, vars) => {
       invalidate(id);
       void queryClient.invalidateQueries({ queryKey: jobKeys.jobCharges(id) });
+      void queryClient.invalidateQueries({
+        queryKey: jobKeys.chargeAttachments(id, vars.chargeId),
+      });
     },
   });
   const uploadChargeAttachmentFile = useMutation({
@@ -108,9 +112,12 @@ export function useJobActions(jobId: string) {
       file: File;
       side?: CreateJobChargeAttachmentDto['side'];
     }) => jobService.uploadChargeAttachmentFile(id, chargeId, file, side),
-    onSuccess: () => {
+    onSuccess: (_data, vars) => {
       invalidate(id);
       void queryClient.invalidateQueries({ queryKey: jobKeys.jobCharges(id) });
+      void queryClient.invalidateQueries({
+        queryKey: jobKeys.chargeAttachments(id, vars.chargeId),
+      });
     },
   });
   const remove = useMutation({
@@ -186,13 +193,23 @@ export function useJobActions(jobId: string) {
     onSuccess: invalidateCharges,
   });
   const createSaleInvoiceFromJob = useMutation({
-    mutationFn: (dto: CreateJobInvoiceFromCostingDto = {}) =>
-      jobService.createSaleInvoiceFromJob(id, dto),
+    mutationFn: ({
+      dto = {},
+      file,
+    }: {
+      dto?: CreateJobInvoiceFromCostingDto | JobInvoiceFormSaveDto;
+      file?: File | null;
+    } = {}) => jobService.createSaleInvoiceFromJob(id, dto, file),
     onSuccess: () => invalidate(id),
   });
   const createPurchaseInvoiceFromJob = useMutation({
-    mutationFn: (dto: CreateJobInvoiceFromCostingDto = {}) =>
-      jobService.createPurchaseInvoiceFromJob(id, dto),
+    mutationFn: ({
+      dto = {},
+      file,
+    }: {
+      dto?: CreateJobInvoiceFromCostingDto | JobInvoiceFormSaveDto;
+      file?: File | null;
+    } = {}) => jobService.createPurchaseInvoiceFromJob(id, dto, file),
     onSuccess: () => invalidate(id),
   });
   const generateBulkPurchaseInvoice = useMutation({

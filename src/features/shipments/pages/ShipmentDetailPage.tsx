@@ -87,7 +87,7 @@ function displayValue(value?: string | number | null): string | undefined {
   return text;
 }
 
-/** Fresa-style label + readonly box (matches shipment detail screenshots). */
+/** Label + value on one line (no boxed field). */
 function FresaReadonlyField({
   label,
   value,
@@ -99,17 +99,20 @@ function FresaReadonlyField({
 }) {
   const shown = displayValue(value) ?? '—';
   return (
-    <div className="min-w-0">
-      <div className={erpForm.label}>{label}</div>
-      <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[13px] text-[#0f172a]">
-        {href && shown !== '—' ? (
-          <Link className="truncate font-medium text-[var(--color-primary-700)] hover:underline" to={href}>
-            {shown}
-          </Link>
-        ) : (
-          <span className="truncate">{shown}</span>
-        )}
-      </div>
+    <div className="flex min-w-0 items-baseline gap-1.5 text-[13px] leading-5">
+      <span className="shrink-0 font-semibold text-[var(--fresa-header-text,#0A2942)]">
+        {label}:
+      </span>
+      {href && shown !== '—' ? (
+        <Link
+          className="min-w-0 truncate font-medium text-[var(--color-primary-700)] hover:underline"
+          to={href}
+        >
+          {shown}
+        </Link>
+      ) : (
+        <span className="min-w-0 truncate text-[#0f172a]">{shown}</span>
+      )}
     </div>
   );
 }
@@ -645,11 +648,7 @@ export default function ShipmentDetailPage() {
         />
       </div>
 
-      {/* ── Actions toolbar (below Shipment detail) ── */}
       <div className={`${erpForm.toolbar} w-full max-w-none`}>
-        <p className="mr-1 w-full text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)] sm:mr-2 sm:w-auto">
-          Actions
-        </p>
         {hasJob ? (
           <Button
             size="sm"
@@ -671,12 +670,6 @@ export default function ShipmentDetailPage() {
           >
             Generate Job
           </Button>
-        ) : !hasJob ? (
-          <span className="text-[12px] text-[var(--color-neutral-500)]">
-            {shipment.status
-              ? `Generate Job is not available while status is ${shipment.status.replaceAll('_', ' ')}.`
-              : 'Generate Job is not available for this shipment yet.'}
-          </span>
         ) : null}
         {canChangeStatus && (
           <Button
@@ -985,11 +978,7 @@ export default function ShipmentDetailPage() {
 
       {/* Tabs from GET /shipments/:id/detail only — each panel loads detail/:tab */}
       <section className={erpForm.section}>
-        {tabs.length === 0 ? (
-          <p className="p-3 text-center text-[13px] text-[#64748b]">
-            No detail tabs returned for this shipment.
-          </p>
-        ) : (
+        {tabs.length > 0 ? (
           <>
             <div className="kf-tabs-scroll flex gap-0 overflow-x-auto border-b border-[var(--color-sidebar-bg,#0A2942)] bg-[var(--color-sidebar-bg,#0A2942)]">
               {tabs.map((tab) => (
@@ -1022,7 +1011,7 @@ export default function ShipmentDetailPage() {
               />
             ) : null}
           </>
-        )}
+        ) : null}
       </section>
 
       {/* Confirm dialogs */}

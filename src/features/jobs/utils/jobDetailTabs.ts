@@ -50,7 +50,11 @@ export function jobDetailTabLabel(key: string): string {
     case 'section_files':
       return 'Section files';
     default:
-      return key.replaceAll('_', ' ');
+      return key
+        .trim()
+        .replace(/[-_]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase());
   }
 }
 
@@ -326,8 +330,12 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
     seen.add(key);
     const apiLabel = t.label?.trim();
     const lower = apiLabel?.toLowerCase() ?? '';
+    // Prefer mapped labels; never show raw snake_case keys (underscores) in the strip.
     const label =
-      apiLabel && lower !== 'organization' && lower !== 'organisation'
+      apiLabel &&
+      !/[_-]/.test(apiLabel) &&
+      lower !== 'organization' &&
+      lower !== 'organisation'
         ? apiLabel
         : jobDetailTabLabel(key);
     out.push({ key, label });

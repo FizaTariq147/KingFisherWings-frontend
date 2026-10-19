@@ -2,6 +2,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { useAuthStore } from '@/store/authStore';
 import { useVendorAuthStore } from '@/features/vendor-auth/store/vendorAuthStore';
 import { useVendorQueryScope } from '@/features/vendor-shared/useVendorQueryScope';
+import { jobKeys } from '@/features/jobs/hooks/useJobs';
 import {
   staffVendorJobOffersService,
   vendorPortalJobsService,
@@ -83,6 +84,9 @@ export function useStaffVendorOfferActions(jobId: string) {
         queryKey: staffVendorJobOfferKeys.negotiation(offerId),
       });
     }
+    // Backend syncs vendor offer negotiation into job_charges.
+    void queryClient.invalidateQueries({ queryKey: jobKeys.jobCharges(jobId) });
+    void queryClient.invalidateQueries({ queryKey: jobKeys.detail(jobId) });
   };
 
   const reviseAndSend = useMutation({

@@ -25,9 +25,11 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
+import { useFileDownload } from '@/features/files/hooks/useFileDownload';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
+import { useAuthStore } from '@/store/authStore';
 import { VOUCHER_ROUTE_PREFIX } from '@/features/vouchers/api/voucher.api';
 import {
   VOUCHER_TYPE_LABELS,
@@ -44,6 +46,7 @@ import { isUuid } from '@/lib/isUuid';
 import { useJobActions, useJobChargeMutations } from '../../hooks/useJobActions';
 import {
   useJobBulkPurchasePreview,
+  useJobChargeAttachments,
   useJobCharges,
   useJobChargesHistory,
   useJobGpum,
@@ -61,7 +64,12 @@ import type {
 } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { normalizeJobCharges } from '../../utils/normalizeJob';
+import { resolveJobDocumentFileUrl } from '../../utils/resolveJobDocumentFileUrl';
 import { ApiDataView } from '../ApiDataView';
+import {
+  JobInvoiceFormModal,
+  type JobInvoiceFormKind,
+} from '../JobInvoiceFormModal';
 
 /** Fresa Costing toolbar — each action has a unique solid color */
 const COSTING_COLORS = {
@@ -500,6 +508,12 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const gpumQuery = useJobGpum(job.id, sidePanel === 'gpum');
   const mutations = useJobChargeMutations(job.id);
   const actions = useJobActions(job.id);
+  const tenantId = useAuthStore((s) => s.user?.tenantId);
+  const { downloadStoredFile } = useFileDownload();
+  const [invoiceForm, setInvoiceForm] = useState<{
+    kind: JobInvoiceFormKind;
+    allowPdf?: boolean;
+  } | null>(null);
 
   const { data: chargeCodes = [] } = useMasterOptions(
     'charge-codes',
@@ -740,6 +754,12 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const [attachPickFile, setAttachPickFile] = useState<File | null>(null);
   const [attachSide, setAttachSide] = useState<'CHARGE' | 'SALE' | 'COST'>('CHARGE');
   const [attachModalOpen, setAttachModalOpen] = useState(false);
+  const attachListQuery = useJobChargeAttachments(
+    job.id,
+    attachChargeId,
+    attachModalOpen && isUuid(attachChargeId),
+    attachSide === 'CHARGE' ? 'CHARGE' : attachSide,
+  );
   const [sideEdit, setSideEdit] = useState<{
     chargeId: string;
     side: 'SALE' | 'COST';
@@ -1291,14 +1311,8 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           <CostingBtn
             color={COSTING_COLORS.vendorInv}
             icon={<Truck className={ICO} />}
-            title="Generate purchase invoice from job costing"
-            disabled={actions.createPurchaseInvoiceFromJob.isPending}
-            onClick={() =>
-              void run(
-                () => actions.createPurchaseInvoiceFromJob.mutateAsync({}),
-                'Vendor / purchase invoice created from job.',
-              )
-            }
+            title="Purchase / vendor invoice form (optional PDF upload)"
+            onClick={() => setInvoiceForm({ kind: 'purchase', allowPdf: true })}
           >
             Vendor INV Upload
           </CostingBtn>
@@ -1400,26 +1414,16 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           <CostingBtn
             color={COSTING_COLORS.salesInv}
             icon={<FileText className={ICO} />}
-            disabled={actions.createSaleInvoiceFromJob.isPending}
-            onClick={() =>
-              void run(
-                () => actions.createSaleInvoiceFromJob.mutateAsync({}),
-                'Sales invoice created from job.',
-              )
-            }
+            title="Sales invoice form (sale charges → quotation → empty)"
+            onClick={() => setInvoiceForm({ kind: 'sale' })}
           >
             Generate Sales Invoice
           </CostingBtn>
           <CostingBtn
             color={COSTING_COLORS.purchaseInv}
             icon={<FileText className={ICO} />}
-            disabled={actions.createPurchaseInvoiceFromJob.isPending}
-            onClick={() =>
-              void run(
-                () => actions.createPurchaseInvoiceFromJob.mutateAsync({}),
-                'Purchase invoice created from job.',
-              )
-            }
+            title="Purchase invoice form (vendor offer → costing → empty)"
+            onClick={() => setInvoiceForm({ kind: 'purchase' })}
           >
             Generate Purchase Invoice
           </CostingBtn>
@@ -2602,7 +2606,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
         }
       >
         <div className="space-y-4">
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-thead-bg,#E9EEF2)] p-3">
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] p-3">
             <div>
               <p className="text-[11px] font-semibold uppercase text-[var(--fresa-header-text,#0A2942)]">
                 Job No.
@@ -3257,6 +3261,52 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
       >
         <div className="grid gap-3">
           <Input label="Charge id" value={attachChargeId} readOnly />
+          {attachListQuery.data && attachListQuery.data.length > 0 ? (
+            <ul className="space-y-1 rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-3 py-2">
+              {attachListQuery.data.map((att, idx) => {
+                const url =
+                  resolveJobDocumentFileUrl(
+                    {
+                      file_url: att.file_url,
+                      s3_key: att.s3_key,
+                      file_name: att.file_name,
+                    },
+                    tenantId,
+                  ) || att.file_url;
+                return (
+                  <li
+                    key={att.id || `${att.file_name}-${idx}`}
+                    className="flex items-center justify-between gap-2 text-[13px]"
+                  >
+                    <span className="min-w-0 truncate" title={att.file_name}>
+                      {att.file_name}
+                    </span>
+                    {url ? (
+                      <button
+                        type="button"
+                        className="shrink-0 text-xs font-medium text-[var(--fresa-header-text,#0A2942)] underline"
+                        onClick={() =>
+                          void downloadStoredFile(url, {
+                            displayName: att.file_name,
+                          })
+                        }
+                      >
+                        Download
+                      </button>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : attachListQuery.isFetching ? (
+            <p className="text-[12px] text-[var(--color-neutral-400)]">
+              Loading attachments…
+            </p>
+          ) : (
+            <p className="text-[12px] text-[var(--color-neutral-400)]">
+              No attachments on this side yet.
+            </p>
+          )}
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[var(--color-neutral-600)]">
               Choose file
@@ -3293,6 +3343,29 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           />
         </div>
       </Modal>
+
+      <JobInvoiceFormModal
+        open={Boolean(invoiceForm)}
+        onClose={() => setInvoiceForm(null)}
+        jobId={job.id}
+        kind={invoiceForm?.kind ?? 'sale'}
+        allowPdf={invoiceForm?.allowPdf}
+        chargeIds={charges
+          .filter((c) =>
+            invoiceForm?.kind === 'sale' ? !c.is_cost : Boolean(c.is_cost),
+          )
+          .map((c) => c.id)
+          .filter((id) => isUuid(id))}
+        onSaved={() => {
+          setMsg(
+            invoiceForm?.kind === 'sale'
+              ? 'Sales invoice form saved as DRAFT.'
+              : 'Purchase / vendor invoice form saved as DRAFT.',
+          );
+          onChanged?.();
+          void chargesQuery.refetch();
+        }}
+      />
     </div>
   );
 }

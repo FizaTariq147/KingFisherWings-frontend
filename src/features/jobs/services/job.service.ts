@@ -33,6 +33,7 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 import { normalizeCode128Value } from '../utils/scannableBarcode';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import { jobDetailTabLabel, toApiDetailTabKey } from '../utils/jobDetailTabs';
+import { resolveJobDocumentFileUrl } from '../utils/resolveJobDocumentFileUrl';
 
 function jobDetailTabLabelSafe(key: string): string {
   try {
@@ -63,6 +64,8 @@ import type {
   GetJobChargesDto,
   GetJobChargesFromShipmentDto,
   JobCharge,
+  JobInvoiceFormPreview,
+  JobInvoiceFormSaveDto,
   PatchJobChargeSideDto,
   PatchJobClosedOverridesDto,
   ProfitShareAddDto,
@@ -1549,14 +1552,19 @@ export const jobService = {
         .map((row) => {
           if (!row || typeof row !== 'object') return null;
           const r = row as Record<string, unknown>;
-          const file_name = String(r.file_name ?? r.fileName ?? '').trim();
-          const file_url = String(r.file_url ?? r.fileUrl ?? '').trim();
-          if (!file_name || !file_url) return null;
+          const file_name = String(r.file_name ?? r.fileName ?? r.name ?? '').trim();
+          const s3_key = String(r.s3_key ?? r.s3Key ?? '').trim() || undefined;
+          let file_url = String(r.file_url ?? r.fileUrl ?? r.url ?? r.download_url ?? '').trim();
+          if (!file_url && s3_key) {
+            file_url =
+              resolveJobDocumentFileUrl({ s3_key, file_name }, undefined) || s3_key;
+          }
+          if (!file_name && !file_url && !s3_key) return null;
           return {
             id: typeof r.id === 'string' ? r.id : undefined,
-            file_name,
-            file_url,
-            s3_key: typeof r.s3_key === 'string' ? r.s3_key : undefined,
+            file_name: file_name || 'attachment',
+            file_url: file_url || s3_key || '',
+            s3_key,
             file_size: Number.isFinite(Number(r.file_size ?? r.fileSize))
               ? Number(r.file_size ?? r.fileSize)
               : undefined,
@@ -1606,12 +1614,31 @@ export const jobService = {
     const uploaded = await this.uploadJobTypedDocument(id, 'OTHER', file);
     const file_name =
       String(uploaded.file_name ?? uploaded.fileName ?? file.name).trim() || file.name;
-    const file_url = String(
+    const s3_key =
+      typeof uploaded.s3_key === 'string'
+        ? uploaded.s3_key
+        : typeof uploaded.s3Key === 'string'
+          ? uploaded.s3Key
+          : undefined;
+    let file_url = String(
       uploaded.file_url ?? uploaded.fileUrl ?? uploaded.url ?? uploaded.download_url ?? '',
     ).trim();
     if (!file_url) {
-      throw new Error('Upload succeeded but no file URL was returned.');
+      file_url =
+        resolveJobDocumentFileUrl(
+          { s3_key, file_name, file_url: undefined },
+          typeof uploaded.tenant_id === 'string'
+            ? uploaded.tenant_id
+            : typeof uploaded.tenantId === 'string'
+              ? uploaded.tenantId
+              : undefined,
+        ) || '';
     }
+    if (!file_url && !s3_key) {
+      throw new Error('Upload succeeded but no file URL or storage key was returned.');
+    }
+    // OpenAPI requires file_url — use s3_key as last-resort absolute-ish ref.
+    if (!file_url && s3_key) file_url = s3_key;
     const file_size = Number.isFinite(Number(uploaded.file_size ?? uploaded.fileSize))
       ? Number(uploaded.file_size ?? uploaded.fileSize)
       : file.size;
@@ -1620,12 +1647,6 @@ export const jobService = {
       (typeof uploaded.mimeType === 'string' && uploaded.mimeType) ||
       file.type ||
       undefined;
-    const s3_key =
-      typeof uploaded.s3_key === 'string'
-        ? uploaded.s3_key
-        : typeof uploaded.s3Key === 'string'
-          ? uploaded.s3Key
-          : undefined;
     return this.createChargeAttachment(id, chargeId, {
       file_name,
       file_url,
@@ -1783,22 +1804,107 @@ export const jobService = {
     return request(() => axiosInstance.get(JOB_API.chargeHistory(id, chargeId)));
   },
 
-  /** POST /jobs/:id/invoices/sale */
+  /**
+   * GET /jobs/:id/invoices/sale/form
+   * Prefill from sale charges → quotation → empty. `charge_ids` query is comma-separated.
+   */
+  async getSaleInvoiceForm(
+    id: string,
+    chargeIds: string[] = [],
+  ): Promise<JobInvoiceFormPreview> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.get(JOB_API.invoicesSaleForm(id), {
+        params: { charge_ids: chargeIds.filter(Boolean).join(',') },
+      }),
+    ) as Promise<JobInvoiceFormPreview>;
+  },
+
+  /**
+   * GET /jobs/:id/invoices/purchase/form
+   * Prefill from vendor offer → costing → empty (does not require cost_party_id).
+   */
+  async getPurchaseInvoiceForm(
+    id: string,
+    chargeIds: string[] = [],
+  ): Promise<JobInvoiceFormPreview> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.get(JOB_API.invoicesPurchaseForm(id), {
+        params: { charge_ids: chargeIds.filter(Boolean).join(',') },
+      }),
+    ) as Promise<JobInvoiceFormPreview>;
+  },
+
+  /** POST /jobs/:id/invoices/sale — save form DRAFT/CREATE or legacy generate from charge_ids */
   async createSaleInvoiceFromJob(
     id: string,
-    dto: CreateJobInvoiceFromCostingDto = {},
+    dto: CreateJobInvoiceFromCostingDto | JobInvoiceFormSaveDto = {},
+    file?: File | null,
   ): Promise<unknown> {
     assertId(id);
+    if (file) {
+      const form = new FormData();
+      form.append('file', file);
+      form.append('data', JSON.stringify(dto ?? {}));
+      return request(() =>
+        axiosInstance.post(JOB_API.invoicesSale(id), form, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }),
+      );
+    }
     return request(() => axiosInstance.post(JOB_API.invoicesSale(id), dto));
   },
 
-  /** POST /jobs/:id/invoices/purchase */
+  /**
+   * POST /jobs/:id/invoices/purchase — save form DRAFT/CREATE;
+   * optional PDF via multipart `file` + JSON `data`.
+   */
   async createPurchaseInvoiceFromJob(
     id: string,
-    dto: CreateJobInvoiceFromCostingDto = {},
+    dto: CreateJobInvoiceFromCostingDto | JobInvoiceFormSaveDto = {},
+    file?: File | null,
   ): Promise<unknown> {
     assertId(id);
+    if (file) {
+      const form = new FormData();
+      form.append('file', file);
+      form.append('data', JSON.stringify(dto ?? {}));
+      return request(() =>
+        axiosInstance.post(JOB_API.invoicesPurchase(id), form, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }),
+      );
+    }
     return request(() => axiosInstance.post(JOB_API.invoicesPurchase(id), dto));
+  },
+
+  /** GET /jobs/:id/documents/:documentId/download — trigger browser download */
+  async downloadJobDocument(
+    id: string,
+    documentId: string,
+    displayName?: string,
+  ): Promise<void> {
+    assertId(id);
+    if (!isUuid(documentId)) throw new Error('Invalid document id.');
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<Blob>(JOB_API.documentDownload(id, documentId), {
+          responseType: 'blob',
+        }),
+      );
+      const blob = res.data;
+      const name = (displayName || 'document').trim() || 'document';
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = name;
+      anchor.rel = 'noopener noreferrer';
+      anchor.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
   },
 
   /** GET /jobs/:id/invoices/purchase/bulk — Fresa bulk PI preview */

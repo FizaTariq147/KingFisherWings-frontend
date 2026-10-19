@@ -104,20 +104,20 @@ function FresaReadonlyField({
   const shown = !raw || isUuid(raw) ? '' : raw;
   const text = shown || (href ? 'View' : '—');
   return (
-    <div className="min-w-0">
-      <div className={erpForm.label}>{label}</div>
-      <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[13px] text-[#0f172a]">
-        {href ? (
-          <Link
-            className="truncate font-medium text-[var(--color-primary-700)] hover:underline"
-            to={href}
-          >
-            {text}
-          </Link>
-        ) : (
-          <span className="truncate">{text}</span>
-        )}
-      </div>
+    <div className="flex min-w-0 items-baseline gap-1.5 text-[13px] leading-5">
+      <span className="shrink-0 font-semibold text-[var(--fresa-header-text,#0A2942)]">
+        {label}:
+      </span>
+      {href ? (
+        <Link
+          className="min-w-0 truncate font-medium text-[var(--color-primary-700)] hover:underline"
+          to={href}
+        >
+          {text}
+        </Link>
+      ) : (
+        <span className="min-w-0 truncate text-[#0f172a]">{text}</span>
+      )}
     </div>
   );
 }
@@ -505,8 +505,6 @@ export default function QuotationDetailPage() {
   const hasJob = Boolean(quotation.job_id && isUuid(quotation.job_id));
   const canVerify = fclActions?.can_verify === true;
   const canApproveVerified = fclActions?.can_approve_verified === true;
-  const isApprovedLike =
-    status === 'APPROVED' || status === 'WON' || status === 'CONVERTED';
   /**
    * Backend gates Generate Shipment / Job on APPROVED (not VERIFIED).
    * Show buttons only when actions.can_generate_* is explicitly true.
@@ -835,13 +833,9 @@ export default function QuotationDetailPage() {
                     : quotation.job_number?.trim() || quotation.job_id?.slice(0, 8)}
                 </Link>
               ) : null}
-              {!enquiryHref && !shipmentHref && !jobHref ? (
-                <span className="text-[#64748b]">No linked records yet</span>
-              ) : null}
             </div>
           </>
         }
-        toolbarLabel="Generation actions"
         toolbar={
           <>
             {quotation.actions?.can_change_status !== false ? (
@@ -1075,17 +1069,6 @@ export default function QuotationDetailPage() {
               >
                 Expire
               </Button>
-            ) : null}
-            {!canGenerateShipment && !canGenerateJobFromQuote ? (
-              <span className="text-[12px] text-[var(--color-neutral-500)]">
-                {status === 'VERIFIED'
-                  ? 'Quotation is Verified — set status to Approved to unlock Generate Shipment / Job.'
-                  : isApprovedLike
-                    ? hasShipment && hasJob
-                      ? 'Shipment and job already linked.'
-                      : 'Generate Shipment / Job is not available for this quotation yet.'
-                    : 'Approve the quotation (Verified → Approved) to unlock Generate Shipment and Generate Job.'}
-              </span>
             ) : null}
           </>
         }

@@ -788,57 +788,41 @@ export const quotationService = {
       return null;
     };
 
+    // Continuum Generate Job leaves quote APPROVED (+ job_id) — not only CONVERTED.
+    const baseList = {
+      page: 1,
+      limit: 100,
+      order: 'desc' as const,
+      ...(hints?.customerId && isUuid(hints.customerId)
+        ? { customer_id: hints.customerId }
+        : {}),
+      ...(hints?.jobType ? { job_type: hints.jobType as Quotation['job_type'] } : {}),
+    };
     const listAttempts: QuotationListParams[] = [
-      {
-        page: 1,
-        limit: 100,
-        order: 'desc',
-        status: 'CONVERTED',
-        ...(hints?.customerId && isUuid(hints.customerId)
-          ? { customer_id: hints.customerId }
-          : {}),
-        ...(hints?.jobType ? { job_type: hints.jobType as Quotation['job_type'] } : {}),
-      },
-      // Air shell jobs often keep quotation APPROVED with job_id (not CONVERTED yet).
-      ...(isAirFamily
-        ? ([
-            {
-              page: 1,
-              limit: 50,
-              order: 'desc',
-              status: 'APPROVED',
-              ...(hints?.customerId && isUuid(hints.customerId)
-                ? { customer_id: hints.customerId }
-                : {}),
-              ...(hints?.jobType ? { job_type: hints.jobType as Quotation['job_type'] } : {}),
-            },
-            {
-              page: 1,
-              limit: 50,
-              order: 'desc',
-              status: 'APPROVED',
-              job_type: 'AIR_EXPORT' as never,
-            },
-            {
-              page: 1,
-              limit: 50,
-              order: 'desc',
-              status: 'APPROVED',
-              job_type: 'AIR_IMPORT' as never,
-            },
-          ] as QuotationListParams[])
-        : []),
-      {
-        page: 1,
-        limit: 50,
-        order: 'desc',
-        ...(hints?.customerId && isUuid(hints.customerId)
-          ? { customer_id: hints.customerId }
-          : {}),
-        ...(hints?.jobType ? { job_type: hints.jobType as Quotation['job_type'] } : {}),
-      },
+      { ...baseList, status: 'CONVERTED' },
+      { ...baseList, status: 'APPROVED', limit: 100 },
+      { ...baseList, status: 'WON', limit: 50 },
+      { ...baseList, limit: 50 },
       { page: 1, limit: 30, search: jobId, order: 'desc' },
     ];
+    if (isAirFamily) {
+      listAttempts.push(
+        {
+          page: 1,
+          limit: 50,
+          order: 'desc',
+          status: 'APPROVED',
+          job_type: 'AIR_EXPORT' as never,
+        },
+        {
+          page: 1,
+          limit: 50,
+          order: 'desc',
+          status: 'APPROVED',
+          job_type: 'AIR_IMPORT' as never,
+        },
+      );
+    }
     if (jobNumberUpper) {
       listAttempts.push({ page: 1, limit: 30, search: jobNumberUpper, order: 'desc' });
     }
@@ -1186,11 +1170,31 @@ export const quotationService = {
         strField(nestedJob?.job_number) ??
         strField(nestedJob?.jobNumber) ??
         strField(nestedJob?.number);
-      const quotation =
+      let quotation =
         normalizeQuotation(unwrapEntity(res.data)) ?? (await this.getById(id));
+      const resolvedJobId = jobId || quotation.job_id;
+      if (resolvedJobId && isUuid(resolvedJobId)) {
+        const { rememberQuotationConverted } = await import(
+          '../utils/quotationConvertedMemory'
+        );
+        rememberQuotationConverted(id, resolvedJobId);
+        // Push customer portal booking form onto empty job booking-form APIs.
+        await syncPortalBookingFormAfterConvert({
+          ...quotation,
+          id,
+          job_id: resolvedJobId,
+          job_type: quotation.job_type,
+          quotation_number: quotation.quotation_number || quotation.quote_no,
+        });
+        try {
+          quotation = await this.getById(id);
+        } catch {
+          /* keep prior */
+        }
+      }
       return {
         ...quotation,
-        ...(jobId ? { job_id: jobId } : {}),
+        ...(resolvedJobId ? { job_id: resolvedJobId } : {}),
         ...(jobNumber || quotation.job_number
           ? { job_number: jobNumber || quotation.job_number }
           : {}),

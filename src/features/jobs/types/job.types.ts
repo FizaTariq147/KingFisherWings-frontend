@@ -1219,6 +1219,55 @@ export type CreateJobInvoiceFromCostingDto = {
   notes?: string;
 } & Record<string, unknown>;
 
+/** OpenAPI JobInvoiceFormLineDto — pricing line on sale/purchase invoice form */
+export interface JobInvoiceFormLineDto {
+  job_charge_id?: string;
+  charge_code_id?: string;
+  description?: string;
+  shipment_no?: string;
+  unit?: string;
+  quantity?: number;
+  currency_code?: string;
+  exchange_rate?: number;
+  dr_cr?: 'DR' | 'CR' | string;
+  amount: number;
+  fcy_amount?: number;
+  tax_rate_id?: string;
+  pp_cc?: 'PP' | 'CC' | string;
+}
+
+/**
+ * OpenAPI JobInvoiceFormSaveDto — POST /jobs/:id/invoices/sale | /purchase
+ * Saves DRAFT with display_status CREATE (optional PDF multipart on purchase).
+ */
+export interface JobInvoiceFormSaveDto {
+  charge_ids?: string[];
+  organization_id?: string;
+  party_id?: string;
+  branch_id?: string;
+  company_id?: string;
+  voucher_type?: string;
+  v_date?: string;
+  gl_date?: string;
+  exchange_rate?: number;
+  bill_amount?: number;
+  remarks?: string;
+  books?: string;
+  address?: string;
+  currency_code?: string;
+  narration?: string;
+  ref_no?: string;
+  vendor_quote_id?: string;
+  lines?: JobInvoiceFormLineDto[];
+}
+
+/** GET /jobs/:id/invoices/sale|purchase/form preview payload */
+export type JobInvoiceFormPreview = JobInvoiceFormSaveDto & {
+  display_status?: string;
+  status?: string;
+  lines?: JobInvoiceFormLineDto[];
+} & Record<string, unknown>;
+
 /** OpenAPI GenerateJobEdiDto / GenerateShipmentEdiDto */
 export const JOB_EDI_TYPES = [
   'BAYAN_MASTER',

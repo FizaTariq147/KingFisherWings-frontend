@@ -111,7 +111,7 @@ const reportsOpsTile: MenuTile = {
   id: 'operations-reports',
   title: 'Operations reports',
   description:
-    'DO not invoiced, job finance, exceptions, KPI status, job list summary, voyage list.',
+    'DO not invoiced, job finance, exceptions, KPI status, job list summary, voyage list, closed jobs.',
   icon: ClipboardList,
   iconColor: 'bg-teal-500',
   path: '/operations/reports',

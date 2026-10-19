@@ -56,7 +56,7 @@ export function opsLifecycleHostLabel(host: {
         : host.entityType === 'SHIPMENT'
           ? 'Shipment'
           : 'Job';
-  return `${label} continuum (synced across Enquiry → Quotation → Shipment → Job)`;
+  return label;
 }
 
 /**
