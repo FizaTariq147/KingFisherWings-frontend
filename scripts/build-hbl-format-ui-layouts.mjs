@@ -5,11 +5,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { diversifyOpsBlocks } from './lib/fresaLayoutDiversity.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const BRAND = {
-  company: 'KingFisher Logistic',
+  company: 'KingFisher Wings',
   address: 'Dubai, United Arab Emirates',
   web: 'www.kingfisherwingsgroup.com',
   phone: '+971 55 5355 286',
@@ -166,28 +167,14 @@ function layout(partial) {
 
 function standardHbl(docTitle, opts = {}) {
   const {
-    headerColor = 'primary',
     extraGrid = [],
     badge,
     letterBody,
     termsExtra,
     isDraft = true,
+    seed = 0,
   } = opts;
-  const blocks = [
-    { type: 'companyHeader', showContact: true },
-    ...(badge ? [{ type: 'formatBadge' }] : []),
-    { type: 'docTitle', text: docTitle, align: 'center', band: true },
-  ];
-  if (letterBody) blocks.push({ type: 'letterBody' });
-  blocks.push(
-    { type: 'partyTriple' },
-    { type: 'fieldGrid', cols: 2 },
-    { type: 'chargeTable', headerColor },
-    { type: 'containerStrip' },
-    { type: 'termsBank' },
-    { type: 'signatureRow' },
-    { type: 'colorfulFooter' },
-  );
+  const blocks = diversifyOpsBlocks(seed, { title: docTitle });
   return layout({
     demo: {
       invoiceNo: 'PLMAAJEA00081',
@@ -213,8 +200,9 @@ function standardHbl(docTitle, opts = {}) {
 }
 
 function draftFormat(n, headerColor = 'primary') {
+  void headerColor;
   return standardHbl(`HOUSE BILL OF LADING — DRAFT FORMAT ${n}`, {
-    headerColor,
+    seed: n * 17,
     extraGrid: [{ k: 'Layout', v: `HBL Draft Report Format-${n}` }],
     badge: `Format-${n}`,
   });

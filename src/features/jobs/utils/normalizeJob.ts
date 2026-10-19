@@ -6,8 +6,10 @@ import type {
   JobListParams,
   JobMilestone,
   JobNote,
+  JobPnl,
   JobStatusOption,
   AirUldRequest,
+  DeliveryAcknowledgement,
 } from '../types/job.types';
 import type { JobStatus } from '../constants/job.constants';
 import { canonicalizeJobType } from './canonicalizeJobType';
@@ -247,7 +249,13 @@ export function normalizeJobCharge(raw: unknown): JobCharge | null {
       num(sale?.exchange_rate ?? sale?.exchangeRate) ??
       num(cost?.exchange_rate ?? cost?.exchangeRate),
     tax_rate_id: pickString(r, 'tax_rate_id', 'taxRateId') || undefined,
-    is_cost: bool(r.is_cost ?? r.isCost),
+    // Dual-sided lines can carry both sale_amount + cost_amount; don't rely on is_cost alone.
+    is_cost:
+      bool(r.is_cost ?? r.isCost) === true
+        ? true
+        : saleAmt == null && costAmt != null
+          ? true
+          : bool(r.is_cost ?? r.isCost),
     is_billable: bool(r.is_billable ?? r.isBillable, true),
     is_provisional: bool(
       r.is_provisional ?? r.isProvisional ?? chargeSec?.is_provisional,
@@ -265,6 +273,8 @@ export function normalizeJobCharge(raw: unknown): JobCharge | null {
       undefined,
     line_total:
       num(r.line_total ?? r.lineTotal) ?? saleAmt ?? costAmt,
+    sale_amount: saleAmt,
+    cost_amount: costAmt,
     line_no: num(r.line_no ?? r.lineNo),
     unit: pickString(r, 'unit') || undefined,
     pp_cc:
@@ -308,6 +318,84 @@ export function normalizeJobCharge(raw: unknown): JobCharge | null {
 export function normalizeJobCharges(raw: unknown): JobCharge[] {
   const { items } = unwrapList(raw);
   return items.map(normalizeJobCharge).filter((c): c is JobCharge => Boolean(c));
+}
+
+function asLineRows(value: unknown): Array<Record<string, unknown>> {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((row) => asRecord(row))
+    .filter((row): row is Record<string, unknown> => Boolean(row));
+}
+
+/** GET /jobs/:id/pnl — revenue/cost lines + totals (dual-sided costing). */
+export function normalizeJobPnl(raw: unknown): JobPnl {
+  const r = asRecord(unwrapEntity(raw) ?? raw) ?? {};
+  const summary = asRecord(r.summary) ?? asRecord(r.totals) ?? r;
+  const revenue = num(
+    summary.revenue ??
+      summary.total_revenue ??
+      summary.totalRevenue ??
+      summary.sale_total ??
+      summary.saleTotal ??
+      r.revenue ??
+      r.total_revenue ??
+      r.totalRevenue ??
+      r.sale_amount ??
+      r.saleAmount,
+  );
+  const cost = num(
+    summary.cost ??
+      summary.total_cost ??
+      summary.totalCost ??
+      summary.cost_total ??
+      summary.costTotal ??
+      r.cost ??
+      r.total_cost ??
+      r.totalCost ??
+      r.cost_amount ??
+      r.costAmount,
+  );
+  const gross_profit =
+    num(
+      summary.gross_profit ??
+        summary.grossProfit ??
+        summary.gp ??
+        r.gross_profit ??
+        r.grossProfit ??
+        r.gp,
+    ) ?? (revenue != null && cost != null ? revenue - cost : undefined);
+
+  const revenue_lines = asLineRows(
+    r.revenue_lines ?? r.revenueLines ?? r.sale_lines ?? r.saleLines,
+  );
+  const cost_lines = asLineRows(
+    r.cost_lines ?? r.costLines ?? r.purchase_lines ?? r.purchaseLines,
+  );
+  let lines = asLineRows(r.lines ?? r.items ?? r.breakdown);
+  if (!lines.length && (revenue_lines.length || cost_lines.length)) {
+    lines = [
+      ...revenue_lines.map((row) => ({ ...row, side: row.side ?? 'revenue' })),
+      ...cost_lines.map((row) => ({ ...row, side: row.side ?? 'cost' })),
+    ];
+  }
+
+  return {
+    revenue,
+    cost,
+    gross_profit,
+    currency_code:
+      pickString(
+        summary,
+        'currency_code',
+        'currencyCode',
+        'currency',
+      ).toUpperCase() ||
+      pickString(r, 'currency_code', 'currencyCode', 'currency').toUpperCase() ||
+      undefined,
+    lines,
+    revenue_lines: revenue_lines.length ? revenue_lines : undefined,
+    cost_lines: cost_lines.length ? cost_lines : undefined,
+  };
 }
 
 function normalizeMilestone(raw: unknown): JobMilestone | null {
@@ -413,6 +501,7 @@ export function normalizeJob(raw: unknown): Job | null {
     job_number: pickString(r, 'job_number', 'jobNumber') || undefined,
     job_type: jobType,
     status: (pickString(r, 'status') || 'ENQUIRY') as JobStatus,
+    status_code: pickString(r, 'status_code', 'statusCode') || undefined,
     company_id: pickString(r, 'company_id', 'companyId') || undefined,
     branch_id: pickString(r, 'branch_id', 'branchId') || undefined,
     department_id: pickString(r, 'department_id', 'departmentId') || undefined,
@@ -928,10 +1017,38 @@ export function normalizeJobStatusOptions(raw: unknown): JobStatusOption[] {
     const value = pickString(rec, 'value', 'status', 'code', 'id', 'key').toUpperCase();
     if (!value || seen.has(value)) continue;
     seen.add(value);
+    const mapsTo = pickString(
+      rec,
+      'maps_to_system_status',
+      'mapsToSystemStatus',
+      'maps_to',
+      'system_status',
+    ).toUpperCase();
+    const code = pickString(rec, 'code', 'status_code', 'statusCode') || value;
     out.push({
-      value,
+      value: code || value,
       label: pickString(rec, 'label', 'name', 'title') || value.replaceAll('_', ' '),
       group: pickString(rec, 'group', 'category', 'bucket') || undefined,
+      code: code || undefined,
+      maps_to_system_status: mapsTo || undefined,
+      is_system:
+        typeof rec.is_system === 'boolean'
+          ? rec.is_system
+          : typeof rec.isSystem === 'boolean'
+            ? rec.isSystem
+            : undefined,
+      is_custom:
+        typeof rec.is_custom === 'boolean'
+          ? rec.is_custom
+          : typeof rec.isCustom === 'boolean'
+            ? rec.isCustom
+            : undefined,
+      is_active:
+        typeof rec.is_active === 'boolean'
+          ? rec.is_active
+          : typeof rec.isActive === 'boolean'
+            ? rec.isActive
+            : undefined,
     });
   }
   return out;
@@ -939,4 +1056,54 @@ export function normalizeJobStatusOptions(raw: unknown): JobStatusOption[] {
 
 export function normalizeJobs(items: unknown[]): Job[] {
   return items.map(normalizeJob).filter((j): j is Job => Boolean(j));
+}
+
+/** Normalize GET/POST acknowledgement payloads (extends ProofOfDelivery). */
+export function normalizeDeliveryAcknowledgement(raw: unknown): DeliveryAcknowledgement {
+  const r = asRecord(unwrapEntity(raw)) ?? asRecord(raw) ?? {};
+  const nested =
+    asRecord(r.acknowledgement) ??
+    asRecord(r.delivery_acknowledgement) ??
+    asRecord(r.proof_of_delivery) ??
+    r;
+  const pathHintsRaw = nested.path_hints ?? nested.pathHints ?? r.path_hints;
+  let path_hints: DeliveryAcknowledgement['path_hints'];
+  if (Array.isArray(pathHintsRaw)) {
+    path_hints = pathHintsRaw.map(String);
+  } else if (asRecord(pathHintsRaw)) {
+    path_hints = Object.fromEntries(
+      Object.entries(asRecord(pathHintsRaw)!).map(([k, v]) => [k, String(v ?? '')]),
+    );
+  }
+  return {
+    id: pickString(nested, 'id') || undefined,
+    job_id: pickString(nested, 'job_id', 'jobId') || undefined,
+    status:
+      pickString(nested, 'status', 'acknowledgement_status', 'ack_status').toUpperCase() ||
+      'DRAFT',
+    acknowledged_at:
+      pickString(nested, 'acknowledged_at', 'acknowledgedAt') || undefined,
+    receiver_name: pickString(nested, 'receiver_name', 'receiverName', 'received_by') || undefined,
+    receiver_title: pickString(nested, 'receiver_title', 'receiverTitle') || undefined,
+    goods_condition:
+      pickString(nested, 'goods_condition', 'goodsCondition', 'condition') || undefined,
+    remarks: pickString(nested, 'remarks', 'notes', 'comments') || undefined,
+    signature_s3_key:
+      pickString(nested, 'signature_s3_key', 'signatureS3Key', 'signature_image_path') ||
+      undefined,
+    signature_url:
+      pickString(nested, 'signature_url', 'signatureUrl', 'signature_file_url') || undefined,
+    template_snapshot:
+      (nested.template_snapshot as string | Record<string, unknown> | undefined) ??
+      (nested.templateSnapshot as string | Record<string, unknown> | undefined),
+    submitted_by_party_id:
+      pickString(nested, 'submitted_by_party_id', 'submittedByPartyId') || undefined,
+    received_by_user_id:
+      pickString(nested, 'received_by_user_id', 'receivedByUserId') || undefined,
+    received_at: pickString(nested, 'received_at', 'receivedAt') || undefined,
+    actual_delivery_date:
+      pickString(nested, 'actual_delivery_date', 'actualDeliveryDate') || undefined,
+    path_hints,
+    raw: nested,
+  };
 }

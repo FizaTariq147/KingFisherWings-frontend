@@ -7,6 +7,11 @@ import type { InvoiceFormatPdfData } from './invoiceFormatToInvoicePdfModel';
 import { shouldAppendCustomerTermsPage } from './shouldAppendCustomerTermsPage';
 import { appendOfficialCustomerTermsPdf } from './appendOfficialCustomerTermsPdf';
 import { resolveCustomerTermsBranding } from './resolveCustomerTermsBranding';
+import {
+  SHARED_LAYOUT_CHROME,
+  type SharedLayoutChrome,
+} from './applySharedLayoutChrome';
+import { sanitizeHtml2CanvasClone } from './html2canvasSafeColors';
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -64,8 +69,25 @@ export async function generateInvoiceFormatPreviewPdf(
 
   let root: Root | null = null;
   try {
+    // Shared header/footer chrome from org profile (same for every format).
+    let chrome: SharedLayoutChrome = SHARED_LAYOUT_CHROME;
+    try {
+      const termsBrand = await resolveCustomerTermsBranding();
+      if (termsBrand.companyName?.trim()) {
+        chrome = { ...SHARED_LAYOUT_CHROME, company: termsBrand.companyName.trim() };
+      }
+    } catch {
+      /* keep default chrome */
+    }
+    const liveData = {
+      ...data,
+      companyName: data.companyName || chrome.company,
+    };
+
     root = createRoot(mount);
-    root.render(<InvoiceFormatLayoutByKind preview={preview} data={data} />);
+    root.render(
+      <InvoiceFormatLayoutByKind preview={preview} data={liveData} chrome={chrome} />,
+    );
 
     await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
     await waitForImages(mount);
@@ -79,6 +101,9 @@ export async function generateInvoiceFormatPreviewPdf(
     }
 
     // Capture the full bordered sheet as one image (no mid-box page splits).
+    // Tailwind v4 / Chromium emit oklab() colors — html2canvas 1.x cannot parse them.
+    // Inline rgb/hex on the off-screen sheet and again on the clone.
+    sanitizeHtml2CanvasClone(document, sheet);
     const canvas = await html2canvas(sheet, {
       scale: 2,
       useCORS: true,
@@ -86,6 +111,10 @@ export async function generateInvoiceFormatPreviewPdf(
       backgroundColor: '#ffffff',
       logging: false,
       windowWidth: cssWidth,
+      foreignObjectRendering: false,
+      onclone: (clonedDoc, clonedElement) => {
+        sanitizeHtml2CanvasClone(clonedDoc, clonedElement);
+      },
     });
 
     const pdf = new jsPDF({

@@ -193,8 +193,21 @@ export function normalizeMilestones(raw: unknown): PortalMilestone[] {
 export function normalizeShipmentDocument(raw: unknown): PortalShipmentDocument | null {
   const record = asRecord(raw);
   if (!record) return null;
-  const id = pickString(record.id, record.document_id, record.doc_id);
+  const id = pickString(record.id, record.document_id, record.doc_id, record.job_document_id);
   if (!id) return null;
+  const visible =
+    record.visible_to_customer === false || record.visibleToCustomer === false
+      ? false
+      : record.visible_to_customer === true || record.visibleToCustomer === true
+        ? true
+        : undefined;
+  // List all customer-visible completed docs; permission matrix only gates download.
+  const canDownload =
+    record.can_download === false || record.canDownload === false
+      ? false
+      : visible === false
+        ? false
+        : true;
   return {
     id,
     name:
@@ -203,7 +216,10 @@ export function normalizeShipmentDocument(raw: unknown): PortalShipmentDocument 
     documentType: pickString(record.document_type, record.documentType, record.type) || undefined,
     mimeType: pickString(record.mime_type, record.mimeType, record.content_type) || undefined,
     createdAt: pickString(record.created_at, record.createdAt) || undefined,
-    canDownload: record.can_download !== false && record.canDownload !== false,
+    canDownload,
+    visibleToCustomer: visible,
+    downloadPath:
+      pickString(record.download_path, record.downloadPath, record.path) || undefined,
   };
 }
 
@@ -259,6 +275,65 @@ export function normalizeShipmentDetail(raw: unknown): PortalShipmentDetail | nu
     documents: Array.isArray(docsRaw)
       ? docsRaw.map(normalizeShipmentDocument).filter((d): d is PortalShipmentDocument => Boolean(d))
       : undefined,
+    documentsSummary: normalizeDocumentsSummary(
+      data.documents_summary ?? data.documentsSummary ?? data.doc_summary,
+    ),
+    acknowledgementStatus:
+      pickString(
+        data.acknowledgement_status,
+        data.acknowledgementStatus,
+        asRecord(data.acknowledgement)?.status,
+      ) || undefined,
+    bookingFormSummary: asRecord(
+      data.booking_form_summary ?? data.bookingFormSummary ?? data.booking_form,
+    ) ?? undefined,
+    pathHints: normalizePathHints(data.path_hints ?? data.pathHints),
+  };
+}
+
+function normalizeDocumentsSummary(raw: unknown): PortalShipmentDetail['documentsSummary'] {
+  const r = asRecord(raw);
+  if (!r) return undefined;
+  const byType = asRecord(r.by_type ?? r.byType);
+  return {
+    total: pickNumber(r.total, r.count),
+    visible: pickNumber(r.visible, r.visible_count, r.visibleCount),
+    bookingFormAttached: pickNumber(
+      r.booking_form_attached,
+      r.bookingFormAttached,
+      r.attached,
+    ),
+    bookingFormMissing: pickNumber(r.booking_form_missing, r.bookingFormMissing, r.missing),
+    byType: byType
+      ? Object.fromEntries(
+          Object.entries(byType).map(([k, v]) => [k, Number(v) || 0]),
+        )
+      : undefined,
+  };
+}
+
+function normalizePathHints(raw: unknown): PortalShipmentDetail['pathHints'] {
+  if (Array.isArray(raw)) {
+    const map: Record<string, string> = {};
+    for (const item of raw) {
+      if (typeof item === 'string' && item.trim()) map[item.trim()] = item.trim();
+    }
+    return Object.keys(map).length ? { raw: map } : undefined;
+  }
+  const r = asRecord(raw);
+  if (!r) return undefined;
+  const rawMap: Record<string, string> = {};
+  for (const [k, v] of Object.entries(r)) {
+    if (typeof v === 'string' && v.trim()) rawMap[k] = v.trim();
+  }
+  return {
+    documents: pickString(r.documents, r.documents_list, r.list_documents) || undefined,
+    documentDownload:
+      pickString(r.document_download, r.documentDownload, r.download) || undefined,
+    acknowledgement:
+      pickString(r.acknowledgement, r.delivery_acknowledgement) || undefined,
+    bookingForm: pickString(r.booking_form, r.bookingForm) || undefined,
+    raw: Object.keys(rawMap).length ? rawMap : undefined,
   };
 }
 

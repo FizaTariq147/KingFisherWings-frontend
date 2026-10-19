@@ -24,6 +24,7 @@ import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
 import { QuotationEmailModal } from '../components/QuotationEmailModal';
 import { QuotationLinesEditor } from '../components/QuotationLinesEditor';
 import { QuotationNegotiationPanel } from '../components/QuotationNegotiationPanel';
+import { QuotationBookingFormPanel } from '../components/QuotationBookingFormPanel';
 import { QuotationOverviewPanel } from '../components/QuotationOverviewPanel';
 import { QuotationPdfModal } from '../components/QuotationPdfModal';
 import { QuotationStatusBadge } from '../components/QuotationStatusBadge';
@@ -36,7 +37,12 @@ import {
 } from '../hooks/useQuotationActions';
 import { useQuotationConfirmState } from '../hooks/useQuotationConfirmState';
 import { useQuotationNegotiation } from '../hooks/useQuotationNegotiation';
-import { useDeleteQuotation, useQuotation, useQuotationRevisions } from '../hooks/useQuotations';
+import {
+  useDeleteQuotation,
+  useQuotation,
+  useQuotationRevisions,
+  useQuotationStatusOptions,
+} from '../hooks/useQuotations';
 import { useQuotationResolvedLabels } from '../hooks/useQuotationResolvedLabels';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { isAirQuoteJobType } from '@/features/jobs/constants/airWorkflow';
@@ -141,6 +147,7 @@ export default function QuotationDetailPage() {
   const [emailOpen, setEmailOpen] = useState(false);
   const [changeStatusOpen, setChangeStatusOpen] = useState(false);
   const [changeStatusValue, setChangeStatusValue] = useState('VERIFIED');
+  const statusOptionsQuery = useQuotationStatusOptions(changeStatusOpen);
   const [vendorPassOpen, setVendorPassOpen] = useState(false);
   const [generatedLink, setGeneratedLink] = useState<{
     kind: 'shipment' | 'job';
@@ -1195,6 +1202,18 @@ export default function QuotationDetailPage() {
               </div>
             ),
           },
+          ...(quotation.actions?.can_booking_form !== false &&
+          (usesModeBookingFormConvertFlow(quotation.job_type) ||
+            Boolean(quotation.job_id) ||
+            quotation.actions?.can_booking_form === true)
+            ? [
+                {
+                  key: 'booking_form',
+                  label: 'Booking form',
+                  content: <QuotationBookingFormPanel quotation={quotation} />,
+                },
+              ]
+            : []),
         ]}
       />
 
@@ -1365,17 +1384,21 @@ export default function QuotationDetailPage() {
               value={changeStatusValue}
               onChange={(e) => setChangeStatusValue(e.target.value)}
             >
-              {[
-                'VERIFIED',
-                'APPROVED',
-                'SUBMITTED',
-                'INTERNALLY_APPROVED',
-                'SENT',
-                'REJECTED',
-                'EXPIRED',
-              ].map((s) => (
-                <option key={s} value={s}>
-                  {s}
+              {(statusOptionsQuery.data?.length
+                ? statusOptionsQuery.data
+                : [
+                    { value: 'VERIFIED', label: 'VERIFIED' },
+                    { value: 'APPROVED', label: 'APPROVED' },
+                    { value: 'SUBMITTED', label: 'SUBMITTED' },
+                    { value: 'INTERNALLY_APPROVED', label: 'INTERNALLY_APPROVED' },
+                    { value: 'SENT', label: 'SENT' },
+                    { value: 'REJECTED', label: 'REJECTED' },
+                    { value: 'EXPIRED', label: 'EXPIRED' },
+                  ]
+              ).map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                  {s.is_custom ? ' (custom)' : ''}
                 </option>
               ))}
             </select>

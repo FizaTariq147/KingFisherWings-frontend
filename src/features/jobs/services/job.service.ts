@@ -8,8 +8,10 @@ import { ensureJobNumberFormatReady } from '@/features/organization/utils/ensure
 import { JOB_API } from '../api/job.api';
 import {
   normalizeAirUldRequest,
+  normalizeDeliveryAcknowledgement,
   normalizeJob,
   normalizeJobCharges,
+  normalizeJobPnl,
   normalizeJobs,
   normalizeJobStatusOptions,
   normalizePaginationMeta,
@@ -84,6 +86,7 @@ import type {
   CreatePartDeliveryDto,
   CreatePaymentRequestFromJobDto,
   CreateProofOfDeliveryDto,
+  DeliveryAcknowledgement,
   CreateStuffingRecordDto,
   CreateSubJobDto,
   CreateTransportRequestDto,
@@ -1137,6 +1140,85 @@ export const jobService = {
         }),
       );
       return normalizeJobStatusOptions(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async createStatusCatalog(
+    dto: import('../types/job.types').UpsertStatusCatalogDto,
+  ): Promise<unknown> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.statusCatalog, dto),
+      );
+      return unwrapEntity(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async updateStatusCatalog(
+    id: string,
+    dto: Partial<import('../types/job.types').UpsertStatusCatalogDto>,
+  ): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch(JOB_API.statusCatalogById(id), dto),
+      );
+      return unwrapEntity(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async deactivateStatusCatalog(id: string): Promise<void> {
+    assertId(id);
+    try {
+      await withGatewayRetry(() => axiosInstance.delete(JOB_API.statusCatalogById(id)));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /jobs/:id/detail/acknowledgement */
+  async getAcknowledgement(id: string): Promise<DeliveryAcknowledgement> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.acknowledgement(id)),
+      );
+      return normalizeDeliveryAcknowledgement(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /jobs/:id/acknowledgement/receive — mark RECEIVED_BY_ADMIN. */
+  async receiveAcknowledgement(
+    id: string,
+    body: Record<string, unknown> = {},
+  ): Promise<DeliveryAcknowledgement> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.acknowledgementReceive(id), body),
+      );
+      return normalizeDeliveryAcknowledgement(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** Optional formal PDF → JobDocument PROOF_OF_DELIVERY (visible_to_customer). */
+  async generateAcknowledgementPdf(id: string): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.acknowledgementGeneratePdf(id)),
+      );
+      return unwrapEntity(res.data) ?? res.data;
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -3197,7 +3279,34 @@ export const jobService = {
 
   async getPnl(id: string): Promise<JobPnl> {
     assertId(id);
-    return request(() => axiosInstance.get(JOB_API.pnl(id)));
+    return request(() => axiosInstance.get(JOB_API.pnl(id)), normalizeJobPnl);
+  },
+
+  /** GET /jobs/:id/cargo/:cargoId/documents */
+  async listCargoDocuments(id: string, cargoId: string): Promise<unknown[]> {
+    assertId(id);
+    if (!isUuid(cargoId)) throw new Error('Invalid cargo id.');
+    const res = await withGatewayRetry(() =>
+      axiosInstance.get(JOB_API.cargoDocuments(id, cargoId)),
+    );
+    return unwrapList(res.data).items;
+  },
+
+  /** POST multipart /jobs/:id/cargo/:cargoId/documents/upload */
+  async uploadCargoDocument(
+    id: string,
+    cargoId: string,
+    file: File,
+  ): Promise<unknown> {
+    assertId(id);
+    if (!isUuid(cargoId)) throw new Error('Invalid cargo id.');
+    const form = new FormData();
+    form.append('file', file);
+    return request(() =>
+      axiosInstance.post(JOB_API.cargoDocumentUpload(id, cargoId), form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }),
+    );
   },
 
   async listDeposits(id: string): Promise<unknown[]> {
@@ -3435,9 +3544,20 @@ export const jobService = {
     return requestVoid(() => axiosInstance.delete(JOB_API.stuffingRecord(id, recordId)));
   },
 
-  async listDocuments(id: string): Promise<unknown[]> {
+  /**
+   * GET /jobs/:id/documents
+   * Optional `uploader_side=CUSTOMER|VENDOR|STAFF` — customer booking-form uploads use CUSTOMER.
+   */
+  async listDocuments(
+    id: string,
+    opts?: { uploader_side?: 'CUSTOMER' | 'VENDOR' | 'STAFF' },
+  ): Promise<unknown[]> {
     assertId(id);
-    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.documents(id)));
+    const res = await withGatewayRetry(() =>
+      axiosInstance.get(JOB_API.documents(id), {
+        params: opts?.uploader_side ? { uploader_side: opts.uploader_side } : undefined,
+      }),
+    );
     return unwrapList(res.data).items;
   },
 

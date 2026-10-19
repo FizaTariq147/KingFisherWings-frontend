@@ -34,6 +34,13 @@ export const PORTAL_SHIPMENTS_API = {
     `/portal/shipments/${encodeURIComponent(id)}/compliance-form/submit`,
   complianceDocument: (id: string, kind: string) =>
     `/portal/shipments/${encodeURIComponent(id)}/compliance-form/documents/${encodeURIComponent(kind)}`,
+  /** Mode booking-form document attach (sea/land/etc.). */
+  bookingFormDocument: (id: string, kind: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/booking-form/documents/${encodeURIComponent(kind)}`,
+  acknowledgement: (id: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/acknowledgement`,
+  acknowledgementSignature: (id: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/acknowledgement/signature`,
 } as const;
 
 export const PORTAL_JOB_STATUSES = [

@@ -27,6 +27,7 @@ import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { useFileDownload } from '@/features/files/hooks/useFileDownload';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { AddChargeCodeModal } from '@/features/masters/components/AddChargeCodeModal';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { useAuthStore } from '@/store/authStore';
@@ -70,6 +71,7 @@ import {
   JobInvoiceFormModal,
   type JobInvoiceFormKind,
 } from '../JobInvoiceFormModal';
+import { JobPnlSummary } from '../JobPnlPanel/JobPnlPanel';
 
 /** Fresa Costing toolbar — each action has a unique solid color */
 const COSTING_COLORS = {
@@ -339,7 +341,7 @@ function parseProfitSharePreview(raw: unknown): {
       sale?.lines ??
       sale?.items ??
       rec.charges,
-  ).filter((c) => !c.is_cost);
+  ).filter((c) => c.sale_amount != null || Boolean(c.sale) || !c.is_cost);
   const costLines = previewChargeRows(
     rec.declared_cost_lines ??
       rec.declaredCostLines ??
@@ -349,11 +351,15 @@ function parseProfitSharePreview(raw: unknown): {
       rec.declaredCost ??
       cost?.lines ??
       cost?.items,
-  ).filter((c) => c.is_cost || Boolean(c.cost));
-  // If API returns a flat charge list, split by side
+  ).filter((c) => c.cost_amount != null || Boolean(c.cost) || Boolean(c.is_cost));
+  // If API returns a flat charge list, split by dual-sided amounts (not is_cost alone)
   const allLines = previewChargeRows(raw);
-  const saleFromAll = allLines.filter((c) => !c.is_cost);
-  const costFromAll = allLines.filter((c) => Boolean(c.is_cost));
+  const saleFromAll = allLines.filter(
+    (c) => c.sale_amount != null || Boolean(c.sale) || !c.is_cost,
+  );
+  const costFromAll = allLines.filter(
+    (c) => c.cost_amount != null || Boolean(c.cost) || Boolean(c.is_cost),
+  );
   const saleAmount =
     pickNum(
       rec,
@@ -563,8 +569,20 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   }, [chargesQuery.data, job.charges]);
 
   const visibleCharges = useMemo(() => {
-    if (gridFilter === 'sale') return charges.filter((c) => !c.is_cost);
-    if (gridFilter === 'cost') return charges.filter((c) => Boolean(c.is_cost));
+    if (gridFilter === 'sale')
+      return charges.filter(
+        (c) =>
+          c.sale_amount != null ||
+          Boolean(c.sale) ||
+          (!c.is_cost && c.cost_amount == null),
+      );
+    if (gridFilter === 'cost')
+      return charges.filter(
+        (c) =>
+          c.cost_amount != null ||
+          Boolean(c.cost) ||
+          Boolean(c.is_cost),
+      );
     if (gridFilter === 'accrued')
       return charges.filter((c) => Boolean(c.is_provisional) || Boolean(c.is_cost));
     return charges;
@@ -657,6 +675,10 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   // Add charge — Fresa Charge / Sale / Cost tabs → POST composite (all OpenAPI fields)
   const [addTab, setAddTab] = useState<'charge' | 'sale' | 'cost'>('charge');
   const [chargeCodeId, setChargeCodeId] = useState('');
+  const [addChargeCodeOpen, setAddChargeCodeOpen] = useState(false);
+  const [addChargeCodeTarget, setAddChargeCodeTarget] = useState<
+    'charge' | 'profitShare' | 'prorate'
+  >('charge');
   const [description, setDescription] = useState('');
   const [quantity, setQuantity] = useState('1');
   const [unit, setUnit] = useState('');
@@ -1552,13 +1574,19 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
               <tbody>
                 {visibleCharges.map((c: JobCharge, idx) => {
                   const saleAmt =
+                    c.sale_amount ??
                     c.sale?.local_amount ??
                     c.sale?.amount ??
-                    (!c.is_cost ? (c.line_total ?? c.unit_price) : undefined);
+                    (!c.is_cost && c.cost_amount == null
+                      ? (c.line_total ?? c.unit_price)
+                      : undefined);
                   const costAmt =
+                    c.cost_amount ??
                     c.cost?.local_amount ??
                     c.cost?.amount ??
-                    (c.is_cost ? (c.line_total ?? c.unit_price) : undefined);
+                    (c.is_cost || (c.sale_amount == null && c.cost_amount != null)
+                      ? (c.line_total ?? c.unit_price)
+                      : undefined);
                   const gp =
                     c.gross_profit ??
                     (saleAmt != null && costAmt != null
@@ -1787,8 +1815,10 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           <div className="px-4 pb-4">
             {pnlQuery.isLoading ? (
               <p className="text-sm text-[var(--color-neutral-400)]">Loading P&amp;L…</p>
+            ) : pnlQuery.data ? (
+              <JobPnlSummary pnl={pnlQuery.data} />
             ) : (
-              <ApiDataView data={pnlQuery.data} emptyLabel="P&L unavailable." />
+              <p className="text-sm text-[var(--color-neutral-400)]">P&L unavailable.</p>
             )}
           </div>
         </Card>
@@ -2026,28 +2056,42 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
 
           {addTab === 'charge' ? (
             <div className="grid gap-3 sm:grid-cols-3">
-              <label className="block text-sm sm:col-span-3">
+              <div className="block text-sm sm:col-span-3">
                 <span className={FIELD_LABEL}>Charge (Freight Charge)</span>
-                <select
-                  className={FIELD_CONTROL}
-                  value={chargeCodeId}
-                  onChange={(e) => {
-                    const next = e.target.value;
-                    setChargeCodeId(next);
-                    const opt = chargeCodeOpts.find((c) => c.id === next);
-                    if (opt && !description.trim()) {
-                      setDescription(opt.name || opt.label);
-                    }
-                  }}
-                >
-                  <option value="">Select charge…</option>
-                  {chargeCodeOpts.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                <div className="flex items-end gap-2">
+                  <select
+                    className={`${FIELD_CONTROL} min-w-0 flex-1`}
+                    value={chargeCodeId}
+                    onChange={(e) => {
+                      const next = e.target.value;
+                      setChargeCodeId(next);
+                      const opt = chargeCodeOpts.find((c) => c.id === next);
+                      if (opt && !description.trim()) {
+                        setDescription(opt.name || opt.label);
+                      }
+                    }}
+                  >
+                    <option value="">Select charge…</option>
+                    {chargeCodeOpts.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.label}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    title="Add charge code"
+                    aria-label="Add charge code"
+                    onClick={() => {
+                      setAddChargeCodeTarget('charge');
+                      setAddChargeCodeOpen(true);
+                    }}
+                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[var(--color-primary-600)] text-white hover:bg-[var(--color-primary-700)]"
+                  >
+                    <Plus className="h-4 w-4" aria-hidden />
+                  </button>
+                </div>
+              </div>
               <Input
                 label="Description"
                 value={description}
@@ -2700,7 +2744,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
               </span>
               <div className="flex gap-2">
                 <select
-                  className={FIELD_CONTROL}
+                  className={`${FIELD_CONTROL} min-w-0 flex-1`}
                   value={psChargeCodeId}
                   onChange={(e) => {
                     setPsChargeCodeId(e.target.value);
@@ -2714,6 +2758,18 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                     </option>
                   ))}
                 </select>
+                <button
+                  type="button"
+                  title="Add charge code"
+                  aria-label="Add charge code"
+                  onClick={() => {
+                    setAddChargeCodeTarget('profitShare');
+                    setAddChargeCodeOpen(true);
+                  }}
+                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[var(--color-primary-600)] text-white hover:bg-[var(--color-primary-700)]"
+                >
+                  <Plus className="h-4 w-4" aria-hidden />
+                </button>
                 <Button
                   type="button"
                   variant="edit"
@@ -2916,21 +2972,35 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
         }
       >
         <div className="grid gap-3">
-          <label className="block text-sm">
+          <div className="block text-sm">
             <span className={FIELD_LABEL}>Charge code</span>
-            <select
-              className={FIELD_CONTROL}
-              value={prorateCodeId}
-              onChange={(e) => setProrateCodeId(e.target.value)}
-            >
-              <option value="">Select charge code…</option>
-              {chargeCodeOpts.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-          </label>
+            <div className="flex items-end gap-2">
+              <select
+                className={`${FIELD_CONTROL} min-w-0 flex-1`}
+                value={prorateCodeId}
+                onChange={(e) => setProrateCodeId(e.target.value)}
+              >
+                <option value="">Select charge code…</option>
+                {chargeCodeOpts.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                title="Add charge code"
+                aria-label="Add charge code"
+                onClick={() => {
+                  setAddChargeCodeTarget('prorate');
+                  setAddChargeCodeOpen(true);
+                }}
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[var(--color-primary-600)] text-white hover:bg-[var(--color-primary-700)]"
+              >
+                <Plus className="h-4 w-4" aria-hidden />
+              </button>
+            </div>
+          </div>
           <label className="block text-sm">
             <span className={FIELD_LABEL}>Job charge (optional)</span>
             <select
@@ -3364,6 +3434,30 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           );
           onChanged?.();
           void chargesQuery.refetch();
+        }}
+      />
+
+      <AddChargeCodeModal
+        open={addChargeCodeOpen}
+        nested
+        onClose={() => setAddChargeCodeOpen(false)}
+        onCreated={(record) => {
+          const id = String(record.id ?? '');
+          if (!isUuid(id)) return;
+          if (addChargeCodeTarget === 'profitShare') {
+            setPsChargeCodeId(id);
+            setPsPreview(null);
+            return;
+          }
+          if (addChargeCodeTarget === 'prorate') {
+            setProrateCodeId(id);
+            return;
+          }
+          setChargeCodeId(id);
+          const desc = String(
+            record.description ?? record.name ?? record.code ?? '',
+          ).trim();
+          if (desc && !description.trim()) setDescription(desc);
         }}
       />
     </div>

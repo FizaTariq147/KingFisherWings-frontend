@@ -6,6 +6,16 @@ const STORAGE_PREFIX = 'kf.portal.bookingForm.v2:';
 export const PORTAL_BOOKING_FORM_JSON_START = '---KF_PORTAL_BOOKING_FORM_JSON---';
 export const PORTAL_BOOKING_FORM_JSON_END = '---END_KF_PORTAL_BOOKING_FORM_JSON---';
 
+/** File refs from portal compliance upload responses (when API returns them). */
+export type PortalBookingFormDocumentRef = {
+  kind?: string;
+  id?: string;
+  file_name?: string;
+  file_url?: string;
+  download_url?: string;
+  s3_key?: string;
+};
+
 /** Payload mirrors UpsertNvoccBookingFormDto (+ meta for Ops matching). */
 export type PortalBookingFormMessagePayload = {
   v: 1 | 2;
@@ -16,12 +26,19 @@ export type PortalBookingFormMessagePayload = {
   /** NVOCC booking id when customer submitted via /portal/bookings/:id/compliance-form. */
   bookingId?: string;
   submittedAt: string;
+  /**
+   * Customer-uploaded compliance docs (from upload API response / draft).
+   * Not part of UpsertNvoccBookingFormDto — carried so admin can resolve downloads.
+   */
+  documents?: PortalBookingFormDocumentRef[];
 } & Partial<PortalBookingFormUpsertDto>;
 
 type StoredBookingForm = PortalBookingForm & {
   saved_at?: string;
   quote_number?: string;
   job_type?: string;
+  /** Customer upload refs (not part of Upsert*BookingFormDto). */
+  documents?: PortalBookingFormDocumentRef[];
 };
 
 function storageKey(quotationId: string): string {
@@ -129,6 +146,47 @@ export function portalBookingFormToUpsertDto(
   };
 }
 
+function normalizeDocumentRefs(raw: unknown): PortalBookingFormDocumentRef[] | undefined {
+  if (!Array.isArray(raw) || !raw.length) return undefined;
+  const out: PortalBookingFormDocumentRef[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') continue;
+    const row = item as Record<string, unknown>;
+    const ref: PortalBookingFormDocumentRef = {
+      kind: typeof row.kind === 'string' ? row.kind : undefined,
+      id: typeof row.id === 'string' ? row.id : undefined,
+      file_name:
+        typeof row.file_name === 'string'
+          ? row.file_name
+          : typeof row.fileName === 'string'
+            ? row.fileName
+            : undefined,
+      file_url:
+        typeof row.file_url === 'string'
+          ? row.file_url
+          : typeof row.fileUrl === 'string'
+            ? row.fileUrl
+            : undefined,
+      download_url:
+        typeof row.download_url === 'string'
+          ? row.download_url
+          : typeof row.downloadUrl === 'string'
+            ? row.downloadUrl
+            : undefined,
+      s3_key:
+        typeof row.s3_key === 'string'
+          ? row.s3_key
+          : typeof row.s3Key === 'string'
+            ? row.s3Key
+            : undefined,
+    };
+    if (ref.id || ref.file_name || ref.file_url || ref.download_url || ref.s3_key || ref.kind) {
+      out.push(ref);
+    }
+  }
+  return out.length ? out : undefined;
+}
+
 export function readPortalBookingFormDraft(quotationId: string): PortalBookingForm | null {
   if (!quotationId || typeof localStorage === 'undefined') return null;
   try {
@@ -138,9 +196,11 @@ export function readPortalBookingFormDraft(quotationId: string): PortalBookingFo
     if (!raw) return null;
     const parsed = JSON.parse(raw) as StoredBookingForm;
     if (!parsed || typeof parsed !== 'object') return null;
+    const documents = normalizeDocumentRefs(parsed.documents);
     return {
       quotation_id: quotationId,
       ...pickFormFields(parsed),
+      ...(documents ? { documents } : {}),
     };
   } catch {
     return null;
@@ -150,20 +210,42 @@ export function readPortalBookingFormDraft(quotationId: string): PortalBookingFo
 export function writePortalBookingFormDraft(
   quotationId: string,
   dto: PortalBookingFormUpsertDto,
-  meta?: { quoteNumber?: string; jobType?: string },
+  meta?: {
+    quoteNumber?: string;
+    jobType?: string;
+    documents?: PortalBookingFormDocumentRef[];
+  },
 ): PortalBookingForm {
   const fields = pickFormFields(dto);
+  // Keep prior upload refs unless caller replaces them (save without re-upload).
+  let documents = normalizeDocumentRefs(meta?.documents);
+  if (!documents && typeof localStorage !== 'undefined') {
+    try {
+      const raw = localStorage.getItem(storageKey(quotationId));
+      if (raw) {
+        const prev = JSON.parse(raw) as StoredBookingForm;
+        documents = normalizeDocumentRefs(prev.documents);
+      }
+    } catch {
+      /* ignore */
+    }
+  }
   const form: StoredBookingForm = {
     quotation_id: quotationId,
     ...fields,
     saved_at: new Date().toISOString(),
     quote_number: meta?.quoteNumber,
     job_type: meta?.jobType,
+    ...(documents ? { documents } : {}),
   };
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem(storageKey(quotationId), JSON.stringify(form));
   }
-  return { quotation_id: quotationId, ...fields };
+  return {
+    quotation_id: quotationId,
+    ...fields,
+    ...(documents ? { documents } : {}),
+  };
 }
 
 export function buildPortalBookingFormMessagePayload(opts: {
@@ -173,8 +255,11 @@ export function buildPortalBookingFormMessagePayload(opts: {
   jobId?: string;
   bookingId?: string;
   dto: PortalBookingFormUpsertDto;
+  documents?: PortalBookingFormDocumentRef[];
 }): PortalBookingFormMessagePayload {
-  const { quotationId, quoteNumber, jobType, jobId, bookingId, dto } = opts;
+  const { quotationId, quoteNumber, jobType, jobId, bookingId, dto, documents } = opts;
+  const fromDto = (dto as { documents?: PortalBookingFormDocumentRef[] }).documents;
+  const docs = documents?.length ? documents : fromDto;
   return {
     v: 2,
     quotationId,
@@ -184,6 +269,7 @@ export function buildPortalBookingFormMessagePayload(opts: {
     bookingId: bookingId || undefined,
     submittedAt: new Date().toISOString(),
     ...dto,
+    ...(docs?.length ? { documents: docs } : {}),
   };
 }
 
@@ -194,6 +280,7 @@ export function formatBookingFormMessageBody(opts: {
   jobId?: string;
   bookingId?: string;
   dto: PortalBookingFormUpsertDto;
+  documents?: PortalBookingFormDocumentRef[];
 }): string {
   const { quotationId, quoteNumber, jobType, dto } = opts;
   const isWarehouse =
@@ -290,6 +377,7 @@ export function formatBookingFormMessageBodyCompact(opts: {
   jobId?: string;
   bookingId?: string;
   dto: PortalBookingFormUpsertDto;
+  documents?: PortalBookingFormDocumentRef[];
 }): string {
   const payload = buildPortalBookingFormMessagePayload(opts);
   return [

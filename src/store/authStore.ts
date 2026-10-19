@@ -164,16 +164,48 @@ interface AuthActions {
   revokeExpiredSessionAndLogin: () => Promise<void>
   /** Clear ERP staff/tenant session (e.g. when entering Super Admin). */
   clearSession: () => void
+  /**
+   * Backend idle revoke (401 Session timed out due to inactivity) —
+   * clear tokens and hard-navigate to login.
+   */
+  forceLogoutDueToInactivity: () => void
 }
 
 type AuthStore = AuthState & AuthActions
 
-/** Idle timeout — inactivity only (not counted from login). */
-export const SESSION_IDLE_MS = 20 * 60 * 1000
+/** Idle timeout — inactivity only (not counted from login). Matches backend SESSION_IDLE_TIMEOUT_MINUTES=30. */
+export const SESSION_IDLE_MS = 30 * 60 * 1000
 
 export function isSessionIdleExpired(lastActiveAt: number | null | undefined): boolean {
   if (!lastActiveAt || !Number.isFinite(lastActiveAt)) return false
   return Date.now() - lastActiveAt >= SESSION_IDLE_MS
+}
+
+/** Detect API 401 body from SESSION_IDLE_TIMEOUT_MINUTES revoke. */
+export function isSessionInactivityTimeoutMessage(raw: unknown): boolean {
+  const parts: string[] = []
+  if (typeof raw === 'string') parts.push(raw)
+  else if (raw && typeof raw === 'object') {
+    const rec = raw as Record<string, unknown>
+    for (const key of ['message', 'error', 'detail', 'title', 'localizedMessage']) {
+      const v = rec[key]
+      if (typeof v === 'string') parts.push(v)
+      if (Array.isArray(v)) {
+        for (const item of v) {
+          if (typeof item === 'string') parts.push(item)
+          else if (item && typeof item === 'object' && typeof (item as { message?: unknown }).message === 'string') {
+            parts.push(String((item as { message: string }).message))
+          }
+        }
+      }
+    }
+  }
+  const text = parts.join(' ').toLowerCase()
+  return (
+    text.includes('session timed out') ||
+    text.includes('due to inactivity') ||
+    text.includes('inactivity') && text.includes('session')
+  )
 }
 
 async function applyLoginSuccess(
@@ -556,9 +588,12 @@ export const useAuthStore = create<AuthStore>()(
           }
         } catch (err) {
           set({ sessionExpiryActionInProgress: false })
-          const status = (err as { response?: { status?: number } })?.response?.status
-          if (status === 401 || status === 403) {
-            throw new Error('Refresh token expired. Please sign in again.')
+          const status = (err as { response?: { status?: number; data?: unknown } })?.response
+            ?.status
+          const data = (err as { response?: { data?: unknown } })?.response?.data
+          if (status === 401 || status === 403 || isSessionInactivityTimeoutMessage(data)) {
+            hardSignOutToLogin('/login')
+            throw new Error('Session timed out. Please sign in again.')
           }
           throw err instanceof Error
             ? err
@@ -604,6 +639,10 @@ export const useAuthStore = create<AuthStore>()(
         } finally {
           hardSignOutToLogin('/login')
         }
+      },
+
+      forceLogoutDueToInactivity: () => {
+        hardSignOutToLogin('/login')
       },
 
       clearSession: () => {

@@ -24,7 +24,10 @@ import {
   useMasterCodeOptions,
 } from '@/features/masters/hooks/useMasterCodeOptions';
 import { useCustomerPortalBookingForm } from '@/features/portal-admin-inbox/hooks/usePortalAdminInbox';
-import type { PortalBookingFormMessagePayload } from '@/features/portal-quotations/utils/portalBookingFormStorage';
+import type {
+  PortalBookingFormDocumentRef,
+  PortalBookingFormMessagePayload,
+} from '@/features/portal-quotations/utils/portalBookingFormStorage';
 import { quotationService } from '@/features/quotations/services/quotation.service';
 import { isCustomerPortalQuotation } from '@/features/quotations/utils/isCustomerPortalQuotation';
 import { BookingDocumentUploadList } from '@/features/booking-documents/components/BookingDocumentUploadList';
@@ -37,7 +40,9 @@ import {
 import {
   extractBookingFormDocuments,
   extractUploadResponseMeta,
+  listBookingDocumentsFromJobDocs,
   mergeJobDocumentsIntoBooking,
+  type BookingDocumentListItem,
   type BookingFormDocumentMeta,
 } from '@/features/booking-documents/utils/bookingFormDocuments';
 import { useFileDownload } from '@/features/files/hooks/useFileDownload';
@@ -841,10 +846,44 @@ export function ModeBookingFormPanel({
   const tenantId = useAuthStore((s) => s.user?.tenantId);
   const { downloadStoredFile } = useFileDownload();
   const jobDocumentsQuery = useQuery({
-    queryKey: ['jobs', jobId, 'documents', 'booking-form'],
-    queryFn: () => jobService.listDocuments(jobId),
+    queryKey: ['jobs', jobId, 'documents', 'booking-form', 'customer'],
+    queryFn: async () => {
+      const seen = new Set<string>();
+      const out: unknown[] = [];
+      const pushAll = (list: unknown[]) => {
+        for (const item of list) {
+          if (!item || typeof item !== 'object') {
+            out.push(item);
+            continue;
+          }
+          const id = String(
+            (item as { id?: unknown }).id ??
+              (item as { document_id?: unknown }).document_id ??
+              '',
+          ).trim();
+          if (id) {
+            if (seen.has(id)) continue;
+            seen.add(id);
+          }
+          out.push(item);
+        }
+      };
+      // Customer booking-form uploads (OpenAPI: ?uploader_side=CUSTOMER)
+      try {
+        pushAll(await jobService.listDocuments(jobId, { uploader_side: 'CUSTOMER' }));
+      } catch {
+        /* filter may 400 on older backends — fall through */
+      }
+      // Also merge full list so typed booking docs without uploader_side still appear
+      try {
+        pushAll(await jobService.listDocuments(jobId));
+      } catch {
+        /* ignore */
+      }
+      return out;
+    },
     enabled: Boolean(jobId),
-    staleTime: 30_000,
+    staleTime: 15_000,
   });
   const { data: containerTypes = [] } = useMasterOptions(
     'container-types',
@@ -957,16 +996,84 @@ export function ModeBookingFormPanel({
         ? (portalBookingQuery.data as Record<string, unknown>)
         : undefined,
     );
+    const flaggedKinds = new Set<string>([...fromForm.kinds, ...fromPortal.kinds]);
     const seed = { ...fromPortal.byKind, ...fromForm.byKind };
-    const merged = mergeJobDocumentsIntoBooking(
-      jobDocumentsQuery.data ?? [],
-      seed,
-    );
-    for (const kind of fromForm.kinds) merged.kinds.add(kind);
-    for (const kind of fromPortal.kinds) merged.kinds.add(kind);
+    const merged = mergeJobDocumentsIntoBooking(jobDocumentsQuery.data ?? [], seed, {
+      flaggedKinds,
+    });
+    for (const kind of flaggedKinds) merged.kinds.add(kind);
+    // Any job doc matched to a booking kind counts as uploaded (customer file on file).
+    for (const kind of Object.keys(merged.byKind)) {
+      const meta = merged.byKind[kind];
+      if (meta?.file_name || meta?.file_url || meta?.s3_key || meta?.id) {
+        merged.kinds.add(kind);
+      }
+    }
     setUploadedDocKinds(merged.kinds);
     setDocMetaByKind(merged.byKind);
+    // Reflect customer uploads on the attach_* checkboxes under the checklist.
+    setForm((prev) => {
+      const attaches = { ...prev.attaches };
+      let changed = false;
+      if (merged.kinds.has('commercial_invoice') && !attaches.attach_commercial_invoice) {
+        attaches.attach_commercial_invoice = true;
+        changed = true;
+      }
+      if (merged.kinds.has('packing_list') && !attaches.attach_packing_list) {
+        attaches.attach_packing_list = true;
+        changed = true;
+      }
+      if (merged.kinds.has('bill_of_lading') && !attaches.attach_bl_awb_copy) {
+        attaches.attach_bl_awb_copy = true;
+        changed = true;
+      }
+      if (merged.kinds.has('licence') && !attaches.attach_licence) {
+        attaches.attach_licence = true;
+        attaches.attach_permit = true;
+        changed = true;
+      }
+      return changed ? { ...prev, attaches } : prev;
+    });
   }, [query.data, jobDocumentsQuery.data, portalBookingQuery.data]);
+
+  /** Every customer file from job documents API + portal inbox payload — do not drop any. */
+  const allCustomerDocuments = useMemo((): BookingDocumentListItem[] => {
+    const fromJob = listBookingDocumentsFromJobDocs(jobDocumentsQuery.data ?? []);
+    const portalDocs = (portalBookingQuery.data as { documents?: PortalBookingFormDocumentRef[] } | null)
+      ?.documents;
+    const fromPortal = listBookingDocumentsFromJobDocs(
+      Array.isArray(portalDocs) ? portalDocs : [],
+    );
+    const seen = new Set<string>();
+    const out: BookingDocumentListItem[] = [];
+    for (const item of [...fromJob, ...fromPortal]) {
+      const key =
+        item.id ||
+        `${item.file_name || ''}|${item.s3_key || ''}|${item.file_url || ''}|${item.kind || ''}`;
+      if (key && seen.has(key)) continue;
+      if (key) seen.add(key);
+      out.push(item);
+    }
+    return out;
+  }, [jobDocumentsQuery.data, portalBookingQuery.data]);
+
+  const flaggedWithoutFile = useMemo(() => {
+    const flagged: string[] = [];
+    for (const kind of MODE_BOOKING_FORM_DOCUMENT_KINDS) {
+      if (!uploadedDocKinds.has(kind)) continue;
+      const meta = docMetaByKind[kind];
+      const hasFile = Boolean(
+        meta?.id ||
+          meta?.file_url ||
+          meta?.download_url ||
+          meta?.download_path ||
+          meta?.s3_key ||
+          meta?.file_name,
+      );
+      if (!hasFile) flagged.push(kind);
+    }
+    return flagged;
+  }, [uploadedDocKinds, docMetaByKind]);
 
   // Hydrate only when entering view/edit — do not wipe in-progress admin edits on refetch.
   useEffect(() => {
@@ -2494,10 +2601,87 @@ export function ModeBookingFormPanel({
         <div className={`space-y-4 ${sectionPad}`}>
           <div className="space-y-2">
             <p className="text-xs text-[var(--color-neutral-500)]">
-              Documents Checklist (these documents should be uploaded by the customer). Ops may
-              upload here if the customer has not. Complete is blocked until all mandatory docs
-              are present (Bill of lading / AWB is optional).
+              Documents Checklist — lists files the customer uploaded on the portal booking form
+              (Download when on file). Ops may upload here if the customer has not. Complete is
+              blocked until all mandatory docs are present (Bill of lading / AWB is optional).
             </p>
+            {jobDocumentsQuery.isFetching ? (
+              <p className="text-[11px] text-[var(--color-neutral-400)]">
+                Loading customer documents…
+              </p>
+            ) : null}
+            {allCustomerDocuments.length > 0 ? (
+              <div className="rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2 space-y-2">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-600)]">
+                  All customer uploads ({allCustomerDocuments.length})
+                </p>
+                <ul className="space-y-1.5">
+                  {allCustomerDocuments.map((doc, idx) => {
+                    const label =
+                      BOOKING_DOCUMENT_KIND_LABELS[
+                        doc.kind as keyof typeof BOOKING_DOCUMENT_KIND_LABELS
+                      ] ||
+                      doc.document_type ||
+                      doc.kind ||
+                      'Document';
+                    const fileName = doc.file_name || label;
+                    const url = resolveJobDocumentFileUrl(doc, tenantId);
+                    const canDownload = Boolean(url || doc.id);
+                    return (
+                      <li
+                        key={doc.id || `${doc.kind}-${idx}-${fileName}`}
+                        className="flex flex-wrap items-center justify-between gap-2 text-sm text-[var(--color-neutral-800)]"
+                      >
+                        <span className="min-w-0 truncate">
+                          <span className="font-medium">{label}</span>
+                          {doc.file_name ? (
+                            <span className="text-[var(--color-neutral-500)]"> — {doc.file_name}</span>
+                          ) : null}
+                        </span>
+                        {canDownload ? (
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => {
+                              if (url) {
+                                void downloadStoredFile(url, { displayName: fileName });
+                                return;
+                              }
+                              if (doc.id) {
+                                void jobService
+                                  .downloadJobDocument(jobId, doc.id, fileName)
+                                  .catch((err) => setErr(getErrorMessage(err)));
+                              }
+                            }}
+                          >
+                            Download
+                          </Button>
+                        ) : (
+                          <span className="text-[11px] text-amber-700">No download link</span>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ) : null}
+            {flaggedWithoutFile.length > 0 && allCustomerDocuments.length === 0 ? (
+              <p className="text-xs text-amber-800 rounded-md border border-amber-200 bg-amber-50 px-3 py-2">
+                Customer marked document(s) attached (
+                {flaggedWithoutFile
+                  .map(
+                    (k) =>
+                      BOOKING_DOCUMENT_KIND_LABELS[
+                        k as keyof typeof BOOKING_DOCUMENT_KIND_LABELS
+                      ] || k,
+                  )
+                  .join(', ')}
+                ), but no downloadable files were returned yet. Refresh after portal upload
+                completes — booking-form GET should include job_document_id / download_path per
+                kind, and GET /jobs/:id/documents should list CUSTOMER docs.
+              </p>
+            ) : null}
             <BookingDocumentUploadList
               kinds={MODE_BOOKING_FORM_DOCUMENT_KINDS}
               uploadedKinds={uploadedDocKinds}

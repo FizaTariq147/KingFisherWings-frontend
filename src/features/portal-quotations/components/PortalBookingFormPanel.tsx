@@ -16,10 +16,12 @@ import {
   missingMandatoryBookingDocs,
   type PortalBookingDocumentKind,
 } from '@/features/booking-documents/constants/bookingDocumentKinds';
+import { extractUploadResponseMeta } from '@/features/booking-documents/utils/bookingFormDocuments';
 import type {
   PortalBookingFormUpsertDto,
   PortalQuotationDetail,
 } from '../types/portalQuotations.types';
+import type { PortalBookingFormDocumentRef } from '../utils/portalBookingFormStorage';
 import { portalQuoteShowsBookingForm } from '../utils/portalQuotationStatus';
 import { isAirJobType } from '@/features/jobs/constants/job.constants';
 import { usesModeBookingFormConvertFlow } from '@/features/quotations/utils/quotationStatus';
@@ -889,19 +891,25 @@ export function PortalBookingFormPanel({
   const [uploadedDocKinds, setUploadedDocKinds] = useState<Set<string>>(() => new Set());
   const [stagedDocKinds, setStagedDocKinds] = useState<Set<string>>(() => new Set());
   const [uploadingKind, setUploadingKind] = useState<string | null>(null);
+  /** Upload API file refs — mirrored into inbox payload for admin download. */
+  const [documentRefs, setDocumentRefs] = useState<PortalBookingFormDocumentRef[]>([]);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Customer uploads on Step 6 — portal compliance APIs for NVOCC bookings / Air shipments.
+  // Customer uploads — mode booking-form/documents (sea/land/…) or compliance (NVOCC/Air).
   const jtUpper = String(quote.jobType ?? '')
     .trim()
     .toUpperCase()
     .replace(/[\s-]+/g, '_');
+  const usesModeBookingDocs = usesModeBookingFormConvertFlow(quote.jobType);
   const usesPortalComplianceDocs =
     isAir || jtUpper.startsWith('NVOCC') || Boolean(bookingId);
-  // Live upload needs a linked booking (NVOCC) or shipment/job (Air). Until then, stage files in the UI.
-  const canUploadComplianceDocs = isAir
-    ? Boolean(jobId && /^[0-9a-f-]{36}$/i.test(jobId))
-    : Boolean(bookingId && /^[0-9a-f-]{36}$/i.test(bookingId));
+  // Mode booking uploads via /portal/quotations/:id/booking-form/documents/:kind (no booking link required).
+  // NVOCC/Air still need linked booking or shipment.
+  const canUploadComplianceDocs = usesModeBookingDocs
+    ? Boolean(quote.id && /^[0-9a-f-]{36}$/i.test(quote.id))
+    : isAir
+      ? Boolean(jobId && /^[0-9a-f-]{36}$/i.test(jobId))
+      : Boolean(bookingId && /^[0-9a-f-]{36}$/i.test(bookingId));
   const docsSatisfiedKinds = useMemo(() => {
     const next = new Set(uploadedDocKinds);
     if (!canUploadComplianceDocs) {
@@ -1073,6 +1081,17 @@ export function PortalBookingFormPanel({
       invoice_currency: String(data.invoice_currency ?? '') || base.invoice_currency,
     });
     if (data.mark_complete === true) setSubmitted(true);
+    const docs = Array.isArray(data.documents) ? data.documents : [];
+    if (docs.length) {
+      setDocumentRefs((prev) => (prev.length ? prev : docs));
+      setUploadedDocKinds((prev) => {
+        const next = new Set(prev);
+        for (const d of docs) {
+          if (d.kind) next.add(d.kind);
+        }
+        return next;
+      });
+    }
   }, [
     formQuery.data,
     quote.origin,
@@ -1240,6 +1259,7 @@ export function PortalBookingFormPanel({
         bookingId,
         quoteNumber: quote.number,
         jobType: quote.jobType,
+        documents: documentRefs.length ? documentRefs : undefined,
       })
       .then(() => {
         const message = complete
@@ -2444,7 +2464,7 @@ export function PortalBookingFormPanel({
                 : ' (bill of lading / AWB is optional)'}
               . Submit is blocked until all mandatory documents are chosen.
             </p>
-            {!canUploadComplianceDocs ? (
+            {!canUploadComplianceDocs && !usesModeBookingDocs ? (
               <p className="text-xs text-amber-800 rounded-md border border-amber-200 bg-amber-50 px-3 py-2">
                 Choose files below — the file name appears next to each row. Upload to the server
                 starts automatically once your forwarder links the booking or shipment.
@@ -2476,13 +2496,28 @@ export function PortalBookingFormPanel({
               onUpload={async (kind, file) => {
                 setUploadingKind(kind);
                 try {
-                  await uploadDoc.mutateAsync({
+                  const uploaded = await uploadDoc.mutateAsync({
                     kind,
                     file,
                     isAir,
                     jobId,
                     bookingId,
                     jobType: quote.jobType,
+                  });
+                  const meta = extractUploadResponseMeta(kind, uploaded, file.name);
+                  setDocumentRefs((prev) => {
+                    const without = prev.filter((d) => d.kind !== kind);
+                    return [
+                      ...without,
+                      {
+                        kind,
+                        id: meta.id,
+                        file_name: meta.file_name || file.name,
+                        file_url: meta.file_url,
+                        download_url: meta.download_url,
+                        s3_key: meta.s3_key,
+                      },
+                    ];
                   });
                   setUploadedDocKinds((prev) => new Set(prev).add(kind));
                   setStagedDocKinds((prev) => {

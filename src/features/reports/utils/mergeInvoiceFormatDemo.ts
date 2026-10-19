@@ -362,5 +362,13 @@ export function mergeInvoiceFormatDemo(
   demo.fieldGrid = demo.fieldGrid?.map((f) => ({ ...f, v: scrub(f.v) || f.v }));
   demo.metaRows = demo.metaRows?.map((f) => ({ ...f, v: scrub(f.v) || f.v }));
 
-  return { ...layout, demo, name: scrub(layout.name) || layout.name };
+  // Optional live company chrome hints (full override happens in applySharedLayoutChrome).
+  const branding = { ...layout.branding };
+  if (data.companyName?.trim()) branding.company = data.companyName.trim();
+  if (data.companyAddress?.trim()) branding.address = data.companyAddress.trim();
+  if (data.companyWeb?.trim()) branding.web = data.companyWeb.trim();
+  if (data.companyPhone?.trim()) branding.phone = data.companyPhone.trim();
+  if (data.companyEmail?.trim()) branding.email = data.companyEmail.trim();
+
+  return { ...layout, demo, branding, name: scrub(layout.name) || layout.name };
 }

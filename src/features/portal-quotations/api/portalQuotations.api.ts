@@ -21,6 +21,9 @@ export const PORTAL_QUOTATIONS_API = {
     `/portal/quotations/${encodeURIComponent(id)}/booking-form`,
   bookingFormComplete: (id: string) =>
     `/portal/quotations/${encodeURIComponent(id)}/booking-form/complete`,
+  /** Mode booking docs (sea/land/etc.) — uploader_side=CUSTOMER. */
+  bookingFormDocument: (id: string, kind: string) =>
+    `/portal/quotations/${encodeURIComponent(id)}/booking-form/documents/${encodeURIComponent(kind)}`,
 } as const;
 
 /** Portal — NVOCC Compliance Booking Form (customer 8-step). Air uses PORTAL_SHIPMENTS_API. */

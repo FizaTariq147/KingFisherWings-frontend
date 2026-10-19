@@ -47,6 +47,8 @@ export function jobDetailTabLabel(key: string): string {
       return 'Shipping bill / BOE';
     case 'booking_form':
       return 'Booking form';
+    case 'acknowledgement':
+      return 'Delivery acknowledgement';
     case 'section_files':
       return 'Section files';
     default:

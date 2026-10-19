@@ -41,6 +41,11 @@ export const SHIPMENT_API = {
   bookingForm: (id: string) => `/shipments/${id}/booking-form`,
   bookingFormComplete: (id: string) => `/shipments/${id}/booking-form/complete`,
   changeStatus: (id: string) => `/shipments/${id}/change-status`,
+  /** GET selectable statuses (system + custom catalog). */
+  statusOptions: '/shipments/status-options',
+  statusCatalog: '/shipments/status-catalog',
+  statusCatalogById: (id: string) =>
+    `/shipments/status-catalog/${encodeURIComponent(id)}`,
   changeBlStatus: (id: string) => `/shipments/${id}/change-bl-status`,
   changeDepartment: (id: string) => `/shipments/${id}/department`,
   generateJob: (id: string) => `/shipments/${id}/generate-job`,

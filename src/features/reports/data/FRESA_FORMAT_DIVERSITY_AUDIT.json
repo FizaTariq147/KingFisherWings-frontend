@@ -1,0 +1,86 @@
+{
+  "totalLayouts": 852,
+  "fresaSampleNames": 77,
+  "matched": 77,
+  "missingNames": [],
+  "stores": [
+    {
+      "store": "accountsFormatUiLayouts.json",
+      "count": 95,
+      "uniqueSignatures": 95,
+      "ok": true
+    },
+    {
+      "store": "arrivalNoticeFormatUiLayouts.json",
+      "count": 55,
+      "uniqueSignatures": 55,
+      "ok": true
+    },
+    {
+      "store": "commercialExtraFormatUiLayouts.json",
+      "count": 37,
+      "uniqueSignatures": 37,
+      "ok": true
+    },
+    {
+      "store": "deliveryOrderFormatUiLayouts.json",
+      "count": 41,
+      "uniqueSignatures": 41,
+      "ok": true
+    },
+    {
+      "store": "hawbFormatUiLayouts.json",
+      "count": 30,
+      "uniqueSignatures": 30,
+      "ok": true
+    },
+    {
+      "store": "hblFormatUiLayouts.json",
+      "count": 122,
+      "uniqueSignatures": 122,
+      "ok": true
+    },
+    {
+      "store": "invoiceFormatUiLayouts.json",
+      "count": 82,
+      "uniqueSignatures": 82,
+      "ok": true
+    },
+    {
+      "store": "leftoverFormatUiLayouts.json",
+      "count": 83,
+      "uniqueSignatures": 83,
+      "ok": true
+    },
+    {
+      "store": "opsListFormatUiLayouts.json",
+      "count": 108,
+      "uniqueSignatures": 108,
+      "ok": true
+    },
+    {
+      "store": "otherReportsFormatUiLayouts.json",
+      "count": 80,
+      "uniqueSignatures": 80,
+      "ok": true
+    },
+    {
+      "store": "quotationFormatUiLayouts.json",
+      "count": 15,
+      "uniqueSignatures": 15,
+      "ok": true
+    },
+    {
+      "store": "seaDocsExtraFormatUiLayouts.json",
+      "count": 43,
+      "uniqueSignatures": 43,
+      "ok": true
+    },
+    {
+      "store": "wmsFormatUiLayouts.json",
+      "count": 61,
+      "uniqueSignatures": 61,
+      "ok": true
+    }
+  ]
+}

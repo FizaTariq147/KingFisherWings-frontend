@@ -17,6 +17,7 @@ import { JobCustomsRefsPanel } from './JobCustomsRefsPanel/JobCustomsRefsPanel';
 import { JobDepartmentPanel } from './JobDepartmentPanel/JobDepartmentPanel';
 import { JobDimensionsPanel } from './JobDimensionsPanel/JobDimensionsPanel';
 import { JobExchangeRatesPanel } from './JobExchangeRatesPanel/JobExchangeRatesPanel';
+import { JobAcknowledgementPanel } from './JobAcknowledgementPanel';
 import { JobOpsPanel } from './JobOpsPanel';
 import { JobOverviewPanel } from './JobOverviewPanel';
 import { JobPartyPanel } from './JobPartyPanel/JobPartyPanel';
@@ -716,6 +717,9 @@ function InteractiveTabBody({
   if (key === 'booking_form') {
     return <JobOpsPanel job={job} />;
   }
+  if (key === 'acknowledgement') {
+    return <JobAcknowledgementPanel jobId={job.id} />;
+  }
   if (key === 'shipments') {
     return <JobShipmentsTabPanel job={job} tabData={tabData} onChanged={onChanged} />;
   }
@@ -755,6 +759,7 @@ function SingleJobDetailTabPanel({
     'costing',
     'history',
     'booking_form',
+    'acknowledgement',
     'shipments',
     'department',
     'ex_rate',

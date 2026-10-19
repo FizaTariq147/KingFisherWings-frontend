@@ -21,7 +21,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -233,13 +233,17 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "blocks": [
       {
-        "type": "docTitle",
-        "text": "ADVANCE SHIPPING NOTE",
-        "align": "center"
+        "type": "companyHeader",
+        "showContact": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": true
+        "type": "docTitle",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -247,13 +251,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "jobDescription"
       },
       {
-        "type": "signatureRow"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -279,7 +283,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -510,8 +514,12 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ADVANCE SHIPPING NOTE / ASN No - ASN/000033",
-        "align": "center"
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -522,7 +530,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -548,7 +562,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -730,19 +744,20 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ASN LOCATION WISE / ASN No - ASN/000033",
-        "align": "center"
+        "text": "ADVANCE SHIPPING NOTE — LOCATION",
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -768,7 +783,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -950,19 +965,23 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ASN LOCATION WISE / ASN No - ASN/000033",
-        "align": "center"
+        "text": "ADVANCE SHIPPING NOTE — LOCATION",
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -988,7 +1007,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1170,8 +1189,12 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ADVANCE SHIPPING NOTE / ASN No - ASN/000033",
-        "align": "center"
+        "text": "ADVANCE SHIPPING NOTE — SUMMARY",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -1179,10 +1202,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "primary"
       },
       {
         "type": "colorfulFooter"
@@ -1208,7 +1228,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1281,21 +1301,24 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "ADVANCE SHIPPING NOTE LOCATION SUMMARY",
+        "text": "ADVANCE SHIPPING NOTE — LOCATION",
         "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -1321,7 +1344,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1394,13 +1417,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -1408,7 +1431,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -1434,7 +1466,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1507,13 +1539,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -1521,7 +1553,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -1547,7 +1588,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1620,13 +1661,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -1634,7 +1675,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -1660,7 +1710,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1733,13 +1783,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -1747,7 +1797,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -1773,7 +1835,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1846,13 +1908,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -1861,6 +1923,18 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -1886,7 +1960,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1959,13 +2033,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -1973,7 +2047,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -1999,7 +2085,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2072,13 +2158,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -2086,7 +2172,22 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -2112,7 +2213,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2185,13 +2286,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -2199,7 +2300,22 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -2225,7 +2341,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2298,13 +2414,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -2312,7 +2428,22 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -2338,7 +2469,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2411,13 +2542,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -2426,6 +2557,24 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -2451,7 +2600,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2524,13 +2673,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -2538,7 +2687,25 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -2564,7 +2731,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2637,13 +2804,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -2651,7 +2818,25 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -2677,7 +2862,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2750,13 +2935,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -2764,7 +2949,28 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -2790,7 +2996,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2863,13 +3069,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -2877,7 +3083,28 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -2903,7 +3130,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2976,13 +3203,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -2991,6 +3218,27 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -3016,7 +3264,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3089,13 +3337,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -3103,7 +3351,31 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -3129,7 +3401,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3202,13 +3474,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -3216,7 +3488,31 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -3242,7 +3538,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3315,13 +3611,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -3329,7 +3625,31 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -3355,7 +3675,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3428,13 +3748,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -3442,7 +3762,34 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -3468,7 +3815,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3541,13 +3888,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -3556,6 +3903,33 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -3581,7 +3955,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3654,21 +4028,33 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -3694,7 +4080,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3767,21 +4153,36 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -3807,7 +4208,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3880,21 +4281,36 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -3920,7 +4336,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3993,21 +4409,36 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -4033,7 +4464,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4106,21 +4537,39 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -4146,7 +4595,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4219,21 +4668,39 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -4259,7 +4726,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4332,21 +4799,39 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -4372,7 +4857,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4445,21 +4930,42 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -4485,7 +4991,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4558,21 +5064,42 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -4598,7 +5125,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4671,21 +5198,42 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -4711,7 +5259,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4784,21 +5332,45 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -4824,7 +5396,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4897,21 +5469,45 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -4937,7 +5533,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5010,21 +5606,45 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -5050,7 +5670,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5123,21 +5743,48 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -5163,7 +5810,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5236,21 +5883,48 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS STOCK",
         "align": "center",
         "band": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -5276,7 +5950,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5349,13 +6023,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GRN",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "fieldGrid",
@@ -5363,7 +6040,10 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -5389,7 +6069,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5462,13 +6142,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GRN",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "fieldGrid",
@@ -5476,7 +6159,10 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -5502,7 +6188,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5575,13 +6261,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GRN",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -5589,7 +6278,10 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -5615,7 +6307,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5688,13 +6380,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GRN",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "fieldGrid",
@@ -5702,7 +6397,10 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -5728,7 +6426,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5801,13 +6499,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GRN",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "fieldGrid",
@@ -5816,6 +6517,12 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -5841,7 +6548,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5914,13 +6621,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GRN",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "fieldGrid",
@@ -5928,7 +6638,10 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -5954,7 +6667,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6027,13 +6740,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GRN",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "fieldGrid",
@@ -6041,7 +6757,10 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -6067,7 +6786,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6140,13 +6859,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GRN",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "fieldGrid",
@@ -6154,7 +6876,10 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -6180,7 +6905,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6253,13 +6978,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GRN",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -6267,7 +6995,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -6293,7 +7027,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6366,13 +7100,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GRN",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "fieldGrid",
@@ -6381,6 +7118,9 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -6406,7 +7146,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6479,13 +7219,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GDO",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -6493,7 +7239,10 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -6519,7 +7268,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6592,13 +7341,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GDO",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -6606,7 +7361,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -6632,7 +7393,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6705,13 +7466,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GDO",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -6719,7 +7486,10 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -6745,7 +7515,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6818,13 +7588,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GDO",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -6832,7 +7608,10 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -6858,7 +7637,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6931,13 +7710,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GDO",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -6946,6 +7731,15 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -6971,7 +7765,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7044,13 +7838,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GDO",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -7058,7 +7858,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -7084,7 +7890,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7157,13 +7963,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GDO",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -7171,7 +7983,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -7197,7 +8015,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7270,13 +8088,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GDO",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -7284,7 +8108,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -7310,7 +8140,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7383,13 +8213,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GDO",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -7397,7 +8233,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -7423,7 +8268,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7496,13 +8341,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "WMS GDO",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -7511,6 +8362,12 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"

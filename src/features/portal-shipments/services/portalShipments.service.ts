@@ -178,6 +178,40 @@ export const portalShipmentsService = {
     );
     return (asRecord(unwrapData(res.data)) ?? asRecord(res.data) ?? {}) as Record<string, unknown>;
   },
+
+  /** GET /portal/shipments/:id/acknowledgement */
+  async getAcknowledgement(
+    id: string,
+  ): Promise<import('@/features/jobs/types/job.types').DeliveryAcknowledgement> {
+    const { normalizeDeliveryAcknowledgement } = await import(
+      '@/features/jobs/utils/normalizeJob'
+    );
+    const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.acknowledgement(id));
+    return normalizeDeliveryAcknowledgement(res.data);
+  },
+
+  /** POST submit acknowledgement (fields + optional signature already uploaded). */
+  async submitAcknowledgement(
+    id: string,
+    dto: import('@/features/jobs/types/job.types').SubmitDeliveryAcknowledgementDto,
+  ): Promise<import('@/features/jobs/types/job.types').DeliveryAcknowledgement> {
+    const { normalizeDeliveryAcknowledgement } = await import(
+      '@/features/jobs/utils/normalizeJob'
+    );
+    const res = await portalApiClient.post(PORTAL_SHIPMENTS_API.acknowledgement(id), dto);
+    return normalizeDeliveryAcknowledgement(res.data);
+  },
+
+  async uploadAcknowledgementSignature(id: string, file: File): Promise<unknown> {
+    const form = new FormData();
+    form.append('file', file);
+    const res = await portalApiClient.post(
+      PORTAL_SHIPMENTS_API.acknowledgementSignature(id),
+      form,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
+    );
+    return unwrapData(res.data) ?? res.data;
+  },
 };
 
 function asRecord(value: unknown): Record<string, unknown> | null {

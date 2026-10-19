@@ -25,6 +25,7 @@ import {
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { jobDisplayNumber } from '../../utils/jobRoute';
 import { ApiDataView } from '../ApiDataView';
+import { JobAcknowledgementPanel } from '../JobAcknowledgementPanel';
 
 interface JobLogisticsPanelProps {
   jobId: string;
@@ -646,6 +647,8 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           />
         </div>
       </Card>
+
+      <JobAcknowledgementPanel jobId={jobId} />
 
       <Card>
         <CardHeader>

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { AddChargeCodeModal } from '@/features/masters/components/AddChargeCodeModal';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { createQuotationLineSchema } from '../../schemas/quotation.schema';
 import type { CreateQuotationLineFormValues, QuotationLine } from '../../types/quotation.types';
@@ -33,6 +34,7 @@ export function QuotationLinesEditor({
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editingLineId, setEditingLineId] = useState<string | null>(null);
+  const [addChargeCodeOpen, setAddChargeCodeOpen] = useState(false);
   const { data: chargeCodes = [] } = useMasterOptions(
     'charge-codes',
     MASTER_PATHS['charge-codes'],
@@ -302,34 +304,47 @@ export function QuotationLinesEditor({
             <label htmlFor="charge_code_id" className="text-xs font-medium text-[var(--color-neutral-500)]">
               Charge code *
             </label>
-            <select
-              id="charge_code_id"
-              className={selectClass}
-              {...register('charge_code_id')}
-              onChange={(e) => {
-                const id = e.target.value;
-                setValue('charge_code_id', id, { shouldValidate: true });
-                const code = chargeCodes.find((c) => String(c.id) === id);
-                if (code) {
-                  const desc = String(code.name ?? code.code ?? '').trim();
-                  if (desc) setValue('description', desc, { shouldValidate: true });
-                }
-              }}
-            >
-              <option value="">Select…</option>
-              {(() => {
-                const opts = [];
-                for (const c of chargeCodes) {
-                  if (!isUuid(String(c.id))) continue;
-                  opts.push(
-                    <option key={String(c.id)} value={String(c.id)}>
-                      {String(c.code ?? c.name ?? c.id)}
-                    </option>,
-                  );
-                }
-                return opts;
-              })()}
-            </select>
+            <div className="flex items-end gap-2">
+              <select
+                id="charge_code_id"
+                className={`${selectClass} min-w-0 flex-1`}
+                {...register('charge_code_id')}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  setValue('charge_code_id', id, { shouldValidate: true });
+                  const code = chargeCodes.find((c) => String(c.id) === id);
+                  if (code) {
+                    const desc = String(
+                      code.description ?? code.name ?? code.code ?? '',
+                    ).trim();
+                    if (desc) setValue('description', desc, { shouldValidate: true });
+                  }
+                }}
+              >
+                <option value="">Select…</option>
+                {(() => {
+                  const opts = [];
+                  for (const c of chargeCodes) {
+                    if (!isUuid(String(c.id))) continue;
+                    opts.push(
+                      <option key={String(c.id)} value={String(c.id)}>
+                        {String(c.code ?? c.name ?? c.id)}
+                      </option>,
+                    );
+                  }
+                  return opts;
+                })()}
+              </select>
+              <button
+                type="button"
+                title="Add charge code"
+                aria-label="Add charge code"
+                onClick={() => setAddChargeCodeOpen(true)}
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[var(--color-primary-600)] text-white hover:bg-[var(--color-primary-700)]"
+              >
+                <Plus className="h-4 w-4" aria-hidden />
+              </button>
+            </div>
             {errors.charge_code_id && (
               <p className="text-xs text-[var(--color-danger-500)]">
                 {errors.charge_code_id.message as string}
@@ -394,6 +409,20 @@ export function QuotationLinesEditor({
           </div>
         </form>
       )}
+
+      <AddChargeCodeModal
+        open={addChargeCodeOpen}
+        onClose={() => setAddChargeCodeOpen(false)}
+        onCreated={(record) => {
+          const id = String(record.id ?? '');
+          if (!isUuid(id)) return;
+          setValue('charge_code_id', id, { shouldValidate: true });
+          const desc = String(
+            record.description ?? record.name ?? record.code ?? '',
+          ).trim();
+          if (desc) setValue('description', desc, { shouldValidate: true });
+        }}
+      />
     </div>
   );
 }

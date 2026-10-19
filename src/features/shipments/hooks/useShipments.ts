@@ -29,7 +29,19 @@ export const shipmentKeys = {
   ediTypes: (id: string) => [...shipmentKeys.all, 'edi-types', id] as const,
   ediSubmissions: (id: string) =>
     [...shipmentKeys.all, 'edi-submissions', id] as const,
+  statusOptions: [...(['tenant', 'shipments'] as const), 'status-options'] as const,
 };
+
+/** GET /shipments/status-options — system + custom catalog. */
+export function useShipmentStatusOptions(enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: shipmentKeys.statusOptions,
+    queryFn: () => shipmentService.getStatusOptions(),
+    enabled: Boolean(accessToken) && enabled,
+    staleTime: 60_000,
+  });
+}
 
 export function useShipments(params: ShipmentListParams) {
   const accessToken = useAuthStore((s) => s.accessToken);

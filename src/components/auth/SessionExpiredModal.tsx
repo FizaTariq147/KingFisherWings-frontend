@@ -10,11 +10,12 @@ function isSuperAdminSurface(): boolean {
 }
 
 /**
- * Idle timeout popup (20 minutes of inactivity — not from login).
+ * Idle timeout popup (30 minutes of inactivity — matches backend SESSION_IDLE_TIMEOUT_MINUTES).
  * Continue → refresh tokens and keep working (no login).
  * Revoke → POST /auth/logout (revoke current session) then sign out to login.
  *
  * ERP-only: never show on Super Admin routes or when a Super Admin session is active.
+ * If the API already revoked the session (401 inactivity), axios clears tokens and goes to login.
  */
 export function SessionExpiredModal() {
   const sessionExpired = useAuthStore((s) => s.sessionExpired)
@@ -89,8 +90,9 @@ export function SessionExpiredModal() {
                 Session idle
               </h2>
               <p className="text-sm text-[var(--color-neutral-500)] mt-1 leading-relaxed">
-                No activity for 20 minutes. Continue to keep working without signing in again, or
-                revoke this session.
+                No activity for 30 minutes. Continue to keep working without signing in again, or
+                revoke this session. If the server already timed out the session, you will be sent
+                to login.
               </p>
             </div>
           </div>
