@@ -599,7 +599,38 @@ export const shipmentService = {
       const jobId = extractJobId(res.data) ?? extractJobId(unwrapShipmentPayload(res.data));
       const shipment =
         normalizeShipment(unwrapShipmentPayload(res.data)) ?? (await this.getDetail(id));
-      return { ...shipment, ...(jobId ? { job_id: jobId } : {}) };
+      const resolvedJobId = jobId || shipment.job_id;
+      if (resolvedJobId && isUuid(resolvedJobId)) {
+        try {
+          const { quotationService } = await import(
+            '@/features/quotations/services/quotation.service'
+          );
+          const { syncCustomerPortalBookingFormOntoJob } = await import(
+            '@/features/jobs/utils/applyPortalPayloadToModeBookingForm'
+          );
+          const linked = await quotationService.findLinkedToJob(resolvedJobId, {
+            quotationId: shipment.quotation_id,
+            jobNumber: undefined,
+            jobType: shipment.job_type,
+            customerId: shipment.customer_id,
+          });
+          if (linked?.id) {
+            const { rememberQuotationConverted } = await import(
+              '@/features/quotations/utils/quotationConvertedMemory'
+            );
+            rememberQuotationConverted(linked.id, resolvedJobId);
+            await syncCustomerPortalBookingFormOntoJob({
+              jobId: resolvedJobId,
+              jobType: linked.job_type || shipment.job_type,
+              quotationId: linked.id,
+              quoteNumber: linked.quotation_number || linked.quote_no,
+            });
+          }
+        } catch {
+          /* non-fatal — ModeBookingFormPanel can still prefill from inbox */
+        }
+      }
+      return { ...shipment, ...(resolvedJobId ? { job_id: resolvedJobId } : {}) };
     } catch (error) {
       throw formatAxiosError(error);
     }

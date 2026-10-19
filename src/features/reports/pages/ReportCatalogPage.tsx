@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { appType } from '@/lib/erpTypography';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
+import { getOperationsReportByFormatCode } from '@/features/operations/config/operationsReports';
 import { Input } from '@/components/ui/Input';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import {
@@ -1224,11 +1225,25 @@ export default function ReportCatalogPage() {
             <p className="min-w-0 truncate text-sm font-medium text-[var(--color-neutral-800)]">
               {selected.name}
             </p>
-            <FavouriteToggle
-              kind="report_template"
-              targetKey={selected.code}
-              label={selected.name}
-            />
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
+              {(() => {
+                const live = getOperationsReportByFormatCode(selected.code);
+                if (!live) return null;
+                return (
+                  <Link
+                    to={live.path}
+                    className="rounded-md border border-[var(--color-primary-200)] bg-[var(--color-primary-50)] px-2.5 py-1 text-xs font-medium text-[var(--color-primary-800)] hover:bg-[var(--color-primary-100)]"
+                  >
+                    Open live Operations report
+                  </Link>
+                );
+              })()}
+              <FavouriteToggle
+                kind="report_template"
+                targetKey={selected.code}
+                label={selected.name}
+              />
+            </div>
           </div>
           <ReportGeneratePanel
             template={selected}

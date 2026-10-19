@@ -98,17 +98,20 @@ function FresaReadonlyField({
   const shown = !raw || isUuid(raw) ? '' : raw;
   const text = shown || (href ? 'View' : '—');
   return (
-    <div className="min-w-0">
-      <div className={erpForm.label}>{label}</div>
-      <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[13px] text-[#0f172a]">
-        {href ? (
-          <Link className="truncate font-medium text-[var(--color-primary-700)] hover:underline" to={href}>
-            {text}
-          </Link>
-        ) : (
-          <span className="truncate">{text}</span>
-        )}
-      </div>
+    <div className="flex min-w-0 items-baseline gap-1.5 text-[13px] leading-5">
+      <span className="shrink-0 font-semibold text-[var(--fresa-header-text,#0A2942)]">
+        {label}:
+      </span>
+      {href ? (
+        <Link
+          className="min-w-0 truncate font-medium text-[var(--color-primary-700)] hover:underline"
+          to={href}
+        >
+          {text}
+        </Link>
+      ) : (
+        <span className="min-w-0 truncate text-[#0f172a]">{text}</span>
+      )}
     </div>
   );
 }
@@ -649,11 +652,7 @@ export default function CrmEnquiryDetailPage() {
         <FavouriteToggle kind="enquiry" targetKey={id} label={titleRef} />
       </div>
 
-      {/* Generation actions — below Enquiry detail (same pattern as shipment) */}
       <div className={`${erpForm.toolbar} w-full max-w-none print:hidden`}>
-        <p className="mr-1 w-full text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)] sm:mr-2 sm:w-auto">
-          Generation actions
-        </p>
         {canCopy && (
           <Button
             size="sm"
@@ -729,21 +728,6 @@ export default function CrmEnquiryDetailPage() {
             Cancel enquiry
           </Button>
         )}
-        {!canGenerateShipment && !canGenerateJob && hasQuotation && !hasShipment ? (
-          <span className="text-[12px] text-[var(--color-neutral-500)]">
-            Generate Shipment / Job unlock after the linked quotation is Approved.
-          </span>
-        ) : null}
-        {!canCopy &&
-        !canGenerateQuotation &&
-        !canGenerateShipment &&
-        !canGenerateJob &&
-        !canConvert &&
-        !canCancel ? (
-          <span className="text-[12px] text-[var(--color-neutral-500)]">
-            No generation actions available for this enquiry status.
-          </span>
-        ) : null}
       </div>
 
       {/* Tabs + form body */}

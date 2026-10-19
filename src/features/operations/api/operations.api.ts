@@ -20,14 +20,8 @@ export const OPERATIONS_API = {
   voyageJobsShipments: '/operations/voyage-jobs-shipments',
 } as const;
 
-/** Report format codes for POST /reports/generate (Waves 1–3 costing parity). */
-export const OPERATIONS_COSTING_REPORT_FORMATS = [
-  'AR_JOB_NOT_INVOICE_REPORT_FORMAT',
-  'JOB_FINANCE_BY_SHIPMENT_DATE_REPORT_FORMAT',
-  'EXCEPTION_REPORT_FORMAT',
-  'KPI_STATUS_BY_COMPLETED_DATE_REPORT_FORMAT',
-  'JOB_LIST_SUMMARY_REPORT_FORMAT',
-] as const;
-
-export type OperationsCostingReportFormat =
-  (typeof OPERATIONS_COSTING_REPORT_FORMATS)[number];
+export {
+  OPERATIONS_COSTING_REPORT_FORMATS,
+  getOperationsReportByFormatCode,
+  operationsLiveReportPathForFormat,
+} from '../config/operationsReports';

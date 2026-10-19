@@ -112,20 +112,20 @@ function FresaReadonlyField({
   const shown = displayValue(value);
   const text = shown || (href ? 'View' : '—');
   return (
-    <div className="min-w-0">
-      <div className={erpForm.label}>{label}</div>
-      <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[13px] text-[#0f172a]">
-        {href ? (
-          <Link
-            className="truncate font-medium text-[var(--color-primary-700)] hover:underline"
-            to={href}
-          >
-            {text}
-          </Link>
-        ) : (
-          <span className="truncate">{text}</span>
-        )}
-      </div>
+    <div className="flex min-w-0 items-baseline gap-1.5 text-[13px] leading-5">
+      <span className="shrink-0 font-semibold text-[var(--fresa-header-text,#0A2942)]">
+        {label}:
+      </span>
+      {href ? (
+        <Link
+          className="min-w-0 truncate font-medium text-[var(--color-primary-700)] hover:underline"
+          to={href}
+        >
+          {text}
+        </Link>
+      ) : (
+        <span className="min-w-0 truncate text-[#0f172a]">{text}</span>
+      )}
     </div>
   );
 }
@@ -768,14 +768,10 @@ export default function JobDetailPage() {
                   Shipment{shipmentNumber ? ` ${shipmentNumber}` : ''}
                 </Link>
               ) : null}
-              {!enquiryHref && !quotationHref && !shipmentHref ? (
-                <span className="text-[#64748b]">No linked continuum records</span>
-              ) : null}
               <span className="text-[#64748b]"> · {job.job_type?.replaceAll('_', ' ')}</span>
             </div>
           </>
         }
-        toolbarLabel="Actions"
         toolbar={
           <>
             {canChangeStatus ? (
@@ -1122,10 +1118,6 @@ export default function JobDetailPage() {
             </div>
           }
         >
-          <p className="mb-3 text-[12px] text-[#64748b]">
-            Allowlisted fields only while the job remains closed (delivery dates, DO remarks,
-            return-to-terminal, load-onboard, commodity note).
-          </p>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block text-[13px]">
               <span className="mb-1 block text-[12px] font-medium text-[#334155]">

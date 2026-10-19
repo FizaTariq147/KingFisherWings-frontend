@@ -59,5 +59,12 @@ export function reportsTileModuleKey(tile: {
   if (id.includes('customer') || path.includes('/customer')) return 'support';
   if (id.includes('transport') || path.includes('/transport')) return 'transport';
   if (id.includes('catalog') || path.includes('/reports/catalog')) return null;
+  if (
+    id.includes('operation') ||
+    path.includes('/operations') ||
+    section.includes('operation')
+  ) {
+    return 'operations';
+  }
   return null;
 }

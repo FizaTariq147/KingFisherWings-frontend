@@ -103,9 +103,15 @@ export function BookingDocumentUploadList({
         const file = selectedFiles[kind];
         const existing = existingByKind?.[kind];
         const inputId = `${baseId}-${kind}`;
+        const displayName =
+          file?.name ||
+          existing?.fileName ||
+          (uploaded ? `${BOOKING_DOCUMENT_KIND_LABELS[kind]} (on file)` : undefined);
+        const onFile =
+          Boolean(existing?.fileName || existing?.onDownload) || (uploaded && !file);
         const statusText = uploaded
-          ? existing?.fileName
-            ? `On file · ${existing.fileName}`
+          ? onFile
+            ? 'On file'
             : 'Uploaded'
           : busy
             ? 'Uploading…'
@@ -137,10 +143,18 @@ export function BookingDocumentUploadList({
                   )}
                 </p>
                 <p className="text-xs text-[var(--color-neutral-500)]">{statusText}</p>
+                {onFile && displayName ? (
+                  <p
+                    className="mt-0.5 truncate text-sm font-medium text-[var(--color-neutral-800)]"
+                    title={displayName}
+                  >
+                    {displayName}
+                  </p>
+                ) : null}
               </div>
 
               <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">
-                {uploaded && existing?.onDownload ? (
+                {existing?.onDownload ? (
                   <button
                     type="button"
                     className="inline-flex h-9 shrink-0 items-center rounded-md border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 text-xs font-medium text-[var(--fresa-header-text,#0A2942)] hover:bg-[var(--fresa-page-bg,#F4F6F9)]"
@@ -185,32 +199,50 @@ export function BookingDocumentUploadList({
                     });
                   }}
                 />
-                <label
-                  htmlFor={inputId}
-                  className={[
-                    'inline-flex h-9 shrink-0 cursor-pointer items-center rounded-md border border-[var(--color-neutral-300)] bg-[var(--color-neutral-50)] px-3 text-xs font-medium text-[var(--color-neutral-800)]',
-                    'hover:bg-[var(--color-neutral-100)]',
-                    disabled || busy
-                      ? 'pointer-events-none cursor-not-allowed opacity-60'
-                      : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' ')}
-                >
-                  {file || uploaded ? 'Change file' : 'Choose file'}
-                </label>
-                <span
-                  className="min-w-0 max-w-[220px] truncate text-xs text-[var(--color-neutral-600)]"
-                  title={
-                    file?.name ||
-                    existing?.fileName ||
-                    (uploaded ? 'Uploaded' : undefined)
-                  }
-                >
-                  {uploaded && !file
-                    ? existing?.fileName || 'File uploaded'
-                    : formatFileLabel(file)}
-                </span>
+                {onFile && !file ? (
+                  <label
+                    htmlFor={inputId}
+                    className={[
+                      'inline-flex h-9 shrink-0 cursor-pointer items-center rounded-md border border-transparent px-2 text-xs font-medium text-[var(--color-neutral-600)] underline-offset-2 hover:underline',
+                      disabled || busy
+                        ? 'pointer-events-none cursor-not-allowed opacity-60'
+                        : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                  >
+                    Replace
+                  </label>
+                ) : (
+                  <>
+                    <label
+                      htmlFor={inputId}
+                      className={[
+                        'inline-flex h-9 shrink-0 cursor-pointer items-center rounded-md border border-[var(--color-neutral-300)] bg-[var(--color-neutral-50)] px-3 text-xs font-medium text-[var(--color-neutral-800)]',
+                        'hover:bg-[var(--color-neutral-100)]',
+                        disabled || busy
+                          ? 'pointer-events-none cursor-not-allowed opacity-60'
+                          : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                    >
+                      {file || uploaded ? 'Change file' : 'Choose file'}
+                    </label>
+                    <span
+                      className="min-w-0 max-w-[220px] truncate text-xs text-[var(--color-neutral-600)]"
+                      title={
+                        file?.name ||
+                        existing?.fileName ||
+                        (uploaded ? 'Uploaded' : undefined)
+                      }
+                    >
+                      {uploaded && !file
+                        ? existing?.fileName || 'File uploaded'
+                        : formatFileLabel(file)}
+                    </span>
+                  </>
+                )}
               </div>
             </div>
             {errors[kind] ? (

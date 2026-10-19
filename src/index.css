@@ -74,7 +74,7 @@
   --fresa-border:        #C9D3DF;
   --fresa-page-bg:       #F4F6F9;
   --fresa-toolbar-bg:    #EEF3F9;
-  --fresa-thead-bg:      var(--color-primary);
+  --fresa-thead-bg:      #E9EEF2;
   --fresa-row-hover:     #F5F9FC;
   /* Status / semantic (Fresa operational palette) */
   --fresa-success:       var(--color-success-500);
@@ -282,7 +282,7 @@ code, kbd, pre, samp {
   display: none;               /* Chrome, Safari, new Edge */
 }
 
-/* Detail form only — slim pad for compact Ops continuum icon rail */
+/* Detail form only — pad for Ops continuum icon rail (fixed px so zoom/DPI stay stable) */
 .kf-ops-continuum-form-pad {
   box-sizing: border-box;
   max-width: 100%;
@@ -291,13 +291,61 @@ code, kbd, pre, samp {
 @media (min-width: 640px) {
   .kf-ops-continuum-form-pad {
     padding-bottom: 0;
-    /* Compact icon rail (~2.75rem) — only detail summary shrinks; Actions/tabs stay full width */
-    padding-right: 3.25rem;
+    /* Match .kf-ops-continuum-rail outer width + gutter */
+    padding-right: 52px;
   }
 }
 @media (min-width: 1280px) {
   .kf-ops-continuum-form-pad {
-    padding-right: 3.5rem;
+    padding-right: 56px;
+  }
+}
+
+/*
+ * Ops continuum rail — fixed CSS px sizes so 110%+ browser zoom / display scale
+ * does not crush icons. Buttons never shrink; column scrolls when tall.
+ */
+.kf-ops-continuum-rail {
+  box-sizing: border-box;
+  width: 44px;
+  min-width: 44px;
+  max-width: 44px;
+  flex-shrink: 0;
+  max-height: min(70vh, 560px);
+}
+.kf-ops-continuum-rail__btn {
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  max-width: 36px;
+  max-height: 36px;
+  flex-shrink: 0;
+}
+.kf-ops-continuum-rail__btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+@media (min-width: 1280px) {
+  .kf-ops-continuum-rail {
+    width: 48px;
+    min-width: 48px;
+    max-width: 48px;
+    max-height: min(75vh, 640px);
+  }
+  .kf-ops-continuum-rail__btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 40px;
+    max-height: 40px;
+  }
+  .kf-ops-continuum-rail__btn svg {
+    width: 22px;
+    height: 22px;
   }
 }
 

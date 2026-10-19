@@ -858,19 +858,33 @@ function normalizePathHints(raw: unknown): string[] | undefined {
   return hints.length ? hints : undefined;
 }
 
+function humanizeTabLabel(raw: string): string {
+  return raw
+    .trim()
+    .replace(/[-_]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 function normalizeJobTabs(raw: unknown): JobDetailTab[] | undefined {
   if (!Array.isArray(raw)) return undefined;
   const tabs: JobDetailTab[] = [];
   for (const item of raw) {
     if (typeof item === 'string' && item.trim()) {
-      tabs.push({ key: item.trim(), label: item.trim() });
+      const key = item.trim();
+      tabs.push({ key, label: humanizeTabLabel(key) });
       continue;
     }
     const rec = asRecord(item);
     if (!rec) continue;
     const key = pickString(rec, 'key', 'id', 'name', 'tab');
     if (!key) continue;
-    tabs.push({ key, label: pickString(rec, 'label', 'title', 'name') || key });
+    const apiLabel = pickString(rec, 'label', 'title', 'name');
+    tabs.push({
+      key,
+      label:
+        apiLabel && !/[_-]/.test(apiLabel) ? apiLabel : humanizeTabLabel(apiLabel || key),
+    });
   }
   return tabs.length ? tabs : undefined;
 }

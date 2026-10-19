@@ -130,7 +130,7 @@ export function DetailPageTemplate({
   detailTitle = 'Detail',
   afterDetail,
   toolbar,
-  toolbarLabel = 'Actions',
+  toolbarLabel = '',
   sidebar,
   onBack,
   backTo,
@@ -244,12 +244,14 @@ export function DetailPageTemplate({
 
       {afterDetail ? <div className="space-y-2.5">{afterDetail}</div> : null}
 
-      {/* Actions / generation toolbar — always full width (never continuum-padded) */}
+      {/* Toolbar — always full width (never continuum-padded) */}
       {toolbar ? (
         <div className={`${erpForm.toolbar} w-full max-w-none print:hidden`}>
-          <p className="mr-1 w-full text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)] sm:mr-2 sm:w-auto">
-            {toolbarLabel}
-          </p>
+          {toolbarLabel ? (
+            <p className="mr-1 w-full text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)] sm:mr-2 sm:w-auto">
+              {toolbarLabel}
+            </p>
+          ) : null}
           {toolbar}
         </div>
       ) : null}

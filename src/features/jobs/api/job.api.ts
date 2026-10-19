@@ -61,6 +61,10 @@ export const JOB_API = {
   /** POST /jobs/:id/invoices/sale · /purchase */
   invoicesSale: (id: string) => `/jobs/${id}/invoices/sale`,
   invoicesPurchase: (id: string) => `/jobs/${id}/invoices/purchase`,
+  /** GET /jobs/:id/invoices/sale/form — prefill sale charges → quotation → empty */
+  invoicesSaleForm: (id: string) => `/jobs/${id}/invoices/sale/form`,
+  /** GET /jobs/:id/invoices/purchase/form — prefill vendor offer → costing → empty */
+  invoicesPurchaseForm: (id: string) => `/jobs/${id}/invoices/purchase/form`,
   /** GET/POST /jobs/:id/invoices/purchase/bulk — Fresa bulk PI preview + generate */
   invoicesPurchaseBulk: (id: string) => `/jobs/${id}/invoices/purchase/bulk`,
   /** GET /jobs/:id/edi/types · POST generate · GET submissions · GET download (PDF stream) */
@@ -293,6 +297,9 @@ export const JOB_API = {
   documentTypeUpload: (id: string, documentType: string) =>
     `/jobs/${id}/documents/${encodeURIComponent(documentType)}/upload`,
   document: (id: string, documentId: string) => `/jobs/${id}/documents/${documentId}`,
+  /** GET /jobs/:id/documents/:documentId/download — Bearer PDF/file stream */
+  documentDownload: (id: string, documentId: string) =>
+    `/jobs/${id}/documents/${encodeURIComponent(documentId)}/download`,
   finalizeDocument: (id: string, documentId: string) =>
     `/jobs/${id}/documents/${documentId}/finalize`,
   documentGenerationStatus: (id: string) => `/jobs/${id}/documents/generation-status`,

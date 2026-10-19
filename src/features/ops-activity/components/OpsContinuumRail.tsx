@@ -15,7 +15,6 @@ import { Button } from '@/components/ui/Button';
 import { useOpsContinuumCounts } from '../hooks/useOpsContinuumCounts';
 import { OpsContinuumPanel } from './OpsContinuumPanel';
 import {
-  opsLifecycleHostLabel,
   resolveOpsContinuumEntity,
   type OpsLifecycleLinks,
 } from '../utils/resolveOpsContinuumEntity';
@@ -125,7 +124,6 @@ export function OpsContinuumRail({
       }),
     [pathHints, opsContinuum, actions],
   );
-  const hostLabel = opsLifecycleHostLabel(host);
   const counts = useOpsContinuumCounts(host.entityType, host.entityId, {
     enabled: Boolean(host.entityId) && tabs.length > 0,
     opsContinuum,
@@ -141,7 +139,7 @@ export function OpsContinuumRail({
         aria-label="Ops continuum"
         className={`pointer-events-none fixed bottom-6 right-2 z-40 flex flex-col items-end gap-2 sm:bottom-auto sm:top-28 ${className}`}
       >
-        <div className="pointer-events-auto flex max-h-[min(70vh,32rem)] w-11 flex-col gap-1 overflow-y-auto rounded-md border border-[var(--fresa-border,#C9D3DF)] bg-white/95 p-1 shadow-md backdrop-blur-sm">
+        <div className="kf-ops-continuum-rail pointer-events-auto flex flex-col gap-1 overflow-y-auto overflow-x-hidden rounded-md border border-[var(--fresa-border,#C9D3DF)] bg-white/95 p-1 shadow-md backdrop-blur-sm">
           {tabs.map((tab) => {
             const meta = TAB_META[tab];
             const Icon = meta.Icon;
@@ -153,7 +151,7 @@ export function OpsContinuumRail({
                 type="button"
                 title={`${meta.label}${count != null ? ` (${count})` : ''}`}
                 aria-label={`${meta.label}${count != null ? `, ${count}` : ''}`}
-                className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border text-white shadow-sm transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
+                className="kf-ops-continuum-rail__btn relative flex items-center justify-center rounded-sm border text-white shadow-sm transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
                 style={{
                   ...meta.style,
                   borderWidth: 1,
@@ -165,7 +163,7 @@ export function OpsContinuumRail({
                 <span className="absolute -right-1 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-white px-0.5 text-[8px] font-bold leading-none text-[var(--fresa-header-text,#0A2942)] shadow-sm ring-1 ring-black/10">
                   {countLabel}
                 </span>
-                <Icon className="h-5 w-5 shrink-0" aria-hidden />
+                <Icon aria-hidden />
               </button>
             );
           })}
@@ -191,7 +189,6 @@ export function OpsContinuumRail({
             </Button>
           }
         >
-          <p className="mb-2 text-[11px] text-[#64748b]">{hostLabel}</p>
           <OpsContinuumPanel
             entityType={entityType}
             entityId={entityId}

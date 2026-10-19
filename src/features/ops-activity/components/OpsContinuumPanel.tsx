@@ -18,7 +18,6 @@ import {
 import type { OpsContinuumTab, OpsEntityType } from '../types/opsActivity.types';
 import {
   buildOpsLifecycleLinks,
-  opsLifecycleHostLabel,
   resolveOpsContinuumEntity,
   type OpsLifecycleLinks,
 } from '../utils/resolveOpsContinuumEntity';
@@ -204,10 +203,6 @@ export function OpsContinuumPanel({
 
         {error ? <p className="text-sm text-[var(--color-danger-600)]">{error}</p> : null}
         {msg ? <p className="text-sm text-[var(--color-success-700)]">{msg}</p> : null}
-
-        <p className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-2.5 py-1.5 text-[11px] text-[#475569]">
-          {opsLifecycleHostLabel(host)}
-        </p>
 
         {tab === 'comments' ? (
           <div className="space-y-3">

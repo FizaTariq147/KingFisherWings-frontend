@@ -632,7 +632,8 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
     retry: 1,
   });
   const linkedQuote = linkedQuoteQuery.data;
-  const quoteFromCustomerPortal = isCustomerPortalQuotation(linkedQuote);
+  const mayHavePortalBooking =
+    Boolean(linkedQuote?.id) || isCustomerPortalQuotation(linkedQuote);
 
   const portalBookingQuery = useCustomerPortalBookingForm(
     {
@@ -642,8 +643,10 @@ export function AirComplianceStaffPanel({ jobId }: { jobId: string }) {
       jobTypePrefix: 'AIR',
       jobNumber: job?.job_number,
     },
-    Boolean(jobId) && quoteFromCustomerPortal && !linkedQuoteQuery.isLoading,
+    Boolean(jobId) && mayHavePortalBooking && !linkedQuoteQuery.isLoading,
   );
+  const quoteFromCustomerPortal =
+    isCustomerPortalQuotation(linkedQuote) || Boolean(portalBookingQuery.data);
 
   const portalPayload = quoteFromCustomerPortal ? portalBookingQuery.data : undefined;
   const customerCompleted = Boolean(portalPayload?.mark_complete);

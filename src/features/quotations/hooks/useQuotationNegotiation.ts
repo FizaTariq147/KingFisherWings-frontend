@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
+import { jobKeys } from '@/features/jobs/hooks/useJobs';
 import { quotationNegotiationService } from '../services/quotationNegotiation.service';
 import type { ApprovalDecisionDto } from '../types/quotation.types';
 import type { NegotiationRejectDto, ReviseAndSendDto } from '../types/quotationExtended.types';
@@ -31,6 +32,8 @@ export function useQuotationNegotiationActions(quotationId: string) {
     clearCustomerQuoteDecision(quotationId);
     invalidate(quotationId);
     void qc.invalidateQueries({ queryKey: negotiationKeys.timeline(quotationId) });
+    // Backend syncs negotiation into job_charges — refresh costing grids.
+    void qc.invalidateQueries({ queryKey: jobKeys.all });
   };
 
   // Call each mutation hook at top level (stable order) — do not construct inside object literals only.

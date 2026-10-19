@@ -34,7 +34,10 @@ export function isCustomerPortalQuotation(
     source.includes('portal') ||
     source === 'customer_portal' ||
     source === 'online_quote' ||
-    source === 'online'
+    source === 'online' ||
+    source === 'customer_request' ||
+    source === 'portal_request' ||
+    source.includes('customer')
   ) {
     return true;
   }
