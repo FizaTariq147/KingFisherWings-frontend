@@ -561,6 +561,62 @@ export const shipmentService = {
     }
   },
 
+  /** GET /shipments/status-options — system + custom catalog. */
+  async getStatusOptions(): Promise<
+    import('@/features/jobs/types/job.types').JobStatusOption[]
+  > {
+    try {
+      const { normalizeJobStatusOptions } = await import(
+        '@/features/jobs/utils/normalizeJob'
+      );
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(SHIPMENT_API.statusOptions),
+      );
+      return normalizeJobStatusOptions(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async createStatusCatalog(
+    dto: import('@/features/jobs/types/job.types').UpsertStatusCatalogDto,
+  ): Promise<unknown> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(SHIPMENT_API.statusCatalog, dto),
+      );
+      return unwrapShipmentPayload(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async updateStatusCatalog(
+    id: string,
+    dto: Partial<import('@/features/jobs/types/job.types').UpsertStatusCatalogDto>,
+  ): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch(SHIPMENT_API.statusCatalogById(id), dto),
+      );
+      return unwrapShipmentPayload(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async deactivateStatusCatalog(id: string): Promise<void> {
+    assertId(id);
+    try {
+      await withGatewayRetry(() =>
+        axiosInstance.delete(SHIPMENT_API.statusCatalogById(id)),
+      );
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
   async changeBlStatus(id: string, dto: ChangeShipmentBlStatusDto): Promise<Shipment> {
     assertId(id);
     try {

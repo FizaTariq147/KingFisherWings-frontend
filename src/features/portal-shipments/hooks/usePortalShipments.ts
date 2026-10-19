@@ -16,6 +16,8 @@ export const portalShipmentKeys = {
     [...portalShipmentKeys.all(scope), 'milestones', id] as const,
   documents: (scope: string, id: string) =>
     [...portalShipmentKeys.all(scope), 'documents', id] as const,
+  acknowledgement: (scope: string, id: string) =>
+    [...portalShipmentKeys.all(scope), 'acknowledgement', id] as const,
   containerRequests: (scope: string, id: string) =>
     [...portalShipmentKeys.all(scope), 'container-requests', id] as const,
   uldRequests: (scope: string, id: string) =>
@@ -197,5 +199,39 @@ export function useDownloadPortalShipmentDocument() {
       docId: string;
       name?: string;
     }) => portalShipmentsService.downloadDocument(shipmentId, docId, name),
+  });
+}
+
+export function usePortalShipmentAcknowledgement(id: string, enabled = true) {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  return useQuery({
+    queryKey: portalShipmentKeys.acknowledgement(scope, id),
+    queryFn: () => portalShipmentsService.getAcknowledgement(id),
+    enabled: Boolean(accessToken) && Boolean(id) && enabled && scope !== 'anon',
+    retry: false,
+  });
+}
+
+export function useSubmitPortalShipmentAcknowledgement(shipmentId: string) {
+  const queryClient = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: (
+      dto: import('@/features/jobs/types/job.types').SubmitDeliveryAcknowledgementDto,
+    ) => portalShipmentsService.submitAcknowledgement(shipmentId, dto),
+    onSuccess: (data) => {
+      queryClient.setQueryData(portalShipmentKeys.acknowledgement(scope, shipmentId), data);
+      void queryClient.invalidateQueries({
+        queryKey: portalShipmentKeys.detail(scope, shipmentId),
+      });
+    },
+  });
+}
+
+export function useUploadPortalAcknowledgementSignature(shipmentId: string) {
+  return useMutation({
+    mutationFn: (file: File) =>
+      portalShipmentsService.uploadAcknowledgementSignature(shipmentId, file),
   });
 }

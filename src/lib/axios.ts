@@ -4,7 +4,7 @@ import { matchesAnyApiPath } from '@/lib/apiPath'
 import { erpAccessBlockMessage } from '@/lib/detectErpAccessBlock'
 import { ensureErpAccessToken } from '@/lib/ensureErpAccessToken'
 import { notifyAxiosError } from '@/lib/toastNotify'
-import { useAuthStore } from '@/store/authStore'
+import { isSessionInactivityTimeoutMessage, useAuthStore } from '@/store/authStore'
 
 interface RetryConfig extends InternalAxiosRequestConfig {
   _retry?: boolean
@@ -95,6 +95,12 @@ axiosInstance.interceptors.response.use(
 
     if (error.response?.status !== 401) return rejectWithToast(error)
 
+    // Backend SESSION_IDLE_TIMEOUT_MINUTES — clear tokens and send to login.
+    if (isSessionInactivityTimeoutMessage(error.response?.data)) {
+      useAuthStore.getState().forceLogoutDueToInactivity()
+      return rejectWithToast(error)
+    }
+
     // Idle modal owns refresh — unless Continue/Revoke is actively running.
     const authState = useAuthStore.getState()
     if (authState.sessionExpired && !authState.sessionExpiryActionInProgress) {
@@ -102,7 +108,7 @@ axiosInstance.interceptors.response.use(
     }
 
     if (!authState.refreshToken) {
-      useAuthStore.getState().markSessionExpired()
+      useAuthStore.getState().forceLogoutDueToInactivity()
       return rejectWithToast(error)
     }
 
@@ -114,7 +120,15 @@ axiosInstance.interceptors.response.use(
       original.headers.Authorization = `Bearer ${newToken}`
       return axiosInstance(original)
     } catch (refreshError) {
-      useAuthStore.getState().markSessionExpired()
+      const refreshData = (refreshError as AxiosError)?.response?.data
+      if (
+        isSessionInactivityTimeoutMessage(refreshData) ||
+        (refreshError as AxiosError)?.response?.status === 401
+      ) {
+        useAuthStore.getState().forceLogoutDueToInactivity()
+      } else {
+        useAuthStore.getState().markSessionExpired()
+      }
       return rejectWithToast(refreshError)
     }
   },

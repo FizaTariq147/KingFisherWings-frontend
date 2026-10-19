@@ -11,6 +11,9 @@ type JobDocumentFileRef = {
   fileName?: string;
   download_url?: string;
   downloadUrl?: string;
+  /** Relative API download path from enriched booking-form documents. */
+  download_path?: string;
+  downloadPath?: string;
 };
 
 function isUsableFileUrl(value: string): boolean {
@@ -34,9 +37,12 @@ function fromS3Key(key: string, tenantId?: string | null): string | null {
   return null;
 }
 
-function pushUnique(out: string[], value: string | null | undefined) {
+function pushUnique(out: string[], value: string | null | undefined, opts?: { allowRelativeApi?: boolean }) {
   const trimmed = (value || '').trim();
-  if (!trimmed || !isUsableFileUrl(trimmed)) return;
+  if (!trimmed) return;
+  const okRelative =
+    opts?.allowRelativeApi && trimmed.startsWith('/') && !trimmed.startsWith('//');
+  if (!okRelative && !isUsableFileUrl(trimmed)) return;
   if (!out.includes(trimmed)) out.push(trimmed);
 }
 
@@ -58,6 +64,8 @@ export function resolveJobDocumentFileUrlCandidates(
   }
 
   const urls = [
+    doc.download_path,
+    doc.downloadPath,
     doc.file_url,
     doc.fileUrl,
     doc.download_url,
@@ -68,7 +76,13 @@ export function resolveJobDocumentFileUrlCandidates(
   const external: string[] = [];
   for (const raw of urls) {
     const url = (raw || '').trim();
-    if (!url || !isUsableFileUrl(url)) continue;
+    if (!url) continue;
+    // Relative API paths (e.g. /jobs/:id/documents/:id/download) are usable via axios.
+    if (url.startsWith('/') && !url.startsWith('//') && !url.startsWith('/files/')) {
+      pushUnique(out, url, { allowRelativeApi: true });
+      continue;
+    }
+    if (!isUsableFileUrl(url)) continue;
     if (isApiOriginUrl(url) || isStoredFileUrl(url) || url.startsWith('/files/')) {
       apiOrigin.push(url);
     } else {

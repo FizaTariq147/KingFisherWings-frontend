@@ -10,6 +10,13 @@ export const QUOTATION_API = {
   detailTab: (id: string, tab: string) =>
     `/quotations/${id}/detail/${encodeURIComponent(tab)}`,
   changeStatus: (id: string) => `/quotations/${id}/change-status`,
+  /** GET selectable statuses (system + custom catalog). */
+  statusOptions: '/quotations/status-options',
+  statusCatalog: '/quotations/status-catalog',
+  statusCatalogById: (id: string) =>
+    `/quotations/status-catalog/${encodeURIComponent(id)}`,
+  bookingFormDocument: (id: string, kind: string) =>
+    `/quotations/${encodeURIComponent(id)}/booking-form/documents/${encodeURIComponent(kind)}`,
   copy: (id: string) => `/quotations/${id}/copy`,
   revisions: (id: string) => `/quotations/${id}/revisions`,
   lines: (id: string) => `/quotations/${id}/lines`,

@@ -21,7 +21,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -151,7 +151,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT (JASPER)",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -199,7 +199,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -325,13 +325,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "FG HBL — HONG KONG",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -339,10 +341,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "fieldGrid",
         "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "accent"
       },
       {
         "type": "containerStrip"
@@ -377,7 +375,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -503,33 +501,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "FG HBL — FORMAT 1",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "fill"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -555,7 +553,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -685,7 +683,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG HBL — MAGICLOGISYS",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -708,6 +706,9 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -733,7 +734,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -859,13 +860,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 2",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -875,10 +878,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -886,6 +885,9 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -911,7 +913,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1037,33 +1039,36 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 4",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -1089,7 +1094,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1219,7 +1224,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 5",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -1232,7 +1237,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -1242,6 +1247,12 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -1267,7 +1278,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1393,13 +1404,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 6",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -1409,10 +1422,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -1420,6 +1429,12 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -1445,7 +1460,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1571,33 +1586,39 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 7",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -1623,7 +1644,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1753,7 +1774,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 8",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -1766,7 +1787,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -1776,6 +1797,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -1801,7 +1831,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1927,13 +1957,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 9",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -1943,10 +1975,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -1954,6 +1982,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -1979,7 +2016,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2105,33 +2142,42 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 10",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
         "headerColor": "accent"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -2157,7 +2203,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2287,7 +2333,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 11",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -2300,7 +2346,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -2310,6 +2356,18 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -2335,7 +2393,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2461,13 +2519,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 12",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -2477,10 +2537,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -2488,6 +2544,18 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -2513,7 +2581,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2639,33 +2707,45 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 13",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "cyan"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -2691,7 +2771,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2821,7 +2901,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 14",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -2844,6 +2924,21 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -2869,7 +2964,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2995,13 +3090,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 15",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -3011,10 +3108,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -3022,6 +3115,21 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -3047,7 +3155,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3173,33 +3281,48 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 16",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
         "headerColor": "accent"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -3225,7 +3348,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3355,7 +3478,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 17",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -3368,7 +3491,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -3378,6 +3501,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -3403,7 +3544,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3529,13 +3670,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 18",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -3545,10 +3688,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -3556,6 +3695,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -3581,7 +3738,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3707,33 +3864,51 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 19",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -3759,7 +3934,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3889,7 +4064,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 20",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -3902,7 +4077,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -3912,6 +4087,27 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -3937,7 +4133,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4063,13 +4259,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 23",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -4079,10 +4277,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -4090,6 +4284,27 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -4115,7 +4330,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4241,33 +4456,54 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 25",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
         "headerColor": "accent"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -4293,7 +4529,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4423,7 +4659,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 26",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -4436,7 +4672,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -4446,6 +4682,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -4471,7 +4731,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4597,13 +4857,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 27",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -4613,10 +4875,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -4624,6 +4882,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -4649,7 +4931,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4781,11 +5063,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 29 (HTML)",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -4797,20 +5076,44 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "cyan"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -4836,7 +5139,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4966,7 +5269,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 33",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -4979,7 +5282,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -4989,6 +5292,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -5014,7 +5344,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5140,13 +5470,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 40",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -5156,10 +5488,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -5167,6 +5495,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -5192,7 +5547,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5318,33 +5673,60 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 41",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -5370,7 +5752,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5500,7 +5882,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 42",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -5513,7 +5895,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -5523,6 +5905,36 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -5548,7 +5960,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5674,13 +6086,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 43",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -5690,10 +6104,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -5701,6 +6111,36 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -5726,7 +6166,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5852,33 +6292,63 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 44",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -5904,7 +6374,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6034,7 +6504,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 45",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -6047,7 +6517,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -6057,6 +6527,39 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -6082,7 +6585,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6208,13 +6711,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 46",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -6224,10 +6729,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -6235,6 +6736,39 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -6260,7 +6794,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6386,33 +6920,66 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 47",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -6438,7 +7005,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6568,7 +7135,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 48",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -6581,7 +7148,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -6591,6 +7158,42 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -6616,7 +7219,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6742,13 +7345,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 49",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -6758,10 +7363,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -6769,6 +7370,42 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -6794,7 +7431,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6920,33 +7557,69 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 50",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -6972,7 +7645,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7102,7 +7775,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 51",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -7115,7 +7788,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -7125,6 +7798,45 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -7150,7 +7862,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7276,13 +7988,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 52",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -7292,10 +8006,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -7303,6 +8013,45 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -7328,7 +8077,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7454,33 +8203,72 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 53",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -7506,7 +8294,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7636,7 +8424,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 54",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -7649,7 +8437,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -7659,6 +8447,48 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -7684,7 +8514,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7810,13 +8640,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 55",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -7826,10 +8658,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -7837,6 +8665,48 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -7862,7 +8732,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7988,33 +8858,75 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 56",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
         "headerColor": "accent"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -8040,7 +8952,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8170,7 +9082,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 59",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -8183,7 +9095,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -8193,6 +9105,51 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -8218,7 +9175,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8344,13 +9301,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 60",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -8360,10 +9319,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -8371,6 +9326,51 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -8396,7 +9396,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8522,33 +9522,78 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 61",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
         "headerColor": "accent"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -8574,7 +9619,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8704,7 +9749,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 63",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -8717,7 +9762,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -8727,6 +9772,54 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -8752,7 +9845,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8878,13 +9971,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 64",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -8894,10 +9989,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -8905,6 +9996,54 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -8930,7 +10069,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9056,33 +10195,81 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 65",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
         "headerColor": "accent"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -9108,7 +10295,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9238,7 +10425,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 66",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -9251,7 +10438,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -9261,6 +10448,57 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -9286,7 +10524,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9412,13 +10650,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 67",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -9428,10 +10668,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -9439,6 +10675,57 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -9464,7 +10751,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9590,33 +10877,84 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 68",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "cyan"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -9642,7 +10980,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9772,7 +11110,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 69",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -9795,6 +11133,60 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -9820,7 +11212,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9946,13 +11338,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 70",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -9962,10 +11356,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -9973,6 +11363,60 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -9998,7 +11442,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10124,13 +11568,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 72",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -10140,10 +11586,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -10151,6 +11593,9 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -10176,7 +11621,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10302,33 +11747,36 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 73",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "fill"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -10354,7 +11802,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10484,7 +11932,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 75",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -10507,6 +11955,9 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -10532,7 +11983,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10658,13 +12109,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 77",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -10674,10 +12127,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -10685,6 +12134,12 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -10710,7 +12165,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10836,33 +12291,39 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 83",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "fill"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -10888,7 +12349,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11018,7 +12479,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 84",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -11041,6 +12502,12 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -11066,7 +12533,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11192,13 +12659,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 85",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -11208,10 +12677,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -11219,6 +12684,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -11244,7 +12718,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11370,33 +12844,42 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 86",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "fill"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -11422,7 +12905,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11552,7 +13035,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 87",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -11575,6 +13058,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -11600,7 +13092,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11731,13 +13223,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — ORIGINAL FORMAT 87",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -11747,10 +13241,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -11758,6 +13248,18 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -11783,7 +13285,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11913,7 +13415,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 88",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -11926,7 +13428,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -11936,6 +13438,63 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -11961,7 +13520,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12087,13 +13646,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 89",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -12103,10 +13664,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -12114,6 +13671,63 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -12139,7 +13753,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12265,33 +13879,87 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 90",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "fill"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -12317,7 +13985,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12447,7 +14115,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 92",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -12470,6 +14138,66 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -12495,7 +14223,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12621,13 +14349,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 95",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -12637,10 +14367,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -12648,6 +14374,66 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -12673,7 +14459,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12799,33 +14585,90 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 96",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "cyan"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -12851,7 +14694,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12981,7 +14824,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 97",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -12994,7 +14837,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -13004,6 +14847,69 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -13029,7 +14935,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -13155,13 +15061,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 99",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -13171,10 +15079,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -13182,6 +15086,69 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -13207,7 +15174,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -13333,33 +15300,93 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 100",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "cyan"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -13385,7 +15412,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -13515,7 +15542,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 101",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -13538,6 +15565,72 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -13563,7 +15656,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -13689,13 +15782,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 102",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -13705,10 +15800,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -13716,6 +15807,72 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -13741,7 +15898,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -13867,33 +16024,96 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 107",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "fill"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -13919,7 +16139,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -14049,7 +16269,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 109",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -14062,7 +16282,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -14072,6 +16292,75 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -14097,7 +16386,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -14223,13 +16512,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 114",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -14239,10 +16530,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -14250,6 +16537,75 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -14275,7 +16631,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -14401,33 +16757,99 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 116",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -14453,7 +16875,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -14583,7 +17005,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 117",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -14596,7 +17018,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -14606,6 +17028,78 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -14631,7 +17125,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -14757,13 +17251,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 118",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -14773,10 +17269,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -14784,6 +17276,78 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -14809,7 +17373,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -14935,33 +17499,102 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 120",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -14987,7 +17620,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -15117,7 +17750,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 122",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -15130,7 +17763,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -15140,6 +17773,81 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -15165,7 +17873,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -15291,13 +17999,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 127",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -15307,10 +18017,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -15318,6 +18024,81 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -15343,7 +18124,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -15469,33 +18250,105 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 128",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
         "headerColor": "accent"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -15521,7 +18374,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -15651,7 +18504,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 129",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -15664,7 +18517,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -15674,6 +18527,84 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -15699,7 +18630,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -15825,13 +18756,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 130",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -15841,10 +18774,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -15852,6 +18781,84 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -15877,7 +18884,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16003,33 +19010,108 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 132",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "cyan"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -16055,7 +19137,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16185,7 +19267,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 134",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -16208,6 +19290,87 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -16233,7 +19396,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16359,13 +19522,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 135",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -16375,10 +19540,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -16386,6 +19547,87 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -16411,7 +19653,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16537,33 +19779,111 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 136",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "fill"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -16589,7 +19909,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16719,7 +20039,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 137",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -16732,7 +20052,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -16742,6 +20062,90 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -16767,7 +20171,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16893,13 +20297,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 138",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -16909,10 +20315,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -16920,6 +20322,90 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -16945,7 +20431,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17071,33 +20557,114 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 139",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -17123,7 +20690,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17253,7 +20820,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 140",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -17266,7 +20833,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -17276,6 +20843,93 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -17301,7 +20955,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17427,13 +21081,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 141",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -17443,10 +21099,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -17454,6 +21106,93 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -17479,7 +21218,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17605,33 +21344,117 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 142",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -17657,7 +21480,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17787,7 +21610,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 143",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -17800,7 +21623,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -17810,6 +21633,96 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -17835,7 +21748,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17961,13 +21874,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 144",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -17977,10 +21892,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -17988,6 +21899,96 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -18013,7 +22014,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -18139,33 +22140,120 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 145",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
         "headerColor": "accent"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -18191,7 +22279,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -18321,7 +22409,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 146",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -18334,7 +22422,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -18344,6 +22432,99 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -18369,7 +22550,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -18495,13 +22676,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 147",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -18511,10 +22694,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -18522,6 +22701,99 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -18547,7 +22819,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -18673,33 +22945,123 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 148",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "cyan"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -18725,7 +23087,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -18855,7 +23217,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 149",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -18878,6 +23240,102 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -18903,7 +23361,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -19029,13 +23487,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 151",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -19045,10 +23505,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -19056,6 +23512,102 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -19081,7 +23633,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -19207,33 +23759,126 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 171",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "fill"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -19259,7 +23904,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -19389,7 +24034,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 172",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -19402,7 +24047,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -19412,6 +24057,105 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -19437,7 +24181,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -19543,7 +24287,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HBL DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -19566,6 +24310,108 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -19591,7 +24437,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -19693,13 +24539,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HBL DRAFT",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -19709,10 +24557,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -19720,6 +24564,105 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -19745,7 +24688,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -19851,7 +24794,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HBL DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -19864,7 +24807,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -19874,6 +24817,9 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -19899,7 +24845,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20001,13 +24947,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HBL DRAFT",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -20017,10 +24965,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -20028,6 +24972,108 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -20053,7 +25099,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20159,7 +25205,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HBL DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -20172,7 +25218,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -20182,6 +25228,12 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -20207,7 +25259,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20309,13 +25361,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HBL DRAFT",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -20325,10 +25379,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -20336,6 +25386,9 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -20361,7 +25414,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20463,33 +25516,36 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HBL DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
         "headerColor": "accent"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -20515,7 +25571,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20617,13 +25673,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HBL DRAFT",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -20633,10 +25691,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -20644,6 +25698,9 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -20669,7 +25726,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20771,33 +25828,36 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HBL DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -20823,7 +25883,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20929,7 +25989,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HBL DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -20942,7 +26002,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -20952,6 +26012,9 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -20977,7 +26040,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -21079,13 +26142,15 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HBL DRAFT",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -21095,10 +26160,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -21106,6 +26167,12 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -21131,7 +26198,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -21233,33 +26300,39 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HBL DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
         "headerColor": "accent"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -21285,7 +26358,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -21391,7 +26464,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "HBL DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
@@ -21404,7 +26477,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -21414,6 +26487,12 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"

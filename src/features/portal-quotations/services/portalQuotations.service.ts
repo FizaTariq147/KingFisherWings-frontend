@@ -443,6 +443,8 @@ export const portalQuotationsService = {
       isAir?: boolean;
       quoteNumber?: string;
       jobType?: string;
+      /** Upload response refs — mirrored into inbox JSON for admin download. */
+      documents?: import('../utils/portalBookingFormStorage').PortalBookingFormDocumentRef[];
     },
     dto: PortalBookingFormUpsertDto,
   ): Promise<PortalBookingForm> {
@@ -450,6 +452,7 @@ export const portalQuotationsService = {
       .trim()
       .toUpperCase()
       .replace(/[\s-]+/g, '_');
+    const documents = opts.documents;
 
     const saveViaMessages = async (): Promise<PortalBookingForm> => {
       const quoteLabel = opts.quoteNumber?.trim() || opts.quotationId.slice(0, 8);
@@ -462,6 +465,7 @@ export const portalQuotationsService = {
         jobId: opts.jobId,
         bookingId,
         dto,
+        documents,
       };
       const subject = dto.mark_complete
         ? bookingFormInboxSubject({
@@ -483,6 +487,7 @@ export const portalQuotationsService = {
       return writePortalBookingFormDraft(opts.quotationId, dto, {
         quoteNumber: opts.quoteNumber,
         jobType: opts.jobType,
+        documents,
       });
     };
 
@@ -571,6 +576,7 @@ export const portalQuotationsService = {
             jobId: mirrorJobId,
             bookingId: mirrorBookingId,
             dto: { ...dto, mark_complete: true },
+            documents,
           };
           const subject = bookingFormInboxSubject({
             quoteLabel,
@@ -599,7 +605,11 @@ export const portalQuotationsService = {
         return writePortalBookingFormDraft(
           opts.quotationId,
           { ...dto, mark_complete: true },
-          { quoteNumber: mirrorQuoteNumber, jobType: mirrorJobType },
+          {
+            quoteNumber: mirrorQuoteNumber,
+            jobType: mirrorJobType,
+            documents,
+          },
         );
       }
 
@@ -610,7 +620,11 @@ export const portalQuotationsService = {
       return writePortalBookingFormDraft(
         opts.quotationId,
         { ...dto, mark_complete: false },
-        { quoteNumber: opts.quoteNumber, jobType: opts.jobType },
+        {
+          quoteNumber: opts.quoteNumber,
+          jobType: opts.jobType,
+          documents,
+        },
       );
     } catch (error) {
       if (isComplianceNotFoundError(error)) {
@@ -646,6 +660,7 @@ export const portalQuotationsService = {
       /* use opts */
     }
     const dto = portalBookingFormToUpsertDto(opts.form);
+    const formDocs = (opts.form as PortalBookingForm).documents;
     const payloadOpts = {
       quotationId: opts.quotationId,
       quoteNumber: mirrorQuoteNumber,
@@ -653,6 +668,7 @@ export const portalQuotationsService = {
       jobId: mirrorJobId,
       bookingId: mirrorBookingId,
       dto: { ...dto, mark_complete: true },
+      documents: formDocs,
     };
     const quoteLabel = mirrorQuoteNumber?.trim() || opts.quotationId.slice(0, 8);
     const subject = bookingFormInboxSubject({
@@ -730,24 +746,66 @@ export const portalQuotationsService = {
       jobId?: string;
       isAir?: boolean;
       jobType?: string;
+      /** Prefer mode booking-form document path (sea/land/etc.). */
+      useBookingFormDocuments?: boolean;
     },
     kind: import('@/features/booking-documents/constants/bookingDocumentKinds').PortalBookingDocumentKind,
     file: File,
-  ): Promise<void> {
+  ): Promise<unknown> {
+    const form = new FormData();
+    form.append('file', file);
+
+    const modeBooking =
+      opts.useBookingFormDocuments === true ||
+      (opts.jobType
+        ? (await import('@/features/quotations/utils/quotationStatus')).usesModeBookingFormConvertFlow(
+            opts.jobType,
+          )
+        : false);
+
+    // Mode booking: POST /portal/quotations/:id/booking-form/documents/:kind
+    // (and shipment path when a linked job/shipment id is present).
+    if (modeBooking && opts.quotationId) {
+      const shipmentId = opts.jobId?.trim() || '';
+      const path =
+        shipmentId && isUuid(shipmentId)
+          ? PORTAL_SHIPMENTS_API.bookingFormDocument(shipmentId, kind)
+          : PORTAL_QUOTATIONS_API.bookingFormDocument(opts.quotationId, kind);
+      try {
+        const res = await portalApiClient.post(path, form, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        if (res.data && typeof res.data === 'object' && 'data' in (res.data as object)) {
+          return (res.data as { data: unknown }).data;
+        }
+        return res.data;
+      } catch (err) {
+        // Fall through to compliance paths when booking-form upload is unavailable.
+        if (!(err instanceof PortalApiError) || (err.status !== 404 && err.status !== 405)) {
+          throw err;
+        }
+      }
+    }
+
     const target = resolveComplianceTarget(opts);
     if (!target) {
       throw new PortalApiError(
         opts.isAir || isAirJobType(opts.jobType)
           ? 'File selected. Upload starts when an air shipment/job is linked to this quote.'
-          : 'File selected. Upload starts when an NVOCC booking is linked to this quote.',
+          : modeBooking
+            ? 'Could not upload booking document. Try again or contact your forwarder.'
+            : 'File selected. Upload starts when an NVOCC booking is linked to this quote.',
         404,
       );
     }
-    const form = new FormData();
-    form.append('file', file);
     const paths = compliancePaths(target.kind);
-    await portalApiClient.post(paths.document(target.id, kind), form, {
+    const res = await portalApiClient.post(paths.document(target.id, kind), form, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
+    // 201 body: { id, document_type, file_url, s3_key, kind, form }
+    if (res.data && typeof res.data === 'object' && 'data' in (res.data as object)) {
+      return (res.data as { data: unknown }).data;
+    }
+    return res.data;
   },
 };

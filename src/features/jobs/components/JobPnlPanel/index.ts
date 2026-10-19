@@ -1,1 +1,1 @@
-export { JobPnlPanel } from './JobPnlPanel';
+export { JobPnlPanel, JobPnlSummary } from './JobPnlPanel';

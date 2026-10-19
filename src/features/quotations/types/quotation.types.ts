@@ -90,6 +90,8 @@ export interface QuotationActions {
   can_generate_job?: boolean;
   can_copy?: boolean;
   can_change_status?: boolean;
+  /** Booking form tab (provisional / converted job). */
+  can_booking_form?: boolean;
   /** Raw flags for forward-compat. */
   raw?: Record<string, unknown>;
 }
@@ -195,7 +197,8 @@ export interface Quotation {
   status_history?: QuotationStatusHistoryEntry[];
   approvals?: QuotationApproval[];
   actions?: QuotationActions;
-  path_hints?: string[];
+  /** Detail path hints — array or keyed map (e.g. booking_form, status_options). */
+  path_hints?: string[] | Record<string, string>;
   ops_continuum?: Record<string, unknown>;
 }
 

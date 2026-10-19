@@ -6,8 +6,13 @@ export type BookingFormDocumentMeta = {
   file_name?: string;
   file_url?: string;
   download_url?: string;
+  /** Relative API path e.g. `/jobs/:id/documents/:docId/download`. */
+  download_path?: string;
   s3_key?: string;
   id?: string;
+  /** True when backend marks the kind attached (may still lack file meta). */
+  attached?: boolean;
+  missing?: boolean;
 };
 
 const ATTACH_TO_KIND: Record<string, ModeBookingFormDocumentKind> = {
@@ -101,9 +106,29 @@ function metaFromRow(
   kind: ModeBookingFormDocumentKind,
   row: Record<string, unknown>,
 ): BookingFormDocumentMeta {
+  const attached =
+    row.attached === true ||
+    row.is_attached === true ||
+    row.missing === false
+      ? true
+      : row.attached === false || row.missing === true
+        ? false
+        : undefined;
+  const missing =
+    row.missing === true
+      ? true
+      : row.missing === false || attached === true
+        ? false
+        : undefined;
   return {
     kind,
-    id: pickString(row.id, row.document_id, row.documentId),
+    id: pickString(
+      row.job_document_id,
+      row.jobDocumentId,
+      row.id,
+      row.document_id,
+      row.documentId,
+    ),
     file_name: pickString(
       row.file_name,
       row.fileName,
@@ -114,13 +139,28 @@ function metaFromRow(
     ),
     file_url: pickString(row.file_url, row.fileUrl, row.url),
     download_url: pickString(row.download_url, row.downloadUrl, row.presigned_url, row.presignedUrl),
+    download_path: pickString(
+      row.download_path,
+      row.downloadPath,
+      row.path,
+      row.document_download_path,
+    ),
     s3_key: pickString(row.s3_key, row.s3Key, row.storage_key, row.storageKey, row.key),
+    attached,
+    missing,
   };
 }
 
 function hasFileRef(meta: BookingFormDocumentMeta | undefined): boolean {
   if (!meta) return false;
-  return Boolean(meta.file_url || meta.download_url || meta.s3_key || meta.file_name);
+  return Boolean(
+    meta.id ||
+      meta.file_url ||
+      meta.download_url ||
+      meta.download_path ||
+      meta.s3_key ||
+      meta.file_name,
+  );
 }
 
 function preferMeta(
@@ -129,12 +169,14 @@ function preferMeta(
 ): BookingFormDocumentMeta {
   if (!current) return next;
   const currentScore =
+    (current.id ? 8 : 0) +
     (current.s3_key ? 4 : 0) +
-    (current.file_url || current.download_url ? 2 : 0) +
+    (current.file_url || current.download_url || current.download_path ? 2 : 0) +
     (current.file_name ? 1 : 0);
   const nextScore =
+    (next.id ? 8 : 0) +
     (next.s3_key ? 4 : 0) +
-    (next.file_url || next.download_url ? 2 : 0) +
+    (next.file_url || next.download_url || next.download_path ? 2 : 0) +
     (next.file_name ? 1 : 0);
   if (nextScore > currentScore) return { ...current, ...next };
   return {
@@ -143,9 +185,49 @@ function preferMeta(
     file_name: current.file_name || next.file_name,
     file_url: current.file_url || next.file_url,
     download_url: current.download_url || next.download_url,
+    download_path: current.download_path || next.download_path,
     s3_key: current.s3_key || next.s3_key,
     id: current.id || next.id,
+    attached: current.attached ?? next.attached,
+    missing: current.missing ?? next.missing,
   };
+}
+
+function rowHasFile(row: Record<string, unknown>): boolean {
+  if (row.attached === true && row.missing !== true) {
+    // Enriched booking-form documents[] may mark attached without nested file fields yet.
+    if (
+      pickString(
+        row.job_document_id,
+        row.jobDocumentId,
+        row.id,
+        row.document_id,
+        row.file_url,
+        row.s3_key,
+        row.download_path,
+      )
+    ) {
+      return true;
+    }
+  }
+  return Boolean(
+    pickString(
+      row.file_url,
+      row.fileUrl,
+      row.download_url,
+      row.downloadUrl,
+      row.download_path,
+      row.downloadPath,
+      row.s3_key,
+      row.s3Key,
+      row.file_name,
+      row.fileName,
+      row.job_document_id,
+      row.jobDocumentId,
+      row.id,
+      row.document_id,
+    ),
+  );
 }
 
 function matchKindFromRow(row: Record<string, unknown>): ModeBookingFormDocumentKind | null {
@@ -159,6 +241,8 @@ function matchKindFromRow(row: Record<string, unknown>): ModeBookingFormDocument
       row.category ??
       row.sub_type ??
       row.subType ??
+      row.section ??
+      row.source ??
       row.label ??
       row.title,
   );
@@ -172,6 +256,10 @@ function matchKindFromRow(row: Record<string, unknown>): ModeBookingFormDocument
     row.tags,
     row.file_name,
     row.fileName,
+    row.original_name,
+    row.originalName,
+    row.section,
+    row.source,
   ]
     .flatMap((v) => (Array.isArray(v) ? v : [v]))
     .map((v) => normalizeKind(v))
@@ -199,8 +287,17 @@ function ingestDocumentRow(
 ) {
   const kind = matchKindFromRow(row);
   if (!kind) return;
-  kinds.add(kind);
-  byKind[kind] = preferMeta(byKind[kind], metaFromRow(kind, row));
+  const meta = metaFromRow(kind, row);
+  // Backend enriched shape: { kind, attached, missing, job_document_id?, … }
+  if (meta.attached === true || hasFileRef(meta) || row.attached === true) {
+    kinds.add(kind);
+  }
+  if (hasFileRef(meta) || meta.attached === true) {
+    byKind[kind] = preferMeta(byKind[kind], meta);
+  } else if (meta.missing === true) {
+    // Keep flag-only awareness without inventing a downloadable row.
+    kinds.add(kind);
+  }
 }
 
 function ingestDocumentBucket(
@@ -263,15 +360,24 @@ export function extractBookingFormDocuments(form: Record<string, unknown> | null
     );
     const fileUrl = pickString(form[`${kind}_file_url`], form[`${kind}FileUrl`], form[`${kind}_url`]);
     const downloadUrl = pickString(form[`${kind}_download_url`], form[`${kind}DownloadUrl`]);
+    const downloadPath = pickString(form[`${kind}_download_path`], form[`${kind}DownloadPath`]);
     const s3Key = pickString(form[`${kind}_s3_key`], form[`${kind}S3Key`]);
-    if (fileName || fileUrl || downloadUrl || s3Key) {
+    const jobDocumentId = pickString(
+      form[`${kind}_job_document_id`],
+      form[`${kind}JobDocumentId`],
+      form[`${kind}_document_id`],
+    );
+    if (fileName || fileUrl || downloadUrl || downloadPath || s3Key || jobDocumentId) {
       kinds.add(kind);
       byKind[kind] = preferMeta(byKind[kind], {
         kind,
+        id: jobDocumentId,
         file_name: fileName,
         file_url: fileUrl,
         download_url: downloadUrl,
+        download_path: downloadPath,
         s3_key: s3Key,
+        attached: true,
       });
     }
   }
@@ -292,26 +398,51 @@ export function extractBookingFormDocuments(form: Record<string, unknown> | null
   return { kinds, byKind };
 }
 
-/** Merge job `GET /jobs/:id/documents` rows that match booking kinds. */
+/**
+ * Merge job `GET /jobs/:id/documents` (often `uploader_side=CUSTOMER`) into booking kinds.
+ * Unmatched customer files are assigned to attach_* flagged kinds that still lack a file.
+ */
 export function mergeJobDocumentsIntoBooking(
   docs: unknown[],
   existing: Record<string, BookingFormDocumentMeta>,
+  opts?: { flaggedKinds?: Iterable<string> },
 ): { kinds: Set<string>; byKind: Record<string, BookingFormDocumentMeta> } {
   const byKind = { ...existing };
-  const kinds = new Set(Object.keys(byKind));
+  const kinds = new Set([...Object.keys(byKind), ...(opts?.flaggedKinds ?? [])]);
+  const usedIds = new Set<string>();
+  const unmatched: Record<string, unknown>[] = [];
+
   for (const item of docs) {
     const row = asRecord(item);
-    if (!row) continue;
+    if (!row || !rowHasFile(row)) continue;
     const kind = matchKindFromRow(row);
-    if (!kind) continue;
-    kinds.add(kind);
-    if (hasFileRef(byKind[kind]) && (byKind[kind]?.s3_key || byKind[kind]?.file_url || byKind[kind]?.download_url)) {
-      // Keep a stronger existing ref, but still fill missing filename/id.
-      byKind[kind] = preferMeta(byKind[kind], metaFromRow(kind, row));
+    if (!kind) {
+      unmatched.push(row);
       continue;
     }
-    byKind[kind] = preferMeta(byKind[kind], metaFromRow(kind, row));
+    kinds.add(kind);
+    const meta = metaFromRow(kind, row);
+    if (meta.id) usedIds.add(meta.id);
+    byKind[kind] = preferMeta(byKind[kind], meta);
   }
+
+  // Customer uploads often land as OTHER / untyped — map leftover files onto flagged kinds.
+  const leftovers = unmatched.filter((row) => {
+    const id = pickString(row.id, row.document_id, row.documentId);
+    return !id || !usedIds.has(id);
+  });
+
+  for (const kind of MODE_BOOKING_FORM_DOCUMENT_KINDS) {
+    if (!kinds.has(kind)) continue;
+    const current = byKind[kind];
+    if (current?.s3_key || current?.file_url || current?.download_url || current?.id) continue;
+    const row = leftovers.shift();
+    if (!row) break;
+    const meta = metaFromRow(kind, row);
+    if (meta.id) usedIds.add(meta.id);
+    byKind[kind] = preferMeta(current, meta);
+  }
+
   return { kinds, byKind };
 }
 
@@ -333,5 +464,44 @@ export function extractUploadResponseMeta(
     file_name: fallbackFileName,
   };
   if (!nested) return base;
-  return preferMeta(base, metaFromRow(kind as ModeBookingFormDocumentKind, nested));
+  // 201 body: { id, document_type, file_url, s3_key, kind, form, job_document_id? }
+  const fromBody = metaFromRow(kind as ModeBookingFormDocumentKind, {
+    ...nested,
+    kind: nested.kind ?? kind,
+    job_document_id:
+      nested.job_document_id ?? nested.jobDocumentId ?? nested.id ?? data?.job_document_id,
+    id: nested.job_document_id ?? nested.jobDocumentId ?? nested.id,
+  });
+  return preferMeta(base, { ...fromBody, attached: true, missing: false });
+}
+
+/** Flat customer/staff document row for admin checklist — never drop API rows. */
+export type BookingDocumentListItem = BookingFormDocumentMeta & {
+  document_type?: string;
+  uploader_side?: string;
+};
+
+/**
+ * Normalize GET /jobs/:id/documents (and similar) into downloadable rows.
+ * Preserves every file the API returns — kind matching is best-effort only.
+ */
+export function listBookingDocumentsFromJobDocs(docs: unknown[]): BookingDocumentListItem[] {
+  const out: BookingDocumentListItem[] = [];
+  const seen = new Set<string>();
+  for (const item of docs) {
+    const row = asRecord(item);
+    if (!row || !rowHasFile(row)) continue;
+    const kind = matchKindFromRow(row) ?? 'other';
+    const meta = metaFromRow(kind as ModeBookingFormDocumentKind, row);
+    const key = meta.id || `${meta.file_name || ''}|${meta.s3_key || ''}|${meta.file_url || ''}`;
+    if (key && seen.has(key)) continue;
+    if (key) seen.add(key);
+    out.push({
+      ...meta,
+      kind: kind === 'other' ? (pickString(row.document_type, row.documentType, row.kind) || 'other') : kind,
+      document_type: pickString(row.document_type, row.documentType, row.kind),
+      uploader_side: pickString(row.uploader_side, row.uploaderSide, row.side),
+    });
+  }
+  return out;
 }

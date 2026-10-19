@@ -2,8 +2,16 @@
  * Shared KingFisher layout kit for FRESA catalog PDF previews.
  * Matches theme/branding used by Invoice/Accounts/WMS/Other build scripts.
  */
+import {
+  diversifyFinanceBlocks,
+  diversifyListBlocks,
+  diversifyOpsBlocks,
+  diversifyWmsBlocks,
+  HEADER_ROTATION,
+} from './fresaLayoutDiversity.mjs';
+
 export const BRAND = {
-  company: 'KingFisher Logistic',
+  company: 'KingFisher Wings',
   address: 'Dubai, United Arab Emirates',
   web: 'www.kingfisherwingsgroup.com',
   phone: '+971 55 5355 286',
@@ -72,7 +80,7 @@ export const LIST_ROWS = [
   ['3', 'B/EXP/19/0253', 'GULF FREIGHT', 'Delivered', '28-JAN-19', '06-FEB-19'],
 ];
 
-const HEADER_ROTATION = ['primary', 'accent', 'fill', 'orange', 'cyan'];
+export { HEADER_ROTATION };
 
 export function layout(partial) {
   return {
@@ -99,32 +107,18 @@ export function badgeFromName(name, formatNumber) {
   return String(name || 'Report').slice(0, 42);
 }
 
-/** Document-style layout (sea/air/commercial/other) — matches Other Reports opsDoc. */
+/** Document-style layout (sea/air/commercial/other) — unique blocks per seed. */
 export function opsDoc(docTitle, opts = {}) {
   const {
-    headerColor = 'primary',
     badge,
     letterBody,
     extraGrid = [],
     meta = SEA_META,
     paper = 'A4',
     termsExtra,
+    seed = 0,
   } = opts;
-  const blocks = [
-    { type: 'companyHeader', showContact: true },
-    ...(badge ? [{ type: 'formatBadge' }] : []),
-    { type: 'docTitle', text: docTitle, align: 'center', band: true },
-  ];
-  if (letterBody) blocks.push({ type: 'letterBody' });
-  blocks.push(
-    { type: 'partyTriple' },
-    { type: 'fieldGrid', cols: 2 },
-    { type: 'chargeTable', headerColor },
-    { type: 'containerStrip' },
-    { type: 'termsBank' },
-    { type: 'signatureRow' },
-    { type: 'colorfulFooter' },
-  );
+  const blocks = diversifyOpsBlocks(seed, { title: docTitle });
   return layout({
     paper,
     demo: {
@@ -148,9 +142,9 @@ export function opsDoc(docTitle, opts = {}) {
   });
 }
 
-/** List / ops analytics layout — table-first like Accounts list reports. */
+/** List / ops analytics layout — unique blocks per seed. */
 export function listDoc(docTitle, opts = {}) {
-  const { headerColor = 'primary', badge, extraGrid = [], paper = 'A4' } = opts;
+  const { badge, extraGrid = [], paper = 'A4', seed = 0 } = opts;
   return layout({
     paper,
     demo: {
@@ -168,26 +162,15 @@ export function listDoc(docTitle, opts = {}) {
       termsLines: ['Computer generated operations list — sample preview data.'],
       remarks: badge,
     },
-    blocks: [
-      { type: 'companyHeader', showContact: true },
-      ...(badge ? [{ type: 'formatBadge' }] : []),
-      { type: 'docTitle', text: docTitle, align: 'center', band: true },
-      { type: 'fieldGrid', cols: 3 },
-      { type: 'chargeTable', headerColor },
-      { type: 'colorfulFooter' },
-    ],
+    blocks: diversifyListBlocks(seed, { title: docTitle }),
   });
 }
 
-/** Quotation commercial layout — variants share companyHeader + colorfulFooter. */
+/** Quotation commercial layout — unique blocks per format number / seed. */
 export function quotationDoc(docTitle, opts = {}) {
-  const { headerColor = 'primary', badge, formatNumber = 1 } = opts;
+  const { badge, formatNumber = 1, seed } = opts;
   const n = Number(formatNumber) || 1;
-  const header = [
-    { type: 'companyHeader', showContact: true },
-    ...(badge ? [{ type: 'formatBadge' }] : []),
-  ];
-  const footer = [{ type: 'colorfulFooter' }];
+  const s = seed != null ? seed : n;
   const qtn = `QTN-19-${String(n).padStart(4, '0')}`;
   const baseDemo = {
     invoiceNo: qtn,
@@ -199,6 +182,7 @@ export function quotationDoc(docTitle, opts = {}) {
     currency: 'USD',
     partyLeft: SHIPPER,
     partyMid: CONSIGNEE,
+    letterBody: 'Thank you for your enquiry. Please find our quotation below.',
     subtotal: '1,380.00',
     tax: '0.00',
     total: '1,380.00',
@@ -217,118 +201,24 @@ export function quotationDoc(docTitle, opts = {}) {
       ['2', 'THC Origin', '1', '85.00', 'USD', '85.00'],
       ['3', 'Documentation', '1', '45.00', 'USD', '45.00'],
     ],
+    agingHeaders: ['Freight', 'Local', 'Docs', 'Total'],
+    agingRow: ['1,250.00', '85.00', '45.00', '1,380.00'],
     termsLines: [
       'Rates are subject to carrier space and equipment availability.',
       'This quotation is a KingFisher layout preview (FRESA format).',
     ],
   };
 
-  const mod = n % 5;
-  if (mod === 1) {
-    return layout({
-      demo: {
-        ...baseDemo,
-        letterBody: 'Thank you for your enquiry. Please find our quotation below.',
-      },
-      blocks: [
-        ...header,
-        { type: 'docTitle', text: docTitle, align: 'center', band: true },
-        { type: 'letterBody' },
-        { type: 'partyTriple' },
-        { type: 'fieldGrid', cols: 2 },
-        { type: 'chargeTable', headerColor },
-        { type: 'wordsAndTotal' },
-        { type: 'termsBank' },
-        { type: 'signatureRow' },
-        ...footer,
-      ],
-    });
-  }
-  if (mod === 2) {
-    return layout({
-      demo: baseDemo,
-      blocks: [
-        ...header,
-        { type: 'docTitle', text: docTitle, align: 'center', band: true },
-        { type: 'fieldGrid', cols: 3 },
-        { type: 'chargeTable', headerColor },
-        { type: 'partyTriple' },
-        { type: 'wordsAndTotal' },
-        { type: 'signatureRow' },
-        { type: 'termsBank' },
-        ...footer,
-      ],
-    });
-  }
-  if (mod === 3) {
-    return layout({
-      paper: 'Letter',
-      demo: { ...baseDemo, fieldGrid: [...baseDemo.fieldGrid, { k: 'Paper', v: 'Letter' }] },
-      blocks: [
-        ...header,
-        { type: 'docTitle', text: docTitle, align: 'center', band: true },
-        { type: 'partyTriple' },
-        { type: 'chargeTable', headerColor },
-        { type: 'fieldGrid', cols: 2 },
-        { type: 'wordsAndTotal' },
-        { type: 'termsBank' },
-        ...footer,
-      ],
-    });
-  }
-  if (mod === 4) {
-    return layout({
-      demo: {
-        ...baseDemo,
-        letterBody: 'Please confirm acceptance to proceed with booking.',
-        agingHeaders: ['Freight', 'Local', 'Docs', 'Total'],
-        agingRow: ['1,250.00', '85.00', '45.00', '1,380.00'],
-      },
-      blocks: [
-        ...header,
-        { type: 'docTitle', text: docTitle, align: 'center', band: true },
-        { type: 'letterBody' },
-        { type: 'fieldGrid', cols: 2 },
-        { type: 'chargeTable', headerColor },
-        { type: 'agingSummary' },
-        { type: 'wordsAndTotal' },
-        { type: 'termsBank' },
-        { type: 'signatureRow' },
-        ...footer,
-      ],
-    });
-  }
   return layout({
+    paper: s % 5 === 3 ? 'Letter' : 'A4',
     demo: baseDemo,
-    blocks: [
-      ...header,
-      { type: 'docTitle', text: docTitle, align: 'center', band: true },
-      { type: 'partyTriple' },
-      { type: 'fieldGrid', cols: 2 },
-      { type: 'chargeTable', headerColor },
-      { type: 'wordsAndTotal' },
-      { type: 'termsBank' },
-      { type: 'signatureRow' },
-      ...footer,
-    ],
+    blocks: diversifyOpsBlocks(s, { title: docTitle }),
   });
 }
 
 /** Finance / accounts letter or statement style. */
 export function financeDoc(docTitle, opts = {}) {
-  const { headerColor = 'primary', badge, letterBody, aging = false } = opts;
-  const blocks = [
-    { type: 'companyHeader', showContact: true },
-    ...(badge ? [{ type: 'formatBadge' }] : []),
-    { type: 'docTitle', text: docTitle, align: 'center', band: true },
-  ];
-  if (letterBody) blocks.push({ type: 'letterBody' });
-  blocks.push(
-    { type: 'fieldGrid', cols: 2 },
-    { type: 'chargeTable', headerColor },
-  );
-  if (aging) blocks.push({ type: 'agingSummary' });
-  blocks.push({ type: 'termsBank' }, { type: 'signatureRow' }, { type: 'colorfulFooter' });
+  const { badge, letterBody, seed = 0 } = opts;
   return layout({
     demo: {
       invoiceNo: 'FIN-001',
@@ -355,13 +245,13 @@ export function financeDoc(docTitle, opts = {}) {
       termsLines: ['Accounts layout preview — FRESA Gold finance format.'],
       remarks: badge,
     },
-    blocks,
+    blocks: diversifyFinanceBlocks(seed, { title: docTitle }),
   });
 }
 
 /** WMS warehouse style. */
 export function wmsDoc(docTitle, opts = {}) {
-  const { headerColor = 'primary', badge } = opts;
+  const { badge, seed = 0 } = opts;
   return layout({
     demo: {
       invoiceNo: 'ASN-19001',
@@ -381,14 +271,7 @@ export function wmsDoc(docTitle, opts = {}) {
       termsLines: ['WMS layout preview — FRESA Gold warehouse format.'],
       remarks: badge,
     },
-    blocks: [
-      { type: 'companyHeader', showContact: true },
-      ...(badge ? [{ type: 'formatBadge' }] : []),
-      { type: 'docTitle', text: docTitle, align: 'center', band: true },
-      { type: 'fieldGrid', cols: 2 },
-      { type: 'chargeTable', headerColor },
-      { type: 'colorfulFooter' },
-    ],
+    blocks: diversifyWmsBlocks(seed, { title: docTitle }),
   });
 }
 
@@ -402,38 +285,42 @@ export function buildStoredLayout(code, name, formatNumber, family, index) {
   const headerColor = headerColorForIndex(index);
   const upper = code.toUpperCase();
   const extraGrid = [{ k: 'Layout', v: name }];
+  const seed = (Number(formatNumber) || index + 1) * 17 + index * 3;
 
   let base;
   if (family === 'quotation' || /QUOTATION/.test(upper)) {
-    base = quotationDoc(title || 'QUOTATION', { headerColor, badge, formatNumber });
+    base = quotationDoc(title || 'QUOTATION', { headerColor, badge, formatNumber, seed });
   } else if (family === 'ops_list' || /_LIST(_|$)|LIST_REPORT/.test(upper)) {
-    base = listDoc(title || 'OPERATIONS LIST', { headerColor, badge, extraGrid });
+    base = listDoc(title || 'OPERATIONS LIST', { headerColor, badge, extraGrid, seed });
   } else if (family === 'finance' || /OUTSTANDING|PROFIT|TRIAL|VOUCHER|AGING|GL_|STATEMENT/.test(upper)) {
     base = financeDoc(title || 'ACCOUNTS REPORT', {
       headerColor,
       badge,
+      seed,
       aging: /AGING|OUTSTANDING/.test(upper),
       letterBody: /OUTSTANDING|LETTER/.test(upper)
         ? 'Please find outstanding details below and arrange settlement.'
         : undefined,
     });
   } else if (family === 'wms' || /ASN|SHIPPING_NOTE|WMS_|STOCK|WAREHOUSE/.test(upper)) {
-    base = wmsDoc(title || 'WMS REPORT', { headerColor, badge });
+    base = wmsDoc(title || 'WMS REPORT', { headerColor, badge, seed });
   } else if (family === 'air_docs' || /HAWB|MAWB|AIR_/.test(upper)) {
     base = opsDoc(title || 'AIR DOCUMENT', {
       headerColor,
       badge,
       meta: AIR_META,
       extraGrid,
+      seed,
       letterBody: /PRE_ALERT|PREALERT/.test(upper) ? 'Air pre-alert for the shipment referenced below.' : undefined,
     });
   } else if (family === 'commercial' || /PROFORMA|DEBIT_NOTE|CREDIT_NOTE|INVOICE/.test(upper)) {
-    base = quotationDoc(title || 'COMMERCIAL DOCUMENT', { headerColor, badge, formatNumber });
+    base = quotationDoc(title || 'COMMERCIAL DOCUMENT', { headerColor, badge, formatNumber, seed });
   } else {
     base = opsDoc(title || 'REPORT', {
       headerColor,
       badge,
       extraGrid,
+      seed,
       letterBody: /BOOKING|CONFIRM|PRE_ALERT|LETTER/.test(upper)
         ? 'Please find the details for your reference as below.'
         : undefined,

@@ -18,7 +18,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -251,6 +251,9 @@
       },
       {
         "type": "exportClosing"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -276,7 +279,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -511,6 +514,12 @@
         "type": "exportClosing"
       },
       {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -534,7 +543,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -796,6 +805,9 @@
         "type": "termsBank"
       },
       {
+        "type": "stampSignature"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -819,7 +831,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1108,6 +1120,12 @@
         "type": "termsBank"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -1131,7 +1149,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1366,6 +1384,9 @@
         "type": "exportClosing"
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -1389,7 +1410,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1593,6 +1614,12 @@
         "type": "termsBank"
       },
       {
+        "type": "agingSummary"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -1616,7 +1643,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1819,6 +1846,9 @@
         "type": "termsBank"
       },
       {
+        "type": "stampSignature"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -1842,7 +1872,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2092,6 +2122,12 @@
         "type": "termsBank"
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -2115,7 +2151,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2378,6 +2414,9 @@
         "type": "termsBank"
       },
       {
+        "type": "letterBody"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -2401,7 +2440,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2680,6 +2719,9 @@
         "type": "termsBank"
       },
       {
+        "type": "wireBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -2703,7 +2745,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2885,7 +2927,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2965,6 +3007,12 @@
         "type": "wordsAndTotal"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -2988,7 +3036,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3251,6 +3299,9 @@
         "type": "termsBank"
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -3274,7 +3325,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3477,6 +3528,15 @@
         "type": "termsBank"
       },
       {
+        "type": "agingSummary"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -3500,7 +3560,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3749,6 +3809,9 @@
         "type": "termsBank"
       },
       {
+        "type": "taxAmountBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -3772,7 +3835,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3852,6 +3915,9 @@
         "type": "wordsAndTotal"
       },
       {
+        "type": "containerStrip"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -3875,7 +3941,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4078,6 +4144,9 @@
         "type": "termsBank"
       },
       {
+        "type": "letterBody"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -4101,7 +4170,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4255,6 +4324,12 @@
         "type": "stampSignature"
       },
       {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -4278,7 +4353,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4460,6 +4535,9 @@
         "type": "termsBank"
       },
       {
+        "type": "stampSignature"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -4483,7 +4561,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4718,6 +4796,12 @@
         "type": "exportClosing"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -4741,7 +4825,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4928,6 +5012,12 @@
         "type": "termsBank"
       },
       {
+        "type": "jobDescription"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -4951,7 +5041,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5183,6 +5273,12 @@
         "type": "termsBank"
       },
       {
+        "type": "agingSummary"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -5206,7 +5302,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5413,6 +5509,9 @@
         "type": "termsBank"
       },
       {
+        "type": "taxAmountBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -5436,7 +5535,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5639,6 +5738,12 @@
         "type": "outstandingTable"
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -5662,7 +5767,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5880,6 +5985,9 @@
         "type": "outstandingTable"
       },
       {
+        "type": "letterBody"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -5903,7 +6011,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6106,6 +6214,12 @@
         "type": "termsBank"
       },
       {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -6129,7 +6243,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6253,6 +6367,9 @@
         "type": "termsBank"
       },
       {
+        "type": "stampSignature"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -6276,7 +6393,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6451,6 +6568,15 @@
         "type": "termsBank"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -6474,7 +6600,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6628,6 +6754,9 @@
         "type": "stampSignature"
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -6651,7 +6780,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6833,6 +6962,12 @@
         "type": "termsBank"
       },
       {
+        "type": "agingSummary"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -6856,7 +6991,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7106,6 +7241,12 @@
         "type": "termsBank"
       },
       {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -7129,7 +7270,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7368,6 +7509,12 @@
         "type": "termsBank"
       },
       {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -7391,7 +7538,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7630,6 +7777,12 @@
         "type": "termsBank"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -7653,7 +7806,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7903,6 +8056,9 @@
         "type": "termsBank"
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -7926,7 +8082,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8184,6 +8340,12 @@
         "type": "termsBank"
       },
       {
+        "type": "agingSummary"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -8207,7 +8369,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8469,6 +8631,9 @@
         "type": "termsBank"
       },
       {
+        "type": "taxAmountBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -8492,7 +8657,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8742,6 +8907,15 @@
         "type": "termsBank"
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -8765,7 +8939,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9015,6 +9189,9 @@
         "type": "termsBank"
       },
       {
+        "type": "letterBody"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -9038,7 +9215,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9296,6 +9473,15 @@
         "type": "termsBank"
       },
       {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -9319,7 +9505,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9491,6 +9677,9 @@
         "type": "termsBank"
       },
       {
+        "type": "stampSignature"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -9514,7 +9703,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9763,6 +9952,12 @@
         "type": "termsBank"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -9786,7 +9981,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9990,6 +10185,9 @@
         "type": "termsBank"
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -10013,7 +10211,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10252,6 +10450,12 @@
         "type": "termsBank"
       },
       {
+        "type": "agingSummary"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -10275,7 +10479,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10507,6 +10711,9 @@
         "type": "termsBank"
       },
       {
+        "type": "taxAmountBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -10530,7 +10737,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10713,6 +10920,12 @@
         "type": "termsBank"
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -10736,7 +10949,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10966,6 +11179,12 @@
         "type": "termsBank"
       },
       {
+        "type": "letterBody"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -10989,7 +11208,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11214,6 +11433,12 @@
         "type": "termsBank"
       },
       {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -11237,7 +11462,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11433,6 +11658,9 @@
         "type": "termsBank"
       },
       {
+        "type": "stampSignature"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -11456,7 +11684,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11685,6 +11913,12 @@
         "type": "termsBank"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -11708,7 +11942,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11970,6 +12204,9 @@
         "type": "termsBank"
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -11993,7 +12230,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12293,6 +12530,12 @@
         "type": "termsBank"
       },
       {
+        "type": "agingSummary"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -12316,7 +12559,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12639,7 +12882,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12921,6 +13164,15 @@
         "type": "termsBank"
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -12944,7 +13196,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -13248,6 +13500,9 @@
         "type": "termsBank"
       },
       {
+        "type": "letterBody"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -13271,7 +13526,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -13532,6 +13787,12 @@
         "type": "termsBank"
       },
       {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -13555,7 +13816,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -13855,6 +14116,9 @@
         "type": "termsBank"
       },
       {
+        "type": "stampSignature"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -13878,7 +14142,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -14178,6 +14442,12 @@
         "type": "termsBank"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -14201,7 +14471,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -14509,6 +14779,9 @@
         "type": "termsBank"
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -14532,7 +14805,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -14832,6 +15105,15 @@
         "type": "termsBank"
       },
       {
+        "type": "agingSummary"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -14855,7 +15137,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -15159,6 +15441,12 @@
         "type": "termsBank"
       },
       {
+        "type": "stampSignature"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -15182,7 +15470,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -15482,6 +15770,12 @@
         "type": "termsBank"
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -15505,7 +15799,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -15804,6 +16098,12 @@
         "type": "termsBank"
       },
       {
+        "type": "letterBody"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -15827,7 +16127,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16021,6 +16321,12 @@
         "type": "termsBank"
       },
       {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -16044,7 +16350,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16268,6 +16574,12 @@
         "type": "termsBank"
       },
       {
+        "type": "stampSignature"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -16291,7 +16603,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16515,6 +16827,12 @@
         "type": "termsBank"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -16538,7 +16856,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16724,6 +17042,9 @@
         "type": "termsBank"
       },
       {
+        "type": "jobDescription"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -16747,7 +17068,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17047,6 +17368,15 @@
         "type": "termsBank"
       },
       {
+        "type": "agingSummary"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -17070,7 +17400,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17231,6 +17561,9 @@
         "type": "wordsAndTotal"
       },
       {
+        "type": "taxAmountBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -17254,7 +17587,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17528,6 +17861,12 @@
         "type": "termsBank"
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -17551,7 +17890,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17834,6 +18173,9 @@
         "type": "termsBank"
       },
       {
+        "type": "letterBody"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -17857,7 +18199,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -18078,6 +18420,12 @@
         "type": "stampSignature"
       },
       {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -18101,7 +18449,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -18395,6 +18743,9 @@
         "type": "termsBank"
       },
       {
+        "type": "stampSignature"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -18418,7 +18769,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -18675,6 +19026,12 @@
         "type": "termsBank"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -18698,7 +19055,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -18975,6 +19332,12 @@
         "type": "termsBank"
       },
       {
+        "type": "jobDescription"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -18998,7 +19361,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -19244,6 +19607,12 @@
         "type": "termsBank"
       },
       {
+        "type": "agingSummary"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -19267,7 +19636,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -19576,7 +19945,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -19832,6 +20201,12 @@
         "type": "termsBank"
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -19855,7 +20230,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20087,6 +20462,9 @@
         "type": "termsBank"
       },
       {
+        "type": "letterBody"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -20110,7 +20488,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20362,6 +20740,12 @@
         "type": "termsBank"
       },
       {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -20385,7 +20769,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20661,7 +21045,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20924,6 +21308,15 @@
         "type": "termsBank"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -20947,7 +21340,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -21192,6 +21585,9 @@
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"

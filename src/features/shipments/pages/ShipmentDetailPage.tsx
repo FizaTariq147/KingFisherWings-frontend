@@ -66,6 +66,7 @@ import {
   useShipmentEdiSubmissions,
   useShipmentEdiTypes,
   useShipmentKpi,
+  useShipmentStatusOptions,
   useShipmentTracking,
   useSplitShipment,
   useSwitchShipmentBl,
@@ -178,6 +179,9 @@ export default function ShipmentDetailPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [confirmKind, setConfirmKind] = useState<ConfirmKind | null>(null);
+  const statusCatalogQuery = useShipmentStatusOptions(
+    confirmKind === 'change-status' || Boolean(id),
+  );
   const [statusValue, setStatusValue] = useState('');
   const [blStatusValue, setBlStatusValue] = useState('');
   const [departmentId, setDepartmentId] = useState('');
@@ -333,13 +337,20 @@ export default function ShipmentDetailPage() {
     perms.canWriteGenerate && hasJob && actions?.can_hbl_document === true;
 
   /**
-   * Prefer detail `actions.allowed_*` when the API sends them.
-   * Otherwise use the OpenAPI change-status / change-bl-status enums
-   * (detail often omits allowed_* — that was leaving only the current value).
+   * Prefer status-options catalog (system + custom), then detail allowed_*,
+   * then OpenAPI enums.
    */
-  const statusOptions = actions?.allowed_statuses?.length
-    ? actions.allowed_statuses
-    : [...SHIPMENT_STATUSES];
+  const statusOptions = statusCatalogQuery.data?.length
+    ? statusCatalogQuery.data.map((o) => o.value)
+    : actions?.allowed_statuses?.length
+      ? actions.allowed_statuses
+      : [...SHIPMENT_STATUSES];
+  const statusOptionLabels = new Map(
+    (statusCatalogQuery.data ?? []).map((o) => [
+      o.value,
+      `${o.label}${o.is_custom ? ' (custom)' : ''}`,
+    ]),
+  );
   const blOptions = actions?.allowed_bl_statuses?.length
     ? actions.allowed_bl_statuses
     : [...SHIPMENT_BL_STATUSES];
@@ -1305,7 +1316,7 @@ export default function ShipmentDetailPage() {
               ) : (
                 statusOptions.map((s) => (
                   <option key={s} value={s}>
-                    {s.replaceAll('_', ' ')}
+                    {statusOptionLabels.get(s) || s.replaceAll('_', ' ')}
                   </option>
                 ))
               )}

@@ -389,6 +389,7 @@ export function useUpdatePortalQuotationBookingForm(id: string) {
       bookingId,
       quoteNumber,
       jobType,
+      documents,
     }: {
       dto: import('../types/portalQuotations.types').PortalBookingFormUpsertDto;
       isAir?: boolean;
@@ -396,9 +397,10 @@ export function useUpdatePortalQuotationBookingForm(id: string) {
       bookingId?: string;
       quoteNumber?: string;
       jobType?: string;
+      documents?: import('../utils/portalBookingFormStorage').PortalBookingFormDocumentRef[];
     }) =>
       portalQuotationsService.updateBookingForm(
-        { quotationId: id, jobId, bookingId, isAir, quoteNumber, jobType },
+        { quotationId: id, jobId, bookingId, isAir, quoteNumber, jobType, documents },
         dto,
       ),
     onSuccess: (form) => {
@@ -408,7 +410,7 @@ export function useUpdatePortalQuotationBookingForm(id: string) {
   });
 }
 
-/** POST …/compliance-form/documents/:kind (bookings or shipments). */
+/** POST …/booking-form/documents/:kind or …/compliance-form/documents/:kind. */
 export function useUploadPortalComplianceDocument(quotationId: string) {
   return useMutation({
     mutationFn: ({
@@ -418,6 +420,7 @@ export function useUploadPortalComplianceDocument(quotationId: string) {
       jobId,
       bookingId,
       jobType,
+      useBookingFormDocuments,
     }: {
       kind: import('@/features/booking-documents/constants/bookingDocumentKinds').PortalBookingDocumentKind;
       file: File;
@@ -425,9 +428,10 @@ export function useUploadPortalComplianceDocument(quotationId: string) {
       jobId?: string;
       bookingId?: string;
       jobType?: string;
+      useBookingFormDocuments?: boolean;
     }) =>
       portalQuotationsService.uploadComplianceDocument(
-        { quotationId, isAir, jobId, bookingId, jobType },
+        { quotationId, isAir, jobId, bookingId, jobType, useBookingFormDocuments },
         kind,
         file,
       ),

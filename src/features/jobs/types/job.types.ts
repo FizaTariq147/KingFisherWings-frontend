@@ -568,6 +568,9 @@ export interface JobCharge {
   party_id?: string;
   party_name?: string;
   line_total?: number;
+  /** Dual-sided costing — prefer these over is_cost alone */
+  sale_amount?: number;
+  cost_amount?: number;
   /** Fresa costing grid extras when API returns them */
   line_no?: number;
   unit?: string;
@@ -686,6 +689,9 @@ export interface JobPnl {
   gross_profit?: number;
   currency_code?: string;
   lines?: Array<Record<string, unknown>>;
+  /** GET /jobs/:id/pnl — dual-sided breakdown */
+  revenue_lines?: Array<Record<string, unknown>>;
+  cost_lines?: Array<Record<string, unknown>>;
 }
 
 /** Fresa GET /jobs/:id/detail action flags. */
@@ -738,11 +744,28 @@ export interface JobStatusOption {
   label: string;
   /** Approved / Open / Closed grouping when API returns groups. */
   group?: string;
+  /** Catalog code persisted on the entity (`status_code`). */
+  code?: string;
+  /** System enum this custom/system row maps to for gates/reports. */
+  maps_to_system_status?: string;
+  is_system?: boolean;
+  is_custom?: boolean;
+  is_active?: boolean;
 }
 
 export interface ChangeJobStatusDto {
+  /** Catalog code or system enum — backend resolves status_code + enum status. */
   status: JobStatus | string;
   reason?: string;
+}
+
+/** Tenant-admin status catalog create/update body. */
+export interface UpsertStatusCatalogDto {
+  code: string;
+  label: string;
+  maps_to_system_status: string;
+  is_active?: boolean;
+  sort_order?: number;
 }
 
 export interface ReopenJobDto {
@@ -976,6 +999,8 @@ export interface Job {
   job_number?: string;
   job_type: JobType;
   status: JobStatus;
+  /** Catalog code when custom statuses are enabled (maps to `status` enum). */
+  status_code?: string;
   company_id?: string;
   branch_id?: string;
   department_id?: string;
@@ -1674,6 +1699,42 @@ export interface CreateProofOfDeliveryDto {
   received_by?: string;
   signature_image_path?: string;
   remarks?: string;
+}
+
+/** Delivery acknowledgement (extends ProofOfDelivery / 1:1 job). */
+export type DeliveryAcknowledgementStatus =
+  | 'DRAFT'
+  | 'SUBMITTED'
+  | 'RECEIVED_BY_ADMIN'
+  | string;
+
+export interface DeliveryAcknowledgement {
+  id?: string;
+  job_id?: string;
+  status: DeliveryAcknowledgementStatus;
+  acknowledged_at?: string;
+  receiver_name?: string;
+  receiver_title?: string;
+  goods_condition?: string;
+  remarks?: string;
+  signature_s3_key?: string;
+  signature_url?: string;
+  template_snapshot?: string | Record<string, unknown>;
+  submitted_by_party_id?: string;
+  received_by_user_id?: string;
+  received_at?: string;
+  actual_delivery_date?: string;
+  path_hints?: Record<string, string> | string[];
+  raw?: Record<string, unknown>;
+}
+
+export interface SubmitDeliveryAcknowledgementDto {
+  receiver_name: string;
+  receiver_title?: string;
+  goods_condition?: string;
+  remarks?: string;
+  acknowledged_at?: string;
+  actual_delivery_date?: string;
 }
 
 export interface CreatePaymentRequestFromJobDto {

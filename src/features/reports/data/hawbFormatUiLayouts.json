@@ -18,7 +18,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -143,11 +143,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE AIR WAYBILL — HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -161,6 +158,9 @@
       {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "termsBank"
@@ -192,7 +192,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -321,11 +321,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE AIR WAYBILL — HAWB DRAFT FORMAT 1",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -338,13 +335,19 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -370,7 +373,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -499,11 +502,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE AIR WAYBILL — HAWB DRAFT FORMAT 2",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -516,13 +516,19 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -548,7 +554,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -677,13 +683,13 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE AIR WAYBILL — ORIGINAL (PRE-PRINTED) FORMAT 1",
+        "text": "HAWB",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "partyTriple"
@@ -694,7 +700,10 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "termsBank"
@@ -726,7 +735,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -855,13 +864,13 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE AIR WAYBILL — ORIGINAL (PRE-PRINTED) FORMAT 2",
+        "text": "HAWB",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "partyTriple"
@@ -872,13 +881,19 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -904,7 +919,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1006,11 +1021,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -1033,6 +1045,9 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -1058,7 +1073,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1160,11 +1175,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -1177,7 +1189,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -1187,6 +1199,9 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -1212,7 +1227,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1314,11 +1329,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -1331,7 +1343,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -1341,6 +1353,9 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -1366,7 +1381,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1468,11 +1483,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -1485,7 +1497,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -1495,6 +1507,12 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -1520,7 +1538,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1622,11 +1640,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -1639,7 +1654,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -1649,6 +1664,12 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -1674,7 +1695,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1776,11 +1797,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -1803,6 +1821,12 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -1828,7 +1852,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1930,11 +1954,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -1947,7 +1968,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -1957,6 +1978,15 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -1982,7 +2012,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2084,11 +2114,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -2101,7 +2128,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -2111,6 +2138,15 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -2136,7 +2172,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2238,11 +2274,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -2255,7 +2288,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -2265,6 +2298,15 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -2290,7 +2332,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2392,11 +2434,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -2409,7 +2448,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -2419,6 +2458,18 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -2444,7 +2495,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2546,11 +2597,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -2573,6 +2621,18 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -2598,7 +2658,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2700,11 +2760,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -2717,7 +2774,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -2727,6 +2784,18 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -2752,7 +2821,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2854,11 +2923,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -2871,7 +2937,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -2881,6 +2947,21 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -2906,7 +2987,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3008,11 +3089,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -3025,7 +3103,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -3035,6 +3113,21 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -3060,7 +3153,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3162,11 +3255,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -3179,7 +3269,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -3189,6 +3279,21 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -3214,7 +3319,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3316,11 +3421,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -3343,6 +3445,24 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -3368,7 +3488,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3470,11 +3590,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -3487,7 +3604,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -3497,6 +3614,24 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -3522,7 +3657,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3624,11 +3759,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -3641,7 +3773,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -3651,6 +3783,24 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -3676,7 +3826,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3778,11 +3928,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -3795,7 +3942,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -3805,6 +3952,27 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -3830,7 +3998,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3932,11 +4100,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -3949,7 +4114,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -3959,6 +4124,27 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -3984,7 +4170,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4086,11 +4272,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -4113,6 +4296,27 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -4138,7 +4342,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4240,11 +4444,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -4257,7 +4458,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -4267,6 +4468,30 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -4292,7 +4517,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4394,11 +4619,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -4411,7 +4633,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -4421,6 +4643,30 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -4446,7 +4692,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4548,11 +4794,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -4565,7 +4808,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -4575,6 +4818,30 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -4600,7 +4867,7 @@
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4702,11 +4969,8 @@
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HAWB DRAFT",
+        "text": "HAWB",
         "align": "center",
         "band": true
       },
@@ -4719,7 +4983,7 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -4729,6 +4993,33 @@
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"

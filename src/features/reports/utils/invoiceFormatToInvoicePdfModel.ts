@@ -17,6 +17,12 @@ export type InvoiceFormatPdfData = {
    * mapped fields render as N/A instead of demo sample values.
    */
   entityBound?: boolean;
+  /** Tenant / org display name for shared header chrome (dynamic, not per-format). */
+  companyName?: string;
+  companyAddress?: string;
+  companyWeb?: string;
+  companyPhone?: string;
+  companyEmail?: string;
   invoiceNumber?: string;
   quotationNumber?: string;
   jobNumber?: string;

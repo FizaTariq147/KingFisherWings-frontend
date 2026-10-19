@@ -5,6 +5,14 @@ export const JOB_API = {
   teamWorkload: '/jobs/team-workload',
   /** Catalog (Approved / Open / Closed labels); optional ?job_id= */
   statusOptions: '/jobs/status-options',
+  /** Tenant-admin catalog mutations (soft-deactivate via DELETE). */
+  statusCatalog: '/jobs/status-catalog',
+  statusCatalogById: (id: string) => `/jobs/status-catalog/${encodeURIComponent(id)}`,
+  /** Delivery acknowledgement (extends ProofOfDelivery). */
+  acknowledgement: (id: string) => `/jobs/${id}/detail/acknowledgement`,
+  acknowledgementReceive: (id: string) => `/jobs/${id}/acknowledgement/receive`,
+  acknowledgementGeneratePdf: (id: string) =>
+    `/jobs/${id}/acknowledgement/generate-pdf`,
   /** Name dropdowns for department / GPUM (no UUIDs in UI). */
   lookupsDropdowns: '/jobs/lookups/dropdowns',
   byBarcode: (code: string) => `/jobs/by-barcode/${encodeURIComponent(code)}`,
@@ -253,6 +261,12 @@ export const JOB_API = {
 
   cargo: (id: string) => `/jobs/${id}/cargo`,
   cargoItem: (id: string, cargoId: string) => `/jobs/${id}/cargo/${cargoId}`,
+  /** GET /jobs/:id/cargo/:cargoId/documents */
+  cargoDocuments: (id: string, cargoId: string) =>
+    `/jobs/${id}/cargo/${encodeURIComponent(cargoId)}/documents`,
+  /** POST multipart /jobs/:id/cargo/:cargoId/documents/upload */
+  cargoDocumentUpload: (id: string, cargoId: string) =>
+    `/jobs/${id}/cargo/${encodeURIComponent(cargoId)}/documents/upload`,
 
   billsOfLading: (id: string) => `/jobs/${id}/bills-of-lading`,
   billOfLading: (id: string, blId: string) => `/jobs/${id}/bills-of-lading/${blId}`,
@@ -379,6 +393,7 @@ export const JOB_DETAIL_TABS = [
   'customs',
   'shipping_bill_boe',
   'booking_form',
+  'acknowledgement',
 ] as const;
 
 export type JobDetailTabKey = (typeof JOB_DETAIL_TABS)[number];

@@ -16,6 +16,7 @@ import {
   PortalPanel,
   PortalStatCard,
 } from '@/features/portal-auth/components/portal-ui';
+import { PortalAcknowledgementPanel } from '../components/PortalAcknowledgementPanel';
 import {
   useDownloadPortalShipmentDocument,
   usePortalShipment,
@@ -352,7 +353,24 @@ export default function PortalShipmentDetailPage() {
       </PortalPanel>
 
       <PortalPanel padded>
-        <h2 className="mb-4 text-sm font-semibold text-[var(--color-neutral-900)]">Documents</h2>
+        <h2 className="mb-2 text-sm font-semibold text-[var(--color-neutral-900)]">Documents</h2>
+        {data.documentsSummary ? (
+          <p className="mb-3 text-xs text-[var(--color-neutral-500)]">
+            {[
+              data.documentsSummary.visible != null
+                ? `${data.documentsSummary.visible} shared with you`
+                : null,
+              data.documentsSummary.total != null
+                ? `${data.documentsSummary.total} total`
+                : null,
+              data.documentsSummary.bookingFormAttached != null
+                ? `${data.documentsSummary.bookingFormAttached} booking docs`
+                : null,
+            ]
+              .filter(Boolean)
+              .join(' · ')}
+          </p>
+        ) : null}
         {documents.length === 0 ? (
           <p className="text-sm text-[var(--color-neutral-400)]">No documents available.</p>
         ) : (
@@ -368,7 +386,7 @@ export default function PortalShipmentDetailPage() {
                     {doc.documentType || 'Document'}
                   </div>
                 </div>
-                {doc.canDownload !== false && (
+                {doc.canDownload !== false ? (
                   <Button
                     type="button"
                     size="sm"
@@ -385,12 +403,19 @@ export default function PortalShipmentDetailPage() {
                     <Download size={14} aria-hidden="true" />
                     Download
                   </Button>
+                ) : (
+                  <span className="text-[11px] text-[var(--color-neutral-400)]">View only</span>
                 )}
               </PortalAnimatedListItem>
             ))}
           </PortalAnimatedList>
         )}
       </PortalPanel>
+
+      <PortalAcknowledgementPanel
+        shipmentId={id}
+        statusHint={data.acknowledgementStatus}
+      />
     </div>
   );
 }

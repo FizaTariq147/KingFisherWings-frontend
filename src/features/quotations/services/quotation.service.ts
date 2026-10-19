@@ -1483,6 +1483,62 @@ export const quotationService = {
     }
   },
 
+  /** GET /quotations/status-options — system + custom catalog. */
+  async getStatusOptions(): Promise<
+    import('@/features/jobs/types/job.types').JobStatusOption[]
+  > {
+    try {
+      const { normalizeJobStatusOptions } = await import(
+        '@/features/jobs/utils/normalizeJob'
+      );
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(QUOTATION_API.statusOptions),
+      );
+      return normalizeJobStatusOptions(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async createStatusCatalog(
+    dto: import('@/features/jobs/types/job.types').UpsertStatusCatalogDto,
+  ): Promise<unknown> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(QUOTATION_API.statusCatalog, dto),
+      );
+      return unwrapEntity(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async updateStatusCatalog(
+    id: string,
+    dto: Partial<import('@/features/jobs/types/job.types').UpsertStatusCatalogDto>,
+  ): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch(QUOTATION_API.statusCatalogById(id), dto),
+      );
+      return unwrapEntity(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async deactivateStatusCatalog(id: string): Promise<void> {
+    assertId(id);
+    try {
+      await withGatewayRetry(() =>
+        axiosInstance.delete(QUOTATION_API.statusCatalogById(id)),
+      );
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
   /** GET /quotations/:id/detail — Fresa detail envelope; falls back to getById. */
   async getDetail(id: string): Promise<Quotation> {
     assertId(id);
@@ -1976,6 +2032,27 @@ export const quotationService = {
         axiosInstance.post(QUOTATION_API.bookingFormComplete(id), body),
       );
       return unwrapEntity(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /quotations/:id/booking-form/documents/:kind — staff attach (mirrors job doc). */
+  async uploadBookingFormDocument(
+    id: string,
+    kind: string,
+    file: File,
+  ): Promise<unknown> {
+    assertId(id);
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(QUOTATION_API.bookingFormDocument(id, kind), form, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }),
+      );
+      return unwrapEntity(res.data) ?? res.data;
     } catch (error) {
       throw formatAxiosError(error);
     }

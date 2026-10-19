@@ -89,6 +89,7 @@ function normalizeQuotationActions(raw: unknown): QuotationActions | undefined {
     can_generate_job: flag('can_generate_job', 'canGenerateJob', 'generate_job'),
     can_copy: flag('can_copy', 'canCopy', 'copy'),
     can_change_status: flag('can_change_status', 'canChangeStatus', 'change_status'),
+    can_booking_form: flag('can_booking_form', 'canBookingForm', 'booking_form'),
     raw: r,
   };
 }

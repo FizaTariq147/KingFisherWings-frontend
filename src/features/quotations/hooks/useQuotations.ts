@@ -21,6 +21,7 @@ export const quotationKeys = {
   revisions: (id: string) => [...quotationKeys.all, 'revisions', id] as const,
   pdf: (id: string) => [...quotationKeys.all, 'pdf', id] as const,
   pdfStatus: (id: string) => [...quotationKeys.all, 'pdf-status', id] as const,
+  statusOptions: [...(['tenant', 'quotations'] as const), 'status-options'] as const,
   reports: ['tenant', 'quotations', 'reports'] as const,
 };
 
@@ -83,6 +84,17 @@ export function useQuotationRevisions(id: string, enabled = true) {
     queryKey: quotationKeys.revisions(id),
     queryFn: () => quotationService.listRevisions(id),
     enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /quotations/status-options — system + custom catalog. */
+export function useQuotationStatusOptions(enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: quotationKeys.statusOptions,
+    queryFn: () => quotationService.getStatusOptions(),
+    enabled: Boolean(accessToken) && enabled,
+    staleTime: 60_000,
   });
 }
 

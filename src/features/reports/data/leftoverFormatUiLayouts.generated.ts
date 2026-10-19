@@ -21,7 +21,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -123,13 +123,15 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HBL DRAFT- JASPER",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -137,10 +139,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "fieldGrid",
         "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -175,7 +173,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -277,13 +275,15 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "HBL DRAFT- JASPER FORMAT 1",
+        "text": "BILL OF LADING",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "partyTriple"
@@ -293,10 +293,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
         "type": "containerStrip"
       },
       {
@@ -304,6 +300,9 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -329,7 +328,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -433,16 +432,10 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "INVOICE FORMAT1 –JASPER",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "partyTriple"
@@ -453,16 +446,31 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "totalsOnly"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -488,7 +496,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -591,9 +599,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "INVOICE FORMAT12 –JASPER",
         "align": "center",
@@ -601,23 +606,33 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "chargeTable",
         "headerColor": "orange"
       },
       {
-        "type": "partyTriple"
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "formatBadge"
       },
       {
-        "type": "signatureRow"
+        "type": "summaryHero"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -643,7 +658,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -759,16 +774,16 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "INVOICE FORMAT14 –JASPER",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "partyTriple"
+      },
+      {
+        "type": "landRoute"
       },
       {
         "type": "fieldGrid",
@@ -776,16 +791,22 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "signatureRow"
@@ -814,7 +835,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -917,16 +938,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "INVOICE FORMAT15 –JASPER PREPRINTED",
+        "text": "TAX INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "formatBadge"
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
@@ -934,16 +957,16 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "wordsAndTotal"
       },
       {
-        "type": "termsBank"
+        "type": "stampSignature"
       },
       {
-        "type": "signatureRow"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -969,7 +992,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1072,27 +1095,34 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "INVOICE FORMAT15 –JASPER STANDARD",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
-      },
-      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "partyTriple"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "chargeTable",
+        "headerColor": "orange"
+      },
+      {
+        "type": "subtotalBar",
+        "variant": "tax"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "termsBank"
@@ -1124,7 +1154,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1227,33 +1257,27 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "INVOICE FORMAT2 FCY- JASPER",
+        "text": "INVOICE / DEBIT NOTE",
         "align": "center",
         "band": true
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "shipmentDetails",
+        "fcyOrder": true,
+        "showQuotation": true
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "partyTriple"
+        "type": "subtotalBar",
+        "variant": "fcy"
       },
       {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "termsBank"
+        "type": "exportClosing",
+        "showBullets": true
       },
       {
         "type": "colorfulFooter"
@@ -1279,7 +1303,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1386,30 +1410,40 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "INVOICE FORMAT3 –JASPER",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "wordsAndTotal"
+        "type": "partyTriple"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "subtotalBar",
+        "variant": "tax"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -1435,7 +1469,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1542,30 +1576,30 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "INVOICE FORMAT3 FCY WITH QR/IRN –JASPER",
+        "text": "INVOICE / DEBIT NOTE",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "shipmentDetails",
+        "fcyOrder": true,
+        "showQuotation": true
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "subtotalBar",
+        "variant": "fcy"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "exportClosing",
+        "showBullets": true
       },
       {
-        "type": "termsBank"
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -1591,7 +1625,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1707,36 +1741,30 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "INVOICE FORMAT4 FCY- JASPER",
+        "text": "INVOICE / DEBIT NOTE",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "shipmentDetails",
+        "fcyOrder": true,
+        "showQuotation": true
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
-        "type": "agingSummary"
+        "type": "subtotalBar",
+        "variant": "fcy"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "exportClosing",
+        "showBullets": true
       },
       {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -1762,7 +1790,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1865,9 +1893,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "INVOICE FORMAT5 –JASPER",
         "align": "center",
@@ -1877,18 +1902,30 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "partyTriple"
       },
       {
+        "type": "landRoute"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "orange"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "signatureRow"
@@ -1917,7 +1954,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2021,16 +2058,10 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "INVOICE FORMAT6",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "partyTriple"
@@ -2041,13 +2072,19 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "orange"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "signatureRow"
@@ -2076,7 +2113,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2179,30 +2216,41 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "INVOICE FORMAT7 –JASPER INDIA",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
+        "type": "partyTriple"
+      },
+      {
+        "type": "shipmentDetails",
+        "showIrn": true,
+        "showQuotation": true
+      },
+      {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
         "headerColor": "orange"
       },
       {
-        "type": "partyTriple"
+        "type": "letterBody"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "summaryHero"
       },
       {
-        "type": "signatureRow"
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "termsBank"
@@ -2216,7 +2264,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "code": "LEFTOVER_INVOICE_FORMAT7_JASPER_USA",
     "formatNumber": 7,
     "name": "Invoice format7 –Jasper USA",
-    "paper": "A4",
+    "paper": "Letter",
     "rtl": false,
     "theme": {
       "primary": "#0A2942",
@@ -2231,7 +2279,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2326,7 +2374,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Standard Invoice USA"
     },
     "blocks": [
       {
@@ -2334,30 +2383,25 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "INVOICE FORMAT7 –JASPER USA",
+        "text": "INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
-        "type": "partyTriple"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "termsBank"
@@ -2386,7 +2430,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2493,30 +2537,44 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "INVOICE FORMAT8 WITH QR/IRN –JASPER",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -2542,7 +2600,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2658,30 +2716,34 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "INVOICE FORMAT9 WITH QR/IRN –JASPER",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "fieldGrid",
+        "cols": 3
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "partyTriple"
       },
       {
         "type": "chargeTable",
         "headerColor": "accent"
       },
       {
-        "type": "agingSummary"
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "formatBadge"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "termsBank"
@@ -2713,7 +2775,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2820,13 +2882,14 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "INVOICE SINGAPORE –JASPER",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 1
       },
       {
         "type": "partyTriple"
@@ -2836,14 +2899,23 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "fill"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "formatBadge"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -2869,7 +2941,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2973,36 +3045,26 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "landFreightHeader",
+        "title": "LAND FREIGHT / TRANSPORTATION INVOICE"
       },
       {
-        "type": "docTitle",
-        "text": "LAND FREIGHT/ TRANSPORTATION INVOICE FORMAT 1",
-        "align": "center",
-        "band": true
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "landRoute"
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "grandTotalDue"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -3028,7 +3090,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3131,30 +3193,26 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "OVERSEAS DEBIT NOTE (EXPORT INVOICE) –JASPER FORMAT2",
+        "text": "DEBIT NOTE",
         "align": "center",
         "band": true
       },
       {
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
+      },
+      {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
-        "type": "partyTriple"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "termsBank"
@@ -3183,7 +3241,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3287,36 +3345,45 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "PROFORMA INVOICE FORMAT 1",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "totalsOnly"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -3328,7 +3395,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "formatNumber": 22,
     "name": "Saudi TAX Invoice –Arabic Jasper",
     "paper": "A4",
-    "rtl": false,
+    "rtl": true,
     "theme": {
       "primary": "#0A2942",
       "accent": "#0A2942",
@@ -3342,7 +3409,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3437,7 +3504,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Standard Invoice Arabic"
     },
     "blocks": [
       {
@@ -3445,30 +3513,29 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "arabicHeader"
       },
       {
         "type": "docTitle",
-        "text": "SAUDI TAX INVOICE –ARABIC JASPER",
+        "text": "فاتورة / INVOICE",
         "align": "center",
         "band": true
       },
       {
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
+      },
+      {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "partyTriple"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "termsBank"
@@ -3497,7 +3564,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3596,7 +3663,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Simple Invoice (India)"
     },
     "blocks": [
       {
@@ -3604,24 +3672,26 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "SIMPLE INVOICE –INDIA",
+        "text": "INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "format6Totals"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
         "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -3653,7 +3723,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3761,7 +3831,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "85.00",
         "45.00",
         "1,380.00"
-      ]
+      ],
+      "docSubtitle": "Simple Invoice (India)"
     },
     "blocks": [
       {
@@ -3769,16 +3840,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "SIMPLE INVOICE –INDIA JASPER",
+        "text": "INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "format6Totals"
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
@@ -3786,10 +3859,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "agingSummary"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -3798,7 +3868,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -3824,7 +3894,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3919,7 +3989,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Simple Invoice (India)"
     },
     "blocks": [
       {
@@ -3927,16 +3998,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "SIMPLE INVOICE –INDIA WITH O/S",
+        "text": "INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "format6Totals"
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
@@ -3944,7 +4017,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -3953,7 +4026,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -3979,7 +4052,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4075,7 +4148,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
       ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
+      "docSubtitle": "Simple Invoice"
     },
     "blocks": [
       {
@@ -4083,19 +4157,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "SIMPLE INVOICE –JASPER",
+        "text": "INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "format6Totals"
       },
       {
-        "type": "partyTriple"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
@@ -4112,7 +4185,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -4138,7 +4211,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4233,7 +4306,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Simple Invoice"
     },
     "blocks": [
       {
@@ -4241,33 +4315,38 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "SIMPLE INVOICE –US JASPER",
+        "text": "INVOICE",
         "align": "center",
         "band": true
       },
       {
+        "type": "format6Totals"
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
+      },
+      {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "partyTriple"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
       },
       {
-        "type": "signatureRow"
+        "type": "termsBank"
       },
       {
-        "type": "termsBank"
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -4293,7 +4372,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4392,7 +4471,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Simple Invoice"
     },
     "blocks": [
       {
@@ -4400,30 +4480,38 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "SIMPLE INVOICE WITH O/S",
+        "text": "INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "format6Totals"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -4449,7 +4537,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4557,7 +4645,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "85.00",
         "45.00",
         "1,380.00"
-      ]
+      ],
+      "docSubtitle": "Simple Invoice"
     },
     "blocks": [
       {
@@ -4565,16 +4654,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "SIMPLE INVOICE(VAT)",
+        "text": "INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "format6Totals"
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
@@ -4582,10 +4673,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "agingSummary"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -4594,7 +4682,10 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -4620,7 +4711,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4723,27 +4814,34 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE -LAND",
         "align": "center",
         "band": true
       },
       {
+        "type": "fieldGrid",
+        "cols": 1
+      },
+      {
         "type": "partyTriple"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "subtotalBar",
+        "variant": "tax"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "termsBank"
@@ -4775,7 +4873,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4879,36 +4977,45 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "totalsOnly"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -4934,7 +5041,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5037,9 +5144,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT10",
         "align": "center",
@@ -5054,16 +5158,31 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "orange"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "totalsOnly"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -5074,7 +5193,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "code": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT12_LETTERHEAD",
     "formatNumber": 12,
     "name": "Standard Invoice –Jasper format12 Letterhead",
-    "paper": "A4",
+    "paper": "Letter",
     "rtl": false,
     "theme": {
       "primary": "#0A2942",
@@ -5089,7 +5208,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5192,33 +5311,36 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT12 LETTERHEAD",
         "align": "center",
         "band": true
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
         "type": "partyTriple"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "formatBadge"
       },
       {
-        "type": "signatureRow"
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -5244,7 +5366,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5351,27 +5473,32 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT13",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "type": "wireBox"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "shipmentDetails",
+        "showIrn": true,
+        "showQuotation": true
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "wordsAndTotal"
+        "type": "chargeTable",
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
@@ -5400,7 +5527,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5516,16 +5643,16 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT14 QR CODE",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "partyTriple"
+      },
+      {
+        "type": "landRoute"
       },
       {
         "type": "fieldGrid",
@@ -5533,16 +5660,22 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "signatureRow"
@@ -5571,7 +5704,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5674,9 +5807,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT15",
         "align": "center",
@@ -5686,15 +5816,21 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "partyTriple"
       },
       {
+        "type": "formatBadge"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
         "type": "chargeTable",
         "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
@@ -5726,7 +5862,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5830,19 +5966,33 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT16",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "partyTriple"
       },
       {
-        "type": "partyTriple"
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "shipmentDetails",
+        "showIrn": true,
+        "showQuotation": true
       },
       {
         "type": "fieldGrid",
@@ -5850,16 +6000,10 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -5885,7 +6029,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5988,33 +6132,39 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT17 (WITH HOLDING TAX)",
         "align": "center",
         "band": true
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
         "type": "partyTriple"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "landRoute"
       },
       {
-        "type": "signatureRow"
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -6040,7 +6190,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6147,9 +6297,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT18",
         "align": "center",
@@ -6159,18 +6306,27 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "partyTriple"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "type": "formatBadge"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "wordsAndTotal"
+        "type": "chargeTable",
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -6196,7 +6352,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6312,16 +6468,33 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT19",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "partyTriple"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "shipmentDetails",
+        "showIrn": true,
+        "showQuotation": true
       },
       {
         "type": "fieldGrid",
@@ -6329,19 +6502,10 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -6367,7 +6531,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6470,9 +6634,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT20 –UAE LOCAL CURRENCY",
         "align": "center",
@@ -6480,6 +6641,9 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "partyTriple"
+      },
+      {
+        "type": "landRoute"
       },
       {
         "type": "fieldGrid",
@@ -6490,10 +6654,19 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "termsBank"
       },
       {
-        "type": "termsBank"
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "signatureRow"
@@ -6522,7 +6695,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6626,19 +6799,22 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT21 (WITH HOLDING TAX)",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "partyTriple"
       },
       {
-        "type": "partyTriple"
+        "type": "formatBadge"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "fieldGrid",
@@ -6646,10 +6822,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
@@ -6681,7 +6854,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6784,30 +6957,41 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT22",
-        "align": "center",
+        "align": "start",
         "band": true
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "fill"
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "summaryHero"
       },
       {
-        "type": "signatureRow"
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "shipmentDetails",
+        "showIrn": true,
+        "showQuotation": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
@@ -6836,7 +7020,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6943,9 +7127,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT3",
         "align": "center",
@@ -6955,18 +7136,27 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "partyTriple"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "type": "formatBadge"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "wordsAndTotal"
+        "type": "chargeTable",
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -6992,7 +7182,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7108,16 +7298,30 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT4",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "partyTriple"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "shipmentDetails",
+        "showIrn": true,
+        "showQuotation": true
       },
       {
         "type": "fieldGrid",
@@ -7125,19 +7329,10 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -7163,7 +7358,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7266,9 +7461,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT5",
         "align": "center",
@@ -7276,6 +7468,9 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "partyTriple"
+      },
+      {
+        "type": "landRoute"
       },
       {
         "type": "fieldGrid",
@@ -7286,13 +7481,25 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "wordsAndTotal"
-      },
-      {
         "type": "termsBank"
       },
       {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
         "type": "signatureRow"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -7318,7 +7525,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7422,19 +7629,22 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT6",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "partyTriple"
       },
       {
-        "type": "partyTriple"
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "fieldGrid",
@@ -7442,10 +7652,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
@@ -7477,7 +7684,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7593,36 +7800,36 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT9",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "cyan"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -7648,7 +7855,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7764,36 +7971,45 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER TANZANIA",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "type": "totalsOnly"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -7819,7 +8035,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7922,24 +8138,35 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE 3 DECIMAL",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
       },
       {
         "type": "wordsAndTotal"
@@ -7960,7 +8187,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "formatNumber": 51,
     "name": "Standard Invoice Arabic –Jasper",
     "paper": "A4",
-    "rtl": false,
+    "rtl": true,
     "theme": {
       "primary": "#0A2942",
       "accent": "#0A2942",
@@ -7974,7 +8201,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8070,7 +8297,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
       ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
+      "docSubtitle": "Standard Invoice Arabic"
     },
     "blocks": [
       {
@@ -8078,19 +8306,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "arabicHeader"
       },
       {
         "type": "docTitle",
-        "text": "STANDARD INVOICE ARABIC –JASPER",
+        "text": "فاتورة / INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
@@ -8107,7 +8334,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -8119,7 +8346,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "formatNumber": 1,
     "name": "Standard Invoice Arabic –Jasper Format1",
     "paper": "A4",
-    "rtl": false,
+    "rtl": true,
     "theme": {
       "primary": "#0A2942",
       "accent": "#0A2942",
@@ -8133,7 +8360,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8229,7 +8456,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
       ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
+      "docSubtitle": "Standard Invoice Arabic"
     },
     "blocks": [
       {
@@ -8237,19 +8465,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "arabicHeader"
       },
       {
         "type": "docTitle",
-        "text": "STANDARD INVOICE ARABIC –JASPER FORMAT1",
+        "text": "فاتورة / INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
@@ -8257,7 +8484,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -8266,7 +8493,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -8277,8 +8504,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "code": "LEFTOVER_STANDARD_INVOICE_ARABIC_JASPER_FORMAT1_WITH_LETTER_HEAD",
     "formatNumber": 1,
     "name": "Standard Invoice Arabic –Jasper Format1 With Letter head",
-    "paper": "A4",
-    "rtl": false,
+    "paper": "Letter",
+    "rtl": true,
     "theme": {
       "primary": "#0A2942",
       "accent": "#0A2942",
@@ -8292,7 +8519,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8388,7 +8615,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
       ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
+      "docSubtitle": "Standard Invoice Arabic"
     },
     "blocks": [
       {
@@ -8396,19 +8624,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "arabicHeader"
       },
       {
         "type": "docTitle",
-        "text": "STANDARD INVOICE ARABIC –JASPER FORMAT1 WITH LETTER HEAD",
+        "text": "فاتورة / INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
@@ -8416,7 +8643,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -8425,7 +8652,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -8437,7 +8664,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "formatNumber": 54,
     "name": "Standard Invoice Arabic Oman –Jasper",
     "paper": "A4",
-    "rtl": false,
+    "rtl": true,
     "theme": {
       "primary": "#0A2942",
       "accent": "#0A2942",
@@ -8451,7 +8678,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8559,7 +8786,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "85.00",
         "45.00",
         "1,380.00"
-      ]
+      ],
+      "docSubtitle": "Standard Invoice Arabic"
     },
     "blocks": [
       {
@@ -8567,16 +8795,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "arabicHeader"
       },
       {
         "type": "docTitle",
-        "text": "STANDARD INVOICE ARABIC OMAN –JASPER",
+        "text": "فاتورة / INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
@@ -8584,10 +8814,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "agingSummary"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -8596,7 +8823,10 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -8608,7 +8838,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "formatNumber": 2,
     "name": "Standard Invoice Arabic with QR code –Jasper Format2",
     "paper": "A4",
-    "rtl": false,
+    "rtl": true,
     "theme": {
       "primary": "#0A2942",
       "accent": "#0A2942",
@@ -8622,7 +8852,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8717,7 +8947,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Standard Invoice Arabic"
     },
     "blocks": [
       {
@@ -8725,33 +8956,35 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "arabicHeader"
       },
       {
         "type": "docTitle",
-        "text": "STANDARD INVOICE ARABIC WITH QR CODE –JASPER FORMAT2",
+        "text": "فاتورة / INVOICE",
         "align": "center",
         "band": true
       },
       {
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
+      },
+      {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
-        "type": "partyTriple"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
       },
       {
-        "type": "signatureRow"
+        "type": "termsBank"
       },
       {
-        "type": "termsBank"
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -8763,7 +8996,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "formatNumber": 3,
     "name": "Standard Invoice Arabic with QR code –Jasper Format3",
     "paper": "Letter",
-    "rtl": false,
+    "rtl": true,
     "theme": {
       "primary": "#0A2942",
       "accent": "#0A2942",
@@ -8777,7 +9010,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8876,7 +9109,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Standard Invoice Arabic"
     },
     "blocks": [
       {
@@ -8884,30 +9118,35 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "arabicHeader"
       },
       {
         "type": "docTitle",
-        "text": "STANDARD INVOICE ARABIC WITH QR CODE –JASPER FORMAT3",
+        "text": "فاتورة / INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -8919,7 +9158,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "formatNumber": 4,
     "name": "Standard Invoice Arabic with QR code –Jasper Format4",
     "paper": "A4",
-    "rtl": false,
+    "rtl": true,
     "theme": {
       "primary": "#0A2942",
       "accent": "#0A2942",
@@ -8933,7 +9172,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9041,7 +9280,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "85.00",
         "45.00",
         "1,380.00"
-      ]
+      ],
+      "docSubtitle": "Standard Invoice Arabic"
     },
     "blocks": [
       {
@@ -9049,16 +9289,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "arabicHeader"
       },
       {
         "type": "docTitle",
-        "text": "STANDARD INVOICE ARABIC WITH QR CODE –JASPER FORMAT4",
+        "text": "فاتورة / INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
@@ -9066,10 +9308,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "agingSummary"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -9078,7 +9317,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -9090,7 +9329,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "formatNumber": 5,
     "name": "Standard Invoice Arabic with QR code –Jasper Format5",
     "paper": "A4",
-    "rtl": false,
+    "rtl": true,
     "theme": {
       "primary": "#0A2942",
       "accent": "#0A2942",
@@ -9104,7 +9343,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9199,7 +9438,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Standard Invoice Arabic"
     },
     "blocks": [
       {
@@ -9207,16 +9447,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "arabicHeader"
       },
       {
         "type": "docTitle",
-        "text": "STANDARD INVOICE ARABIC WITH QR CODE –JASPER FORMAT5",
+        "text": "فاتورة / INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
@@ -9224,7 +9466,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -9233,7 +9475,10 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -9245,7 +9490,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "formatNumber": 7,
     "name": "Standard Invoice Arabic with QR code –Jasper Format7",
     "paper": "A4",
-    "rtl": false,
+    "rtl": true,
     "theme": {
       "primary": "#0A2942",
       "accent": "#0A2942",
@@ -9259,7 +9504,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9354,7 +9599,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Standard Invoice Arabic"
     },
     "blocks": [
       {
@@ -9362,33 +9608,38 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "arabicHeader"
       },
       {
         "type": "docTitle",
-        "text": "STANDARD INVOICE ARABIC WITH QR CODE –JASPER FORMAT7",
+        "text": "فاتورة / INVOICE",
         "align": "center",
         "band": true
       },
       {
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
+      },
+      {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "partyTriple"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
       },
       {
-        "type": "signatureRow"
+        "type": "termsBank"
       },
       {
-        "type": "termsBank"
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -9414,7 +9665,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9517,27 +9768,34 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE COURIER –JASPER",
         "align": "center",
         "band": true
       },
       {
+        "type": "fieldGrid",
+        "cols": 1
+      },
+      {
         "type": "partyTriple"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "subtotalBar",
+        "variant": "tax"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "termsBank"
@@ -9569,7 +9827,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9673,16 +9931,10 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE CUM ARRIVAL NOTICE –JASPER FORMAT16",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "partyTriple"
@@ -9690,6 +9942,9 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "fieldGrid",
         "cols": 2
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
@@ -9728,7 +9983,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9831,33 +10086,30 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "STANDARD INVOICE FCY FORMAT2",
+        "text": "INVOICE / DEBIT NOTE",
         "align": "center",
         "band": true
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "shipmentDetails",
+        "fcyOrder": true,
+        "showQuotation": true
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "fill"
       },
       {
-        "type": "partyTriple"
+        "type": "subtotalBar",
+        "variant": "fcy"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "exportClosing",
+        "showBullets": true
       },
       {
-        "type": "signatureRow"
-      },
-      {
-        "type": "termsBank"
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -9883,7 +10135,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9990,30 +10242,30 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "STANDARD INVOICE FCY WITH QR/IRN –JASPER",
+        "text": "INVOICE / DEBIT NOTE",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "shipmentDetails",
+        "fcyOrder": true,
+        "showQuotation": true
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "subtotalBar",
+        "variant": "fcy"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "exportClosing",
+        "showBullets": true
       },
       {
-        "type": "termsBank"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -10039,7 +10291,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10155,36 +10407,45 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD INVOICE-MALAYSIA",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "type": "totalsOnly"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -10195,7 +10456,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "code": "LEFTOVER_STANDARD_INVOICE_USA_FORMAT_2",
     "formatNumber": 2,
     "name": "Standard Invoice-USA Format 2",
-    "paper": "A4",
+    "paper": "Letter",
     "rtl": false,
     "theme": {
       "primary": "#0A2942",
@@ -10210,7 +10471,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10305,7 +10566,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Standard Invoice USA"
     },
     "blocks": [
       {
@@ -10313,33 +10575,31 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "STANDARD INVOICE-USA FORMAT 2",
+        "text": "INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
-        "type": "partyTriple"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
       },
       {
-        "type": "signatureRow"
+        "type": "termsBank"
       },
       {
-        "type": "termsBank"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -10365,7 +10625,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10469,36 +10729,43 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "STANDARD TAX INVOICE –JASPER",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "fieldGrid",
+        "cols": 1
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "subtotalBar",
+        "variant": "tax"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -10524,7 +10791,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10538,7 +10805,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "quotationNo": "QTN-19-0067",
       "billToName": "AL NASER TRADING COMPANY LLC",
       "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
-      "currency": "USD",
+      "currency": "INR",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -10619,7 +10886,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Tax Invoice India"
     },
     "blocks": [
       {
@@ -10627,33 +10895,32 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "TAX INVOICE –INDIA",
-        "align": "center",
+        "text": "TAX INVOICE",
+        "align": "start",
         "band": true
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "exportMetaStrip"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "shipmentDetails",
+        "showTermsOfShipment": true,
+        "showPlaceOfSupply": true
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "signatureRow"
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "termsBank"
+        "type": "exportClosing"
       },
       {
         "type": "colorfulFooter"
@@ -10679,7 +10946,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10693,7 +10960,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "quotationNo": "QTN-19-0068",
       "billToName": "AL NASER TRADING COMPANY LLC",
       "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
-      "currency": "USD",
+      "currency": "INR",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -10778,7 +11045,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Tax Invoice India"
     },
     "blocks": [
       {
@@ -10786,13 +11054,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "docTitle",
+        "text": "TAX INVOICE",
+        "align": "start",
+        "band": true
       },
       {
-        "type": "docTitle",
-        "text": "TAX INVOICE –INDIA (REIMBURSEMENT BILL)",
-        "align": "center",
-        "band": true
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "shipmentDetails",
+        "showTermsOfShipment": true,
+        "showPlaceOfSupply": true
       },
       {
         "type": "partyTriple"
@@ -10802,14 +11075,14 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "fill"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "exportClosing"
       },
       {
-        "type": "termsBank"
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -10835,7 +11108,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10849,7 +11122,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "quotationNo": "QTN-19-0001",
       "billToName": "AL NASER TRADING COMPANY LLC",
       "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
-      "currency": "USD",
+      "currency": "INR",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -10931,7 +11204,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
       ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
+      "docSubtitle": "Tax Invoice India"
     },
     "blocks": [
       {
@@ -10939,36 +11213,35 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "TAX INVOICE –INDIA FORMAT1",
-        "align": "center",
+        "text": "TAX INVOICE",
+        "align": "start",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "shipmentDetails",
+        "showTermsOfShipment": true,
+        "showPlaceOfSupply": true
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "termsBank"
+        "type": "exportClosing"
       },
       {
-        "type": "signatureRow"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -10994,7 +11267,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11008,7 +11281,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "quotationNo": "QTN-19-0002",
       "billToName": "AL NASER TRADING COMPANY LLC",
       "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
-      "currency": "USD",
+      "currency": "INR",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -11089,7 +11362,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Tax Invoice India"
     },
     "blocks": [
       {
@@ -11097,33 +11371,38 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "TAX INVOICE –INDIA FORMAT2",
-        "align": "center",
+        "text": "TAX INVOICE",
+        "align": "start",
         "band": true
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "exportMetaStrip"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "cyan"
+        "type": "shipmentDetails",
+        "showTermsOfShipment": true,
+        "showPlaceOfSupply": true
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "signatureRow"
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "termsBank"
+        "type": "exportClosing"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -11149,7 +11428,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11163,7 +11442,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "quotationNo": "QTN-19-0002",
       "billToName": "AL NASER TRADING COMPANY LLC",
       "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
-      "currency": "USD",
+      "currency": "INR",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -11244,7 +11523,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Tax Invoice India"
     },
     "blocks": [
       {
@@ -11252,33 +11532,35 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "TAX INVOICE –INDIA FORMAT2 JASPER",
-        "align": "center",
+        "text": "TAX INVOICE",
+        "align": "start",
         "band": true
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "exportMetaStrip"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "shipmentDetails",
+        "showTermsOfShipment": true,
+        "showPlaceOfSupply": true
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "signatureRow"
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "termsBank"
+        "type": "exportClosing"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -11304,7 +11586,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11318,7 +11600,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "quotationNo": "QTN-19-0006",
       "billToName": "AL NASER TRADING COMPANY LLC",
       "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
-      "currency": "USD",
+      "currency": "INR",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -11400,7 +11682,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
       ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
+      "docSubtitle": "Tax Invoice India"
     },
     "blocks": [
       {
@@ -11408,36 +11691,35 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "TAX INVOICE –INDIA FORMAT6 JASPER",
-        "align": "center",
+        "text": "TAX INVOICE",
+        "align": "start",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "shipmentDetails",
+        "showTermsOfShipment": true,
+        "showPlaceOfSupply": true
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "termsBank"
+        "type": "exportClosing"
       },
       {
-        "type": "signatureRow"
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -11463,7 +11745,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11477,7 +11759,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "quotationNo": "QTN-19-0007",
       "billToName": "AL NASER TRADING COMPANY LLC",
       "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
-      "currency": "USD",
+      "currency": "INR",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -11558,7 +11840,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Tax Invoice India"
     },
     "blocks": [
       {
@@ -11566,33 +11849,35 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "TAX INVOICE –INDIA FORMAT7 JASPER",
-        "align": "center",
+        "text": "TAX INVOICE",
+        "align": "start",
         "band": true
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "shipmentDetails",
+        "showTermsOfShipment": true,
+        "showPlaceOfSupply": true
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "partyTriple"
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "exportClosing"
       },
       {
-        "type": "signatureRow"
-      },
-      {
-        "type": "termsBank"
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -11618,7 +11903,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11632,7 +11917,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "quotationNo": "QTN-19-0008",
       "billToName": "AL NASER TRADING COMPANY LLC",
       "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
-      "currency": "USD",
+      "currency": "INR",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -11717,7 +12002,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Tax Invoice India"
     },
     "blocks": [
       {
@@ -11725,30 +12011,35 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "docTitle",
+        "text": "TAX INVOICE",
+        "align": "start",
+        "band": true
       },
       {
-        "type": "docTitle",
-        "text": "TAX INVOICE –INDIA FORMAT8 JASPER",
-        "align": "center",
-        "band": true
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "shipmentDetails",
+        "showTermsOfShipment": true,
+        "showPlaceOfSupply": true
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "exportClosing"
       },
       {
-        "type": "termsBank"
+        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -11774,7 +12065,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11788,7 +12079,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "quotationNo": "QTN-19-0075",
       "billToName": "AL NASER TRADING COMPANY LLC",
       "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
-      "currency": "USD",
+      "currency": "INR",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -11869,7 +12160,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
-      ]
+      ],
+      "docSubtitle": "Tax Invoice India"
     },
     "blocks": [
       {
@@ -11877,33 +12169,35 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "docTitle",
+        "text": "TAX INVOICE",
+        "align": "start",
+        "band": true
       },
       {
-        "type": "docTitle",
-        "text": "TAX INVOICE –INDIA JASPER",
-        "align": "center",
-        "band": true
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "shipmentDetails",
+        "showTermsOfShipment": true,
+        "showPlaceOfSupply": true
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "termsBank"
+        "type": "exportClosing"
       },
       {
-        "type": "signatureRow"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -11929,7 +12223,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11943,7 +12237,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "quotationNo": "QTN-19-0001",
       "billToName": "AL NASER TRADING COMPANY LLC",
       "billToAddress": "30 AL MAKTHOOM BUILDING, SHARJAH UAE",
-      "currency": "USD",
+      "currency": "INR",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -12025,7 +12319,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "Rates are subject to carrier space and equipment availability.",
         "This quotation is a KingFisher layout preview (FRESA format)."
       ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
+      "docSubtitle": "Tax Invoice India"
     },
     "blocks": [
       {
@@ -12033,36 +12328,35 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "TAX INVOICE –INDIA JASPER FORMAT1",
-        "align": "center",
+        "text": "TAX INVOICE",
+        "align": "start",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "shipmentDetails",
+        "showTermsOfShipment": true,
+        "showPlaceOfSupply": true
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "termsBank"
+        "type": "exportClosing"
       },
       {
-        "type": "signatureRow"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -12088,7 +12382,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12191,33 +12485,44 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "TAX INVOICE MALAYSIA –JASPER",
         "align": "center",
         "band": true
       },
       {
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
+      },
+      {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "partyTriple"
+        "headerColor": "fill"
       },
       {
         "type": "wordsAndTotal"
       },
       {
-        "type": "signatureRow"
+        "type": "termsBank"
       },
       {
-        "type": "termsBank"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -12243,7 +12548,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12350,13 +12655,14 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "TAX INVOICE SINGAPORE –JASPER",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 1
       },
       {
         "type": "partyTriple"
@@ -12366,14 +12672,26 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "fill"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "formatBadge"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -12399,7 +12717,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12506,30 +12824,40 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "TAX INVOICE WITH QR –INDIA FORMAT3 JASPER",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "wordsAndTotal"
+        "type": "partyTriple"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "subtotalBar",
+        "variant": "tax"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -12555,7 +12883,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12671,16 +12999,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "TAX INVOICE WITH QR/IRN –INDIA FORMAT4 JASPER",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -12688,19 +13013,28 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "type": "totalsOnly"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -12726,7 +13060,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12829,20 +13163,31 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "TAX INVOICE WITH QR/IRN –INDIA FORMAT5 JASPER",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "fieldGrid",
         "cols": 2
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "chargeTable",
@@ -12881,7 +13226,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12984,33 +13329,45 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
         "text": "VIETNAM INVOICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
         "type": "partyTriple"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "fieldGrid",
+        "cols": 1
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "totalsOnly"
+      },
+      {
+        "type": "termsBank"
       },
       {
         "type": "signatureRow"
       },
       {
-        "type": "termsBank"
+        "type": "formatBadge"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -13036,7 +13393,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -13109,21 +13466,27 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "WAREHOUSE INVOICE –INDIA FORMAT",
+        "text": "WAREHOUSE INVOICE",
         "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"

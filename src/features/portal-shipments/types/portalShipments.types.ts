@@ -55,7 +55,26 @@ export interface PortalShipmentDocument {
   documentType?: string;
   mimeType?: string;
   createdAt?: string;
+  /** List shows all visible_to_customer docs; download may still be gated. */
   canDownload?: boolean;
+  visibleToCustomer?: boolean;
+  downloadPath?: string;
+}
+
+export interface PortalShipmentDocumentsSummary {
+  total?: number;
+  visible?: number;
+  bookingFormAttached?: number;
+  bookingFormMissing?: number;
+  byType?: Record<string, number>;
+}
+
+export interface PortalShipmentPathHints {
+  documents?: string;
+  documentDownload?: string;
+  acknowledgement?: string;
+  bookingForm?: string;
+  raw?: Record<string, string>;
 }
 
 export interface PortalShipmentDetail extends PortalShipmentListItem {
@@ -75,6 +94,10 @@ export interface PortalShipmentDetail extends PortalShipmentListItem {
   destinationCityCountry?: string;
   milestones: PortalMilestone[];
   documents?: PortalShipmentDocument[];
+  documentsSummary?: PortalShipmentDocumentsSummary;
+  acknowledgementStatus?: string;
+  bookingFormSummary?: Record<string, unknown>;
+  pathHints?: PortalShipmentPathHints;
 }
 
 /** Portal view of staff-issued container requests / CRO lines. */

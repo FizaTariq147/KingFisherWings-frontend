@@ -356,6 +356,18 @@ export type PortalBookingForm = {
   eta?: string;
   freight_terms?: string;
   cfs_warehouse?: string;
+  /**
+   * Customer-uploaded compliance file refs (upload API / draft).
+   * Not part of Upsert*BookingFormDto — carried for admin download sync.
+   */
+  documents?: {
+    kind?: string;
+    id?: string;
+    file_name?: string;
+    file_url?: string;
+    download_url?: string;
+    s3_key?: string;
+  }[];
 };
 
 /**
