@@ -37,17 +37,56 @@ export const publicTrackService = {
     return url.toString();
   },
 
-  async track(tenantSlug: string | undefined, ref: string): Promise<PublicTrackResult> {
+  /**
+   * Raw GET /track?ref=… (or GET /track/{ref} fallback) for staff panels that
+   * render the API payload as-is.
+   *
+   * OpenAPI: resolve tenant via `tenant_slug` or Host/domain. On localhost /
+   * Vite proxy, `tenant_slug` is required because Host is the API origin.
+   */
+  async trackRaw(tenantSlug: string | undefined, ref: string): Promise<unknown> {
+    const reference = ref.trim();
+    if (!reference) throw new Error('Reference is required.');
+    const slug = tenantSlug?.trim();
+    if (!slug) {
+      throw new Error(
+        'Workspace (tenant slug) is required for Track & Trace when not on your company domain.',
+      );
+    }
+    const headers = buildPublicTrackHeaders();
     try {
       const res = await publicClient.get(PUBLIC_TRACK_API.track, {
-        params: trackParams(tenantSlug, ref),
-        headers: buildPublicTrackHeaders(),
+        params: trackParams(slug, reference),
+        headers,
       });
-      const result = normalizePublicTrack(res.data);
+      return res.data;
+    } catch (firstError) {
+      try {
+        const res = await publicClient.get(PUBLIC_TRACK_API.trackByRef(reference), {
+          params: { tenant_slug: slug },
+          headers,
+        });
+        return res.data;
+      } catch {
+        throw new Error(
+          getPublicTrackErrorMessage(firstError, 'Track lookup failed.'),
+        );
+      }
+    }
+  },
+
+  async track(tenantSlug: string | undefined, ref: string): Promise<PublicTrackResult> {
+    try {
+      const raw = await this.trackRaw(tenantSlug, ref);
+      const result = normalizePublicTrack(raw);
       if (!result) throw new Error('Shipment not found for that reference.');
       return result;
     } catch (error) {
-      throw new Error(getPublicTrackErrorMessage(error, 'Track lookup failed.'));
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : getPublicTrackErrorMessage(error, 'Track lookup failed.'),
+      );
     }
   },
 
@@ -60,7 +99,9 @@ export const publicTrackService = {
       const config = normalizeEmbedConfig(res.data);
       return {
         ...config,
-        widgetScriptUrl: config.widgetScriptUrl || publicTrackService.widgetScriptUrl(config.tenantSlug ?? tenantSlug),
+        widgetScriptUrl:
+          config.widgetScriptUrl ||
+          publicTrackService.widgetScriptUrl(config.tenantSlug ?? tenantSlug),
       };
     } catch (error) {
       throw new Error(getPublicTrackErrorMessage(error, 'Unable to load track widget settings.'));

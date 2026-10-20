@@ -124,6 +124,18 @@ export default function PortalShipmentDetailPage() {
               type="button"
               size="sm"
               variant="secondary"
+              onClick={() =>
+                navigate('/portal/track', {
+                  state: { ref: data.reference || id },
+                })
+              }
+            >
+              Track & Trace
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
               onClick={() => navigate(`/portal/documents?job_id=${encodeURIComponent(id)}`)}
             >
               All documents

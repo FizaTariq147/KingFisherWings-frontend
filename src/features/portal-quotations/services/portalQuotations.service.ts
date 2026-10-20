@@ -374,6 +374,41 @@ export const portalQuotationsService = {
         }
       );
     }
+
+    // Sea/land/courier/CC mode booking — GET /portal/quotations/:id/booking-form
+    // (persists on server; do not rely on localStorage draft alone after convert).
+    const { usesModeBookingFormConvertFlow } = await import(
+      '@/features/quotations/utils/quotationStatus'
+    );
+    if (usesModeBookingFormConvertFlow(opts.jobType || jt)) {
+      try {
+        const form = await this.getQuotationBookingForm(opts.quotationId);
+        writePortalBookingFormDraft(
+          opts.quotationId,
+          {
+            ...portalBookingFormToUpsertDto(form),
+            // Preserve server mark_complete (upsert helper defaults true).
+            mark_complete: form.mark_complete === true,
+          },
+          {
+            quoteNumber: opts.quoteNumber,
+            jobType: opts.jobType,
+            documents: form.documents,
+          },
+        );
+        return form;
+      } catch (error) {
+        if (!isComplianceNotFoundError(error)) {
+          // Prefer draft over hard-fail when API is briefly unavailable.
+          const draft = readPortalBookingFormDraft(opts.quotationId);
+          if (draft) return draft;
+          throw error;
+        }
+        const draft = readPortalBookingFormDraft(opts.quotationId);
+        if (draft) return draft;
+      }
+    }
+
     const target = resolveComplianceTarget(opts);
     if (!target) {
       return (
@@ -495,6 +530,69 @@ export const portalQuotationsService = {
     // UpsertWarehouseBookingFormDto on draft + messages for staff sync.
     if (jt === 'WAREHOUSE') {
       return saveViaMessages();
+    }
+
+    // Mode booking (sea/land/courier/CC) — PUT/complete /portal/quotations/:id/booking-form*
+    const { usesModeBookingFormConvertFlow } = await import(
+      '@/features/quotations/utils/quotationStatus'
+    );
+    if (usesModeBookingFormConvertFlow(opts.jobType || jt)) {
+      try {
+        const saved = await this.upsertQuotationBookingForm(opts.quotationId, dto);
+        if (dto.mark_complete) {
+          try {
+            await this.completeQuotationBookingForm(opts.quotationId, {
+              consent_accepted: Boolean(dto.consent_accepted),
+            });
+          } catch {
+            /* complete may be implicit on PUT with mark_complete */
+          }
+          try {
+            const quoteLabel = opts.quoteNumber?.trim() || opts.quotationId.slice(0, 8);
+            await portalMessagesService.create({
+              subject: bookingFormInboxSubject({
+                quoteLabel,
+                quotationId: opts.quotationId,
+                bookingId: opts.bookingId,
+                jobId: opts.jobId,
+              }),
+              body: formatBookingFormMessageBodyCompact({
+                quotationId: opts.quotationId,
+                quoteNumber: opts.quoteNumber,
+                jobType: opts.jobType,
+                jobId: opts.jobId,
+                bookingId: opts.bookingId,
+                dto: { ...dto, mark_complete: true },
+                documents,
+              }),
+              job_id: opts.jobId && isUuid(opts.jobId) ? opts.jobId : undefined,
+            });
+          } catch {
+            /* inbox mirror best-effort */
+          }
+          return writePortalBookingFormDraft(
+            opts.quotationId,
+            { ...dto, mark_complete: true },
+            {
+              quoteNumber: opts.quoteNumber,
+              jobType: opts.jobType,
+              documents,
+            },
+          );
+        }
+        return {
+          ...writePortalBookingFormDraft(opts.quotationId, dto, {
+            quoteNumber: opts.quoteNumber,
+            jobType: opts.jobType,
+            documents,
+          }),
+          ...saved,
+          mark_complete: false,
+        };
+      } catch (error) {
+        if (!isComplianceNotFoundError(error)) throw error;
+        // Fall through to compliance / messages if quotation booking-form is unavailable.
+      }
     }
 
     let target = resolveComplianceTarget(opts);

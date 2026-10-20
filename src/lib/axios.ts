@@ -56,15 +56,11 @@ axiosInstance.interceptors.request.use(async (config) => {
     return config
   }
 
-  // Proactive refresh when access is missing/expired — prevents flaky 401 on
-  // GET /auth/sessions and POST …/revoke (access token is not persisted).
-  // While the idle modal is open, only Continue/Revoke may refresh (one-time tokens).
+  // Proactive refresh when access is missing/expired — prevents flaky 401
+  // (access token is not persisted). Idle timeout auto-logs out; no Continue modal.
   let token = useAuthStore.getState().accessToken
   const authState = useAuthStore.getState()
-  const mayProactiveRefresh =
-    Boolean(authState.refreshToken) &&
-    (!authState.sessionExpired || authState.sessionExpiryActionInProgress)
-  if (mayProactiveRefresh) {
+  if (authState.refreshToken && !authState.sessionExpired) {
     token = (await ensureErpAccessToken()) ?? token
   }
   if (token) config.headers.Authorization = `Bearer ${token}`
@@ -101,12 +97,7 @@ axiosInstance.interceptors.response.use(
       return rejectWithToast(error)
     }
 
-    // Idle modal owns refresh — unless Continue/Revoke is actively running.
     const authState = useAuthStore.getState()
-    if (authState.sessionExpired && !authState.sessionExpiryActionInProgress) {
-      return rejectWithToast(error)
-    }
-
     if (!authState.refreshToken) {
       useAuthStore.getState().forceLogoutDueToInactivity()
       return rejectWithToast(error)
@@ -120,15 +111,8 @@ axiosInstance.interceptors.response.use(
       original.headers.Authorization = `Bearer ${newToken}`
       return axiosInstance(original)
     } catch (refreshError) {
-      const refreshData = (refreshError as AxiosError)?.response?.data
-      if (
-        isSessionInactivityTimeoutMessage(refreshData) ||
-        (refreshError as AxiosError)?.response?.status === 401
-      ) {
-        useAuthStore.getState().forceLogoutDueToInactivity()
-      } else {
-        useAuthStore.getState().markSessionExpired()
-      }
+      // Refresh failed or idle — auto sign-out (no Continue/Revoke popup).
+      useAuthStore.getState().forceLogoutDueToInactivity()
       return rejectWithToast(refreshError)
     }
   },

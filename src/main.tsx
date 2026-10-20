@@ -4,7 +4,6 @@ import { Provider } from 'react-redux'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider } from 'react-router-dom'
 import { ErpAccessBlockedModal } from './components/auth/ErpAccessBlockedModal'
-import { SessionExpiredModal } from './components/auth/SessionExpiredModal'
 import { SubscriptionExpiredModal } from './components/auth/SubscriptionExpiredModal'
 import { SessionExpiryWatcher } from './components/auth/SessionExpiryWatcher'
 import { ToastHost } from './components/toast'
@@ -28,7 +27,6 @@ createRoot(document.getElementById('root')!).render(
           <ToastHost />
           <AuthLoadingGate>
             <SessionExpiryWatcher />
-            <SessionExpiredModal />
             <SubscriptionExpiredModal />
             <ErpAccessBlockedModal />
             <RouterProvider router={router} />

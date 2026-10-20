@@ -33,6 +33,7 @@ import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggl
 import { OpsContinuumRail } from '@/features/ops-activity';
 import { GenerateEdiPanel } from '@/features/shared/edi/GenerateEdiPanel';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
+import { AddStatusCatalogModal } from '@/features/shared/status-catalog';
 import { erpForm } from '@/lib/erpForm';
 import { isUuid } from '@/lib/isUuid';
 import { cn } from '@/lib/utils';
@@ -179,8 +180,9 @@ export default function ShipmentDetailPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [confirmKind, setConfirmKind] = useState<ConfirmKind | null>(null);
+  const [addStatusOpen, setAddStatusOpen] = useState(false);
   const statusCatalogQuery = useShipmentStatusOptions(
-    confirmKind === 'change-status' || Boolean(id),
+    confirmKind === 'change-status' || addStatusOpen || Boolean(id),
   );
   const [statusValue, setStatusValue] = useState('');
   const [blStatusValue, setBlStatusValue] = useState('');
@@ -830,7 +832,20 @@ export default function ShipmentDetailPage() {
             type="button"
             variant="report"
             leftIcon={<MapPin />}
-            onClick={() => setShowTracking((v) => !v)}
+            onClick={() => {
+              if (showTracking) {
+                setShowTracking(false);
+                return;
+              }
+              setShowTracking(true);
+              const showAll = tabs.find((t) => isShipmentShowAllTab(t.key));
+              if (showAll) setActiveTab(showAll.key);
+              window.setTimeout(() => {
+                document
+                  .getElementById('shipment-track-trace')
+                  ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }, 120);
+            }}
           >
             {showTracking ? 'Hide Tracking' : 'Track & Trace'}
           </Button>
@@ -926,24 +941,6 @@ export default function ShipmentDetailPage() {
         </section>
       )}
 
-      {showTracking && (
-        <section className={erpForm.section}>
-          <div className={erpForm.sectionHeader}>Track & Trace</div>
-          <div className={erpForm.sectionBody}>
-            {trackingQuery.isLoading ? (
-              <p className="text-[13px] text-[#64748b]">Loading tracking…</p>
-            ) : trackingQuery.isError ? (
-              <p className="text-[13px] text-red-700">{getErrorMessage(trackingQuery.error)}</p>
-            ) : (
-              <ShipmentApiPayloadView
-                data={trackingQuery.data ?? {}}
-                emptyMessage="No tracking data returned."
-              />
-            )}
-          </div>
-        </section>
-      )}
-
       {showBlEntry && (
         <section className={erpForm.section}>
           <div className={erpForm.sectionHeader}>Bills of lading</div>
@@ -1019,6 +1016,42 @@ export default function ShipmentDetailPage() {
                       k !== 'section-files' &&
                       k !== 'section_files',
                   )}
+                showAllFooter={
+                  showTracking ? (
+                    <div
+                      id="shipment-track-trace"
+                      className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white"
+                    >
+                      <div className="flex items-center justify-between gap-2 border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2">
+                        <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
+                          Track &amp; Trace
+                        </p>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setShowTracking(false)}
+                        >
+                          Hide
+                        </Button>
+                      </div>
+                      <div className="px-3 py-2">
+                        {trackingQuery.isLoading ? (
+                          <p className="text-[13px] text-[#64748b]">Loading tracking…</p>
+                        ) : trackingQuery.isError ? (
+                          <p className="text-[13px] text-red-700">
+                            {getErrorMessage(trackingQuery.error)}
+                          </p>
+                        ) : (
+                          <ShipmentApiPayloadView
+                            data={trackingQuery.data ?? {}}
+                            emptyMessage="No tracking data returned."
+                          />
+                        )}
+                      </div>
+                    </div>
+                  ) : null
+                }
               />
             ) : null}
           </>
@@ -1304,26 +1337,48 @@ export default function ShipmentDetailPage() {
         >
           <label className="block text-[13px]">
             <span className={erpForm.label}>Status</span>
-            <select
-              className={erpForm.input}
-              value={statusValue}
-              onChange={(e) => setStatusValue(e.target.value)}
-            >
-              {statusOptions.length === 0 ? (
-                <option value="" disabled>
-                  No statuses returned by API
-                </option>
-              ) : (
-                statusOptions.map((s) => (
-                  <option key={s} value={s}>
-                    {statusOptionLabels.get(s) || s.replaceAll('_', ' ')}
+            <div className="flex items-center gap-2">
+              <select
+                className={`${erpForm.input} min-w-0 flex-1`}
+                value={statusValue}
+                onChange={(e) => setStatusValue(e.target.value)}
+              >
+                {statusOptions.length === 0 ? (
+                  <option value="" disabled>
+                    No statuses returned by API
                   </option>
-                ))
-              )}
-            </select>
+                ) : (
+                  statusOptions.map((s) => (
+                    <option key={s} value={s}>
+                      {statusOptionLabels.get(s) || s.replaceAll('_', ' ')}
+                    </option>
+                  ))
+                )}
+              </select>
+              <button
+                type="button"
+                title="Add custom status"
+                aria-label="Add custom status"
+                onClick={() => setAddStatusOpen(true)}
+                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-[var(--color-primary-600)] text-white hover:bg-[var(--color-primary-700)]"
+              >
+                <Plus className="h-4 w-4" aria-hidden />
+              </button>
+            </div>
           </label>
         </Modal>
       )}
+
+      <AddStatusCatalogModal
+        open={addStatusOpen}
+        nested
+        entity="shipments"
+        onClose={() => setAddStatusOpen(false)}
+        onCreated={(code) => {
+          setStatusValue(code);
+          void statusCatalogQuery.refetch();
+        }}
+      />
 
       {confirmKind === 'change-bl-status' && (
         <Modal

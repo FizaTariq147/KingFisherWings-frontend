@@ -42,6 +42,13 @@ const KIND_ALIASES: Record<string, ModeBookingFormDocumentKind> = {
   bl_awb_copy: 'bill_of_lading',
   awb: 'bill_of_lading',
   air_waybill: 'bill_of_lading',
+  hbl: 'bill_of_lading',
+  house_bill: 'bill_of_lading',
+  house_bill_of_lading: 'bill_of_lading',
+  mbl: 'bill_of_lading',
+  master_bill: 'bill_of_lading',
+  hawb: 'bill_of_lading',
+  mawb: 'bill_of_lading',
   licence: 'licence',
   license: 'licence',
   permit: 'licence',
@@ -84,7 +91,12 @@ export function matchBookingKind(raw: unknown): ModeBookingFormDocumentKind | nu
     kind.includes('bill_of_lading') ||
     kind.includes('bl_awb') ||
     kind.includes('air_waybill') ||
-    kind === 'awb'
+    kind === 'awb' ||
+    kind === 'hbl' ||
+    kind === 'mbl' ||
+    kind === 'hawb' ||
+    kind === 'mawb' ||
+    kind.includes('house_bill')
   ) {
     return 'bill_of_lading';
   }
@@ -151,6 +163,7 @@ function metaFromRow(
   };
 }
 
+/** True when meta has a locator we can download or remirror — not a display name alone. */
 function hasFileRef(meta: BookingFormDocumentMeta | undefined): boolean {
   if (!meta) return false;
   return Boolean(
@@ -158,8 +171,7 @@ function hasFileRef(meta: BookingFormDocumentMeta | undefined): boolean {
       meta.file_url ||
       meta.download_url ||
       meta.download_path ||
-      meta.s3_key ||
-      meta.file_name,
+      meta.s3_key,
   );
 }
 
@@ -232,7 +244,9 @@ function rowHasFile(row: Record<string, unknown>): boolean {
 
 function matchKindFromRow(row: Record<string, unknown>): ModeBookingFormDocumentKind | null {
   const direct = matchBookingKind(
-    row.kind ??
+    row.booking_form_kind ??
+      row.bookingFormKind ??
+      row.kind ??
       row.document_kind ??
       row.documentKind ??
       row.document_type ??
@@ -400,7 +414,8 @@ export function extractBookingFormDocuments(form: Record<string, unknown> | null
 
 /**
  * Merge job `GET /jobs/:id/documents` (often `uploader_side=CUSTOMER`) into booking kinds.
- * Unmatched customer files are assigned to attach_* flagged kinds that still lack a file.
+ * Only kinds that match document_type / booking_form_kind are marked on-file —
+ * do not invent Commercial invoice from an HBL leftover (that caused Complete 400s).
  */
 export function mergeJobDocumentsIntoBooking(
   docs: unknown[],
@@ -408,39 +423,21 @@ export function mergeJobDocumentsIntoBooking(
   opts?: { flaggedKinds?: Iterable<string> },
 ): { kinds: Set<string>; byKind: Record<string, BookingFormDocumentMeta> } {
   const byKind = { ...existing };
-  const kinds = new Set([...Object.keys(byKind), ...(opts?.flaggedKinds ?? [])]);
-  const usedIds = new Set<string>();
-  const unmatched: Record<string, unknown>[] = [];
+  // Start from kinds that already have real file meta — not attach_* flags alone.
+  const kinds = new Set(
+    Object.entries(byKind)
+      .filter(([, meta]) => hasFileRef(meta))
+      .map(([kind]) => kind),
+  );
+  void opts;
 
   for (const item of docs) {
     const row = asRecord(item);
     if (!row || !rowHasFile(row)) continue;
     const kind = matchKindFromRow(row);
-    if (!kind) {
-      unmatched.push(row);
-      continue;
-    }
+    if (!kind) continue;
     kinds.add(kind);
-    const meta = metaFromRow(kind, row);
-    if (meta.id) usedIds.add(meta.id);
-    byKind[kind] = preferMeta(byKind[kind], meta);
-  }
-
-  // Customer uploads often land as OTHER / untyped — map leftover files onto flagged kinds.
-  const leftovers = unmatched.filter((row) => {
-    const id = pickString(row.id, row.document_id, row.documentId);
-    return !id || !usedIds.has(id);
-  });
-
-  for (const kind of MODE_BOOKING_FORM_DOCUMENT_KINDS) {
-    if (!kinds.has(kind)) continue;
-    const current = byKind[kind];
-    if (current?.s3_key || current?.file_url || current?.download_url || current?.id) continue;
-    const row = leftovers.shift();
-    if (!row) break;
-    const meta = metaFromRow(kind, row);
-    if (meta.id) usedIds.add(meta.id);
-    byKind[kind] = preferMeta(current, meta);
+    byKind[kind] = preferMeta(byKind[kind], metaFromRow(kind, row));
   }
 
   return { kinds, byKind };

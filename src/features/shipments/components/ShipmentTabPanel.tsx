@@ -362,35 +362,45 @@ function SectionCard({
 function ShipmentShowAllPanel({
   shipmentId,
   siblingTabKeys,
+  footer,
 }: {
   shipmentId: string;
   siblingTabKeys: string[];
+  /** Rendered after all Show All sections (e.g. Track & Trace). */
+  footer?: ReactNode;
 }) {
   const query = useShipmentShowAll(shipmentId, siblingTabKeys, true);
 
   if (query.isLoading) {
     return (
-      <div className="space-y-1.5 p-3" aria-busy>
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="h-8 animate-pulse rounded-sm bg-[var(--fresa-action-soft,#E9EEF2)]" />
-        ))}
+      <div className="space-y-3 p-3">
+        <div className="space-y-1.5" aria-busy>
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div
+              key={i}
+              className="h-8 animate-pulse rounded-sm bg-[var(--fresa-action-soft,#E9EEF2)]"
+            />
+          ))}
+        </div>
+        {footer}
       </div>
     );
   }
 
   if (query.isError) {
     return (
-      <div className="p-3">
+      <div className="space-y-3 p-3">
         <ErrorState
           message={getErrorMessage(query.error) || 'Failed to load Show All.'}
           onRetry={() => void query.refetch()}
         />
+        {footer}
       </div>
     );
   }
 
   const { sections = [], arrays = [] } = query.data ?? {};
-  if (!sections.length && !arrays.length) {
+  if (!sections.length && !arrays.length && !footer) {
     return (
       <p className="p-3 text-center text-[13px] text-[#64748b]">
         No Show All data returned from shipment APIs.
@@ -410,6 +420,7 @@ function ShipmentShowAllPanel({
           <ArrayTable rows={block.rows} title={block.title} showTitle={false} />
         </SectionCard>
       ))}
+      {footer}
     </div>
   );
 }
@@ -479,15 +490,22 @@ export function ShipmentTabPanel({
   shipmentId,
   tabKey,
   siblingTabKeys = [],
+  showAllFooter,
 }: {
   shipmentId: string;
   tabKey: string;
   /** Other tab keys from GET /shipments/:id/detail — used by Show All aggregation. */
   siblingTabKeys?: string[];
+  /** Appended at the end of Show All (Track & Trace panel). */
+  showAllFooter?: ReactNode;
 }) {
   if (isShipmentShowAllTab(tabKey)) {
     return (
-      <ShipmentShowAllPanel shipmentId={shipmentId} siblingTabKeys={siblingTabKeys} />
+      <ShipmentShowAllPanel
+        shipmentId={shipmentId}
+        siblingTabKeys={siblingTabKeys}
+        footer={showAllFooter}
+      />
     );
   }
   /** Costing tab — interactive Fresa panel (only when API returns a costing tab key). */

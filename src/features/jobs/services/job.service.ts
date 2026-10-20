@@ -1962,11 +1962,8 @@ export const jobService = {
   },
 
   /** GET /jobs/:id/documents/:documentId/download — trigger browser download */
-  async downloadJobDocument(
-    id: string,
-    documentId: string,
-    displayName?: string,
-  ): Promise<void> {
+  /** GET /jobs/:id/documents/:documentId/download as Blob (for remirror / preview). */
+  async fetchJobDocumentBlob(id: string, documentId: string): Promise<Blob> {
     assertId(id);
     if (!isUuid(documentId)) throw new Error('Invalid document id.');
     try {
@@ -1975,7 +1972,21 @@ export const jobService = {
           responseType: 'blob',
         }),
       );
-      const blob = res.data;
+      return res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async downloadJobDocument(
+    id: string,
+    documentId: string,
+    displayName?: string,
+  ): Promise<void> {
+    assertId(id);
+    if (!isUuid(documentId)) throw new Error('Invalid document id.');
+    try {
+      const blob = await this.fetchJobDocumentBlob(id, documentId);
       const name = (displayName || 'document').trim() || 'document';
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement('a');
@@ -3719,5 +3730,77 @@ export const jobService = {
       return this.getById(quotation.job_id);
     }
     throw new Error('Convert succeeded but no job id was returned.');
+  },
+
+  /**
+   * Track & Trace for a job (OpenAPI has no GET /jobs/:id/tracking):
+   * 1. Linked shipment → GET /shipments/:id/tracking (Bearer) — preferred
+   * 2. Else resolve shipment via GET /jobs/:id/shipments → tracking
+   * 3. Else job number → GET /track?ref=… (public Track & Trace)
+   * 4. Else GET /jobs/:id/milestones (Bearer fallback)
+   */
+  async trackAndTrace(opts: {
+    jobId: string;
+    jobNumber?: string;
+    shipmentId?: string;
+    tenantSlug?: string;
+  }): Promise<{ source: 'shipment' | 'public' | 'milestones'; data: unknown }> {
+    assertId(opts.jobId);
+
+    let shipmentId =
+      opts.shipmentId && isUuid(opts.shipmentId) ? opts.shipmentId : undefined;
+    if (!shipmentId) {
+      try {
+        const rows = await this.listJobShipments(opts.jobId);
+        for (const row of rows) {
+          if (typeof row === 'string' && isUuid(row.trim())) {
+            shipmentId = row.trim();
+            break;
+          }
+          if (row && typeof row === 'object' && !Array.isArray(row)) {
+            const rec = row as Record<string, unknown>;
+            for (const key of ['id', 'shipment_id', 'shipmentId'] as const) {
+              const value = rec[key];
+              if (typeof value === 'string' && isUuid(value)) {
+                shipmentId = value;
+                break;
+              }
+            }
+            if (shipmentId) break;
+          }
+        }
+      } catch {
+        /* ignore — fall through */
+      }
+    }
+
+    if (shipmentId) {
+      const { shipmentService } = await import(
+        '@/features/shipments/services/shipment.service'
+      );
+      const data = await shipmentService.tracking(shipmentId);
+      return { source: 'shipment', data };
+    }
+
+    const ref = (opts.jobNumber || '').trim();
+    if (ref && !/^job\s/i.test(ref)) {
+      try {
+        const { publicTrackService } = await import(
+          '@/features/public-track/services/publicTrack.service'
+        );
+        const data = await publicTrackService.trackRaw(opts.tenantSlug, ref);
+        return { source: 'public', data };
+      } catch {
+        /* fall through to milestones */
+      }
+    }
+    const milestones = await this.listMilestones(opts.jobId);
+    return {
+      source: 'milestones',
+      data: {
+        reference: ref || opts.jobId,
+        milestones,
+      },
+    };
   },
 };

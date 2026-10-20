@@ -22,22 +22,21 @@ function isSuperAdminSurface(): boolean {
 }
 
 /**
- * Idle timeout is 20 minutes from last activity (not from login).
- * When idle expires, SessionExpiredModal offers Continue (no login) or Revoke.
+ * Idle timeout is 30 minutes from last activity (not from login).
+ * When idle expires the user is signed out automatically (no Continue/Revoke popup).
  * ERP staff/tenant only — disabled on Super Admin surfaces.
  */
 export function SessionExpiryWatcher() {
   const accessToken = useAuthStore((s) => s.accessToken)
   const lastActiveAt = useAuthStore((s) => s.lastActiveAt)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  const sessionExpired = useAuthStore((s) => s.sessionExpired)
   const isSuperAdmin = useSuperAdminAuthStore((s) => s.isAuthenticated)
   const idleTimerRef = useRef<number | null>(null)
   const jwtTimerRef = useRef<number | null>(null)
   const activityThrottleRef = useRef(0)
 
   const erpIdleActive =
-    isAuthenticated && !sessionExpired && !isSuperAdmin && !isSuperAdminSurface()
+    isAuthenticated && !isSuperAdmin && !isSuperAdminSurface()
 
   useEffect(() => {
     if (!erpIdleActive) return
@@ -87,8 +86,7 @@ export function SessionExpiryWatcher() {
       }, remaining)
     }
 
-    // Silent JWT refresh while still active (does not start a new idle clock by itself —
-    // refreshAccessToken also touches lastActiveAt when successful).
+    // Silent JWT refresh while still active.
     if (accessToken) {
       const expiresAt = accessTokenExpiresAtMs(accessToken)
       if (expiresAt != null) {
@@ -96,7 +94,7 @@ export function SessionExpiryWatcher() {
         const delay = Math.max(0, expiresAt - Date.now() - refreshSkewMs)
         jwtTimerRef.current = window.setTimeout(async () => {
           const state = useAuthStore.getState()
-          if (state.sessionExpired || !state.isAuthenticated) return
+          if (!state.isAuthenticated) return
           if (useSuperAdminAuthStore.getState().isAuthenticated || isSuperAdminSurface()) return
           if (isSessionIdleExpired(state.lastActiveAt)) {
             state.markSessionExpired()
@@ -109,7 +107,7 @@ export function SessionExpiryWatcher() {
           try {
             await state.refreshAccessToken()
           } catch {
-            // markSessionExpired is called inside refreshAccessToken on failure
+            // markSessionExpired (auto logout) is called inside refreshAccessToken on failure
           }
         }, delay)
       }

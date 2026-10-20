@@ -58,9 +58,9 @@ export const PORTAL_NAV_SECTIONS: PortalNavSection[] = [
     title: 'Shipping',
     color: '#67E8F9',
     items: [
-      { label: 'Book', to: '/portal/book', Icon: BookOpen, iconStyle: navStyle('#818CF8') },
+      { label: 'Booking', to: '/portal/book', Icon: BookOpen, iconStyle: navStyle('#818CF8') },
       { label: 'Track', to: '/portal/track', Icon: Route, iconStyle: navStyle('#60A5FA') },
-      { label: 'Shipments', to: '/portal/shipments', Icon: Package, iconStyle: navStyle('#14B8A6') },
+      { label: 'Jobs', to: '/portal/shipments', Icon: Package, iconStyle: navStyle('#14B8A6') },
       {
         label: 'Customs clearance',
         to: '/portal/cc-jobs',

@@ -625,25 +625,34 @@ function SectionCard({ title, children }: { title: string; children: ReactNode }
 function JobShowAllPanel({
   jobId,
   siblingTabKeys,
+  footer,
 }: {
   jobId: string;
   siblingTabKeys: string[];
+  /** Rendered after all Show All sections (e.g. Track & Trace). */
+  footer?: ReactNode;
 }) {
   const query = useJobShowAll(jobId, siblingTabKeys, true);
 
   if (query.isLoading) {
     return (
-      <p className="text-[13px] text-[#64748b]">Loading Show All from detail tabs…</p>
+      <div className="space-y-3">
+        <p className="text-[13px] text-[#64748b]">Loading Show All from detail tabs…</p>
+        {footer}
+      </div>
     );
   }
   if (query.isError) {
     return (
-      <p className="text-[13px] text-red-700">Could not load Show All detail tabs.</p>
+      <div className="space-y-3">
+        <p className="text-[13px] text-red-700">Could not load Show All detail tabs.</p>
+        {footer}
+      </div>
     );
   }
 
   const { sections = [], arrays = [] } = query.data ?? {};
-  if (!sections.length && !arrays.length) {
+  if (!sections.length && !arrays.length && !footer) {
     return (
       <p className="text-[13px] text-[#64748b]">
         No Show All data returned from job detail APIs.
@@ -663,6 +672,7 @@ function JobShowAllPanel({
           <FormFieldsFromPayload data={block.rows} />
         </SectionCard>
       ))}
+      {footer}
     </div>
   );
 }
@@ -802,17 +812,26 @@ export function JobDetailApiTabPanel({
   job,
   onChanged,
   siblingTabKeys = [],
+  showAllFooter,
 }: {
   tabKey: string;
   job: Job;
   onChanged?: () => void;
   /** Other tab keys from GET /jobs/:id/detail — used by Show All aggregation. */
   siblingTabKeys?: string[];
+  /** Appended at the end of Show All (Track & Trace panel). */
+  showAllFooter?: ReactNode;
 }) {
   const apiKey = normalizeJobDetailTabKey(tabKey);
 
   if (isJobShowAllTab(apiKey)) {
-    return <JobShowAllPanel jobId={job.id} siblingTabKeys={siblingTabKeys} />;
+    return (
+      <JobShowAllPanel
+        jobId={job.id}
+        siblingTabKeys={siblingTabKeys}
+        footer={showAllFooter}
+      />
+    );
   }
 
   return <SingleJobDetailTabPanel apiKey={apiKey} job={job} onChanged={onChanged} />;

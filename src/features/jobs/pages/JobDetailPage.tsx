@@ -4,6 +4,7 @@ import {
   CheckCircle2,
   Copy,
   FileText,
+  MapPin,
   PauseCircle,
   Pencil,
   Plus,
@@ -23,7 +24,7 @@ import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggl
 import { OpsContinuumRail } from '@/features/ops-activity';
 import { GenerateEdiPanel } from '@/features/shared/edi/GenerateEdiPanel';
 import { EntitySectionFilesPanel } from '@/features/shared/section-attachments';
-import { erpForm } from '@/lib/erpForm';
+import { AddStatusCatalogModal } from '@/features/shared/status-catalog';
 import { JobDetailApiTabPanel } from '../components/JobDetailApiTabPanel';
 import {
   JobActionPanelContent,
@@ -61,7 +62,9 @@ import {
   useJobEdiTypes,
   useJobHouseJobs,
   useJobStatusOptions,
+  useJobTracking,
 } from '../hooks/useJobs';
+import { ApiDataView } from '../components/ApiDataView';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import {
@@ -188,6 +191,76 @@ export default function JobDetailPage() {
   const resolvedShipmentId =
     job?.shipment_id && isUuid(job.shipment_id) ? job.shipment_id : undefined;
 
+  const [showTracking, setShowTracking] = useState(false);
+  const trackingQuery = useJobTracking(
+    {
+      jobId: id,
+      jobNumber: job ? jobDisplayNumber(job) : undefined,
+      shipmentId: resolvedShipmentId,
+    },
+    showTracking && Boolean(id),
+  );
+  const canTracking = job?.actions?.can_tracking !== false;
+
+  const openTrackTrace = () => {
+    setShowTracking(true);
+    const params = new URLSearchParams(location.search);
+    params.set('tab', 'show_all');
+    navigate(
+      { pathname: location.pathname, search: `?${params.toString()}` },
+      { replace: true, state: location.state },
+    );
+    window.setTimeout(() => {
+      document
+        .getElementById('job-track-trace')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 120);
+  };
+
+  const trackTraceFooter = useMemo(() => {
+    if (!showTracking) return null;
+    return (
+      <div
+        id="job-track-trace"
+        className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white"
+      >
+        <div className="flex items-center justify-between gap-2 border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
+            Track &amp; Trace
+          </p>
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() => setShowTracking(false)}
+          >
+            Hide
+          </Button>
+        </div>
+        <div className="px-3 py-2">
+          {trackingQuery.isLoading ? (
+            <p className="text-[13px] text-[#64748b]">Loading tracking…</p>
+          ) : trackingQuery.isError ? (
+            <p className="text-[13px] text-red-700">
+              {getErrorMessage(trackingQuery.error)}
+            </p>
+          ) : (
+            <ApiDataView
+              data={trackingQuery.data?.data ?? {}}
+              emptyLabel="No tracking data returned."
+            />
+          )}
+        </div>
+      </div>
+    );
+  }, [
+    showTracking,
+    trackingQuery.isLoading,
+    trackingQuery.isError,
+    trackingQuery.error,
+    trackingQuery.data,
+  ]);
+
   const needsEnquiryLink = Boolean(
     resolvedEnquiryId && !displayValue(job?.enquiry_number) && !displayValue(linkedShipment?.enquiry_number),
   );
@@ -222,6 +295,7 @@ export default function JobDetailPage() {
   const [changeStatusOpen, setChangeStatusOpen] = useState(false);
   const [changeStatusValue, setChangeStatusValue] = useState('IN_PROGRESS');
   const [changeStatusReason, setChangeStatusReason] = useState('');
+  const [addStatusOpen, setAddStatusOpen] = useState(false);
   const [reopenOpen, setReopenOpen] = useState(false);
   const [reopenStatus, setReopenStatus] = useState('IN_PROGRESS');
   const [reopenReason, setReopenReason] = useState('');
@@ -385,6 +459,7 @@ export default function JobDetailPage() {
           job={overviewJob}
           onChanged={() => refetch()}
           siblingTabKeys={siblingTabKeys}
+          showAllFooter={trackTraceFooter}
         />
       ),
     }));
@@ -411,6 +486,7 @@ export default function JobDetailPage() {
     enquiryNumber,
     quotationNumber,
     shipmentNumber,
+    trackTraceFooter,
   ]);
 
   if (isLoading) {
@@ -851,6 +927,24 @@ export default function JobDetailPage() {
             >
               Generate EDI
             </Button>
+            {canTracking ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="report"
+                leftIcon={<MapPin />}
+                disabled={pending}
+                onClick={() => {
+                  if (showTracking) {
+                    setShowTracking(false);
+                    return;
+                  }
+                  openTrackTrace();
+                }}
+              >
+                {showTracking ? 'Hide Tracking' : 'Track & Trace'}
+              </Button>
+            ) : null}
             {(job.path_hints?.includes('job_not_invoiced_do') ||
               job.path_hints?.includes('job_finance_report') ||
               !job.path_hints?.length) && (
@@ -1042,17 +1136,29 @@ export default function JobDetailPage() {
           </p>
           <label className="mb-3 block text-[13px]">
             <span className="mb-1 block text-[12px] font-medium text-[#334155]">Status</span>
-            <select
-              className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
-              value={changeStatusValue}
-              onChange={(e) => setChangeStatusValue(e.target.value)}
-            >
-              {statusCatalog.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.group ? `${opt.group}: ${opt.label}` : opt.label}
-                </option>
-              ))}
-            </select>
+            <div className="flex items-center gap-2">
+              <select
+                className="h-8 min-w-0 flex-1 rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={changeStatusValue}
+                onChange={(e) => setChangeStatusValue(e.target.value)}
+              >
+                {statusCatalog.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.group ? `${opt.group}: ${opt.label}` : opt.label}
+                    {opt.is_custom ? ' (custom)' : ''}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                title="Add custom status"
+                aria-label="Add custom status"
+                onClick={() => setAddStatusOpen(true)}
+                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-[var(--color-primary-600)] text-white hover:bg-[var(--color-primary-700)]"
+              >
+                <Plus className="h-4 w-4" aria-hidden />
+              </button>
+            </div>
           </label>
           <label className="block text-[13px]">
             <span className="mb-1 block text-[12px] font-medium text-[#334155]">Reason (optional)</span>
@@ -1065,6 +1171,17 @@ export default function JobDetailPage() {
           </label>
         </Modal>
       ) : null}
+
+      <AddStatusCatalogModal
+        open={addStatusOpen}
+        nested
+        entity="jobs"
+        onClose={() => setAddStatusOpen(false)}
+        onCreated={(code) => {
+          setChangeStatusValue(code);
+          void statusOptionsQuery.refetch();
+        }}
+      />
 
       {closedOverridesOpen ? (
         <Modal
