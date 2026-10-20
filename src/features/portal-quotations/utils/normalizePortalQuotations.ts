@@ -426,6 +426,8 @@ export function normalizePortalBookingForm(raw: unknown): PortalBookingForm {
       undefined,
     consent_accepted: pickBoolean(data.consent_accepted, data.consentAccepted) ?? undefined,
     mark_complete: pickBoolean(data.mark_complete, data.markComplete) ?? false,
+    customer_submitted:
+      pickBoolean(data.customer_submitted, data.customerSubmitted) ?? undefined,
     parties: normalizeBookingParties(data.parties),
   };
 }

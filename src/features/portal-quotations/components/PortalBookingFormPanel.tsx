@@ -639,24 +639,6 @@ function toDto(
     parties,
   };
 
-  // Backend complete requires origin/dest door addresses — fall back to route hubs.
-  const originDoorFallback =
-    form.origin_door_address.trim() ||
-    form.origin_city_country.trim() ||
-    form.pol.trim() ||
-    form.origin_airport_code.trim() ||
-    form.border_or_port.trim() ||
-    form.port_of_entry.trim() ||
-    undefined;
-  const destDoorFallback =
-    form.dest_door_address.trim() ||
-    form.dest_city_country.trim() ||
-    form.pod.trim() ||
-    form.warehouse_name.trim() ||
-    form.dest_airport_code.trim() ||
-    form.port_of_exit.trim() ||
-    undefined;
-
   if (kind === 'air') {
     const pallets = form.pallets
       .map((p) => ({
@@ -671,8 +653,8 @@ function toDto(
     return {
       ...shared,
       service_scope: form.service_scope || undefined,
-      origin_door_address: originDoorFallback,
-      dest_door_address: destDoorFallback,
+      origin_door_address: form.origin_door_address.trim() || undefined,
+      dest_door_address: form.dest_door_address.trim() || undefined,
       origin_airport_code:
         clipComplianceField(form.origin_airport_code, L.origin_airport_code) ?? '',
       dest_airport_code: clipComplianceField(form.dest_airport_code, L.dest_airport_code) ?? '',
@@ -765,8 +747,8 @@ function toDto(
     const baseLand = {
       ...shared,
       service_scope: form.service_scope || undefined,
-      origin_door_address: originDoorFallback || originCity || undefined,
-      dest_door_address: destDoorFallback || destCity || undefined,
+      origin_door_address: form.origin_door_address.trim() || undefined,
+      dest_door_address: form.dest_door_address.trim() || undefined,
       pieces: numOrUndef(form.pieces),
       volume_cbm: numOrUndef(form.volume_cbm),
       cargo_category: form.cargo_category || undefined,
@@ -826,8 +808,8 @@ function toDto(
     pod: clipComplianceField(form.pod, L.pod) ?? '',
     shipper_owned_container: form.shipper_owned_container,
     service_scope: form.service_scope || undefined,
-    origin_door_address: originDoorFallback,
-    dest_door_address: destDoorFallback,
+    origin_door_address: form.origin_door_address.trim() || undefined,
+    dest_door_address: form.dest_door_address.trim() || undefined,
   };
 }
 
@@ -1098,7 +1080,9 @@ export function PortalBookingFormPanel({
         data.invoice_value_amount != null ? String(data.invoice_value_amount) : '',
       invoice_currency: String(data.invoice_currency ?? '') || base.invoice_currency,
     });
-    if (data.mark_complete === true) setSubmitted(true);
+    if (data.mark_complete === true || data.customer_submitted === true) {
+      setSubmitted(true);
+    }
     const docs = Array.isArray(data.documents) ? data.documents : [];
     if (docs.length) {
       setDocumentRefs((prev) => (prev.length ? prev : docs));
@@ -1123,15 +1107,31 @@ export function PortalBookingFormPanel({
   ]);
 
   useEffect(() => {
-    const complete = submitted || formQuery.data?.mark_complete === true;
+    const complete =
+      submitted ||
+      formQuery.data?.mark_complete === true ||
+      formQuery.data?.customer_submitted === true;
     onFormCompleteChange?.(complete);
-  }, [submitted, formQuery.data?.mark_complete, onFormCompleteChange]);
+  }, [
+    submitted,
+    formQuery.data?.mark_complete,
+    formQuery.data?.customer_submitted,
+    onFormCompleteChange,
+  ]);
 
   // If submit already succeeded but Ops inbox never got the mirror (common), re-post once
   // when the customer reopens the submitted quote so admin autofill can find it.
   useEffect(() => {
     if (!enabled) return;
-    if (!(submitted || formQuery.data?.mark_complete === true)) return;
+    if (
+      !(
+        submitted ||
+        formQuery.data?.mark_complete === true ||
+        formQuery.data?.customer_submitted === true
+      )
+    ) {
+      return;
+    }
     const key = `kf.portal.bookingForm.inboxMirror:${quote.id}`;
     try {
       const existing = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(key) : null;
@@ -1140,7 +1140,10 @@ export function PortalBookingFormPanel({
     } catch {
       /* ignore */
     }
-    const source = formQuery.data?.mark_complete ? formQuery.data : null;
+    const source =
+      formQuery.data?.mark_complete || formQuery.data?.customer_submitted
+        ? formQuery.data
+        : null;
     const dto = source
       ? undefined
       : form.commodity.trim()
@@ -1206,7 +1209,10 @@ export function PortalBookingFormPanel({
     } catch {
       /* ignore */
     }
-    const source = formQuery.data?.mark_complete ? formQuery.data : null;
+    const source =
+      formQuery.data?.mark_complete || formQuery.data?.customer_submitted
+        ? formQuery.data
+        : null;
     const dto = toDto(form, true, formKind);
     void (async () => {
       try {
@@ -1282,11 +1288,11 @@ export function PortalBookingFormPanel({
       .then(() => {
         const message = complete
           ? linked
-            ? 'Booking form submitted. Your forwarder can complete Ops (Generate Shipment → Generate Job).'
+            ? 'Booking form submitted. Your forwarder will review remaining details and complete Ops.'
             : isAir
               ? 'Booking form submitted to your forwarder. They will link it to the air shipment and continue ops.'
               : usesModeBookingFormConvertFlow(quote.jobType)
-                ? 'Booking form submitted — your forwarder has been notified. They will generate the shipment and job when ready.'
+                ? 'Booking form submitted — your forwarder has been notified. They will fill remaining details and complete the form.'
                 : 'Booking form submitted to your forwarder. They will link it to the NVOCC booking and continue ops.'
           : 'Booking form draft saved.';
         setMsg(message);
@@ -1386,7 +1392,11 @@ export function PortalBookingFormPanel({
 
   if (!enabled) return null;
 
-  if (submitted || formQuery.data?.mark_complete === true) {
+  if (
+    submitted ||
+    formQuery.data?.mark_complete === true ||
+    formQuery.data?.customer_submitted === true
+  ) {
     return (
       <div ref={panelRef}>
         <PortalPanel padded className="border-emerald-200 bg-emerald-50/50">

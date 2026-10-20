@@ -384,20 +384,29 @@ export const portalQuotationsService = {
     if (usesModeBookingFormConvertFlow(opts.jobType || jt)) {
       try {
         const form = await this.getQuotationBookingForm(opts.quotationId);
+        const prior = readPortalBookingFormDraft(opts.quotationId);
         writePortalBookingFormDraft(
           opts.quotationId,
           {
             ...portalBookingFormToUpsertDto(form),
-            // Preserve server mark_complete (upsert helper defaults true).
-            mark_complete: form.mark_complete === true,
+            // Server mark_complete is admin Ops complete — keep false for customer draft store.
+            mark_complete: false,
           },
           {
             quoteNumber: opts.quoteNumber,
             jobType: opts.jobType,
             documents: form.documents,
+            customerSubmitted:
+              prior?.customer_submitted === true || form.customer_submitted === true,
           },
         );
-        return form;
+        return {
+          ...form,
+          // Customer Submit ≠ Ops complete.
+          mark_complete: form.mark_complete === true,
+          customer_submitted:
+            prior?.customer_submitted === true || form.customer_submitted === true,
+        };
       } catch (error) {
         if (!isComplianceNotFoundError(error)) {
           // Prefer draft over hard-fail when API is briefly unavailable.
@@ -533,11 +542,13 @@ export const portalQuotationsService = {
       return saveViaMessages();
     }
 
-    // Mode booking (sea/land/courier/CC) — PUT/complete /portal/quotations/:id/booking-form*
+    // Mode booking (sea/land/courier/CC) — PUT /portal/quotations/:id/booking-form
+    // Customer submit saves DRAFT only. Admin fills remaining fields and Completes on the job form.
     const { usesModeBookingFormConvertFlow } = await import(
       '@/features/quotations/utils/quotationStatus'
     );
     if (usesModeBookingFormConvertFlow(opts.jobType || jt)) {
+      const draftDto = { ...dto, mark_complete: false };
       const mirrorInbox = async () => {
         const quoteLabel = opts.quoteNumber?.trim() || opts.quotationId.slice(0, 8);
         await portalMessagesService.create({
@@ -553,7 +564,12 @@ export const portalQuotationsService = {
             jobType: opts.jobType,
             jobId: opts.jobId,
             bookingId: opts.bookingId,
-            dto: { ...dto, mark_complete: true },
+            // Ops form stays draft until admin Completes — never mirror mark_complete: true.
+            dto: {
+              ...draftDto,
+              // Carried in inbox JSON for Ops prefill matching (not Upsert* DTO).
+              customer_submitted: true,
+            } as typeof draftDto,
             documents,
           }),
           job_id: opts.jobId && isUuid(opts.jobId) ? opts.jobId : undefined,
@@ -561,55 +577,33 @@ export const portalQuotationsService = {
       };
 
       try {
-        // Save data first without forcing complete (complete can crash if BE tries to auto-job).
         const saved = await this.upsertQuotationBookingForm(
           opts.quotationId,
-          { ...dto, mark_complete: false },
+          draftDto,
           opts.jobType || jt,
         );
         if (dto.mark_complete) {
-          try {
-            await this.completeQuotationBookingForm(opts.quotationId, {
-              consent_accepted: Boolean(dto.consent_accepted),
-            });
-          } catch (completeErr) {
-            // If complete endpoint is missing, retry PUT with mark_complete only.
-            if (isComplianceNotFoundError(completeErr)) {
-              try {
-                await this.upsertQuotationBookingForm(
-                  opts.quotationId,
-                  { ...dto, mark_complete: true },
-                  opts.jobType || jt,
-                );
-              } catch {
-                /* draft already saved — continue to inbox */
-              }
-            } else {
-              // 5xx / validation on complete: still notify Ops via inbox so customer is not blocked.
-              const status =
-                completeErr instanceof PortalApiError
-                  ? completeErr.status
-                  : (completeErr as { status?: number })?.status ?? 0;
-              if (status < 500) throw completeErr;
-            }
-          }
+          // Customer "Submit" = draft saved + notify Ops. Do not call /booking-form/complete
+          // (that is admin-only after door addresses and remaining fields are filled).
           try {
             await mirrorInbox();
           } catch {
             /* inbox mirror best-effort */
           }
-          return writePortalBookingFormDraft(
-            opts.quotationId,
-            { ...dto, mark_complete: true },
-            {
+          return {
+            ...writePortalBookingFormDraft(opts.quotationId, draftDto, {
               quoteNumber: opts.quoteNumber,
               jobType: opts.jobType,
               documents,
-            },
-          );
+              customerSubmitted: true,
+            }),
+            ...saved,
+            mark_complete: false,
+            customer_submitted: true,
+          };
         }
         return {
-          ...writePortalBookingFormDraft(opts.quotationId, dto, {
+          ...writePortalBookingFormDraft(opts.quotationId, draftDto, {
             quoteNumber: opts.quoteNumber,
             jobType: opts.jobType,
             documents,
@@ -618,7 +612,6 @@ export const portalQuotationsService = {
           mark_complete: false,
         };
       } catch (error) {
-        // Missing route OR server crash on convert — fall back to inbox so submit still works.
         const status =
           error instanceof PortalApiError
             ? error.status
@@ -628,17 +621,14 @@ export const portalQuotationsService = {
             try {
               await mirrorInbox();
             } catch {
-              /* still return local complete */
+              /* still return local draft */
             }
-            return writePortalBookingFormDraft(
-              opts.quotationId,
-              { ...dto, mark_complete: true },
-              {
-                quoteNumber: opts.quoteNumber,
-                jobType: opts.jobType,
-                documents,
-              },
-            );
+            return writePortalBookingFormDraft(opts.quotationId, draftDto, {
+              quoteNumber: opts.quoteNumber,
+              jobType: opts.jobType,
+              documents,
+              customerSubmitted: true,
+            });
           }
           return saveViaMessages();
         }
@@ -810,13 +800,25 @@ export const portalQuotationsService = {
     }
     const dto = portalBookingFormToUpsertDto(opts.form);
     const formDocs = (opts.form as PortalBookingForm).documents;
+    const { usesModeBookingFormConvertFlow } = await import(
+      '@/features/quotations/utils/quotationStatus'
+    );
+    const modeBooking = usesModeBookingFormConvertFlow(mirrorJobType || opts.jobType);
+    // Mode booking: customer remirror stays draft for Ops. NVOCC/Air compliance can be complete.
+    const mirrorDto = modeBooking
+      ? ({
+          ...dto,
+          mark_complete: false,
+          customer_submitted: true,
+        } as typeof dto)
+      : { ...dto, mark_complete: true };
     const payloadOpts = {
       quotationId: opts.quotationId,
       quoteNumber: mirrorQuoteNumber,
       jobType: mirrorJobType,
       jobId: mirrorJobId,
       bookingId: mirrorBookingId,
-      dto: { ...dto, mark_complete: true },
+      dto: mirrorDto,
       documents: formDocs,
     };
     const quoteLabel = mirrorQuoteNumber?.trim() || opts.quotationId.slice(0, 8);

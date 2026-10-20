@@ -38,6 +38,8 @@ type StoredBookingForm = PortalBookingForm & {
   saved_at?: string;
   quote_number?: string;
   job_type?: string;
+  /** Customer clicked Submit — Ops form stays draft until admin Completes. */
+  customer_submitted?: boolean;
   /** Customer upload refs (not part of Upsert*BookingFormDto). */
   documents?: PortalBookingFormDocumentRef[];
 };
@@ -268,6 +270,7 @@ export function readPortalBookingFormDraft(quotationId: string): PortalBookingFo
       quotation_id: quotationId,
       ...pickFormFields(parsed),
       ...(documents ? { documents } : {}),
+      ...(parsed.customer_submitted ? { customer_submitted: true } : {}),
     };
   } catch {
     return null;
@@ -281,28 +284,38 @@ export function writePortalBookingFormDraft(
     quoteNumber?: string;
     jobType?: string;
     documents?: PortalBookingFormDocumentRef[];
+    /** Customer Submit — not the same as Ops mark_complete. */
+    customerSubmitted?: boolean;
   },
 ): PortalBookingForm {
   const fields = pickFormFields(dto);
   // Keep prior upload refs unless caller replaces them (save without re-upload).
   let documents = normalizeDocumentRefs(meta?.documents);
-  if (!documents && typeof localStorage !== 'undefined') {
+  let priorCustomerSubmitted = false;
+  if (typeof localStorage !== 'undefined') {
     try {
       const raw = localStorage.getItem(storageKey(quotationId));
       if (raw) {
         const prev = JSON.parse(raw) as StoredBookingForm;
-        documents = normalizeDocumentRefs(prev.documents);
+        if (!documents) documents = normalizeDocumentRefs(prev.documents);
+        priorCustomerSubmitted = prev.customer_submitted === true;
       }
     } catch {
       /* ignore */
     }
   }
+  const customerSubmitted = meta?.customerSubmitted === true || priorCustomerSubmitted;
+  // Mode-booking customer Submit stores customer_submitted and keeps mark_complete false
+  // (Ops Completes later). NVOCC/Air compliance may still persist mark_complete true.
+  const markComplete = customerSubmitted ? false : Boolean(fields.mark_complete);
   const form: StoredBookingForm = {
     quotation_id: quotationId,
     ...fields,
+    mark_complete: markComplete,
     saved_at: new Date().toISOString(),
     quote_number: meta?.quoteNumber,
     job_type: meta?.jobType,
+    ...(customerSubmitted ? { customer_submitted: true } : {}),
     ...(documents ? { documents } : {}),
   };
   if (typeof localStorage !== 'undefined') {
@@ -311,6 +324,8 @@ export function writePortalBookingFormDraft(
   return {
     quotation_id: quotationId,
     ...fields,
+    mark_complete: markComplete,
+    ...(customerSubmitted ? { customer_submitted: true } : {}),
     ...(documents ? { documents } : {}),
   };
 }

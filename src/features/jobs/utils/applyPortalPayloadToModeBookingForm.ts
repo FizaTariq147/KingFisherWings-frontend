@@ -280,9 +280,10 @@ export async function syncCustomerPortalBookingFormOntoJob(opts: {
       .split('_')[0],
   });
 
-  if (!payload?.mark_complete) {
+  if (!payload) {
     const draft = readPortalBookingFormDraft(quotationId);
-    if (draft?.mark_complete) {
+    // Customer submit stores draft with mark_complete false + customer_submitted.
+    if (draft && (draft.customer_submitted || !modeBookingFormIsEmpty(draft))) {
       payload = {
         v: 2,
         quotationId,
@@ -291,7 +292,22 @@ export async function syncCustomerPortalBookingFormOntoJob(opts: {
         jobId,
         submittedAt: new Date().toISOString(),
         ...draft,
-        mark_complete: true,
+        mark_complete: false,
+      };
+    }
+  } else if (!payload.mark_complete) {
+    const draft = readPortalBookingFormDraft(quotationId);
+    if (draft && (draft.customer_submitted || !modeBookingFormIsEmpty(draft))) {
+      payload = {
+        v: 2,
+        quotationId,
+        quoteNumber: quoteNumber || undefined,
+        jobType: jobType || undefined,
+        jobId,
+        submittedAt: new Date().toISOString(),
+        ...draft,
+        ...payload,
+        mark_complete: false,
       };
     }
   }

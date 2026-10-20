@@ -294,6 +294,11 @@ export type PortalBookingForm = {
   request_details?: string;
   consent_accepted?: boolean;
   mark_complete?: boolean;
+  /**
+   * Customer clicked Submit on the portal. Ops booking form stays draft until
+   * admin Completes (fills remaining fields such as door addresses).
+   */
+  customer_submitted?: boolean;
   parties?: PortalBookingFormParty[];
   /** Warehouse extras (UpsertWarehouseBookingFormDto) — synced to staff /jobs/:id/warehouse/booking-form */
   warehouse_id?: string;
