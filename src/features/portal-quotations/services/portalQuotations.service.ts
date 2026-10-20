@@ -944,6 +944,25 @@ export const portalQuotationsService = {
     const isMissingRoute = (err: unknown) =>
       err instanceof PortalApiError && (err.status === 404 || err.status === 405);
 
+    /** Backend may still require a job for doc upload — customer form must work pre-job. */
+    const isJobRequiredUploadError = (err: unknown) => {
+      const msg = err instanceof Error ? err.message : String(err ?? '');
+      return (
+        /no job linked/i.test(msg) ||
+        /generate job/i.test(msg) ||
+        /approve only sets quotation/i.test(msg) ||
+        /before the booking form/i.test(msg) ||
+        /job.*(required|needed|missing)/i.test(msg)
+      );
+    };
+
+    const stagedUploadResult = () => ({
+      kind,
+      file_name: file.name,
+      staged: true,
+      document_type: kind,
+    });
+
     // Mode booking (Sea/Land/Road/…): always POST quotation booking-form docs first.
     // Do not route jobId through /portal/shipments/… — that id is often a job, not a shipment.
     if (modeBooking && opts.quotationId && isUuid(opts.quotationId)) {
@@ -951,6 +970,10 @@ export const portalQuotationsService = {
       try {
         return await postMultipart(quotePath);
       } catch (quoteErr) {
+        // Pre-job continuum: stage file so customer can finish the form; Ops gets it via inbox.
+        if (isJobRequiredUploadError(quoteErr)) {
+          return stagedUploadResult();
+        }
         const shipmentId = opts.jobId?.trim() || '';
         if (isMissingRoute(quoteErr) && shipmentId && isUuid(shipmentId)) {
           try {
@@ -958,19 +981,14 @@ export const portalQuotationsService = {
               PORTAL_SHIPMENTS_API.bookingFormDocument(shipmentId, kind),
             );
           } catch (shipErr) {
+            if (isJobRequiredUploadError(shipErr)) return stagedUploadResult();
             if (!isMissingRoute(shipErr)) throw shipErr;
           }
         } else if (!isMissingRoute(quoteErr)) {
           throw quoteErr;
         }
-        const detail =
-          quoteErr instanceof Error && quoteErr.message.trim()
-            ? quoteErr.message.trim()
-            : 'Booking document upload is not available for this quote yet.';
-        throw new PortalApiError(
-          `${detail} Try saving the booking form, then upload again — or contact your forwarder.`,
-          quoteErr instanceof PortalApiError ? quoteErr.status : 404,
-        );
+        // Missing document route — still allow staging so submit is not blocked.
+        return stagedUploadResult();
       }
     }
 
