@@ -20,6 +20,8 @@ import {
 import {
   isReportSearchActive,
 } from '../utils/reportCatalogSearch';
+import { parseCatalogFamiliesParam } from '../utils/moduleCatalogFamily';
+import { hasReportEntityContext } from '../utils/reportParameterUtils';
 import { ReportCatalogBrowseList } from '../components/ReportCatalog/ReportCatalogBrowseList';
 import { InvoiceFormatBrowseStrip } from '../components/ReportCatalog/InvoiceFormatBrowseStrip';
 import { InvoiceFormatAutoPdf } from '../components/ReportCatalog/InvoiceFormatAutoPdf';
@@ -163,8 +165,13 @@ export default function ReportCatalogPage() {
   const quotationId = searchParams.get('quotation_id') || undefined;
   const invoiceId = searchParams.get('invoice_id') || undefined;
   const partyId = searchParams.get('party_id') || undefined;
+  const shipmentId = searchParams.get('shipment_id') || undefined;
   const selectedCode = (searchParams.get('code') || '').trim();
   const family = ((searchParams.get('family') as ReportFamily) || 'all') as ReportFamily | 'all';
+  const familiesFilter = useMemo(
+    () => parseCatalogFamiliesParam(searchParams.get('families')),
+    [searchParams],
+  );
 
   const [searchInput, setSearchInput] = useState(() => searchParams.get('q') || '');
   const searchQuery = searchInput.trim();
@@ -181,9 +188,21 @@ export default function ReportCatalogPage() {
       quotation_id: quotationId,
       invoice_id: invoiceId,
       party_id: partyId,
+      shipment_id: shipmentId,
     }),
-    [jobId, quotationId, invoiceId, partyId],
+    [jobId, quotationId, invoiceId, partyId, shipmentId],
   );
+
+  const entityBound = hasReportEntityContext(reportContext);
+  const entityBannerLabel = useMemo(() => {
+    if (invoiceId) return 'Invoice (live data)';
+    if (quotationId) return 'Quotation (live data)';
+    if (jobId && shipmentId) return 'Job + Shipment (live data)';
+    if (jobId) return 'Job (live data)';
+    if (shipmentId) return 'Shipment (live data)';
+    if (partyId) return 'Party (live data)';
+    return null;
+  }, [invoiceId, quotationId, jobId, shipmentId, partyId]);
 
   /**
    * Deep-link with entity ids: bias family/context and auto-open the first matching format
@@ -192,7 +211,7 @@ export default function ReportCatalogPage() {
   const entityDeepLinkApplied = useRef(false);
   useEffect(() => {
     if (entityDeepLinkApplied.current) return;
-    if (!quotationId && !invoiceId && !jobId && !partyId) return;
+    if (!quotationId && !invoiceId && !jobId && !partyId && !shipmentId) return;
     entityDeepLinkApplied.current = true;
 
     const next = new URLSearchParams(searchParams);
@@ -230,7 +249,7 @@ export default function ReportCatalogPage() {
           changed = true;
         }
       }
-    } else if (jobId) {
+    } else if (jobId || shipmentId) {
       if (!next.get('context') || next.get('context') === 'all') {
         next.set('context', 'job');
         changed = true;
@@ -243,7 +262,7 @@ export default function ReportCatalogPage() {
     }
 
     if (changed) setSearchParams(next, { replace: true });
-  }, [quotationId, invoiceId, jobId, partyId, searchParams, setSearchParams]);
+  }, [quotationId, invoiceId, jobId, partyId, shipmentId, searchParams, setSearchParams]);
 
   const patchParams = (updates: Record<string, string | null | undefined>, replace = true) => {
     const next = new URLSearchParams(searchParams);
@@ -277,7 +296,15 @@ export default function ReportCatalogPage() {
         localStorage.getItem(CATALOG_STATE_KEY) || sessionStorage.getItem(CATALOG_STATE_KEY);
       if (!saved) return;
       const restored = new URLSearchParams(saved);
-      for (const key of ['job_id', 'quotation_id', 'invoice_id', 'party_id', 'context'] as const) {
+      for (const key of [
+        'job_id',
+        'quotation_id',
+        'invoice_id',
+        'party_id',
+        'shipment_id',
+        'context',
+        'families',
+      ] as const) {
         const current = searchParams.get(key);
         if (current) restored.set(key, current);
       }
@@ -356,14 +383,21 @@ export default function ReportCatalogPage() {
    * FRESA local registry is fallback only when the API is unavailable.
    */
   const items = useMemo(() => {
+    const familyAllow =
+      familiesFilter.length > 0 ? new Set(familiesFilter) : null;
     if (liveAvailable && liveBrowse.data?.items) {
-      return liveBrowse.data.items.filter((t) =>
-        reportFamilyAllowed(t.family, enabledModules),
-      );
+      return liveBrowse.data.items.filter((t) => {
+        if (!reportFamilyAllowed(t.family, enabledModules)) return false;
+        if (familyAllow && t.family && !familyAllow.has(t.family as ReportFamily)) {
+          return false;
+        }
+        return true;
+      });
     }
     const rows = filterRegistry({
       search: searchQuery,
       family: family === 'all' ? 'all' : (family as ReportFamily),
+      families: familiesFilter.length ? familiesFilter : undefined,
       context: contextFilter,
     }).filter((meta) => reportFamilyAllowed(meta.family, enabledModules));
     return rows.map((meta, i) => metaToTemplate(meta, i));
@@ -372,6 +406,7 @@ export default function ReportCatalogPage() {
     liveBrowse.data?.items,
     searchQuery,
     family,
+    familiesFilter,
     contextFilter,
     enabledModules,
   ]);
@@ -383,22 +418,30 @@ export default function ReportCatalogPage() {
 
   /** Family/Context allow-list for browse strips (null = no restriction). */
   const allowedCodes = useMemo(() => {
-    if (family === 'all' && contextFilter === 'all') return null;
+    const multi = familiesFilter.length > 0;
+    if (family === 'all' && contextFilter === 'all' && !multi) return null;
+    const familyAllow = multi ? new Set(familiesFilter) : null;
     const set = new Set<string>();
     for (const entry of registeredLayoutEntries) {
-      if (family !== 'all' && entry.family !== family) continue;
-      if (
-        contextFilter !== 'all' &&
-        !(entry.contexts ?? []).includes(
-          contextFilter as 'job' | 'quotation' | 'list' | 'invoice' | 'gl' | 'wms' | 'party',
-        )
-      ) {
-        continue;
+      if (familyAllow) {
+        if (!familyAllow.has(entry.family as ReportFamily)) continue;
+        // Multi-family deep-links (job/shipment) use family allow-list only —
+        // do not also require contexts[] to include `job` (many sea/air docs omit it).
+      } else {
+        if (family !== 'all' && entry.family !== family) continue;
+        if (
+          contextFilter !== 'all' &&
+          !(entry.contexts ?? []).includes(
+            contextFilter as 'job' | 'quotation' | 'list' | 'invoice' | 'gl' | 'wms' | 'party',
+          )
+        ) {
+          continue;
+        }
       }
       set.add(entry.code.toUpperCase());
     }
     return set;
-  }, [registeredLayoutEntries, family, contextFilter]);
+  }, [registeredLayoutEntries, family, familiesFilter, contextFilter]);
 
   const familyOptions = useMemo(() => {
     const fromCatalog = new Set<string>();
@@ -654,7 +697,7 @@ export default function ReportCatalogPage() {
           formats: ['PDF'],
           rolloutPhase: 3,
           gapStatus: getRegistryByCode(selectedCode)?.gapStatus ?? 'covered_document_pdf',
-          description: `Leftover sample: ${leftover.name}`,
+          description: `Additional commercial: ${leftover.name}`,
           defaultParams:
             leftover.contexts[0] === 'invoice'
               ? [{ name: 'invoice_id', label: 'Invoice', type: 'uuid', required: true }]
@@ -914,12 +957,28 @@ export default function ReportCatalogPage() {
     <div className="space-y-4">
       <PageBackLink to="/reports" label="Back to Reports" />
 
+      {entityBound && entityBannerLabel ? (
+        <div
+          role="status"
+          className="rounded-sm border border-[var(--color-primary-200,#BFDBFE)] bg-[var(--color-primary-50,#EFF6FF)] px-3 py-2 text-[13px] text-[var(--color-primary-900,#1E3A5F)]"
+        >
+          Showing formats for <strong>{entityBannerLabel}</strong>
+          {familiesFilter.length
+            ? ` · families: ${familiesFilter.map((f) => reportFamilyLabel(f)).join(', ')}`
+            : ''}
+          . Selected formats use this record’s live fields (not demo placeholders).
+        </div>
+      ) : null}
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className={appType.pageTitle}>Report catalogue</h2>
           <p className="mt-0.5 text-sm text-[var(--color-neutral-500)]">
             {metaTotal} of {completeReportTotal} complete reports
-            {isReportSearchActive(searchQuery) || family !== 'all' || contextFilter !== 'all'
+            {isReportSearchActive(searchQuery) ||
+            family !== 'all' ||
+            familiesFilter.length > 0 ||
+            contextFilter !== 'all'
               ? ' (filtered)'
               : ''}
             .

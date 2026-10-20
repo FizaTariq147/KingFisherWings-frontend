@@ -17,12 +17,22 @@ export function getRegistryByCode(code: string): ReportTemplateMeta | undefined 
 export function filterRegistry(options: {
   search?: string;
   family?: ReportFamily | 'all';
+  /** When set (length > 0), template family must be one of these (overrides single family). */
+  families?: ReportFamily[];
   context?: string;
   rolloutPhase?: number;
   gapStatus?: ReportGapStatus | 'all';
 }): ReportTemplateMeta[] {
+  const familySet =
+    options.families?.length && options.families.length > 0
+      ? new Set(options.families)
+      : null;
   const filtered = FRESA_REPORT_REGISTRY.filter((t) => {
-    if (options.family && options.family !== 'all' && t.family !== options.family) return false;
+    if (familySet) {
+      if (!familySet.has(t.family)) return false;
+    } else if (options.family && options.family !== 'all' && t.family !== options.family) {
+      return false;
+    }
     if (options.context && options.context !== 'all') {
       if (!t.contexts.includes(options.context as ReportTemplateMeta['contexts'][number])) {
         return false;

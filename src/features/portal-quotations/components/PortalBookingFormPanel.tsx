@@ -1268,7 +1268,7 @@ export function PortalBookingFormPanel({
             : isAir
               ? 'Booking form submitted to your forwarder. They will link it to the air shipment and continue ops.'
               : usesModeBookingFormConvertFlow(quote.jobType)
-                ? 'Booking form submitted — your forwarder has been notified and will generate the shipment and job.'
+                ? 'Booking form submitted — your forwarder has been notified. They will generate the shipment and job when ready.'
                 : 'Booking form submitted to your forwarder. They will link it to the NVOCC booking and continue ops.'
           : 'Booking form draft saved.';
         setMsg(message);
@@ -2503,6 +2503,7 @@ export function PortalBookingFormPanel({
                     jobId,
                     bookingId,
                     jobType: quote.jobType,
+                    useBookingFormDocuments: usesModeBookingDocs,
                   });
                   const meta = extractUploadResponseMeta(kind, uploaded, file.name);
                   setDocumentRefs((prev) => {

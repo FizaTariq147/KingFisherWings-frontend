@@ -215,8 +215,8 @@ export function canStartAirOpsJobFromQuote(
 }
 
 /**
- * Booking-form modes: if approve did not create a shell, staff can start one
- * explicitly (rare — prefer waiting for the customer portal booking form).
+ * Booking-form modes: after customer approve, staff may create the job shell
+ * explicitly (Generate Shipment → Generate Job). Never auto-created on approve.
  */
 export function canStartBookingOpsJobFromQuote(
   status: string,

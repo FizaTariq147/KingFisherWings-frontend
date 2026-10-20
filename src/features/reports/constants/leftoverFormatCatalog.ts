@@ -1,5 +1,6 @@
 /**
- * Leftover Fresa sample-page formats — layouts in leftoverFormatUiLayouts.json.
+ * Additional commercial / HBL Jasper formats from Fresa sample-report-formats
+ * (stored in leftoverFormatUiLayouts.json).
  */
 import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
 import { listLeftoverFormatUiLayouts } from '../data/leftoverFormatUiLayouts';

@@ -2740,9 +2740,23 @@ export const jobService = {
     assertId(id);
     const form = new FormData();
     form.append('file', file);
+    // Do not set Content-Type — axios must add the multipart boundary for Multer.
     return request(() =>
       axiosInstance.post(JOB_API.bookingFormDocument(id, mode, kind), form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        transformRequest: [
+          (data, headers) => {
+            if (headers && typeof headers === 'object' && data instanceof FormData) {
+              const h = headers as Record<string, unknown>;
+              delete h['Content-Type'];
+              delete h['content-type'];
+              if (typeof (headers as { delete?: (k: string) => void }).delete === 'function') {
+                (headers as { delete: (k: string) => void }).delete('Content-Type');
+                (headers as { delete: (k: string) => void }).delete('content-type');
+              }
+            }
+            return data;
+          },
+        ],
       }),
     );
   },

@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import { FileText } from 'lucide-react';
-import type { ReportContext } from '../../types/reportCatalog.types';
+import type { ReportContext, ReportFamily } from '../../types/reportCatalog.types';
 import {
   buildCatalogHref,
+  catalogFamiliesForJobType,
   catalogFamilyForContext,
 } from '../../utils/moduleCatalogFamily';
 
@@ -12,11 +13,23 @@ type ReportContextLauncherProps = {
   entityId: string;
   label?: string;
   className?: string;
+  /** Job / shipment mode — expands multi-family filter for relevant formats. */
+  jobType?: string | null;
+  /** Extra linked ids (e.g. shipment page with job + quotation). */
+  linked?: {
+    job_id?: string | null;
+    quotation_id?: string | null;
+    invoice_id?: string | null;
+    party_id?: string | null;
+    shipment_id?: string | null;
+  };
+  /** Override family allow-list (otherwise derived from context / jobType). */
+  families?: ReportFamily[];
 };
 
 /**
  * Additive launcher — opens formats catalogue filtered by context + entity id.
- * Live quotation / invoice / job / party data hydrates every selected format.
+ * Live quotation / invoice / job / party / shipment data hydrates every selected format.
  * Does not replace existing PDF / Generate PDF buttons.
  */
 export function ReportContextLauncher({
@@ -24,15 +37,28 @@ export function ReportContextLauncher({
   entityId,
   label = 'Reports',
   className = '',
+  jobType,
+  linked,
+  families: familiesProp,
 }: ReportContextLauncherProps) {
   const family = catalogFamilyForContext(context);
+  const families =
+    familiesProp?.length
+      ? familiesProp
+      : jobType
+        ? catalogFamiliesForJobType(jobType)
+        : undefined;
+
   const to = buildCatalogHref({
     context,
-    family,
-    quotation_id: context === 'quotation' ? entityId : undefined,
-    invoice_id: context === 'invoice' ? entityId : undefined,
-    job_id: context === 'job' ? entityId : undefined,
-    party_id: context === 'party' ? entityId : undefined,
+    family: families?.length ? undefined : family,
+    families,
+    quotation_id:
+      context === 'quotation' ? entityId : linked?.quotation_id || undefined,
+    invoice_id: context === 'invoice' ? entityId : linked?.invoice_id || undefined,
+    job_id: context === 'job' ? entityId : linked?.job_id || undefined,
+    party_id: context === 'party' ? entityId : linked?.party_id || undefined,
+    shipment_id: linked?.shipment_id || undefined,
   });
 
   return (

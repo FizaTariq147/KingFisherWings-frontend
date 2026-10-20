@@ -1249,38 +1249,13 @@ export const quotationService = {
   },
 
   /**
-   * After the customer completes the portal booking form
-   * (Sea/Land/Road/Courier/Warehouse/Customs), convert the quotation to a job + draft invoice.
+   * No longer auto-converts after portal booking-form submit.
+   * Customer approve + booking form stay APPROVED; admin creates the job via
+   * Generate Shipment → Generate Job (or Convert to job).
    */
   async convertAfterCustomerBookingForm(id: string): Promise<ConvertToJobResult | Quotation> {
     assertId(id);
-    const quotation = await this.getById(id);
-    const { coerceQuotationStatus, usesModeBookingFormConvertFlow } = await import(
-      '../utils/quotationStatus'
-    );
-    if (!usesModeBookingFormConvertFlow(quotation.job_type)) {
-      throw new Error(
-        'convertAfterCustomerBookingForm is only for Sea/Land/Road/Courier/Warehouse/Customs quotes.',
-      );
-    }
-    const status = coerceQuotationStatus(quotation.status);
-    if (status === 'CONVERTED' || (quotation.job_id && isUuid(quotation.job_id))) {
-      return quotation;
-    }
-    if (status !== 'APPROVED') {
-      throw new Error(
-        `Quotation must be customer-approved before convert (current status: ${quotation.status}).`,
-      );
-    }
-    const formDone = await isCustomerPortalBookingFormComplete(quotation);
-    if (!formDone) {
-      throw new Error(
-        'Customer portal booking form is not complete yet — convert runs after the customer submits it.',
-      );
-    }
-    const converted = await this.convertToJob(id, { afterCustomerBookingForm: true });
-    await syncPortalBookingFormAfterConvert(converted);
-    return converted;
+    return this.getById(id);
   },
 
   /**
@@ -1294,9 +1269,8 @@ export const quotationService = {
   },
 
   /**
-   * After the customer portal booking form is complete, mark quote CONVERTED.
-   * Staff booking-form complete must NOT call this — OpenAPI convert requires the
-   * customer mode/compliance form; admin complete only flips Draft → Completed.
+   * No auto-convert on booking-form complete.
+   * Admin creates/links the job; this only syncs CONVERTED when a job already exists.
    */
   async convertAfterBookingFormComplete(
     jobId: string,
@@ -1327,10 +1301,7 @@ export const quotationService = {
       return linked;
     }
 
-    const portalDone = await isCustomerPortalBookingFormComplete(linked);
-    if (!portalDone) return linked;
-
-    // Job shell already exists — flip APPROVED → CONVERTED without creating a second job.
+    // Only mark CONVERTED when admin already created/linked this job — never create a new job here.
     if (linked.job_id && isUuid(linked.job_id) && linked.job_id === jobId) {
       const marked = await this.markConvertedWithJob(linked.id, jobId);
       if (marked) {
@@ -1346,9 +1317,7 @@ export const quotationService = {
       }
     }
 
-    const converted = await this.convertToJob(linked.id, { afterCustomerBookingForm: true });
-    await syncPortalBookingFormAfterConvert(converted);
-    return converted;
+    return linked;
   },
 
   /**
@@ -1588,12 +1557,9 @@ export const quotationService = {
       } = await import('../utils/quotationStatus');
 
       if (usesModeBookingFormConvertFlow(quotation.job_type)) {
-        if (!opts?.afterCustomerBookingForm) {
-          throw new Error(
-            `Complete the booking form first — quotation converts after portal submit or staff booking-form /complete (current status: ${quotation.status}).`,
-          );
-        }
-        if (coerceQuotationStatus(quotation.status) !== 'APPROVED') {
+        // Admin-only convert — customer approve / booking-form submit never auto-create a job.
+        const status = coerceQuotationStatus(quotation.status);
+        if (status !== 'APPROVED' && status !== 'CONVERTED') {
           throw new Error(
             `Quotation must be customer-approved before convert (current status: ${quotation.status}).`,
           );
@@ -2047,9 +2013,23 @@ export const quotationService = {
     try {
       const form = new FormData();
       form.append('file', file);
+      // Do not set Content-Type — axios must add the multipart boundary for Multer.
       const res = await withGatewayRetry(() =>
         axiosInstance.post(QUOTATION_API.bookingFormDocument(id, kind), form, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+          transformRequest: [
+            (data, headers) => {
+              if (headers && typeof headers === 'object' && data instanceof FormData) {
+                const h = headers as Record<string, unknown>;
+                delete h['Content-Type'];
+                delete h['content-type'];
+                if (typeof (headers as { delete?: (k: string) => void }).delete === 'function') {
+                  (headers as { delete: (k: string) => void }).delete('Content-Type');
+                  (headers as { delete: (k: string) => void }).delete('content-type');
+                }
+              }
+              return data;
+            },
+          ],
         }),
       );
       return unwrapEntity(res.data) ?? res.data;

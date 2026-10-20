@@ -39,3 +39,10 @@ Runtime layouts remain the 13 `*FormatUiLayouts.json` files (**852/852** — do 
 ## Optional backend (additive)
 
 Live FRESA Puppeteer packs remain optional for print parity. Bind/activate via `GET /reports/templates/renderers` + `suggestedPackKey` in the complete catalog JSON — do not invent `renderer_key` values on the FE.
+
+## Page mapping refresh (2026-10-20)
+
+- Official marketing page coverage: see [`FRESA_PAGE_GAP.md`](./FRESA_PAGE_GAP.md).
+- Diversity audit: **77/77** curated Fresa sample names OK (`FRESA_FORMAT_DIVERSITY_AUDIT.json`).
+- Layout audit: **852** unique layout codes; **3** analytics catalog codes without document layouts (listed in FRESA_PAGE_GAP).
+- Product focus: entity-bound Reports (`quotation_id` / `job_id` / `invoice_id` / `shipment_id`) hydrate live fields into existing layouts — not new layout chrome.

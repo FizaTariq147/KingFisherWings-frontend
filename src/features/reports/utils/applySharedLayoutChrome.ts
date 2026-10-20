@@ -1,4 +1,5 @@
 import { DEFAULT_PDF_BRANDING } from '../constants/invoicePreviewBranding';
+import { normalizeFresaThemeColors } from '../constants/fresaInvoiceColors';
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
 export type SharedLayoutChrome = {
@@ -21,8 +22,9 @@ export const SHARED_LAYOUT_CHROME: SharedLayoutChrome = {
 };
 
 /**
- * Runtime override: every format uses the same company header/footer branding.
- * Body blocks / themes stay format-specific; JSON branding placeholders are ignored.
+ * Runtime override: KingFisher logo / company text only.
+ * Restores Fresa sample theme colors when JSON themes were remapped to T&C navy.
+ * Body blocks / field schemas stay as in the Fresa sample JSON.
  */
 export function applySharedLayoutChrome(
   layout: InvoiceFormatUiLayout,
@@ -30,6 +32,7 @@ export function applySharedLayoutChrome(
 ): InvoiceFormatUiLayout {
   return {
     ...layout,
+    theme: normalizeFresaThemeColors(layout.theme),
     branding: {
       company: chrome.company,
       address: chrome.address,

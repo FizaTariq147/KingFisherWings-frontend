@@ -1,13 +1,17 @@
 import { invoiceService } from '@/features/invoices/services/invoice.service';
 import { jobService } from '@/features/jobs/services/job.service';
+import type { JobCharge } from '@/features/jobs/types/job.types';
 import { partyService } from '@/features/parties/services/party.service';
 import { quotationService } from '@/features/quotations/services/quotation.service';
+import { shipmentService } from '@/features/shipments/services/shipment.service';
+import type { Shipment } from '@/features/shipments/types/shipment.types';
 import { fetchTenantCompanyOptions } from '@/features/users/hooks/useTenantCompanies';
 import type { ReportContextIds } from './reportParameterUtils';
 import {
   invoiceRecordToFormatPdfData,
   quotationRecordToFormatPdfData,
   type InvoiceFormatPdfData,
+  type InvoiceFormatPdfLine,
 } from './generateInvoiceFormatLayoutPdf';
 import { formatReportLayoutDate } from './formatReportLayoutDate';
 import { partyToFormatPdfLines } from './partyToFormatPdfLines';
@@ -26,6 +30,17 @@ function money(n: number | null | undefined): string | undefined {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+}
+
+function chargeLinesFromJobCharges(charges: JobCharge[]): InvoiceFormatPdfLine[] {
+  return charges
+    .filter((c) => !c.is_cost)
+    .map((c) => ({
+      description: c.description || c.charge_code || 'Charge',
+      qty: c.quantity != null ? String(c.quantity) : undefined,
+      rate: money(c.unit_price),
+      amount: money(c.sale_amount ?? c.line_total ?? c.unit_price),
+    }));
 }
 
 /** Map a staff job into layout PDF fields (best-effort). */
@@ -70,6 +85,45 @@ export function jobRecordToFormatPdfData(job: {
     commodity: job.commodity || undefined,
     vesselFlight: job.carrier_name || undefined,
     currencyCode: job.currency_code || undefined,
+  };
+}
+
+/** Map a staff shipment into layout PDF fields (best-effort). */
+export function shipmentRecordToFormatPdfData(shipment: Shipment): InvoiceFormatPdfData {
+  const origin =
+    shipment.pol ||
+    shipment.origin_port_name ||
+    (typeof shipment.place_of_receipt === 'string' ? shipment.place_of_receipt : undefined);
+  const dest =
+    shipment.pod ||
+    shipment.dest_port_name ||
+    (typeof shipment.place_of_delivery === 'string' ? shipment.place_of_delivery : undefined);
+  const route = origin || dest ? [origin, dest].filter(Boolean).join(' → ') : undefined;
+  const shipmentNo =
+    shipment.shipment_number || shipment.reference || shipment.hbl_number || undefined;
+  const partyName = shipment.party_name || shipment.customer_name || undefined;
+  const vesselFlight = [shipment.vessel_name, shipment.voyage_number, shipment.carrier_name]
+    .filter(Boolean)
+    .join(' / ');
+  return {
+    invoiceNumber: shipmentNo,
+    jobNumber: shipment.job_number || undefined,
+    shipmentNumber: shipmentNo,
+    quotationNumber: shipment.quotation_number || undefined,
+    invoiceDate: formatReportLayoutDate(shipment.created_at?.slice(0, 10)),
+    etd: formatReportLayoutDate(shipment.etd),
+    eta: formatReportLayoutDate(shipment.eta),
+    billToName: partyName,
+    billToAddress:
+      [route, shipment.commodity || shipment.cargo_details].filter(Boolean).join(' · ') ||
+      undefined,
+    consigneeLines: partyName ? [partyName] : undefined,
+    pol: origin || undefined,
+    pod: dest || undefined,
+    commodity: shipment.commodity || shipment.cargo_details || undefined,
+    vesselFlight: vesselFlight || undefined,
+    currencyCode: shipment.currency_code || undefined,
+    referenceNo: shipment.mbl_number || shipment.hbl_number || undefined,
   };
 }
 
@@ -242,6 +296,7 @@ export function catalogContextCacheKey(context?: ReportContextIds | null): strin
     context.quotation_id || '',
     context.job_id || '',
     context.party_id || '',
+    context.shipment_id || '',
   ].join('|');
 }
 
@@ -259,11 +314,13 @@ export async function resolveCatalogContextPdfData(
   let data: InvoiceFormatPdfData = {};
   const errors: string[] = [];
   const partyId = context.party_id?.trim();
+  const shipmentId = context.shipment_id?.trim();
   const hasEntityContext =
     isEntityId(context.invoice_id?.trim()) ||
     isEntityId(context.quotation_id?.trim()) ||
     isEntityId(context.job_id?.trim()) ||
-    isEntityId(partyId);
+    isEntityId(partyId) ||
+    isEntityId(shipmentId);
 
   if (hasEntityContext) {
     data.entityBound = true;
@@ -284,6 +341,42 @@ export async function resolveCatalogContextPdfData(
     }
   }
 
+  let linkedJobId: string | undefined;
+  let linkedCustomerId: string | undefined;
+  let linkedInvoicePartyId: string | undefined;
+  let linkedCompanyId: string | undefined;
+  let linkedQuotationId: string | undefined;
+
+  if (isEntityId(shipmentId)) {
+    try {
+      const shipment = await shipmentService.getById(shipmentId);
+      data = mergePdfData(data, shipmentRecordToFormatPdfData(shipment));
+      linkedJobId = shipment.job_id?.trim() || linkedJobId;
+      linkedQuotationId = shipment.quotation_id?.trim() || linkedQuotationId;
+      linkedCustomerId =
+        shipment.customer_id?.trim() || shipment.party_id?.trim() || linkedCustomerId;
+      linkedCompanyId = shipment.company_id?.trim() || linkedCompanyId;
+      if (!data.lines?.length) {
+        try {
+          const charges = await shipmentService.listCharges(shipmentId);
+          const saleLines = (charges ?? [])
+            .filter((c) => !c.is_cost)
+            .map((c) => ({
+              description: c.description || c.charge_code || 'Charge',
+              qty: c.quantity != null ? String(c.quantity) : undefined,
+              rate: money(c.unit_price),
+              amount: money(c.line_total ?? c.unit_price),
+            }));
+          if (saleLines.length) data = mergePdfData(data, { lines: saleLines });
+        } catch {
+          /* optional */
+        }
+      }
+    } catch (err) {
+      errors.push(err instanceof Error ? err.message : 'shipment');
+    }
+  }
+
   const jobId = context.job_id?.trim();
   if (isEntityId(jobId)) {
     const before = data.jobNumber || data.invoiceNumber;
@@ -291,13 +384,18 @@ export async function resolveCatalogContextPdfData(
     if (!before && !data.jobNumber && !data.invoiceNumber && !data.shipperLines?.length) {
       errors.push('job');
     }
+    if (!data.lines?.length) {
+      try {
+        const charges = await jobService.listJobCharges(jobId);
+        const saleLines = chargeLinesFromJobCharges(charges ?? []);
+        if (saleLines.length) data = mergePdfData(data, { lines: saleLines });
+      } catch {
+        /* optional */
+      }
+    }
   }
 
-  const quotationId = context.quotation_id?.trim();
-  let linkedJobId: string | undefined;
-  let linkedCustomerId: string | undefined;
-  let linkedInvoicePartyId: string | undefined;
-  let linkedCompanyId: string | undefined;
+  const quotationId = context.quotation_id?.trim() || linkedQuotationId;
   if (isEntityId(quotationId)) {
     try {
       const quotation = await quotationService.getById(quotationId);
@@ -345,6 +443,15 @@ export async function resolveCatalogContextPdfData(
 
   if (linkedJobId && linkedJobId !== jobId) {
     data = await enrichPdfDataFromJobId(linkedJobId, data);
+    if (!data.lines?.length) {
+      try {
+        const charges = await jobService.listJobCharges(linkedJobId);
+        const saleLines = chargeLinesFromJobCharges(charges ?? []);
+        if (saleLines.length) data = mergePdfData(data, { lines: saleLines });
+      } catch {
+        /* optional */
+      }
+    }
   }
 
   // Shipper: prefer job shipper; otherwise tenant company on the quote/invoice.

@@ -56,7 +56,6 @@ import {
   useCopyShipment,
   useGenerateShipmentJob,
   useMergeShipments,
-  useQueueShipmentBookingConfirmation,
   useQueueShipmentHbl,
   useShipment,
   useShipmentAwb,
@@ -81,6 +80,10 @@ import {
 } from '../types/shipment.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { shipmentDisplayNumber } from '../utils/normalizeShipment';
+import {
+  buildCatalogHref,
+  catalogFamiliesForJobType,
+} from '@/features/reports/utils/moduleCatalogFamily';
 
 function displayValue(value?: string | number | null): string | undefined {
   if (value == null || value === '') return undefined;
@@ -164,7 +167,6 @@ export default function ShipmentDetailPage() {
   const generateJob = useGenerateShipmentJob(id);
   const copyShipment = useCopyShipment(id);
   const updateShipment = useUpdateShipment(id);
-  const queueBookingConfirmation = useQueueShipmentBookingConfirmation(id);
   const queueHbl = useQueueShipmentHbl(id);
   const splitShipment = useSplitShipment(id);
   const mergeShipments = useMergeShipments(id);
@@ -209,7 +211,6 @@ export default function ShipmentDetailPage() {
     vessel_name: '',
     voyage_number: '',
   });
-  const [reportPending, setReportPending] = useState(false);
   const pendingStartEdit = useRef(
     Boolean((location.state as { startEdit?: boolean } | null)?.startEdit),
   );
@@ -374,7 +375,6 @@ export default function ShipmentDetailPage() {
     generateJob.isPending ||
     copyShipment.isPending ||
     updateShipment.isPending ||
-    queueBookingConfirmation.isPending ||
     queueHbl.isPending ||
     splitShipment.isPending ||
     mergeShipments.isPending ||
@@ -444,24 +444,24 @@ export default function ShipmentDetailPage() {
     }
   };
 
-  const onReport = async () => {
-    setReportPending(true);
+  const openShipmentReportsCatalog = () => {
+    navigate(
+      buildCatalogHref({
+        context: 'job',
+        shipment_id: id,
+        job_id: shipment.job_id && isUuid(shipment.job_id) ? shipment.job_id : undefined,
+        quotation_id:
+          shipment.quotation_id && isUuid(shipment.quotation_id)
+            ? shipment.quotation_id
+            : undefined,
+        families: catalogFamiliesForJobType(jobType),
+      }),
+    );
+  };
+
+  const onReport = () => {
     setActionError(null);
-    setActionMessage(null);
-    try {
-      if (hasJob) {
-        await queueBookingConfirmation.mutateAsync();
-        setActionMessage('Booking confirmation PDF queued (POST /shipments/:id/documents/booking-confirmation).');
-      } else {
-        navigate(
-          `/reports/catalog?family=shipment&context=shipment&shipment_id=${encodeURIComponent(id)}`,
-        );
-      }
-    } catch (e) {
-      setActionError(getErrorMessage(e));
-    } finally {
-      setReportPending(false);
-    }
+    openShipmentReportsCatalog();
   };
 
   const jobHref =
@@ -540,10 +540,10 @@ export default function ShipmentDetailPage() {
               type="button"
               variant="report"
               leftIcon={<FileText />}
-              disabled={reportPending || anyPending}
-              onClick={() => void onReport()}
+              disabled={anyPending}
+              onClick={() => onReport()}
             >
-              {reportPending ? 'Report…' : 'Report'}
+              Report
             </Button>
             <Button
               size="sm"
