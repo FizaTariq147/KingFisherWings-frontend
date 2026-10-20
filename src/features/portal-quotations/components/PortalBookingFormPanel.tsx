@@ -930,11 +930,10 @@ export function PortalBookingFormPanel({
       : Boolean(bookingId && /^[0-9a-f-]{36}$/i.test(bookingId));
   const docsSatisfiedKinds = useMemo(() => {
     const next = new Set(uploadedDocKinds);
-    if (!canUploadComplianceDocs) {
-      for (const k of stagedDocKinds) next.add(k);
-    }
+    // Count staged files too (API may reject pre-job uploads; file is still chosen).
+    for (const k of stagedDocKinds) next.add(k);
     return next;
-  }, [uploadedDocKinds, stagedDocKinds, canUploadComplianceDocs]);
+  }, [uploadedDocKinds, stagedDocKinds]);
   const portalDocKinds = useMemo(
     () =>
       [
@@ -2524,6 +2523,12 @@ export function PortalBookingFormPanel({
                     useBookingFormDocuments: usesModeBookingDocs,
                   });
                   const meta = extractUploadResponseMeta(kind, uploaded, file.name);
+                  const stagedOnly =
+                    Boolean(
+                      uploaded &&
+                        typeof uploaded === 'object' &&
+                        (uploaded as { staged?: boolean }).staged === true,
+                    ) && !meta.id && !meta.file_url && !meta.s3_key;
                   setDocumentRefs((prev) => {
                     const without = prev.filter((d) => d.kind !== kind);
                     return [
@@ -2541,7 +2546,8 @@ export function PortalBookingFormPanel({
                   setUploadedDocKinds((prev) => new Set(prev).add(kind));
                   setStagedDocKinds((prev) => {
                     const next = new Set(prev);
-                    next.delete(kind);
+                    if (stagedOnly) next.add(kind);
+                    else next.delete(kind);
                     return next;
                   });
                   if (kind === 'commercial_invoice') {
