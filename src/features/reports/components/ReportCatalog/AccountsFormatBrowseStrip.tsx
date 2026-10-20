@@ -147,7 +147,7 @@ export function AccountsFormatBrowseStrip({
     <div className="space-y-2.5 rounded-xl border border-[var(--color-neutral-200)] bg-[var(--color-surface)] p-3.5 shadow-sm">
       <div className="flex items-baseline justify-between gap-2">
         <h3 className="text-xs font-semibold uppercase tracking-wide text-[var(--color-secondary-700)]">
-          Accounts formats
+          Finance &amp; GL
         </h3>
         <p className="text-[10px] text-[var(--color-neutral-400)]">
           {filterActive ? `${items.length} of ${scopedTotal} formats` : `${all.length} formats`}

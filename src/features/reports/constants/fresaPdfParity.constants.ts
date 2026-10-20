@@ -1,3 +1,5 @@
+import { buildCatalogHref } from '../utils/moduleCatalogFamily';
+
 /**
  * FRESA exact PDF parity — backend pack priority (handoff for kingfisherwings-backend).
  *
@@ -94,12 +96,10 @@ export const FRESA_INVOICE_FORMAT_1 = {
 
 /** Catalog deep-link helpers for invoice detail → FRESA formats. */
 export function buildInvoiceFresaCatalogPath(invoiceId: string, opts?: { code?: string }): string {
-  const params = new URLSearchParams({
+  return buildCatalogHref({
     context: 'invoice',
-    invoice_id: invoiceId,
     family: 'commercial',
+    invoice_id: invoiceId,
+    code: opts?.code ?? FRESA_INVOICE_FORMAT_1.code,
   });
-  const code = opts?.code ?? FRESA_INVOICE_FORMAT_1.code;
-  if (code) params.set('code', code);
-  return `/reports/catalog?${params.toString()}`;
 }

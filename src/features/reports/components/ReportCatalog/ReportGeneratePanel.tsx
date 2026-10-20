@@ -117,7 +117,7 @@ export function ReportGeneratePanel({
 
   const lockedContextKeys = useMemo(
     () =>
-      (['job_id', 'quotation_id', 'invoice_id', 'party_id'] as const).filter(
+      (['job_id', 'quotation_id', 'invoice_id', 'party_id', 'shipment_id'] as const).filter(
         (k) => Boolean(context?.[k]),
       ),
     [context],

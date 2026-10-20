@@ -1,3 +1,4 @@
+import { API_SCHEMA_KEYS } from '@/lib/api/apiSchema.generated';
 import type { PortalBookingForm, PortalBookingFormUpsertDto } from '../types/portalQuotations.types';
 
 const STORAGE_PREFIX = 'kf.portal.bookingForm.v2:';
@@ -132,7 +133,7 @@ function pickFormFields(src: Partial<PortalBookingForm> | PortalBookingFormUpser
   };
 }
 
-/** Convert stored / GET form into UpsertDto for inbox remirror. */
+/** Convert stored / GET form into UpsertDto for inbox remirror / PUT. */
 export function portalBookingFormToUpsertDto(
   form: PortalBookingForm | PortalBookingFormUpsertDto,
 ): PortalBookingFormUpsertDto {
@@ -141,9 +142,75 @@ export function portalBookingFormToUpsertDto(
     ...picked,
     commodity: picked.commodity || '',
     parties: picked.parties ?? [],
-    mark_complete: true,
+    // Preserve caller intent — never force complete (that can trigger backend job convert).
+    mark_complete: Boolean(picked.mark_complete),
     consent_accepted: Boolean(picked.consent_accepted),
   };
+}
+
+type SchemaDtoName =
+  | 'UpsertSeaFclBookingFormDto'
+  | 'UpsertSeaLclBookingFormDto'
+  | 'UpsertLandBookingFormDto'
+  | 'UpsertRoadFreightBookingFormDto'
+  | 'UpsertCourierBookingFormDto'
+  | 'UpsertCustomsClearanceBookingFormDto'
+  | 'UpsertWarehouseBookingFormDto'
+  | 'UpsertNvoccBookingFormDto'
+  | 'UpsertAirComplianceBookingFormDto';
+
+function bookingFormSchemaDtoForJobType(jobType?: string): SchemaDtoName {
+  const jt = String(jobType ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  if (jt.startsWith('AIR')) return 'UpsertAirComplianceBookingFormDto';
+  if (jt.startsWith('NVOCC')) return 'UpsertNvoccBookingFormDto';
+  if (jt.startsWith('SEA_LCL') || jt === 'SEA_LCL') return 'UpsertSeaLclBookingFormDto';
+  if (jt.startsWith('SEA')) return 'UpsertSeaFclBookingFormDto';
+  if (jt.startsWith('ROAD')) return 'UpsertRoadFreightBookingFormDto';
+  if (jt.startsWith('COURIER')) return 'UpsertCourierBookingFormDto';
+  if (jt.startsWith('WAREHOUSE')) return 'UpsertWarehouseBookingFormDto';
+  if (jt.startsWith('CUSTOMS') || jt === 'CC') return 'UpsertCustomsClearanceBookingFormDto';
+  if (jt.startsWith('LAND')) return 'UpsertLandBookingFormDto';
+  return 'UpsertSeaFclBookingFormDto';
+}
+
+/**
+ * Strip fields the mode booking-form DTO does not accept.
+ * Extra NVOCC/compliance keys on Sea/Land PUTs often cause API 500s.
+ */
+export function sanitizePortalBookingFormUpsertDto(
+  dto: PortalBookingFormUpsertDto,
+  jobType?: string,
+): PortalBookingFormUpsertDto {
+  const schemaName = bookingFormSchemaDtoForJobType(jobType);
+  const allowed = new Set<string>(API_SCHEMA_KEYS[schemaName] ?? []);
+  const partyKeys = new Set<string>(API_SCHEMA_KEYS.BookingFormPartyDto ?? []);
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(dto as Record<string, unknown>)) {
+    if (value === undefined) continue;
+    if (!allowed.has(key)) continue;
+    if (key === 'parties' && Array.isArray(value)) {
+      out.parties = value.map((party) => {
+        if (!party || typeof party !== 'object') return party;
+        const cleaned: Record<string, unknown> = {};
+        for (const [pk, pv] of Object.entries(party as Record<string, unknown>)) {
+          if (pv === undefined) continue;
+          if (partyKeys.size && !partyKeys.has(pk)) continue;
+          cleaned[pk] = pv;
+        }
+        return cleaned;
+      });
+      continue;
+    }
+    out[key] = value;
+  }
+  if (!Array.isArray(out.parties)) out.parties = dto.parties ?? [];
+  if (typeof out.commodity !== 'string') out.commodity = dto.commodity || '';
+  out.mark_complete = Boolean(dto.mark_complete);
+  out.consent_accepted = Boolean(dto.consent_accepted);
+  return out as PortalBookingFormUpsertDto;
 }
 
 function normalizeDocumentRefs(raw: unknown): PortalBookingFormDocumentRef[] | undefined {

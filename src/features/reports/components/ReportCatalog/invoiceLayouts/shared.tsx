@@ -1,14 +1,13 @@
 import type { ReactNode } from 'react';
 import logo from '@/assets/logo.png';
 import type { InvoiceFormatPreview } from '../../../types/invoiceFormatPreview.types';
-import { KINGFISHER_TC_PAGE_FRAME } from '../../../constants/kingfisherTermsBrandColors';
+import { FRESA_UI } from '../../../constants/fresaInvoiceColors';
 import { TcBrandColorBar } from './TcBrandChrome';
-import { TcBrandColorBar, TcBrandTagline } from './TcBrandChrome';
 
 /** Issuer branding — Fresa sample company → KingFisher Logistic + KingFisher logo. */
 export const KF = {
-  navy: '#0A2942',
-  orange: '#F26A00',
+  navy: FRESA_UI.navy,
+  orange: FRESA_UI.orange,
   muted: '#555555',
   border: '#000000',
   /** Format-4 PDF fill (~0.953 RGB) — shared by Formats 1/2/4/5. */
@@ -203,7 +202,7 @@ export function Shell({
   paper?: 'A4' | 'Letter';
   dir?: 'ltr' | 'rtl';
   className?: string;
-  /** Top navy|orange T&C brand bar (default on). */
+  /** Top primary|orange Fresa-style brand bar (default on). */
   brandBar?: boolean;
 }) {
   const w = paper === 'Letter' ? 'max-w-[8.5in]' : 'max-w-[210mm]';
@@ -211,9 +210,20 @@ export function Shell({
     <div
       dir={dir}
       className={`mx-auto ${w} overflow-hidden border bg-white text-[10px] leading-snug text-[var(--color-neutral-800)] shadow-sm ${className}`}
-      style={KINGFISHER_TC_PAGE_FRAME}
+      style={{
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderColor: '#999999',
+      }}
     >
-      {brandBar ? <TcBrandColorBar size="lg" reverse={dir === 'rtl'} /> : null}
+      {brandBar ? (
+        <TcBrandColorBar
+          size="lg"
+          reverse={dir === 'rtl'}
+          primary={FRESA_UI.navy}
+          accent={FRESA_UI.orange}
+        />
+      ) : null}
       {children}
     </div>
   );

@@ -35,6 +35,7 @@ import {
   formatBookingFormMessageBodyCompact,
   bookingFormInboxSubject,
   portalBookingFormToUpsertDto,
+  sanitizePortalBookingFormUpsertDto,
   parsePortalBookingFormMessagePayload,
   readPortalBookingFormDraft,
   writePortalBookingFormDraft,
@@ -537,36 +538,63 @@ export const portalQuotationsService = {
       '@/features/quotations/utils/quotationStatus'
     );
     if (usesModeBookingFormConvertFlow(opts.jobType || jt)) {
+      const mirrorInbox = async () => {
+        const quoteLabel = opts.quoteNumber?.trim() || opts.quotationId.slice(0, 8);
+        await portalMessagesService.create({
+          subject: bookingFormInboxSubject({
+            quoteLabel,
+            quotationId: opts.quotationId,
+            bookingId: opts.bookingId,
+            jobId: opts.jobId,
+          }),
+          body: formatBookingFormMessageBodyCompact({
+            quotationId: opts.quotationId,
+            quoteNumber: opts.quoteNumber,
+            jobType: opts.jobType,
+            jobId: opts.jobId,
+            bookingId: opts.bookingId,
+            dto: { ...dto, mark_complete: true },
+            documents,
+          }),
+          job_id: opts.jobId && isUuid(opts.jobId) ? opts.jobId : undefined,
+        });
+      };
+
       try {
-        const saved = await this.upsertQuotationBookingForm(opts.quotationId, dto);
+        // Save data first without forcing complete (complete can crash if BE tries to auto-job).
+        const saved = await this.upsertQuotationBookingForm(
+          opts.quotationId,
+          { ...dto, mark_complete: false },
+          opts.jobType || jt,
+        );
         if (dto.mark_complete) {
           try {
             await this.completeQuotationBookingForm(opts.quotationId, {
               consent_accepted: Boolean(dto.consent_accepted),
             });
-          } catch {
-            /* complete may be implicit on PUT with mark_complete */
+          } catch (completeErr) {
+            // If complete endpoint is missing, retry PUT with mark_complete only.
+            if (isComplianceNotFoundError(completeErr)) {
+              try {
+                await this.upsertQuotationBookingForm(
+                  opts.quotationId,
+                  { ...dto, mark_complete: true },
+                  opts.jobType || jt,
+                );
+              } catch {
+                /* draft already saved — continue to inbox */
+              }
+            } else {
+              // 5xx / validation on complete: still notify Ops via inbox so customer is not blocked.
+              const status =
+                completeErr instanceof PortalApiError
+                  ? completeErr.status
+                  : (completeErr as { status?: number })?.status ?? 0;
+              if (status < 500) throw completeErr;
+            }
           }
           try {
-            const quoteLabel = opts.quoteNumber?.trim() || opts.quotationId.slice(0, 8);
-            await portalMessagesService.create({
-              subject: bookingFormInboxSubject({
-                quoteLabel,
-                quotationId: opts.quotationId,
-                bookingId: opts.bookingId,
-                jobId: opts.jobId,
-              }),
-              body: formatBookingFormMessageBodyCompact({
-                quotationId: opts.quotationId,
-                quoteNumber: opts.quoteNumber,
-                jobType: opts.jobType,
-                jobId: opts.jobId,
-                bookingId: opts.bookingId,
-                dto: { ...dto, mark_complete: true },
-                documents,
-              }),
-              job_id: opts.jobId && isUuid(opts.jobId) ? opts.jobId : undefined,
-            });
+            await mirrorInbox();
           } catch {
             /* inbox mirror best-effort */
           }
@@ -590,8 +618,31 @@ export const portalQuotationsService = {
           mark_complete: false,
         };
       } catch (error) {
-        if (!isComplianceNotFoundError(error)) throw error;
-        // Fall through to compliance / messages if quotation booking-form is unavailable.
+        // Missing route OR server crash on convert — fall back to inbox so submit still works.
+        const status =
+          error instanceof PortalApiError
+            ? error.status
+            : (error as { status?: number })?.status ?? 0;
+        if (isComplianceNotFoundError(error) || status >= 500) {
+          if (dto.mark_complete) {
+            try {
+              await mirrorInbox();
+            } catch {
+              /* still return local complete */
+            }
+            return writePortalBookingFormDraft(
+              opts.quotationId,
+              { ...dto, mark_complete: true },
+              {
+                quoteNumber: opts.quoteNumber,
+                jobType: opts.jobType,
+                documents,
+              },
+            );
+          }
+          return saveViaMessages();
+        }
+        throw error;
       }
     }
 
@@ -814,10 +865,15 @@ export const portalQuotationsService = {
   async upsertQuotationBookingForm(
     quotationId: string,
     dto: PortalBookingFormUpsertDto,
+    jobType?: string,
   ): Promise<PortalBookingForm> {
+    const payload = sanitizePortalBookingFormUpsertDto(
+      portalBookingFormToUpsertDto(dto),
+      jobType,
+    );
     const res = await portalApiClient.put(
       PORTAL_QUOTATIONS_API.bookingForm(quotationId),
-      portalBookingFormToUpsertDto(dto),
+      payload,
     );
     const form = normalizePortalBookingForm(res.data);
     return { ...form, quotation_id: quotationId };
@@ -861,27 +917,60 @@ export const portalQuotationsService = {
           )
         : false);
 
-    // Mode booking: POST /portal/quotations/:id/booking-form/documents/:kind
-    // (and shipment path when a linked job/shipment id is present).
-    if (modeBooking && opts.quotationId) {
-      const shipmentId = opts.jobId?.trim() || '';
-      const path =
-        shipmentId && isUuid(shipmentId)
-          ? PORTAL_SHIPMENTS_API.bookingFormDocument(shipmentId, kind)
-          : PORTAL_QUOTATIONS_API.bookingFormDocument(opts.quotationId, kind);
+    const postMultipart = async (path: string) => {
+      // Do not set Content-Type — browser/axios must add the multipart boundary.
+      const res = await portalApiClient.post(path, form, {
+        transformRequest: [
+          (data, headers) => {
+            if (headers && typeof headers === 'object' && data instanceof FormData) {
+              const h = headers as Record<string, unknown>;
+              delete h['Content-Type'];
+              delete h['content-type'];
+              if (typeof (headers as { delete?: (k: string) => void }).delete === 'function') {
+                (headers as { delete: (k: string) => void }).delete('Content-Type');
+                (headers as { delete: (k: string) => void }).delete('content-type');
+              }
+            }
+            return data;
+          },
+        ],
+      });
+      if (res.data && typeof res.data === 'object' && 'data' in (res.data as object)) {
+        return (res.data as { data: unknown }).data;
+      }
+      return res.data;
+    };
+
+    const isMissingRoute = (err: unknown) =>
+      err instanceof PortalApiError && (err.status === 404 || err.status === 405);
+
+    // Mode booking (Sea/Land/Road/…): always POST quotation booking-form docs first.
+    // Do not route jobId through /portal/shipments/… — that id is often a job, not a shipment.
+    if (modeBooking && opts.quotationId && isUuid(opts.quotationId)) {
+      const quotePath = PORTAL_QUOTATIONS_API.bookingFormDocument(opts.quotationId, kind);
       try {
-        const res = await portalApiClient.post(path, form, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        if (res.data && typeof res.data === 'object' && 'data' in (res.data as object)) {
-          return (res.data as { data: unknown }).data;
+        return await postMultipart(quotePath);
+      } catch (quoteErr) {
+        const shipmentId = opts.jobId?.trim() || '';
+        if (isMissingRoute(quoteErr) && shipmentId && isUuid(shipmentId)) {
+          try {
+            return await postMultipart(
+              PORTAL_SHIPMENTS_API.bookingFormDocument(shipmentId, kind),
+            );
+          } catch (shipErr) {
+            if (!isMissingRoute(shipErr)) throw shipErr;
+          }
+        } else if (!isMissingRoute(quoteErr)) {
+          throw quoteErr;
         }
-        return res.data;
-      } catch (err) {
-        // Fall through to compliance paths when booking-form upload is unavailable.
-        if (!(err instanceof PortalApiError) || (err.status !== 404 && err.status !== 405)) {
-          throw err;
-        }
+        const detail =
+          quoteErr instanceof Error && quoteErr.message.trim()
+            ? quoteErr.message.trim()
+            : 'Booking document upload is not available for this quote yet.';
+        throw new PortalApiError(
+          `${detail} Try saving the booking form, then upload again — or contact your forwarder.`,
+          quoteErr instanceof PortalApiError ? quoteErr.status : 404,
+        );
       }
     }
 
@@ -890,20 +979,11 @@ export const portalQuotationsService = {
       throw new PortalApiError(
         opts.isAir || isAirJobType(opts.jobType)
           ? 'File selected. Upload starts when an air shipment/job is linked to this quote.'
-          : modeBooking
-            ? 'Could not upload booking document. Try again or contact your forwarder.'
-            : 'File selected. Upload starts when an NVOCC booking is linked to this quote.',
+          : 'File selected. Upload starts when an NVOCC booking is linked to this quote.',
         404,
       );
     }
     const paths = compliancePaths(target.kind);
-    const res = await portalApiClient.post(paths.document(target.id, kind), form, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    // 201 body: { id, document_type, file_url, s3_key, kind, form }
-    if (res.data && typeof res.data === 'object' && 'data' in (res.data as object)) {
-      return (res.data as { data: unknown }).data;
-    }
-    return res.data;
+    return postMultipart(paths.document(target.id, kind));
   },
 };

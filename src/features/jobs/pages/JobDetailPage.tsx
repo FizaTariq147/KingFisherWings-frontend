@@ -75,6 +75,10 @@ import {
   segmentForJobType,
   segmentFromPath,
 } from '../utils/jobRoute';
+import {
+  buildCatalogHref,
+  catalogFamiliesForJobType,
+} from '@/features/reports/utils/moduleCatalogFamily';
 import { isUuid } from '@/lib/isUuid';
 
 function statusTone(status: string): 'emerald' | 'amber' | 'rose' | 'slate' {
@@ -599,7 +603,16 @@ export default function JobDetailPage() {
     {
       label: 'Reports',
       icon: <FileText />,
-      onClick: () => navigate(`/reports/catalog?context=job&job_id=${encodeURIComponent(id)}`),
+      onClick: () =>
+        navigate(
+          buildCatalogHref({
+            context: 'job',
+            job_id: id,
+            quotation_id: resolvedQuotationId,
+            shipment_id: resolvedShipmentId,
+            families: catalogFamiliesForJobType(job.job_type),
+          }),
+        ),
       variant: 'report' as const,
     },
   ];

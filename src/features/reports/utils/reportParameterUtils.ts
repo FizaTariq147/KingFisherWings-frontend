@@ -1,13 +1,34 @@
-import type { ReportTemplateParamField } from '../types/reportCatalog.types';
+import type {
+  ReportExportFormat,
+  ReportTemplateParamField,
+} from '../types/reportCatalog.types';
+
+/** File extension for a report export format (PDF / XLSX / CSV). */
+export function downloadExtensionForFormat(format?: string | null): string {
+  const key = String(format || 'PDF')
+    .trim()
+    .toUpperCase() as ReportExportFormat | string;
+  if (key === 'XLSX' || key === 'XLS') return 'xlsx';
+  if (key === 'CSV') return 'csv';
+  return 'pdf';
+}
 
 export type ReportContextIds = {
   job_id?: string;
   quotation_id?: string;
   invoice_id?: string;
   party_id?: string;
+  /** Live shipment — not an OpenAPI report context enum; used for PDF hydration. */
+  shipment_id?: string;
 };
 
-const CONTEXT_KEYS = ['job_id', 'quotation_id', 'invoice_id', 'party_id'] as const;
+const CONTEXT_KEYS = [
+  'job_id',
+  'quotation_id',
+  'invoice_id',
+  'party_id',
+  'shipment_id',
+] as const;
 
 /**
  * Merge deep-link / launcher context with form parameter values.
@@ -28,13 +49,18 @@ export function mergeReportContextIds(
     quotation_id: pick('quotation_id'),
     invoice_id: pick('invoice_id'),
     party_id: pick('party_id'),
+    shipment_id: pick('shipment_id'),
   };
 }
 
 export function hasReportEntityContext(context?: ReportContextIds | null): boolean {
   if (!context) return false;
   return Boolean(
-    context.job_id || context.quotation_id || context.invoice_id || context.party_id,
+    context.job_id ||
+      context.quotation_id ||
+      context.invoice_id ||
+      context.party_id ||
+      context.shipment_id,
   );
 }
 
@@ -56,6 +82,7 @@ export function buildInitialReportParams(
   if (context?.quotation_id) out.quotation_id = context.quotation_id;
   if (context?.invoice_id) out.invoice_id = context.invoice_id;
   if (context?.party_id) out.party_id = context.party_id;
+  if (context?.shipment_id) out.shipment_id = context.shipment_id;
   return out;
 }
 
@@ -78,41 +105,35 @@ export function coerceReportParameters(
       }
       continue;
     }
-    if (field.type === 'number') {
-      const n = Number(raw);
-      if (!Number.isFinite(n)) {
-        return { parameters: {}, error: `${field.label} must be a number.` };
+
+    switch (field.type) {
+      case 'number': {
+        const n = Number(raw);
+        if (!Number.isFinite(n)) {
+          return { parameters: {}, error: `Invalid number: ${field.label}` };
+        }
+        parameters[field.name] = n;
+        break;
       }
-      parameters[field.name] = n;
-      continue;
+      case 'boolean':
+        parameters[field.name] = raw === 'true' || raw === '1' || raw.toLowerCase() === 'yes';
+        break;
+      case 'uuid':
+      case 'date':
+      case 'string':
+      case 'select':
+      default:
+        parameters[field.name] = raw;
+        break;
     }
-    if (field.type === 'boolean') {
-      parameters[field.name] = raw === 'true' || raw === '1' || raw.toLowerCase() === 'yes';
-      continue;
-    }
-    parameters[field.name] = raw;
   }
 
+  // Always pass through known context ids even when schema omits them.
   for (const key of CONTEXT_KEYS) {
-    if (parameters[key] !== undefined) continue;
+    if (byName.has(key)) continue;
     const raw = String(values[key] ?? '').trim();
-    if (!raw) continue;
-    // Prefer schema typing when the field is declared.
-    const field = byName.get(key);
-    if (field?.type === 'number') {
-      const n = Number(raw);
-      if (Number.isFinite(n)) parameters[key] = n;
-    } else {
-      parameters[key] = raw;
-    }
+    if (raw) parameters[key] = raw;
   }
 
   return { parameters };
-}
-
-export function downloadExtensionForFormat(format?: string): string {
-  const f = String(format ?? 'pdf').toLowerCase();
-  if (f === 'xlsx') return 'xlsx';
-  if (f === 'csv') return 'csv';
-  return 'pdf';
 }

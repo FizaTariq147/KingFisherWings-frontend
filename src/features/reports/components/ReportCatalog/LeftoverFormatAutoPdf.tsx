@@ -34,7 +34,7 @@ export function LeftoverFormatAutoPdf({ code, context, autoOpen = true }: Props)
     autoOpen,
     preview,
     fileName: formatPdfFilename(
-      `Leftover-${layout?.formatNumber ?? 0}-${layout?.code ?? code}`,
+      `Additional-Commercial-${layout?.formatNumber ?? 0}-${layout?.code ?? code}`,
       'leftover-format',
     ),
     title: preview?.name || spec?.name,

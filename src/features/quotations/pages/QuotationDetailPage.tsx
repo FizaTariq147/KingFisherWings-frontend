@@ -66,6 +66,7 @@ import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggl
 import { OpsContinuumRail } from '@/features/ops-activity';
 import { EntitySectionFilesPanel } from '@/features/shared/section-attachments';
 import { AddStatusCatalogModal } from '@/features/shared/status-catalog';
+import { buildCatalogHref } from '@/features/reports/utils/moduleCatalogFamily';
 import { isUuid } from '@/lib/isUuid';
 import {
   isAwaitingCustomerDecision,
@@ -553,7 +554,13 @@ export default function QuotationDetailPage() {
       icon: <FileText />,
       onClick: () =>
         navigate(
-          `/reports/catalog?family=quotation&context=quotation&quotation_id=${encodeURIComponent(id)}`,
+          buildCatalogHref({
+            family: 'quotation',
+            context: 'quotation',
+            quotation_id: id,
+            job_id: quotation.job_id,
+            shipment_id: quotation.shipment_id,
+          }),
         ),
       variant: 'report' as const,
     },

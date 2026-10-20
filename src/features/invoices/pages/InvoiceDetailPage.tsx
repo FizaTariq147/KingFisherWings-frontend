@@ -28,6 +28,7 @@ import { invoiceToPdfModel } from '../utils/invoiceToPdfModel';
 import { loadInvoiceJobForPdf } from '../utils/loadInvoiceJobForPdf';
 import { invoiceDisplayNumber } from '../utils/normalizeInvoice';
 import { buildInvoiceFresaCatalogPath } from '@/features/reports/constants/fresaPdfParity.constants';
+import { buildCatalogHref } from '@/features/reports/utils/moduleCatalogFamily';
 
 function Field({ label, value }: { label: string; value?: string | number | null }) {
   return (
@@ -233,7 +234,13 @@ export default function InvoiceDetailPage() {
       label: 'Reports catalog',
       onClick: () =>
         navigate(
-          `/reports/catalog?context=invoice&invoice_id=${encodeURIComponent(id)}&family=commercial`,
+          buildCatalogHref({
+            context: 'invoice',
+            family: 'commercial',
+            invoice_id: id,
+            job_id: invoice?.job_id,
+            party_id: invoice?.party_id,
+          }),
         ),
       variant: 'secondary' as const,
     },
