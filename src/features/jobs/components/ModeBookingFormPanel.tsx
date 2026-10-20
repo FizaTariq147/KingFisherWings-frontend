@@ -496,29 +496,12 @@ function toDto(form: FormUi, mode: StaffBookingFormMode): ModeBookingForm {
       other_details: p.other_details.trim() || undefined,
     }));
 
-  // Backend mark_complete requires origin/dest door addresses — fall back to
-  // POL/POD or city/country so PORT_TO_PORT (and similar) forms can complete.
-  const originDoor =
-    form.origin_door_address.trim() ||
-    form.origin_city_country.trim() ||
-    form.pol.trim() ||
-    form.border_or_port.trim() ||
-    form.port_of_entry.trim() ||
-    undefined;
-  const destDoor =
-    form.dest_door_address.trim() ||
-    form.dest_city_country.trim() ||
-    form.pod.trim() ||
-    form.warehouse_name.trim() ||
-    form.port_of_exit.trim() ||
-    undefined;
-
   const dto: ModeBookingForm = {
     date_of_request: form.date_of_request || undefined,
     client_booking_no: form.client_booking_no.trim() || undefined,
     voyage_ref: form.voyage_ref.trim() || undefined,
-    origin_door_address: originDoor,
-    dest_door_address: destDoor,
+    origin_door_address: form.origin_door_address.trim() || undefined,
+    dest_door_address: form.dest_door_address.trim() || undefined,
     commodity: form.commodity.trim() || undefined,
     hs_code: form.hs_code.trim() || undefined,
     cargo_category: form.cargo_category || undefined,
@@ -1280,7 +1263,8 @@ export function ModeBookingFormPanel({
     if (!jobId || !linkedQuote?.id) return;
     if (query.isLoading || query.isFetching) return;
     if (hasSavedForm) return;
-    if (!portalBookingQuery.data?.mark_complete) return;
+    // Customer submit leaves mark_complete false — sync whenever portal payload exists.
+    if (!portalBookingQuery.data) return;
     let cancelled = false;
     void (async () => {
       try {
@@ -1313,7 +1297,7 @@ export function ModeBookingFormPanel({
     hasSavedForm,
     query.isLoading,
     query.isFetching,
-    portalBookingQuery.data?.mark_complete,
+    portalBookingQuery.data,
     mode,
   ]);
 

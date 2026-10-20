@@ -497,7 +497,12 @@ export const portalAdminInboxService = {
         continue;
       }
 
-      if (subjectHint && payload.mark_complete) {
+      if (
+        subjectHint &&
+        (payload.mark_complete ||
+          payload.consent_accepted ||
+          (payload as { customer_submitted?: boolean }).customer_submitted)
+      ) {
         pushScore(80, at, withIds(payload));
       }
     }
@@ -516,7 +521,15 @@ export const portalAdminInboxService = {
         const msg = await hydrateMessage(rawMsg);
         const payload =
           parsePayloadLoose(msg.body) || parsePayloadLoose(msg.attachmentText);
-        if (!payload?.mark_complete || !payload.quotationId) continue;
+        // Customer submit is draft (mark_complete false); still accept for Ops prefill.
+        if (!payload?.quotationId) continue;
+        if (
+          !payload.mark_complete &&
+          !payload.consent_accepted &&
+          !(payload as { customer_submitted?: boolean }).customer_submitted
+        ) {
+          continue;
+        }
         if (!jobTypeCompatible(payload.jobType)) continue;
         softCandidates.push({ msg, payload });
         if (softCandidates.length >= 40) break;
