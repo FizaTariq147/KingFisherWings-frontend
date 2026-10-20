@@ -95,7 +95,9 @@ function resolveCurrentStep(
   formSubmitted: boolean,
   commercialComplete: boolean,
 ): PortalCommercialStepId | 'complete' {
-  if (commercialComplete) return 'complete';
+  // Do not mark the whole rail complete until the customer booking form is done —
+  // a linked job alone used to paint "Booking form" as Done while the panel was empty.
+  if (commercialComplete && formSubmitted) return 'complete';
 
   if (formSubmitted) return 'invoice-sent';
 

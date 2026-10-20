@@ -46,6 +46,7 @@ import {
   type BookingFormDocumentMeta,
 } from '@/features/booking-documents/utils/bookingFormDocuments';
 import { useFileDownload } from '@/features/files/hooks/useFileDownload';
+import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import {
   staffBookingFormApiLabel,
@@ -55,6 +56,7 @@ import {
 import { useJobs } from '../hooks/useJobs';
 import { jobService } from '../services/job.service';
 import { resolveJobDocumentFileUrl } from '../utils/resolveJobDocumentFileUrl';
+import { staffBookingFormModeToApiMode } from '@/features/booking-documents/constants/bookingDocumentKinds';
 import type {
   BookingFormPartyDto,
   BookingFormPartyKind,
@@ -660,6 +662,95 @@ function incompleteFormMessage(
   return null;
 }
 
+function docIdFromDownloadPath(path: string | undefined): string | null {
+  const raw = (path || '').trim();
+  if (!raw) return null;
+  const match = raw.match(/\/documents\/([^/?#]+)\/download\/?$/i);
+  const id = match?.[1] ? decodeURIComponent(match[1]) : null;
+  return id && isUuid(id) ? id : null;
+}
+
+/**
+ * Prefer GET /jobs/:id/documents/:documentId/download (UUID) over /files or
+ * relative paths — fake /files/{tenant}/{file_name} and relative download_path
+ * both fail silently via downloadStoredFile.
+ */
+async function downloadBookingFormDocFile(
+  jobId: string,
+  meta: {
+    id?: string;
+    file_name?: string;
+    file_url?: string;
+    download_url?: string;
+    download_path?: string;
+    s3_key?: string;
+  },
+  tenantId: string | undefined,
+  downloadStoredFile: (
+    url: string,
+    options?: { displayName?: string },
+  ) => Promise<void>,
+  displayName: string,
+): Promise<void> {
+  const fromPath = docIdFromDownloadPath(meta.download_path);
+  const docId =
+    meta.id && isUuid(meta.id) ? meta.id : fromPath;
+  if (docId) {
+    await jobService.downloadJobDocument(jobId, docId, displayName);
+    return;
+  }
+  const url = resolveJobDocumentFileUrl(meta, tenantId);
+  if (!url) {
+    throw new Error('No downloadable file for this document.');
+  }
+  // Relative job-document API path without a parseable UUID — try axios download
+  // via path segments when possible; otherwise require a stored /files or http URL.
+  if (url.startsWith('/') && !url.startsWith('//') && !url.startsWith('/files/')) {
+    const pathId = docIdFromDownloadPath(url);
+    if (pathId) {
+      await jobService.downloadJobDocument(jobId, pathId, displayName);
+      return;
+    }
+    throw new Error('No downloadable file for this document.');
+  }
+  await downloadStoredFile(url, { displayName });
+}
+
+/**
+ * Customer job documents often lack `booking_form_kind`. Complete requires docs
+ * linked via POST …/booking-form/documents/:kind — remirror matched files first.
+ */
+async function ensureDocsLinkedBeforeComplete(
+  jobId: string,
+  mode: StaffBookingFormMode,
+  byKind: Record<string, BookingFormDocumentMeta>,
+): Promise<Record<string, BookingFormDocumentMeta>> {
+  const apiMode = staffBookingFormModeToApiMode(mode);
+  const next = { ...byKind };
+  for (const kind of MODE_BOOKING_FORM_DOCUMENT_KINDS) {
+    const meta = next[kind];
+    if (!meta) continue;
+    const fromPath = docIdFromDownloadPath(meta.download_path);
+    const docId = meta.id && isUuid(meta.id) ? meta.id : fromPath;
+    if (!docId) continue;
+    const blob = await jobService.fetchJobDocumentBlob(jobId, docId);
+    const fileName =
+      (meta.file_name || '').trim() ||
+      `${BOOKING_DOCUMENT_KIND_LABELS[kind] || kind}.pdf`;
+    const file = new File([blob], fileName, {
+      type: blob.type || 'application/pdf',
+    });
+    const uploaded = await jobService.uploadBookingFormDocument(
+      jobId,
+      apiMode,
+      kind,
+      file,
+    );
+    next[kind] = extractUploadResponseMeta(kind, uploaded, fileName);
+  }
+  return next;
+}
+
 function mergeFormUiPreferExisting(base: FormUi, fromPortal: FormUi, overwrite: boolean): FormUi {
   const pick = (current: string, next: string) => {
     const n = (next ?? '').trim();
@@ -996,40 +1087,55 @@ export function ModeBookingFormPanel({
         ? (portalBookingQuery.data as Record<string, unknown>)
         : undefined,
     );
-    const flaggedKinds = new Set<string>([...fromForm.kinds, ...fromPortal.kinds]);
-    const seed = { ...fromPortal.byKind, ...fromForm.byKind };
-    const merged = mergeJobDocumentsIntoBooking(jobDocumentsQuery.data ?? [], seed, {
-      flaggedKinds,
-    });
-    for (const kind of flaggedKinds) merged.kinds.add(kind);
-    // Any job doc matched to a booking kind counts as uploaded (customer file on file).
-    for (const kind of Object.keys(merged.byKind)) {
-      const meta = merged.byKind[kind];
-      if (meta?.file_name || meta?.file_url || meta?.s3_key || meta?.id) {
-        merged.kinds.add(kind);
+    // Prefer rows with real file locators — attach_* / file_name alone must not invent "On file".
+    const seedMeta: Record<string, BookingFormDocumentMeta> = {};
+    for (const [kind, meta] of Object.entries({ ...fromPortal.byKind, ...fromForm.byKind })) {
+      if (
+        meta?.id ||
+        meta?.file_url ||
+        meta?.download_url ||
+        meta?.download_path ||
+        meta?.s3_key
+      ) {
+        seedMeta[kind] = meta;
       }
     }
+    const merged = mergeJobDocumentsIntoBooking(jobDocumentsQuery.data ?? [], seedMeta);
     setUploadedDocKinds(merged.kinds);
     setDocMetaByKind(merged.byKind);
-    // Reflect customer uploads on the attach_* checkboxes under the checklist.
+    // Reflect matched uploads on attach_* checkboxes (backend complete gates on these + docs).
     setForm((prev) => {
       const attaches = { ...prev.attaches };
       let changed = false;
-      if (merged.kinds.has('commercial_invoice') && !attaches.attach_commercial_invoice) {
+      const has = (kind: string) => {
+        const meta = merged.byKind[kind];
+        return Boolean(
+          meta?.id ||
+            meta?.file_url ||
+            meta?.download_url ||
+            meta?.download_path ||
+            meta?.s3_key,
+        );
+      };
+      if (has('commercial_invoice') && !attaches.attach_commercial_invoice) {
         attaches.attach_commercial_invoice = true;
         changed = true;
       }
-      if (merged.kinds.has('packing_list') && !attaches.attach_packing_list) {
+      if (has('packing_list') && !attaches.attach_packing_list) {
         attaches.attach_packing_list = true;
         changed = true;
       }
-      if (merged.kinds.has('bill_of_lading') && !attaches.attach_bl_awb_copy) {
+      if (has('bill_of_lading') && !attaches.attach_bl_awb_copy) {
         attaches.attach_bl_awb_copy = true;
         changed = true;
       }
-      if (merged.kinds.has('licence') && !attaches.attach_licence) {
+      if (has('licence') && !attaches.attach_licence) {
         attaches.attach_licence = true;
         attaches.attach_permit = true;
+        changed = true;
+      }
+      if (has('uat_tax_certificate') && !attaches.attach_uat_tax_certificate) {
+        attaches.attach_uat_tax_certificate = true;
         changed = true;
       }
       return changed ? { ...prev, attaches } : prev;
@@ -1067,8 +1173,7 @@ export function ModeBookingFormPanel({
           meta?.file_url ||
           meta?.download_url ||
           meta?.download_path ||
-          meta?.s3_key ||
-          meta?.file_name,
+          meta?.s3_key,
       );
       if (!hasFile) flagged.push(kind);
     }
@@ -2625,8 +2730,11 @@ export function ModeBookingFormPanel({
                       doc.kind ||
                       'Document';
                     const fileName = doc.file_name || label;
-                    const url = resolveJobDocumentFileUrl(doc, tenantId);
-                    const canDownload = Boolean(url || doc.id);
+                    const canDownload = Boolean(
+                      (doc.id && isUuid(doc.id)) ||
+                        docIdFromDownloadPath(doc.download_path) ||
+                        resolveJobDocumentFileUrl(doc, tenantId),
+                    );
                     return (
                       <li
                         key={doc.id || `${doc.kind}-${idx}-${fileName}`}
@@ -2644,15 +2752,13 @@ export function ModeBookingFormPanel({
                             variant="secondary"
                             size="sm"
                             onClick={() => {
-                              if (url) {
-                                void downloadStoredFile(url, { displayName: fileName });
-                                return;
-                              }
-                              if (doc.id) {
-                                void jobService
-                                  .downloadJobDocument(jobId, doc.id, fileName)
-                                  .catch((err) => setErr(getErrorMessage(err)));
-                              }
+                              void downloadBookingFormDocFile(
+                                jobId,
+                                doc,
+                                tenantId,
+                                downloadStoredFile,
+                                fileName,
+                              ).catch((err) => setErr(getErrorMessage(err)));
                             }}
                           >
                             Download
@@ -2695,27 +2801,27 @@ export function ModeBookingFormPanel({
                     BOOKING_DOCUMENT_KIND_LABELS[
                       kind as keyof typeof BOOKING_DOCUMENT_KIND_LABELS
                     ] || kind;
-                  const fileName = meta.file_name || (url || meta.id ? label : undefined);
-                  const canDownload = Boolean(url || meta.id);
+                  const fileName =
+                    meta.file_name ||
+                    (url || meta.id || meta.download_path ? label : undefined);
+                  const canDownload = Boolean(
+                    (meta.id && isUuid(meta.id)) ||
+                      docIdFromDownloadPath(meta.download_path) ||
+                      url,
+                  );
                   return [
                     kind,
                     {
                       fileName,
                       onDownload: canDownload
                         ? () => {
-                            if (url) {
-                              void downloadStoredFile(url, {
-                                displayName: fileName || label,
-                              });
-                              return;
-                            }
-                            if (meta.id) {
-                              void jobService
-                                .downloadJobDocument(jobId, meta.id, fileName || label)
-                                .catch((err) => {
-                                  setErr(getErrorMessage(err));
-                                });
-                            }
+                            void downloadBookingFormDocFile(
+                              jobId,
+                              meta,
+                              tenantId,
+                              downloadStoredFile,
+                              fileName || label,
+                            ).catch((err) => setErr(getErrorMessage(err)));
                           }
                         : undefined,
                     },
@@ -2820,6 +2926,27 @@ export function ModeBookingFormPanel({
                 async () => {
                   const result = await save.mutateAsync(toDto(form, mode));
                   if (form.mark_complete || (result as ModeBookingForm)?.mark_complete) {
+                    const linked = await ensureDocsLinkedBeforeComplete(
+                      jobId,
+                      mode,
+                      docMetaByKind,
+                    );
+                    setDocMetaByKind(linked);
+                    setUploadedDocKinds(
+                      new Set([
+                        ...uploadedDocKinds,
+                        ...Object.keys(linked).filter((k) => {
+                          const m = linked[k];
+                          return Boolean(
+                            m?.id ||
+                              m?.file_url ||
+                              m?.download_url ||
+                              m?.download_path ||
+                              m?.s3_key,
+                          );
+                        }),
+                      ]),
+                    );
                     await complete.mutateAsync();
                     setForceCompleted(true);
                     setForm((prev) => ({ ...prev, mark_complete: true }));
@@ -2866,6 +2993,27 @@ export function ModeBookingFormPanel({
                     consent_accepted: true,
                     mark_complete: true,
                   }));
+                  const linked = await ensureDocsLinkedBeforeComplete(
+                    jobId,
+                    mode,
+                    docMetaByKind,
+                  );
+                  setDocMetaByKind(linked);
+                  setUploadedDocKinds(
+                    new Set([
+                      ...uploadedDocKinds,
+                      ...Object.keys(linked).filter((k) => {
+                        const m = linked[k];
+                        return Boolean(
+                          m?.id ||
+                            m?.file_url ||
+                            m?.download_url ||
+                            m?.download_path ||
+                            m?.s3_key,
+                        );
+                      }),
+                    ]),
+                  );
                   await complete.mutateAsync();
                   setForceCompleted(true);
                   return undefined;

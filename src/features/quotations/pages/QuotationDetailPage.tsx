@@ -29,7 +29,11 @@ import { QuotationOverviewPanel } from '../components/QuotationOverviewPanel';
 import { QuotationPdfModal } from '../components/QuotationPdfModal';
 import { QuotationStatusBadge } from '../components/QuotationStatusBadge';
 import { QuotationTotalsSummary } from '../components/QuotationTotalsSummary';
-import { STATUS_LABELS, type LostReason } from '../constants/quotation.constants';
+import {
+  QUOTATION_STATUSES,
+  STATUS_LABELS,
+  type LostReason,
+} from '../constants/quotation.constants';
 import { QuotationVendorPassModal } from '../components/QuotationVendorPassPanel';
 import {
   useQuotationActions,
@@ -61,6 +65,7 @@ import { FclContinuumRail } from '@/features/shared/continuum/FclContinuumRail';
 import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggle';
 import { OpsContinuumRail } from '@/features/ops-activity';
 import { EntitySectionFilesPanel } from '@/features/shared/section-attachments';
+import { AddStatusCatalogModal } from '@/features/shared/status-catalog';
 import { isUuid } from '@/lib/isUuid';
 import {
   isAwaitingCustomerDecision,
@@ -147,7 +152,8 @@ export default function QuotationDetailPage() {
   const [emailOpen, setEmailOpen] = useState(false);
   const [changeStatusOpen, setChangeStatusOpen] = useState(false);
   const [changeStatusValue, setChangeStatusValue] = useState('VERIFIED');
-  const statusOptionsQuery = useQuotationStatusOptions(changeStatusOpen);
+  const [addStatusOpen, setAddStatusOpen] = useState(false);
+  const statusOptionsQuery = useQuotationStatusOptions(changeStatusOpen || addStatusOpen);
   const [vendorPassOpen, setVendorPassOpen] = useState(false);
   const [generatedLink, setGeneratedLink] = useState<{
     kind: 'shipment' | 'job';
@@ -1379,32 +1385,54 @@ export default function QuotationDetailPage() {
           </p>
           <label className="block text-[13px]">
             <span className="mb-1 block text-[12px] font-medium text-[#334155]">Status</span>
-            <select
-              className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
-              value={changeStatusValue}
-              onChange={(e) => setChangeStatusValue(e.target.value)}
-            >
-              {(statusOptionsQuery.data?.length
-                ? statusOptionsQuery.data
-                : [
-                    { value: 'VERIFIED', label: 'VERIFIED' },
-                    { value: 'APPROVED', label: 'APPROVED' },
-                    { value: 'SUBMITTED', label: 'SUBMITTED' },
-                    { value: 'INTERNALLY_APPROVED', label: 'INTERNALLY_APPROVED' },
-                    { value: 'SENT', label: 'SENT' },
-                    { value: 'REJECTED', label: 'REJECTED' },
-                    { value: 'EXPIRED', label: 'EXPIRED' },
-                  ]
-              ).map((s) => (
-                <option key={s.value} value={s.value}>
-                  {s.label}
-                  {s.is_custom ? ' (custom)' : ''}
-                </option>
-              ))}
-            </select>
+            <div className="flex items-center gap-2">
+              <select
+                className="h-8 min-w-0 flex-1 rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={changeStatusValue}
+                onChange={(e) => setChangeStatusValue(e.target.value)}
+              >
+                {(statusOptionsQuery.data?.length
+                  ? statusOptionsQuery.data
+                  : [
+                      { value: 'VERIFIED', label: 'VERIFIED' },
+                      { value: 'APPROVED', label: 'APPROVED' },
+                      { value: 'SUBMITTED', label: 'SUBMITTED' },
+                      { value: 'INTERNALLY_APPROVED', label: 'INTERNALLY_APPROVED' },
+                      { value: 'SENT', label: 'SENT' },
+                      { value: 'REJECTED', label: 'REJECTED' },
+                      { value: 'EXPIRED', label: 'EXPIRED' },
+                    ]
+                ).map((s) => (
+                  <option key={s.value} value={s.value}>
+                    {s.label}
+                    {s.is_custom ? ' (custom)' : ''}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                title="Add custom status"
+                aria-label="Add custom status"
+                onClick={() => setAddStatusOpen(true)}
+                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-[var(--color-primary-600)] text-white hover:bg-[var(--color-primary-700)]"
+              >
+                <Plus className="h-4 w-4" aria-hidden />
+              </button>
+            </div>
           </label>
         </Modal>
       )}
+
+      <AddStatusCatalogModal
+        open={addStatusOpen}
+        nested
+        entity="quotations"
+        onClose={() => setAddStatusOpen(false)}
+        onCreated={(code) => {
+          setChangeStatusValue(code);
+          void statusOptionsQuery.refetch();
+        }}
+      />
 
       <QuotationPdfModal
         quotationId={id}

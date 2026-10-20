@@ -51,8 +51,8 @@ export default function PortalTrackPage() {
   return (
     <div className="mx-auto max-w-xl space-y-5">
       <PortalPageHeader
-        title="Track"
-        description="Enter a job or document reference to open the matching shipment."
+        title="Track & Trace"
+        description="Enter a job or document reference (job no, HBL, MBL, HAWB, booking) to open the matching job."
       />
 
       <PortalPanel padded>
@@ -93,7 +93,7 @@ export default function PortalTrackPage() {
             className="w-full"
             disabled={lookup.isPending || ref.trim().length < 2}
           >
-            {lookup.isPending ? 'Searching…' : 'Track shipment'}
+            {lookup.isPending ? 'Searching…' : 'Track job'}
           </Button>
         </form>
       </PortalPanel>

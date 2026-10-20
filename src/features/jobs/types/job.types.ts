@@ -712,6 +712,8 @@ export interface JobActions {
   can_invoices?: boolean;
   can_pnl?: boolean;
   can_milestones?: boolean;
+  /** Track & Trace (linked shipment tracking / public /track / milestones). */
+  can_tracking?: boolean;
   can_notes?: boolean;
   can_vendor_offers?: boolean;
   can_logistics?: boolean;
@@ -763,7 +765,7 @@ export interface ChangeJobStatusDto {
 export interface UpsertStatusCatalogDto {
   code: string;
   label: string;
-  maps_to_system_status: string;
+  maps_to_system_status?: string;
   is_active?: boolean;
   sort_order?: number;
 }

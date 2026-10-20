@@ -128,12 +128,12 @@ interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
-  /** True when idle timeout or refresh failed — show SessionExpiredModal. */
-  sessionExpired: boolean
   /**
-   * Continue / Revoke owns token refresh while the idle modal is open.
-   * Axios must not auto-refresh in the background (one-time refresh tokens).
+   * Legacy flag — idle timeout now auto-logs out (no Continue/Revoke modal).
+   * Kept so persist / axios guards stay compatible.
    */
+  sessionExpired: boolean
+  /** True while an explicit logout-after-idle path is clearing tokens. */
   sessionExpiryActionInProgress: boolean
   /** GET /auth/me blocked the tenant (e.g. subscription expired) — keep login session. */
   subscriptionBlocked: boolean
@@ -155,12 +155,13 @@ interface AuthActions {
   patchSessionUser: (partial: Partial<AuthUser>) => void
   clearMustChangePassword: () => void
   touchSessionActivity: () => void
+  /** Idle / refresh failure — clear session and go to login (no popup). */
   markSessionExpired: () => void
   setSubscriptionBlocked: (message: string | null) => void
   setErpAccessBlocked: (message: string | null) => void
-  /** Continue after idle expiry — refresh tokens, stay signed in (no login). */
+  /** @deprecated Idle no longer offers Continue — calls markSessionExpired. */
   continueExpiredSession: () => Promise<void>
-  /** POST /auth/sessions/{id}/revoke then clear and go to login. */
+  /** @deprecated Idle no longer offers Revoke — calls markSessionExpired. */
   revokeExpiredSessionAndLogin: () => Promise<void>
   /** Clear ERP staff/tenant session (e.g. when entering Super Admin). */
   clearSession: () => void
@@ -375,6 +376,10 @@ export const useAuthStore = create<AuthStore>()(
               device_name: dto.device_name,
             }),
           )
+          const { rememberPublicTrackTenantSlug } = await import(
+            '@/features/public-track/utils/publicTrackContext'
+          )
+          rememberPublicTrackTenantSlug(dto.tenant_slug)
           await applyLoginSuccess(set, result)
         } catch (err) {
           if (import.meta.env.DEV && dto.tenant_slug?.trim()) {
@@ -421,6 +426,10 @@ export const useAuthStore = create<AuthStore>()(
               mac_address: dto.mac_address,
             }),
           )
+          const { rememberPublicTrackTenantSlug } = await import(
+            '@/features/public-track/utils/publicTrackContext'
+          )
+          rememberPublicTrackTenantSlug(dto.tenant_slug)
           await applyLoginSuccess(set, result)
         } catch (err) {
           if (import.meta.env.DEV) {
@@ -478,10 +487,9 @@ export const useAuthStore = create<AuthStore>()(
             accessToken: pair.accessToken,
             refreshToken: pair.refreshToken || refreshToken,
             sessionId,
-            // Do not clear sessionExpired here — idle modal Continue owns that.
+            sessionExpired: false,
           })
         } catch (err) {
-          if (get().sessionExpired) throw err
           get().markSessionExpired()
           throw new Error('Session expired. Please sign in again.')
         }
@@ -533,16 +541,13 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       touchSessionActivity: () => {
-        if (!get().isAuthenticated || get().sessionExpired) return
+        if (!get().isAuthenticated) return
         set({ lastActiveAt: Date.now() })
       },
 
       markSessionExpired: () => {
-        if (get().sessionExpired) return
-        set({
-          sessionExpired: true,
-          // Keep tokens/sessionId so Continue / Revoke can run without login.
-        })
+        // 30 minutes idle (or refresh failure): sign out automatically — no Continue/Revoke popup.
+        hardSignOutToLogin('/login')
       },
 
       setSubscriptionBlocked: (message) => {
@@ -560,85 +565,11 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       continueExpiredSession: async () => {
-        const refreshToken = get().refreshToken
-        if (!refreshToken) {
-          throw new Error('Session cannot be continued. Sign in again.')
-        }
-        set({ sessionExpiryActionInProgress: true })
-        try {
-          const pair = await authService.refresh({ refresh_token: refreshToken })
-          let sessionId =
-            pair.sessionId ||
-            sessionIdFromAccessToken(pair.accessToken) ||
-            get().sessionId
-          set({
-            accessToken: pair.accessToken,
-            refreshToken: pair.refreshToken || refreshToken,
-            sessionId,
-            lastActiveAt: Date.now(),
-            sessionExpired: false,
-            sessionExpiryActionInProgress: false,
-            isAuthenticated: true,
-          })
-          try {
-            const resolved = await authService.resolveCurrentSessionId()
-            if (resolved) set({ sessionId: resolved })
-          } catch {
-            // Keep JWT/login session id — Continue already succeeded.
-          }
-        } catch (err) {
-          set({ sessionExpiryActionInProgress: false })
-          const status = (err as { response?: { status?: number; data?: unknown } })?.response
-            ?.status
-          const data = (err as { response?: { data?: unknown } })?.response?.data
-          if (status === 401 || status === 403 || isSessionInactivityTimeoutMessage(data)) {
-            hardSignOutToLogin('/login')
-            throw new Error('Session timed out. Please sign in again.')
-          }
-          throw err instanceof Error
-            ? err
-            : new Error('Could not continue session. Please try again.')
-        }
+        get().markSessionExpired()
       },
 
       revokeExpiredSessionAndLogin: async () => {
-        set({ sessionExpiryActionInProgress: true })
-        const refreshToken = get().refreshToken
-        try {
-          // Idle modal often still has an expired access token. Refresh first so
-          // POST /auth/logout (revokes the *current* session) can authenticate.
-          if (refreshToken) {
-            try {
-              const pair = await authService.refresh({ refresh_token: refreshToken })
-              set({
-                accessToken: pair.accessToken,
-                refreshToken: pair.refreshToken || refreshToken,
-                sessionId:
-                  pair.sessionId ||
-                  sessionIdFromAccessToken(pair.accessToken) ||
-                  get().sessionId,
-              })
-            } catch {
-              // Fall through — still clear local session below.
-            }
-          }
-
-          // Primary: OpenAPI "Revoke the current session" — no session-id required.
-          if (get().accessToken) {
-            try {
-              await authService.logout()
-            } catch {
-              // Secondary: explicit sessions/{id}/revoke if logout rejected.
-              try {
-                await authService.revokeCurrentSession(get().sessionId)
-              } catch {
-                /* local sign-out below */
-              }
-            }
-          }
-        } finally {
-          hardSignOutToLogin('/login')
-        }
+        get().markSessionExpired()
       },
 
       forceLogoutDueToInactivity: () => {

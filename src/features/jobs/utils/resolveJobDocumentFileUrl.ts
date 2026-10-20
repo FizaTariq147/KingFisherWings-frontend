@@ -27,13 +27,13 @@ function fromS3Key(key: string, tenantId?: string | null): string | null {
   if (trimmed.startsWith('/files/')) return trimmed;
 
   const parts = trimmed.split('/').filter(Boolean);
+  // Require tenant/filename shape — do not invent `/files/{tenant}/{displayName}`
+  // from a bare file name (breaks Download; prefer document UUID API instead).
   if (parts.length >= 2) {
     const filename = parts.slice(1).join('/');
     return FILES_API.download(parts[0], filename);
   }
-  if (tenantId && parts.length === 1) {
-    return FILES_API.download(tenantId, parts[0]);
-  }
+  void tenantId;
   return null;
 }
 
@@ -92,10 +92,8 @@ export function resolveJobDocumentFileUrlCandidates(
   for (const url of apiOrigin) pushUnique(out, url);
   for (const url of external) pushUnique(out, url);
 
-  const name = (doc.file_name || doc.fileName || '').trim();
-  if (name && tenantId && !name.includes('/')) {
-    pushUnique(out, FILES_API.download(tenantId, name));
-  }
+  // Do not invent `/files/{tenant}/{file_name}` from a display name alone — that path
+  // is almost never valid for job documents and breaks Download (prefer document id API).
 
   return out;
 }

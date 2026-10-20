@@ -1,5 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isUuid } from '@/lib/isUuid';
+import { tenantSlugFromAccessToken } from '@/lib/tenantFromAuth';
 import { useAuthStore } from '@/store/authStore';
 import { jobService } from '../services/job.service';
 import type {
@@ -23,6 +24,7 @@ export const jobKeys = {
   houseJobs: (id: string) => [...jobKeys.all, 'house-jobs', id] as const,
   pnl: (id: string) => [...jobKeys.all, 'pnl', id] as const,
   milestones: (id: string) => [...jobKeys.all, 'milestones', id] as const,
+  tracking: (id: string) => [...jobKeys.all, 'tracking', id] as const,
   notes: (id: string) => [...jobKeys.all, 'notes', id] as const,
   documents: (id: string) => [...jobKeys.all, 'documents', id] as const,
   docStatus: (id: string) => [...jobKeys.all, 'doc-status', id] as const,
@@ -371,6 +373,41 @@ export function useJobMilestones(id: string, enabled = true) {
     queryKey: jobKeys.milestones(id),
     queryFn: () => jobService.listMilestones(id),
     enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** Track & Trace — shipment tracking / public /track / job milestones. */
+export function useJobTracking(
+  opts: {
+    jobId: string;
+    jobNumber?: string;
+    shipmentId?: string;
+  },
+  enabled = false,
+) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const tenantSlugFromToken = tenantSlugFromAccessToken(accessToken);
+  return useQuery({
+    queryKey: [
+      ...jobKeys.tracking(opts.jobId),
+      opts.shipmentId ?? '',
+      opts.jobNumber ?? '',
+      tenantSlugFromToken,
+    ],
+    queryFn: async () => {
+      const { readRememberedPublicTrackTenantSlug } = await import(
+        '@/features/public-track/utils/publicTrackContext'
+      );
+      const tenantSlug =
+        tenantSlugFromToken || readRememberedPublicTrackTenantSlug() || undefined;
+      return jobService.trackAndTrace({
+        jobId: opts.jobId,
+        jobNumber: opts.jobNumber,
+        shipmentId: opts.shipmentId,
+        tenantSlug,
+      });
+    },
+    enabled: Boolean(accessToken) && isUuid(opts.jobId) && enabled,
   });
 }
 

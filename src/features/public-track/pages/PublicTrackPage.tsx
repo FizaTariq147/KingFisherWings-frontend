@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { usePublicTrackEmbed, usePublicTrackLookup } from '../hooks/usePublicTrack';
 import type { PublicTrackResult } from '../types/publicTrack.types';
-import { resolveRefFromLocation, resolveTenantSlugFromLocation } from '../utils/publicTrackContext';
+import {
+  rememberPublicTrackTenantSlug,
+  resolveRefFromLocation,
+  resolveTenantSlugFromLocation,
+} from '../utils/publicTrackContext';
 import { isSafeHttpUrl } from '@/lib/safeHttpUrl';
 
 export default function PublicTrackPage() {
@@ -35,9 +39,15 @@ export default function PublicTrackPage() {
   const runLookup = async () => {
     setError(null);
     setResult(null);
+    const slug = (resolvedTenant || tenantSlug).trim();
+    if (!slug) {
+      setError('Enter your workspace (tenant slug) to look up a shipment.');
+      return;
+    }
+    rememberPublicTrackTenantSlug(slug);
     try {
       const data = await lookup.mutateAsync({
-        tenantSlug: resolvedTenant || undefined,
+        tenantSlug: slug,
         ref: ref.trim(),
       });
       setResult(data);
