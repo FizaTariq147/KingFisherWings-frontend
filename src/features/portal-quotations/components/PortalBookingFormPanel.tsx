@@ -639,6 +639,24 @@ function toDto(
     parties,
   };
 
+  // Backend complete requires origin/dest door addresses — fall back to route hubs.
+  const originDoorFallback =
+    form.origin_door_address.trim() ||
+    form.origin_city_country.trim() ||
+    form.pol.trim() ||
+    form.origin_airport_code.trim() ||
+    form.border_or_port.trim() ||
+    form.port_of_entry.trim() ||
+    undefined;
+  const destDoorFallback =
+    form.dest_door_address.trim() ||
+    form.dest_city_country.trim() ||
+    form.pod.trim() ||
+    form.warehouse_name.trim() ||
+    form.dest_airport_code.trim() ||
+    form.port_of_exit.trim() ||
+    undefined;
+
   if (kind === 'air') {
     const pallets = form.pallets
       .map((p) => ({
@@ -653,8 +671,8 @@ function toDto(
     return {
       ...shared,
       service_scope: form.service_scope || undefined,
-      origin_door_address: form.origin_door_address.trim() || undefined,
-      dest_door_address: form.dest_door_address.trim() || undefined,
+      origin_door_address: originDoorFallback,
+      dest_door_address: destDoorFallback,
       origin_airport_code:
         clipComplianceField(form.origin_airport_code, L.origin_airport_code) ?? '',
       dest_airport_code: clipComplianceField(form.dest_airport_code, L.dest_airport_code) ?? '',
@@ -747,8 +765,8 @@ function toDto(
     const baseLand = {
       ...shared,
       service_scope: form.service_scope || undefined,
-      origin_door_address: form.origin_door_address.trim() || undefined,
-      dest_door_address: form.dest_door_address.trim() || undefined,
+      origin_door_address: originDoorFallback || originCity || undefined,
+      dest_door_address: destDoorFallback || destCity || undefined,
       pieces: numOrUndef(form.pieces),
       volume_cbm: numOrUndef(form.volume_cbm),
       cargo_category: form.cargo_category || undefined,
@@ -808,8 +826,8 @@ function toDto(
     pod: clipComplianceField(form.pod, L.pod) ?? '',
     shipper_owned_container: form.shipper_owned_container,
     service_scope: form.service_scope || undefined,
-    origin_door_address: form.origin_door_address.trim() || undefined,
-    dest_door_address: form.dest_door_address.trim() || undefined,
+    origin_door_address: originDoorFallback,
+    dest_door_address: destDoorFallback,
   };
 }
 
