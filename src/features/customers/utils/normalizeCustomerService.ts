@@ -45,11 +45,14 @@ function portDisplay(code: string | undefined): string {
 }
 
 export function mapJobToShipmentRow(job: Job): CustomerShipmentRow {
+  // Prefer real job_number for sales/jobs lists — never fall back to shipment_number here.
+  const jobNo = job.job_number?.trim() || `Job ${job.id.slice(0, 8)}`;
+  const shipmentNo = job.shipment_number?.trim() || jobNo;
   return {
     id: job.id,
     jobType: job.job_type,
-    shipmentNo: job.job_number || job.id.slice(0, 8),
-    jobNo: job.job_number || '—',
+    shipmentNo,
+    jobNo,
     client: displayLabel(job.shipper_name),
     origin: portDisplay(job.origin_port_code),
     destination: portDisplay(job.dest_port_code),
@@ -161,7 +164,7 @@ export function mapJobCosting(job: Job, pnl?: { revenue?: number; cost?: number;
   const revenue = pnl?.revenue ?? saleLines.reduce((sum, line) => sum + line.lineTotal, 0);
   const cost = pnl?.cost ?? costLines.reduce((sum, line) => sum + line.lineTotal, 0);
   return {
-    shipmentNo: job.job_number || job.id.slice(0, 8),
+    shipmentNo: job.shipment_number?.trim() || job.job_number?.trim() || job.id.slice(0, 8),
     revenue,
     cost,
     grossProfit: pnl?.gross_profit ?? revenue - cost,

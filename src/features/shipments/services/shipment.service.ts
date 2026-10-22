@@ -29,6 +29,11 @@ import {
   normalizeShipments,
   unwrapShipmentPayload,
 } from '../utils/normalizeShipment';
+import {
+  applyRememberedShipmentDepartment,
+  getRememberedShipmentDepartment,
+  rememberShipmentDepartment,
+} from '../utils/shipmentDepartmentMemory';
 import { formatShipmentsPermissionError } from '../utils/shipmentPermissions';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -103,15 +108,43 @@ function formatAxiosError(error: unknown): Error {
     return new Error(formatShipmentsPermissionError(error.message));
   }
   const axiosErr = error as {
-    response?: { data?: { message?: string | string[]; error?: string }; status?: number };
+    response?: {
+      data?: {
+        message?: unknown;
+        error?: string;
+        detail?: string;
+      };
+      status?: number;
+    };
     message?: string;
   };
   const data = axiosErr.response?.data;
   const message = data?.message;
+  let fromArray: string | null = null;
+  if (Array.isArray(message)) {
+    fromArray = message
+      .map((item) => {
+        if (typeof item === 'string') return item;
+        if (item && typeof item === 'object') {
+          const row = item as Record<string, unknown>;
+          if (row.constraints && typeof row.constraints === 'object') {
+            return Object.values(row.constraints as Record<string, unknown>)
+              .map(String)
+              .join('; ');
+          }
+          if (typeof row.message === 'string') return row.message;
+        }
+        return String(item ?? '');
+      })
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .join('; ');
+  }
   const raw =
-    (Array.isArray(message) && message.map(String).join('; ')) ||
+    fromArray ||
     (typeof message === 'string' && message.trim() && message) ||
     (typeof data?.error === 'string' && data.error.trim() && data.error) ||
+    (typeof data?.detail === 'string' && data.detail.trim() && data.detail) ||
     axiosErr.message ||
     'Request failed';
   return new Error(formatShipmentsPermissionError(String(raw)));
@@ -288,7 +321,7 @@ export const shipmentService = {
       const res = await withGatewayRetry(() => axiosInstance.get(SHIPMENT_API.byId(id)));
       const item = normalizeShipment(unwrapShipmentPayload(res.data));
       if (!item) throw new Error('Shipment not found.');
-      return item;
+      return applyRememberedShipmentDepartment(item);
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -342,19 +375,24 @@ export const shipmentService = {
 
       const enriched = normalizeShipment(merged);
       if (enriched) {
-        return {
+        return applyRememberedShipmentDepartment({
           ...basic,
           ...enriched,
           id: basic.id,
+          // Prefer ids from either basic GET or detail envelope (detail may omit them).
+          department_id: enriched.department_id || basic.department_id,
+          department_name: enriched.department_name || basic.department_name,
+          branch_id: enriched.branch_id || basic.branch_id,
+          branch_name: enriched.branch_name || basic.branch_name,
           // Never keep tabs from basic GET /shipments/:id — only detail API.
           tabs: enriched.tabs,
-        };
+        });
       }
     } catch (error) {
       const err = formatAxiosError(error);
       if (!/404|not found/i.test(err.message)) throw err;
     }
-    return { ...basic, tabs: undefined };
+    return applyRememberedShipmentDepartment({ ...basic, tabs: undefined });
   },
 
   /** GET /shipments/:id/detail/:tab — lazy tab payload (exact API key, form-ready). */
@@ -635,9 +673,30 @@ export const shipmentService = {
       const res = await withGatewayRetry(() =>
         axiosInstance.patch(SHIPMENT_API.changeDepartment(id), dto),
       );
-      return (
-        normalizeShipment(unwrapShipmentPayload(res.data)) ?? (await this.getDetail(id))
-      );
+      const fromBody = normalizeShipment(unwrapShipmentPayload(res.data));
+      const branchId =
+        dto.branch_id != null && dto.branch_id !== ''
+          ? fromBody?.branch_id || dto.branch_id
+          : fromBody?.branch_id;
+      {
+        const prior = getRememberedShipmentDepartment(id);
+        rememberShipmentDepartment(id, {
+          department_id: fromBody?.department_id || dto.department_id,
+          branch_id: branchId,
+          department_name:
+            fromBody?.department_name || prior?.department_name,
+          branch_name: fromBody?.branch_name || prior?.branch_name,
+        });
+      }
+      // Prefer PATCH body + remembered ids; avoid an immediate detail GET that can omit them.
+      if (fromBody) {
+        return applyRememberedShipmentDepartment({
+          ...fromBody,
+          department_id: fromBody.department_id || dto.department_id,
+          branch_id: branchId,
+        });
+      }
+      return applyRememberedShipmentDepartment(await this.getDetail(id));
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -809,7 +868,7 @@ export const shipmentService = {
 
   /**
    * GET /shipments/:id/edi/submissions/:submissionId/download
-   * Streams application/pdf (Content-Disposition: attachment) with Bearer — not an S3 URL.
+   * Streams text/plain (.txt MANIFEST_CSDP) or application/pdf with Bearer — not an S3 URL.
    */
   async downloadEdiSubmission(id: string, submissionId: string): Promise<Blob | unknown> {
     assertId(id);
@@ -824,7 +883,7 @@ export const shipmentService = {
           {
             responseType: 'blob',
             headers: {
-              Accept: 'application/pdf, application/json, */*',
+              Accept: 'text/plain, application/pdf, application/json, */*',
             },
           },
         ),
@@ -889,9 +948,11 @@ export const shipmentService = {
   /** POST /shipments/:id/charges — add charge line. */
   async addCharge(id: string, dto: CreateShipmentChargeDto): Promise<unknown> {
     assertId(id);
+    const { compactShipmentChargeDto } = await import('../utils/normalizeShipmentCharges');
+    const body = compactShipmentChargeDto({ ...dto } as Record<string, unknown>);
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.post(SHIPMENT_API.charges(id), dto),
+        axiosInstance.post(SHIPMENT_API.charges(id), body),
       );
       return unwrapShipmentPayload(res.data) ?? res.data;
     } catch (error) {
@@ -902,9 +963,11 @@ export const shipmentService = {
   /** POST /shipments/:id/get-charges — pull from quote / party standards. */
   async pullCharges(id: string, dto: GetShipmentChargesDto = {}): Promise<unknown> {
     assertId(id);
+    const { compactShipmentChargeDto } = await import('../utils/normalizeShipmentCharges');
+    const body = compactShipmentChargeDto({ ...dto } as Record<string, unknown>);
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.post(SHIPMENT_API.getCharges(id), dto),
+        axiosInstance.post(SHIPMENT_API.getCharges(id), body),
       );
       return unwrapShipmentPayload(res.data) ?? res.data;
     } catch (error) {
@@ -915,9 +978,11 @@ export const shipmentService = {
   /** POST /shipments/:id/copy-charges */
   async copyCharges(id: string, dto: CopyShipmentChargesDto): Promise<unknown> {
     assertId(id);
+    const { compactShipmentChargeDto } = await import('../utils/normalizeShipmentCharges');
+    const body = compactShipmentChargeDto({ ...dto } as Record<string, unknown>);
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.post(SHIPMENT_API.copyCharges(id), dto),
+        axiosInstance.post(SHIPMENT_API.copyCharges(id), body),
       );
       return unwrapShipmentPayload(res.data) ?? res.data;
     } catch (error) {
@@ -1015,6 +1080,118 @@ export const shipmentService = {
     try {
       const res = await withGatewayRetry(() =>
         axiosInstance.post(SHIPMENT_API.organizations(id), body),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /shipments/:id/organizations (proxies to job when linked). */
+  async listOrganizations(id: string): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(SHIPMENT_API.organizations(id)),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** PUT /shipments/:id/organizations/:orgType */
+  async replaceOrganization(
+    id: string,
+    orgType: string,
+    body: Record<string, unknown>,
+  ): Promise<unknown> {
+    assertId(id);
+    if (!orgType?.trim()) throw new Error('Organization type is required.');
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.put(SHIPMENT_API.organizationByType(id, orgType.trim()), body),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** DELETE /shipments/:id/organizations/:orgType */
+  async unlinkOrganization(id: string, orgType: string): Promise<unknown> {
+    assertId(id);
+    if (!orgType?.trim()) throw new Error('Organization type is required.');
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.delete(SHIPMENT_API.organizationByType(id, orgType.trim())),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /shipments/:id/organizations/copy-from */
+  async copyOrganizationsFrom(
+    id: string,
+    body: Record<string, unknown> = {},
+  ): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(SHIPMENT_API.organizationsCopyFrom(id), body),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /shipments/:id/organizations/party-search?q= */
+  async searchOrganizationParties(
+    id: string,
+    q: string,
+    params: { party_type?: string; limit?: number } = {},
+  ): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(SHIPMENT_API.organizationsPartySearch(id), {
+          params: { q: q.trim(), ...params },
+        }),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /shipments/:id/bl-draft/preview */
+  async getBlDraftPreview(id: string): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(SHIPMENT_API.blDraftPreview(id)),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /shipments/:id/bl-draft/generate — is_original: false */
+  async generateBlDraft(
+    id: string,
+    body: Record<string, unknown> = {},
+  ): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(SHIPMENT_API.blDraftGenerate(id), {
+          is_original: false,
+          ...body,
+        }),
       );
       return unwrapShipmentPayload(res.data) ?? res.data;
     } catch (error) {

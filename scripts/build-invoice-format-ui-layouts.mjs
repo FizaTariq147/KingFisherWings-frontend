@@ -26,11 +26,12 @@ const BRAND = {
   logo: 'kingfisher',
 };
 
+/** Fresa Tax Invoice India palette (black ink + light fills; cyan/orange/red footer accents). */
 const THEME_TAX = {
   primary: '#000000',
   accent: '#2286C8',
   fill: '#F3F3F3',
-  panel: '#EBF0F4',
+  panel: '#F3F3F3',
   orange: '#F7A21C',
   red: '#DE1F26',
   cyan: '#9AD7FF',
@@ -62,35 +63,117 @@ const GST_HEADERS = [
   'Total Amount (INR)',
 ];
 
+/** Charge rows from Fresa invoice-report-format-1-tax-invoice-india.pdf */
 const GST_ROWS = [
-  ['FREIGHT CHARGE', '', '1', '100.00', 'USD', '70.00000', '100.00', '7,000.00', '7,000.00', '', '', '', '', ''],
-  ['TERMINAL HANDLING 20"GP', '', '1', '5,500.00', 'INR', '1.00000', '5,500.00', '5,500.00', '', '9.00', '495.00', '9.00', '495.00', '6,490.00'],
+  ['FREIGHT CHARGE', '', '1', '100.00', 'USD', '70.00000', '100.00', '', '7,000.00', '', '', '', '', '7,000.00'],
+  [
+    'TERMINAL HANDLING CHARGES 20"GP',
+    '',
+    '1',
+    '5,500.00',
+    'INR',
+    '1.00000',
+    '5,500.00',
+    '5,500.00',
+    '',
+    '9.00',
+    '495.00',
+    '9.00',
+    '495.00',
+    '6,490.00',
+  ],
   ['SEAL FEE', '', '1', '300.00', 'INR', '1.00000', '300.00', '300.00', '', '9.00', '27.00', '9.00', '27.00', '354.00'],
-  ['BILL OF LADING', '', '1', '3,000.00', 'INR', '1.00000', '3,000.00', '3,000.00', '', '9.00', '270.00', '9.00', '270.00', '3,540.00'],
+  [
+    'BILL OF LADING',
+    '',
+    '1',
+    '3,000.00',
+    'INR',
+    '1.00000',
+    '3,000.00',
+    '3,000.00',
+    '',
+    '9.00',
+    '270.00',
+    '9.00',
+    '270.00',
+    '3,540.00',
+  ],
 ];
 
+/** Field grid from Fresa Format-1 Tax Invoice India sample PDF. */
 const SHIP_FIELDS = [
   { k: 'Shipper', v: '4G LOGISTICS INDIA PVT LTD' },
   { k: 'Consignee', v: 'AL NASER TRADING COMPANY LLC' },
-  { k: 'Job No.', v: 'CEXP260148 / 14-SEP-26' },
-  { k: 'Shipment No.', v: 'B/EXP/26/0251 / 08-SEP-26' },
-  { k: 'MBL / MAWB No.', v: 'MBLC9878909999 / 07-SEP-26' },
-  { k: 'HBL / HAWB No.', v: 'PLMAAJEA00080 / 09-SEP-26' },
+  { k: 'Job No.', v: 'CEXP190148 / 28-JAN-19' },
+  { k: 'Shipment No.', v: 'B/EXP/19/0251 / 22-JAN-19' },
+  { k: 'MBL / MAWB No.', v: 'MBLC9878909999 / 21-JAN-19' },
+  { k: 'HBL / HAWB No.', v: 'PLMAAJEA00080 / 23-JAN-19' },
   { k: 'Place of Receipt', v: 'CHENNAI' },
   { k: 'POR', v: 'INMAA' },
   { k: 'POL', v: 'INMAA' },
   { k: 'POD', v: 'AEJEA' },
   { k: 'Place of Delivery', v: 'JEBEL ALI FZE' },
   { k: 'Vessel / Voyage', v: 'MSC MARINA / 876' },
-  { k: 'ETD', v: '14-SEP-26' },
-  { k: 'ETA', v: '21-SEP-26' },
-  { k: 'Reference No.', v: 'REFE NO. 987890 / 08-SEP-26' },
+  { k: 'ETD', v: '28-JAN-19' },
+  { k: 'ETA', v: '05-FEB-19' },
+  { k: 'Reference No.', v: 'REFE NO. 987890 / 22-JAN-19' },
   { k: 'Currency', v: 'INR 1.000000' },
-  { k: 'IGM No.', v: '8987777 / 11-SEP-26' },
+  { k: 'IGM No.', v: '8987777 / 25-JAN-19' },
   { k: 'INCO Terms', v: 'CFR' },
-  { k: 'Narration', v: 'B/EXP/26/0251 MBL NO. MBLC9878909999 / HBL NO. PLMAAJEA00080' },
-  { k: 'Remarks', v: '1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777' },
+  {
+    k: 'Narration',
+    v: 'B/EXP/19/0251 MBL NO. MBLC9878909999 / HBL NO. PLMAAJEA00080 / JOB NO.CEXP190148',
+  },
+  {
+    k: 'Remarks',
+    v: '1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777 DATE: 17/01/2019',
+  },
 ];
+
+/** Shared Tax Invoice India demo (Format-1 / Format-2 sample PDFs). */
+const TAX_INDIA_DEMO = {
+  invoiceNo: 'MAAINV1900717',
+  invoiceDate: '28-JAN-19',
+  dueDate: '28-JAN-19',
+  creditTerm: 'CASH',
+  billToLabel: 'Bill To',
+  billToName: '4G LOGISTICS INDIA PVT LTD',
+  billToAddress:
+    '10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD, NUNGAMBAKKAM, CHENNAI, TAMIL NADU, INDIA, 600084',
+  billToPhone: 'N/A',
+  billToGstin: 'GSTNO9876666554',
+  currency: 'INR',
+  words: 'Rupee Seventeen Thousand Three Hundred Eighty-Four Only',
+  subtotal: '8,800.00',
+  tax: '1,584.00',
+  total: '17,384.00',
+  totalLabel: '',
+  taxAmountLines: ['GST18-SGST9% 792.00', 'GST18-CGST9% 792.00'],
+  tableHeaders: GST_HEADERS,
+  tableRows: GST_ROWS,
+  containerHeaders: [
+    'Container No.',
+    'Type',
+    'No of Pcs',
+    'Gross Weight',
+    'Volume',
+    'Volume Weight',
+  ],
+  containerRow: ['TCNU9876543', "20' DC", '125 PACKAGES', '18,000.000 K', '20.000', ''],
+  termsLines: [
+    '1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.',
+    '2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.',
+  ],
+  bankLines: [
+    'Beneficiary Name: KingFisher Logistic',
+    'Bank : HDFC',
+    'A/c No : XXXXXXXXXXX',
+    'IBAN Code : ABA:XXXXXX',
+    'Swift Code : XXXXXX',
+    'Address : Dubai, United Arab Emirates',
+  ],
+};
 
 /** Shared demo from fg_invoice_format* sample PDFs (BOMINV230500382). */
 const BOMINV = {
@@ -368,30 +451,88 @@ let PURCHASE_2_LAYOUT;
 
 /** Distinct Formats 1–10 */
 const DISTINCT = {
+  /**
+   * Format-1 Tax Invoice India — Fresa sample PDF structure.
+   * @see https://fresatechnologies.com/wp-content/uploads/report-formats/invoice-report-format-1-tax-invoice-india.pdf
+   */
   1: layout({
     theme: THEME_TAX,
-    demo: bomInvDemo({ ...BOMINV.chargesIgst }),
+    demo: {
+      ...TAX_INDIA_DEMO,
+      metaRows: [
+        { k: 'Invoice No./Date', v: 'MAAINV1900717 / 28-JAN-19 (CREATED)' },
+        { k: 'Due Date', v: '28-JAN-19' },
+      ],
+      fieldGrid: SHIP_FIELDS,
+    },
     blocks: [
       { type: 'companyHeader', showContact: true },
-      { type: 'docTitle', text: `INVOICE ${BOMINV.no}`, align: 'start' },
-      { type: 'exportMetaStrip' },
-      { type: 'shipmentDetails', showPlaceOfSupply: true },
+      { type: 'docTitle', text: 'TAX INVOICE', align: 'center' },
+      { type: 'twoColumn', showBillTo: true },
+      { type: 'fieldGrid', cols: 2 },
+      { type: 'containerStrip' },
       { type: 'chargeTable', headerColor: 'fill' },
-      { type: 'subtotalBar', variant: 'igst' },
-      { type: 'exportClosing' },
+      { type: 'taxAmountBox' },
+      { type: 'wordsAndTotal' },
+      { type: 'termsBank' },
       { type: 'colorfulFooter' },
     ],
   }),
+  /**
+   * Format-2 Tax Invoice India — Client / Origin-Destination party block.
+   * @see https://fresatechnologies.com/wp-content/uploads/report-formats/invoice-report-format-2-tax-invoice-india.pdf
+   */
   2: layout({
     theme: THEME_TAX,
-    demo: bomInvDemo({ ...BOMINV.chargesFcy }),
+    demo: {
+      ...TAX_INDIA_DEMO,
+      billToLabel: 'Client',
+      metaRows: [
+        { k: 'Invoice No.', v: 'MAAINV1900717 / 28-JAN-19 (CREATED)' },
+        { k: 'Job No.', v: 'CEXP190148 / 28-JAN-19' },
+        { k: 'Shipment No.', v: 'B/EXP/19/0251 / 22-JAN-19' },
+        { k: 'Line / Subline No.', v: '128 / 12' },
+      ],
+      partyLeft: {
+        title: 'Shipper',
+        lines: ['4G LOGISTICS INDIA PVT LTD', 'Origin', 'CHENNAI (EX MADRAS), INDIA'],
+      },
+      partyMid: {
+        title: 'Consignee',
+        lines: ['AL NASER TRADING COMPANY LLC', 'Destination', 'JEBEL ALI, UNITED ARAB EMIRATES'],
+      },
+      partyRight: [
+        { k: 'MBL / MAWB No.', v: 'MBLC9878909999 / 21-JAN-19' },
+        { k: 'HBL / HAWB No.', v: 'PLMAAJEA00080 / 23-JAN-19' },
+        { k: 'Vessel / Voyage', v: 'MSC MARINA / 876' },
+        { k: 'ETD', v: '28-JAN-19' },
+        { k: 'ETA', v: '05-FEB-19' },
+        { k: 'INCO Terms', v: 'CFR' },
+        { k: 'Currency', v: 'INR 1.00000' },
+        { k: 'Reference No.', v: '987898 / 17-JAN-19' },
+        { k: 'IGM No.', v: '8987777 / 25-JAN-19' },
+        { k: 'PO No.', v: '987898' },
+      ],
+      fieldGrid: [
+        {
+          k: 'Remarks',
+          v: '1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777 DATE: 17/01/2019',
+        },
+      ],
+      containerHeaders: ['Container No.', 'Type', 'No. of Pcs', 'Pack Type', 'G.Weight', 'Volume (CBM)'],
+      containerRow: ['TCNU9876543', "20' DC", '125.00', 'PACKAGES', '18,000.000 K', '20.000'],
+    },
     blocks: [
       { type: 'companyHeader', showContact: true },
-      { type: 'docTitle', text: `INVOICE ${BOMINV.no}`, align: 'start' },
-      { type: 'shipmentDetails', fcyOrder: true },
+      { type: 'docTitle', text: 'TAX INVOICE', align: 'center' },
+      { type: 'twoColumn', showBillTo: true, showCreditTerm: true },
+      { type: 'partyTriple' },
+      { type: 'fieldGrid', cols: 1 },
       { type: 'chargeTable', headerColor: 'fill' },
-      { type: 'subtotalBar', variant: 'fcy' },
-      { type: 'exportClosing' },
+      { type: 'taxAmountBox' },
+      { type: 'wordsAndTotal' },
+      { type: 'containerStrip' },
+      { type: 'termsBank' },
       { type: 'colorfulFooter' },
     ],
   }),
@@ -795,6 +936,13 @@ const DISTINCT = {
     ],
   }),
 };
+
+/**
+ * Pin official Fresa Tax Invoice India Format-1 / Format-2 before later batches
+ * overwrite slots 1–2 (tax-formats-extra-batch parks alts at 85+).
+ */
+const OFFICIAL_FORMAT_1 = JSON.parse(JSON.stringify(DISTINCT[1]));
+const OFFICIAL_FORMAT_2 = JSON.parse(JSON.stringify(DISTINCT[2]));
 
 const KIND_TEMPLATES = {
   tax_india: () => DISTINCT[1],
@@ -1770,10 +1918,14 @@ const officialMapResult = applyOfficialFresaPageMapping({
   deepClone,
   KIND_TEMPLATES,
 });
+// Restore PDF-matched Format-1 / Format-2 after batches + official mapping.
+DISTINCT[1] = deepClone(OFFICIAL_FORMAT_1);
+DISTINCT[2] = deepClone(OFFICIAL_FORMAT_2);
 console.log(
   'Official Fresa page mapping applied; parked sample layouts at',
   Object.keys(officialMapResult.parkedFrom).join(','),
 );
+console.log('Restored Format-1 / Format-2 Tax Invoice India from Fresa sample PDFs');
 
 const EXTRA_COMMERCIAL = {
   proforma1: layout({

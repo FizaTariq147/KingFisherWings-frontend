@@ -107,7 +107,7 @@ export default function ShipmentsListSalesPage() {
       <PageBackLink to="/sales" label="Back to Sales" />
       <div className="bg-white border border-gray-200 rounded-md">
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
-          <h2 className="text-[17px] font-medium text-gray-800">Shipment List - Sales</h2>
+          <h2 className="text-[17px] font-medium text-gray-800">Job List - Sales</h2>
         </div>
 
         <form
@@ -208,7 +208,7 @@ export default function ShipmentsListSalesPage() {
             <SelectInput options={filters.salesPersons} value={createdUser} onChange={(e) => setCreatedUser(e.target.value)} />
           </FilterField>
 
-          <FilterField label="Shipment Status">
+          <FilterField label="Job Status">
             <SelectInput options={['All', ...JOB_STATUSES]} value={status} onChange={(e) => setStatus(e.target.value)} />
           </FilterField>
 
@@ -225,7 +225,7 @@ export default function ShipmentsListSalesPage() {
             </button>
             <input
               type="text"
-              placeholder="Search: Shipment No"
+              placeholder="Search: Job No"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="border border-gray-300 rounded px-3 py-1.5 text-sm w-56 focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]"
@@ -263,15 +263,15 @@ export default function ShipmentsListSalesPage() {
 
         <div className="min-h-56">
           {query.isLoading ? (
-            <div className="flex items-center justify-center h-56 text-sm text-gray-400">Loading shipments…</div>
+            <div className="flex items-center justify-center h-56 text-sm text-gray-400">Loading jobs…</div>
           ) : query.isError ? (
             <div className="flex items-center justify-center h-56 px-5 text-sm text-red-600 text-center">
-              {getErrorMessage(query.error, 'Could not load shipments.')}
+              {getErrorMessage(query.error, 'Could not load jobs.')}
             </div>
           ) : pageItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-56 px-5 text-center">
               <Search size={40} className="text-gray-300 mb-3" />
-              <p className="text-sm text-gray-500">No shipments match your filters.</p>
+              <p className="text-sm text-gray-500">No jobs match your filters.</p>
               <p className="text-xs text-gray-400 mt-1">Try a wider date range or clear status/type filters.</p>
             </div>
           ) : (
@@ -279,7 +279,7 @@ export default function ShipmentsListSalesPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Shipment No.</th>
+                    <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Job No.</th>
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Client</th>
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Sales Person</th>
                     <th className="px-4 py-2 text-left font-semibold text-[#0A2942]">Origin</th>
@@ -295,7 +295,7 @@ export default function ShipmentsListSalesPage() {
                       onClick={() => navigate(jobDetailPath({ id: item.id, job_type: item.jobType }))}
                       className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
                     >
-                      <td className="px-4 py-2 text-blue-600">{item.shipmentNo}</td>
+                      <td className="px-4 py-2 text-blue-600">{item.jobNo}</td>
                       <td className="px-4 py-2 text-gray-700">{item.client}</td>
                       <td className="px-4 py-2 text-gray-700">{item.salesPerson}</td>
                       <td className="px-4 py-2 text-gray-700">{item.origin}</td>
@@ -312,7 +312,7 @@ export default function ShipmentsListSalesPage() {
 
         {submitted && !query.isLoading && (
           <div className="px-5 py-3 border-t border-gray-200">
-            <span className="text-xs text-gray-500">{query.data?.length ?? 0} shipment(s)</span>
+            <span className="text-xs text-gray-500">{query.data?.length ?? 0} job(s)</span>
           </div>
         )}
       </div>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { BlDraftFromBookingPanel } from '@/features/shared/bl-draft/BlDraftFromBookingPanel';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import { useJobBillsOfLading } from '../../hooks/useJobs';
@@ -31,6 +32,12 @@ export function JobBillsOfLadingPanel({ jobId }: JobBillsOfLadingPanelProps) {
   return (
     <div className="space-y-4">
       {error && <p className="text-sm text-[var(--color-danger-600)]">{error}</p>}
+      <BlDraftFromBookingPanel
+        jobId={jobId}
+        onGenerated={() => {
+          void refetch();
+        }}
+      />
       <Card>
         <CardHeader>
           <CardTitle>Bills of lading</CardTitle>

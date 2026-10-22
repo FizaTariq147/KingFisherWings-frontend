@@ -167,11 +167,55 @@ export function useChangeShipmentBlStatus(id: string) {
 }
 
 export function useChangeShipmentDepartment(id: string) {
-  const invalidate = useInvalidateShipments();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (dto: ChangeShipmentDepartmentDto) =>
       shipmentService.changeDepartment(id, dto),
-    onSuccess: () => invalidate(id),
+    onSuccess: async (updated, dto) => {
+      const preserved = {
+        department_id:
+          updated?.department_id || dto.department_id,
+        department_name: updated?.department_name,
+        branch_id:
+          dto.branch_id != null && dto.branch_id !== ''
+            ? updated?.branch_id || dto.branch_id
+            : updated?.branch_id,
+        branch_name: updated?.branch_name,
+      };
+
+      queryClient.setQueryData(
+        shipmentKeys.detail(id),
+        (prev: import('../types/shipment.types').Shipment | undefined) => ({
+          ...(prev ?? {}),
+          ...(updated ?? {}),
+          id,
+          department_id: preserved.department_id || prev?.department_id,
+          department_name: preserved.department_name || prev?.department_name,
+          branch_id: preserved.branch_id ?? prev?.branch_id,
+          branch_name: preserved.branch_name || prev?.branch_name,
+        }),
+      );
+
+      // Soft refetch detail and merge — full invalidate was wiping sparse GET responses.
+      try {
+        const fresh = await shipmentService.getDetail(id);
+        queryClient.setQueryData(shipmentKeys.detail(id), {
+          ...fresh,
+          department_id: fresh.department_id || preserved.department_id,
+          department_name: fresh.department_name || preserved.department_name,
+          branch_id: fresh.branch_id || preserved.branch_id,
+          branch_name: fresh.branch_name || preserved.branch_name,
+        });
+      } catch {
+        /* keep setQueryData above */
+      }
+
+      // Refresh lists only (not this detail key via broad all-invalidate).
+      void queryClient.invalidateQueries({
+        queryKey: shipmentKeys.all,
+        predicate: (query) => query.queryKey[2] === 'list',
+      });
+    },
   });
 }
 

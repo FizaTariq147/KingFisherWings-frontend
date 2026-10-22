@@ -30,6 +30,7 @@ import {
   usePortalInvoiceDisplayRows,
 } from '../hooks/usePortalInvoices';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
+import { isUsableCustomerPortalInvoiceStatusFilter } from '../utils/portalInvoiceVisibility';
 
 export default function PortalInvoicesPage() {
   const [page, setPage] = useState(1);
@@ -54,7 +55,12 @@ export default function PortalInvoicesPage() {
     const saved = prefs.data?.defaultInvoiceFilters;
     if (saved) {
       if (typeof saved.search === 'string') setSearch(saved.search);
-      if (typeof saved.status === 'string') setStatus(saved.status);
+      if (
+        typeof saved.status === 'string' &&
+        isUsableCustomerPortalInvoiceStatusFilter(saved.status)
+      ) {
+        setStatus(saved.status);
+      }
       if (typeof saved.from_date === 'string') setFromDate(saved.from_date);
       if (typeof saved.to_date === 'string') setToDate(saved.to_date);
     }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Save } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
@@ -10,6 +10,7 @@ import { useShipmentResolvedLabels } from '../hooks/useShipmentResolvedLabels';
 import { useShipmentsPermissions } from '../hooks/useShipmentsPermissions';
 import type { Shipment } from '../types/shipment.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { rememberShipmentDepartment } from '../utils/shipmentDepartmentMemory';
 
 function optionLabel(row: Record<string, unknown>): string {
   const code = String(row.code ?? '').trim();
@@ -18,6 +19,15 @@ function optionLabel(row: Record<string, unknown>): string {
   if (name && !isUuid(name)) return name;
   if (code && !isUuid(code)) return code;
   return String(row.id ?? '');
+}
+
+function labelForId(
+  rows: Array<Record<string, unknown>>,
+  id: string | undefined,
+): string | undefined {
+  if (!id || !isUuid(id)) return undefined;
+  const row = rows.find((r) => String(r.id ?? '') === id);
+  return row ? optionLabel(row) : undefined;
 }
 
 /**
@@ -51,8 +61,39 @@ export function ShipmentDepartmentPanel({
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
+  // Reset only when opening another shipment — do not clear selects if a sparse
+  // refetch briefly omits department_id / branch_id.
+  useEffect(() => {
+    setDepartmentId(shipment.department_id || '');
+    setBranchId(shipment.branch_id || '');
+  }, [shipment.id]);
+
+  useEffect(() => {
+    if (shipment.department_id) setDepartmentId(shipment.department_id);
+    if (shipment.branch_id) setBranchId(shipment.branch_id);
+  }, [shipment.department_id, shipment.branch_id]);
+
   const canEdit =
     perms.canWriteUpdate && shipment.actions?.can_change_department !== false;
+
+  const deptRows = departments as Array<Record<string, unknown>>;
+  const branchRows = branches as Array<Record<string, unknown>>;
+
+  const currentDepartmentLabel = useMemo(
+    () =>
+      labels.departmentLabel ||
+      labelForId(deptRows, shipment.department_id) ||
+      labelForId(deptRows, departmentId),
+    [labels.departmentLabel, deptRows, shipment.department_id, departmentId],
+  );
+
+  const currentBranchLabel = useMemo(
+    () =>
+      labels.branchLabel ||
+      labelForId(branchRows, shipment.branch_id) ||
+      labelForId(branchRows, branchId),
+    [labels.branchLabel, branchRows, shipment.branch_id, branchId],
+  );
 
   const save = async () => {
     setError(null);
@@ -62,10 +103,18 @@ export function ShipmentDepartmentPanel({
       setError('Select a valid department.');
       return;
     }
+    const branch = branchId.trim();
+    const branchUuid = isUuid(branch) ? branch : undefined;
     try {
+      rememberShipmentDepartment(shipment.id, {
+        department_id: dept,
+        branch_id: branchUuid,
+        department_name: labelForId(deptRows, dept),
+        branch_name: branchUuid ? labelForId(branchRows, branchUuid) : undefined,
+      });
       await changeDepartment.mutateAsync({
         department_id: dept,
-        ...(isUuid(branchId.trim()) ? { branch_id: branchId.trim() } : {}),
+        ...(branchUuid ? { branch_id: branchUuid } : {}),
       });
       setMsg('Department updated.');
       onChanged?.();
@@ -83,13 +132,13 @@ export function ShipmentDepartmentPanel({
         <div className="min-w-0">
           <div className={erpForm.label}>Current department</div>
           <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[#0f172a]">
-            {labels.departmentLabel || '—'}
+            {currentDepartmentLabel || '—'}
           </div>
         </div>
         <div className="min-w-0">
           <div className={erpForm.label}>Current branch</div>
           <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[#0f172a]">
-            {labels.branchLabel || '—'}
+            {currentBranchLabel || '—'}
           </div>
         </div>
       </div>
@@ -105,11 +154,11 @@ export function ShipmentDepartmentPanel({
               disabled={changeDepartment.isPending}
             >
               <option value="">Select…</option>
-              {departments
+              {deptRows
                 .filter((d) => isUuid(String(d.id)))
                 .map((d) => (
                   <option key={String(d.id)} value={String(d.id)}>
-                    {optionLabel(d as Record<string, unknown>)}
+                    {optionLabel(d)}
                   </option>
                 ))}
             </select>
@@ -123,11 +172,11 @@ export function ShipmentDepartmentPanel({
               disabled={changeDepartment.isPending}
             >
               <option value="">Select…</option>
-              {branches
+              {branchRows
                 .filter((b) => isUuid(String(b.id)))
                 .map((b) => (
                   <option key={String(b.id)} value={String(b.id)}>
-                    {optionLabel(b as Record<string, unknown>)}
+                    {optionLabel(b)}
                   </option>
                 ))}
             </select>

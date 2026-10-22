@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { appType } from '@/lib/erpTypography';
 import { useQuery } from '@tanstack/react-query';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
@@ -57,6 +57,11 @@ import { useJobs } from '../hooks/useJobs';
 import { jobService } from '../services/job.service';
 import { resolveJobDocumentFileUrl } from '../utils/resolveJobDocumentFileUrl';
 import { staffBookingFormModeToApiMode } from '@/features/booking-documents/constants/bookingDocumentKinds';
+import {
+  useQuotationBookingForm,
+  useQuotationBookingFormActions,
+} from '@/features/quotations/hooks/useQuotationBookingForm';
+import { useQuotation } from '@/features/quotations/hooks/useQuotations';
 import type {
   BookingFormPartyDto,
   BookingFormPartyKind,
@@ -921,14 +926,40 @@ const portalLabelClass =
   'flex flex-col gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-600)]';
 
 export function ModeBookingFormPanel({
-  jobId,
+  jobId: jobIdProp,
+  quotationId: quotationIdProp,
   mode,
 }: {
-  jobId: string;
+  /** Job booking-form APIs when a provisional/converted job exists. */
+  jobId?: string;
+  /**
+   * Quotation booking-form APIs before convert —
+   * GET/PUT/POST /quotations/:id/booking-form (OpenAPI creates provisional job if needed).
+   */
+  quotationId?: string;
   mode: StaffBookingFormMode;
 }) {
-  const query = useStaffBookingForm(jobId, mode);
-  const { save, complete, uploadDocument } = useStaffBookingFormActions(jobId, mode);
+  const jobId = jobIdProp && isUuid(jobIdProp) ? jobIdProp : '';
+  const quotationId =
+    quotationIdProp && isUuid(quotationIdProp) ? quotationIdProp : '';
+  const useQuotationApis = Boolean(quotationId) && !jobId;
+
+  const jobQuery = useStaffBookingForm(jobId, mode, Boolean(jobId));
+  const quotationQuery = useQuotationBookingForm(quotationId, useQuotationApis);
+  const query = useQuotationApis ? quotationQuery : jobQuery;
+
+  const jobActions = useStaffBookingFormActions(
+    jobId || '00000000-0000-0000-0000-000000000000',
+    mode,
+  );
+  const quotationActions = useQuotationBookingFormActions(
+    quotationId || '00000000-0000-0000-0000-000000000000',
+    mode,
+  );
+  const { save, clear, complete, uploadDocument } = useQuotationApis
+    ? quotationActions
+    : jobActions;
+
   const [uploadedDocKinds, setUploadedDocKinds] = useState<Set<string>>(() => new Set());
   const [docMetaByKind, setDocMetaByKind] = useState<Record<string, BookingFormDocumentMeta>>(
     {},
@@ -1013,7 +1044,10 @@ export function ModeBookingFormPanel({
     staleTime: 60_000,
     retry: 1,
   });
-  const linkedQuote = linkedQuoteQuery.data;
+  const quotationDetailQuery = useQuotation(quotationId);
+  const linkedQuote = jobId
+    ? linkedQuoteQuery.data
+    : quotationDetailQuery.data ?? undefined;
   const linkedJobType = String(linkedQuote?.job_type ?? mode).toUpperCase();
   const jobTypePrefix = linkedJobType.split('_')[0];
   /**
@@ -1021,16 +1055,19 @@ export function ModeBookingFormPanel({
    * keeps quote APPROVED). Prefer portal-origin quotes; still try inbox match.
    */
   const mayHavePortalBooking =
-    Boolean(linkedQuote?.id) || isCustomerPortalQuotation(linkedQuote);
+    Boolean(linkedQuote?.id) ||
+    Boolean(quotationId) ||
+    isCustomerPortalQuotation(linkedQuote);
 
   const portalBookingQuery = useCustomerPortalBookingForm(
     {
-      jobId,
-      quotationId: linkedQuote?.id,
+      jobId: jobId || undefined,
+      quotationId: linkedQuote?.id || quotationId || undefined,
       quoteNumber: linkedQuote?.quotation_number || linkedQuote?.quote_no,
       jobTypePrefix,
     },
-    Boolean(jobId) && mayHavePortalBooking && !linkedQuoteQuery.isLoading,
+    mayHavePortalBooking &&
+      (Boolean(jobId) ? !linkedQuoteQuery.isLoading : Boolean(quotationId)),
   );
   /** Prefill when quote is portal-origin OR inbox already has a booking payload. */
   const quoteFromCustomerPortal =
@@ -1042,6 +1079,11 @@ export function ModeBookingFormPanel({
   const [err, setErr] = useState<string | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [portalPrefillApplied, setPortalPrefillApplied] = useState(false);
+  /**
+   * After admin Delete, do not auto-repush / auto-open the customer portal payload.
+   * Cleared when the user explicitly Add / Reload from portal.
+   */
+  const [suppressPortalAutoSync, setSuppressPortalAutoSync] = useState(false);
   /** Optimistic Completed flag after POST /complete (GET may lag). */
   const [forceCompleted, setForceCompleted] = useState(false);
 
@@ -1230,6 +1272,7 @@ export function ModeBookingFormPanel({
 
   /** Auto-open create prefilled only when the quotation originated from customer portal. */
   useEffect(() => {
+    if (suppressPortalAutoSync) return;
     if (!quoteFromCustomerPortal) return;
     if (panelMode !== 'list') return;
     if (hasSavedForm) return;
@@ -1246,6 +1289,7 @@ export function ModeBookingFormPanel({
       }). Review, then Save.`,
     );
   }, [
+    suppressPortalAutoSync,
     quoteFromCustomerPortal,
     panelMode,
     hasSavedForm,
@@ -1259,8 +1303,8 @@ export function ModeBookingFormPanel({
 
   /** Push portal payload onto empty staff booking-form API (idempotent; portal quotes only). */
   useEffect(() => {
+    if (suppressPortalAutoSync) return;
     if (!quoteFromCustomerPortal) return;
-    if (!jobId || !linkedQuote?.id) return;
     if (query.isLoading || query.isFetching) return;
     if (hasSavedForm) return;
     // Customer submit leaves mark_complete false — sync whenever portal payload exists.
@@ -1268,17 +1312,31 @@ export function ModeBookingFormPanel({
     let cancelled = false;
     void (async () => {
       try {
-        const { syncCustomerPortalBookingFormOntoJob } = await import(
-          '../utils/applyPortalPayloadToModeBookingForm'
-        );
-        const result = await syncCustomerPortalBookingFormOntoJob({
-          jobId,
-          jobType: linkedQuote.job_type || mode,
-          quotationId: linkedQuote.id,
-          quoteNumber: linkedQuote.quotation_number || linkedQuote.quote_no,
-        });
-        if (!cancelled && result.synced) {
-          void query.refetch();
+        if (jobId && linkedQuote?.id) {
+          const { syncCustomerPortalBookingFormOntoJob } = await import(
+            '../utils/applyPortalPayloadToModeBookingForm'
+          );
+          const result = await syncCustomerPortalBookingFormOntoJob({
+            jobId,
+            jobType: linkedQuote.job_type || mode,
+            quotationId: linkedQuote.id,
+            quoteNumber: linkedQuote.quotation_number || linkedQuote.quote_no,
+          });
+          if (!cancelled && result.synced) {
+            void query.refetch();
+          }
+          return;
+        }
+        // Pre-convert: PUT customer portal fields onto /quotations/:id/booking-form.
+        if (useQuotationApis && quotationId && portalBookingQuery.data) {
+          const dto = portalPayloadToModeBookingFormDto(portalBookingQuery.data, {
+            jobTypeOverride: linkedQuote?.job_type || mode,
+          });
+          await quotationService.upsertBookingForm(
+            quotationId,
+            dto as Record<string, unknown>,
+          );
+          if (!cancelled) void query.refetch();
         }
       } catch {
         /* UI prefill still works without API sync */
@@ -1288,8 +1346,11 @@ export function ModeBookingFormPanel({
       cancelled = true;
     };
   }, [
+    suppressPortalAutoSync,
     quoteFromCustomerPortal,
     jobId,
+    useQuotationApis,
+    quotationId,
     linkedQuote?.id,
     linkedQuote?.job_type,
     linkedQuote?.quotation_number,
@@ -1299,6 +1360,7 @@ export function ModeBookingFormPanel({
     query.isFetching,
     portalBookingQuery.data,
     mode,
+    query,
   ]);
 
   const patch = (partial: Partial<FormUi>) => {
@@ -1334,6 +1396,7 @@ export function ModeBookingFormPanel({
   const openCreate = () => {
     setErr(null);
     setMsg(null);
+    setSuppressPortalAutoSync(false);
     const payload = quoteFromCustomerPortal ? portalBookingQuery.data : undefined;
     if (payload) {
       setForm(applyPortal(emptyForm(), payload, true));
@@ -1387,6 +1450,7 @@ export function ModeBookingFormPanel({
       setErr('No customer portal booking form found for this job / quotation yet.');
       return;
     }
+    setSuppressPortalAutoSync(false);
     setForm((prev) => applyPortal(prev, payload, true));
     setMsg(
       `Reloaded from customer portal (quote ${
@@ -1398,7 +1462,7 @@ export function ModeBookingFormPanel({
   const confirmDelete = () =>
     void run(
       async () => {
-        await save.mutateAsync({
+        const emptyDto: ModeBookingForm = {
           mark_complete: false,
           consent_accepted: false,
           parties: [],
@@ -1428,7 +1492,11 @@ export function ModeBookingFormPanel({
           country_of_origin: '',
           country_of_destination: '',
           attach_packing_list: false,
-        });
+        };
+        // clear replaces cache (save merge used to keep old fields / Completed).
+        await clear.mutateAsync(emptyDto);
+        setSuppressPortalAutoSync(true);
+        setPortalPrefillApplied(true);
         setForm(emptyForm());
         setForceCompleted(false);
         setDeleteOpen(false);
@@ -1461,7 +1529,11 @@ export function ModeBookingFormPanel({
             </h3>
             <p className="text-xs text-[var(--color-neutral-400)]">
               Saved booking forms for this job ·{' '}
-              <code className="text-[10px]">{staffBookingFormApiLabel(mode)}</code>
+              <code className="text-[10px]">
+                {useQuotationApis
+                  ? '/quotations/:id/booking-form'
+                  : staffBookingFormApiLabel(mode)}
+              </code>
               <span className="mt-1 block">
                 Status: <strong>Draft</strong> after Save · <strong>Completed</strong> after
                 Complete
@@ -1578,7 +1650,7 @@ export function ModeBookingFormPanel({
             <Button
               type="button"
               variant="danger"
-              disabled={save.isPending}
+              disabled={clear.isPending || save.isPending}
               onClick={confirmDelete}
             >
               Delete
@@ -1605,7 +1677,11 @@ export function ModeBookingFormPanel({
           </h3>
           <p className="mt-1 text-sm text-[var(--color-neutral-500)]">
             Same look as the customer portal booking form · fields follow live API for{' '}
-            <code className="text-[10px]">{staffBookingFormApiLabel(mode)}</code>
+            <code className="text-[10px]">
+              {useQuotationApis
+                ? '/quotations/:id/booking-form'
+                : staffBookingFormApiLabel(mode)}
+            </code>
           </p>
         </div>
         <Button type="button" variant="secondary" onClick={backToList} className="w-full sm:w-auto">

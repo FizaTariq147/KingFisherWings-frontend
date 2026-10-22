@@ -13,6 +13,8 @@ import type { Job } from '../../types/job.types';
 import { usePartyTypes } from '@/features/parties/hooks/useParties';
 import { resolvePartyTypeOptions } from '@/features/parties/utils/resolvePartyTypeOptions';
 import { JOB_ORG_TYPES, JOB_PARTY_ROLES } from '@/features/shared/organizations/orgTypes';
+import { orgPartyLabel } from '@/features/shared/organizations/orgDisplay';
+import { PartyOrgSearchField } from '@/features/shared/organizations/PartyOrgSearchField';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
 /** Matches AddJobOrganizationDto.org_type (includes Vendor). */
@@ -161,31 +163,29 @@ export function JobPartyPanel({
         ) : (
           <ul className="space-y-2">
             {rows.map((row, i) => {
-              const type = String(row.org_type ?? row.type ?? row.role ?? '—');
-              const name = String(
-                row.party_name ?? row.name ?? row.display_name ?? '',
-              ).trim();
-              const pid = String(row.party_id ?? row.id ?? '').trim();
+              const label = orgPartyLabel(row);
               return (
                 <li
-                  key={`${type}-${pid || i}`}
+                  key={`${label.orgType}-${label.partyId || i}`}
                   className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-[#e8edf2] bg-white px-2.5 py-2"
                 >
                   <div className="min-w-0">
-                    <p className="font-medium text-[#0f172a]">{type}</p>
+                    <p className="font-medium text-[#0f172a]">{label.orgType}</p>
                     <p className="truncate text-[12px] text-[#64748b]">
-                      {name || (isUuid(pid) ? pid.slice(0, 8) : pid) || '—'}
+                      {label.primary}
+                      {label.secondary ? ` · ${label.secondary}` : ''}
                     </p>
                   </div>
                   <Button
                     type="button"
                     size="sm"
                     variant="danger"
-                    disabled={pending || !type || type === '—'}
+                    disabled={pending || !label.orgType || label.orgType === '—'}
                     onClick={() =>
                       void run(
-                        () => resources.unlinkOrganization.mutateAsync(type),
-                        `Unlinked ${type}.`,
+                        () =>
+                          resources.unlinkOrganization.mutateAsync(label.orgType),
+                        `Unlinked ${label.orgType}.`,
                       )
                     }
                   >
@@ -212,10 +212,11 @@ export function JobPartyPanel({
               ))}
             </select>
           </label>
-          <Input
-            label="Party ID (UUID)"
+          <PartyOrgSearchField
+            jobId={job.id}
+            label="Search party"
             value={partyId}
-            onChange={(e) => setPartyId(e.target.value)}
+            onChange={(id) => setPartyId(id)}
           />
           <div className="flex items-end">
             <Button
@@ -299,10 +300,11 @@ export function JobPartyPanel({
         </div>
 
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-          <Input
-            label="Replace party ID"
+          <PartyOrgSearchField
+            jobId={job.id}
+            label="Replace with party"
             value={replacePartyId}
-            onChange={(e) => setReplacePartyId(e.target.value)}
+            onChange={(id) => setReplacePartyId(id)}
           />
           <div className="flex items-end gap-2 sm:col-span-2">
             <Button

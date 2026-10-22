@@ -31,6 +31,7 @@ import { buildFclContinuumSteps } from '@/features/shared/continuum/buildFclCont
 import { FclContinuumRail } from '@/features/shared/continuum/FclContinuumRail';
 import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggle';
 import { OpsContinuumRail } from '@/features/ops-activity';
+import { BlDraftFromBookingPanel } from '@/features/shared/bl-draft/BlDraftFromBookingPanel';
 import { GenerateEdiPanel } from '@/features/shared/edi/GenerateEdiPanel';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { AddStatusCatalogModal } from '@/features/shared/status-catalog';
@@ -955,7 +956,14 @@ export default function ShipmentDetailPage() {
                 emptyMessage="No bills of lading returned."
               />
             )}
-            <div className="mt-3">
+            <div className="mt-3 space-y-3">
+              <BlDraftFromBookingPanel
+                shipmentId={shipment.id}
+                jobId={shipment.job_id}
+                onGenerated={() => {
+                  void blEntryQuery.refetch();
+                }}
+              />
               <SectionAttachmentsPanel
                 entity="shipments"
                 entityId={shipment.id}

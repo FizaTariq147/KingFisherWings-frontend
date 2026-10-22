@@ -335,7 +335,7 @@ export default function VendorInvoicesPage() {
         ) : items.length === 0 ? (
           <PortalEmptyState
             title="No invoices"
-            description="Invoices appear here once they are created for your vendor account."
+            description="Invoices appear here once posted for your vendor account."
             Icon={FileText}
           />
         ) : (

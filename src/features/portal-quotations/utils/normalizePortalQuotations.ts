@@ -260,6 +260,10 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
         can_accept: flag('can_accept', 'canAccept', 'accept'),
         can_reject: flag('can_reject', 'canReject', 'reject'),
         can_counter_offer: flag('can_counter_offer', 'canCounterOffer', 'counter_offer'),
+        can_edit: flag('can_edit', 'canEdit', 'edit'),
+        can_replace: flag('can_replace', 'canReplace', 'replace'),
+        can_delete: flag('can_delete', 'canDelete', 'delete'),
+        can_amend: flag('can_amend', 'canAmend', 'amend'),
         // Portal never exposes generate/convert — staff continuum only.
         can_convert: false,
         can_generate_shipment: false,
@@ -355,9 +359,85 @@ function normalizeBookingParties(raw: unknown): PortalBookingFormParty[] | undef
   return parties.length ? parties : undefined;
 }
 
+/**
+ * Staff GET /quotations/:id/booking-form and portal booking-form responses nest fields
+ * under form / booking_form / data. Prefer the nested object that carries booking fields;
+ * never take an empty shell over a populated sibling/root.
+ */
+export function resolveBookingFormPayloadRecord(raw: unknown): Record<string, unknown> {
+  const root = asRecord(unwrapData(raw)) ?? asRecord(raw);
+  if (!root) return {};
+
+  const candidates: Record<string, unknown>[] = [root];
+  for (const key of [
+    'form',
+    'booking_form',
+    'bookingForm',
+    'data',
+    'payload',
+    'values',
+    'result',
+    'item',
+  ]) {
+    const nested = asRecord(root[key]);
+    if (nested) candidates.push(nested);
+    const nestedForm = nested ? asRecord(nested.form) ?? asRecord(nested.booking_form) : null;
+    if (nestedForm) candidates.push(nestedForm);
+  }
+
+  const score = (r: Record<string, unknown>): number => {
+    let s = 0;
+    if (pickString(r.commodity)) s += 4;
+    if (pickString(r.client_booking_no, r.clientBookingNo)) s += 3;
+    if (pickString(r.pol, r.origin, r.origin_airport_code, r.originAirportCode)) s += 2;
+    if (pickString(r.pod, r.destination, r.dest_airport_code, r.destAirportCode)) s += 2;
+    if (pickString(r.origin_door_address, r.originDoorAddress)) s += 1;
+    if (pickString(r.dest_door_address, r.destDoorAddress)) s += 1;
+    if (Array.isArray(r.parties) && r.parties.length) s += 4;
+    if (pickBoolean(r.customer_submitted, r.customerSubmitted)) s += 1;
+    if (pickBoolean(r.mark_complete, r.markComplete)) s += 1;
+    return s;
+  };
+
+  let best = root;
+  let bestScore = score(root);
+  for (const c of candidates) {
+    const sc = score(c);
+    if (sc > bestScore) {
+      best = c;
+      bestScore = sc;
+    }
+  }
+
+  // Merge root flags onto the winning payload so job_id / customer_submitted are not lost.
+  return {
+    ...root,
+    ...best,
+    customer_submitted:
+      pickBoolean(best.customer_submitted, best.customerSubmitted, root.customer_submitted, root.customerSubmitted) ??
+      undefined,
+    mark_complete:
+      pickBoolean(best.mark_complete, best.markComplete, root.mark_complete, root.markComplete) ??
+      undefined,
+    parties: Array.isArray(best.parties)
+      ? best.parties
+      : Array.isArray(root.parties)
+        ? root.parties
+        : best.parties,
+    job_id: pickString(root.job_id, root.jobId, best.job_id, best.jobId) || undefined,
+    provisional_job_id:
+      pickString(
+        root.provisional_job_id,
+        root.provisionalJobId,
+        best.provisional_job_id,
+        best.provisionalJobId,
+      ) || undefined,
+  };
+}
+
 /** Normalize portal / shipment booking-form payloads (matches UpsertNvoccBookingFormDto). */
 export function normalizePortalBookingForm(raw: unknown): PortalBookingForm {
-  const data = asRecord(unwrapData(raw)) ?? asRecord(raw) ?? {};
+  const data = resolveBookingFormPayloadRecord(raw);
   const num = (...keys: unknown[]) => {
     for (const k of keys) {
       if (typeof k === 'number' && Number.isFinite(k)) return k;

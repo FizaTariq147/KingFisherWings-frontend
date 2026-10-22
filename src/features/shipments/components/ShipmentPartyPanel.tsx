@@ -5,8 +5,15 @@ import { isUuid } from '@/lib/isUuid';
 import { usePartyTypes } from '@/features/parties/hooks/useParties';
 import { resolvePartyTypeOptions } from '@/features/parties/utils/resolvePartyTypeOptions';
 import { JOB_ORG_TYPES } from '@/features/shared/organizations/orgTypes';
+import { orgPartyLabel } from '@/features/shared/organizations/orgDisplay';
+import { PartyOrgSearchField } from '@/features/shared/organizations/PartyOrgSearchField';
 import { useShipmentDetailTab } from '../hooks/useShipments';
-import { useAddShipmentOrganization } from '../hooks/useShipmentOrganizations';
+import {
+  useAddShipmentOrganization,
+  useCopyShipmentOrganizations,
+  useReplaceShipmentOrganization,
+  useUnlinkShipmentOrganization,
+} from '../hooks/useShipmentOrganizations';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -31,8 +38,8 @@ function orgRows(raw: unknown): Record<string, unknown>[] {
 }
 
 /**
- * Shipment Party / Organization tab — POST /shipments/:id/organizations
- * (AddJobOrganizationDto; proxies to job when linked). Includes Vendor.
+ * Shipment Party / Organization tab — list / add / replace / delete / copy-from
+ * (proxies to job when linked). Search by name/code — no UUID typing.
  */
 export function ShipmentPartyPanel({
   shipmentId,
@@ -43,9 +50,14 @@ export function ShipmentPartyPanel({
 }) {
   const tabQuery = useShipmentDetailTab(shipmentId, 'organization');
   const addOrg = useAddShipmentOrganization(shipmentId);
+  const replaceOrg = useReplaceShipmentOrganization(shipmentId);
+  const unlinkOrg = useUnlinkShipmentOrganization(shipmentId);
+  const copyOrg = useCopyShipmentOrganizations(shipmentId);
 
   const [orgType, setOrgType] = useState<string>('SHIPPER');
   const [partyId, setPartyId] = useState('');
+  const [replacePartyId, setReplacePartyId] = useState('');
+  const [copyFromJobId, setCopyFromJobId] = useState('');
   const [createPartyType, setCreatePartyType] = useState('VENDOR');
   const [createCode, setCreateCode] = useState('');
   const [createName, setCreateName] = useState('');
@@ -55,6 +67,12 @@ export function ShipmentPartyPanel({
   const typesQuery = usePartyTypes(true);
   const partyTypeOptions = resolvePartyTypeOptions(typesQuery.data);
   const rows = useMemo(() => orgRows(tabQuery.data), [tabQuery.data]);
+
+  const pending =
+    addOrg.isPending ||
+    replaceOrg.isPending ||
+    unlinkOrg.isPending ||
+    copyOrg.isPending;
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
     setError(null);
@@ -85,22 +103,33 @@ export function ShipmentPartyPanel({
         ) : (
           <ul className="space-y-2">
             {rows.map((row, i) => {
-              const type = String(row.org_type ?? row.type ?? row.role ?? '—');
-              const name = String(
-                row.party_name ?? row.name ?? row.display_name ?? '',
-              ).trim();
-              const pid = String(row.party_id ?? row.id ?? '').trim();
+              const label = orgPartyLabel(row);
               return (
                 <li
-                  key={`${type}-${pid || i}`}
+                  key={`${label.orgType}-${label.partyId || i}`}
                   className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-[#e8edf2] bg-white px-2.5 py-2"
                 >
                   <div className="min-w-0">
-                    <p className="font-medium text-[#0f172a]">{type}</p>
+                    <p className="font-medium text-[#0f172a]">{label.orgType}</p>
                     <p className="truncate text-[12px] text-[#64748b]">
-                      {name || (isUuid(pid) ? pid.slice(0, 8) : pid) || '—'}
+                      {label.primary}
+                      {label.secondary ? ` · ${label.secondary}` : ''}
                     </p>
                   </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="danger"
+                    disabled={pending || !label.orgType || label.orgType === '—'}
+                    onClick={() =>
+                      void run(
+                        () => unlinkOrg.mutateAsync(label.orgType),
+                        `Unlinked ${label.orgType}.`,
+                      )
+                    }
+                  >
+                    Unlink
+                  </Button>
                 </li>
               );
             })}
@@ -122,17 +151,18 @@ export function ShipmentPartyPanel({
               ))}
             </select>
           </label>
-          <Input
-            label="Party ID (UUID)"
+          <PartyOrgSearchField
+            shipmentId={shipmentId}
+            label="Search party"
             value={partyId}
-            onChange={(e) => setPartyId(e.target.value)}
+            onChange={(id) => setPartyId(id)}
           />
           <div className="flex items-end">
             <Button
               type="button"
               size="sm"
               variant="edit"
-              disabled={addOrg.isPending || !orgType.trim() || !isUuid(partyId.trim())}
+              disabled={pending || !orgType.trim() || !isUuid(partyId.trim())}
               onClick={() =>
                 void run(
                   () =>
@@ -182,7 +212,7 @@ export function ShipmentPartyPanel({
               size="sm"
               variant="create"
               disabled={
-                addOrg.isPending ||
+                pending ||
                 !orgType.trim() ||
                 !createPartyType.trim() ||
                 createCode.trim().length < 1 ||
@@ -207,9 +237,66 @@ export function ShipmentPartyPanel({
             </Button>
           </div>
         </div>
+
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+          <PartyOrgSearchField
+            shipmentId={shipmentId}
+            label="Replace with party"
+            value={replacePartyId}
+            onChange={(id) => setReplacePartyId(id)}
+          />
+          <div className="flex items-end sm:col-span-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="edit"
+              disabled={pending || !orgType.trim() || !isUuid(replacePartyId.trim())}
+              onClick={() =>
+                void run(
+                  () =>
+                    replaceOrg.mutateAsync({
+                      orgType: orgType.trim(),
+                      dto: { party_id: replacePartyId.trim() },
+                    }),
+                  `Replaced ${orgType}.`,
+                )
+              }
+            >
+              Replace type
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+          <Input
+            label="Copy from job ID"
+            value={copyFromJobId}
+            onChange={(e) => setCopyFromJobId(e.target.value)}
+          />
+          <div className="flex items-end sm:col-span-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              disabled={pending || !isUuid(copyFromJobId.trim())}
+              onClick={() =>
+                void run(
+                  () =>
+                    copyOrg.mutateAsync({
+                      source_job_id: copyFromJobId.trim(),
+                    }),
+                  'Organizations copied.',
+                )
+              }
+            >
+              Copy from job
+            </Button>
+          </div>
+        </div>
+
         <p className="text-[11px] text-[#64748b]">
-          Org types include Vendor. When a job is linked, this proxies to the job organization
-          tab.
+          Search by party name or code. When a job is linked, this proxies to the job
+          organization tab; otherwise rows stay shipment-local.
         </p>
       </section>
     </div>

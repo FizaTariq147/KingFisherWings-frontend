@@ -231,18 +231,28 @@ export interface CreateShipmentChargeDto {
   party_id?: string;
 }
 
-/** POST /shipments/:id/get-charges — pull from quotation / party standards. */
+/**
+ * POST /shipments/:id/get-charges — same shape as job GetJobChargesDto
+ * (from_quotation / from_party_standard). Optional quotation_id when pulling
+ * a specific quote.
+ */
 export interface GetShipmentChargesDto {
+  from_quotation?: boolean;
+  from_party_standard?: boolean;
   quotation_id?: string;
-  include_standard_charges?: boolean;
   [key: string]: unknown;
 }
 
-/** POST /shipments/:id/copy-charges */
+/**
+ * POST /shipments/:id/copy-charges — same shape as job CopyJobChargesDto
+ * (from_* ids, not source_*).
+ */
 export interface CopyShipmentChargesDto {
-  source_shipment_id?: string;
-  source_job_id?: string;
-  source_quotation_id?: string;
+  from_job_id?: string;
+  from_shipment_id?: string;
+  from_quotation_id?: string;
+  copy_sale?: boolean;
+  copy_cost?: boolean;
   [key: string]: unknown;
 }
 

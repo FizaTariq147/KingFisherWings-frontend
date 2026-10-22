@@ -498,7 +498,7 @@ export function normalizeJob(raw: unknown): Job | null {
 
   return {
     id: str(r.id),
-    job_number: pickString(r, 'job_number', 'jobNumber') || undefined,
+    job_number: pickString(r, 'job_number', 'jobNumber', 'job_no', 'jobNo') || undefined,
     job_type: jobType,
     status: (pickString(r, 'status') || 'ENQUIRY') as JobStatus,
     status_code: pickString(r, 'status_code', 'statusCode') || undefined,

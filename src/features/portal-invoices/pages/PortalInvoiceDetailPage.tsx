@@ -34,6 +34,7 @@ import {
   openBillingCheckoutUrl,
   portalPaymentStatusBadgeVariant,
 } from '@/features/portal-payments/utils/portalPaymentsUi';
+import { isCustomerPortalVisibleInvoiceStatus } from '../utils/portalInvoiceVisibility';
 
 export default function PortalInvoiceDetailPage() {
   const { id = '' } = useParams();
@@ -133,6 +134,19 @@ export default function PortalInvoiceDetailPage() {
         <p className="text-sm text-[var(--color-danger-600)]">{error instanceof PortalApiError || error instanceof Error ? error.message : 'Invoice not found.'}</p>
         <Button type="button" size="sm" variant="secondary" onClick={() => refetch()}>Retry</Button>
         <Link to="/portal/invoices" className="block text-sm text-[var(--color-primary)] underline">Back to invoices</Link>
+      </div>
+    );
+  }
+
+  if (!isCustomerPortalVisibleInvoiceStatus(data.status)) {
+    return (
+      <div className="space-y-2">
+        <p className="text-sm text-[var(--color-neutral-600)]">
+          This invoice is not posted yet. It will appear here after finance posts it for your account.
+        </p>
+        <Link to="/portal/invoices" className="block text-sm text-[var(--color-primary)] underline">
+          Back to invoices
+        </Link>
       </div>
     );
   }

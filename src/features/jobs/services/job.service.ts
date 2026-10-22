@@ -2047,7 +2047,7 @@ export const jobService = {
 
   /**
    * GET /jobs/:id/edi/submissions/:submissionId/download
-   * Streams application/pdf (Content-Disposition: attachment) with Bearer — not an S3 URL.
+   * Streams text/plain (.txt MANIFEST_CSDP) or application/pdf with Bearer — not an S3 URL.
    */
   async downloadJobEdiSubmission(
     id: string,
@@ -2065,7 +2065,7 @@ export const jobService = {
         axiosInstance.get(JOB_API.ediSubmissionDownload(id, submissionId.trim()), {
           responseType: 'blob',
           headers: {
-            Accept: 'application/pdf, application/json, */*',
+            Accept: 'text/plain, application/pdf, application/json, */*',
           },
         }),
       );
@@ -3197,6 +3197,40 @@ export const jobService = {
     assertId(id);
     return request(() =>
       axiosInstance.post(JOB_API.organizationsRefreshSnapshots(id), body),
+    );
+  },
+
+  /** GET /jobs/:id/organizations/party-search?q= */
+  async searchOrganizationParties(
+    id: string,
+    q: string,
+    params: { party_type?: string; limit?: number } = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.get(JOB_API.organizationsPartySearch(id), {
+        params: { q: q.trim(), ...params },
+      }),
+    );
+  },
+
+  /** GET /jobs/:id/bl-draft/preview */
+  async getBlDraftPreview(id: string): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.get(JOB_API.blDraftPreview(id)));
+  },
+
+  /** POST /jobs/:id/bl-draft/generate — is_original: false */
+  async generateBlDraft(
+    id: string,
+    body: Record<string, unknown> = {},
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.post(JOB_API.blDraftGenerate(id), {
+        is_original: false,
+        ...body,
+      }),
     );
   },
 

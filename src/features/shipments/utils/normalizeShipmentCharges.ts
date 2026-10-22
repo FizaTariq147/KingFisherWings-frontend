@@ -12,6 +12,8 @@ export interface ShipmentChargeRow {
   party_id?: string;
   party_name?: string;
   line_total?: number;
+  sale_amount?: number;
+  cost_amount?: number;
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -48,6 +50,8 @@ function unwrapItems(raw: unknown): unknown[] {
     'items',
     'lines',
     'preview_charges',
+    'sale_charges',
+    'cost_charges',
     'data',
     'results',
   ]) {
@@ -60,36 +64,102 @@ function unwrapItems(raw: unknown): unknown[] {
       }
     }
   }
+  // Dual arrays: merge sale + cost lists when present
+  const sale = Array.isArray(rec.sale) ? (rec.sale as unknown[]) : [];
+  const cost = Array.isArray(rec.cost) ? (rec.cost as unknown[]) : [];
+  if (sale.length || cost.length) return [...sale, ...cost];
   return [];
 }
 
-export function normalizeShipmentCharge(raw: unknown): ShipmentChargeRow | null {
+export function normalizeShipmentCharge(
+  raw: unknown,
+  index = 0,
+): ShipmentChargeRow | null {
   const r = asRecord(raw);
   if (!r) return null;
-  const id = str(r.id, r.charge_id, r.chargeId);
-  if (!id) return null;
+
+  const chargeSec = asRecord(r.charge);
+  const sale = asRecord(r.sale);
+  const cost = asRecord(r.cost);
   const party = asRecord(r.party);
+
+  const id =
+    str(
+      r.id,
+      r.charge_id,
+      r.chargeId,
+      r.shipment_charge_id,
+      r.shipmentChargeId,
+      chargeSec?.id,
+    ) || `row-${index}`;
+
+  const saleAmt =
+    num(r.sale_amount ?? r.saleAmount) ??
+    num(sale?.amount ?? sale?.local_amount ?? sale?.unit_price ?? sale?.amount_per_qty);
+  const costAmt =
+    num(r.cost_amount ?? r.costAmount) ??
+    num(cost?.amount ?? cost?.local_amount ?? cost?.unit_price ?? cost?.amount_per_qty);
+
+  const unitPrice =
+    num(r.unit_price ?? r.unitPrice ?? r.amount_per_unit ?? r.amountPerUnit) ??
+    saleAmt ??
+    costAmt ??
+    0;
+
+  const isCostFlag = bool(r.is_cost ?? r.isCost);
+  const is_cost =
+    isCostFlag === true
+      ? true
+      : saleAmt == null && costAmt != null
+        ? true
+        : isCostFlag === false
+          ? false
+          : undefined;
+
   return {
     id,
-    charge_code_id: str(r.charge_code_id, r.chargeCodeId) || undefined,
-    charge_code: str(r.charge_code, r.chargeCode) || undefined,
-    description: str(r.description, r.name) || '—',
-    quantity: num(r.quantity),
-    unit_price: num(r.unit_price ?? r.unitPrice) ?? 0,
-    currency_code: (str(r.currency_code, r.currencyCode, r.currency) || 'AED').toUpperCase(),
-    is_cost: bool(r.is_cost ?? r.isCost),
-    party_id: str(r.party_id, r.partyId) || undefined,
+    charge_code_id:
+      str(r.charge_code_id, r.chargeCodeId) ||
+      str(chargeSec?.charge_code_id, chargeSec?.chargeCodeId) ||
+      undefined,
+    charge_code:
+      str(r.charge_code, r.chargeCode, r.code) ||
+      str(chargeSec?.charge_code, chargeSec?.code) ||
+      undefined,
+    description:
+      str(r.description, r.name, r.charge_name, r.chargeName) ||
+      str(chargeSec?.description, chargeSec?.name) ||
+      '—',
+    quantity:
+      num(r.quantity ?? r.qty) ??
+      num(chargeSec?.quantity) ??
+      num(sale?.qty ?? sale?.quantity) ??
+      num(cost?.qty ?? cost?.quantity),
+    unit_price: unitPrice,
+    currency_code: (
+      str(r.currency_code, r.currencyCode, r.currency) ||
+      str(sale?.currency, sale?.currency_code) ||
+      str(cost?.currency, cost?.currency_code) ||
+      'AED'
+    ).toUpperCase(),
+    is_cost,
+    party_id:
+      str(r.party_id, r.partyId) ||
+      str(sale?.bill_to, cost?.vendor) ||
+      undefined,
     party_name:
       str(r.party_name, r.partyName) ||
       str(party?.name, party?.party_name) ||
       undefined,
-    line_total: num(r.line_total ?? r.lineTotal),
+    line_total: num(r.line_total ?? r.lineTotal) ?? saleAmt ?? costAmt,
+    sale_amount: saleAmt,
+    cost_amount: costAmt,
   };
 }
 
 export function normalizeShipmentCharges(raw: unknown): ShipmentChargeRow[] {
   return unwrapItems(raw)
-    .map(normalizeShipmentCharge)
+    .map((row, i) => normalizeShipmentCharge(row, i))
     .filter((c): c is ShipmentChargeRow => Boolean(c));
 }
 
@@ -101,4 +171,15 @@ export function isShipmentCostingTab(key: string): boolean {
 
 export function shipmentChargeSelectableId(row: ShipmentChargeRow): string {
   return isUuid(row.id) ? row.id : row.id;
+}
+
+/** Drop undefined / empty-string keys so Nest validation does not reject the body. */
+export function compactShipmentChargeDto<T extends Record<string, unknown>>(dto: T): T {
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(dto)) {
+    if (v === undefined || v === null) continue;
+    if (typeof v === 'string' && !v.trim()) continue;
+    out[k] = v;
+  }
+  return out as T;
 }

@@ -70,22 +70,31 @@ export function GenerateEdiPanel({
     setDownloadingId(row.id);
     try {
       const raw = await onDownload(row.id);
+      const isTxt =
+        row.mime_type?.includes('text/plain') ||
+        /\.txt$/i.test(row.file_name || '') ||
+        /MANIFEST_CSDP|CSDP/i.test(row.edi_type || '');
       const base =
         row.file_name ||
-        `${(row.edi_type || 'edi').toLowerCase()}-${row.id.slice(0, 8)}`;
-      const fileBase =
-        row.mime_type?.includes('pdf') || !/\.\w+$/i.test(base)
-          ? /\.pdf$/i.test(base)
-            ? base
-            : `${base.replace(/\.[^.]+$/, '')}.pdf`
-          : base;
+        (isTxt
+          ? `${(row.edi_type || 'MANIFEST').replace(/\s+/g, '_')}.txt`
+          : `${(row.edi_type || 'edi').toLowerCase()}-${row.id.slice(0, 8)}`);
+      const fileBase = /\.\w+$/i.test(base)
+        ? base
+        : isTxt
+          ? `${base}.txt`
+          : row.mime_type?.includes('pdf')
+            ? `${base}.pdf`
+            : `${base}.pdf`;
       await saveEdiDownload(raw, fileBase);
-      setMsg(`Downloaded ${row.edi_type || 'EDI'} PDF.`);
+      setMsg(
+        `Downloaded ${row.edi_type || 'EDI'} ${isTxt ? 'TXT' : 'file'}.`,
+      );
     } catch (err) {
       const message = getErrorMessage(err);
       setError(
         /failed to fetch|cors|external file url/i.test(message)
-          ? 'Download failed. EDI must stream as a PDF from the API (Bearer) — retry or regenerate.'
+          ? 'Download failed. EDI must stream from the API (Bearer text/plain or PDF) — retry or regenerate.'
           : message,
       );
     } finally {

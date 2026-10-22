@@ -12,6 +12,7 @@ import type {
   PortalInvoiceListResult,
   PortalInvoicePaymentStatusView,
 } from '../types/portalInvoices.types';
+import { isCustomerPortalVisibleInvoiceStatus } from '../utils/portalInvoiceVisibility';
 
 export const portalInvoiceKeys = {
   all: (scope: string) => ['portal', scope, 'invoices'] as const,
@@ -238,7 +239,11 @@ export function usePortalInvoiceDisplayRows(
 ): PortalInvoiceDisplayRow[] {
   const accessToken = usePortalAuthStore((s) => s.accessToken);
   const scope = usePortalQueryScope();
-  const ids = items.map((item) => item.id);
+  // Drafts are staff-only; APIs normally omit them — hide if any slip through.
+  const visibleItems = items.filter((item) =>
+    isCustomerPortalVisibleInvoiceStatus(item.status),
+  );
+  const ids = visibleItems.map((item) => item.id);
 
   const proofQueries = useQueries({
     queries: ids.map((invoiceId) => ({
@@ -249,7 +254,7 @@ export function usePortalInvoiceDisplayRows(
     })),
   });
 
-  return items.map((item, index) => {
+  return visibleItems.map((item, index) => {
     const proofs = (proofQueries[index]?.data ?? []) as PaymentProof[];
     const adjusted = adjustInvoiceAmountsWithProofs(
       {
