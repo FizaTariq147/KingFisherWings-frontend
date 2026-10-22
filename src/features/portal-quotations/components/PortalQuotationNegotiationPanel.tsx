@@ -12,10 +12,13 @@ import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import { PortalPanel } from '@/features/portal-auth/components/portal-ui';
 import {
+  useAmendPortalQuotation,
   usePortalQuotationNegotiation,
-  usePortalQuotationCounterOffer,
 } from '../hooks/usePortalQuotations';
-import { canPortalCustomerCounterOffer, portalQuoteTotalAmount } from '../utils/portalQuotationStatus';
+import {
+  canPortalCustomerAmendQuote,
+  portalQuoteTotalAmount,
+} from '../utils/portalQuotationStatus';
 import type { PortalQuotationDetail } from '../types/portalQuotations.types';
 
 interface PortalQuotationNegotiationPanelProps {
@@ -27,14 +30,14 @@ export function PortalQuotationNegotiationPanel({
   quote,
   onSuccess,
 }: PortalQuotationNegotiationPanelProps) {
-  const canCounter = canPortalCustomerCounterOffer(quote.status, quote);
+  const canCounter = canPortalCustomerAmendQuote(quote);
   const showTimeline =
     canCounter || (quote.negotiationRound != null && quote.negotiationRound > 0);
   const { data: timeline, isLoading, isError, error, refetch } = usePortalQuotationNegotiation(
     quote.id,
     showTimeline,
   );
-  const counterOffer = usePortalQuotationCounterOffer();
+  const counterOffer = useAmendPortalQuotation();
   const events = useMemo(
     () => sortNegotiationEvents(timeline?.events ?? []),
     [timeline?.events],
@@ -193,13 +196,13 @@ export function PortalQuotationNegotiationPanel({
                   setProposedTotal('');
                   void refetch();
                   onSuccess?.(
-                    'Counter-offer submitted. Your proposed total is waiting for the forwarder.',
+                    'Amendment / counter-offer submitted. Your proposed total is waiting for the forwarder.',
                   );
                 })
                 .catch((err) => setLocalError(getServerErrorMessage(err)));
             }}
           >
-            {counterOffer.isPending ? 'Submitting…' : 'Submit counter-offer'}
+            {counterOffer.isPending ? 'Submitting…' : 'Amend / counter-offer'}
           </Button>
         </div>
       ) : null}

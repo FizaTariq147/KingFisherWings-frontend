@@ -66,6 +66,9 @@ export function normalizeFresaThemeColors<T extends {
     hexEq(theme.cyan, KF_TC_NAVY) ||
     (hexEq(theme.cyan, theme.accent) && accentIsKf);
 
+  const panelIsKf = hexEq(theme.panel, KF_TC_NAVY);
+  const fillIsKf = hexEq(theme.fill, KF_TC_NAVY);
+
   return {
     ...theme,
     primary: primaryIsKf ? FRESA_UI.navy : theme.primary,
@@ -73,7 +76,7 @@ export function normalizeFresaThemeColors<T extends {
     cyan: cyanIsKf ? FRESA_UI.cyan : theme.cyan,
     orange: theme.orange || FRESA_UI.orange,
     red: theme.red || FRESA_UI.red,
-    fill: theme.fill || FRESA_UI.fill,
-    panel: theme.panel || FRESA_UI.panel,
+    fill: fillIsKf || !theme.fill ? FRESA_UI.fill : theme.fill,
+    panel: panelIsKf || !theme.panel ? FRESA_UI.panel : theme.panel,
   };
 }

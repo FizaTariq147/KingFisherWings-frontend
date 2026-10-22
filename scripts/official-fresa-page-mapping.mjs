@@ -25,12 +25,14 @@ export function applyOfficialFresaPageMapping({
   const summary = () => deepClone(DISTINCT[53] || DISTINCT[3]);
 
   // Official page Format-1…21
+  // Format-1 / Format-2 are distinct Fresa Tax Invoice India PDFs — do not collapse.
   DISTINCT[1] = taxIndia();
-  DISTINCT[2] = taxIndia();
+  DISTINCT[2] = deepClone(snap[2] || DISTINCT[2] || taxIndia());
   DISTINCT[3] = summary();
   // 4 stays Standard Tax Invoice if present
   if (!DISTINCT[4]) DISTINCT[4] = taxIndia();
-  DISTINCT[5] = taxIndia();
+  // Format-5 stays its own Tax Invoice India variant when snapped; else Format-1 shell
+  DISTINCT[5] = deepClone(snap[5] || taxIndia());
   // Simple Invoice (India) — clone base simple, force India labelling
   DISTINCT[6] = deepClone(simpleBase);
   {

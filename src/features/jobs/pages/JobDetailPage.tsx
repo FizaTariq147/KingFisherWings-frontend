@@ -472,7 +472,7 @@ export default function JobDetailPage() {
       {
         key: 'section-files',
         label: 'Section files',
-        content: (
+              content: (
           <EntitySectionFilesPanel
             entity="jobs"
             entityId={job.id}

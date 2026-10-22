@@ -183,7 +183,11 @@ export default function InvoiceDetailPage() {
       ? [
           {
             label: 'Post',
-            onClick: () => void run(() => actions.post.mutateAsync(), 'Invoice posted.'),
+            onClick: () =>
+              void run(
+                () => actions.post.mutateAsync(),
+                'Invoice posted. It will appear on the customer portal for this party.',
+              ),
             variant: 'primary' as const,
           },
         ]

@@ -19,7 +19,17 @@ export function TableHeader({ children }: { children: React.ReactNode }) {
 }
 
 export function TableBody({ children }: { children: React.ReactNode }) {
-  return <tbody className="divide-y divide-[var(--color-neutral-100)]">{children}</tbody>;
+  return (
+    <tbody
+      className={cn(
+        'divide-y divide-[var(--color-neutral-100)]',
+        // Body rows only — neutral-50 is nearly invisible on white cards
+        '[&_tr]:transition-colors [&_tr:hover]:bg-[var(--color-neutral-100)]',
+      )}
+    >
+      {children}
+    </tbody>
+  );
 }
 
 export function TableRow({ children, selected, className }: {
@@ -29,7 +39,6 @@ export function TableRow({ children, selected, className }: {
 }) {
   return (
     <tr className={cn(
-      'transition-colors hover:bg-[var(--color-neutral-50)]',
       selected && 'bg-[var(--color-primary-50)]',
       className
     )}>

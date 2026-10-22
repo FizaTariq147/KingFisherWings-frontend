@@ -2003,17 +2003,19 @@ export const quotationService = {
     }
   },
 
-  /** POST /quotations/:id/booking-form/documents/:kind — staff attach (mirrors job doc). */
+  /**
+   * POST /quotations/:id/booking-form/documents/:kind
+   * Creates provisional job when needed; mirrors job mode upload.
+   */
   async uploadBookingFormDocument(
     id: string,
     kind: string,
     file: File,
   ): Promise<unknown> {
     assertId(id);
+    const form = new FormData();
+    form.append('file', file);
     try {
-      const form = new FormData();
-      form.append('file', file);
-      // Do not set Content-Type — axios must add the multipart boundary for Multer.
       const res = await withGatewayRetry(() =>
         axiosInstance.post(QUOTATION_API.bookingFormDocument(id, kind), form, {
           transformRequest: [
@@ -2032,7 +2034,7 @@ export const quotationService = {
           ],
         }),
       );
-      return unwrapEntity(res.data) ?? res.data;
+      return unwrapEntity(res.data);
     } catch (error) {
       throw formatAxiosError(error);
     }

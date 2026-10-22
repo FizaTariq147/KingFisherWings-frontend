@@ -341,6 +341,70 @@ export function usePortalQuotationCounterOffer() {
   });
 }
 
+/** POST /portal/quotations/:id/amend (falls back to counter-offer). */
+export function useAmendPortalQuotation() {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: ({ id, dto }: { id: string; dto: PortalQuotationCounterOfferDto }) =>
+      portalQuotationsService.amend(id, dto),
+    onSuccess: (q) => {
+      void qc.invalidateQueries({ queryKey: portalQuotationKeys.all(scope) });
+      if (scope !== 'anon' && q.id) {
+        qc.setQueryData(portalQuotationKeys.detail(scope, q.id), q);
+        void qc.invalidateQueries({ queryKey: portalQuotationKeys.negotiation(scope, q.id) });
+      }
+    },
+  });
+}
+
+/** PATCH /portal/quotations/:id */
+export function useUpdatePortalQuotation() {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: ({ id, dto }: { id: string; dto: Record<string, unknown> }) =>
+      portalQuotationsService.update(id, dto),
+    onSuccess: (q) => {
+      void qc.invalidateQueries({ queryKey: portalQuotationKeys.all(scope) });
+      if (scope !== 'anon' && q.id) {
+        qc.setQueryData(portalQuotationKeys.detail(scope, q.id), q);
+      }
+    },
+  });
+}
+
+/** POST /portal/quotations/:id/replace */
+export function useReplacePortalQuotation() {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: ({ id }: { id: string }) => portalQuotationsService.replace(id),
+    onSuccess: (q, vars) => {
+      void qc.invalidateQueries({ queryKey: portalQuotationKeys.all(scope) });
+      if (scope !== 'anon') {
+        void qc.invalidateQueries({ queryKey: portalQuotationKeys.detail(scope, vars.id) });
+        if (q.id) qc.setQueryData(portalQuotationKeys.detail(scope, q.id), q);
+      }
+    },
+  });
+}
+
+/** DELETE /portal/quotations/:id */
+export function useDeletePortalQuotation() {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: (id: string) => portalQuotationsService.delete(id),
+    onSuccess: (_void, id) => {
+      void qc.invalidateQueries({ queryKey: portalQuotationKeys.all(scope) });
+      if (scope !== 'anon') {
+        qc.removeQueries({ queryKey: portalQuotationKeys.detail(scope, id) });
+      }
+    },
+  });
+}
+
 export function usePortalQuotationBookingForm(
   id: string,
   enabled = true,

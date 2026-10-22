@@ -574,9 +574,12 @@ export default function QuotationDetailPage() {
     verified: Boolean(fclActions?.can_approve_verified) || undefined,
     shipmentId: quotation.shipment_id,
     jobId: quotation.job_id,
-    jobHref: quotation.job_id
-      ? jobDetailPath({ id: quotation.job_id, job_type: quotation.job_type })
-      : undefined,
+    // View Job only when CONVERTED (provisional job_id must not open the link).
+    jobHref:
+      quotation.job_id &&
+      String(status ?? '').toUpperCase().replace(/[\s-]+/g, '_') === 'CONVERTED'
+        ? jobDetailPath({ id: quotation.job_id, job_type: quotation.job_type })
+        : undefined,
   });
 
   const enquiryHref =
@@ -589,10 +592,12 @@ export default function QuotationDetailPage() {
       : hasShipment && quotation.shipment_id
         ? `/operations/shipments/${quotation.shipment_id}`
         : undefined;
+  const isConvertedStatus =
+    String(status ?? '').toUpperCase().replace(/[\s-]+/g, '_') === 'CONVERTED';
   const jobHref =
     generatedLink?.kind === 'job'
       ? generatedLink.href
-      : hasJob && quotation.job_id
+      : hasJob && quotation.job_id && isConvertedStatus
         ? jobDetailPath({ id: quotation.job_id, job_type: quotation.job_type })
         : undefined;
 

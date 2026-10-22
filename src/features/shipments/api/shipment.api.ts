@@ -77,6 +77,14 @@ export const SHIPMENT_API = {
   customsRefs: (id: string) => `/shipments/${id}/customs-refs`,
   exchangeRates: (id: string) => `/shipments/${id}/exchange-rates`,
   organizations: (id: string) => `/shipments/${id}/organizations`,
+  organizationByType: (id: string, orgType: string) =>
+    `/shipments/${id}/organizations/${encodeURIComponent(orgType)}`,
+  organizationsPartySearch: (id: string) =>
+    `/shipments/${id}/organizations/party-search`,
+  organizationsCopyFrom: (id: string) => `/shipments/${id}/organizations/copy-from`,
+  /** GET /shipments/:id/bl-draft/preview · POST generate */
+  blDraftPreview: (id: string) => `/shipments/${id}/bl-draft/preview`,
+  blDraftGenerate: (id: string) => `/shipments/${id}/bl-draft/generate`,
   documentBookingConfirmation: (id: string) =>
     `/shipments/${id}/documents/booking-confirmation`,
   documentHbl: (id: string) => `/shipments/${id}/documents/hbl`,

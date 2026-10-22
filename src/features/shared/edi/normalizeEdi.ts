@@ -88,18 +88,26 @@ export function normalizeEdiSubmissions(raw: unknown): JobEdiSubmission[] {
     const mime =
       String(rec.mime_type ?? rec.mimeType ?? rec.content_type ?? '').trim() ||
       undefined;
+    const ediType =
+      String(rec.edi_type ?? rec.type ?? rec.code ?? '').trim() || undefined;
     let fileName =
       String(rec.file_name ?? rec.fileName ?? rec.filename ?? '').trim() ||
       undefined;
-    if (fileName && mime?.includes('pdf') && !/\.pdf$/i.test(fileName)) {
+    const isTxt =
+      mime?.includes('text/plain') ||
+      /\.txt$/i.test(fileName || '') ||
+      /MANIFEST_CSDP|CSDP/i.test(ediType || '');
+    if (fileName && isTxt && !/\.txt$/i.test(fileName)) {
+      fileName = `${fileName.replace(/\.[^.]+$/, '')}.txt`;
+    } else if (fileName && mime?.includes('pdf') && !/\.pdf$/i.test(fileName) && !isTxt) {
       fileName = `${fileName.replace(/\.[^.]+$/, '')}.pdf`;
     }
     out.push({
       id,
-      edi_type: String(rec.edi_type ?? rec.type ?? rec.code ?? '').trim() || undefined,
+      edi_type: ediType,
       status: String(rec.status ?? '').trim() || undefined,
       file_name: fileName,
-      mime_type: mime || 'application/pdf',
+      mime_type: mime || (isTxt ? 'text/plain' : 'application/pdf'),
       download:
         String(rec.download ?? rec.download_path ?? rec.downloadPath ?? '').trim() ||
         undefined,
@@ -181,13 +189,17 @@ function pickEdiFileName(raw: unknown, fallback: string): string {
 function ensureDownloadName(name: string, blob: Blob): string {
   const type = (blob.type || '').toLowerCase();
   const base = name.replace(/\.[^.]+$/, '') || 'edi-submission';
+  if (type.includes('text/plain') || /\.txt$/i.test(name)) {
+    return /\.txt$/i.test(name) ? name : `${base}.txt`;
+  }
   if (type.includes('pdf') || /\.pdf$/i.test(name)) {
     return /\.pdf$/i.test(name) ? name : `${base}.pdf`;
   }
   if (/\.(xml|edi|txt|json|pdf)$/i.test(name)) return name;
   if (type.includes('json')) return `${base}.json`;
-  if (type.includes('xml') || type.includes('text')) return `${base}.xml`;
-  // Printable EDI download is PDF by default (API streams application/pdf).
+  if (type.includes('xml')) return `${base}.xml`;
+  if (type.includes('text')) return `${base}.txt`;
+  // Legacy printable EDI is PDF; MANIFEST_CSDP streams text/plain.
   return `${base}.pdf`;
 }
 
@@ -367,6 +379,13 @@ export async function resolveEdiDownloadPayload(
       : new Blob([blob], { type: 'application/pdf' });
   }
 
+  // Official CSDP manifest and other text EDI.
+  if (contentType.includes('text/plain') || contentType.includes('charset=utf-8')) {
+    return blob.type?.includes('text')
+      ? blob
+      : new Blob([blob], { type: 'text/plain; charset=utf-8' });
+  }
+
   // Only probe small payloads for JSON errors / legacy envelopes.
   if (
     blob.size > 0 &&
@@ -388,6 +407,10 @@ export async function resolveEdiDownloadPayload(
       if (trimmed.startsWith('<')) {
         return new Blob([trimmed], { type: 'application/xml' });
       }
+      // VOY/BOL/CTR/CON/END style lines
+      if (/^"?VOY"?[,:]/im.test(trimmed) || /CSDPAEDI/i.test(trimmed)) {
+        return new Blob([text], { type: 'text/plain; charset=utf-8' });
+      }
       return new Blob([text], {
         type: contentType || 'application/octet-stream',
       });
@@ -396,8 +419,13 @@ export async function resolveEdiDownloadPayload(
     }
   }
 
-  if (contentType.includes('xml') || contentType.includes('text')) {
+  if (contentType.includes('xml')) {
     return blob;
+  }
+  if (contentType.includes('text')) {
+    return blob.type?.includes('text')
+      ? blob
+      : new Blob([blob], { type: 'text/plain; charset=utf-8' });
   }
 
   return blob;

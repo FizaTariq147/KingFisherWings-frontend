@@ -27,9 +27,29 @@ const VARIANT_EXTRAS = [
 const rows = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 const used = new Set();
 
+/** Official Fresa sample-report Format-1…21 — keep PDF-matched blocks intact. */
+const OFFICIAL_FRESA_FORMATS = new Set(
+  Array.from({ length: 21 }, (_, i) => i + 1),
+);
+
 const next = rows.map((row, index) => {
   let blocks = Array.isArray(row.blocks) ? row.blocks.map((b) => ({ ...b })) : [];
   const n = Number(row.formatNumber) || index;
+  const branding = {
+    company: 'KingFisher Wings',
+    address: 'Dubai, United Arab Emirates',
+    web: 'www.kingfisherwingsgroup.com',
+    phone: '+971 55 5355 286',
+    email: 'inquiry@kingfishertec.com',
+    logo: 'kingfisher',
+  };
+
+  // Do not inject diversity extras into official Fresa Format-1…21 layouts.
+  if (OFFICIAL_FRESA_FORMATS.has(n)) {
+    used.add(blockSignature(blocks));
+    return { ...row, blocks, branding };
+  }
+
   const foot = blocks[blocks.length - 1];
   const hasFooter = foot?.type === 'colorfulFooter';
   const body = hasFooter ? blocks.slice(0, -1) : blocks;
@@ -62,14 +82,7 @@ const next = rows.map((row, index) => {
   return {
     ...row,
     blocks: outBlocks,
-    branding: {
-      company: 'KingFisher Wings',
-      address: 'Dubai, United Arab Emirates',
-      web: 'www.kingfisherwingsgroup.com',
-      phone: '+971 55 5355 286',
-      email: 'inquiry@kingfishertec.com',
-      logo: 'kingfisher',
-    },
+    branding,
   };
 });
 

@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
 import { portLabelFromRecord } from '@/features/customers/utils/customerMasterLookup';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
-import { useMasterDetail } from '@/features/masters/hooks/useMasterResource';
+import {
+  useMasterDetail,
+  useMasterOptions,
+} from '@/features/masters/hooks/useMasterResource';
 import { useParty } from '@/features/parties/hooks/useParties';
 import { isUuid } from '@/lib/isUuid';
 import type { Shipment } from '../types/shipment.types';
@@ -86,6 +89,18 @@ export function useShipmentResolvedLabels(shipment: Shipment | null | undefined)
     MASTER_PATHS.branches,
     needsBranch ? shipment!.branch_id! : '',
   );
+  // Options fallback when detail-by-id lags or shipment only has UUIDs.
+  const { data: departmentOptions = [] } = useMasterOptions(
+    'departments',
+    MASTER_PATHS.departments,
+    Boolean(shipment?.department_id && isUuid(shipment.department_id)),
+    true,
+  );
+  const { data: branchOptions = [] } = useMasterOptions(
+    'branches',
+    MASTER_PATHS.branches,
+    Boolean(shipment?.branch_id && isUuid(shipment.branch_id)),
+  );
   const { data: containerType, isLoading: containerLoading } = useMasterDetail(
     'container-types',
     MASTER_PATHS['container-types'],
@@ -122,14 +137,23 @@ export function useShipmentResolvedLabels(shipment: Shipment | null | undefined)
       destFromMaster ||
       (destLoading ? 'Loading…' : undefined);
 
+    const departmentFromOptions = departmentOptions.find(
+      (row) => String(row.id ?? '') === String(shipment?.department_id ?? ''),
+    );
+    const branchFromOptions = branchOptions.find(
+      (row) => String(row.id ?? '') === String(shipment?.branch_id ?? ''),
+    );
+
     const departmentLabel =
       readable(shipment?.department_name) ||
       masterLabel(asRecord(department)) ||
+      masterLabel(asRecord(departmentFromOptions)) ||
       (deptLoading ? 'Loading…' : undefined);
 
     const branchLabel =
       readable(shipment?.branch_name) ||
       masterLabel(asRecord(branch)) ||
+      masterLabel(asRecord(branchFromOptions)) ||
       (branchLoading ? 'Loading…' : undefined);
 
     const containerTypeLabel =
@@ -161,8 +185,10 @@ export function useShipmentResolvedLabels(shipment: Shipment | null | undefined)
     destLoading,
     department,
     deptLoading,
+    departmentOptions,
     branch,
     branchLoading,
+    branchOptions,
     containerType,
     containerLoading,
     carrier,

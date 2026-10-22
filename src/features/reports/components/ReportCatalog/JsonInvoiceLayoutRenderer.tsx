@@ -570,7 +570,7 @@ function ChargeTable({
           {rows.map((row, ri) => (
             <tr key={ri} style={{ backgroundColor: ri % 2 ? theme.panel : theme.white }}>
               {row.map((cell, ci) => (
-                <td key={ci} className="border px-1.5 py-1.5" style={{ borderColor: theme.fill }}>
+                <td key={ci} className="border px-1.5 py-1.5" style={{ borderColor: theme.primary }}>
                   {cell}
                 </td>
               ))}

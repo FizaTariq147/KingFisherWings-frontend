@@ -89,8 +89,8 @@ export const salesMenu: MenuTile[] = [
   },
   {
     id: 'shipments-list-sales',
-    title: 'Shipments List-Sales',
-    description: 'The list of users can view based on mapped Employee users list.',
+    title: 'Jobs List-Sales',
+    description: 'Jobs visible to sales users based on mapped employee coverage.',
     icon: ListChecks,
     iconColor: 'bg-amber-500',
     path: '/sales/shipments-list',

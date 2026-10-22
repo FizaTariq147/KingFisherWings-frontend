@@ -1306,6 +1306,8 @@ export const JOB_EDI_TYPES = [
   'EQO_OMAN',
   'IAL',
   'MPCI',
+  /** Official CSDP manifest .txt (VOY/BOL/CTR/CON/END). */
+  'MANIFEST_CSDP',
 ] as const;
 
 export type JobEdiType = (typeof JOB_EDI_TYPES)[number];

@@ -9,6 +9,10 @@ export const PORTAL_QUOTATIONS_API = {
   accept: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/accept`,
   reject: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/reject`,
   counterOffer: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/counter-offer`,
+  /** Amend sent quote — alias of counter-offer (same negotiation payload). */
+  amend: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/amend`,
+  /** Replace DRAFT with linked revision (old DRAFT soft-withdrawn). */
+  replace: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/replace`,
   negotiation: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/negotiation`,
   pdf: (id: string) => `/portal/quotations/${encodeURIComponent(id)}/pdf`,
   /**

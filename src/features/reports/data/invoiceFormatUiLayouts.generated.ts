@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — invoiceFormatUiLayouts. */
+/** Auto-generated — run: node scripts/build-invoice-format-ui-layouts.mjs */
 export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
@@ -10,18 +10,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -29,202 +29,226 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "logo": "kingfisher"
     },
     "demo": {
-      "invoiceNo": "BOMINV230500382",
-      "invoiceDate": "17-MAY-23",
-      "dueDate": "17-MAY-23",
+      "invoiceNo": "MAAINV1900717",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-JAN-19",
       "creditTerm": "CASH",
-      "billToName": "DEMOCLIEJK001",
-      "billToPhone": "798798798",
-      "fax": "9879878",
-      "vatNo": "68768978898098",
-      "shipmentNo": "BOM/EXP/23/05/B/0709",
-      "shippersReference": "FCL EXPORT",
-      "goodsDescription": "GENERAL CARGO",
-      "placeOfSupply": "TAMIL NADU",
-      "termsOfShipment": "FOB",
-      "quotationNo": "—",
-      "irnNo": "—",
+      "billToLabel": "Bill To",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD, NUNGAMBAKKAM, CHENNAI, TAMIL NADU, INDIA, 600084",
+      "billToPhone": "N/A",
+      "billToGstin": "GSTNO9876666554",
       "currency": "INR",
-      "words": "Rupee Four Thousand Seven Hundred Seventy-Six Only",
-      "subtotal": "4,200.00",
-      "tax": "576.00",
-      "total": "4,776.00",
-      "totalLabel": "INR",
-      "subtotalParts": [
-        "4,200.00",
-        "576.00",
-        "4,776.00"
+      "words": "Rupee Seventeen Thousand Three Hundred Eighty-Four Only",
+      "subtotal": "8,800.00",
+      "tax": "1,584.00",
+      "total": "17,384.00",
+      "totalLabel": "",
+      "taxAmountLines": [
+        "GST18-SGST9% 792.00",
+        "GST18-CGST9% 792.00"
       ],
-      "frenchTotalWords": "quatre mille sept cent soixante-seize dollars",
-      "metaRows": [
-        {
-          "k": "INVOICE DATE",
-          "v": "17-MAY-23"
-        },
-        {
-          "k": "SHIPMENT",
-          "v": "BOM/EXP/23/05/B/0709"
-        },
-        {
-          "k": "TERMS",
-          "v": "CASH"
-        },
-        {
-          "k": "JOB NUMBER",
-          "v": "—"
-        },
-        {
-          "k": "CUSTOMER ID",
-          "v": "DEMOCLIEJK001"
-        },
-        {
-          "k": "DUE DATE",
-          "v": "17-MAY-23"
-        }
+      "tableHeaders": [
+        "Charges",
+        "SAC Code",
+        "Qty",
+        "Amount / Qty",
+        "Currency",
+        "Ex.Rate",
+        "FCY Amount",
+        "Taxable Amount",
+        "Non Taxable Amount",
+        "SGST %",
+        "SGST",
+        "CGST %",
+        "CGST",
+        "Total Amount (INR)"
       ],
-      "partyLeft": {
-        "title": "SHIPPER",
-        "lines": [
-          "DEMO-SHIPPER ENGG COMPANY"
+      "tableRows": [
+        [
+          "FREIGHT CHARGE",
+          "",
+          "1",
+          "100.00",
+          "USD",
+          "70.00000",
+          "100.00",
+          "",
+          "7,000.00",
+          "",
+          "",
+          "",
+          "",
+          "7,000.00"
+        ],
+        [
+          "TERMINAL HANDLING CHARGES 20\"GP",
+          "",
+          "1",
+          "5,500.00",
+          "INR",
+          "1.00000",
+          "5,500.00",
+          "5,500.00",
+          "",
+          "9.00",
+          "495.00",
+          "9.00",
+          "495.00",
+          "6,490.00"
+        ],
+        [
+          "SEAL FEE",
+          "",
+          "1",
+          "300.00",
+          "INR",
+          "1.00000",
+          "300.00",
+          "300.00",
+          "",
+          "9.00",
+          "27.00",
+          "9.00",
+          "27.00",
+          "354.00"
+        ],
+        [
+          "BILL OF LADING",
+          "",
+          "1",
+          "3,000.00",
+          "INR",
+          "1.00000",
+          "3,000.00",
+          "3,000.00",
+          "",
+          "9.00",
+          "270.00",
+          "9.00",
+          "270.00",
+          "3,540.00"
         ]
-      },
-      "partyMid": {
-        "title": "CONSIGNEE",
-        "lines": [
-          "DEMO STEEL FACTORY CO. LTD."
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "DEPARTMENT",
-          "v": "FCL EXPORT"
-        },
-        {
-          "k": "GROSS WEIGHT",
-          "v": "22,700.000 KGS"
-        },
-        {
-          "k": "CUSTOMS BROKER",
-          "v": "—"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "CAP SAN JUAN / 310W"
-        },
-        {
-          "k": "ORIGIN ETD",
-          "v": "01-MAR-23 INNSA - NHAVA SHEVA, INDIA"
-        },
-        {
-          "k": "DESTINATION ETA",
-          "v": "20-MAR-23 SAJED - JEDDAH, SAUDI ARABIA"
-        },
-        {
-          "k": "CONTAINERS",
-          "v": "TTNU0712894 / 40' FLAT"
-        },
-        {
-          "k": "OCEAN BILL OF LADING",
-          "v": "NSAJED85630124277"
-        },
-        {
-          "k": "HOUSE BILL OF LADING",
-          "v": "—"
-        },
-        {
-          "k": "CHARGEABLE PACKAGES",
-          "v": "3 PACKAGES"
-        },
-        {
-          "k": "VOLUME",
-          "v": "22,700.000 KGS"
-        }
+      ],
+      "containerHeaders": [
+        "Container No.",
+        "Type",
+        "No of Pcs",
+        "Gross Weight",
+        "Volume",
+        "Volume Weight"
+      ],
+      "containerRow": [
+        "TCNU9876543",
+        "20' DC",
+        "125 PACKAGES",
+        "18,000.000 K",
+        "20.000",
+        ""
       ],
       "termsLines": [
-        "1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt."
+        "1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.",
+        "2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted."
       ],
       "bankLines": [
         "Beneficiary Name: KingFisher Logistic",
-        "Transfer Funds To : KingFisher Logistic",
         "Bank : HDFC",
         "A/c No : XXXXXXXXXXX",
         "IBAN Code : ABA:XXXXXX",
         "Swift Code : XXXXXX",
         "Address : Dubai, United Arab Emirates"
       ],
-      "footerBullets": [
-        "Payments delayed beyond agreed credit terms will attract interest @24% per annum.",
-        "Cheques should be made out to KingFisher Logistic & crossed A/C payee.",
-        "Any discrepancy should be notified in writing within 07 days from the invoice date.",
-        "This is a computer-generated document & does not require a signature & stamp."
+      "metaRows": [
+        {
+          "k": "Invoice No./Date",
+          "v": "MAAINV1900717 / 28-JAN-19 (CREATED)"
+        },
+        {
+          "k": "Due Date",
+          "v": "28-JAN-19"
+        }
       ],
-      "tableHeaders": [
-        "Charge Details",
-        "SAC",
-        "Cur.",
-        "Rate/Unit",
-        "Qty",
-        "Cur",
-        "Amount",
-        "Ex.Rate",
-        "Amount",
-        "IGST%",
-        "IGST",
-        "Total Amt (INR)"
-      ],
-      "tableRows": [
-        [
-          "FREIGHT CHARGE",
-          "",
-          "INR",
-          "1,500.00",
-          "1",
-          "1,500.00",
-          "1.00000",
-          "1,500.00",
-          "18",
-          "270.00",
-          "1,770.00"
-        ],
-        [
-          "LOCAL CHARGES",
-          "",
-          "INR",
-          "800.00",
-          "1",
-          "800.00",
-          "1.00000",
-          "800.00",
-          "18",
-          "144.00",
-          "944.00"
-        ],
-        [
-          "SEA FREIGHT CHARGE",
-          "",
-          "INR",
-          "900.00",
-          "1",
-          "900.00",
-          "1.00000",
-          "900.00",
-          "18",
-          "162.00",
-          "1,062.00"
-        ],
-        [
-          "CONTAINER CLEANING FEE",
-          "",
-          "INR",
-          "1,000.00",
-          "1",
-          "1,000.00",
-          "1.00000",
-          "1,000.00",
-          "0",
-          "0.00",
-          "1,000.00"
-        ]
+      "fieldGrid": [
+        {
+          "k": "Shipper",
+          "v": "4G LOGISTICS INDIA PVT LTD"
+        },
+        {
+          "k": "Consignee",
+          "v": "AL NASER TRADING COMPANY LLC"
+        },
+        {
+          "k": "Job No.",
+          "v": "CEXP190148 / 28-JAN-19"
+        },
+        {
+          "k": "Shipment No.",
+          "v": "B/EXP/19/0251 / 22-JAN-19"
+        },
+        {
+          "k": "MBL / MAWB No.",
+          "v": "MBLC9878909999 / 21-JAN-19"
+        },
+        {
+          "k": "HBL / HAWB No.",
+          "v": "PLMAAJEA00080 / 23-JAN-19"
+        },
+        {
+          "k": "Place of Receipt",
+          "v": "CHENNAI"
+        },
+        {
+          "k": "POR",
+          "v": "INMAA"
+        },
+        {
+          "k": "POL",
+          "v": "INMAA"
+        },
+        {
+          "k": "POD",
+          "v": "AEJEA"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI FZE"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "MSC MARINA / 876"
+        },
+        {
+          "k": "ETD",
+          "v": "28-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "05-FEB-19"
+        },
+        {
+          "k": "Reference No.",
+          "v": "REFE NO. 987890 / 22-JAN-19"
+        },
+        {
+          "k": "Currency",
+          "v": "INR 1.000000"
+        },
+        {
+          "k": "IGM No.",
+          "v": "8987777 / 25-JAN-19"
+        },
+        {
+          "k": "INCO Terms",
+          "v": "CFR"
+        },
+        {
+          "k": "Narration",
+          "v": "B/EXP/19/0251 MBL NO. MBLC9878909999 / HBL NO. PLMAAJEA00080 / JOB NO.CEXP190148"
+        },
+        {
+          "k": "Remarks",
+          "v": "1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777 DATE: 17/01/2019"
+        }
       ]
     },
     "blocks": [
@@ -234,29 +258,32 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "INVOICE BOMINV230500382",
-        "align": "start"
+        "text": "TAX INVOICE",
+        "align": "center"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
-        "type": "shipmentDetails",
-        "showPlaceOfSupply": true
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "subtotalBar",
-        "variant": "igst"
+        "type": "taxAmountBox"
       },
       {
-        "type": "exportClosing"
+        "type": "wordsAndTotal"
       },
       {
-        "type": "letterBody"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -271,18 +298,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -290,202 +317,216 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "logo": "kingfisher"
     },
     "demo": {
-      "invoiceNo": "BOMINV230500382",
-      "invoiceDate": "17-MAY-23",
-      "dueDate": "17-MAY-23",
+      "invoiceNo": "MAAINV1900717",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-JAN-19",
       "creditTerm": "CASH",
-      "billToName": "DEMOCLIEJK001",
-      "billToPhone": "798798798",
-      "fax": "9879878",
-      "vatNo": "68768978898098",
-      "shipmentNo": "BOM/EXP/23/05/B/0709",
-      "shippersReference": "FCL EXPORT",
-      "goodsDescription": "GENERAL CARGO",
-      "placeOfSupply": "TAMIL NADU",
-      "termsOfShipment": "FOB",
-      "quotationNo": "—",
-      "irnNo": "—",
+      "billToLabel": "Client",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD, NUNGAMBAKKAM, CHENNAI, TAMIL NADU, INDIA, 600084",
+      "billToPhone": "N/A",
+      "billToGstin": "GSTNO9876666554",
       "currency": "INR",
-      "words": "Rupee Four Thousand Seven Hundred Seventy-Six Only",
-      "subtotal": "4,200.00",
-      "tax": "576.00",
-      "total": "4,776.00",
-      "totalLabel": "INR",
-      "subtotalParts": [
-        "4,200.00",
-        "576.00",
-        "4,776.00"
+      "words": "Rupee Seventeen Thousand Three Hundred Eighty-Four Only",
+      "subtotal": "8,800.00",
+      "tax": "1,584.00",
+      "total": "17,384.00",
+      "totalLabel": "",
+      "taxAmountLines": [
+        "GST18-SGST9% 792.00",
+        "GST18-CGST9% 792.00"
       ],
-      "frenchTotalWords": "quatre mille sept cent soixante-seize dollars",
-      "metaRows": [
-        {
-          "k": "INVOICE DATE",
-          "v": "17-MAY-23"
-        },
-        {
-          "k": "SHIPMENT",
-          "v": "BOM/EXP/23/05/B/0709"
-        },
-        {
-          "k": "TERMS",
-          "v": "CASH"
-        },
-        {
-          "k": "JOB NUMBER",
-          "v": "—"
-        },
-        {
-          "k": "CUSTOMER ID",
-          "v": "DEMOCLIEJK001"
-        },
-        {
-          "k": "DUE DATE",
-          "v": "17-MAY-23"
-        }
+      "tableHeaders": [
+        "Charges",
+        "SAC Code",
+        "Qty",
+        "Amount / Qty",
+        "Currency",
+        "Ex.Rate",
+        "FCY Amount",
+        "Taxable Amount",
+        "Non Taxable Amount",
+        "SGST %",
+        "SGST",
+        "CGST %",
+        "CGST",
+        "Total Amount (INR)"
       ],
-      "partyLeft": {
-        "title": "SHIPPER",
-        "lines": [
-          "DEMO-SHIPPER ENGG COMPANY"
+      "tableRows": [
+        [
+          "FREIGHT CHARGE",
+          "",
+          "1",
+          "100.00",
+          "USD",
+          "70.00000",
+          "100.00",
+          "",
+          "7,000.00",
+          "",
+          "",
+          "",
+          "",
+          "7,000.00"
+        ],
+        [
+          "TERMINAL HANDLING CHARGES 20\"GP",
+          "",
+          "1",
+          "5,500.00",
+          "INR",
+          "1.00000",
+          "5,500.00",
+          "5,500.00",
+          "",
+          "9.00",
+          "495.00",
+          "9.00",
+          "495.00",
+          "6,490.00"
+        ],
+        [
+          "SEAL FEE",
+          "",
+          "1",
+          "300.00",
+          "INR",
+          "1.00000",
+          "300.00",
+          "300.00",
+          "",
+          "9.00",
+          "27.00",
+          "9.00",
+          "27.00",
+          "354.00"
+        ],
+        [
+          "BILL OF LADING",
+          "",
+          "1",
+          "3,000.00",
+          "INR",
+          "1.00000",
+          "3,000.00",
+          "3,000.00",
+          "",
+          "9.00",
+          "270.00",
+          "9.00",
+          "270.00",
+          "3,540.00"
         ]
-      },
-      "partyMid": {
-        "title": "CONSIGNEE",
-        "lines": [
-          "DEMO STEEL FACTORY CO. LTD."
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "DEPARTMENT",
-          "v": "FCL EXPORT"
-        },
-        {
-          "k": "GROSS WEIGHT",
-          "v": "22,700.000 KGS"
-        },
-        {
-          "k": "CUSTOMS BROKER",
-          "v": "—"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "CAP SAN JUAN / 310W"
-        },
-        {
-          "k": "ORIGIN ETD",
-          "v": "01-MAR-23 INNSA - NHAVA SHEVA, INDIA"
-        },
-        {
-          "k": "DESTINATION ETA",
-          "v": "20-MAR-23 SAJED - JEDDAH, SAUDI ARABIA"
-        },
-        {
-          "k": "CONTAINERS",
-          "v": "TTNU0712894 / 40' FLAT"
-        },
-        {
-          "k": "OCEAN BILL OF LADING",
-          "v": "NSAJED85630124277"
-        },
-        {
-          "k": "HOUSE BILL OF LADING",
-          "v": "—"
-        },
-        {
-          "k": "CHARGEABLE PACKAGES",
-          "v": "3 PACKAGES"
-        },
-        {
-          "k": "VOLUME",
-          "v": "22,700.000 KGS"
-        }
+      ],
+      "containerHeaders": [
+        "Container No.",
+        "Type",
+        "No. of Pcs",
+        "Pack Type",
+        "G.Weight",
+        "Volume (CBM)"
+      ],
+      "containerRow": [
+        "TCNU9876543",
+        "20' DC",
+        "125.00",
+        "PACKAGES",
+        "18,000.000 K",
+        "20.000"
       ],
       "termsLines": [
-        "1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt."
+        "1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.",
+        "2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted."
       ],
       "bankLines": [
         "Beneficiary Name: KingFisher Logistic",
-        "Transfer Funds To : KingFisher Logistic",
         "Bank : HDFC",
         "A/c No : XXXXXXXXXXX",
         "IBAN Code : ABA:XXXXXX",
         "Swift Code : XXXXXX",
         "Address : Dubai, United Arab Emirates"
       ],
-      "footerBullets": [
-        "Payments delayed beyond agreed credit terms will attract interest @24% per annum.",
-        "Cheques should be made out to KingFisher Logistic & crossed A/C payee.",
-        "Any discrepancy should be notified in writing within 07 days from the invoice date.",
-        "This is a computer-generated document & does not require a signature & stamp."
+      "metaRows": [
+        {
+          "k": "Invoice No.",
+          "v": "MAAINV1900717 / 28-JAN-19 (CREATED)"
+        },
+        {
+          "k": "Job No.",
+          "v": "CEXP190148 / 28-JAN-19"
+        },
+        {
+          "k": "Shipment No.",
+          "v": "B/EXP/19/0251 / 22-JAN-19"
+        },
+        {
+          "k": "Line / Subline No.",
+          "v": "128 / 12"
+        }
       ],
-      "tableHeaders": [
-        "Charge Details",
-        "SAC",
-        "Cur.",
-        "Rate/Unit",
-        "Qty",
-        "Cur",
-        "Amount",
-        "Ex.Rate",
-        "Amount",
-        "IGST%",
-        "IGST",
-        "Total Amt (INR)"
-      ],
-      "tableRows": [
-        [
-          "FREIGHT CHARGE",
-          "",
-          "INR",
-          "1,500.00",
-          "1",
-          "1,500.00",
-          "1.00000",
-          "1,500.00",
-          "18",
-          "270.00",
-          "1,770.00"
-        ],
-        [
-          "LOCAL CHARGES",
-          "",
-          "INR",
-          "800.00",
-          "1",
-          "800.00",
-          "1.00000",
-          "800.00",
-          "18",
-          "144.00",
-          "944.00"
-        ],
-        [
-          "SEA FREIGHT CHARGE",
-          "",
-          "INR",
-          "900.00",
-          "1",
-          "900.00",
-          "1.00000",
-          "900.00",
-          "18",
-          "162.00",
-          "1,062.00"
-        ],
-        [
-          "CONTAINER CLEANING FEE",
-          "",
-          "INR",
-          "1,000.00",
-          "1",
-          "1,000.00",
-          "1.00000",
-          "1,000.00",
-          "0",
-          "0.00",
-          "1,000.00"
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "Origin",
+          "CHENNAI (EX MADRAS), INDIA"
         ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "Destination",
+          "JEBEL ALI, UNITED ARAB EMIRATES"
+        ]
+      },
+      "partyRight": [
+        {
+          "k": "MBL / MAWB No.",
+          "v": "MBLC9878909999 / 21-JAN-19"
+        },
+        {
+          "k": "HBL / HAWB No.",
+          "v": "PLMAAJEA00080 / 23-JAN-19"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "MSC MARINA / 876"
+        },
+        {
+          "k": "ETD",
+          "v": "28-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "05-FEB-19"
+        },
+        {
+          "k": "INCO Terms",
+          "v": "CFR"
+        },
+        {
+          "k": "Currency",
+          "v": "INR 1.00000"
+        },
+        {
+          "k": "Reference No.",
+          "v": "987898 / 17-JAN-19"
+        },
+        {
+          "k": "IGM No.",
+          "v": "8987777 / 25-JAN-19"
+        },
+        {
+          "k": "PO No.",
+          "v": "987898"
+        }
+      ],
+      "fieldGrid": [
+        {
+          "k": "Remarks",
+          "v": "1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777 DATE: 17/01/2019"
+        }
       ]
     },
     "blocks": [
@@ -495,32 +536,36 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "INVOICE BOMINV230500382",
-        "align": "start"
+        "text": "TAX INVOICE",
+        "align": "center"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "twoColumn",
+        "showBillTo": true,
+        "showCreditTerm": true
       },
       {
-        "type": "shipmentDetails",
-        "showPlaceOfSupply": true
+        "type": "partyTriple"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 1
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "subtotalBar",
-        "variant": "igst"
+        "type": "taxAmountBox"
       },
       {
-        "type": "exportClosing"
+        "type": "wordsAndTotal"
       },
       {
         "type": "containerStrip"
       },
       {
-        "type": "wireBox"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -535,18 +580,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -808,9 +853,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -823,18 +865,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1123,12 +1165,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -1141,18 +1177,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1162,113 +1198,49 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "BOMINV230500382",
       "invoiceDate": "17-MAY-23",
-      "dueDate": "17-MAY-23",
-      "creditTerm": "CASH",
-      "billToName": "DEMOCLIEJK001",
+      "dueDate": "24-MAY-23",
+      "billToLabel": "Client",
+      "billToName": "DEMO LOGISTICS INDIA PVT LTD",
+      "billToAddress": "21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU, INDIA, 676876",
       "billToPhone": "798798798",
       "fax": "9879878",
       "vatNo": "68768978898098",
-      "shipmentNo": "BOM/EXP/23/05/B/0709",
-      "shippersReference": "FCL EXPORT",
-      "goodsDescription": "GENERAL CARGO",
-      "placeOfSupply": "TAMIL NADU",
-      "termsOfShipment": "FOB",
-      "quotationNo": "—",
-      "irnNo": "—",
+      "billToGstin": "888329087642356",
+      "creditTerm": "CASH",
       "currency": "INR",
-      "words": "Rupee Four Thousand Seven Hundred Seventy-Six Only",
+      "words": "Rupee Four Thousand Two Hundred Only",
       "subtotal": "4,200.00",
       "tax": "576.00",
-      "total": "4,776.00",
-      "totalLabel": "INR",
-      "subtotalParts": [
-        "4,200.00",
-        "576.00",
-        "4,776.00"
+      "total": "4,200.00",
+      "narration": "MBL NO... / HBL NO. NSAJED85630124277 / JOB NO.",
+      "officeAddressLines": [
+        "MUMBAI",
+        "406, 4TH FLOOR, D-21 CORPORATE PARK, SECTOR 21,, MUMBAI, Pincode : 400001"
       ],
-      "frenchTotalWords": "quatre mille sept cent soixante-seize dollars",
+      "taxAmountLines": [
+        "GST18",
+        "GST 15%"
+      ],
       "metaRows": [
         {
-          "k": "INVOICE DATE",
-          "v": "17-MAY-23"
+          "k": "Invoice No.",
+          "v": "BOMINV230500382"
         },
         {
-          "k": "SHIPMENT",
-          "v": "BOM/EXP/23/05/B/0709"
+          "k": "Date",
+          "v": "17-MAY-23 (POSTED)"
         },
         {
-          "k": "TERMS",
-          "v": "CASH"
-        },
-        {
-          "k": "JOB NUMBER",
+          "k": "Job No.",
           "v": "—"
         },
         {
-          "k": "CUSTOMER ID",
-          "v": "DEMOCLIEJK001"
+          "k": "Shipment No.",
+          "v": "BOM/EXP/23/05/B/0709 / 16-MAY-23"
         },
         {
-          "k": "DUE DATE",
-          "v": "17-MAY-23"
-        }
-      ],
-      "partyLeft": {
-        "title": "SHIPPER",
-        "lines": [
-          "DEMO-SHIPPER ENGG COMPANY"
-        ]
-      },
-      "partyMid": {
-        "title": "CONSIGNEE",
-        "lines": [
-          "DEMO STEEL FACTORY CO. LTD."
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "DEPARTMENT",
+          "k": "Department",
           "v": "FCL EXPORT"
-        },
-        {
-          "k": "GROSS WEIGHT",
-          "v": "22,700.000 KGS"
-        },
-        {
-          "k": "CUSTOMS BROKER",
-          "v": "—"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "CAP SAN JUAN / 310W"
-        },
-        {
-          "k": "ORIGIN ETD",
-          "v": "01-MAR-23 INNSA - NHAVA SHEVA, INDIA"
-        },
-        {
-          "k": "DESTINATION ETA",
-          "v": "20-MAR-23 SAJED - JEDDAH, SAUDI ARABIA"
-        },
-        {
-          "k": "CONTAINERS",
-          "v": "TTNU0712894 / 40' FLAT"
-        },
-        {
-          "k": "OCEAN BILL OF LADING",
-          "v": "NSAJED85630124277"
-        },
-        {
-          "k": "HOUSE BILL OF LADING",
-          "v": "—"
-        },
-        {
-          "k": "CHARGEABLE PACKAGES",
-          "v": "3 PACKAGES"
-        },
-        {
-          "k": "VOLUME",
-          "v": "22,700.000 KGS"
         }
       ],
       "termsLines": [
@@ -1276,118 +1248,196 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "bankLines": [
         "Beneficiary Name: KingFisher Logistic",
-        "Transfer Funds To : KingFisher Logistic",
         "Bank : HDFC",
         "A/c No : XXXXXXXXXXX",
         "IBAN Code : ABA:XXXXXX",
         "Swift Code : XXXXXX",
         "Address : Dubai, United Arab Emirates"
       ],
-      "footerBullets": [
-        "Payments delayed beyond agreed credit terms will attract interest @24% per annum.",
-        "Cheques should be made out to KingFisher Logistic & crossed A/C payee.",
-        "Any discrepancy should be notified in writing within 07 days from the invoice date.",
-        "This is a computer-generated document & does not require a signature & stamp."
+      "osTableHeaders": [
+        "Date",
+        "Voucher No",
+        "Narration",
+        "Currency",
+        "FCY Amount",
+        "O/S FCY Amount",
+        "Aging"
+      ],
+      "osTableRows": [
+        [
+          "16-MAY-23",
+          "BOMINV230500371",
+          "MBL NO... / HBL NO. 6676687 / JOB NO.CBOMEXP230764",
+          "INR",
+          "944.00",
+          "944.00",
+          "1"
+        ]
+      ],
+      "agingHeaders": [
+        "Currency",
+        "Total O/S",
+        "< 30",
+        "30 - 60",
+        "60 - 90",
+        "90 - 120",
+        "120 - 150",
+        "150 - 180",
+        "180+"
+      ],
+      "agingRow": [
+        "INR",
+        "944.00",
+        "944.00",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "fieldGrid": [
+        {
+          "k": "Origin",
+          "v": "NHAVA SHEVA, INDIA"
+        },
+        {
+          "k": "Destination",
+          "v": "JEDDAH, SAUDI ARABIA"
+        },
+        {
+          "k": "Shipper",
+          "v": "DEMO-SHIPPER ENGG COMPANY"
+        },
+        {
+          "k": "Consignee",
+          "v": "DEMO STEEL FACTORY CO. LTD."
+        },
+        {
+          "k": "ETD",
+          "v": "01-MAR-23"
+        },
+        {
+          "k": "ETA",
+          "v": "20-MAR-23"
+        },
+        {
+          "k": "Currency",
+          "v": "INR 1.000000"
+        },
+        {
+          "k": "Total No. of Pcs / G.Weight / V.Weight",
+          "v": "3.00 / 22,700.00 / 22,700.00"
+        },
+        {
+          "k": "Salesperson",
+          "v": "DEMO-PERSON"
+        },
+        {
+          "k": "TRN No.",
+          "v": "888329087642356"
+        },
+        {
+          "k": "HBL No.",
+          "v": "NSAJED85630124277"
+        },
+        {
+          "k": "Narration",
+          "v": "MBL NO... / HBL NO. NSAJED85630124277 / JOB NO."
+        }
       ],
       "tableHeaders": [
-        "Charge Details",
-        "SAC",
-        "Cur.",
-        "Rate/Unit",
+        "Charge",
+        "Unit",
         "Qty",
-        "Cur",
-        "Amount",
+        "Cur.",
         "Ex.Rate",
-        "Amount",
-        "IGST%",
-        "IGST",
-        "Total Amt (INR)"
+        "Amount / Qty",
+        "Tax %",
+        "FCY Amount",
+        "VAT Amount (INR)"
       ],
       "tableRows": [
         [
           "FREIGHT CHARGE",
-          "",
+          "1 TON OR 1/2 MEASURE",
+          "1.00",
           "INR",
+          "1.000000",
+          "1,500.000",
+          "18.00",
           "1,500.00",
-          "1",
-          "1,500.00",
-          "1.00000",
-          "1,500.00",
-          "18",
-          "270.00",
-          "1,770.00"
+          "1,500.00"
         ],
         [
           "LOCAL CHARGES",
-          "",
+          "—",
+          "1.00",
           "INR",
+          "1.000000",
+          "800.000",
+          "18.00",
           "800.00",
-          "1",
-          "800.00",
-          "1.00000",
-          "800.00",
-          "18",
-          "144.00",
-          "944.00"
+          "800.00"
         ],
         [
           "SEA FREIGHT CHARGE",
-          "",
+          "1 TON OR 1/2 MEASURE",
+          "1.00",
           "INR",
+          "1.000000",
+          "900.000",
+          "18.00",
           "900.00",
-          "1",
-          "900.00",
-          "1.00000",
-          "900.00",
-          "18",
-          "162.00",
-          "1,062.00"
+          "900.00"
         ],
         [
           "CONTAINER CLEANING FEE",
-          "",
+          "1 TON OR 1/2 MEASURE",
+          "1.00",
           "INR",
+          "1.000000",
+          "1,000.000",
+          "15.00",
           "1,000.00",
-          "1",
-          "1,000.00",
-          "1.00000",
-          "1,000.00",
-          "0",
-          "0.00",
           "1,000.00"
         ]
-      ]
+      ],
+      "totalLabel": "Total : INR",
+      "containerNote": "TTNU0712894,"
     },
     "blocks": [
       {
-        "type": "companyHeader",
-        "showContact": true
+        "type": "companyHeader"
       },
       {
         "type": "docTitle",
-        "text": "INVOICE BOMINV230500382",
-        "align": "start"
+        "text": "TAX INVOICE",
+        "align": "center"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
-        "type": "shipmentDetails",
-        "showPlaceOfSupply": true
+        "type": "fieldGrid",
+        "cols": 2
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "subtotalBar",
-        "variant": "igst"
+        "type": "totalsOnly"
       },
       {
-        "type": "exportClosing"
+        "type": "wordsAndTotal"
       },
       {
-        "type": "jobDescription"
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -1402,18 +1452,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1617,12 +1667,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -1635,18 +1679,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1849,9 +1893,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -1864,18 +1905,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": true,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2125,12 +2166,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "formatBadge"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -2143,18 +2178,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2417,9 +2452,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -2432,18 +2464,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2722,9 +2754,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "wireBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -2737,18 +2766,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2919,18 +2948,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3010,12 +3039,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "wordsAndTotal"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -3028,18 +3051,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3302,9 +3325,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "jobDescription"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -3317,18 +3337,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3531,15 +3551,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -3552,18 +3563,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3812,9 +3823,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "taxAmountBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -3827,18 +3835,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3918,9 +3926,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "wordsAndTotal"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -3933,18 +3938,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4147,9 +4152,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -4162,18 +4164,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4327,12 +4329,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "stampSignature"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -4345,18 +4341,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4538,9 +4534,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -4553,18 +4546,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4572,202 +4565,226 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "logo": "kingfisher"
     },
     "demo": {
-      "invoiceNo": "BOMINV230500382",
-      "invoiceDate": "17-MAY-23",
-      "dueDate": "17-MAY-23",
+      "invoiceNo": "MAAINV1900717",
+      "invoiceDate": "28-JAN-19",
+      "dueDate": "28-JAN-19",
       "creditTerm": "CASH",
-      "billToName": "DEMOCLIEJK001",
-      "billToPhone": "798798798",
-      "fax": "9879878",
-      "vatNo": "68768978898098",
-      "shipmentNo": "BOM/EXP/23/05/B/0709",
-      "shippersReference": "FCL EXPORT",
-      "goodsDescription": "GENERAL CARGO",
-      "placeOfSupply": "TAMIL NADU",
-      "termsOfShipment": "FOB",
-      "quotationNo": "—",
-      "irnNo": "—",
+      "billToLabel": "Bill To",
+      "billToName": "4G LOGISTICS INDIA PVT LTD",
+      "billToAddress": "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD, NUNGAMBAKKAM, CHENNAI, TAMIL NADU, INDIA, 600084",
+      "billToPhone": "N/A",
+      "billToGstin": "GSTNO9876666554",
       "currency": "INR",
-      "words": "Rupee Four Thousand Seven Hundred Seventy-Six Only",
-      "subtotal": "4,200.00",
-      "tax": "576.00",
-      "total": "4,776.00",
-      "totalLabel": "INR",
-      "subtotalParts": [
-        "4,200.00",
-        "576.00",
-        "4,776.00"
+      "words": "Rupee Seventeen Thousand Three Hundred Eighty-Four Only",
+      "subtotal": "8,800.00",
+      "tax": "1,584.00",
+      "total": "17,384.00",
+      "totalLabel": "",
+      "taxAmountLines": [
+        "GST18-SGST9% 792.00",
+        "GST18-CGST9% 792.00"
       ],
-      "frenchTotalWords": "quatre mille sept cent soixante-seize dollars",
-      "metaRows": [
-        {
-          "k": "INVOICE DATE",
-          "v": "17-MAY-23"
-        },
-        {
-          "k": "SHIPMENT",
-          "v": "BOM/EXP/23/05/B/0709"
-        },
-        {
-          "k": "TERMS",
-          "v": "CASH"
-        },
-        {
-          "k": "JOB NUMBER",
-          "v": "—"
-        },
-        {
-          "k": "CUSTOMER ID",
-          "v": "DEMOCLIEJK001"
-        },
-        {
-          "k": "DUE DATE",
-          "v": "17-MAY-23"
-        }
+      "tableHeaders": [
+        "Charges",
+        "SAC Code",
+        "Qty",
+        "Amount / Qty",
+        "Currency",
+        "Ex.Rate",
+        "FCY Amount",
+        "Taxable Amount",
+        "Non Taxable Amount",
+        "SGST %",
+        "SGST",
+        "CGST %",
+        "CGST",
+        "Total Amount (INR)"
       ],
-      "partyLeft": {
-        "title": "SHIPPER",
-        "lines": [
-          "DEMO-SHIPPER ENGG COMPANY"
+      "tableRows": [
+        [
+          "FREIGHT CHARGE",
+          "",
+          "1",
+          "100.00",
+          "USD",
+          "70.00000",
+          "100.00",
+          "",
+          "7,000.00",
+          "",
+          "",
+          "",
+          "",
+          "7,000.00"
+        ],
+        [
+          "TERMINAL HANDLING CHARGES 20\"GP",
+          "",
+          "1",
+          "5,500.00",
+          "INR",
+          "1.00000",
+          "5,500.00",
+          "5,500.00",
+          "",
+          "9.00",
+          "495.00",
+          "9.00",
+          "495.00",
+          "6,490.00"
+        ],
+        [
+          "SEAL FEE",
+          "",
+          "1",
+          "300.00",
+          "INR",
+          "1.00000",
+          "300.00",
+          "300.00",
+          "",
+          "9.00",
+          "27.00",
+          "9.00",
+          "27.00",
+          "354.00"
+        ],
+        [
+          "BILL OF LADING",
+          "",
+          "1",
+          "3,000.00",
+          "INR",
+          "1.00000",
+          "3,000.00",
+          "3,000.00",
+          "",
+          "9.00",
+          "270.00",
+          "9.00",
+          "270.00",
+          "3,540.00"
         ]
-      },
-      "partyMid": {
-        "title": "CONSIGNEE",
-        "lines": [
-          "DEMO STEEL FACTORY CO. LTD."
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "DEPARTMENT",
-          "v": "FCL EXPORT"
-        },
-        {
-          "k": "GROSS WEIGHT",
-          "v": "22,700.000 KGS"
-        },
-        {
-          "k": "CUSTOMS BROKER",
-          "v": "—"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "CAP SAN JUAN / 310W"
-        },
-        {
-          "k": "ORIGIN ETD",
-          "v": "01-MAR-23 INNSA - NHAVA SHEVA, INDIA"
-        },
-        {
-          "k": "DESTINATION ETA",
-          "v": "20-MAR-23 SAJED - JEDDAH, SAUDI ARABIA"
-        },
-        {
-          "k": "CONTAINERS",
-          "v": "TTNU0712894 / 40' FLAT"
-        },
-        {
-          "k": "OCEAN BILL OF LADING",
-          "v": "NSAJED85630124277"
-        },
-        {
-          "k": "HOUSE BILL OF LADING",
-          "v": "—"
-        },
-        {
-          "k": "CHARGEABLE PACKAGES",
-          "v": "3 PACKAGES"
-        },
-        {
-          "k": "VOLUME",
-          "v": "22,700.000 KGS"
-        }
+      ],
+      "containerHeaders": [
+        "Container No.",
+        "Type",
+        "No of Pcs",
+        "Gross Weight",
+        "Volume",
+        "Volume Weight"
+      ],
+      "containerRow": [
+        "TCNU9876543",
+        "20' DC",
+        "125 PACKAGES",
+        "18,000.000 K",
+        "20.000",
+        ""
       ],
       "termsLines": [
-        "1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt."
+        "1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.",
+        "2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted."
       ],
       "bankLines": [
         "Beneficiary Name: KingFisher Logistic",
-        "Transfer Funds To : KingFisher Logistic",
         "Bank : HDFC",
         "A/c No : XXXXXXXXXXX",
         "IBAN Code : ABA:XXXXXX",
         "Swift Code : XXXXXX",
         "Address : Dubai, United Arab Emirates"
       ],
-      "footerBullets": [
-        "Payments delayed beyond agreed credit terms will attract interest @24% per annum.",
-        "Cheques should be made out to KingFisher Logistic & crossed A/C payee.",
-        "Any discrepancy should be notified in writing within 07 days from the invoice date.",
-        "This is a computer-generated document & does not require a signature & stamp."
+      "metaRows": [
+        {
+          "k": "Invoice No./Date",
+          "v": "MAAINV1900717 / 28-JAN-19 (CREATED)"
+        },
+        {
+          "k": "Due Date",
+          "v": "28-JAN-19"
+        }
       ],
-      "tableHeaders": [
-        "Charge Details",
-        "SAC",
-        "Cur.",
-        "Rate/Unit",
-        "Qty",
-        "Cur",
-        "Amount",
-        "Ex.Rate",
-        "Amount",
-        "IGST%",
-        "IGST",
-        "Total Amt (INR)"
-      ],
-      "tableRows": [
-        [
-          "FREIGHT CHARGE",
-          "",
-          "INR",
-          "1,500.00",
-          "1",
-          "1,500.00",
-          "1.00000",
-          "1,500.00",
-          "18",
-          "270.00",
-          "1,770.00"
-        ],
-        [
-          "LOCAL CHARGES",
-          "",
-          "INR",
-          "800.00",
-          "1",
-          "800.00",
-          "1.00000",
-          "800.00",
-          "18",
-          "144.00",
-          "944.00"
-        ],
-        [
-          "SEA FREIGHT CHARGE",
-          "",
-          "INR",
-          "900.00",
-          "1",
-          "900.00",
-          "1.00000",
-          "900.00",
-          "18",
-          "162.00",
-          "1,062.00"
-        ],
-        [
-          "CONTAINER CLEANING FEE",
-          "",
-          "INR",
-          "1,000.00",
-          "1",
-          "1,000.00",
-          "1.00000",
-          "1,000.00",
-          "0",
-          "0.00",
-          "1,000.00"
-        ]
+      "fieldGrid": [
+        {
+          "k": "Shipper",
+          "v": "4G LOGISTICS INDIA PVT LTD"
+        },
+        {
+          "k": "Consignee",
+          "v": "AL NASER TRADING COMPANY LLC"
+        },
+        {
+          "k": "Job No.",
+          "v": "CEXP190148 / 28-JAN-19"
+        },
+        {
+          "k": "Shipment No.",
+          "v": "B/EXP/19/0251 / 22-JAN-19"
+        },
+        {
+          "k": "MBL / MAWB No.",
+          "v": "MBLC9878909999 / 21-JAN-19"
+        },
+        {
+          "k": "HBL / HAWB No.",
+          "v": "PLMAAJEA00080 / 23-JAN-19"
+        },
+        {
+          "k": "Place of Receipt",
+          "v": "CHENNAI"
+        },
+        {
+          "k": "POR",
+          "v": "INMAA"
+        },
+        {
+          "k": "POL",
+          "v": "INMAA"
+        },
+        {
+          "k": "POD",
+          "v": "AEJEA"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI FZE"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "MSC MARINA / 876"
+        },
+        {
+          "k": "ETD",
+          "v": "28-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "05-FEB-19"
+        },
+        {
+          "k": "Reference No.",
+          "v": "REFE NO. 987890 / 22-JAN-19"
+        },
+        {
+          "k": "Currency",
+          "v": "INR 1.000000"
+        },
+        {
+          "k": "IGM No.",
+          "v": "8987777 / 25-JAN-19"
+        },
+        {
+          "k": "INCO Terms",
+          "v": "CFR"
+        },
+        {
+          "k": "Narration",
+          "v": "B/EXP/19/0251 MBL NO. MBLC9878909999 / HBL NO. PLMAAJEA00080 / JOB NO.CEXP190148"
+        },
+        {
+          "k": "Remarks",
+          "v": "1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777 DATE: 17/01/2019"
+        }
       ]
     },
     "blocks": [
@@ -4777,32 +4794,32 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "INVOICE BOMINV230500382",
-        "align": "start"
+        "text": "TAX INVOICE",
+        "align": "center"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
-        "type": "shipmentDetails",
-        "showPlaceOfSupply": true
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "subtotalBar",
-        "variant": "igst"
+        "type": "taxAmountBox"
       },
       {
-        "type": "exportClosing"
+        "type": "wordsAndTotal"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "agingSummary"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -4816,19 +4833,19 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5015,12 +5032,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "jobDescription"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -5033,18 +5044,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5276,12 +5287,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -5294,18 +5299,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5512,9 +5517,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "taxAmountBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -5527,18 +5529,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5741,12 +5743,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "outstandingTable"
       },
       {
-        "type": "formatBadge"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -5759,18 +5755,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5988,9 +5984,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "outstandingTable"
       },
       {
-        "type": "letterBody"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -6003,18 +5996,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6217,12 +6210,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -6235,18 +6222,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6370,9 +6357,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -6385,18 +6369,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6571,15 +6555,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -6592,18 +6567,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6757,9 +6732,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "stampSignature"
       },
       {
-        "type": "jobDescription"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -6772,18 +6744,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6965,12 +6937,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -6983,18 +6949,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": true,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7244,12 +7210,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -7262,18 +7222,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": true,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7512,12 +7472,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -7530,18 +7484,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": true,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -7780,12 +7734,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -7798,18 +7746,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": true,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8059,9 +8007,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "jobDescription"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -8074,18 +8019,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": true,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8343,12 +8288,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -8361,18 +8300,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": true,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8634,9 +8573,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "taxAmountBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -8649,18 +8585,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": true,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -8910,15 +8846,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "formatBadge"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -8931,18 +8858,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": true,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9192,9 +9119,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -9207,18 +9131,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": true,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9476,15 +9400,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -9497,18 +9412,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9680,9 +9595,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -9695,18 +9607,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -9955,12 +9867,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -9973,18 +9879,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10188,9 +10094,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "jobDescription"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -10203,18 +10106,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10453,12 +10356,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -10471,18 +10368,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10714,9 +10611,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "taxAmountBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -10729,18 +10623,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -10923,12 +10817,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "formatBadge"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -10941,18 +10829,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11182,12 +11070,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -11200,18 +11082,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11436,12 +11318,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -11454,18 +11330,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11661,9 +11537,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -11676,18 +11549,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -11916,12 +11789,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -11934,18 +11801,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12207,9 +12074,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "jobDescription"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -12222,18 +12086,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12533,12 +12397,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -12551,18 +12409,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -12874,18 +12732,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -13167,15 +13025,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "formatBadge"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -13188,18 +13037,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -13503,9 +13352,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -13518,18 +13364,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -13790,12 +13636,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -13808,18 +13648,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -14119,9 +13959,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -14134,18 +13971,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -14445,12 +14282,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -14463,18 +14294,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -14782,9 +14613,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "jobDescription"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -14797,18 +14625,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -15108,15 +14936,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -15129,18 +14948,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -15444,12 +15263,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -15462,18 +15275,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -15773,12 +15586,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "formatBadge"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -15791,18 +15598,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16101,12 +15908,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -16119,18 +15920,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16324,12 +16125,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -16342,18 +16137,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16577,12 +16372,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -16595,18 +16384,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -16830,12 +16619,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -16848,18 +16631,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17045,9 +16828,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "jobDescription"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -17060,18 +16840,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17371,15 +17151,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -17392,18 +17163,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17564,9 +17335,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "wordsAndTotal"
       },
       {
-        "type": "taxAmountBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -17579,18 +17347,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17864,12 +17632,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "formatBadge"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -17882,18 +17644,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -18176,9 +17938,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -18191,18 +17950,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -18423,12 +18182,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "stampSignature"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -18441,18 +18194,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -18746,9 +18499,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -18761,18 +18511,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -19029,12 +18779,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -19047,18 +18791,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -19335,12 +19079,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "jobDescription"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -19353,18 +19091,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -19610,12 +19348,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -19628,18 +19360,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -19937,18 +19669,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20204,12 +19936,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "formatBadge"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -20222,18 +19948,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20465,9 +20191,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -20480,18 +20203,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20743,12 +20466,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -20761,18 +20478,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -21037,18 +20754,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -21311,15 +21028,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -21332,18 +21040,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#000000",
-      "accent": "#0A2942",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -21588,9 +21296,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"

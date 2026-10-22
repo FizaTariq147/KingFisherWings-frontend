@@ -24,10 +24,14 @@ import {
   PortalCommercialFlowRail,
   usesPortalCommercialFlow,
 } from '../components/PortalCommercialFlowRail';
+import { PortalQuotationDraftActions } from '../components/PortalQuotationDraftActions';
 import { PortalQuotationNegotiationPanel } from '../components/PortalQuotationNegotiationPanel';
 import { usePortalQuotation } from '../hooks/usePortalQuotations';
 import { portalQuotationsService } from '../services/portalQuotations.service';
 import {
+  canPortalCustomerDeleteQuote,
+  canPortalCustomerEditQuote,
+  canPortalCustomerReplaceQuote,
   canPortalCustomerRespondToQuote,
   portalQuoteIndicatesInvoiceSent,
   portalQuoteShowsBookingForm,
@@ -283,6 +287,18 @@ export default function PortalQuoteDetailPage() {
           </PortalAnimatedList>
         )}
       </PortalPanel>
+
+      {canPortalCustomerEditQuote(data) ||
+      canPortalCustomerReplaceQuote(data) ||
+      canPortalCustomerDeleteQuote(data) ? (
+        <PortalQuotationDraftActions
+          quote={data}
+          onSuccess={(message) => {
+            setActionSuccess(message);
+            void refetch();
+          }}
+        />
+      ) : null}
 
       {/* Shared commercial flow: negotiate → accept → booking form → wait for invoice */}
       {canRespond ? (

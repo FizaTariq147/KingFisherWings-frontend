@@ -10,8 +10,12 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 import { isShipmentCostingTab } from '../utils/normalizeShipmentCharges';
 import { EntitySectionFilesPanel } from '@/features/shared/section-attachments';
 import { ShipmentChargesPanel } from './ShipmentChargesPanel';
+import { ShipmentCustomsRefsPanel } from './ShipmentCustomsRefsPanel';
 import { ShipmentDepartmentPanel } from './ShipmentDepartmentPanel';
+import { ShipmentDimensionsPanel } from './ShipmentDimensionsPanel';
+import { ShipmentExchangeRatesPanel } from './ShipmentExchangeRatesPanel';
 import { ShipmentPartyPanel } from './ShipmentPartyPanel';
+import { ShipmentRoutingLegsPanel } from './ShipmentRoutingLegsPanel';
 
 function formatKey(key: string): string {
   const norm = key
@@ -485,6 +489,38 @@ function isShipmentContainerTab(tabKey: string): boolean {
   );
 }
 
+function isShipmentDimensionsTab(tabKey: string): boolean {
+  const norm = tabKey.trim().toLowerCase().replace(/-/g, '_');
+  return norm === 'dimensions' || norm === 'dimension';
+}
+
+function isShipmentExchangeRateTab(tabKey: string): boolean {
+  const norm = tabKey.trim().toLowerCase().replace(/-/g, '_');
+  return (
+    norm === 'ex_rate' ||
+    norm === 'exrate' ||
+    norm === 'exchange_rate' ||
+    norm === 'exchange_rates'
+  );
+}
+
+function isShipmentCustomsRefsTab(tabKey: string): boolean {
+  const norm = tabKey.trim().toLowerCase().replace(/-/g, '_');
+  return (
+    norm === 'shipping_bill_boe' ||
+    norm === 'shipping_bill' ||
+    norm === 'boe' ||
+    norm === 'customs' ||
+    norm === 'customs_refs' ||
+    norm === 'customs_ref'
+  );
+}
+
+function isShipmentRoutingTab(tabKey: string): boolean {
+  const norm = tabKey.trim().toLowerCase().replace(/-/g, '_');
+  return norm === 'routing' || norm === 'routing_legs' || norm === 'legs';
+}
+
 /** Lazy-loaded shipment detail tab — Show All aggregates sibling detail/{tab} payloads. */
 export function ShipmentTabPanel({
   shipmentId,
@@ -510,7 +546,7 @@ export function ShipmentTabPanel({
   }
   /** Costing tab — interactive Fresa panel (only when API returns a costing tab key). */
   if (isShipmentCostingTab(tabKey)) {
-    return <ShipmentCostingTabPanel shipmentId={shipmentId} />;
+    return <ShipmentCostingTabPanel shipmentId={shipmentId} tabKey={tabKey} />;
   }
   if (isShipmentDepartmentTab(tabKey)) {
     return <ShipmentDepartmentTabPanel shipmentId={shipmentId} />;
@@ -531,6 +567,18 @@ export function ShipmentTabPanel({
   }
   if (isShipmentContainerTab(tabKey)) {
     return <ShipmentContainersTabPanel shipmentId={shipmentId} tabKey={tabKey} />;
+  }
+  if (isShipmentDimensionsTab(tabKey)) {
+    return <ShipmentDimensionsPanel shipmentId={shipmentId} tabKey={tabKey} />;
+  }
+  if (isShipmentExchangeRateTab(tabKey)) {
+    return <ShipmentExchangeRatesPanel shipmentId={shipmentId} tabKey={tabKey} />;
+  }
+  if (isShipmentCustomsRefsTab(tabKey)) {
+    return <ShipmentCustomsRefsPanel shipmentId={shipmentId} tabKey={tabKey} />;
+  }
+  if (isShipmentRoutingTab(tabKey)) {
+    return <ShipmentRoutingLegsPanel shipmentId={shipmentId} tabKey={tabKey} />;
   }
   return <SingleTabPanel shipmentId={shipmentId} tabKey={tabKey} />;
 }
@@ -632,12 +680,22 @@ function ShipmentDepartmentTabPanel({ shipmentId }: { shipmentId: string }) {
   return (
     <ShipmentDepartmentPanel
       shipment={shipment}
-      onChanged={() => void shipmentQuery.refetch()}
+      onChanged={() => {
+        // Mutation already merges department into the detail cache; avoid a bare
+        // refetch that can flash empty before remembered ids are re-applied.
+        void shipmentQuery.refetch();
+      }}
     />
   );
 }
 
-function ShipmentCostingTabPanel({ shipmentId }: { shipmentId: string }) {
+function ShipmentCostingTabPanel({
+  shipmentId,
+  tabKey = 'costing',
+}: {
+  shipmentId: string;
+  tabKey?: string;
+}) {
   const shipmentQuery = useShipment(shipmentId);
   const shipment = shipmentQuery.data;
 
@@ -668,6 +726,7 @@ function ShipmentCostingTabPanel({ shipmentId }: { shipmentId: string }) {
   return (
     <ShipmentChargesPanel
       shipment={shipment}
+      tabKey={tabKey}
       onChanged={() => void shipmentQuery.refetch()}
     />
   );

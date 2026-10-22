@@ -174,13 +174,63 @@ export function useStaffBookingFormActions(jobId: string, mode: StaffBookingForm
       mutationFn: (dto: ModeBookingForm) => putBookingForm(mode, jobId, dto),
       onSuccess: (saved) => {
         if (saved && typeof saved === 'object') {
-          queryClient.setQueryData(key, (prev: ModeBookingForm | undefined) => ({
-            ...(prev ?? {}),
-            ...saved,
-            mark_complete:
-              saved.mark_complete === true || prev?.mark_complete === true || false,
-          }));
+          queryClient.setQueryData(key, (prev: ModeBookingForm | undefined) => {
+            const next: ModeBookingForm = {
+              ...(prev ?? {}),
+              ...saved,
+            };
+            // Explicit mark_complete from this save wins (delete/clear must not keep Completed).
+            if ('mark_complete' in saved) {
+              next.mark_complete = saved.mark_complete === true;
+            } else if (prev?.mark_complete === true) {
+              next.mark_complete = true;
+            }
+            return next;
+          });
         }
+        refresh();
+      },
+    }),
+    /** Clears staff booking form via PUT empty payload and replaces the cache (not merge). */
+    clear: useMutation({
+      mutationFn: (dto: ModeBookingForm) => putBookingForm(mode, jobId, dto),
+      onSuccess: (saved) => {
+        const fromApi =
+          saved && typeof saved === 'object' ? (saved as ModeBookingForm) : undefined;
+        const cleared: ModeBookingForm = {
+          ...(fromApi ?? {}),
+          mark_complete: false,
+          consent_accepted: false,
+          parties: [],
+          containers: [],
+          stock_lines: [],
+          cargo_lines: [],
+          commodity: '',
+          client_booking_no: '',
+          voyage_ref: '',
+          pol: '',
+          pod: '',
+          warehouse_id: '',
+          warehouse_name: '',
+          expected_inbound_at: '',
+          expected_outbound_at: '',
+          handling_instructions: '',
+          freight_job_id: '',
+          request_details: '',
+          border_or_port: '',
+          invoice_value_amount: undefined,
+          invoice_currency: '',
+          direction: undefined,
+          entry_type: '',
+          declaration_type: '',
+          port_of_entry: '',
+          port_of_exit: '',
+          country_of_origin: '',
+          country_of_destination: '',
+          attach_packing_list: false,
+          status: 'DRAFT',
+        };
+        queryClient.setQueryData(key, cleared);
         refresh();
       },
     }),

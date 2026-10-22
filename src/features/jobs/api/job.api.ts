@@ -260,9 +260,14 @@ export const JOB_API = {
   organizations: (id: string) => `/jobs/${id}/organizations`,
   organizationByType: (id: string, orgType: string) =>
     `/jobs/${id}/organizations/${encodeURIComponent(orgType)}`,
+  organizationsPartySearch: (id: string) =>
+    `/jobs/${id}/organizations/party-search`,
   organizationsCopyFrom: (id: string) => `/jobs/${id}/organizations/copy-from`,
   organizationsRefreshSnapshots: (id: string) =>
     `/jobs/${id}/organizations/refresh-snapshots`,
+  /** GET /jobs/:id/bl-draft/preview · POST generate (is_original: false) */
+  blDraftPreview: (id: string) => `/jobs/${id}/bl-draft/preview`,
+  blDraftGenerate: (id: string) => `/jobs/${id}/bl-draft/generate`,
 
   cargo: (id: string) => `/jobs/${id}/cargo`,
   cargoItem: (id: string, cargoId: string) => `/jobs/${id}/cargo/${cargoId}`,

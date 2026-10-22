@@ -250,11 +250,66 @@ export function canPortalCustomerCounterOffer(
   quote?: PortalQuotationListItem | PortalQuotationDetail | null,
 ): boolean {
   const detail = quote as PortalQuotationDetail | undefined;
+  if (typeof detail?.actions?.can_amend === 'boolean') {
+    return detail.actions.can_amend;
+  }
   if (typeof detail?.actions?.can_counter_offer === 'boolean') {
     return detail.actions.can_counter_offer;
   }
   const s = normalizePortalQuoteStatus(status ?? detail?.status);
   return s === 'SENT' || s === 'CUSTOMER_REVIEW' || s === 'NEGOTIATING';
+}
+
+/** Amend = counter-offer for SENT / CUSTOMER_REVIEW / NEGOTIATING (actions.can_amend). */
+export function canPortalCustomerAmendQuote(
+  quote?: PortalQuotationListItem | PortalQuotationDetail | null,
+): boolean {
+  return canPortalCustomerCounterOffer(quote?.status, quote);
+}
+
+function isPortalCustomerOwnedDraft(
+  quote?: PortalQuotationListItem | PortalQuotationDetail | null,
+): boolean {
+  if (!quote) return false;
+  const detail = quote as PortalQuotationDetail;
+  const status = normalizePortalQuoteStatus(detail.status);
+  if (status !== 'DRAFT') return false;
+  const source = String(detail.source ?? detail.raw?.source ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  // Prefer server flags when present; otherwise require CUSTOMER_PORTAL source.
+  if (source && source !== 'CUSTOMER_PORTAL' && source !== 'PORTAL' && source !== 'CUSTOMER') {
+    return false;
+  }
+  return true;
+}
+
+export function canPortalCustomerEditQuote(
+  quote?: PortalQuotationListItem | PortalQuotationDetail | null,
+): boolean {
+  if (!quote) return false;
+  const detail = quote as PortalQuotationDetail;
+  if (typeof detail.actions?.can_edit === 'boolean') return detail.actions.can_edit;
+  return isPortalCustomerOwnedDraft(quote);
+}
+
+export function canPortalCustomerReplaceQuote(
+  quote?: PortalQuotationListItem | PortalQuotationDetail | null,
+): boolean {
+  if (!quote) return false;
+  const detail = quote as PortalQuotationDetail;
+  if (typeof detail.actions?.can_replace === 'boolean') return detail.actions.can_replace;
+  return isPortalCustomerOwnedDraft(quote);
+}
+
+export function canPortalCustomerDeleteQuote(
+  quote?: PortalQuotationListItem | PortalQuotationDetail | null,
+): boolean {
+  if (!quote) return false;
+  const detail = quote as PortalQuotationDetail;
+  if (typeof detail.actions?.can_delete === 'boolean') return detail.actions.can_delete;
+  return isPortalCustomerOwnedDraft(quote);
 }
 
 export function formatPortalQuotationActionError(raw: string): string {

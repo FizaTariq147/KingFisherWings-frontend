@@ -242,6 +242,46 @@ export const portalQuotationsService = {
     return this.getById(id);
   },
 
+  /** POST /portal/quotations/:id/amend — alias of counter-offer. */
+  async amend(id: string, dto: PortalQuotationCounterOfferDto): Promise<PortalQuotationDetail> {
+    try {
+      const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.amend(id), dto);
+      const detail = normalizeQuotationDetail(res.data);
+      if (detail) return detail;
+      return this.getById(id);
+    } catch (err) {
+      const msg = err instanceof PortalApiError ? err.message : String(err);
+      if (/404|cannot post|not found|not implemented/i.test(msg)) {
+        return this.counterOffer(id, dto);
+      }
+      throw err;
+    }
+  },
+
+  /** PATCH /portal/quotations/:id — edit DRAFT portal quote. */
+  async update(
+    id: string,
+    dto: Record<string, unknown>,
+  ): Promise<PortalQuotationDetail> {
+    const res = await portalApiClient.patch(PORTAL_QUOTATIONS_API.detail(id), dto);
+    const detail = normalizeQuotationDetail(res.data);
+    if (detail) return detail;
+    return this.getById(id);
+  },
+
+  /** POST /portal/quotations/:id/replace — new DRAFT revision; old withdrawn. */
+  async replace(id: string): Promise<PortalQuotationDetail> {
+    const res = await portalApiClient.post(PORTAL_QUOTATIONS_API.replace(id));
+    const detail = normalizeQuotationDetail(res.data);
+    if (detail) return detail;
+    throw new PortalApiError('Replace draft did not return a quotation.', 502);
+  },
+
+  /** DELETE /portal/quotations/:id — soft-delete DRAFT. */
+  async delete(id: string): Promise<void> {
+    await portalApiClient.delete(PORTAL_QUOTATIONS_API.detail(id));
+  },
+
   async negotiation(id: string): Promise<NegotiationTimeline> {
     const res = await portalApiClient.get(PORTAL_QUOTATIONS_API.negotiation(id));
     return normalizeNegotiationTimeline(res.data);

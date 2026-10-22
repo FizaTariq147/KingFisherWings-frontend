@@ -92,6 +92,12 @@ export interface QuotationActions {
   can_change_status?: boolean;
   /** Booking form tab (provisional / converted job). */
   can_booking_form?: boolean;
+  /** Portal DRAFT + owned CUSTOMER_PORTAL quote. */
+  can_edit?: boolean;
+  can_replace?: boolean;
+  can_delete?: boolean;
+  /** Portal SENT / CUSTOMER_REVIEW / NEGOTIATING — alias of counter-offer. */
+  can_amend?: boolean;
   /** Raw flags for forward-compat. */
   raw?: Record<string, unknown>;
 }
