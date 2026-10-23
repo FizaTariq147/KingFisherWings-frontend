@@ -79,6 +79,8 @@ export const createBankAccountSchema = z.object({
   swift_code: swiftBic(false),
   currency_code: optionalCurrencyOrEmpty.optional(),
   branch_id: optionalUuid(),
+  /** Linked COA bank/cash account — needed for payment-proof Approve & apply. */
+  gl_account_id: optionalUuid(),
   is_default: z.boolean(),
   is_active: z.boolean(),
 });

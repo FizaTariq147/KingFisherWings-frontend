@@ -46,6 +46,24 @@ const optionalDate = z.preprocess(
     .optional(),
 );
 
+/** OpenAPI CreatePortDto — inline on create/update when *_port_id omitted. */
+const createPortInlineSchema = z
+  .object({
+    un_locode: z.string().trim().min(2).max(10),
+    name: z.string().trim().min(2).max(200),
+    country_code: z
+      .string()
+      .trim()
+      .toUpperCase()
+      .regex(/^[A-Z]{2}$/, 'Use a 2-letter country code'),
+    city: z.string().trim().min(1).max(100).optional(),
+    mode: z.enum(['AIR', 'SEA', 'LAND', 'ROAD', 'COURIER']).optional(),
+    latitude: z.number().optional(),
+    longitude: z.number().optional(),
+    is_active: z.boolean().optional(),
+  })
+  .optional();
+
 const quotationHeaderObject = z.object({
   company_id: optionalUuid(),
   job_type: jobTypeSchema,
@@ -56,6 +74,8 @@ const quotationHeaderObject = z.object({
   carrier_id: optionalUuid(),
   origin_port_id: optionalUuid(),
   dest_port_id: optionalUuid(),
+  create_origin_port: createPortInlineSchema,
+  create_dest_port: createPortInlineSchema,
   incoterm: z.preprocess(emptyToUndefined, incotermSchema.optional()),
   commodity: optionalTextUndef({ max: 200 }),
   hs_code: hsCode(false),
@@ -89,6 +109,20 @@ function refineQuotationHeader(
   data: z.infer<typeof quotationHeaderObject>,
   ctx: z.RefinementCtx,
 ) {
+  if (data.origin_port_id && data.create_origin_port) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['origin_port_id'],
+      message: 'Use origin port or create_origin_port, not both',
+    });
+  }
+  if (data.dest_port_id && data.create_dest_port) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['dest_port_id'],
+      message: 'Use destination port or create_dest_port, not both',
+    });
+  }
   if (
     data.origin_port_id &&
     data.dest_port_id &&

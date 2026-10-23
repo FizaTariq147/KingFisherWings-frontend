@@ -16,13 +16,22 @@ export interface VendorQuoteLineDto {
 }
 
 export interface PassJobToVendorDto {
-  vendor_party_id: string;
+  /** Single vendor (backward compatible). */
+  vendor_party_id?: string;
+  /** Batch send — combined with vendor_party_id (deduped on BE). */
+  vendor_party_ids?: string[];
   notes?: string;
   message?: string;
   currency_code?: string;
   /** Tenant seeded cost offer — sets cost_total / SENT. */
   proposed_total?: number;
   lines?: VendorQuoteLineDto[];
+}
+
+export interface PassJobToVendorBatchResult {
+  results: VendorJobOffer[];
+  failed: Array<{ vendor_party_id?: string; message?: string }>;
+  raw?: unknown;
 }
 
 export interface ReviewVendorOfferDto {

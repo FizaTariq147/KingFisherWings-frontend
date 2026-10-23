@@ -53,6 +53,33 @@ export function normalizeVendorUser(raw: unknown): VendorUser | null {
   const { tenantId, tenantSlug, tenantName } = resolveAuthTenantBranding(r, envelope);
   const mustChangePassword = resolveMustChangePassword(r, envelope, asRecord(raw));
 
+  const verificationStatus =
+    pickString(
+      r.verification_status,
+      r.verificationStatus,
+      envelope.verification_status,
+      envelope.verificationStatus,
+      asRecord(r.verification)?.status,
+    ) || undefined;
+  const canUseVendor =
+    typeof r.can_use_vendor === 'boolean'
+      ? r.can_use_vendor
+      : typeof r.canUseVendor === 'boolean'
+        ? r.canUseVendor
+        : typeof envelope.can_use_vendor === 'boolean'
+          ? envelope.can_use_vendor
+          : verificationStatus
+            ? verificationStatus.toUpperCase().replace(/[\s-]+/g, '_') === 'APPROVED'
+            : undefined;
+  const verificationBlocking =
+    typeof r.verification_blocking === 'boolean'
+      ? r.verification_blocking
+      : typeof r.verificationBlocking === 'boolean'
+        ? r.verificationBlocking
+        : canUseVendor === undefined
+          ? undefined
+          : !canUseVendor;
+
   return {
     id: id || email,
     email: email || '',
@@ -63,6 +90,9 @@ export function normalizeVendorUser(raw: unknown): VendorUser | null {
     party,
     status: pickString(r.status) || undefined,
     ...(mustChangePassword === undefined ? {} : { mustChangePassword }),
+    ...(verificationStatus ? { verificationStatus } : {}),
+    ...(verificationBlocking === undefined ? {} : { verificationBlocking }),
+    ...(canUseVendor === undefined ? {} : { canUseVendor }),
   };
 }
 

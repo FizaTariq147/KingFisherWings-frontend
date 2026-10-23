@@ -2,6 +2,7 @@ import { portalApiClient, PortalApiError } from '@/lib/portalApiClient';
 import type { ApiPeriodQuery } from '@/lib/apiPeriod';
 import { periodQueryParams } from '@/lib/apiPeriod';
 import {
+  assertPaymentProofUploadFields,
   buildPaymentProofUploadFields,
   buildPortalInvoicePaymentFields,
   formatPaymentProofUploadError,
@@ -167,13 +168,18 @@ export const portalInvoicesService = {
     dto: UploadPaymentProofDto,
   ): Promise<PaymentProof> {
     if (!invoiceId?.trim()) throw new Error('Invoice id is required.');
+    if (!(file instanceof File) || file.size <= 0) {
+      throw new Error('Choose a payment proof file (PDF/JPEG/PNG/WebP).');
+    }
+    const fields = buildPaymentProofUploadFields(dto, 'portal');
+    assertPaymentProofUploadFields(fields);
     try {
       const token = usePortalAuthStore.getState().accessToken;
       const data = await postPaymentProofMultipartFetch({
         path: PORTAL_INVOICES_API.paymentProofs(invoiceId),
         file,
         accessToken: token,
-        fields: buildPaymentProofUploadFields(dto, 'portal'),
+        fields,
         errorFactory: (message, status) => new PortalApiError(message, status),
       });
       const proof = normalizePaymentProof(data);

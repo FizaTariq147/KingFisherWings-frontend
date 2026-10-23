@@ -31,20 +31,6 @@ function bool(value: unknown): boolean | undefined {
   return undefined;
 }
 
-function looksVendorOriginated(record: Record<string, unknown>): boolean {
-  const source = (
-    str(record.source) ||
-    str(record.origin) ||
-    str(record.created_via) ||
-    str(record.submitted_via) ||
-    ''
-  ).toUpperCase();
-  if (source && /VENDOR/.test(source)) return true;
-  if (bool(record.vendor_submitted) || bool(record.submitted_by_vendor)) return true;
-  const remarks = `${str(record.remarks) ?? ''} ${str(record.internal_notes) ?? ''}`;
-  return /auto-created after accepting vendor|vendor portal|vendor cost offer/i.test(remarks);
-}
-
 function normalizeStatus(
   value: unknown,
   record: Record<string, unknown>,
@@ -60,15 +46,8 @@ function normalizeStatus(
     .trim()
     .toUpperCase();
 
-  // Vendor submit/post is the finalize step — admin only records remittance proofs.
-  // Do not keep showing Draft when the PI came from the vendor portal.
-  if (
-    looksVendorOriginated(record) &&
-    (!raw || raw === 'DRAFT' || raw === 'SUBMITTED' || raw === 'PENDING_REVIEW' || raw === 'PENDING')
-  ) {
-    return 'POSTED';
-  }
-
+  // Vendor portal submit creates a finance PI that stays DRAFT until staff posts it.
+  // Do not remap vendor-originated DRAFT → POSTED (that hid the real status and broke Post).
   if (
     raw === 'SUBMITTED' ||
     raw === 'PENDING_REVIEW' ||
@@ -81,7 +60,8 @@ function normalizeStatus(
   if ((PURCHASE_INVOICE_STATUSES as readonly string[]).includes(raw)) {
     return raw as PurchaseInvoiceStatus;
   }
-  // Prefer Posted over Draft for unknown non-empty statuses from newer APIs.
+  // Unknown non-empty statuses: keep DRAFT when empty; otherwise surface as POSTED only if
+  // the API clearly used a posted-like token (already handled above via enum list).
   return raw ? 'POSTED' : 'DRAFT';
 }
 

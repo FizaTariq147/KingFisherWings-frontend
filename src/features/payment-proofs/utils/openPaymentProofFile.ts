@@ -11,22 +11,48 @@ import {
   openBlobInNewTab,
   triggerBlobDownload,
 } from '@/features/files/utils/triggerBlobDownload';
+import { isUuid } from '@/lib/isUuid';
 import { isApiOriginUrl, isSafeHttpUrl } from '@/lib/safeHttpUrl';
+import { PAYMENT_PROOF_API } from '../api/paymentProof.api';
+import { PORTAL_INVOICES_API } from '@/features/portal-invoices/api/portalInvoices.api';
 
 export type PaymentProofViewer = 'staff' | 'portal' | 'vendor';
 
-/** Normalize API file paths for axios clients whose baseURL is `/backend` or absolute API. */
+export type FetchPaymentProofBlobOptions = {
+  /** Prefer GET /payment-proofs/:id/file (or portal scoped file) over raw file_url. */
+  proofId?: string;
+  /** Required for portal scoped file path. */
+  invoiceId?: string;
+};
+
+/**
+ * Normalize API file paths for axios clients whose baseURL is `/backend` or absolute API.
+ * Absolute URLs pointing at `/files/...` or `/payment-proofs/.../file` are reduced to paths
+ * so a Render absolute host still works when the app proxies via `/backend`.
+ */
 export function paymentProofApiRequestPath(url: string): string {
   let u = url.trim();
   if (!u) return u;
   if (/^https?:\/\//i.test(u)) {
-    if (!isSafeHttpUrl(u) || !isApiOriginUrl(u)) {
+    if (!isSafeHttpUrl(u)) {
       throw new Error('Blocked an unsafe payment proof URL.');
     }
     try {
       const parsed = new URL(u);
-      u = `${parsed.pathname}${parsed.search}`;
-    } catch {
+      const path = `${parsed.pathname}${parsed.search}`;
+      const apiLike =
+        path.startsWith('/files/') ||
+        path.startsWith('/backend/files/') ||
+        /\/payment-proofs\/[^/]+\/file(?:\?|$)/i.test(path) ||
+        /\/invoices\/[^/]+\/payment-proofs\/[^/]+\/file(?:\?|$)/i.test(path);
+      if (apiLike || isApiOriginUrl(u)) {
+        u = path;
+      } else {
+        // Pre-signed object-storage URL — not an API path (caller may fetch without Bearer).
+        throw new Error('EXTERNAL_PAYMENT_PROOF_URL');
+      }
+    } catch (err) {
+      if (err instanceof Error && err.message === 'EXTERNAL_PAYMENT_PROOF_URL') throw err;
       throw new Error('Invalid payment proof URL.');
     }
   }
@@ -41,24 +67,12 @@ function clientFor(viewer: PaymentProofViewer): AxiosInstance {
   return axiosInstance;
 }
 
-export async function fetchPaymentProofBlob(
-  url: string,
-  viewer: PaymentProofViewer,
-): Promise<Blob> {
-  const parsed = parseFilesApiUrl(url);
-  if (viewer === 'staff' && parsed) {
-    return filesService.downloadBlob({
-      tenantId: parsed.tenantId,
-      filename: parsed.filename,
-    });
-  }
-
-  // Portal/vendor: also try staff-style /files/ path via their Bearer client.
-  const path = paymentProofApiRequestPath(url);
-  const client = clientFor(viewer);
+async function getBlobFromClient(client: AxiosInstance, path: string): Promise<Blob> {
   const res = await client.get<Blob>(path, { responseType: 'blob' });
-  const blob = res.data;
+  return interpretProofBlobResponse(res.data);
+}
 
+async function interpretProofBlobResponse(blob: Blob): Promise<Blob> {
   const contentType = (blob.type || '').toLowerCase();
   if (
     contentType.includes('json') ||
@@ -85,10 +99,115 @@ export async function fetchPaymentProofBlob(
         throw err;
       }
     }
-    // Not JSON — treat original bytes as the file (some servers omit Content-Type).
     return new Blob([text], { type: contentType || 'application/octet-stream' });
   }
   return blob;
+}
+
+/** Pre-signed S3/GCS URLs — fetch without Bearer so we never leak staff/vendor tokens. */
+async function fetchExternalSignedUrlBlob(url: string): Promise<Blob> {
+  if (!isSafeHttpUrl(url)) {
+    throw new Error('Blocked an unsafe payment proof URL.');
+  }
+  const res = await fetch(url, { method: 'GET', credentials: 'omit', mode: 'cors' });
+  if (!res.ok) {
+    throw new Error(
+      res.status >= 500
+        ? `Payment proof storage returned HTTP ${res.status}.`
+        : `Could not download payment proof file (HTTP ${res.status}).`,
+    );
+  }
+  return interpretProofBlobResponse(await res.blob());
+}
+
+function formatOpenError(error: unknown, fallback: string): Error {
+  if (error instanceof Error) {
+    const msg = error.message.trim();
+    if (/^request failed with status code\s*500$/i.test(msg) || /internal server error/i.test(msg)) {
+      return new Error(
+        'Could not open payment proof (HTTP 500). The file may be missing in storage — ask backend to check GET /payment-proofs/{id}/file.',
+      );
+    }
+    if (msg === 'EXTERNAL_PAYMENT_PROOF_URL') {
+      return new Error(fallback);
+    }
+    return error;
+  }
+  return new Error(fallback);
+}
+
+export async function fetchPaymentProofBlob(
+  url: string,
+  viewer: PaymentProofViewer,
+  options?: FetchPaymentProofBlobOptions,
+): Promise<Blob> {
+  const proofId = options?.proofId?.trim();
+  const invoiceId = options?.invoiceId?.trim();
+  const trimmedUrl = url.trim();
+  const client = clientFor(viewer);
+  const errors: unknown[] = [];
+
+  // 1) Authenticated download by proof id (avoids unsafe absolute storage hosts).
+  if (proofId && isUuid(proofId)) {
+    try {
+      if (viewer === 'portal' && invoiceId && isUuid(invoiceId)) {
+        return await getBlobFromClient(
+          portalApiClient,
+          PORTAL_INVOICES_API.proofFile(invoiceId, proofId),
+        );
+      }
+      // Staff + vendor: OpenAPI GET /payment-proofs/{id}/file
+      return await getBlobFromClient(client, PAYMENT_PROOF_API.file(proofId));
+    } catch (err) {
+      errors.push(err);
+    }
+  }
+
+  if (!trimmedUrl) {
+    const last = errors[errors.length - 1];
+    throw formatOpenError(last, 'No file URL on this payment proof.');
+  }
+
+  // 2) Staff /files/{tenant}/{filename} helper
+  const parsed = parseFilesApiUrl(trimmedUrl);
+  if (viewer === 'staff' && parsed) {
+    try {
+      return await filesService.downloadBlob({
+        tenantId: parsed.tenantId,
+        filename: parsed.filename,
+      });
+    } catch (err) {
+      errors.push(err);
+    }
+  }
+
+  // 3) Relative / API-origin path via viewer axios client
+  try {
+    const path = paymentProofApiRequestPath(trimmedUrl);
+    return await getBlobFromClient(client, path);
+  } catch (err) {
+    if (err instanceof Error && err.message === 'EXTERNAL_PAYMENT_PROOF_URL') {
+      try {
+        return await fetchExternalSignedUrlBlob(trimmedUrl);
+      } catch (extErr) {
+        errors.push(extErr);
+      }
+    } else {
+      errors.push(err);
+    }
+  }
+
+  // 4) Absolute http(s) that looked like API but failed — last try unsigned fetch
+  if (isSafeHttpUrl(trimmedUrl) && !isApiOriginUrl(trimmedUrl) && !parseFilesApiUrl(trimmedUrl)) {
+    try {
+      return await fetchExternalSignedUrlBlob(trimmedUrl);
+    } catch (err) {
+      errors.push(err);
+    }
+  }
+
+  const last = errors[errors.length - 1];
+  throw formatOpenError(last, 'Could not open payment proof file.');
 }
 
 /**
@@ -100,11 +219,14 @@ export async function openPaymentProofFile(
   viewer: PaymentProofViewer,
   displayName?: string,
   previewWindow?: Window | null,
+  options?: FetchPaymentProofBlobOptions,
 ): Promise<void> {
   const trimmed = url.trim();
-  if (!trimmed) throw new Error('No file URL on this payment proof.');
+  if (!trimmed && !(options?.proofId && isUuid(options.proofId))) {
+    throw new Error('No file URL on this payment proof.');
+  }
 
-  const blob = await fetchPaymentProofBlob(trimmed, viewer);
+  const blob = await fetchPaymentProofBlob(trimmed || PAYMENT_PROOF_API.file(options!.proofId!), viewer, options);
   const name = displayName?.trim() || 'payment-proof';
 
   if (await blobLooksLikePdf(blob)) {
@@ -124,8 +246,13 @@ export async function downloadPaymentProofFile(
   url: string,
   viewer: PaymentProofViewer,
   displayName?: string,
+  options?: FetchPaymentProofBlobOptions,
 ): Promise<void> {
-  const blob = await fetchPaymentProofBlob(url.trim(), viewer);
+  const blob = await fetchPaymentProofBlob(
+    url.trim() || (options?.proofId ? PAYMENT_PROOF_API.file(options.proofId) : ''),
+    viewer,
+    options,
+  );
   const name = displayName?.trim() || 'payment-proof';
   const filename =
     (await blobLooksLikePdf(blob)) && !name.toLowerCase().endsWith('.pdf')

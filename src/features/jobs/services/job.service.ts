@@ -1838,11 +1838,34 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.vouchersGenerate(id), dto));
   },
 
-  /** GET /jobs/:id/charges — costing grid */
-  async listJobCharges(id: string): Promise<JobCharge[]> {
+  /**
+   * GET /jobs/:id/charges — costing grid + optional `parties_included` rollup.
+   * Falls back to client-side party rollup from lines when BE omits the field.
+   */
+  async listJobChargesTab(id: string): Promise<{
+    charges: JobCharge[];
+    parties_included: import('../utils/normalizeCostingParties').CostingPartyIncluded[];
+  }> {
     assertId(id);
     const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.charges(id)));
-    return normalizeJobCharges(res.data);
+    const charges = normalizeJobCharges(res.data);
+    const {
+      normalizePartiesIncluded,
+      derivePartiesIncludedFromCharges,
+    } = await import('../utils/normalizeCostingParties');
+    const fromApi = normalizePartiesIncluded(res.data);
+    return {
+      charges,
+      parties_included: fromApi.length
+        ? fromApi
+        : derivePartiesIncludedFromCharges(charges),
+    };
+  },
+
+  /** GET /jobs/:id/charges — charge lines only (reports / legacy callers). */
+  async listJobCharges(id: string): Promise<JobCharge[]> {
+    const tab = await this.listJobChargesTab(id);
+    return tab.charges;
   },
 
   /** POST /jobs/:id/charges/composite */
@@ -3632,6 +3655,19 @@ export const jobService = {
   ): Promise<unknown> {
     assertId(id);
     return request(() => axiosInstance.patch(JOB_API.document(id, documentId), dto));
+  },
+
+  /** PATCH /jobs/:id/documents/:documentId/visibility */
+  async patchDocumentVisibility(
+    id: string,
+    documentId: string,
+    dto: { visible_to_customer?: boolean; visible_to_vendor?: boolean },
+  ): Promise<unknown> {
+    assertId(id);
+    if (!documentId?.trim()) throw new Error('Document id is required.');
+    return request(() =>
+      axiosInstance.patch(JOB_API.documentVisibility(id, documentId.trim()), dto),
+    );
   },
 
   async deleteDocument(id: string, documentId: string): Promise<void> {

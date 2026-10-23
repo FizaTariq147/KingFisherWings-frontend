@@ -115,6 +115,16 @@ export interface PortalQuotationRequestDto {
   estimate_snapshot?: PortalEstimateSnapshotDto;
 }
 
+/** PATCH /portal/quotations/:id — OpenAPI PortalQuotationUpdateDto (DRAFT edit). */
+export type PortalQuotationUpdateDto = Partial<
+  Omit<PortalQuotationRequestDto, 'job_type' | 'currency_code'>
+> & {
+  job_type?: string;
+  currency_code?: string;
+  origin_port_id?: string;
+  dest_port_id?: string;
+};
+
 export interface PortalServiceCatalogItem {
   code: string;
   name: string;

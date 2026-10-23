@@ -317,7 +317,29 @@ export function normalizeJobCharge(raw: unknown): JobCharge | null {
 
 export function normalizeJobCharges(raw: unknown): JobCharge[] {
   const { items } = unwrapList(raw);
-  return items.map(normalizeJobCharge).filter((c): c is JobCharge => Boolean(c));
+  if (items.length) {
+    return items.map(normalizeJobCharge).filter((c): c is JobCharge => Boolean(c));
+  }
+  // Costing getTab / charges envelope often uses `charges` / `lines` (not unwrapList keys).
+  const root = asRecord(unwrapEntity(raw)) ?? asRecord(raw);
+  if (!root) return [];
+  for (const key of [
+    'charges',
+    'lines',
+    'items',
+    'preview_charges',
+    'grid',
+    'sale_charges',
+    'cost_charges',
+  ]) {
+    const nested = root[key];
+    if (Array.isArray(nested) && nested.length) {
+      return nested
+        .map(normalizeJobCharge)
+        .filter((c): c is JobCharge => Boolean(c));
+    }
+  }
+  return [];
 }
 
 function asLineRows(value: unknown): Array<Record<string, unknown>> {

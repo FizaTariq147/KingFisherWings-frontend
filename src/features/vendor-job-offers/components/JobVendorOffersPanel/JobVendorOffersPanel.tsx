@@ -410,7 +410,7 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
     });
   }, [vendorPartiesResult?.parties, supplierPartiesResult?.parties]);
 
-  const [vendorPartyId, setVendorPartyId] = useState('');
+  const [vendorPartyIds, setVendorPartyIds] = useState<string[]>([]);
   const [passNotes, setPassNotes] = useState('');
   const [proposedTotal, setProposedTotal] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
@@ -440,8 +440,9 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
     portalInvitePending;
 
   const handlePass = () => {
-    if (!isUuid(vendorPartyId)) {
-      setActionError('Select a vendor party.');
+    const selected = vendorPartyIds.filter((id) => isUuid(id));
+    if (!selected.length) {
+      setActionError('Select at least one vendor party.');
       return;
     }
     const trimmedPrice = proposedTotal.trim();
@@ -457,19 +458,45 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
     setMsg(null);
     void passToVendor
       .mutateAsync({
-        vendor_party_id: vendorPartyId,
+        vendor_party_id: selected[0],
+        ...(selected.length > 1 ? { vendor_party_ids: selected } : {}),
         notes: passNotes.trim() || undefined,
         currency_code: currencyCode?.trim() || undefined,
         proposed_total: price,
       })
-      .then(() => {
+      .then((result) => {
+        const batch =
+          result &&
+          typeof result === 'object' &&
+          'results' in result &&
+          Array.isArray((result as { results?: unknown }).results)
+            ? (result as {
+                results: unknown[];
+                failed?: Array<{ vendor_party_id?: string; message?: string }>;
+              })
+            : null;
+        const okCount = batch?.results?.length ?? (result ? 1 : 0);
+        const failCount = batch?.failed?.length ?? 0;
+        const failNote =
+          failCount > 0
+            ? ` ${failCount} failed${
+                batch?.failed?.[0]?.message ? `: ${batch.failed[0].message}` : '.'
+              }`
+            : '';
         setMsg(
-          price != null
-            ? `Job sent to vendor with cost offer ${price.toLocaleString()}${currencyCode ? ` ${currencyCode}` : ''}. Vendor sees this price on the job.`
-            : 'Job sent to vendor. Vendor can submit their cost price next.',
+          selected.length > 1 || failCount > 0
+            ? `Sent to ${okCount} of ${selected.length} vendors${
+                price != null
+                  ? ` with cost offer ${price.toLocaleString()}${currencyCode ? ` ${currencyCode}` : ''}`
+                  : ''
+              }.${failNote}`
+            : price != null
+              ? `Job sent to vendor with cost offer ${price.toLocaleString()}${currencyCode ? ` ${currencyCode}` : ''}. Vendor sees this price on the job.`
+              : 'Job sent to vendor. Vendor can submit their cost price next.',
         );
         setPassNotes('');
         setProposedTotal('');
+        setVendorPartyIds([]);
         void refetch();
       })
       .catch((err) => setActionError(getServerErrorMessage(err)));
@@ -488,7 +515,9 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
     setActionError(null);
     setTempPortalPassword(null);
     const party = await createParty.mutateAsync(values);
-    setVendorPartyId(party.id);
+    setVendorPartyIds((prev) =>
+      prev.includes(party.id) ? prev : [...prev, party.id],
+    );
 
     let portalNote = '';
     let tempPw: string | null = null;
@@ -617,26 +646,10 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
             the vendor counter. Customer sell/revenue prices are never shared.
           </p>
           <div className="space-y-1">
-            <span className="text-xs font-medium text-[var(--color-neutral-600)]">
-              Vendor party
-            </span>
-            <div className="flex items-end gap-2">
-              <label className="min-w-0 flex-1 block">
-                <span className="sr-only">Vendor party</span>
-                <select
-                  className="w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--color-primary-500)]"
-                  value={vendorPartyId}
-                  onChange={(e) => setVendorPartyId(e.target.value)}
-                  disabled={busy}
-                >
-                  <option value="">Select vendor…</option>
-                  {vendorParties.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-medium text-[var(--color-neutral-600)]">
+                Vendor parties (multi-select)
+              </span>
               <button
                 type="button"
                 title="Add vendor party (POST /parties)"
@@ -647,13 +660,42 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
                   setPartyFormKey((k) => k + 1);
                   setAddPartyOpen(true);
                 }}
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[var(--color-primary-600)] text-white hover:bg-[var(--color-primary-700)] disabled:opacity-50"
+                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--color-primary-600)] text-white hover:bg-[var(--color-primary-700)] disabled:opacity-50"
               >
                 <Plus className="h-4 w-4" aria-hidden />
               </button>
             </div>
+            <div className="max-h-40 space-y-1 overflow-y-auto rounded-md border border-[var(--color-neutral-200)] px-3 py-2">
+              {vendorParties.length === 0 ? (
+                <p className="text-xs text-[var(--color-neutral-400)]">No vendor parties found.</p>
+              ) : (
+                vendorParties.map((p) => {
+                  const checked = vendorPartyIds.includes(p.id);
+                  return (
+                    <label
+                      key={p.id}
+                      className="flex cursor-pointer items-center gap-2 text-sm text-[var(--color-neutral-700)]"
+                    >
+                      <input
+                        type="checkbox"
+                        className="rounded border-[var(--color-neutral-300)]"
+                        checked={checked}
+                        disabled={busy}
+                        onChange={() =>
+                          setVendorPartyIds((prev) =>
+                            checked ? prev.filter((id) => id !== p.id) : [...prev, p.id],
+                          )
+                        }
+                      />
+                      <span>{p.label}</span>
+                    </label>
+                  );
+                })
+              )}
+            </div>
             <p className="text-[11px] text-[var(--color-neutral-500)]">
-              Use + for the create-party wizard in this panel, or{' '}
+              Sends one offer per selected party via{' '}
+              <code className="text-[10px]">vendor_party_ids</code>. Use + to create a party, or{' '}
               <Link
                 className="font-medium underline"
                 to="/parties/new"
@@ -663,7 +705,8 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
                 open Parties
               </Link>
               .
-            </p>          </div>
+            </p>
+          </div>
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[var(--color-neutral-600)]">
               Vendor price / cost offer{currencyCode ? ` (${currencyCode})` : ''}
@@ -698,10 +741,14 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
           <Button
             type="button"
             size="sm"
-            disabled={busy || !vendorPartyId}
+            disabled={busy || vendorPartyIds.length === 0}
             onClick={handlePass}
           >
-            {passToVendor.isPending ? 'Sending…' : 'Send to vendor'}
+            {passToVendor.isPending
+              ? 'Sending…'
+              : vendorPartyIds.length > 1
+                ? `Send to ${vendorPartyIds.length} vendors`
+                : 'Send to vendor'}
           </Button>
         </div>
       </Card>

@@ -4,6 +4,8 @@ import { ArrowLeft, CreditCard, Download } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
+import { VerificationBlockedCallout } from '@/features/party-verification/components/VerificationBlockedCallout';
+import { getVerificationGateMessage } from '@/features/party-verification/utils/normalizePartyVerification';
 import {
   PortalAnimatedGrid,
   PortalAnimatedGridItem,
@@ -129,11 +131,39 @@ export default function PortalInvoiceDetailPage() {
 
   if (isLoading) return <PortalLoadingState label="Loading invoice…" />;
   if (isError || !data) {
+    const verificationMessage = getVerificationGateMessage(error);
+    if (verificationMessage) {
+      return (
+        <div className="space-y-3">
+          <VerificationBlockedCallout
+            audience="portal"
+            message={verificationMessage}
+          />
+          <Link
+            to="/portal/invoices"
+            className="block text-sm text-[var(--color-primary)] underline"
+          >
+            Back to invoices
+          </Link>
+        </div>
+      );
+    }
     return (
       <div className="space-y-2">
-        <p className="text-sm text-[var(--color-danger-600)]">{error instanceof PortalApiError || error instanceof Error ? error.message : 'Invoice not found.'}</p>
-        <Button type="button" size="sm" variant="secondary" onClick={() => refetch()}>Retry</Button>
-        <Link to="/portal/invoices" className="block text-sm text-[var(--color-primary)] underline">Back to invoices</Link>
+        <p className="text-sm text-[var(--color-danger-600)]">
+          {error instanceof PortalApiError || error instanceof Error
+            ? error.message
+            : 'Invoice not found.'}
+        </p>
+        <Button type="button" size="sm" variant="secondary" onClick={() => refetch()}>
+          Retry
+        </Button>
+        <Link
+          to="/portal/invoices"
+          className="block text-sm text-[var(--color-primary)] underline"
+        >
+          Back to invoices
+        </Link>
       </div>
     );
   }

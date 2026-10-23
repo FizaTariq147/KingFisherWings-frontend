@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { FullPageSpinner } from '@/components/skeletons/SkeletonPrimitives';
+import { VENDOR_VERIFICATION_PATH } from '@/features/party-verification/api/partyVerification.api';
+import {
+  isVendorVerificationAllowlisted,
+  vendorUserNeedsVerification,
+} from '@/features/party-verification/utils/verificationAllowlist';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
 import { isVendorApiUnavailable } from '@/features/vendor-shared/vendorUnavailable';
 import { VENDOR_CHANGE_PASSWORD_PATH } from '../api/vendorAuth.api';
@@ -13,7 +18,9 @@ export function VendorProtectedRoute() {
   const { ready, accessToken } = useVendorAuthBootstrap();
   const logout = useVendorAuthStore((s) => s.logout);
   const setUser = useVendorAuthStore((s) => s.setUser);
-  const mustChangePassword = useVendorAuthStore((s) => Boolean(s.user?.mustChangePassword));
+  const user = useVendorAuthStore((s) => s.user);
+  const mustChangePassword = Boolean(user?.mustChangePassword);
+  const needsVerification = vendorUserNeedsVerification(user);
   const [sessionOk, setSessionOk] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -72,6 +79,10 @@ export function VendorProtectedRoute() {
   // Temporary-password users must set their own password before using the vendor portal.
   if (mustChangePassword && location.pathname !== VENDOR_CHANGE_PASSWORD_PATH) {
     return <Navigate to={VENDOR_CHANGE_PASSWORD_PATH} replace />;
+  }
+
+  if (needsVerification && !isVendorVerificationAllowlisted(location.pathname)) {
+    return <Navigate to={VENDOR_VERIFICATION_PATH} replace />;
   }
 
   return <Outlet />;

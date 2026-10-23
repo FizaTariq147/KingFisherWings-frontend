@@ -241,12 +241,21 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
     packages: normalizePortalPackages(data.packages),
     negotiationPricing: normalizeNegotiationPricing(data),
     actions: (() => {
-      const actionsRaw =
+      // Nested actions object and/or top-level flags from GET /portal/quotations/:id.
+      const nested =
         asRecord(data.actions) ??
         asRecord(data.action_flags) ??
         asRecord(data.actionFlags) ??
-        asRecord(data.available_actions);
-      if (!actionsRaw) return undefined;
+        asRecord(data.available_actions) ??
+        {};
+      const actionsRaw: Record<string, unknown> = { ...nested };
+      // Promote root-level can_* when nested omitted (BE may flatten flags).
+      for (const key of Object.keys(data)) {
+        if (!/^can[_A-Z]/i.test(key)) continue;
+        if (actionsRaw[key] === undefined) actionsRaw[key] = data[key];
+      }
+      const hasAny = Object.keys(actionsRaw).length > 0;
+      if (!hasAny) return undefined;
       const flag = (...keys: string[]): boolean | undefined => {
         for (const key of keys) {
           const v = actionsRaw[key];
@@ -256,14 +265,22 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
         }
         return undefined;
       };
+      // BE: can_amend === can_negotiate (alias of counter-offer).
+      const canNegotiate = flag('can_negotiate', 'canNegotiate', 'negotiate');
+      const canAmend =
+        flag('can_amend', 'canAmend', 'amend') ??
+        canNegotiate ??
+        flag('can_counter_offer', 'canCounterOffer', 'counter_offer');
       return {
         can_accept: flag('can_accept', 'canAccept', 'accept'),
         can_reject: flag('can_reject', 'canReject', 'reject'),
-        can_counter_offer: flag('can_counter_offer', 'canCounterOffer', 'counter_offer'),
+        can_counter_offer:
+          flag('can_counter_offer', 'canCounterOffer', 'counter_offer') ?? canAmend,
         can_edit: flag('can_edit', 'canEdit', 'edit'),
         can_replace: flag('can_replace', 'canReplace', 'replace'),
         can_delete: flag('can_delete', 'canDelete', 'delete'),
-        can_amend: flag('can_amend', 'canAmend', 'amend'),
+        can_amend: canAmend,
+        can_negotiate: canNegotiate ?? canAmend,
         // Portal never exposes generate/convert — staff continuum only.
         can_convert: false,
         can_generate_shipment: false,

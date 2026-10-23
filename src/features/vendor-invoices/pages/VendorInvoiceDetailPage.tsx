@@ -94,7 +94,7 @@ export default function VendorInvoiceDetailPage() {
       .mutateAsync(data)
       .then(() => {
         setActionMessage(
-          'Invoice posted. Your forwarder can process it under Purchase Invoices and record payment proofs there.',
+          'Invoice submitted. It appears under Purchase Invoices as a draft for your forwarder to post, then they can record payment proofs.',
         );
       })
       .catch((err) => {

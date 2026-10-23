@@ -33,6 +33,12 @@ export interface PortalUser {
    * (temporary password / first login — POST /portal/auth/change-password).
    */
   mustChangePassword?: boolean;
+  /** Party KYC — from login/me (NOT_STARTED | PENDING_REVIEW | APPROVED | REJECTED). */
+  verificationStatus?: string;
+  /** True when party verification blocks portal use (≠ APPROVED). */
+  verificationBlocking?: boolean;
+  /** True only when party verification is APPROVED (can_use_portal). */
+  canUsePortal?: boolean;
 }
 
 export interface PortalChangePasswordDto {

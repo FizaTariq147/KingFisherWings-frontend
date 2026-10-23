@@ -16,6 +16,7 @@ import type {
   PortalQuotationListResult,
   PortalQuotationRejectDto,
   PortalQuotationRequestDto,
+  PortalQuotationUpdateDto,
   PortalQuotationEstimateDto,
   PortalCostingOptionsDto,
   PortalQuotationCounterOfferDto,
@@ -363,7 +364,7 @@ export function useUpdatePortalQuotation() {
   const qc = useQueryClient();
   const scope = usePortalQueryScope();
   return useMutation({
-    mutationFn: ({ id, dto }: { id: string; dto: Record<string, unknown> }) =>
+    mutationFn: ({ id, dto }: { id: string; dto: PortalQuotationUpdateDto }) =>
       portalQuotationsService.update(id, dto),
     onSuccess: (q) => {
       void qc.invalidateQueries({ queryKey: portalQuotationKeys.all(scope) });

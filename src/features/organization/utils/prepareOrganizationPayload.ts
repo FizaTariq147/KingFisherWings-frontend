@@ -109,6 +109,9 @@ export function prepareBankAccountPayload(
   const branchId = trimOrOmit(values.branch_id);
   if (branchId && isUuid(branchId)) dto.branch_id = branchId;
 
+  const glAccountId = trimOrOmit(values.gl_account_id);
+  if (glAccountId && isUuid(glAccountId)) dto.gl_account_id = glAccountId;
+
   return dto;
 }
 
@@ -135,6 +138,10 @@ export function prepareBankAccountUpdatePayload(
   if (values.branch_id != null) {
     const branchId = trimOrOmit(values.branch_id);
     if (branchId && isUuid(branchId)) dto.branch_id = branchId;
+  }
+  if (values.gl_account_id != null) {
+    const glAccountId = trimOrOmit(values.gl_account_id);
+    if (glAccountId && isUuid(glAccountId)) dto.gl_account_id = glAccountId;
   }
   if (typeof values.is_default === 'boolean') dto.is_default = values.is_default;
   if (typeof values.is_active === 'boolean') dto.is_active = values.is_active;
@@ -215,6 +222,7 @@ export function bankAccountToFormValues(
     swift_code: account.swift_code,
     currency_code: account.currency_code || 'AED',
     branch_id: account.branch_id ?? '',
+    gl_account_id: account.gl_account_id ?? '',
     is_default: account.is_default,
     is_active: account.is_active,
   };

@@ -2,12 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
+import { useGlAccountSelectOptions } from '@/features/chartOfAccounts/hooks/useGlAccountSelectOptions';
 import { getServerErrorMessage } from '@/lib/validation/mapApiErrors';
 import { MASTER_PATHS } from '../api/masterPaths';
 import { getMasterResource } from '../config/masterResources';
 import { useMasterMutations, useMasterOptions } from '../hooks/useMasterResource';
 import { validateMasterValues } from '../schemas/master.schema';
 import type { MasterRecord } from '../types/master.types';
+import { SearchableSelect } from './SearchableSelect';
 
 const RESOURCE = getMasterResource('charge-codes');
 
@@ -61,6 +63,7 @@ export function AddChargeCodeModal({
     MASTER_PATHS['units-of-measure'],
     open,
   );
+  const { options: glAccountOptions } = useGlAccountSelectOptions(open);
 
   const [values, setValues] = useState<Record<string, unknown>>(emptyChargeCodeValues);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -268,13 +271,37 @@ export function AddChargeCodeModal({
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
+          <SearchableSelect
+            name="gl_revenue_account_id"
+            label="GL revenue account"
+            value={String(values.gl_revenue_account_id ?? '')}
+            options={glAccountOptions}
+            onChange={(next) => patch('gl_revenue_account_id', next)}
+            placeholder="Search chart of accounts…"
+            emptyMessage="No postable GL accounts — create under Finance → Chart of Accounts"
+            hint="Needed for sales invoices / SALE vouchers (e.g. Ocean Freight)."
+            error={fieldErrors.gl_revenue_account_id}
+          />
+          <SearchableSelect
+            name="gl_cost_account_id"
+            label="GL cost account"
+            value={String(values.gl_cost_account_id ?? '')}
+            options={glAccountOptions}
+            onChange={(next) => patch('gl_cost_account_id', next)}
+            placeholder="Search chart of accounts…"
+            emptyMessage="No postable GL accounts — create under Finance → Chart of Accounts"
+            hint="Needed for purchase / cost postings."
+            error={fieldErrors.gl_cost_account_id}
+          />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
           <Input
-            label="GL revenue code"
+            label="GL revenue code (legacy)"
             value={String(values.gl_revenue_code ?? '')}
             onChange={(e) => patch('gl_revenue_code', e.target.value)}
           />
           <Input
-            label="GL cost code"
+            label="GL cost code (legacy)"
             value={String(values.gl_cost_code ?? '')}
             onChange={(e) => patch('gl_cost_code', e.target.value)}
           />

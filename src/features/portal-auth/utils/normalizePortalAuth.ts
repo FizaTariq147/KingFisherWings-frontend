@@ -78,6 +78,36 @@ export function normalizePortalUser(raw: unknown, _accessToken?: string | null):
 
   const mustChangePassword = resolveMustChangePassword(source, envelope, asRecord(raw));
 
+  const verificationStatus =
+    pickString(
+      source.verification_status,
+      source.verificationStatus,
+      envelope.verification_status,
+      envelope.verificationStatus,
+      asRecord(source.verification)?.status,
+      asRecord(envelope.verification)?.status,
+    ) || undefined;
+  const canUsePortal =
+    typeof source.can_use_portal === 'boolean'
+      ? source.can_use_portal
+      : typeof source.canUsePortal === 'boolean'
+        ? source.canUsePortal
+        : typeof envelope.can_use_portal === 'boolean'
+          ? envelope.can_use_portal
+          : verificationStatus
+            ? verificationStatus.toUpperCase().replace(/[\s-]+/g, '_') === 'APPROVED'
+            : undefined;
+  const verificationBlocking =
+    typeof source.verification_blocking === 'boolean'
+      ? source.verification_blocking
+      : typeof source.verificationBlocking === 'boolean'
+        ? source.verificationBlocking
+        : typeof envelope.verification_blocking === 'boolean'
+          ? envelope.verification_blocking
+          : canUsePortal === undefined
+            ? undefined
+            : !canUsePortal;
+
   return {
     id,
     email,
@@ -89,6 +119,9 @@ export function normalizePortalUser(raw: unknown, _accessToken?: string | null):
     tenantId: resolvedTenantId,
     tenantName,
     ...(mustChangePassword === undefined ? {} : { mustChangePassword }),
+    ...(verificationStatus ? { verificationStatus } : {}),
+    ...(verificationBlocking === undefined ? {} : { verificationBlocking }),
+    ...(canUsePortal === undefined ? {} : { canUsePortal }),
   };
 }
 

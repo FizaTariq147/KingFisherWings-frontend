@@ -15,6 +15,7 @@ import type {
   PortalQuotationListResult,
   PortalQuotationRejectDto,
   PortalQuotationRequestDto,
+  PortalQuotationUpdateDto,
   PortalQuotationEstimateDto,
   PortalCostingOptionsDto,
   PortalQuotationCounterOfferDto,
@@ -258,11 +259,8 @@ export const portalQuotationsService = {
     }
   },
 
-  /** PATCH /portal/quotations/:id — edit DRAFT portal quote. */
-  async update(
-    id: string,
-    dto: Record<string, unknown>,
-  ): Promise<PortalQuotationDetail> {
+  /** PATCH /portal/quotations/:id — edit DRAFT portal quote (PortalQuotationUpdateDto). */
+  async update(id: string, dto: PortalQuotationUpdateDto): Promise<PortalQuotationDetail> {
     const res = await portalApiClient.patch(PORTAL_QUOTATIONS_API.detail(id), dto);
     const detail = normalizeQuotationDetail(res.data);
     if (detail) return detail;

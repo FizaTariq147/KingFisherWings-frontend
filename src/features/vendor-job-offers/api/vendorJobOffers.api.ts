@@ -10,6 +10,11 @@ import { JOB_API } from '@/features/jobs/api/job.api';
 export const VENDOR_JOB_OFFERS_API = {
   /** GET /vendor/jobs/:id/costing — vendor portal job costing view */
   jobCosting: (jobId: string) => `/vendor/jobs/${encodeURIComponent(jobId)}/costing`,
+  /** GET /vendor/jobs/:id/documents — visible_to_vendor or self-uploaded only */
+  jobDocuments: (jobId: string) =>
+    `/vendor/jobs/${encodeURIComponent(jobId)}/documents`,
+  jobDocumentDownload: (jobId: string, documentId: string) =>
+    `/vendor/jobs/${encodeURIComponent(jobId)}/documents/${encodeURIComponent(documentId)}/download`,
   /** Preferred */
   sendToVendor: (jobId: string) => `/jobs/${encodeURIComponent(jobId)}/send-to-vendor`,
   passToVendor: JOB_API.passToVendor,

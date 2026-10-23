@@ -3,6 +3,8 @@ import { PORTAL_AUTH_API } from '@/features/portal-auth/api/portalAuth.api';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import { normalizePortalTokenPair } from '@/features/portal-auth/utils/normalizePortalAuth';
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache';
+import { useVerificationGateStore } from '@/features/party-verification/store/verificationGateStore';
+import { isVerificationGateMessage } from '@/features/party-verification/utils/normalizePartyVerification';
 import { matchesAnyApiPath } from '@/lib/apiPath';
 import { notifyAxiosError } from '@/lib/toastNotify';
 
@@ -135,6 +137,11 @@ portalApiClient.interceptors.response.use(
     const url = original?.url ?? '';
 
     const rejectWithToast = (error: unknown) => {
+      // KYC gate — show custom modal instead of a generic error surface.
+      if (status === 403 && isVerificationGateMessage(message)) {
+        useVerificationGateStore.getState().openGate({ audience: 'portal', message });
+        return Promise.reject(error);
+      }
       // Prefer original Axios error so skipErrorToast / silent URLs still work.
       // Pass resolved Nest message so permission text is not lost.
       notifyAxiosError(err, { message });

@@ -104,6 +104,8 @@ export interface TenantBankAccount {
   swift_code: string;
   currency_code: string;
   branch_id: string | null;
+  /** Linked Chart of Accounts bank/cash ledger — required for GL payment posting. */
+  gl_account_id?: string | null;
   is_default: boolean;
   is_active: boolean;
   created_at?: string;
@@ -118,6 +120,7 @@ export interface CreateTenantBankAccountDto {
   swift_code?: string;
   currency_code?: string;
   branch_id?: string;
+  gl_account_id?: string;
   is_default?: boolean;
   is_active?: boolean;
 }
@@ -132,6 +135,7 @@ export type BankAccountFormValues = {
   swift_code: string;
   currency_code: string;
   branch_id: string;
+  gl_account_id: string;
   is_default: boolean;
   is_active: boolean;
 };

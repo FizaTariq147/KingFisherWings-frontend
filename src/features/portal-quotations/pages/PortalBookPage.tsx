@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useMatch, useNavigate, useSearchParams } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/Button';
@@ -20,6 +20,7 @@ import {
   QuotationWizardStepper,
 } from '@/features/quotations/components/quotation-wizard';
 import {
+  PortalLoadingState,
   PortalPageHeader,
   PortalPanel,
 } from '@/features/portal-auth/components/portal-ui';
@@ -27,9 +28,11 @@ import { PortalPlaceSelect } from '../components/PortalPlaceSelect';
 import {
   usePortalLocaleCurrency,
   usePortalCostingOptions,
+  usePortalQuotation,
   usePortalQuotationEstimate,
   usePortalServiceCatalog,
   useRequestPortalQuotation,
+  useUpdatePortalQuotation,
 } from '../hooks/usePortalQuotations';
 import {
   portalBookQuoteSchema,
@@ -47,6 +50,9 @@ import {
   type PortalPackageDraft,
 } from '../utils/buildPortalEstimatePackages';
 import { isAirJobType, type PortalPortOption } from '../utils/loadPortalPortOptions';
+import { portalQuoteToBookFormState } from '../utils/portalQuoteToBookForm';
+import { canPortalCustomerEditQuote } from '../utils/portalQuotationStatus';
+import type { PortalQuotationUpdateDto } from '../types/portalQuotations.types';
 
 function isRoadOrLandJobType(jobType?: string | null): boolean {
   const t = String(jobType ?? '').toUpperCase().replace(/[\s-]+/g, '_');
@@ -111,7 +117,14 @@ const CONSIGNMENT_FIELDS: (keyof PortalBookQuoteFormValues)[] = [
 
 export default function PortalBookPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editMatch = useMatch('/portal/quotes/:id/edit');
+  const editId =
+    searchParams.get('edit')?.trim() || editMatch?.params.id?.trim() || '';
+  const isEditMode = Boolean(editId);
+  const quoteQuery = usePortalQuotation(editId);
   const requestQuote = useRequestPortalQuotation();
+  const updateQuote = useUpdatePortalQuotation();
   const estimateQuote = usePortalQuotationEstimate();
   const [step, setStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -125,6 +138,9 @@ export default function PortalBookPage() {
     origin_port_id?: string;
     dest_port_id?: string;
   }>({});
+  /** Skip one job-type reset when hydrating an existing quote for edit. */
+  const skipJobTypeResetRef = useRef(false);
+  const hydratedEditIdRef = useRef<string | null>(null);
 
   const rememberPlaces = useCallback((places: PortalPortOption[]) => {
     setPlaceCache((prev) => {
@@ -173,7 +189,8 @@ export default function PortalBookPage() {
     },
   });
 
-  const { setValue, watch, control, register, formState, trigger, handleSubmit, getValues } = form;
+  const { setValue, watch, control, register, formState, trigger, handleSubmit, getValues, reset } =
+    form;
   const currencyCode = watch('currency_code');
   const resolvedCurrencyCode =
     typeof currencyCode === 'string' && currencyCode.trim() ? currencyCode.trim() : '';
@@ -253,6 +270,10 @@ export default function PortalBookPage() {
   }, [catalogItems]);
 
   useEffect(() => {
+    if (skipJobTypeResetRef.current) {
+      skipJobTypeResetRef.current = false;
+      return;
+    }
     setSelectedServices([]);
     setServicePrices({});
     setEstimatePreview(null);
@@ -261,6 +282,25 @@ export default function PortalBookPage() {
     setPlaceCache([]);
     setResolvedRoutePorts({});
   }, [jobType, setValue]);
+
+  // Prefill Book wizard from existing quotation (edit mode).
+  useEffect(() => {
+    if (!isEditMode || !editId || !quoteQuery.data) return;
+    if (hydratedEditIdRef.current === editId) return;
+    if (!canPortalCustomerEditQuote(quoteQuery.data)) return;
+
+    const mapped = portalQuoteToBookFormState(quoteQuery.data);
+    hydratedEditIdRef.current = editId;
+    skipJobTypeResetRef.current = true;
+    if (mapped.countryHint) setCountryCode(mapped.countryHint);
+    reset(mapped.values);
+    setPackages(mapped.packages);
+    setSelectedServices(mapped.selectedServices);
+    setServicePrices(mapped.servicePrices);
+    setEstimatePreview(null);
+    setStep(0);
+    setError(null);
+  }, [isEditMode, editId, quoteQuery.data, reset]);
 
   useEffect(() => {
     let cancelled = false;
@@ -299,11 +339,16 @@ export default function PortalBookPage() {
 
   useEffect(() => {
     if (!localeCurrency) {
-      setValue('currency_code', '', { shouldValidate: false });
+      if (!isEditMode) setValue('currency_code', '', { shouldValidate: false });
       return;
     }
+    // Edit mode: keep quotation currency unless the field is still empty.
+    if (isEditMode) {
+      const current = getValues('currency_code');
+      if (typeof current === 'string' && current.trim()) return;
+    }
     setValue('currency_code', localeCurrency, { shouldValidate: true });
-  }, [localeCurrency, setValue]);
+  }, [localeCurrency, setValue, isEditMode, getValues]);
 
   useEffect(() => {
     if (packagesCbm != null) {
@@ -372,8 +417,9 @@ export default function PortalBookPage() {
     return buildPortalCustomerLines(priceDrafts, catalogByCode, qtyInputs);
   };
 
+  const savePending = requestQuote.isPending || updateQuote.isPending;
   const submitDisabled =
-    requestQuote.isPending || currencyLoading || currencyError || !resolvedCurrencyCode;
+    savePending || currencyLoading || currencyError || !resolvedCurrencyCode;
 
   const updatePackage = (index: number, patch: Partial<PortalPackageDraft>) => {
     setPackages((prev) => prev.map((row, i) => (i === index ? { ...row, ...patch } : row)));
@@ -497,6 +543,15 @@ export default function PortalBookPage() {
         values.job_type,
       );
 
+      if (isEditMode && editId) {
+        const updated = await updateQuote.mutateAsync({
+          id: editId,
+          dto: payload as PortalQuotationUpdateDto,
+        });
+        navigate(`/portal/quotes/${updated.id || editId}`);
+        return;
+      }
+
       const created = await requestQuote.mutateAsync(payload);
       if (created.id && created.id !== 'new') {
         navigate(`/portal/quotes/${created.id}`);
@@ -507,7 +562,8 @@ export default function PortalBookPage() {
       setError(
         err instanceof PortalApiError || err instanceof Error
           ? err.message
-          : getServerErrorMessage(err) || 'Could not submit quote request.',
+          : getServerErrorMessage(err) ||
+            (isEditMode ? 'Could not update quotation.' : 'Could not submit quote request.'),
       );
     }
   });
@@ -545,9 +601,48 @@ export default function PortalBookPage() {
     return fromCache?.label || value;
   };
 
+  if (isEditMode && quoteQuery.isLoading) {
+    return <PortalLoadingState label="Loading quotation…" />;
+  }
+
+  if (isEditMode && (quoteQuery.isError || !quoteQuery.data)) {
+    return (
+      <div className="mx-auto max-w-5xl space-y-3">
+        <p className="text-sm text-[var(--color-danger-600)]">
+          {quoteQuery.error instanceof Error
+            ? quoteQuery.error.message
+            : 'Quotation not found.'}
+        </p>
+        <Button type="button" size="sm" variant="secondary" onClick={() => navigate(`/portal/quotes/${editId}`)}>
+          Back to quotation
+        </Button>
+      </div>
+    );
+  }
+
+  if (isEditMode && quoteQuery.data && !canPortalCustomerEditQuote(quoteQuery.data)) {
+    return (
+      <div className="mx-auto max-w-5xl space-y-3">
+        <p className="text-sm text-[var(--color-neutral-600)]">
+          This quotation can no longer be edited. Your forwarder may already be reviewing it.
+        </p>
+        <Button type="button" size="sm" variant="secondary" onClick={() => navigate(`/portal/quotes/${editId}`)}>
+          Back to quotation
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-5xl space-y-5">
-      <PortalPageHeader title="Request a quote" />
+      <PortalPageHeader
+        title={isEditMode ? 'Edit quotation' : 'Request a quote'}
+        description={
+          isEditMode && quoteQuery.data?.number
+            ? `Update draft ${quoteQuery.data.number} — same steps as booking a quote.`
+            : undefined
+        }
+      />
 
       <PortalPanel padded>
         {error && (
@@ -577,7 +672,11 @@ export default function PortalBookPage() {
                   setValue('job_type', jt, { shouldValidate: true, shouldDirty: true })
                 }
                 error={errors.job_type?.message}
-                heading="What type of Quotation would you like to request?"
+                heading={
+                  isEditMode
+                    ? 'Confirm or change the job type for this quotation'
+                    : 'What type of Quotation would you like to request?'
+                }
               />
               <p className="text-xs text-[var(--color-neutral-500)]">
                 Choose a job type first. Services and pricing are configured on the Costing step.
@@ -1094,10 +1193,12 @@ export default function PortalBookPage() {
             currentStep={step}
             totalSteps={QUOTATION_WIZARD_STEPS.length}
             onPrevious={() => setStep((s) => Math.max(0, s - 1))}
-            onCancel={() => navigate('/portal/quotes')}
+            onCancel={() =>
+              navigate(isEditMode && editId ? `/portal/quotes/${editId}` : '/portal/quotes')
+            }
             onNext={() => void goNext()}
-            isSubmitting={requestQuote.isPending}
-            submitLabel="Submit quote request"
+            isSubmitting={savePending}
+            submitLabel={isEditMode ? 'Save quotation' : 'Submit quote request'}
             disableNext={
               (wizardStepKey === 'create' && !jobType) ||
               ((wizardStepKey === 'ports' ||

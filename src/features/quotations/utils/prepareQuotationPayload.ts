@@ -10,6 +10,8 @@ const ALLOWED_HEADER_FIELDS = new Set([
   'carrier_id',
   'origin_port_id',
   'dest_port_id',
+  'create_origin_port',
+  'create_dest_port',
   'incoterm',
   'commodity',
   'hs_code',
@@ -126,8 +128,37 @@ const ALLOWED_ONLINE_QUOTE_FIELDS = new Set([
   'currency_code',
 ]);
 
+function normalizeInlinePort(value: unknown): Record<string, unknown> | undefined {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+  const r = value as Record<string, unknown>;
+  const un_locode = String(r.un_locode ?? '').trim().toUpperCase();
+  const name = String(r.name ?? '').trim();
+  const country_code = String(r.country_code ?? '').trim().toUpperCase();
+  if (un_locode.length < 2 || name.length < 2 || !/^[A-Z]{2}$/.test(country_code)) {
+    return undefined;
+  }
+  const out: Record<string, unknown> = { un_locode, name, country_code };
+  if (typeof r.city === 'string' && r.city.trim()) out.city = r.city.trim();
+  if (typeof r.mode === 'string' && r.mode.trim()) out.mode = String(r.mode).trim().toUpperCase();
+  if (typeof r.latitude === 'number' && Number.isFinite(r.latitude)) out.latitude = r.latitude;
+  if (typeof r.longitude === 'number' && Number.isFinite(r.longitude)) out.longitude = r.longitude;
+  if (typeof r.is_active === 'boolean') out.is_active = r.is_active;
+  return out;
+}
+
 export function prepareQuotationPayload<T extends Record<string, unknown>>(dto: T): T {
-  return preparePayload(dto, ALLOWED_HEADER_FIELDS) as T;
+  const out = preparePayload(dto, ALLOWED_HEADER_FIELDS) as Record<string, unknown>;
+  const createOrigin = normalizeInlinePort(dto.create_origin_port);
+  const createDest = normalizeInlinePort(dto.create_dest_port);
+  if (createOrigin) {
+    out.create_origin_port = createOrigin;
+    delete out.origin_port_id;
+  }
+  if (createDest) {
+    out.create_dest_port = createDest;
+    delete out.dest_port_id;
+  }
+  return out as T;
 }
 
 export function prepareQuotationLinePayload<T extends Record<string, unknown>>(dto: T): T {

@@ -153,9 +153,10 @@ export function PortalQuotationNegotiationPanel({
 
       {canCounter ? (
         <div className="space-y-2 border-t border-[var(--color-neutral-100)] pt-4">
-          <p className="text-sm font-medium">Submit counter-offer</p>
+          <p className="text-sm font-medium">Amend / counter-offer</p>
           <p className="text-xs text-[var(--color-neutral-500)]">
-            Your proposed total is required. Tenant charge lines stay unchanged until they accept.
+            Submit a proposed total (same as counter-offer). Forwarder charge lines stay unchanged
+            until they accept.
           </p>
           <Input
             placeholder="Message *"

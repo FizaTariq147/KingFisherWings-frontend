@@ -4,6 +4,7 @@ import { Modal } from '@/components/ui/Modal';
 import { PdfViewerModal } from '@/features/files/components/PdfViewerModal';
 import { usePdfViewer } from '@/features/files/hooks/usePdfViewer';
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
+import { isUuid } from '@/lib/isUuid';
 import type { PaymentProof } from '../types/paymentProof.types';
 import {
   downloadPaymentProofFile,
@@ -17,16 +18,19 @@ type PaymentProofOpenButtonProps = {
   proof: PaymentProof;
   viewer: PaymentProofViewer;
   size?: 'sm' | 'md';
+  /** Portal scoped file path needs the invoice id. */
+  invoiceId?: string;
 };
 
 /**
  * Opens payment proof inline (PDF modal / image modal) so browsers do not block pop-ups.
- * Falls back to blank-tab open, then download if needed.
+ * Prefers GET /payment-proofs/{id}/file so absolute storage URLs are not required.
  */
 export function PaymentProofOpenButton({
   proof,
   viewer,
   size = 'sm',
+  invoiceId,
 }: PaymentProofOpenButtonProps) {
   const pdfViewer = usePdfViewer();
   const [pending, setPending] = useState(false);
@@ -34,8 +38,14 @@ export function PaymentProofOpenButton({
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [imageTitle, setImageTitle] = useState('Payment proof');
 
-  const url = proof.fileUrl?.trim();
+  const url = proof.fileUrl?.trim() || '';
+  const proofId = proof.id?.trim() || '';
+  const canOpen = Boolean(url) || isUuid(proofId);
   const displayName = proof.fileName || 'payment-proof';
+  const fetchOpts = {
+    proofId: isUuid(proofId) ? proofId : undefined,
+    invoiceId: invoiceId && isUuid(invoiceId) ? invoiceId : proof.invoiceId,
+  };
 
   useEffect(() => {
     return () => {
@@ -43,7 +53,7 @@ export function PaymentProofOpenButton({
     };
   }, [imageSrc]);
 
-  if (!url) {
+  if (!canOpen) {
     return (
       <span className="text-[10px] text-[var(--color-neutral-400)]" title="No file URL from API">
         No file
@@ -62,7 +72,7 @@ export function PaymentProofOpenButton({
     setError(null);
     setPending(true);
     try {
-      const blob = await fetchPaymentProofBlob(url, viewer);
+      const blob = await fetchPaymentProofBlob(url, viewer, fetchOpts);
       const isPdf = await blobLooksLikePdf(blob);
       const isImage =
         blob.type.startsWith('image/') ||
@@ -85,19 +95,17 @@ export function PaymentProofOpenButton({
         return;
       }
 
-      // Unknown type: open blank tab sync-style, else download (no popup needed).
       let preview: Window | null = null;
       try {
         preview = openBlankPreviewTab();
         await openBlobInNewTab(blob, preview, { filename: displayName });
       } catch {
         preview?.close();
-        await downloadPaymentProofFile(url, viewer, displayName);
+        await downloadPaymentProofFile(url, viewer, displayName, fetchOpts);
       }
     } catch (err) {
-      // Last resort: download (no popup required).
       try {
-        await downloadPaymentProofFile(url, viewer, displayName);
+        await downloadPaymentProofFile(url, viewer, displayName, fetchOpts);
         setError(null);
       } catch {
         setError(err instanceof Error ? err.message : 'Could not open file.');

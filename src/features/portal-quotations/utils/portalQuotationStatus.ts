@@ -136,6 +136,8 @@ export function canPortalCustomerRespondToQuote(
   // Prefer GET action flags when present (accept OR reject still open).
   if (actions) {
     if (actions.can_accept === true || actions.can_reject === true) return true;
+    // Amend-only windows still count as "respond" for commercial UI layout.
+    if (typeof actions.can_amend === 'boolean' && actions.can_amend) return true;
     if (actions.can_accept === false && actions.can_reject === false) return false;
   }
   const s = normalizePortalQuoteStatus(status);
@@ -250,11 +252,23 @@ export function canPortalCustomerCounterOffer(
   quote?: PortalQuotationListItem | PortalQuotationDetail | null,
 ): boolean {
   const detail = quote as PortalQuotationDetail | undefined;
-  if (typeof detail?.actions?.can_amend === 'boolean') {
-    return detail.actions.can_amend;
+  const actions = detail?.actions;
+  // Prefer server flags — can_amend === can_negotiate (BE); do not let a bare
+  // can_counter_offer:false hide amend when can_amend/can_negotiate is true.
+  if (typeof actions?.can_amend === 'boolean') {
+    return actions.can_amend;
   }
-  if (typeof detail?.actions?.can_counter_offer === 'boolean') {
-    return detail.actions.can_counter_offer;
+  const raw = actions?.raw;
+  if (raw && typeof raw === 'object') {
+    const negotiate = (raw as Record<string, unknown>).can_negotiate
+      ?? (raw as Record<string, unknown>).canNegotiate
+      ?? (raw as Record<string, unknown>).negotiate;
+    if (typeof negotiate === 'boolean') return negotiate;
+    if (negotiate === 'true' || negotiate === 1 || negotiate === '1') return true;
+    if (negotiate === 'false' || negotiate === 0 || negotiate === '0') return false;
+  }
+  if (typeof actions?.can_counter_offer === 'boolean') {
+    return actions.can_counter_offer;
   }
   const s = normalizePortalQuoteStatus(status ?? detail?.status);
   return s === 'SENT' || s === 'CUSTOMER_REVIEW' || s === 'NEGOTIATING';

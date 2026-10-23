@@ -112,10 +112,10 @@ export function usePostVendorInvoice() {
       vendorInvoicesService.post(detail),
     onSuccess: (detail, original) => {
       const id = detail?.id || original.id;
-      const status = detail?.status || 'POSTED';
+      const status = detail?.status || 'DRAFT';
       if (id) {
         queryClient.setQueryData(vendorInvoiceKeys.detail(scope, id), detail);
-        // Patch list/open-item rows so status shows POSTED without refetching DRAFT from API.
+        // Patch list/open-item rows with API status (usually DRAFT until staff posts PI).
         queryClient.setQueriesData(
           { queryKey: vendorInvoiceKeys.all(scope) },
           (old: unknown) => {
@@ -131,6 +131,7 @@ export function usePostVendorInvoice() {
           },
         );
       }
+      void queryClient.invalidateQueries({ queryKey: vendorInvoiceKeys.all(scope) });
       void queryClient.invalidateQueries({ queryKey: vendorInvoiceKeys.summary(scope) });
     },
   });

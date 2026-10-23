@@ -24,14 +24,12 @@ import {
   PortalCommercialFlowRail,
   usesPortalCommercialFlow,
 } from '../components/PortalCommercialFlowRail';
-import { PortalQuotationDraftActions } from '../components/PortalQuotationDraftActions';
+import { PortalQuotationLifecycleToolbar } from '../components/PortalQuotationDraftActions';
 import { PortalQuotationNegotiationPanel } from '../components/PortalQuotationNegotiationPanel';
 import { usePortalQuotation } from '../hooks/usePortalQuotations';
 import { portalQuotationsService } from '../services/portalQuotations.service';
 import {
-  canPortalCustomerDeleteQuote,
-  canPortalCustomerEditQuote,
-  canPortalCustomerReplaceQuote,
+  canPortalCustomerAmendQuote,
   canPortalCustomerRespondToQuote,
   portalQuoteIndicatesInvoiceSent,
   portalQuoteShowsBookingForm,
@@ -182,26 +180,37 @@ export default function PortalQuoteDetailPage() {
           'Quotation detail'
         }
         actions={
-          <div className="flex flex-wrap items-center gap-2">
-            {data.status ? <QuotationStatusBadge status={data.status} /> : null}
-            {total != null ? (
-              <Badge variant="neutral">
-                {data.currencyCode || 'AED'}{' '}
-                {total.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-              </Badge>
-            ) : null}
-            {showDownload ? (
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                disabled={pdfPending}
-                onClick={() => openQuotePdf(id || data.id, data.number || 'quotation')}
-              >
-                <Download size={14} aria-hidden="true" />
-                {pdfPending ? 'Preparing…' : 'Download PDF'}
-              </Button>
-            ) : null}
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              {data.status ? <QuotationStatusBadge status={data.status} /> : null}
+              {total != null ? (
+                <Badge variant="neutral">
+                  {data.currencyCode || 'AED'}{' '}
+                  {total.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                </Badge>
+              ) : null}
+            </div>
+            <PortalQuotationLifecycleToolbar
+              quote={data}
+              onSuccess={(message) => {
+                setActionSuccess(message);
+                void refetch();
+              }}
+              trailing={
+                showDownload ? (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    disabled={pdfPending}
+                    onClick={() => openQuotePdf(id || data.id, data.number || 'quotation')}
+                  >
+                    <Download size={14} aria-hidden="true" />
+                    {pdfPending ? 'Preparing…' : 'Download PDF'}
+                  </Button>
+                ) : null
+              }
+            />
           </div>
         }
       />
@@ -288,20 +297,10 @@ export default function PortalQuoteDetailPage() {
         )}
       </PortalPanel>
 
-      {canPortalCustomerEditQuote(data) ||
-      canPortalCustomerReplaceQuote(data) ||
-      canPortalCustomerDeleteQuote(data) ? (
-        <PortalQuotationDraftActions
-          quote={data}
-          onSuccess={(message) => {
-            setActionSuccess(message);
-            void refetch();
-          }}
-        />
-      ) : null}
-
-      {/* Shared commercial flow: negotiate → accept → booking form → wait for invoice */}
-      {canRespond ? (
+      {/* Amend/negotiate is gated by actions.can_amend — not accept/reject flags. */}
+      {canRespond ||
+      canPortalCustomerAmendQuote(data) ||
+      (data.negotiationRound != null && data.negotiationRound > 0) ? (
         <PortalQuotationNegotiationPanel
           quote={data}
           onSuccess={(message) => {

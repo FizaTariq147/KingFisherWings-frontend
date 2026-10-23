@@ -13,6 +13,7 @@ import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQuery
 import { useVendorNotificationUnreadCount } from '@/features/vendor-notifications/hooks/useVendorNotifications';
 import { vendorNotificationsService } from '@/features/vendor-notifications/services/vendorNotifications.service';
 import { NotificationToastWatcher } from '@/components/toast';
+import { VerificationRequiredModal } from '@/features/party-verification/components/VerificationRequiredModal';
 import { VendorSidebar } from '../components/VendorSidebar';
 import { VendorTopbar } from '../components/VendorTopbar';
 import { useVendorBrand } from '../hooks/useVendorBrand';
@@ -87,6 +88,7 @@ export function VendorShell() {
         storageKey="vendor"
         fetchLatest={fetchLatestNotification}
       />
+      <VerificationRequiredModal />
 
       <VendorSidebar onLogout={() => void handleLogout()} collapsed={sidebarCollapsed} />
 

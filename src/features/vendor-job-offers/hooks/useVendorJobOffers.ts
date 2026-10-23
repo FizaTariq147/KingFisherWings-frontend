@@ -39,6 +39,8 @@ export const vendorPortalJobKeys = {
     [...vendorPortalJobKeys.all(scope), 'pricing', id] as const,
   negotiation: (scope: string, id: string) =>
     [...vendorPortalJobKeys.all(scope), 'negotiation', id] as const,
+  documents: (scope: string, id: string) =>
+    [...vendorPortalJobKeys.all(scope), 'documents', id] as const,
 };
 
 export function useJobVendorOffers(jobId: string) {
@@ -155,6 +157,18 @@ export function useVendorPortalJob(id: string) {
     staleTime: 0,
     refetchInterval: 8_000,
     refetchIntervalInBackground: false,
+  });
+}
+
+/** GET /vendor/jobs/:id/documents — BE filters to visible_to_vendor / self-uploaded. */
+export function useVendorPortalJobDocuments(id: string, enabled = true) {
+  const accessToken = useVendorAuthStore((s) => s.accessToken);
+  const scope = useVendorQueryScope();
+  return useQuery({
+    queryKey: vendorPortalJobKeys.documents(scope, id),
+    queryFn: () => vendorPortalJobsService.listJobDocuments(id),
+    enabled: Boolean(accessToken) && Boolean(id) && enabled && scope !== 'anon',
+    staleTime: 30_000,
   });
 }
 

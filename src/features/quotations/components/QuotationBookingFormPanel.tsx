@@ -51,11 +51,15 @@ export function QuotationBookingFormPanel({ quotation }: QuotationBookingFormPan
     );
   }
 
+  const isConverted =
+    String(quotation.status ?? '').toUpperCase().replace(/[\s-]+/g, '_') ===
+    'CONVERTED';
+
   if (!mode) {
     return (
       <p className="text-sm text-[var(--color-neutral-500)]">
         Booking form is not available for this quotation type.
-        {jobId ? (
+        {jobId && isConverted ? (
           <>
             {' '}
             <Link
@@ -69,10 +73,6 @@ export function QuotationBookingFormPanel({ quotation }: QuotationBookingFormPan
       </p>
     );
   }
-
-  const isConverted =
-    String(quotation.status ?? '').toUpperCase().replace(/[\s-]+/g, '_') ===
-    'CONVERTED';
 
   return (
     <div className="space-y-3">

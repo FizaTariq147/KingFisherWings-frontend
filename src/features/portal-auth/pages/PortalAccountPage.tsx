@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
+import { AccountVerificationSection } from '@/features/party-verification/components/AccountVerificationSection';
 import {
   usePortalPreferences,
   useUpdatePortalPreferences,
@@ -18,6 +19,7 @@ import {
 
 export default function PortalAccountPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = usePortalAuthStore((s) => s.user);
   const firstLetter = (user?.fullName || user?.email || 'U').charAt(0).toUpperCase();
   const prefs = usePortalPreferences();
@@ -33,9 +35,15 @@ export default function PortalAccountPage() {
     setDocumentAlerts(prefs.data.documentAlertsEnabled);
   }, [prefs.data]);
 
+  useEffect(() => {
+    if (location.hash !== '#verification') return;
+    const el = document.getElementById('verification');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [location.hash]);
+
   return (
     <div className="mx-auto max-w-2xl space-y-5">
-      <PortalPageHeader title="Account" description="Your portal profile, company context, and alert preferences." />
+      <PortalPageHeader title="Account" description="Your portal profile, company documents, and alert preferences." />
 
       <PortalPanel padded>
         <div className="mb-6 flex items-center gap-4">
@@ -70,6 +78,10 @@ export default function PortalAccountPage() {
             <Info label="Tenant" value={user?.tenantName || user?.tenantSlug || '—'} />
           </PortalAnimatedGridItem>
         </PortalAnimatedGrid>
+      </PortalPanel>
+
+      <PortalPanel padded>
+        <AccountVerificationSection audience="portal" />
       </PortalPanel>
 
       <PortalPanel padded className="flex flex-wrap items-center justify-between gap-3">

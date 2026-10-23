@@ -256,10 +256,13 @@ export default function PurchaseInvoiceDetailPage() {
                   <StaffPurchaseInvoicePaymentProofPanel
                     purchaseInvoiceId={id}
                     currencyCode={invoice.currency_code}
+                    invoiceStatus={invoice.status}
                     remainingAmount={
                       invoice.outstanding_balance != null
                         ? Number(invoice.outstanding_balance)
-                        : undefined
+                        : invoice.total_amount != null
+                          ? Number(invoice.total_amount)
+                          : undefined
                     }
                   />
                 </div>

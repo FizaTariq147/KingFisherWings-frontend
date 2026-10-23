@@ -10,6 +10,10 @@ import { FieldError } from '@/components/ui/FieldError/FieldError';
 import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
+import {
+  AddPortModal,
+  type CreatePortInlineDto,
+} from '@/features/masters/components/AddPortModal';
 import { SearchableSelect } from '@/features/masters/components/SearchableSelect';
 import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
@@ -110,11 +114,13 @@ export function JobForm({
   const isWizard = layout === 'wizard' && mode === 'create';
   const [step, setStep] = useState(0);
   const [draftCharges, setDraftCharges] = useState<JobDraftChargeLine[]>([]);
+  const [portCreateFor, setPortCreateFor] = useState<'origin' | 'dest' | null>(null);
   const schema = mode === 'create' ? createJobSchema : updateJobSchema;
   const {
     register,
     control,
     watch,
+    setValue,
     trigger,
     handleValidatedSubmit,
     applyApiErrors,
@@ -159,12 +165,99 @@ export function JobForm({
 
   const originPortId = watch('origin_port_id');
   const destPortId = watch('dest_port_id');
+  const createOriginPort = watch('create_origin_port') as CreatePortInlineDto | undefined;
+  const createDestPort = watch('create_dest_port') as CreatePortInlineDto | undefined;
   const watched = watch();
 
   const fieldError = (name: keyof CreateJobFormValues) =>
     errors[name]?.message as string | undefined;
 
   const [apiError, setApiError] = useState<string | null>(null);
+
+  const portCreateLabel = (p?: CreatePortInlineDto | null) =>
+    p ? `${p.un_locode} — ${p.name}` : undefined;
+
+  const applyInlinePort = (side: 'origin' | 'dest', dto: CreatePortInlineDto) => {
+    if (side === 'origin') {
+      setValue('origin_port_id', undefined, { shouldDirty: true, shouldValidate: true });
+      setValue('create_origin_port', dto, { shouldDirty: true, shouldValidate: true });
+    } else {
+      setValue('dest_port_id', undefined, { shouldDirty: true, shouldValidate: true });
+      setValue('create_dest_port', dto, { shouldDirty: true, shouldValidate: true });
+    }
+  };
+
+  const portModal = (
+    <AddPortModal
+      open={portCreateFor != null}
+      onClose={() => setPortCreateFor(null)}
+      title={portCreateFor === 'dest' ? 'Add destination port' : 'Add origin port'}
+      defaultMode={useAirports ? 'AIR' : 'SEA'}
+      onSubmit={(dto) => {
+        if (portCreateFor) applyInlinePort(portCreateFor, dto);
+      }}
+    />
+  );
+
+  const originPlaceSelect = (
+    <Controller
+      name="origin_port_id"
+      control={control}
+      render={({ field }) => (
+        <MasterPlaceSelect
+          name="origin_port_id"
+          kind="ports"
+          label={
+            useAirports
+              ? 'Origin airport'
+              : isRoadLand
+                ? 'Origin hub (optional)'
+                : 'Origin port'
+          }
+          value={field.value ?? ''}
+          onChange={field.onChange}
+          jobType={selectedJobType}
+          excludeId={destPortId}
+          error={fieldError('origin_port_id')}
+          onCreateClick={() => setPortCreateFor('origin')}
+          pendingCreateLabel={portCreateLabel(createOriginPort)}
+          onClearPendingCreate={() =>
+            setValue('create_origin_port', undefined, { shouldDirty: true })
+          }
+        />
+      )}
+    />
+  );
+
+  const destPlaceSelect = (
+    <Controller
+      name="dest_port_id"
+      control={control}
+      render={({ field }) => (
+        <MasterPlaceSelect
+          name="dest_port_id"
+          kind="ports"
+          label={
+            useAirports
+              ? 'Destination airport'
+              : isRoadLand
+                ? 'Destination hub (optional)'
+                : 'Destination port'
+          }
+          value={field.value ?? ''}
+          onChange={field.onChange}
+          jobType={selectedJobType}
+          excludeId={originPortId}
+          error={fieldError('dest_port_id')}
+          onCreateClick={() => setPortCreateFor('dest')}
+          pendingCreateLabel={portCreateLabel(createDestPort)}
+          onClearPendingCreate={() =>
+            setValue('create_dest_port', undefined, { shouldDirty: true })
+          }
+        />
+      )}
+    />
+  );
 
   const containerOpts: Array<{ value: string; label: string }> = [];
   for (const c of containers) {
@@ -364,48 +457,8 @@ export function JobForm({
                 />
               </div>
               <div className="space-y-4">
-                <Controller
-                  name="origin_port_id"
-                  control={control}
-                  render={({ field }) => (
-                    <MasterPlaceSelect
-                      name="origin_port_id"
-                      label={
-                        useAirports
-                          ? 'Origin airport'
-                          : isRoadLand
-                            ? 'Origin hub (optional)'
-                            : 'Origin'
-                      }
-                      value={field.value ?? ''}
-                      onChange={field.onChange}
-                      jobType={selectedJobType}
-                      excludeId={destPortId}
-                      error={fieldError('origin_port_id')}
-                    />
-                  )}
-                />
-                <Controller
-                  name="dest_port_id"
-                  control={control}
-                  render={({ field }) => (
-                    <MasterPlaceSelect
-                      name="dest_port_id"
-                      label={
-                        useAirports
-                          ? 'Destination airport'
-                          : isRoadLand
-                            ? 'Destination hub (optional)'
-                            : 'Destination'
-                      }
-                      value={field.value ?? ''}
-                      onChange={field.onChange}
-                      jobType={selectedJobType}
-                      excludeId={originPortId}
-                      error={fieldError('dest_port_id')}
-                    />
-                  )}
-                />
+                {originPlaceSelect}
+                {destPlaceSelect}
                 <Input
                   id="job-etd"
                   type="date"
@@ -743,6 +796,7 @@ export function JobForm({
           nextLabel={step === totalSteps - 1 ? 'Create job' : 'Next'}
           disableNext={step === 0 && !selectedJobType}
         />
+        {portModal}
       </form>
     );
   }
@@ -877,48 +931,8 @@ export function JobForm({
           <CardTitle>Shipment information</CardTitle>
         </CardHeader>
         <div className="p-4 pt-0 grid gap-4 sm:grid-cols-2">
-          <Controller
-            name="origin_port_id"
-            control={control}
-            render={({ field }) => (
-              <MasterPlaceSelect
-                name="origin_port_id"
-                label={
-                  useAirports
-                    ? 'Origin airport'
-                    : isRoadLand
-                      ? 'Origin hub (optional)'
-                      : 'Origin port'
-                }
-                value={field.value ?? ''}
-                onChange={field.onChange}
-                jobType={selectedJobType}
-                excludeId={destPortId}
-                error={fieldError('origin_port_id')}
-              />
-            )}
-          />
-          <Controller
-            name="dest_port_id"
-            control={control}
-            render={({ field }) => (
-              <MasterPlaceSelect
-                name="dest_port_id"
-                label={
-                  useAirports
-                    ? 'Destination airport'
-                    : isRoadLand
-                      ? 'Destination hub (optional)'
-                      : 'Destination port'
-                }
-                value={field.value ?? ''}
-                onChange={field.onChange}
-                jobType={selectedJobType}
-                excludeId={originPortId}
-                error={fieldError('dest_port_id')}
-              />
-            )}
-          />
+          {originPlaceSelect}
+          {destPlaceSelect}
           {isRoadLand ? (
             <>
               <div className="space-y-1">
@@ -1157,6 +1171,7 @@ export function JobForm({
           Cancel
         </Button>
       </div>
+      {portModal}
     </form>
   );
 }

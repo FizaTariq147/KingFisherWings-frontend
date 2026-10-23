@@ -606,7 +606,47 @@ function JobShipmentsTabPanel({
         >
           Attach existing
         </Button>
+        <Button
+          type="button"
+          size="sm"
+          variant="secondary"
+          disabled={
+            resources.createLinkShipments.isPending ||
+            !job.job_type ||
+            !isUuid(job.shipper_id || job.billing_party_id || '')
+          }
+          onClick={() =>
+            void run(
+              async () => {
+                const customerId = job.shipper_id || job.billing_party_id || '';
+                await resources.createLinkShipments.mutateAsync({
+                  create: {
+                    job_type: job.job_type,
+                    customer_id: customerId,
+                    ...(job.company_id && isUuid(job.company_id)
+                      ? { company_id: job.company_id }
+                      : {}),
+                    ...(job.branch_id && isUuid(job.branch_id)
+                      ? { branch_id: job.branch_id }
+                      : {}),
+                    ...(job.quotation_id && isUuid(job.quotation_id)
+                      ? { quotation_id: job.quotation_id }
+                      : {}),
+                  },
+                });
+              },
+              'Shipment created and linked to this job.',
+            )
+          }
+        >
+          {resources.createLinkShipments.isPending
+            ? 'Creating…'
+            : 'Create shipment on job'}
+        </Button>
       </div>
+      <p className="text-[11px] text-[#64748b]">
+        Prorate to shipments needs at least one linked shipment on this master job.
+      </p>
     </div>
   );
 }
