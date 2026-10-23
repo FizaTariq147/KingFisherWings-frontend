@@ -142,7 +142,45 @@ export function prepareJobPayload(
 
   // Do not auto-inject billing_party_id — some tenants 500 when it duplicates shipper FK context.
 
+  // Inline CreatePortDto — mutual exclusion with *_port_id (OpenAPI ValidateIf).
+  const createOrigin = asCreatePort(payload.create_origin_port);
+  if (createOrigin) {
+    payload.create_origin_port = createOrigin;
+    delete payload.origin_port_id;
+  } else {
+    delete payload.create_origin_port;
+  }
+  const createDest = asCreatePort(payload.create_dest_port);
+  if (createDest) {
+    payload.create_dest_port = createDest;
+    delete payload.dest_port_id;
+  } else {
+    delete payload.create_dest_port;
+  }
+
   return omitEmpty(payload);
+}
+
+function asCreatePort(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const r = value as Record<string, unknown>;
+  const un_locode = String(r.un_locode ?? '').trim().toUpperCase();
+  const name = String(r.name ?? '').trim();
+  const country_code = String(r.country_code ?? '').trim().toUpperCase();
+  if (un_locode.length < 2 || name.length < 2 || !/^[A-Z]{2}$/.test(country_code)) {
+    return null;
+  }
+  const out: Record<string, unknown> = {
+    un_locode,
+    name,
+    country_code,
+  };
+  if (typeof r.city === 'string' && r.city.trim()) out.city = r.city.trim();
+  if (typeof r.mode === 'string' && r.mode.trim()) out.mode = r.mode.trim().toUpperCase();
+  if (typeof r.latitude === 'number' && Number.isFinite(r.latitude)) out.latitude = r.latitude;
+  if (typeof r.longitude === 'number' && Number.isFinite(r.longitude)) out.longitude = r.longitude;
+  if (typeof r.is_active === 'boolean') out.is_active = r.is_active;
+  return out;
 }
 
 /** Minimal CreateJobDto for 500 retry (only widely accepted fields). */

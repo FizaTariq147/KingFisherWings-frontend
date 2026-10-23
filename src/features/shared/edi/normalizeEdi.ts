@@ -75,7 +75,65 @@ export function normalizeEdiTypeOptions(raw: unknown): JobEdiTypeOption[] {
       label: code.replaceAll('_', ' '),
     }));
   }
+  // Prefer official CSDP manifest TXT as the demo primary picker default.
+  const preferred = out.findIndex((t) => t.code === 'MANIFEST_CSDP');
+  if (preferred > 0) {
+    const [row] = out.splice(preferred, 1);
+    out.unshift(row);
+  }
   return out;
+}
+
+/** Pull submission id from generate EDI response for immediate download. */
+export function pickEdiSubmissionId(raw: unknown): string | null {
+  if (typeof raw === 'string' && raw.trim()) {
+    const s = raw.trim();
+    return s.length >= 8 ? s : null;
+  }
+  const rec = asRecord(raw);
+  if (!rec) return null;
+  for (const key of [
+    'id',
+    'submission_id',
+    'submissionId',
+    'edi_submission_id',
+    'ediSubmissionId',
+  ]) {
+    const v = String(rec[key] ?? '').trim();
+    if (v) return v;
+  }
+  const nested =
+    asRecord(rec.submission) ??
+    asRecord(rec.data) ??
+    asRecord(rec.result) ??
+    asRecord(rec.edi_submission) ??
+    asRecord(rec.ediSubmission);
+  if (nested) return pickEdiSubmissionId(nested);
+  return null;
+}
+
+export function pickEdiFileNameFromGenerate(
+  raw: unknown,
+  ediType: string,
+): string | null {
+  const rec = asRecord(raw);
+  if (!rec) return null;
+  const name = String(
+    rec.file_name ?? rec.fileName ?? rec.filename ?? rec.name ?? '',
+  ).trim();
+  if (name) return name;
+  const nested =
+    asRecord(rec.submission) ?? asRecord(rec.data) ?? asRecord(rec.result);
+  if (nested) {
+    const nestedName = String(
+      nested.file_name ?? nested.fileName ?? nested.filename ?? '',
+    ).trim();
+    if (nestedName) return nestedName;
+  }
+  if (/MANIFEST_CSDP|CSDP/i.test(ediType)) {
+    return 'MENIFIEST.txt';
+  }
+  return null;
 }
 
 export function normalizeEdiSubmissions(raw: unknown): JobEdiSubmission[] {

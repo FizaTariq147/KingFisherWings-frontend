@@ -11,8 +11,10 @@ import {
   normalizePaymentProofList,
 } from '@/features/payment-proofs/utils/normalizePaymentProof';
 import {
+  assertPaymentProofUploadFields,
   buildPaymentProofUploadFields,
   formatPaymentProofUploadError,
+  postPaymentProofMultipart,
   postPaymentProofMultipartFetch,
 } from '@/features/payment-proofs/utils/uploadPaymentProofMultipart';
 import { ensureErpAccessToken } from '@/lib/ensureErpAccessToken';
@@ -236,7 +238,8 @@ export const purchaseInvoiceService = {
   /**
    * POST /purchase-invoices/{id}/payment-proofs
    * Multipart: file + amount_claimed + payment_date (+ optional reference_number, notes).
-   * Uses browser fetch (not axios) so Multer receives a proper multipart boundary.
+   * OpenAPI required[] — amount_claimed string "100.00", payment_date YYYY-MM-DD.
+   * Prefer browser fetch (reliable multipart boundary), then axios fallback.
    */
   async uploadPaymentProof(
     id: string,
@@ -244,34 +247,94 @@ export const purchaseInvoiceService = {
     dto: UploadPaymentProofDto,
   ): Promise<PaymentProof> {
     assertId(id);
-    if (dto.amount == null || !Number.isFinite(dto.amount) || dto.amount <= 0) {
-      throw new Error('Amount claimed is required.');
+    if (!(file instanceof File) || file.size <= 0) {
+      throw new Error('Choose a payment proof file (PDF/JPEG/PNG/WebP).');
     }
-    const paymentDate = dto.payment_date?.trim();
+    if (dto.amount == null || !Number.isFinite(dto.amount) || dto.amount <= 0) {
+      throw new Error('Enter the paid amount for this proof.');
+    }
+    const paymentDate = (dto.payment_date?.trim() || '').slice(0, 10);
     if (!paymentDate || !/^\d{4}-\d{2}-\d{2}$/.test(paymentDate)) {
       throw new Error('Payment date is required (YYYY-MM-DD).');
     }
-    try {
-      const token = (await ensureErpAccessToken()) ?? useAuthStore.getState().accessToken;
-      if (!token) {
-        throw new Error('Your session expired. Sign in again, then retry the payment proof upload.');
-      }
-      const data = await postPaymentProofMultipartFetch({
-        path: PURCHASE_INVOICE_API.paymentProofs(id),
-        file,
-        fields: buildPaymentProofUploadFields(
-          { ...dto, payment_date: paymentDate },
-          'extended',
-        ),
-        accessToken: token,
-        credentials: 'include',
-        failureFallback: 'Could not save payment proof. Verify amount_claimed and payment_date.',
-      });
+
+    // Required fields only first — optional reference/notes can trip older DTOs.
+    const coreFields = buildPaymentProofUploadFields(
+      { amount: dto.amount, payment_date: paymentDate },
+      'portal',
+    );
+    assertPaymentProofUploadFields(coreFields);
+    const extendedFields = buildPaymentProofUploadFields(
+      {
+        amount: dto.amount,
+        payment_date: paymentDate,
+        ...(dto.reference?.trim() ? { reference: dto.reference.trim() } : {}),
+        ...(dto.notes?.trim() ? { notes: dto.notes.trim() } : {}),
+      },
+      'extended',
+    );
+
+    const path = PURCHASE_INVOICE_API.paymentProofs(id);
+    const normalizeUploaded = (data: unknown): PaymentProof => {
       const proof = normalizePaymentProof(unwrapEntity(data));
       if (!proof) throw new Error('Upload succeeded but no payment proof was returned.');
       return proof;
-    } catch (error) {
-      throw formatPaymentProofUploadError(error);
+    };
+
+    const fieldAttempts: Array<Record<string, string | undefined>> = [
+      coreFields,
+      ...(dto.reference?.trim() || dto.notes?.trim() ? [extendedFields] : []),
+      {
+        amount_claimed: String(Math.round(dto.amount * 100) / 100),
+        payment_date: paymentDate,
+      },
+    ];
+
+    const token =
+      (await ensureErpAccessToken()) ?? useAuthStore.getState().accessToken;
+    if (!token) {
+      throw new Error(
+        'Your session expired. Sign in again, then retry the payment proof upload.',
+      );
     }
+
+    let lastError: unknown;
+    for (const fields of fieldAttempts) {
+      try {
+        const data = await postPaymentProofMultipartFetch({
+          path,
+          file,
+          fields,
+          accessToken: token,
+          credentials: 'include',
+          failureFallback:
+            'Could not save payment proof. Verify amount_claimed and payment_date.',
+        });
+        return normalizeUploaded(data);
+      } catch (fetchError) {
+        lastError = fetchError;
+        const msg =
+          fetchError instanceof Error ? fetchError.message : String(fetchError);
+        if (/unexpected field|401|403|session expired/i.test(msg)) {
+          throw formatPaymentProofUploadError(fetchError);
+        }
+      }
+
+      try {
+        const data = await withGatewayRetry(() =>
+          postPaymentProofMultipart(axiosInstance, path, file, fields),
+        );
+        return normalizeUploaded(data);
+      } catch (axiosError) {
+        lastError = axiosError;
+        const msg =
+          axiosError instanceof Error ? axiosError.message : String(axiosError);
+        if (/unexpected field|401|403/i.test(msg)) {
+          throw formatPaymentProofUploadError(axiosError);
+        }
+      }
+    }
+
+    throw formatPaymentProofUploadError(lastError);
   },
 };

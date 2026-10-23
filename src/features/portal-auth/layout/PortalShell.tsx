@@ -15,6 +15,7 @@ import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQuery
 import { usePortalNotificationUnreadCount } from '@/features/portal-notifications/hooks/usePortalNotifications';
 import { portalNotificationsService } from '@/features/portal-notifications/services/portalNotifications.service';
 import { NotificationToastWatcher } from '@/components/toast';
+import { VerificationRequiredModal } from '@/features/party-verification/components/VerificationRequiredModal';
 import { PORTAL_NAV_SECTIONS } from '../config/portalNav';
 
 export function PortalShell() {
@@ -83,6 +84,7 @@ export function PortalShell() {
         storageKey="portal"
         fetchLatest={fetchLatestNotification}
       />
+      <VerificationRequiredModal />
 
       <PortalSidebar
         onLogout={() => void handleLogout()}

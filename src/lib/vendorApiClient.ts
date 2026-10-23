@@ -1,4 +1,6 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
+import { useVerificationGateStore } from '@/features/party-verification/store/verificationGateStore';
+import { isVerificationGateMessage } from '@/features/party-verification/utils/normalizePartyVerification';
 import { VENDOR_AUTH_API } from '@/features/vendor-auth/api/vendorAuth.api';
 import { useVendorAuthStore } from '@/features/vendor-auth/store/vendorAuthStore';
 import { normalizeVendorTokenPair } from '@/features/vendor-auth/utils/normalizeVendorAuth';
@@ -132,6 +134,10 @@ vendorApiClient.interceptors.response.use(
     const url = original?.url ?? '';
 
     const rejectWithToast = (error: unknown) => {
+      if (status === 403 && isVerificationGateMessage(message)) {
+        useVerificationGateStore.getState().openGate({ audience: 'vendor', message });
+        return Promise.reject(error);
+      }
       notifyAxiosError(err, { message });
       return Promise.reject(error);
     };

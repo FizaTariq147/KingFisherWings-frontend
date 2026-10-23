@@ -171,12 +171,12 @@ export function useJobVouchersList(id: string, enabled = true) {
   });
 }
 
-/** GET /jobs/:id/charges — costing grid */
+/** GET /jobs/:id/charges — costing grid + parties_included rollup */
 export function useJobCharges(id: string, enabled = true) {
   const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({
     queryKey: jobKeys.jobCharges(id),
-    queryFn: () => jobService.listJobCharges(id),
+    queryFn: () => jobService.listJobChargesTab(id),
     enabled: Boolean(accessToken) && isUuid(id) && enabled,
   });
 }

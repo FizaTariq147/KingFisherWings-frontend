@@ -57,16 +57,66 @@ function mapLines(lines?: PassJobToVendorDto['lines']) {
   }));
 }
 
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  return value as Record<string, unknown>;
+}
+
+function unwrapData(raw: unknown): unknown {
+  const env = asRecord(raw);
+  if (env && 'data' in env) return env.data;
+  return raw;
+}
+
+/** Normalize SendJobToVendor batch `{ results, failed }` or a single offer. */
+function normalizePassToVendorResponse(
+  raw: unknown,
+): import('../types/vendorJobOffers.types').PassJobToVendorBatchResult | VendorJobOffer | null {
+  const data = unwrapData(raw);
+  const rec = asRecord(data);
+  if (rec && (Array.isArray(rec.results) || Array.isArray(rec.failed))) {
+    const results = normalizeVendorJobOfferList(rec.results ?? rec.data ?? []);
+    const failedRaw = Array.isArray(rec.failed) ? rec.failed : [];
+    const failed = failedRaw.map((row) => {
+      const r = asRecord(row) ?? {};
+      return {
+        vendor_party_id: String(
+          r.vendor_party_id ?? r.vendorPartyId ?? r.party_id ?? '',
+        ).trim() || undefined,
+        message: String(r.message ?? r.error ?? r.reason ?? '').trim() || undefined,
+      };
+    });
+    return { results, failed, raw };
+  }
+  return normalizeVendorJobOffer(raw);
+}
+
 /** Staff ERP — pass jobs, revise, accept/reject counters, approve/disapprove. */
 export const staffVendorJobOffersService = {
-  async passToVendor(jobId: string, dto: PassJobToVendorDto): Promise<VendorJobOffer | null> {
+  async passToVendor(
+    jobId: string,
+    dto: PassJobToVendorDto,
+  ): Promise<
+    | import('../types/vendorJobOffers.types').PassJobToVendorBatchResult
+    | VendorJobOffer
+    | null
+  > {
     try {
-      const vendorId = dto.vendor_party_id.trim();
+      const ids = [
+        ...(dto.vendor_party_ids ?? []),
+        ...(dto.vendor_party_id ? [dto.vendor_party_id] : []),
+      ]
+        .map((id) => id.trim())
+        .filter(Boolean);
+      const unique = [...new Set(ids)];
+      if (!unique.length) throw new Error('Select at least one vendor party.');
+
       const notes = dto.notes?.trim() || dto.message?.trim();
       const currency = dto.currency_code?.trim().toUpperCase();
-      // Swagger SendJobToVendorDto only — avoid extra fields that fail whitelist validation.
+      // Swagger SendJobToVendorDto — single id and/or vendor_party_ids[].
       const body: Record<string, unknown> = {
-        vendor_party_id: vendorId,
+        vendor_party_id: unique[0],
+        ...(unique.length > 1 ? { vendor_party_ids: unique } : {}),
         ...(dto.proposed_total != null && Number.isFinite(dto.proposed_total)
           ? { proposed_total: dto.proposed_total }
           : {}),
@@ -80,7 +130,7 @@ export const staffVendorJobOffersService = {
           VENDOR_JOB_OFFERS_API.sendToVendor(jobId),
           body,
         );
-        return normalizeVendorJobOffer(res.data);
+        return normalizePassToVendorResponse(res.data);
       } catch (err) {
         if (!isNotFound(err)) throw err;
       }
@@ -90,7 +140,7 @@ export const staffVendorJobOffersService = {
           VENDOR_JOB_OFFERS_API.vendorOffers(jobId),
           body,
         );
-        return normalizeVendorJobOffer(res.data);
+        return normalizePassToVendorResponse(res.data);
       } catch (err) {
         if (!isNotFound(err)) throw err;
       }
@@ -100,7 +150,7 @@ export const staffVendorJobOffersService = {
           VENDOR_JOB_OFFERS_API.passToVendor(jobId),
           body,
         );
-        return normalizeVendorJobOffer(res.data);
+        return normalizePassToVendorResponse(res.data);
       } catch (err) {
         if (isNotFound(err)) throw friendlyUnavailable('Pass to vendor');
         throw err;
@@ -351,6 +401,50 @@ export const vendorPortalJobsService = {
   async getJobCosting(jobId: string): Promise<unknown> {
     const res = await vendorApiClient.get(VENDOR_JOB_OFFERS_API.jobCosting(jobId));
     return res.data;
+  },
+
+  /**
+   * GET /vendor/jobs/:id/documents — only visible_to_vendor or self-uploaded (BE filter).
+   */
+  async listJobDocuments(jobId: string): Promise<
+    Array<{ id: string; fileName?: string; documentType?: string }>
+  > {
+    try {
+      const res = await vendorApiClient.get(VENDOR_JOB_OFFERS_API.jobDocuments(jobId));
+      const raw = res.data;
+      const list = Array.isArray(raw)
+        ? raw
+        : raw && typeof raw === 'object' && Array.isArray((raw as { items?: unknown }).items)
+          ? ((raw as { items: unknown[] }).items)
+          : raw && typeof raw === 'object' && Array.isArray((raw as { data?: unknown }).data)
+            ? ((raw as { data: unknown[] }).data)
+            : [];
+      return list
+        .map((row) => {
+          if (!row || typeof row !== 'object') return null;
+          const r = row as Record<string, unknown>;
+          const id = String(r.id ?? r.document_id ?? '').trim();
+          if (!id) return null;
+          return {
+            id,
+            fileName: String(r.file_name ?? r.fileName ?? r.name ?? '').trim() || undefined,
+            documentType: String(r.document_type ?? r.documentType ?? '').trim() || undefined,
+          };
+        })
+        .filter((x): x is { id: string; fileName?: string; documentType?: string } => Boolean(x));
+    } catch (err) {
+      if (isNotFound(err)) return [];
+      throw err;
+    }
+  },
+
+  /** GET /vendor/jobs/:id/documents/:documentId/download */
+  async downloadJobDocument(jobId: string, documentId: string): Promise<Blob> {
+    const res = await vendorApiClient.get(
+      VENDOR_JOB_OFFERS_API.jobDocumentDownload(jobId, documentId),
+      { responseType: 'blob' },
+    );
+    return res.data as Blob;
   },
 
   async list(params: VendorPortalJobListParams = {}): Promise<VendorPortalJobListResult> {

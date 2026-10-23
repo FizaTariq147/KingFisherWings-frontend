@@ -942,9 +942,11 @@ export function ModeBookingFormPanel({
   const jobId = jobIdProp && isUuid(jobIdProp) ? jobIdProp : '';
   const quotationId =
     quotationIdProp && isUuid(quotationIdProp) ? quotationIdProp : '';
-  const useQuotationApis = Boolean(quotationId) && !jobId;
+  // Quotation detail tab always uses /quotations/:id/booking-form* (provisional job + docs).
+  // Job detail uses /jobs/:id/{mode}/booking-form* when only jobId is passed.
+  const useQuotationApis = Boolean(quotationId);
 
-  const jobQuery = useStaffBookingForm(jobId, mode, Boolean(jobId));
+  const jobQuery = useStaffBookingForm(jobId, mode, Boolean(jobId) && !useQuotationApis);
   const quotationQuery = useQuotationBookingForm(quotationId, useQuotationApis);
   const query = useQuotationApis ? quotationQuery : jobQuery;
 

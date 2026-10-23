@@ -195,7 +195,8 @@ export const vendorInvoicesService = {
   /**
    * Post (finalize) a draft invoice via POST /vendor/invoices/submit —
    * there is no /vendor/invoices/{id}/post endpoint.
-   * Submit creates/returns a finance draft; vendor portal treats a successful post as POSTED.
+   * Backend creates/keeps a finance purchase invoice as DRAFT for staff to post —
+   * do not invent POSTED on the client.
    */
   async post(detail: VendorInvoiceDetail): Promise<VendorInvoiceDetail> {
     if (!detail?.id?.trim()) throw new VendorApiError('Invoice id is required.', 400);
@@ -217,10 +218,8 @@ export const vendorInvoicesService = {
       ? { ...detail, ...submitted, id: detail.id, lines: submitted.lines?.length ? submitted.lines : detail.lines }
       : detail;
     const status = String(base.status || '').trim().toUpperCase();
-    if (!status || status === 'DRAFT' || status === 'SUBMITTED') {
-      return { ...base, status: 'POSTED' };
-    }
-    return base;
+    // Trust API status (typically DRAFT until tenant admin posts the PI).
+    return { ...base, status: status || 'DRAFT' };
   },
 
   async sendEmail(id: string, dto: ShareEmailDto = {}): Promise<ShareEmailResult> {

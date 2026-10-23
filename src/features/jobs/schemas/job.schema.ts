@@ -130,6 +130,38 @@ export const createJobBaseSchema = z.object({
   ops_user_id: optionalUuid(),
   origin_port_id: optionalUuid(),
   dest_port_id: optionalUuid(),
+  create_origin_port: z
+    .object({
+      un_locode: z.string().trim().min(2).max(10),
+      name: z.string().trim().min(2).max(200),
+      country_code: z
+        .string()
+        .trim()
+        .toUpperCase()
+        .regex(/^[A-Z]{2}$/, 'Use a 2-letter country code'),
+      city: z.string().trim().min(1).max(100).optional(),
+      mode: z.enum(['AIR', 'SEA', 'LAND', 'ROAD', 'COURIER']).optional(),
+      latitude: z.number().optional(),
+      longitude: z.number().optional(),
+      is_active: z.boolean().optional(),
+    })
+    .optional(),
+  create_dest_port: z
+    .object({
+      un_locode: z.string().trim().min(2).max(10),
+      name: z.string().trim().min(2).max(200),
+      country_code: z
+        .string()
+        .trim()
+        .toUpperCase()
+        .regex(/^[A-Z]{2}$/, 'Use a 2-letter country code'),
+      city: z.string().trim().min(1).max(100).optional(),
+      mode: z.enum(['AIR', 'SEA', 'LAND', 'ROAD', 'COURIER']).optional(),
+      latitude: z.number().optional(),
+      longitude: z.number().optional(),
+      is_active: z.boolean().optional(),
+    })
+    .optional(),
   commodity: optionalTextUndef({ min: 2, max: 500 }),
   hs_code: hsCode(false),
   gross_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),

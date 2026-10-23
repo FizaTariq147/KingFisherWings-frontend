@@ -321,6 +321,9 @@ export const JOB_API = {
   documentTypeUpload: (id: string, documentType: string) =>
     `/jobs/${id}/documents/${encodeURIComponent(documentType)}/upload`,
   document: (id: string, documentId: string) => `/jobs/${id}/documents/${documentId}`,
+  /** PATCH /jobs/:id/documents/:documentId/visibility — customer/vendor flags */
+  documentVisibility: (id: string, documentId: string) =>
+    `/jobs/${id}/documents/${encodeURIComponent(documentId)}/visibility`,
   /** GET /jobs/:id/documents/:documentId/download — Bearer PDF/file stream */
   documentDownload: (id: string, documentId: string) =>
     `/jobs/${id}/documents/${encodeURIComponent(documentId)}/download`,

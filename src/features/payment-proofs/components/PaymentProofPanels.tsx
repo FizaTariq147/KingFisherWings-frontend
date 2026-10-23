@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { getVerificationGateMessage } from '@/features/party-verification/utils/normalizePartyVerification';
+import { openVerificationGateIfNeeded } from '@/features/party-verification/utils/openVerificationGate';
 import { pickValidatedUploadFile, PAYMENT_PROOF_UPLOAD_OPTIONS } from '@/lib/fileUploadValidation';
 import type {
   PaymentProof,
@@ -10,6 +12,14 @@ import type {
 import { Badge } from '@/components/ui/Badge';
 import { PaymentProofOpenButton } from './PaymentProofOpenButton';
 import type { PaymentProofViewer } from '../utils/openPaymentProofFile';
+
+function handleProofVerificationError(err: unknown): boolean {
+  const gateMsg = getVerificationGateMessage(err);
+  if (!gateMsg) return false;
+  const audience = /vendor portal/i.test(gateMsg) ? 'vendor' : 'portal';
+  openVerificationGateIfNeeded(err, audience);
+  return true;
+}
 
 interface PaymentProofUploadFormProps {
   onUpload: (file: File, dto: UploadPaymentProofDto) => Promise<void>;
@@ -37,7 +47,12 @@ export function PaymentProofUploadForm({
 }: PaymentProofUploadFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [amount, setAmount] = useState('');
+  // Paid amount is user-entered (partial OK); remaining is only a ceiling hint.
+  const [amount, setAmount] = useState(() =>
+    remainingAmount != null && Number.isFinite(remainingAmount) && remainingAmount > 0
+      ? String(Math.round(remainingAmount * 100) / 100)
+      : '',
+  );
   const [paymentDate, setPaymentDate] = useState(todayLocalYmd);
   const [reference, setReference] = useState('');
   const [notes, setNotes] = useState('');
@@ -115,7 +130,11 @@ export function PaymentProofUploadForm({
       setReference('');
       setNotes('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed.');
+      if (handleProofVerificationError(err)) {
+        setError(null);
+      } else {
+        setError(err instanceof Error ? err.message : 'Upload failed.');
+      }
     } finally {
       setPending(false);
     }
@@ -176,8 +195,9 @@ export function PaymentProofUploadForm({
       )}
       <div className="grid gap-2 sm:grid-cols-2">
         <Input
-          label="Amount claimed"
+          label="Paid amount"
           placeholder="e.g. 100.00"
+          inputMode="decimal"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           required
@@ -290,7 +310,11 @@ export function PortalInvoicePaymentForm({
       setReference('');
       setNotes('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not record payment.');
+      if (handleProofVerificationError(err)) {
+        setError(null);
+      } else {
+        setError(err instanceof Error ? err.message : 'Could not record payment.');
+      }
     } finally {
       setPending(false);
     }

@@ -7,6 +7,8 @@ import {
   useVendorDashboard,
   useVendorTasks,
 } from '@/features/vendor-dashboard/hooks/useVendorDashboard';
+import { VerificationBlockedCallout } from '@/features/party-verification/components/VerificationBlockedCallout';
+import { getVerificationGateMessage } from '@/features/party-verification/utils/normalizePartyVerification';
 import { vendorErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import { VendorDashboardHeader } from '../components/vendor-dashboard/VendorDashboardHeader';
 import { VendorDashboardKpiRow } from '../components/vendor-dashboard/VendorDashboardKpiRow';
@@ -136,16 +138,25 @@ export default function VendorHomePage() {
     );
   }, [summary.data]);
 
-  const widgetError =
+  const widgetSourceError =
     dashboard.isError || vendorTasks.isError || summary.isError || schedule.isError || aging.isError
-      ? vendorErrorMessage(
-          dashboard.error || vendorTasks.error || summary.error || schedule.error || aging.error,
-        )
+      ? dashboard.error || vendorTasks.error || summary.error || schedule.error || aging.error
+      : null;
+  const widgetVerificationMessage = getVerificationGateMessage(widgetSourceError);
+  const profileVerificationMessage = getVerificationGateMessage(error);
+  const widgetError =
+    widgetSourceError && !widgetVerificationMessage
+      ? vendorErrorMessage(widgetSourceError)
       : null;
 
   return (
     <PortalAnimatedPage className="space-y-4">
-      {error ? (
+      {profileVerificationMessage ? (
+        <VerificationBlockedCallout
+          audience="vendor"
+          message={profileVerificationMessage}
+        />
+      ) : error ? (
         <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
@@ -161,7 +172,12 @@ export default function VendorHomePage() {
         refreshing={isRefreshing}
       />
 
-      {widgetError ? (
+      {widgetVerificationMessage ? (
+        <VerificationBlockedCallout
+          audience="vendor"
+          message={widgetVerificationMessage}
+        />
+      ) : widgetError ? (
         <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           {widgetError}
           <button type="button" className="ml-3 text-xs font-semibold underline" onClick={refresh}>

@@ -98,6 +98,8 @@ export interface QuotationActions {
   can_delete?: boolean;
   /** Portal SENT / CUSTOMER_REVIEW / NEGOTIATING — alias of counter-offer. */
   can_amend?: boolean;
+  /** BE alias: can_amend === can_negotiate. */
+  can_negotiate?: boolean;
   /** Raw flags for forward-compat. */
   raw?: Record<string, unknown>;
 }

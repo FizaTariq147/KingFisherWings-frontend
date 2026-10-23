@@ -250,6 +250,8 @@ import PortalHomePage from '../features/portal-auth/pages/PortalHomePage'
 import PortalAlertsPage from '../features/portal-auth/pages/PortalAlertsPage'
 import PortalAccountPage from '../features/portal-auth/pages/PortalAccountPage'
 import PortalBookPage from '../features/portal-quotations/pages/PortalBookPage'
+import PortalVerificationPage from '../features/party-verification/pages/PortalVerificationPage'
+import VendorVerificationPage from '../features/party-verification/pages/VendorVerificationPage'
 import PortalQuotesPage from '../features/portal-quotations/pages/PortalQuotesPage'
 import PortalQuoteDetailPage from '../features/portal-quotations/pages/PortalQuoteDetailPage'
 import PortalTrackPage from '../features/portal-shipments/pages/PortalTrackPage'
@@ -378,14 +380,21 @@ export const router = createBrowserRouter([
         element: <PortalShell />,
         children: [
           { index: true, element: <PortalHomePage /> },
+          { path: 'verification', element: <PortalVerificationPage /> },
           { path: 'book', element: <PortalBookPage /> },
           { path: 'track', element: <PortalTrackPage /> },
           { path: 'shipments', element: <PortalShipmentsPage /> },
           { path: 'shipments/:id', element: <PortalShipmentDetailPage /> },
           { path: 'cc-jobs', element: <PortalCcJobsPage /> },
           { path: 'cc-jobs/:id', element: <PortalCcJobDetailPage /> },
-          { path: 'quotes', element: <PortalQuotesPage /> },
-          { path: 'quotes/:id', element: <PortalQuoteDetailPage /> },
+          {
+            path: 'quotes',
+            children: [
+              { index: true, element: <PortalQuotesPage /> },
+              { path: ':id/edit', element: <PortalBookPage /> },
+              { path: ':id', element: <PortalQuoteDetailPage /> },
+            ],
+          },
           { path: 'invoices', element: <PortalInvoicesPage /> },
           { path: 'invoices/:id', element: <PortalInvoiceDetailPage /> },
           { path: 'credit-notes', element: <PortalCreditNotesPage /> },
@@ -417,6 +426,7 @@ export const router = createBrowserRouter([
         element: <VendorShell />,
         children: [
           { index: true, element: <VendorHomePage /> },
+          { path: 'verification', element: <VendorVerificationPage /> },
           { path: 'jobs', element: <VendorJobsPage /> },
           { path: 'jobs/:id', element: <VendorJobDetailPage /> },
           { path: 'invoices', element: <VendorInvoicesPage /> },

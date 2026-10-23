@@ -19,6 +19,7 @@ import { PartyTransactionSummarySection } from '../components/PartyTransactionSu
 import { PartyVendorPermissionsSection } from '../components/PartyVendorPermissionsSection';
 import { PartyVendorUsersSection } from '../components/PartyVendorUsersSection';
 import { PartyOnlinePaymentHistoryPanel } from '@/features/online-payments/components/PartyOnlinePaymentHistoryPanel';
+import { StaffPartyVerificationPanel } from '@/features/party-verification/components/StaffPartyVerificationPanel';
 import { PARTY_TYPE_LABELS, type PartyType } from '../constants/party.constants';
 
 /** Vendor / Supplier → Vendor Portal only (switched by party type). */
@@ -124,6 +125,15 @@ export default function PartyDetailPage() {
         <PartyAddressesSection partyId={party.id} addresses={party.addresses ?? []} />
       ),
     },
+    ...(showCustomerPortal || showVendorPortal
+      ? [
+          {
+            key: 'verification',
+            label: 'Verification',
+            content: <StaffPartyVerificationPanel partyId={party.id} />,
+          },
+        ]
+      : []),
     ...(showCustomerPortal
       ? [
           {

@@ -7,6 +7,8 @@ import type { JobEdiSubmission, JobEdiTypeOption } from '@/features/jobs/types/j
 import {
   normalizeEdiSubmissions,
   normalizeEdiTypeOptions,
+  pickEdiFileNameFromGenerate,
+  pickEdiSubmissionId,
   saveEdiDownload,
 } from './normalizeEdi';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
@@ -47,6 +49,7 @@ export function GenerateEdiPanel({
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const selected = ediType || types[0]?.code || '';
+  const isManifestTxt = /MANIFEST_CSDP|CSDP/i.test(selected);
 
   const runGenerate = async () => {
     if (!selected.trim()) {
@@ -56,9 +59,32 @@ export function GenerateEdiPanel({
     setError(null);
     setMsg(null);
     try {
-      await onGenerate(selected.trim());
-      setMsg(`EDI “${selected.trim()}” generated.`);
+      const generated = await onGenerate(selected.trim());
       onChanged?.();
+      const submissionId = pickEdiSubmissionId(generated);
+      // Primary demo path: MANIFEST_CSDP → stream official .txt immediately.
+      if (submissionId && isManifestTxt) {
+        setDownloadingId(submissionId);
+        try {
+          const raw = await onDownload(submissionId);
+          const fileBase =
+            pickEdiFileNameFromGenerate(generated, selected) ||
+            pickEdiFileNameFromGenerate(raw, selected) ||
+            'MENIFIEST.txt';
+          await saveEdiDownload(raw, fileBase);
+          setMsg(`EDI “${selected.trim()}” generated — downloaded TXT.`);
+          return;
+        } catch {
+          /* fall through — still show generated; user can Download from list */
+        } finally {
+          setDownloadingId(null);
+        }
+      }
+      setMsg(
+        isManifestTxt
+          ? `EDI “${selected.trim()}” generated. Download the .txt from submissions.`
+          : `EDI “${selected.trim()}” generated.`,
+      );
     } catch (err) {
       setError(getErrorMessage(err));
     }

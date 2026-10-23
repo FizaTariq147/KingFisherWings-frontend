@@ -159,7 +159,8 @@ export default function VendorInvoicesPage() {
           <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Post an invoice</h2>
           <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
             After you accept a cost offer, a draft invoice is created automatically — open it and
-            post when ready. You can also post a new invoice here (currency, total, optional PDF).
+            submit when ready (it stays Draft until your forwarder posts it). You can also submit a
+            new invoice here (currency, total, optional PDF).
             It appears under Purchase Invoices for your forwarder; payment proofs are recorded on
             the admin side.
           </p>
@@ -197,7 +198,7 @@ export default function VendorInvoicesPage() {
               })
               .then(() => {
                 setSubmitMsg(
-                  'Invoice posted. Your forwarder can process it under Purchase Invoices.',
+                  'Invoice submitted. It appears under Purchase Invoices as a draft for your forwarder to post.',
                 );
                 setAmount('');
                 setInvoiceDate('');

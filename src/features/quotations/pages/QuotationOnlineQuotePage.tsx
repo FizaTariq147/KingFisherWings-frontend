@@ -288,6 +288,7 @@ export default function QuotationOnlineQuotePage() {
                   render={({ field }) => (
                     <MasterPlaceSelect
                       name="origin_port_id"
+                      kind="ports"
                       label={useAirports ? 'Origin airport' : 'Origin'}
                       value={field.value ?? ''}
                       onChange={field.onChange}
@@ -302,6 +303,7 @@ export default function QuotationOnlineQuotePage() {
                   render={({ field }) => (
                     <MasterPlaceSelect
                       name="dest_port_id"
+                      kind="ports"
                       label={useAirports ? 'Destination airport' : 'Destination'}
                       value={field.value ?? ''}
                       onChange={field.onChange}

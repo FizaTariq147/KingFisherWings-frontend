@@ -167,6 +167,16 @@ export function useJobSubresourceMutations(jobId: string) {
       }) => jobService.updateDocument(jobId, documentId, dto),
       onSuccess: refresh,
     }),
+    patchDocumentVisibility: useMutation({
+      mutationFn: ({
+        documentId,
+        dto,
+      }: {
+        documentId: string;
+        dto: { visible_to_customer?: boolean; visible_to_vendor?: boolean };
+      }) => jobService.patchDocumentVisibility(jobId, documentId, dto),
+      onSuccess: refresh,
+    }),
     deleteDocument: useMutation({
       mutationFn: (documentId: string) => jobService.deleteDocument(jobId, documentId),
       onSuccess: refresh,

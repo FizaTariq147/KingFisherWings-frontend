@@ -45,12 +45,14 @@ import type { Voucher } from '@/features/vouchers/types/voucher.types';
 import { erpTable } from '@/lib/erpTypography';
 import { isUuid } from '@/lib/isUuid';
 import { useJobActions, useJobChargeMutations } from '../../hooks/useJobActions';
+import { useJobTabResourceMutations } from '../../hooks/useJobTabResources';
 import {
   useJobBulkPurchasePreview,
   useJobChargeAttachments,
   useJobCharges,
   useJobChargesHistory,
   useJobGpum,
+  useJobHouseJobs,
   useJobPnl,
   useJobPnlCustomDuty,
   useJobShipmentsList,
@@ -72,6 +74,7 @@ import {
   type JobInvoiceFormKind,
 } from '../JobInvoiceFormModal';
 import { JobPnlSummary } from '../JobPnlPanel/JobPnlPanel';
+import { PartiesIncludedSummary } from '../PartiesIncludedSummary';
 
 /** Fresa Costing toolbar — each action has a unique solid color */
 const COSTING_COLORS = {
@@ -505,6 +508,11 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const chargesQuery = useJobCharges(job.id);
   const chargesHistoryQuery = useJobChargesHistory(job.id, showHistory);
   const shipmentsQuery = useJobShipmentsList(job.id);
+  const houseJobsQuery = useJobHouseJobs(
+    job.id,
+    Boolean(job.id && !job.parent_job_id),
+  );
+  const tabResources = useJobTabResourceMutations(job.id);
   const vouchersQuery = useJobVouchersList(
     job.id,
     sidePanel === 'vouchers' || sidePanel === 'vouchersOs',
@@ -564,9 +572,11 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   });
 
   const charges = useMemo(() => {
-    if (chargesQuery.data && chargesQuery.data.length > 0) return chargesQuery.data;
+    if (chargesQuery.data?.charges?.length) return chargesQuery.data.charges;
     return job.charges ?? [];
   }, [chargesQuery.data, job.charges]);
+
+  const partiesIncluded = chargesQuery.data?.parties_included ?? [];
 
   const visibleCharges = useMemo(() => {
     if (gridFilter === 'sale')
@@ -612,6 +622,15 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     () => shipmentOptions(shipmentsQuery.data),
     [shipmentsQuery.data],
   );
+
+  const attachedShipmentCount = useMemo(() => {
+    const ids = new Set(shipmentOpts.map((s) => s.id));
+    if (job.shipment_id && isUuid(job.shipment_id)) ids.add(job.shipment_id);
+    return ids.size;
+  }, [shipmentOpts, job.shipment_id]);
+
+  const houseJobs = houseJobsQuery.data ?? [];
+  const houseJobCount = houseJobs.length;
 
   const partyAccountOpts = useMemo(() => {
     const list = [
@@ -663,6 +682,18 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
         })),
     [chargeCodes],
   );
+
+  /** Master job cost-side lines — required by POST …/prorate-to-shipments. */
+  const costCharges = useMemo(
+    () =>
+      charges.filter(
+        (c) =>
+          c.cost_amount != null || Boolean(c.cost) || Boolean(c.is_cost),
+      ),
+    [charges],
+  );
+
+  const isHouseJob = Boolean(job.parent_job_id && isUuid(job.parent_job_id));
 
   const [dialog, setDialog] = useState<DialogKey>(null);
   const bulkPurchasePreviewQuery = useJobBulkPurchasePreview(
@@ -766,6 +797,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   // Prorate
   const [prorateCodeId, setProrateCodeId] = useState('');
   const [prorateChargeId, setProrateChargeId] = useState('');
+  const [prorateAttachShipmentId, setProrateAttachShipmentId] = useState('');
 
   // Storage / attachments (secondary)
   const [storageUpto, setStorageUpto] = useState('');
@@ -1007,6 +1039,22 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
         setPsChargeCodeId(freight.charge_code_id);
       }
     }
+    if (key === 'prorate') {
+      setProrateCodeId('');
+      setProrateChargeId('');
+      setProrateAttachShipmentId('');
+      void shipmentsQuery.refetch();
+      void houseJobsQuery.refetch();
+      const firstCost = charges.find(
+        (c) => c.cost_amount != null || Boolean(c.cost) || Boolean(c.is_cost),
+      );
+      if (firstCost?.id) {
+        setProrateChargeId(firstCost.id);
+        if (firstCost.charge_code_id && isUuid(firstCost.charge_code_id)) {
+          setProrateCodeId(firstCost.charge_code_id);
+        }
+      }
+    }
     if (key === 'bulkPurchase') {
       void bulkPurchasePreviewQuery.refetch();
     }
@@ -1229,11 +1277,40 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     closeDialog();
   };
 
+  const resolveProrateChargeCodeId = (): string | null => {
+    const code = prorateCodeId.trim();
+    if (isUuid(code)) return code;
+    const chargeId = prorateChargeId.trim();
+    const row = costCharges.find((c) => c.id === chargeId);
+    if (row?.charge_code_id && isUuid(row.charge_code_id)) return row.charge_code_id;
+    return null;
+  };
+
   const submitProrate = async () => {
+    if (isHouseJob) {
+      setError(
+        'Prorate runs on the master job. Open the parent job and add a cost line there first.',
+      );
+      return;
+    }
+    if (!costCharges.length) {
+      setError(
+        'No cost line on this job to prorate. Add a Cost amount for the charge (Costing → Add → Cost tab), then try again.',
+      );
+      return;
+    }
+    if (attachedShipmentCount === 0) {
+      setError(
+        houseJobCount > 0
+          ? 'No attached shipments. Attach or create a shipment below, or use “Prorate to house jobs”.'
+          : 'This master job has no attached shipments to prorate to. Attach an existing shipment or create one on this job first.',
+      );
+      return;
+    }
     const code = prorateCodeId.trim();
     const chargeId = prorateChargeId.trim();
     if (!isUuid(code) && !isUuid(chargeId)) {
-      setError('Provide charge code or job charge UUID.');
+      setError('Select a cost job charge, or a charge code that has a cost line on this master job.');
       return;
     }
     await run(
@@ -1245,6 +1322,98 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
       'Prorated to shipments.',
     );
     closeDialog();
+  };
+
+  const submitProrateToHouses = async () => {
+    if (isHouseJob) {
+      setError('Prorate runs on the master job, not a house job.');
+      return;
+    }
+    if (!costCharges.length) {
+      setError('Add a cost line on this master job first.');
+      return;
+    }
+    const chargeCodeId = resolveProrateChargeCodeId();
+    if (!chargeCodeId) {
+      setError('Select a cost line (or charge code) to prorate to house jobs.');
+      return;
+    }
+    if (!houseJobCount) {
+      setError('No house jobs on this master. Attach shipments or create house jobs first.');
+      return;
+    }
+    await run(
+      () => actions.prorateCost.mutateAsync(chargeCodeId),
+      'Prorated cost to house jobs.',
+    );
+    closeDialog();
+  };
+
+  const attachShipmentForProrate = async () => {
+    const sid = prorateAttachShipmentId.trim();
+    if (!isUuid(sid)) {
+      setError('Enter a valid shipment UUID to attach.');
+      return;
+    }
+    setError(null);
+    setMsg(null);
+    try {
+      const body = { shipment_ids: [sid] };
+      try {
+        await tabResources.attachExistingShipments.mutateAsync(body);
+      } catch {
+        await tabResources.createLinkShipments.mutateAsync(body);
+      }
+      setProrateAttachShipmentId('');
+      setMsg('Shipment attached to this master job.');
+      await shipmentsQuery.refetch();
+      onChanged?.();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
+  };
+
+  const createShipmentForProrate = async () => {
+    const customerId = job.shipper_id || job.billing_party_id || '';
+    if (!job.job_type) {
+      setError('Job type is required to create a shipment.');
+      return;
+    }
+    if (!isUuid(customerId)) {
+      setError('Job needs a shipper (customer) before a shipment can be created.');
+      return;
+    }
+    setError(null);
+    setMsg(null);
+    try {
+      await tabResources.createLinkShipments.mutateAsync({
+        create: {
+          job_type: job.job_type,
+          customer_id: customerId,
+          ...(job.company_id && isUuid(job.company_id)
+            ? { company_id: job.company_id }
+            : {}),
+          ...(job.branch_id && isUuid(job.branch_id) ? { branch_id: job.branch_id } : {}),
+          ...(job.quotation_id && isUuid(job.quotation_id)
+            ? { quotation_id: job.quotation_id }
+            : {}),
+        },
+      });
+      setMsg('Shipment created and linked to this master job.');
+      await shipmentsQuery.refetch();
+      onChanged?.();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
+  };
+
+  const openAddCostForProrate = () => {
+    const code = prorateCodeId.trim();
+    closeDialog();
+    resetAddForm();
+    if (isUuid(code)) setChargeCodeId(code);
+    setAddTab('cost');
+    setDialog('add');
   };
 
   const submitGenerateVoucher = async () => {
@@ -1735,6 +1904,8 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           )}
         </div>
       </Card>
+
+      <PartiesIncludedSummary parties={partiesIncluded} />
 
       {showHistory ? (
         <Card className="kf-section-enter">
@@ -2949,29 +3120,132 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
         </div>
       </Modal>
 
-      {/* Prorate */}
+      {/* Prorate — shipments and/or house jobs */}
       <Modal
         open={dialog === 'prorate'}
         onClose={closeDialog}
-        title="Prorate to Shipments"
-        size="sm"
+        title="Prorate cost"
+        size="md"
         footer={
           <>
             <Button type="button" variant="danger" onClick={closeDialog}>
               Cancel
             </Button>
+            {houseJobCount > 0 ? (
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={
+                  actions.prorateCost.isPending ||
+                  isHouseJob ||
+                  !costCharges.length ||
+                  !resolveProrateChargeCodeId()
+                }
+                onClick={() => void submitProrateToHouses()}
+              >
+                {actions.prorateCost.isPending
+                  ? 'Prorating…'
+                  : `Prorate to house jobs (${houseJobCount})`}
+              </Button>
+            ) : null}
             <Button
               type="button"
               variant="success"
-              disabled={actions.prorateToShipments.isPending}
+              disabled={
+                actions.prorateToShipments.isPending ||
+                isHouseJob ||
+                !costCharges.length ||
+                attachedShipmentCount === 0
+              }
               onClick={() => void submitProrate()}
             >
-              Submit
+              {actions.prorateToShipments.isPending
+                ? 'Prorating…'
+                : attachedShipmentCount
+                  ? `Prorate to shipments (${attachedShipmentCount})`
+                  : 'Prorate to shipments'}
             </Button>
           </>
         }
       >
         <div className="grid gap-3">
+          <p className="text-xs text-[var(--color-neutral-500)]">
+            Distributes a <span className="font-medium">cost line on this master job</span> onto
+            attached shipments (or house jobs). Sale-only lines cannot be prorated.
+          </p>
+          {isHouseJob ? (
+            <p className="text-xs text-[var(--color-warning-700,#a16207)]" role="alert">
+              This job has a parent — open the master job, add a Cost amount for the charge, then
+              prorate from there.
+            </p>
+          ) : null}
+          {!isHouseJob && !costCharges.length ? (
+            <div className="rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2 text-xs text-[var(--color-neutral-700)]">
+              <p>No cost lines on this job yet.</p>
+              <button
+                type="button"
+                className="mt-1 font-medium text-[var(--color-primary-700)] hover:underline"
+                onClick={openAddCostForProrate}
+              >
+                + Add cost line (Cost tab)
+              </button>
+            </div>
+          ) : null}
+          {!isHouseJob && costCharges.length > 0 && attachedShipmentCount === 0 ? (
+            <div className="space-y-2 rounded-md border border-[var(--color-warning-200,#fde68a)] bg-[var(--color-warning-50,#fffbeb)] px-3 py-2 text-xs text-[var(--color-neutral-800)]">
+              <p>
+                This master job has <span className="font-medium">no attached shipments</span> to
+                prorate to.
+                {houseJobCount > 0
+                  ? ` You can prorate to ${houseJobCount} house job(s), or attach/create a shipment below.`
+                  : ' Attach an existing shipment UUID or create one linked to this job.'}
+              </p>
+              <div className="flex flex-wrap items-end gap-2">
+                <Input
+                  label="Attach shipment ID"
+                  value={prorateAttachShipmentId}
+                  onChange={(e) => setProrateAttachShipmentId(e.target.value)}
+                  className="min-w-[12rem] flex-1"
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  disabled={
+                    tabResources.attachExistingShipments.isPending ||
+                    tabResources.createLinkShipments.isPending ||
+                    !isUuid(prorateAttachShipmentId.trim())
+                  }
+                  onClick={() => void attachShipmentForProrate()}
+                >
+                  Attach
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="create"
+                  disabled={
+                    tabResources.createLinkShipments.isPending ||
+                    !isUuid(job.shipper_id || job.billing_party_id || '')
+                  }
+                  onClick={() => void createShipmentForProrate()}
+                >
+                  {tabResources.createLinkShipments.isPending
+                    ? 'Creating…'
+                    : 'Create shipment on job'}
+                </Button>
+              </div>
+              <p className="text-[11px] text-[var(--color-neutral-500)]">
+                Or open the job <span className="font-medium">Shipments</span> tab after canceling.
+              </p>
+            </div>
+          ) : null}
+          {attachedShipmentCount > 0 ? (
+            <p className="text-xs text-[var(--color-success-700)]">
+              {attachedShipmentCount} shipment(s) attached
+              {shipmentOpts[0] ? ` (e.g. ${shipmentOpts[0].label})` : ''}.
+            </p>
+          ) : null}
           <div className="block text-sm">
             <span className={FIELD_LABEL}>Charge code</span>
             <div className="flex items-end gap-2">
@@ -3002,20 +3276,43 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
             </div>
           </div>
           <label className="block text-sm">
-            <span className={FIELD_LABEL}>Job charge (optional)</span>
+            <span className={FIELD_LABEL}>Cost job charge</span>
             <select
               className={FIELD_CONTROL}
               value={prorateChargeId}
-              onChange={(e) => setProrateChargeId(e.target.value)}
+              onChange={(e) => {
+                const id = e.target.value;
+                setProrateChargeId(id);
+                const row = costCharges.find((c) => c.id === id);
+                if (row?.charge_code_id && isUuid(row.charge_code_id)) {
+                  setProrateCodeId(row.charge_code_id);
+                }
+              }}
             >
-              <option value="">—</option>
-              {charges.map((c) => (
+              <option value="">
+                {costCharges.length ? 'Select cost line…' : 'No cost lines — add one first'}
+              </option>
+              {costCharges.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.description || c.charge_code || c.id.slice(0, 8)}
+                  {[
+                    c.description || c.charge_code || c.id.slice(0, 8),
+                    c.cost_amount != null ? `cost ${c.cost_amount}` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' — ')}
                 </option>
               ))}
             </select>
           </label>
+          {costCharges.length ? (
+            <button
+              type="button"
+              className="justify-self-start text-xs font-medium text-[var(--color-primary-700)] hover:underline"
+              onClick={openAddCostForProrate}
+            >
+              + Add another cost line
+            </button>
+          ) : null}
         </div>
       </Modal>
 

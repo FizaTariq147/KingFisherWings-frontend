@@ -19,12 +19,15 @@ import { formatVendorMoney } from '@/features/vendor-shared/formatMoney';
 import { VendorQueryError } from '@/features/vendor-shared/VendorQueryError';
 import { vendorErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import { VendorOfferNegotiationTimeline } from '../components/VendorOfferNegotiationTimeline';
+import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import {
   useVendorPortalJob,
+  useVendorPortalJobDocuments,
   useVendorPortalJobPricing,
   useVendorPortalOfferActions,
   useVendorPortalOfferNegotiation,
 } from '../hooks/useVendorJobOffers';
+import { vendorPortalJobsService } from '../services/vendorJobOffers.service';
 import {
   canVendorRespondToOffer,
   coerceVendorOfferStatus,
@@ -47,7 +50,9 @@ export default function VendorJobDetailPage() {
   const jobQuery = useVendorPortalJob(id);
   const pricingQuery = useVendorPortalJobPricing(id);
   const negotiationQuery = useVendorPortalOfferNegotiation(id, Boolean(id));
+  const documentsQuery = useVendorPortalJobDocuments(id, Boolean(id));
   const actions = useVendorPortalOfferActions(id);
+  const [docBusyId, setDocBusyId] = useState<string | null>(null);
 
   const job = jobQuery.data;
   const pricing = pricingQuery.data;
@@ -209,6 +214,59 @@ export default function VendorJobDetailPage() {
             </p>
           </div>
         ) : null}
+      </PortalPanel>
+
+      <PortalPanel padded className="space-y-3">
+        <h3 className="text-sm font-semibold">Shared documents</h3>
+        <p className="text-xs text-[var(--color-neutral-500)]">
+          Only documents marked visible to vendor (or uploaded by you) appear here.
+        </p>
+        {documentsQuery.isLoading ? (
+          <p className="text-sm text-[var(--color-neutral-400)]">Loading documents…</p>
+        ) : (documentsQuery.data?.length ?? 0) === 0 ? (
+          <p className="text-sm text-[var(--color-neutral-400)]">No documents shared yet.</p>
+        ) : (
+          <ul className="space-y-2 text-sm">
+            {(documentsQuery.data ?? []).map((doc) => (
+              <li
+                key={doc.id}
+                className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-neutral-100)] pb-2 last:border-0"
+              >
+                <span>
+                  {doc.fileName || doc.documentType || doc.id.slice(0, 8)}
+                  {doc.documentType ? (
+                    <span className="ml-2 text-xs text-[var(--color-neutral-500)]">
+                      {doc.documentType}
+                    </span>
+                  ) : null}
+                </span>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  disabled={docBusyId === doc.id}
+                  onClick={() => {
+                    setDocBusyId(doc.id);
+                    void vendorPortalJobsService
+                      .downloadJobDocument(id, doc.id)
+                      .then((blob) => {
+                        triggerBlobDownload(
+                          blob,
+                          doc.fileName || `${doc.documentType || 'document'}.pdf`,
+                        );
+                      })
+                      .catch((err) => {
+                        setFormError(vendorErrorMessage(err, 'Document download failed.'));
+                      })
+                      .finally(() => setDocBusyId(null));
+                  }}
+                >
+                  {docBusyId === doc.id ? '…' : 'Download'}
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
       </PortalPanel>
 
       <PortalPanel padded className="space-y-3">

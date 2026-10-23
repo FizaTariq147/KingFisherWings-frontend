@@ -4,10 +4,22 @@ import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { axiosInstance } from '@/lib/axios';
+import { isUuid } from '@/lib/isUuid';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import { QUOTATION_API } from '../api/quotation.api';
 
-/** Pass an approved quotation to a vendor without sharing customer sell prices. */
+function parseVendorPartyIds(raw: string): string[] {
+  return [
+    ...new Set(
+      raw
+        .split(/[\s,;]+/)
+        .map((s) => s.trim())
+        .filter((id) => isUuid(id)),
+    ),
+  ];
+}
+
+/** Pass an approved quotation to vendor(s) without sharing customer sell prices. */
 export function QuotationVendorPassModal({
   open,
   quotationId,
@@ -19,21 +31,33 @@ export function QuotationVendorPassModal({
   onClose: () => void;
   onSuccess?: (message: string) => void;
 }) {
-  const [vendorPartyId, setVendorPartyId] = useState('');
+  const [vendorPartyIdsRaw, setVendorPartyIdsRaw] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
   if (!open) return null;
 
+  const selected = parseVendorPartyIds(vendorPartyIdsRaw);
+
   const send = async () => {
+    if (!selected.length) {
+      setError('Enter at least one valid vendor party UUID.');
+      return;
+    }
     setPending(true);
     setError(null);
     try {
+      // Same SendJobToVendorDto as job pass-to-vendor (vendor_party_id + optional vendor_party_ids).
       await axiosInstance.post(QUOTATION_API.sendToVendor(quotationId), {
-        vendor_party_id: vendorPartyId.trim(),
+        vendor_party_id: selected[0],
+        ...(selected.length > 1 ? { vendor_party_ids: selected } : {}),
       });
-      setVendorPartyId('');
-      onSuccess?.('Sent to vendor.');
+      setVendorPartyIdsRaw('');
+      onSuccess?.(
+        selected.length > 1
+          ? `Sent to ${selected.length} vendors.`
+          : 'Sent to vendor.',
+      );
       onClose();
     } catch (err) {
       setError(getErrorMessage(err));
@@ -66,22 +90,34 @@ export function QuotationVendorPassModal({
             size="sm"
             variant="success"
             leftIcon={<Send />}
-            disabled={!vendorPartyId.trim() || pending}
+            disabled={selected.length === 0 || pending}
             onClick={() => void send()}
           >
-            {pending ? 'Sending…' : 'Send approved quote to vendor'}
+            {pending
+              ? 'Sending…'
+              : selected.length > 1
+                ? `Send to ${selected.length} vendors`
+                : 'Send approved quote to vendor'}
           </Button>
         </div>
       }
     >
       <p className="mb-3 text-[13px] text-[#475569]">
-        Pass this approved quotation to a vendor without sharing customer sell prices.
+        Pass this approved quotation to one or more vendors without sharing customer sell
+        prices. Paste UUIDs separated by commas or spaces (
+        <code className="text-[11px]">vendor_party_ids</code>).
       </p>
       <Input
-        label="Vendor party id"
-        value={vendorPartyId}
-        onChange={(e) => setVendorPartyId(e.target.value)}
+        label="Vendor party id(s)"
+        value={vendorPartyIdsRaw}
+        onChange={(e) => setVendorPartyIdsRaw(e.target.value)}
+        placeholder="uuid, uuid, …"
       />
+      {selected.length > 0 ? (
+        <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
+          {selected.length} valid UUID{selected.length === 1 ? '' : 's'} ready to send.
+        </p>
+      ) : null}
       {error ? <p className="mt-2 text-sm text-[var(--color-danger-600)]">{error}</p> : null}
     </Modal>
   );

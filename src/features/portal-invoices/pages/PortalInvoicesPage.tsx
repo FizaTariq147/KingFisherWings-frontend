@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
+import { VerificationBlockedCallout } from '@/features/party-verification/components/VerificationBlockedCallout';
+import { getVerificationGateMessage } from '@/features/party-verification/utils/normalizePartyVerification';
 import {
   PortalAnimatedGrid,
   PortalAnimatedGridItem,
@@ -275,10 +277,25 @@ export default function PortalInvoicesPage() {
         {isLoading ? (
           <PortalLoadingState label="Loading invoices…" />
         ) : isError ? (
-          <div className="p-6 space-y-2">
-            <p className="text-sm text-[var(--color-danger-600)]">{error instanceof PortalApiError || error instanceof Error ? error.message : 'Failed to load invoices.'}</p>
-            <Button type="button" size="sm" variant="secondary" onClick={() => refetch()}>Retry</Button>
-          </div>
+          getVerificationGateMessage(error) ? (
+            <div className="p-4">
+              <VerificationBlockedCallout
+                audience="portal"
+                message={getVerificationGateMessage(error)!}
+              />
+            </div>
+          ) : (
+            <div className="space-y-2 p-6">
+              <p className="text-sm text-[var(--color-danger-600)]">
+                {error instanceof PortalApiError || error instanceof Error
+                  ? error.message
+                  : 'Failed to load invoices.'}
+              </p>
+              <Button type="button" size="sm" variant="secondary" onClick={() => refetch()}>
+                Retry
+              </Button>
+            </div>
+          )
         ) : displayItems.length === 0 ? (
           <PortalEmptyState title="No invoices" description="Invoices appear here once posted for your party." Icon={FileText} />
         ) : (

@@ -1,6 +1,8 @@
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { AccountVerificationSection } from '@/features/party-verification/components/AccountVerificationSection';
 import {
   PortalAnimatedGrid,
   PortalAnimatedGridItem,
@@ -11,15 +13,22 @@ import { useVendorAuthStore } from '../store/vendorAuthStore';
 
 export default function VendorAccountPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = useVendorAuthStore((s) => s.user);
   const mustChange = Boolean(user?.mustChangePassword);
   const firstLetter = (user?.fullName || user?.email || 'V').charAt(0).toUpperCase();
+
+  useEffect(() => {
+    if (location.hash !== '#verification') return;
+    const el = document.getElementById('verification');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [location.hash]);
 
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       <PortalPageHeader
         title="Account"
-        description="Your vendor portal profile and company context."
+        description="Your vendor portal profile, company documents, and sign-in settings."
       />
 
       <PortalPanel padded>
@@ -53,6 +62,10 @@ export default function VendorAccountPage() {
             <Info label="Tenant" value={user?.tenantName || user?.tenantSlug || '—'} />
           </PortalAnimatedGridItem>
         </PortalAnimatedGrid>
+      </PortalPanel>
+
+      <PortalPanel padded>
+        <AccountVerificationSection audience="vendor" />
       </PortalPanel>
 
       <PortalPanel padded className="flex flex-wrap items-center justify-between gap-3">

@@ -10,6 +10,7 @@ import { PortalApiError } from '@/lib/portalApiClient';
 import { useApplyTheme } from '@/hooks/useApplyTheme';
 import { AuthLandingShell } from '@/features/auth/components/AuthLandingShell';
 import { LoginPopupFrame } from '@/features/auth/components/LoginPopupFrame';
+import { PORTAL_VERIFICATION_PATH } from '@/features/party-verification/api/partyVerification.api';
 import { PORTAL_CHANGE_PASSWORD_PATH } from '../api/portalAuth.api';
 import { portalAuthService } from '../services/portalAuth.service';
 import { usePortalAuthStore } from '../store/portalAuthStore';
@@ -100,7 +101,19 @@ export default function PortalChangePasswordPage() {
         new_password: values.new_password,
       });
       clearMustChangePassword();
-      navigate('/portal', { replace: true });
+      // Next step in funnel: upload VAT + license (or home if already approved).
+      try {
+        const me = await portalAuthService.me();
+        usePortalAuthStore.getState().setUser(me);
+        const approved =
+          me.canUsePortal === true ||
+          String(me.verificationStatus || '')
+            .toUpperCase()
+            .replace(/[\s-]+/g, '_') === 'APPROVED';
+        navigate(approved ? '/portal' : PORTAL_VERIFICATION_PATH, { replace: true });
+      } catch {
+        navigate(PORTAL_VERIFICATION_PATH, { replace: true });
+      }
     } catch (err) {
       setApiError(extractErrorMessage(err));
     } finally {

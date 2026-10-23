@@ -102,6 +102,12 @@ export function normalizeOrganizationProfile(raw: unknown): OrganizationProfile 
 export function normalizeBankAccount(raw: unknown): TenantBankAccount {
   const data = asRecord(unwrapEntity(raw)) ?? {};
   const branchRaw = data.branch_id ?? data.branchId;
+  const glRaw =
+    data.gl_account_id ??
+    data.glAccountId ??
+    asRecord(data.gl_account)?.id ??
+    asRecord(data.glAccount)?.id;
+  const glId = glRaw ? str(glRaw) : '';
   return {
     id: str(data.id),
     bank_name: str(data.bank_name ?? data.bankName),
@@ -111,6 +117,7 @@ export function normalizeBankAccount(raw: unknown): TenantBankAccount {
     swift_code: str(data.swift_code ?? data.swiftCode),
     currency_code: str(data.currency_code ?? data.currencyCode, 'AED').toUpperCase(),
     branch_id: branchRaw ? str(branchRaw) : null,
+    gl_account_id: glId || null,
     is_default: bool(data.is_default ?? data.isDefault, false),
     is_active: bool(data.is_active ?? data.isActive, true),
     created_at: str(data.created_at ?? data.createdAt) || undefined,

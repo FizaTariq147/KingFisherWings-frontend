@@ -10,6 +10,10 @@ import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import {
+  AddPortModal,
+  type CreatePortInlineDto,
+} from '@/features/masters/components/AddPortModal';
 import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
@@ -126,6 +130,7 @@ export function QuotationForm({
   const [step, setStep] = useState(0);
   const [draftLines, setDraftLines] = useState<QuotationDraftChargeLine[]>([]);
   const [applyTariffAfterCreate, setApplyTariffAfterCreate] = useState(false);
+  const [portCreateFor, setPortCreateFor] = useState<'origin' | 'dest' | null>(null);
   const schema = mode === 'create' ? createQuotationSchema : updateQuotationSchema;
   const { data: companies = [] } = useTenantCompanies(true);
   const {
@@ -336,6 +341,33 @@ export function QuotationForm({
     </>
   );
 
+  const createOriginPort = watch('create_origin_port') as CreatePortInlineDto | undefined;
+  const createDestPort = watch('create_dest_port') as CreatePortInlineDto | undefined;
+  const portCreateLabel = (p?: CreatePortInlineDto | null) =>
+    p ? `${p.un_locode} — ${p.name}` : undefined;
+
+  const applyInlinePort = (side: 'origin' | 'dest', dto: CreatePortInlineDto) => {
+    if (side === 'origin') {
+      setValue('origin_port_id', undefined, { shouldDirty: true, shouldValidate: true });
+      setValue('create_origin_port', dto, { shouldDirty: true, shouldValidate: true });
+    } else {
+      setValue('dest_port_id', undefined, { shouldDirty: true, shouldValidate: true });
+      setValue('create_dest_port', dto, { shouldDirty: true, shouldValidate: true });
+    }
+  };
+
+  const portModal = (
+    <AddPortModal
+      open={portCreateFor != null}
+      onClose={() => setPortCreateFor(null)}
+      title={portCreateFor === 'dest' ? 'Add destination port' : 'Add origin port'}
+      defaultMode={useAirports ? 'AIR' : 'SEA'}
+      onSubmit={(dto) => {
+        if (portCreateFor) applyInlinePort(portCreateFor, dto);
+      }}
+    />
+  );
+
   const placeFields = (
     <>
       <Controller
@@ -344,6 +376,7 @@ export function QuotationForm({
         render={({ field }) => (
           <MasterPlaceSelect
             name="origin_port_id"
+            kind="ports"
             label={
               useAirports
                 ? 'Origin airport'
@@ -360,6 +393,11 @@ export function QuotationForm({
             jobType={watched.job_type}
             excludeId={watched.dest_port_id}
             error={fieldError('origin_port_id')}
+            onCreateClick={() => setPortCreateFor('origin')}
+            pendingCreateLabel={portCreateLabel(createOriginPort)}
+            onClearPendingCreate={() =>
+              setValue('create_origin_port', undefined, { shouldDirty: true })
+            }
           />
         )}
       />
@@ -369,6 +407,7 @@ export function QuotationForm({
         render={({ field }) => (
           <MasterPlaceSelect
             name="dest_port_id"
+            kind="ports"
             label={
               useAirports
                 ? 'Destination airport'
@@ -385,6 +424,11 @@ export function QuotationForm({
             jobType={watched.job_type}
             excludeId={watched.origin_port_id}
             error={fieldError('dest_port_id')}
+            onCreateClick={() => setPortCreateFor('dest')}
+            pendingCreateLabel={portCreateLabel(createDestPort)}
+            onClearPendingCreate={() =>
+              setValue('create_dest_port', undefined, { shouldDirty: true })
+            }
           />
         )}
       />
@@ -807,6 +851,7 @@ export function QuotationForm({
           submitLabel="Create quotation"
           disableNext={wizardStepKey === 'create' && !watched.job_type}
         />
+        {portModal}
       </form>
     );
   }
@@ -1085,6 +1130,7 @@ export function QuotationForm({
           {isSubmitting ? 'Saving…' : mode === 'create' ? 'Create quotation' : 'Save changes'}
         </Button>
       </div>
+      {portModal}
     </form>
   );
 }

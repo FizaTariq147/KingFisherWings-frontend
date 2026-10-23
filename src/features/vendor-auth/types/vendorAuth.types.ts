@@ -18,6 +18,10 @@ export interface VendorUser {
    * (temporary password / first login — POST /vendor/auth/change-password).
    */
   mustChangePassword?: boolean;
+  /** Party KYC — from login/me. */
+  verificationStatus?: string;
+  verificationBlocking?: boolean;
+  canUseVendor?: boolean;
 }
 
 export interface VendorChangePasswordDto {

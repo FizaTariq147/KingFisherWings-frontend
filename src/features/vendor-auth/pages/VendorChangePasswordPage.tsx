@@ -108,7 +108,18 @@ export default function VendorChangePasswordPage() {
         new_password: values.new_password,
       });
       clearMustChangePassword();
-      navigate('/vendor', { replace: true });
+      try {
+        const me = await vendorAuthService.me();
+        useVendorAuthStore.getState().setUser(me);
+        const approved =
+          me.canUseVendor === true ||
+          String(me.verificationStatus || '')
+            .toUpperCase()
+            .replace(/[\s-]+/g, '_') === 'APPROVED';
+        navigate(approved ? '/vendor' : '/vendor/verification', { replace: true });
+      } catch {
+        navigate('/vendor/verification', { replace: true });
+      }
     } catch (err) {
       setApiError(extractErrorMessage(err));
     } finally {

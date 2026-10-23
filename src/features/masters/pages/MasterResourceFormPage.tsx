@@ -31,6 +31,7 @@ import { fetchMarketExchangeRate } from '../utils/fetchMarketExchangeRate';
 import { masterDisplayValue, pickCountryIsoCode, pickMasterField } from '../utils/normalizeMasterRecord';
 import type { MasterFieldConfig } from '../types/master.types';
 import { MASTER_PATHS, type MasterResourceKey } from '../api/masterPaths';
+import { useGlAccountSelectOptions } from '@/features/chartOfAccounts/hooks/useGlAccountSelectOptions';
 import { SearchableSelect } from '../components/SearchableSelect';
 
 const selectClass =
@@ -221,12 +222,13 @@ function FieldInput({
   if (field.type === 'select') {
     const isEmpty = options.length === 0;
     const isDepartmentSelect = field.optionsFrom === 'departments';
+    const isGlAccountSelect = field.optionsFrom === 'gl-accounts';
     const isContainerSize =
       resourceKey === 'container-types' && field.name === 'size';
     const isUomCategory =
       resourceKey === 'units-of-measure' && field.name === 'category';
 
-    if (isDepartmentSelect || isContainerSize || isUomCategory) {
+    if (isDepartmentSelect || isContainerSize || isUomCategory || isGlAccountSelect) {
       return (
         <SearchableSelect
           name={field.name}
@@ -244,16 +246,22 @@ function FieldInput({
               ? 'Pick a size or type your own…'
               : isUomCategory
                 ? 'Pick a category or type your own…'
-                : 'Type to search or select a department…')
+                : isGlAccountSelect
+                  ? 'Search chart of accounts…'
+                  : 'Type to search or select a department…')
           }
           emptyMessage={
             isContainerSize
               ? 'No matching sizes — type your own and press Enter'
               : isUomCategory
                 ? 'No matching categories — type your own and press Enter'
-                : isEmpty
-                  ? 'No departments available'
-                  : 'No matching departments'
+                : isGlAccountSelect
+                  ? isEmpty
+                    ? 'No postable GL accounts — create under Finance → Chart of Accounts'
+                    : 'No matching accounts'
+                  : isEmpty
+                    ? 'No departments available'
+                    : 'No matching departments'
           }
           allowManualUuid={!isContainerSize && !isUomCategory}
           allowManualValue={isContainerSize || isUomCategory}
@@ -262,7 +270,9 @@ function FieldInput({
               ? 'Pick from the dropdown or type your own size (saved in the size field).'
               : isUomCategory
                 ? 'Common categories: Weight, Volume, Length, Count (custom allowed)'
-                : undefined
+                : isGlAccountSelect
+                  ? 'Maps to COA UUID (gl_*_account_id). Required for invoice/voucher posting.'
+                  : undefined
           }
         />
       );
@@ -301,10 +311,16 @@ function FieldInput({
             Create a Tax Rate first under Masters → Tax Rates, then return here.
           </p>
         )}
+        {isEmpty && field.optionsFrom === 'gl-accounts' && (
+          <p className="text-[11px] text-[var(--color-neutral-400)]">
+            Create a postable account under Finance → Chart of Accounts, then return here.
+          </p>
+        )}
         {isEmpty &&
           field.optionsFrom &&
           field.optionsFrom !== 'countries' &&
-          field.optionsFrom !== 'tax-rates' && (
+          field.optionsFrom !== 'tax-rates' &&
+          field.optionsFrom !== 'gl-accounts' && (
             <p className="text-[11px] text-[var(--color-neutral-400)]">
               No options loaded for this field yet.
             </p>
@@ -464,10 +480,12 @@ function FieldInput({
 
 function useFieldOptions(field: MasterFieldConfig) {
   const fromCompanies = field.optionsFrom === 'companies';
+  const fromGlAccounts = field.optionsFrom === 'gl-accounts';
   const fromDepartments = field.optionsFrom === 'departments';
-  const optionsKey = !fromCompanies
-    ? (field.optionsFrom as MasterResourceKey | undefined)
-    : undefined;
+  const optionsKey =
+    !fromCompanies && !fromGlAccounts
+      ? (field.optionsFrom as MasterResourceKey | undefined)
+      : undefined;
   const basePath = optionsKey ? MASTER_PATHS[optionsKey] : '';
   const { data: items = [] } = useMasterOptions(
     optionsKey ?? '',
@@ -476,9 +494,11 @@ function useFieldOptions(field: MasterFieldConfig) {
     fromDepartments,
   );
   const { data: companies = [] } = useTenantCompanies(fromCompanies);
+  const { options: glAccountOptions } = useGlAccountSelectOptions(fromGlAccounts);
 
   return useMemo(() => {
     if (field.options?.length) return field.options;
+    if (fromGlAccounts) return glAccountOptions;
     if (fromCompanies) {
       const opts: Array<{ value: string; label: string }> = [];
       for (const c of companies) {
@@ -559,6 +579,8 @@ function useFieldOptions(field: MasterFieldConfig) {
     field.optionsValueKey,
     fromCompanies,
     fromDepartments,
+    fromGlAccounts,
+    glAccountOptions,
     items,
     optionsKey,
   ]);
@@ -789,11 +811,21 @@ export default function MasterResourceFormPage(props: MasterPageRouteProps = {})
             : typeof raw === 'string'
               ? raw
               : '';
-        } else if (
-          (field.name === 'customer_id' || field.name.endsWith('_id')) &&
-          (raw == null || raw === '' || (typeof raw === 'string' && !isUuid(raw)))
-        ) {
-          next[field.name] = '';
+        } else if (field.name === 'customer_id' || field.name.endsWith('_id')) {
+          if (typeof raw === 'string' && isUuid(raw)) {
+            next[field.name] = raw;
+          } else if (raw && typeof raw === 'object' && isUuid(String((raw as { id?: unknown }).id))) {
+            next[field.name] = String((raw as { id: string }).id);
+          } else {
+            // Nested relation e.g. gl_revenue_account: { id } without gl_revenue_account_id
+            const relKey = field.name.replace(/_id$/, '');
+            const nested = pickMasterField(existing, relKey);
+            const nestedId =
+              nested && typeof nested === 'object'
+                ? String((nested as { id?: unknown }).id ?? '')
+                : '';
+            next[field.name] = isUuid(nestedId) ? nestedId : '';
+          }
         } else if (field.type === 'number') {
           next[field.name] =
             typeof raw === 'number'

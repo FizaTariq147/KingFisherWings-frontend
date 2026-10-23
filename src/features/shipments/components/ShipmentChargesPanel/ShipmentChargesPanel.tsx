@@ -12,6 +12,11 @@ import {
 } from '../../hooks/useShipments';
 import type { Shipment } from '../../types/shipment.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import { PartiesIncludedSummary } from '@/features/jobs/components/PartiesIncludedSummary';
+import {
+  derivePartiesIncludedFromCharges,
+  normalizePartiesIncluded,
+} from '@/features/jobs/utils/normalizeCostingParties';
 import {
   normalizeShipmentCharges,
   type ShipmentChargeRow,
@@ -54,6 +59,12 @@ export function ShipmentChargesPanel({
     const fromTab = normalizeShipmentCharges(costingTabQuery.data);
     return fromTab;
   }, [chargesQuery.data, costingTabQuery.data]);
+
+  const partiesIncluded = useMemo(() => {
+    const fromApi = normalizePartiesIncluded(costingTabQuery.data);
+    if (fromApi.length) return fromApi;
+    return derivePartiesIncludedFromCharges(charges);
+  }, [charges, costingTabQuery.data]);
 
   const [dialog, setDialog] = useState<DialogKey>(null);
   const [error, setError] = useState<string | null>(null);
@@ -339,6 +350,8 @@ export function ShipmentChargesPanel({
           )}
         </div>
       </Card>
+
+      <PartiesIncludedSummary parties={partiesIncluded} />
 
       <Modal
         open={dialog === 'add'}

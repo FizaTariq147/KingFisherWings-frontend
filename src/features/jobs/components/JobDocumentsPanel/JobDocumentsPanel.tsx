@@ -235,7 +235,15 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                 status?: string;
                 is_finalized?: boolean;
                 reference_number?: string;
+                visible_to_customer?: boolean;
+                visible_to_vendor?: boolean;
+                visibleToCustomer?: boolean;
+                visibleToVendor?: boolean;
               };
+              const visibleToCustomer =
+                d.visible_to_customer === true || d.visibleToCustomer === true;
+              const visibleToVendor =
+                d.visible_to_vendor === true || d.visibleToVendor === true;
               const docRef = {
                 file_url: d.file_url || d.fileUrl,
                 s3_key: d.s3_key || d.s3Key,
@@ -263,9 +271,51 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                     <p className="text-xs text-[var(--color-neutral-400)]">
                       {d.document_type} · {d.status || '—'}
                       {d.is_finalized ? ' · Final' : ''}
+                      {visibleToCustomer ? ' · Customer' : ''}
+                      {visibleToVendor ? ' · Vendor' : ''}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={visibleToCustomer ? 'edit' : 'secondary'}
+                      disabled={docs.patchDocumentVisibility.isPending}
+                      onClick={() =>
+                        void run(
+                          () =>
+                            docs.patchDocumentVisibility.mutateAsync({
+                              documentId: d.id,
+                              dto: { visible_to_customer: !visibleToCustomer },
+                            }),
+                          visibleToCustomer
+                            ? 'Hidden from customer portal.'
+                            : 'Visible to customer portal.',
+                        )
+                      }
+                    >
+                      {visibleToCustomer ? 'Hide customer' : 'Show customer'}
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={visibleToVendor ? 'edit' : 'secondary'}
+                      disabled={docs.patchDocumentVisibility.isPending}
+                      onClick={() =>
+                        void run(
+                          () =>
+                            docs.patchDocumentVisibility.mutateAsync({
+                              documentId: d.id,
+                              dto: { visible_to_vendor: !visibleToVendor },
+                            }),
+                          visibleToVendor
+                            ? 'Hidden from vendor portal.'
+                            : 'Visible to vendor portal.',
+                        )
+                      }
+                    >
+                      {visibleToVendor ? 'Hide vendor' : 'Show vendor'}
+                    </Button>
                     <Button
                       type="button"
                       size="sm"
