@@ -212,7 +212,20 @@ export function normalizeNegotiationEvent(raw: unknown): NegotiationEvent | null
     id,
     eventType:
       pickString(record.event_type, record.eventType, record.type, record.action) || undefined,
-    actor: pickString(record.actor, record.actor_name, record.by, record.user_name) || undefined,
+    actor:
+      pickString(
+        record.performed_by_name,
+        record.performedByName,
+        record.changed_by_name,
+        record.actor_name,
+        record.by,
+        record.user_name,
+        typeof record.actor === 'string' ? record.actor : undefined,
+        asRecord(record.actor)?.name,
+        asRecord(record.actor_user)?.name,
+        asRecord(record.actorUser)?.name,
+        asRecord(record.actor_user)?.full_name,
+      ) || undefined,
     message: pickString(record.message, record.comments, record.notes) || undefined,
     proposedTotal: pickNumber(record.proposed_total, record.proposedTotal, record.amount),
     status: pickString(record.status) || undefined,

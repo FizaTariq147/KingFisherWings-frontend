@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
-import { Plus, Search, ChevronDown, Heart, X, AlignJustify } from 'lucide-react';
+import { Plus, Search, ChevronDown, X, AlignJustify } from 'lucide-react';
+
+import { FavouritesChromeButton } from '@/features/favourites/components/FavouritesChromeButton';
 import { useSalesTariffs } from '@/features/sales/hooks/useSales';
 import { getErrorMessage } from '@/features/crm/utils/getErrorMessage';
 
@@ -181,10 +183,7 @@ export default function RateChargesPage() {
       </div>
 
       <div className="mt-4">
-        <button type="button" className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
-          <Heart size={14} />
-          Favorites
-        </button>
+        <FavouritesChromeButton />
       </div>
     </div>
   );

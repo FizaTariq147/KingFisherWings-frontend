@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Star } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Heart } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
+import { FAVOURITES_CHROME_BTN_CLASS } from '../constants/favouritesChrome';
 import { useFavouriteCheck, useFavouritesMutations } from '../hooks/useFavourites';
 import { toFavouriteKind } from '../utils/favouriteKind';
 
@@ -27,18 +28,12 @@ export function FavouriteToggle({
 
   return (
     <div className={className}>
-      <Button
+      <button
         type="button"
-        size="sm"
-        variant={isFav ? 'warning' : 'secondary'}
-        leftIcon={
-          <Star
-            className={`h-3.5 w-3.5 ${isFav ? 'fill-current' : ''}`}
-            aria-hidden
-          />
-        }
+        className={cn(FAVOURITES_CHROME_BTN_CLASS, 'h-7 px-3 text-[12px]')}
         disabled={pending || !targetKey}
         title={isFav ? 'Remove favourite' : 'Add favourite'}
+        aria-pressed={isFav}
         onClick={() => {
           setError(null);
           void mutations.toggle
@@ -50,8 +45,13 @@ export function FavouriteToggle({
             .catch((err) => setError(getErrorMessage(err)));
         }}
       >
+        <Heart
+          size={14}
+          aria-hidden
+          className={cn('shrink-0', isFav ? 'fill-current' : '')}
+        />
         {isFav ? 'Favourited' : 'Favourite'}
-      </Button>
+      </button>
       {error ? (
         <p className="mt-1 text-[11px] text-[var(--color-danger-600)]">{error}</p>
       ) : null}

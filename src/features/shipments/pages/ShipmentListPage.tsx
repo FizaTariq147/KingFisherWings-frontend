@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ListRowEditButton } from '@/components/ui/ListRowEditButton';
@@ -9,12 +9,14 @@ import {
   OperationTypeBadge,
   StatusBadge,
 } from '@/components/erp';
+import { departmentByKey } from '@/features/jobs/config/departmentNav';
 import { appType, erpTable, listShell } from '@/lib/erpTypography';
 import {
   ShipmentFilters,
   shipmentFilterDraftToListParams,
   useShipmentFilterDraft,
 } from '../components/ShipmentFilters';
+import type { JobType } from '@/features/jobs/constants/job.constants';
 import { useShipmentPaths } from '../hooks/useShipmentPaths';
 import { useShipments } from '../hooks/useShipments';
 import { useShipmentsPermissions } from '../hooks/useShipmentsPermissions';
@@ -23,10 +25,22 @@ import { shipmentDisplayNumber } from '../utils/normalizeShipment';
 
 export default function ShipmentListPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const dept = departmentByKey(searchParams.get('dept'));
   const paths = useShipmentPaths();
   const { canReadApi, canWriteCreate } = useShipmentsPermissions();
   const [page, setPage] = useState(1);
-  const { draft, setDraft, applied, submit } = useShipmentFilterDraft(20);
+  const { draft, setDraft, applied, submit, applyPatch } = useShipmentFilterDraft(20);
+
+  useEffect(() => {
+    const jobType = !dept
+      ? ''
+      : dept.jobTypes.length === 1
+        ? (dept.primaryType as JobType)
+        : '';
+    applyPatch({ jobType });
+    setPage(1);
+  }, [dept?.key]); // eslint-disable-line react-hooks/exhaustive-deps -- sync from ?dept=
 
   useEffect(() => {
     setPage(1);
@@ -38,7 +52,15 @@ export default function ShipmentListPage() {
   );
 
   const { data, isLoading, isFetching, isError, error, refetch } = useShipments(listParams);
-  const shipments = data?.shipments ?? [];
+  const shipments = useMemo(() => {
+    const rows = data?.shipments ?? [];
+    if (!dept || dept.jobTypes.length <= 1) return rows;
+    const allowed = new Set(dept.jobTypes.map(String));
+    return rows.filter((s) => {
+      const code = s.job_type || s.service_type;
+      return Boolean(code && allowed.has(String(code)));
+    });
+  }, [data?.shipments, dept]);
   const meta = data?.meta;
 
   return (
@@ -46,7 +68,9 @@ export default function ShipmentListPage() {
       <div className={listShell.card}>
         <div className={listShell.header}>
           <div className="min-w-0">
-            <h2 className={appType.pageTitle}>Shipments</h2>
+            <h2 className={appType.pageTitle}>
+              {dept ? `${dept.label} · Shipments` : 'Shipments'}
+            </h2>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {canWriteCreate ? (

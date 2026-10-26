@@ -5,7 +5,12 @@ import {
   type JobType,
   type QuotationStatus,
 } from '../constants/quotation.constants';
-import type { Quotation, QuotationActions, QuotationLine } from '../types/quotation.types';
+import type {
+  Quotation,
+  QuotationActions,
+  QuotationLine,
+  QuotationStatusHistoryEntry,
+} from '../types/quotation.types';
 import { normalizeNegotiationPricing } from './normalizeQuotationExtended';
 import { coerceQuotationStatus, usesModeBookingFormConvertFlow } from './quotationStatus';
 import { resolveCustomerFacingQuoteStatus } from './customerQuoteDecision';
@@ -396,7 +401,21 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
       str(asRecord(r.creator)?.name),
     lines: normalizeQuotationLines(linesRaw),
     status_history: Array.isArray(r.status_history)
-      ? (r.status_history as Quotation['status_history'])
+      ? (r.status_history as unknown[]).map((row) => {
+          const h = asRecord(row) ?? {};
+          const actorRec = asRecord(h.actor);
+          return {
+            ...(h as QuotationStatusHistoryEntry),
+            changed_by_name:
+              str(h.changed_by_name) ??
+              str(h.changedByName) ??
+              str(h.performed_by_name) ??
+              str(actorRec?.name),
+            performed_by_name: str(h.performed_by_name) ?? str(h.performedByName),
+            actor: (actorRec as { id?: string; name?: string } | undefined) ??
+              (typeof h.actor === 'string' ? h.actor : undefined),
+          };
+        })
       : undefined,
     approvals: Array.isArray(r.approvals) ? (r.approvals as Quotation['approvals']) : undefined,
     actions: normalizeQuotationActions(

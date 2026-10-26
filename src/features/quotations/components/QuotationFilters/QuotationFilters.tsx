@@ -393,5 +393,13 @@ export function useQuotationFilterDraft(initialLimit = 20) {
     setApplied(next);
   };
 
-  return { draft, setDraft, applied, submit };
+  const applyPatch = (partial: Partial<QuotationFilterDraft>) => {
+    setDraft((prev) => {
+      const next = { ...prev, ...partial };
+      setApplied(next);
+      return next;
+    });
+  };
+
+  return { draft, setDraft, applied, submit, applyPatch };
 }

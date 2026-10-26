@@ -19,9 +19,11 @@ import type {
   VendorNotificationListParams,
   VendorNotificationListResult,
 } from '../types/vendorNotifications.types';
+import type { VendorNotificationOpenResult } from '../types/vendorNotifications.types';
 import {
   normalizeUnreadCount,
   normalizeVendorNotificationList,
+  normalizeVendorNotificationOpen,
 } from '../utils/normalizeVendorNotifications';
 import { vendorNotificationHref } from '../utils/vendorNotificationLink';
 
@@ -272,10 +274,10 @@ function paginate(
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / Math.max(1, limit)) || 1);
   return {
-    items: slice.map((n) => ({
-      ...n,
-      href: vendorNotificationHref(n),
-    })),
+    items: slice.map((n) => {
+      const href = n.linkPath || n.href || vendorNotificationHref(n);
+      return { ...n, href, linkPath: href };
+    }),
     meta: { page, limit, total, totalPages },
     sourcedFromAggregate,
   };
@@ -290,10 +292,10 @@ async function tryDedicatedNotificationsApi(
     const normalized = normalizeVendorNotificationList(res.data, params);
     return {
       ...normalized,
-      items: normalized.items.map((n) => ({
-        ...n,
-        href: vendorNotificationHref(n),
-      })),
+      items: normalized.items.map((n) => {
+        const href = n.linkPath || n.href || vendorNotificationHref(n);
+        return { ...n, href, linkPath: href };
+      }),
       sourcedFromAggregate: false,
     };
   } catch (err) {
@@ -352,5 +354,30 @@ export const vendorNotificationsService = {
     const dismissed = readDismissed();
     for (const n of aggregate) dismissed.add(n.id);
     writeDismissed(dismissed);
+  },
+
+  /** POST /vendor/notifications/:id/open — mark read + return `link_path`. */
+  async open(id: string): Promise<VendorNotificationOpenResult> {
+    if (vendorNotificationsApiEnabled()) {
+      try {
+        const res = await vendorApiClient.post(VENDOR_NOTIFICATIONS_API.open(id));
+        return normalizeVendorNotificationOpen(res.data);
+      } catch (err) {
+        if (!isMissingEndpoint(err)) throw err;
+      }
+    }
+    /* Aggregate fallback: dismiss locally and resolve href from composed alert. */
+    const dismissed = readDismissed();
+    dismissed.add(id);
+    writeDismissed(dismissed);
+    const aggregate = await buildAggregateAlerts();
+    const item = aggregate.find((n) => n.id === id);
+    return {
+      id,
+      linkPath: item ? vendorNotificationHref(item) : null,
+      isRead: true,
+      title: item?.title,
+      message: item?.body,
+    };
   },
 };

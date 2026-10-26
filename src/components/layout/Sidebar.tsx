@@ -7,6 +7,7 @@ import {
   MessageSquare,
   Shapes,
   Plane,
+  PlaneLanding,
   Ship,
   FileText,
   Wallet,
@@ -41,6 +42,7 @@ import {
   resolveAuthRoleSlug,
   TENANT_USER_MANAGER_ROLE_SLUGS,
 } from '@/features/users/constants/userPermissions';
+import { DEPARTMENT_NAV } from '@/features/jobs/config/departmentNav';
 import type { PermissionKey } from '@/types/auth.types';
 import { useShellLogout } from './useShellLogout';
 import logo from '@/assets/logo.png';
@@ -70,6 +72,10 @@ interface NavItem {
   iconStyle?: NavIconStyle;
   /** Highlight when pathname starts with this prefix (e.g. sub-routes). */
   activePrefix?: string;
+  /** Department key for hub + ?dept= list scoping highlight. */
+  deptKey?: string;
+  /** Job list prefix highlighted with this department. */
+  jobsPath?: string;
 }
 
 type NavGroupId = 'workspace' | 'operations' | 'business';
@@ -132,9 +138,13 @@ const SIDEBAR_ICON_STYLES: Record<string, NavIconStyle> = {
   '/quotations': navStyle('#818CF8'),
   '/management': navStyle('#84CC16'),
   '/jobs/air-export': navStyle('#60A5FA'),
+  '/jobs/air-import': navStyle('#38BDF8'),
   '/jobs/sea-export': navStyle('#1E3A8A'),
   '/jobs/sea-import': navStyle('#14B8A6'),
+  '/jobs/road-freight': navStyle('#F97316'),
   '/customs-clearance': navStyle('#0F766E'),
+  '/operations/shipments': navStyle('#2DD4BF'),
+  '/sales/enquiries': navStyle('#A78BFA'),
   '/documentation': navStyle('#FACC15'),
   '/finance': navStyle('#059669'),
   '/accounts': navStyle('#22D3EE'),
@@ -260,13 +270,39 @@ function SidebarNavLink({
         const active = resolveActive ? resolveActive(isActive) : isActive;
         return (
           <>
-            <SidebarNavIcon path={path} Icon={Icon} itemStyle={iconStyle} active={active} />
+            <SidebarNavIcon
+              path={path}
+              Icon={Icon}
+              itemStyle={iconStyle}
+              active={active}
+            />
             {!collapsed && <span className="min-w-0 truncate leading-snug">{label}</span>}
           </>
         );
       }}
     </NavLink>
   );
+}
+
+function isDepartmentNavActive(
+  item: NavItem,
+  pathname: string,
+  search: string,
+  isActive: boolean,
+): boolean {
+  if (isActive) return true;
+  if (item.activePrefix && pathname.startsWith(item.activePrefix)) return true;
+  if (item.jobsPath && pathname.startsWith(item.jobsPath)) return true;
+  if (
+    item.deptKey === 'customs-clearance' &&
+    pathname.startsWith('/customs-clearance')
+  ) {
+    return true;
+  }
+  if (item.deptKey && new URLSearchParams(search).get('dept') === item.deptKey) {
+    return true;
+  }
+  return false;
 }
 
 function SidebarBrand({
@@ -306,12 +342,83 @@ function SidebarBrand({
   );
 }
 
+const DEPT_ICONS: Record<string, LucideIcon> = {
+  'air-export': Plane,
+  'air-import': PlaneLanding,
+  'sea-export': Ship,
+  'sea-import': Ship,
+  'road-freight': Truck,
+  'customs-clearance': ClipboardCheck,
+  nvocc: Building2,
+};
+
+const DEPT_ICON_STYLE: Record<string, NavIconStyle> = {
+  'air-export': navStyle('#60A5FA'),
+  'air-import': navStyle('#38BDF8'),
+  'sea-export': navStyle('#2DD4BF'),
+  'sea-import': navStyle('#14B8A6'),
+  'road-freight': navStyle('#F59E0B'),
+  'customs-clearance': navStyle('#0F766E'),
+  nvocc: navStyle('#9333EA'),
+};
+
+const DEPT_PERMISSION: Record<
+  string,
+  {
+    permission: PermissionKey;
+    permissionAny?: PermissionKey[];
+    matrixModule?: string;
+  }
+> = {
+  'air-export': { permission: 'menu_jobs_air_export', matrixModule: 'operations' },
+  'air-import': { permission: 'menu_jobs_air_export', matrixModule: 'operations' },
+  'sea-export': { permission: 'menu_jobs_sea_export', matrixModule: 'operations' },
+  'sea-import': { permission: 'menu_jobs_sea_import', matrixModule: 'operations' },
+  'road-freight': {
+    permission: 'menu_jobs_air_export',
+    permissionAny: [
+      'menu_jobs_air_export',
+      'menu_jobs_sea_export',
+      'menu_jobs_sea_import',
+      'menu_documentation',
+    ],
+    matrixModule: 'operations',
+  },
+  'customs-clearance': {
+    permission: 'menu_jobs_air_export',
+    permissionAny: [
+      'menu_jobs_air_export',
+      'menu_jobs_sea_export',
+      'menu_jobs_sea_import',
+      'menu_documentation',
+    ],
+    matrixModule: 'operations',
+  },
+  nvocc: { permission: 'menu_nvocc', matrixModule: 'nvocc' },
+};
+
+const DEPARTMENT_NAV_ITEMS: NavItem[] = DEPARTMENT_NAV.map((dept) => {
+  const perm = DEPT_PERMISSION[dept.key];
+  return {
+    label: dept.label,
+    path: dept.hubPath,
+    Icon: DEPT_ICONS[dept.key] ?? Package,
+    iconStyle: DEPT_ICON_STYLE[dept.key],
+    permission: perm?.permission ?? 'menu_jobs_air_export',
+    permissionAny: perm?.permissionAny,
+    matrixModule: perm?.matrixModule,
+    activePrefix: dept.hubPath,
+    deptKey: dept.useNativeMenu ? undefined : dept.key,
+    jobsPath: dept.useNativeMenu ? undefined : dept.jobsPath,
+  };
+});
+
 /**
  * matrixModule = Super Admin `enabled_modules` key (backend-validated).
  * Valid: operations, sales, finance, masters, admin, hr, wms, transport,
  * nvocc, documentation, support, logistics.
  */
-const OPS_NAV_ITEMS: NavItem[] = [
+const WORKSPACE_NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', path: '/dashboard', Icon: LayoutDashboard, permission: 'menu_dashboard' },
   {
     label: 'Customer Services',
@@ -341,62 +448,9 @@ const OPS_NAV_ITEMS: NavItem[] = [
     permission: 'menu_management' as PermissionKey,
     matrixModule: 'admin',
   },
-  {
-    label: 'Air Export',
-    path: '/jobs/air-export',
-    Icon: Plane,
-    permission: 'menu_jobs_air_export',
-    matrixModule: 'operations',
-  },
-  {
-    label: 'Sea Export',
-    path: '/jobs/sea-export',
-    Icon: Ship,
-    permission: 'menu_jobs_sea_export',
-    matrixModule: 'operations',
-  },
-  {
-    label: 'Sea Import',
-    path: '/jobs/sea-import',
-    Icon: Ship,
-    permission: 'menu_jobs_sea_import',
-    matrixModule: 'operations',
-  },
-  {
-    label: 'Road Freight',
-    path: '/jobs/road-freight',
-    Icon: Truck,
-    permission: 'menu_jobs_air_export',
-    permissionAny: [
-      'menu_jobs_air_export',
-      'menu_jobs_sea_export',
-      'menu_jobs_sea_import',
-      'menu_documentation',
-    ],
-    matrixModule: 'operations',
-    activePrefix: '/jobs/road-freight',
-  },
-  {
-    label: 'Customs Clearance',
-    path: '/customs-clearance',
-    Icon: ClipboardCheck,
-    permission: 'menu_jobs_air_export',
-    permissionAny: [
-      'menu_jobs_air_export',
-      'menu_jobs_sea_export',
-      'menu_jobs_sea_import',
-      'menu_documentation',
-    ],
-    matrixModule: 'operations',
-    activePrefix: '/customs-clearance',
-  },
-  {
-    label: 'NVOCC',
-    path: '/nvocc',
-    Icon: Building2,
-    permission: 'menu_nvocc',
-    matrixModule: 'nvocc',
-  },
+];
+
+const OPERATIONS_EXTRA_NAV_ITEMS: NavItem[] = [
   {
     label: 'Documentation',
     path: '/documentation',
@@ -427,7 +481,7 @@ const OPS_NAV_ITEMS: NavItem[] = [
     enabledModuleAny: ['shipments', 'operations', 'finance'],
   },
   {
-    label: 'Shipments',
+    label: 'All Shipments',
     path: '/operations/shipments',
     Icon: Package,
     permission: 'shipments.view',
@@ -440,6 +494,7 @@ const OPS_NAV_ITEMS: NavItem[] = [
       'menu_documentation',
       'menu_jobs_sea_export',
       'menu_jobs_sea_import',
+      'menu_jobs_air_export',
     ],
     matrixModule: 'shipments',
     enabledModuleAny: ['shipments', 'operations'],
@@ -457,6 +512,9 @@ const OPS_NAV_ITEMS: NavItem[] = [
     ],
     matrixModule: 'operations',
   },
+];
+
+const BUSINESS_NAV_ITEMS: NavItem[] = [
   {
     label: 'Finance',
     path: '/finance',
@@ -493,7 +551,6 @@ const OPS_NAV_ITEMS: NavItem[] = [
     path: '/reports',
     Icon: BarChart3,
     permission: 'menu_reports',
-    // No dedicated `reports` module key — hub tiles filter by family modules.
   },
   {
     label: 'Sales',
@@ -510,19 +567,19 @@ const NAV_GROUPS: NavGroup[] = [
     id: 'workspace',
     title: 'Workspace',
     color: SECTION_COLORS.workspace,
-    items: OPS_NAV_ITEMS.slice(0, 5),
+    items: WORKSPACE_NAV_ITEMS,
   },
   {
     id: 'operations',
     title: 'Operations',
     color: SECTION_COLORS.operations,
-    items: OPS_NAV_ITEMS.slice(5, 12),
+    items: [...DEPARTMENT_NAV_ITEMS, ...OPERATIONS_EXTRA_NAV_ITEMS],
   },
   {
     id: 'business',
     title: 'Business',
     color: SECTION_COLORS.business,
-    items: OPS_NAV_ITEMS.slice(12),
+    items: BUSINESS_NAV_ITEMS,
   },
 ];
 
@@ -640,10 +697,13 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
     })).filter((group) => group.items.length > 0);
   }, [authCtx, isSuperAdminArea, isTenantAdmin]);
 
-  const flatNavItems = useMemo(
-    () => visibleGroups.flatMap((g) => g.items),
-    [visibleGroups],
-  );
+  const flatNavItems = useMemo(() => {
+    const items: NavItem[] = [];
+    for (const g of visibleGroups) {
+      for (const item of g.items) items.push(item);
+    }
+    return items;
+  }, [visibleGroups]);
 
   const moduleMatches = useMemo(() => {
     const q = moduleQuery.trim().toLowerCase();
@@ -736,10 +796,7 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
                 collapsed={collapsed}
                 onNavigate={onNavigate}
                 resolveActive={(isActive) =>
-                  isActive ||
-                  Boolean(item.activePrefix && location.pathname.startsWith(item.activePrefix)) ||
-                  (item.path === '/customs-clearance' &&
-                    location.pathname.startsWith('/jobs/customs-clearance'))
+                  isDepartmentNavActive(item, location.pathname, location.search, isActive)
                 }
               />
             ))}

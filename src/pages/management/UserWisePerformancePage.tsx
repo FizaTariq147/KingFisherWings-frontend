@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { PageBackLink } from '@/components/ui/PageBackLink';
-import { HardDrive, Search, ChevronDown, Heart } from 'lucide-react';
+import { HardDrive, Search, ChevronDown } from 'lucide-react';
+
+import { FavouritesChromeButton } from '@/features/favourites/components/FavouritesChromeButton';
 import { useManagementPerformance } from '@/features/management/hooks/useManagement';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
 import {
@@ -251,10 +253,7 @@ export default function UserWisePerformancePage() {
       </div>
 
       <div className="mt-4">
-        <button type="button" className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
-          <Heart size={14} />
-          Favorites
-        </button>
+        <FavouritesChromeButton />
       </div>
     </div>
   );

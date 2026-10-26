@@ -14,7 +14,9 @@ import { usePortalAuthStore } from '../store/portalAuthStore';
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache';
 import { usePortalNotificationUnreadCount } from '@/features/portal-notifications/hooks/usePortalNotifications';
 import { portalNotificationsService } from '@/features/portal-notifications/services/portalNotifications.service';
+import { portalNotificationHref } from '@/features/portal-notifications/utils/portalNotificationLink';
 import { NotificationToastWatcher } from '@/components/toast';
+import { AppNavigateBridge } from '@/components/routing/AppNavigateBridge';
 import { VerificationRequiredModal } from '@/features/party-verification/components/VerificationRequiredModal';
 import { PORTAL_NAV_SECTIONS } from '../config/portalNav';
 
@@ -41,6 +43,7 @@ export function PortalShell() {
     return {
       title: item.title || 'Customer portal',
       message: item.body || item.title || undefined,
+      href: item.linkPath || portalNotificationHref(item),
     };
   }, []);
 
@@ -77,6 +80,7 @@ export function PortalShell() {
 
   return (
     <div className="portal-shell flex min-h-screen bg-[#F4F7F9]">
+      <AppNavigateBridge />
       <style>{portalAnimationStyles}</style>
       <NotificationToastWatcher
         unreadCount={unreadReady}

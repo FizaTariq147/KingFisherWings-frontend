@@ -3,5 +3,7 @@ export const PORTAL_NOTIFICATIONS_API = {
   unreadCount: '/portal/notifications/unread-count',
   stream: '/portal/notifications/stream',
   read: (id: string) => `/portal/notifications/${encodeURIComponent(id)}/read`,
+  /** Mark read + return deep-link payload (`link_path`). */
+  open: (id: string) => `/portal/notifications/${encodeURIComponent(id)}/open`,
   readAll: '/portal/notifications/read-all',
 } as const;

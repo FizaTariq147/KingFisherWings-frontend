@@ -45,10 +45,22 @@ function safeVendorHref(candidate: unknown): string | null {
   return safe || null;
 }
 
+/** Map BE audience paths onto FE vendor routes when they differ. */
+function rewriteVendorPath(path: string): string {
+  if (path.startsWith('/vendor/job-offers/')) {
+    return path.replace('/vendor/job-offers/', '/vendor/jobs/');
+  }
+  if (path === '/vendor/job-offers') return '/vendor/jobs';
+  if (path.startsWith('/vendor/quotations/')) {
+    return path.replace('/vendor/quotations/', '/vendor/jobs/');
+  }
+  return path;
+}
+
 /** Deep-link a vendor notification / alert to the matching portal page. */
 export function vendorNotificationHref(n: VendorNotification): string | null {
-  const fromApi = safeVendorHref(n.href);
-  if (fromApi) return fromApi;
+  const fromApi = safeVendorHref(n.linkPath) || safeVendorHref(n.href);
+  if (fromApi) return rewriteVendorPath(fromApi);
 
   const type = normalizeVendorAlertType(n.type || n.kind);
   const meta = asRecord(n.raw) ?? {};

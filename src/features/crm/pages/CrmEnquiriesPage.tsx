@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Plus, Ship } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ListRowEditButton } from '@/components/ui/ListRowEditButton';
@@ -8,11 +8,13 @@ import {
   ErrorState,
   OperationTypeBadge,
 } from '@/components/erp';
+import { departmentByKey } from '@/features/jobs/config/departmentNav';
 import {
   CrmEnquiryFilters,
   crmEnquiryFilterDraftToListParams,
   useCrmEnquiryFilterDraft,
 } from '../components/CrmEnquiryFilters';
+import type { ServiceType } from '../constants/crm.constants';
 import { useCrmEnquiries } from '../hooks/useCrmEnquiries';
 import { CrmStatusBadge } from '../components/CrmStatusBadge';
 import { Pagination, tdClass, thClass } from '../components/CrmUi';
@@ -33,8 +35,20 @@ function formatDate(iso?: string) {
 /** Enquiry Sheet list — Fresa-style permanently shown search filters. */
 export default function CrmEnquiriesPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const dept = departmentByKey(searchParams.get('dept'));
   const [page, setPage] = useState(1);
-  const { draft, setDraft, applied, submit } = useCrmEnquiryFilterDraft();
+  const { draft, setDraft, applied, submit, applyPatch } = useCrmEnquiryFilterDraft();
+
+  useEffect(() => {
+    const serviceType = !dept
+      ? ''
+      : dept.jobTypes.length === 1
+        ? (dept.primaryType as ServiceType)
+        : '';
+    applyPatch({ serviceType });
+    setPage(1);
+  }, [dept?.key]); // eslint-disable-line react-hooks/exhaustive-deps -- sync from ?dept=
 
   useEffect(() => {
     setPage(1);
@@ -47,21 +61,33 @@ export default function CrmEnquiriesPage() {
   }, [applied, page]);
 
   const serviceTypeFilter = applied.serviceType;
+  const deptTypes = useMemo(
+    () => (dept ? new Set(dept.jobTypes.map(String)) : null),
+    [dept],
+  );
 
   const query = useCrmEnquiries(listParams);
 
-  const items = (query.data?.items ?? []).filter((x) =>
-    serviceTypeFilter ? x.service_type === serviceTypeFilter : true,
-  );
+  const items = (query.data?.items ?? []).filter((x) => {
+    if (serviceTypeFilter && x.service_type !== serviceTypeFilter) return false;
+    if (deptTypes && deptTypes.size > 1) {
+      return Boolean(x.service_type && deptTypes.has(String(x.service_type)));
+    }
+    return true;
+  });
 
   return (
     <div className={listShell.page}>
       <div className={listShell.card}>
         <div className={listShell.header}>
           <div className="min-w-0">
-            <h2 className={appType.pageTitle}>Enquiry Sheet</h2>
+            <h2 className={appType.pageTitle}>
+              {dept ? `${dept.label} · Enquiries` : 'Enquiry Sheet'}
+            </h2>
             <p className={appType.pageSubtitle}>
-              Customer Service — create enquiry, then generate quotation → shipment → job.
+              {dept
+                ? `Enquiries for ${dept.label}.`
+                : 'Customer Service — create enquiry, then generate quotation → shipment → job.'}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">

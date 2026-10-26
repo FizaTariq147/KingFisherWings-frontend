@@ -6,6 +6,8 @@ export const INVOICE_API = {
   overdue: '/invoices/reports/overdue',
   fromJob: (jobId: string) => `/invoices/from-job/${jobId}`,
   byId: (id: string) => `/invoices/${id}`,
+  /** GET /invoices/:id/history — AuditLog timeline with actor names. */
+  history: (id: string) => `/invoices/${id}/history`,
   lines: (id: string) => `/invoices/${id}/lines`,
   lineById: (id: string, lineId: string) => `/invoices/${id}/lines/${lineId}`,
   post: (id: string) => `/invoices/${id}/post`,

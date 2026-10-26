@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
-import { Wand2, Heart } from 'lucide-react';
+import { Wand2 } from 'lucide-react';
+
+import { FavouritesChromeButton } from '@/features/favourites/components/FavouritesChromeButton';
 import { FilterField, SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
 import { NVOCC_ENQUIRY_STATUSES, nvoccLabel } from '@/features/nvocc/constants/nvocc.constants';
 import type { NvoccEnquiryStatus } from '@/features/nvocc/constants/nvocc.constants';
@@ -127,10 +129,7 @@ export default function EnquiryListPage() {
       </div>
 
       <div className="mt-4">
-        <button type="button" className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
-          <Heart size={14} />
-          Favorites
-        </button>
+        <FavouritesChromeButton />
       </div>
     </div>
   );

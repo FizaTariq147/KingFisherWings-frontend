@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
-import { UserPlus, Search, ChevronDown, Pencil, Filter, X, ChevronRight as SortIcon, ArrowUpDown, Heart } from 'lucide-react';
+import { UserPlus, Search, ChevronDown, Pencil, Filter, X, ChevronRight as SortIcon, ArrowUpDown } from 'lucide-react';
+
+import { FavouritesChromeButton } from '@/features/favourites/components/FavouritesChromeButton';
 import { useManagementUsers, useManagementSubscriptionKey } from '@/features/management/hooks/useManagement';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
 import { MANAGEMENT_SELECT_CLASS } from '@/features/management/utils/managementFilters';
@@ -269,10 +271,7 @@ export default function UserAccessPage() {
       </div>
 
       <div className="mt-4">
-        <button type="button" className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
-          <Heart size={14} />
-          Favorites
-        </button>
+        <FavouritesChromeButton />
       </div>
     </div>
   );

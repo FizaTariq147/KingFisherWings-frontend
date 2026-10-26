@@ -44,6 +44,9 @@ export interface PermissionMatrix {
 export interface UserPermissionAssignment {
   available: boolean;
   grants: PermissionMatrixGrant[];
+  /** Job types visible from ops matrix; null = unrestricted. */
+  visible_job_types?: string[] | null;
+  unrestricted_ops?: boolean;
 }
 
 export interface UpdatePermissionMatrixDto {

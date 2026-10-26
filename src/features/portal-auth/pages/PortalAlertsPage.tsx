@@ -15,6 +15,7 @@ import {
 import {
   useMarkAllPortalNotificationsRead,
   useMarkPortalNotificationRead,
+  useOpenPortalNotification,
   usePortalNotificationUnreadCount,
   usePortalNotifications,
 } from '@/features/portal-notifications/hooks/usePortalNotifications';
@@ -22,6 +23,7 @@ import {
   notificationTypeLabel,
   portalNotificationHref,
 } from '@/features/portal-notifications/utils/portalNotificationLink';
+import { toast } from '@/store/toastStore';
 
 export default function PortalAlertsPage() {
   const navigate = useNavigate();
@@ -35,8 +37,21 @@ export default function PortalAlertsPage() {
   const unread = usePortalNotificationUnreadCount();
   const markRead = useMarkPortalNotificationRead();
   const markAll = useMarkAllPortalNotificationsRead();
+  const openNotification = useOpenPortalNotification();
   const items = data?.items ?? [];
   const meta = data?.meta;
+
+  const handleOpen = async (id: string, fallbackHref: string | null) => {
+    try {
+      const opened = await openNotification.mutateAsync(id);
+      const path = opened.linkPath || fallbackHref;
+      if (path) navigate(path);
+      else toast.info('No linked screen for this alert.', { title: 'Alerts' });
+    } catch {
+      if (fallbackHref) navigate(fallbackHref);
+      else toast.info('Could not open this alert.', { title: 'Alerts' });
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -104,10 +119,8 @@ export default function PortalAlertsPage() {
                   <button
                     type="button"
                     className="min-w-0 flex-1 text-left"
-                    onClick={() => {
-                      if (!n.isRead) void markRead.mutateAsync(n.id);
-                      if (href) navigate(href);
-                    }}
+                    disabled={openNotification.isPending}
+                    onClick={() => void handleOpen(n.id, href)}
                   >
                     <div className="flex flex-wrap items-center gap-2">
                       <div className="text-sm font-semibold">{n.title}</div>

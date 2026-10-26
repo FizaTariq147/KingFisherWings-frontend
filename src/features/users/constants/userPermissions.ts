@@ -1,5 +1,6 @@
 import type { PermissionKey } from '@/types/auth.types';
 import type { UserRole } from '../constants/user.constants';
+import { menuKeysFromMatrixPermissions } from '../utils/matrixPermissionAccess';
 
 /** Visibility permission field keys on the User entity. */
 export const USER_VISIBILITY_PERMISSIONS = [
@@ -145,8 +146,10 @@ export function menuKeysFromStaffAccess(record: Record<string, unknown>): Permis
 
 /**
  * Build the effective permission list for a signed-in staff user.
- * When Tenant Admin flags are present on /auth/me, those define `menu_*` keys
- * (JWT role menus cannot re-open Finance/Ops the admin turned off).
+ * When Tenant Admin flags are present on /auth/me, coarse `menu_*` keys come from
+ * those flags — JWT role menus alone must not re-open Finance/Ops the admin turned off.
+ * Permission-matrix grants (and /me `menu_*` / bridged classic keys) still open the
+ * matching routes so matrix PUT is not overridden by is_operations=false etc.
  * Action permissions (quotations.negotiate, gl.*, …) still come from JWT / me.
  */
 export function mergeStaffPermissions(opts: {
@@ -162,12 +165,18 @@ export function mergeStaffPermissions(opts: {
     return [...new Set([...fromMe, ...fromJwt, ...fromStaffFlags])] as PermissionKey[];
   }
 
-  const nonMenu = [...fromMe, ...fromJwt].filter((key) => !isMenuPermissionKey(key));
+  const combined = [...fromMe, ...fromJwt];
+  const nonMenu = combined.filter((key) => !isMenuPermissionKey(key));
+  const matrixMenus = menuKeysFromMatrixPermissions(combined);
+  // Prefer /auth/me menus over stale JWT role packs when flags are present.
+  const menusFromMe = fromMe.filter(isMenuPermissionKey) as PermissionKey[];
 
   if (staffFlagsPresent) {
     return [
       ...new Set([
         ...fromStaffFlags,
+        ...menusFromMe,
+        ...matrixMenus,
         ...nonMenu,
         'menu_dashboard',
         'menu_settings',
@@ -177,7 +186,14 @@ export function mergeStaffPermissions(opts: {
 
   // /me had no staff flags — fall back to JWT / role menus so older tenants still work.
   return [
-    ...new Set([...fromMe, ...fromJwt, ...fromStaffFlags, 'menu_dashboard', 'menu_settings']),
+    ...new Set([
+      ...fromMe,
+      ...fromJwt,
+      ...fromStaffFlags,
+      ...matrixMenus,
+      'menu_dashboard',
+      'menu_settings',
+    ]),
   ] as PermissionKey[];
 }
 

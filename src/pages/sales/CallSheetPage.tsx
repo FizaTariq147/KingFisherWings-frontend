@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
-import { Plus, Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
+import { Plus, Search, ChevronDown, Maximize2 } from 'lucide-react';
+
+import { FavouritesChromeButton } from '@/features/favourites/components/FavouritesChromeButton';
 import { FilterField, SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
 
 export default function CallSheetPage() {
@@ -112,10 +114,7 @@ export default function CallSheetPage() {
 
       {/* Floating Favorites button */}
       <div className="mt-4">
-        <button className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
-          <Heart size={14} />
-          Favorites
-        </button>
+        <FavouritesChromeButton />
       </div>
     </div>
   );

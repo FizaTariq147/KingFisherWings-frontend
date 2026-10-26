@@ -4,6 +4,7 @@ import { canonicalizeJobType } from './canonicalizeJobType';
 
 export function segmentFromPath(pathname: string): JobSegmentKey | null {
   if (pathname.startsWith('/jobs/air-export')) return 'air-export';
+  if (pathname.startsWith('/jobs/air-import')) return 'air-import';
   if (pathname.startsWith('/jobs/sea-export')) return 'sea-export';
   if (pathname.startsWith('/jobs/sea-import')) return 'sea-import';
   if (pathname.startsWith('/jobs/customs-clearance')) return 'customs-clearance';
@@ -22,12 +23,19 @@ export function segmentForJobType(jobType: JobType | string): JobSegmentKey {
   >) {
     if (seg.jobTypes.includes(normalized)) return key;
   }
+  if (normalized === 'AIR_IMPORT') return 'air-import';
   if (normalized === 'CUSTOMS_CLEARANCE') return 'customs-clearance';
   if (normalized === 'WAREHOUSE') return 'road-freight';
   if (normalized === 'ROAD_FREIGHT' || normalized === 'LAND' || normalized === 'COURIER') {
     return 'road-freight';
   }
-  if (normalized === 'SEA_FCL_IMPORT' || normalized === 'SEA_LCL_IMPORT') return 'sea-import';
+  if (
+    normalized === 'SEA_FCL_IMPORT' ||
+    normalized === 'SEA_LCL_IMPORT' ||
+    normalized === 'NVOCC_IMPORT'
+  ) {
+    return 'sea-import';
+  }
   if (normalized.startsWith('SEA_') || normalized === 'NVOCC_EXPORT') return 'sea-export';
   return 'air-export';
 }

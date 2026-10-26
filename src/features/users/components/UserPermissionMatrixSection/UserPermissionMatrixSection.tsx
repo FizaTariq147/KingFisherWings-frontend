@@ -35,10 +35,11 @@ export function UserPermissionMatrixSection({ userId }: UserPermissionMatrixSect
           <div>
             <CardTitle>Permissions matrix</CardTitle>
             <p className="mt-1 text-xs text-[var(--color-neutral-400)]">
-              None / Read / Read & Write per submodule. The tree is filtered to this tenant&apos;s
-              enabled modules. After saving, the user must sign in again so the JWT picks up bridged
-              classic permissions (e.g. wms.view). Grants for disabled modules are rejected by the
-              API.
+              None / Read / Read & Write per submodule (includes road_freight bridge). The tree is
+              filtered to this tenant&apos;s enabled modules. After saving, ask the user to refresh
+              or sign in again — API job-type scope and classic JWT bridges (e.g. wms.view,
+              menu_jobs_*) load from the new token /auth/me. Grants for disabled modules are
+              rejected by the API.
             </p>
           </div>
           <Button
@@ -49,7 +50,9 @@ export function UserPermissionMatrixSection({ userId }: UserPermissionMatrixSect
               setMessage(null);
               try {
                 await updateUser.mutateAsync({ grants });
-                setMessage('Permissions saved. Ask the user to sign in again to refresh JWT.');
+                setMessage(
+                  'Permissions saved. Ask the user to refresh or sign in again so JWT / menus update.',
+                );
               } catch (err) {
                 setMessage(getErrorMessage(err) || 'Failed to save permissions.');
               }
@@ -60,6 +63,16 @@ export function UserPermissionMatrixSection({ userId }: UserPermissionMatrixSect
         </CardHeader>
 
         <div className="p-4 pt-0 space-y-3">
+          {assignmentQuery.data &&
+          (assignmentQuery.data.unrestricted_ops != null ||
+            assignmentQuery.data.visible_job_types !== undefined) ? (
+            <p className="rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2 text-xs text-[var(--color-neutral-600)]">
+              {assignmentQuery.data.unrestricted_ops ||
+              assignmentQuery.data.visible_job_types === null
+                ? 'Ops job-type scope: unrestricted (lists are not filtered by job type).'
+                : `Ops job-type scope: ${(assignmentQuery.data.visible_job_types ?? []).join(', ') || 'none'}. Quotations, shipments, enquiries, invoices, and search are filtered to these types.`}
+            </p>
+          ) : null}
           {message ? (
             <p className="text-sm text-[var(--color-neutral-600)]" role="status">
               {message}

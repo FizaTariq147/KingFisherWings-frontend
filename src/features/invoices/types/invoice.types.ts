@@ -60,6 +60,8 @@ export interface Invoice {
   updated_at?: string;
   created_by?: string;
   lines?: InvoiceLine[];
+  path_hints?: string[];
+  ops_continuum?: Record<string, unknown>;
 }
 
 export type CreateInvoiceDto = CreateInvoiceFormValues;
@@ -67,6 +69,17 @@ export type UpdateInvoiceDto = UpdateInvoiceFormValues;
 export type CreateInvoiceLineDto = CreateInvoiceLineFormValues;
 export type UpdateInvoiceLineDto = UpdateInvoiceLineFormValues;
 export type SendInvoiceEmailDto = SendInvoiceEmailFormValues;
+
+/** GET /invoices/:id/history row (AuditLog + actor). */
+export interface InvoiceHistoryEntry {
+  id: string;
+  action?: string;
+  summary?: string;
+  createdAt?: string;
+  actorName?: string;
+  actorId?: string;
+  raw?: Record<string, unknown>;
+}
 
 export interface InvoiceListParams {
   page?: number;

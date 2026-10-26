@@ -236,5 +236,13 @@ export function useCrmEnquiryFilterDraft(initialLimit = CRM_PAGE_SIZE) {
 
   const submit = () => setApplied(draft);
 
-  return { draft, setDraft, applied, submit };
+  const applyPatch = (partial: Partial<CrmEnquiryFilterDraft>) => {
+    setDraft((prev) => {
+      const next = { ...prev, ...partial };
+      setApplied(next);
+      return next;
+    });
+  };
+
+  return { draft, setDraft, applied, submit, applyPatch };
 }

@@ -59,3 +59,14 @@ export function useMarkAllVendorNotificationsRead() {
     },
   });
 }
+
+export function useOpenVendorNotification() {
+  const qc = useQueryClient();
+  const scope = useVendorQueryScope();
+  return useMutation({
+    mutationFn: (id: string) => vendorNotificationsService.open(id),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: vendorNotificationKeys.all(scope) });
+    },
+  });
+}

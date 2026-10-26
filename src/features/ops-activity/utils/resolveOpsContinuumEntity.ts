@@ -5,6 +5,8 @@ export type OpsLifecycleLinks = {
   quotationId?: string | null;
   shipmentId?: string | null;
   jobId?: string | null;
+  invoiceId?: string | null;
+  purchaseInvoiceId?: string | null;
 };
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -18,6 +20,15 @@ function mapEntityType(raw: string): OpsEntityType | null {
   if (n === 'QUOTATION' || n === 'QUOTE') return 'QUOTATION';
   if (n === 'SHIPMENT') return 'SHIPMENT';
   if (n === 'JOB') return 'JOB';
+  if (n === 'INVOICE' || n === 'SALES_INVOICE' || n === 'AR_INVOICE') return 'INVOICE';
+  if (
+    n === 'PURCHASE_INVOICE' ||
+    n === 'PURCHASE' ||
+    n === 'PI' ||
+    n === 'AP_INVOICE'
+  ) {
+    return 'PURCHASE_INVOICE';
+  }
   return null;
 }
 
@@ -41,6 +52,8 @@ export function buildOpsLifecycleLinks(
     quotationId: uuidOrNull(links?.quotationId),
     shipmentId: uuidOrNull(links?.shipmentId),
     jobId: uuidOrNull(links?.jobId),
+    invoiceId: uuidOrNull(links?.invoiceId),
+    purchaseInvoiceId: uuidOrNull(links?.purchaseInvoiceId),
   };
 }
 
@@ -48,15 +61,21 @@ export function opsLifecycleHostLabel(host: {
   entityType: OpsEntityType;
   entityId: string;
 }): string {
-  const label =
-    host.entityType === 'ENQUIRY'
-      ? 'Enquiry'
-      : host.entityType === 'QUOTATION'
-        ? 'Quotation'
-        : host.entityType === 'SHIPMENT'
-          ? 'Shipment'
-          : 'Job';
-  return label;
+  switch (host.entityType) {
+    case 'ENQUIRY':
+      return 'Enquiry';
+    case 'QUOTATION':
+      return 'Quotation';
+    case 'SHIPMENT':
+      return 'Shipment';
+    case 'INVOICE':
+      return 'Invoice';
+    case 'PURCHASE_INVOICE':
+      return 'Purchase invoice';
+    case 'JOB':
+    default:
+      return 'Job';
+  }
 }
 
 /**
@@ -101,6 +120,12 @@ export function resolveOpsContinuumEntity(opts: {
   }
   if (links.jobId) {
     return { entityType: 'JOB', entityId: links.jobId };
+  }
+  if (links.invoiceId) {
+    return { entityType: 'INVOICE', entityId: links.invoiceId };
+  }
+  if (links.purchaseInvoiceId) {
+    return { entityType: 'PURCHASE_INVOICE', entityId: links.purchaseInvoiceId };
   }
 
   const currentId = uuidOrNull(opts.entityId) ?? String(opts.entityId ?? '').trim();

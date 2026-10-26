@@ -12,7 +12,9 @@ import {
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
 import { useVendorNotificationUnreadCount } from '@/features/vendor-notifications/hooks/useVendorNotifications';
 import { vendorNotificationsService } from '@/features/vendor-notifications/services/vendorNotifications.service';
+import { vendorNotificationHref } from '@/features/vendor-notifications/utils/vendorNotificationLink';
 import { NotificationToastWatcher } from '@/components/toast';
+import { AppNavigateBridge } from '@/components/routing/AppNavigateBridge';
 import { VerificationRequiredModal } from '@/features/party-verification/components/VerificationRequiredModal';
 import { VendorSidebar } from '../components/VendorSidebar';
 import { VendorTopbar } from '../components/VendorTopbar';
@@ -45,6 +47,7 @@ export function VendorShell() {
     return {
       title: item.title || 'Vendor portal',
       message: item.body || item.title || undefined,
+      href: item.linkPath || vendorNotificationHref(item),
     };
   }, []);
 
@@ -81,6 +84,7 @@ export function VendorShell() {
 
   return (
     <div className="portal-shell flex min-h-screen bg-[#F4F7F9]">
+      <AppNavigateBridge />
       <style>{portalAnimationStyles}</style>
       <NotificationToastWatcher
         unreadCount={unreadReady}

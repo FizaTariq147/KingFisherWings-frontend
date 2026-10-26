@@ -1176,7 +1176,16 @@ export default function QuotationDetailPage() {
                 {(quotation.status_history ?? []).length === 0 ? (
                   <p className="text-[var(--color-neutral-400)]">No status history.</p>
                 ) : (
-                  (quotation.status_history ?? []).map((h, i) => (
+                  (quotation.status_history ?? []).map((h, i) => {
+                    const actorName =
+                      h.changed_by_name ||
+                      h.performed_by_name ||
+                      (typeof h.actor === 'string'
+                        ? h.actor
+                        : h.actor && typeof h.actor === 'object'
+                          ? h.actor.name
+                          : undefined);
+                    return (
                     <div
                       key={h.id ?? i}
                       className="rounded-md border border-[var(--color-neutral-200)] px-3 py-2"
@@ -1185,10 +1194,13 @@ export default function QuotationDetailPage() {
                         {h.from_status || '—'} → {h.to_status || h.status || '—'}
                       </div>
                       <div className="text-xs text-[var(--color-neutral-400)]">
-                        {h.created_at || ''} {h.comments ? `· ${h.comments}` : ''}
+                        {h.created_at || ''}
+                        {actorName ? ` · ${actorName}` : ''}
+                        {h.comments ? ` · ${h.comments}` : ''}
                       </div>
                     </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             ),

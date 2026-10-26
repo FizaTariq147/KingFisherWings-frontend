@@ -65,3 +65,14 @@ export function useMarkAllPortalNotificationsRead() {
     onSuccess: () => { void qc.invalidateQueries({ queryKey: portalNotificationKeys.all(scope) }); },
   });
 }
+
+export function useOpenPortalNotification() {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: (id: string) => portalNotificationsService.open(id),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: portalNotificationKeys.all(scope) });
+    },
+  });
+}

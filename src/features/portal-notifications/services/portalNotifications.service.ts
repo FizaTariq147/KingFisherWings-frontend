@@ -1,10 +1,13 @@
 import { portalApiClient } from '@/lib/portalApiClient';
-import { PORTAL_NOTIFICATIONS_API } from '../api/portalNotifications.api';import type {
+import { PORTAL_NOTIFICATIONS_API } from '../api/portalNotifications.api';
+import type {
   PortalNotificationListParams,
   PortalNotificationListResult,
+  PortalNotificationOpenResult,
 } from '../types/portalNotifications.types';
 import {
   normalizePortalNotificationList,
+  normalizePortalNotificationOpen,
   normalizeUnreadCount,
 } from '../utils/normalizePortalNotifications';
 
@@ -30,6 +33,11 @@ export const portalNotificationsService = {
   },
   async markAllRead(): Promise<void> {
     await portalApiClient.post(PORTAL_NOTIFICATIONS_API.readAll);
+  },
+  /** POST /portal/notifications/:id/open — mark read + return `link_path`. */
+  async open(id: string): Promise<PortalNotificationOpenResult> {
+    const res = await portalApiClient.post(PORTAL_NOTIFICATIONS_API.open(id));
+    return normalizePortalNotificationOpen(res.data);
   },
   /**
    * SSE with bearer tokens in the query string is disabled — tokens would leak to logs/history.

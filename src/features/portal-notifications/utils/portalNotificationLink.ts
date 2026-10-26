@@ -1,4 +1,5 @@
 import { asRecord, pickString } from '@/features/portal-shared/normalize';
+import { safeInternalPath } from '@/lib/safeInternalPath';
 import type { PortalNotification } from '../types/portalNotifications.types';
 
 const TYPE_ALIASES: Record<string, string> = {
@@ -11,8 +12,11 @@ const TYPE_ALIASES: Record<string, string> = {
   QUOTATION: 'QUOTATION',
   INVOICE: 'INVOICE',
   INVOICE_READY: 'INVOICE',
+  INVOICE_OVERDUE: 'INVOICE',
   MESSAGE: 'MESSAGE',
   DISPUTE: 'DISPUTE',
+  SHIPMENT: 'JOB_MILESTONE_UPDATED',
+  JOB: 'JOB_MILESTONE_UPDATED',
 };
 
 export function normalizeNotificationType(type?: string): string {
@@ -39,9 +43,28 @@ export function notificationTypeLabel(type?: string): string {
   }
 }
 
+/** Map BE audience paths onto FE portal routes when they differ. */
+function rewritePortalPath(path: string): string {
+  if (path.startsWith('/portal/quotations/')) {
+    return path.replace('/portal/quotations/', '/portal/quotes/');
+  }
+  if (path === '/portal/quotations') return '/portal/quotes';
+  return path;
+}
+
+/** Allow only in-app `/portal/...` paths from API-supplied hrefs. */
+function safePortalHref(candidate: unknown): string | null {
+  if (typeof candidate !== 'string' || !candidate.trim()) return null;
+  const safe = safeInternalPath(candidate, { prefix: '/portal', fallback: '' });
+  return safe ? rewritePortalPath(safe) : null;
+}
+
 /** Deep-link a portal notification to the matching customer page. */
 export function portalNotificationHref(n: PortalNotification): string | null {
-  const type = normalizeNotificationType(n.type);
+  const fromApi = safePortalHref(n.linkPath) || safePortalHref(n.href);
+  if (fromApi) return fromApi;
+
+  const type = normalizeNotificationType(n.type || n.kind);
   const meta = asRecord(n.raw) ?? {};
   const nested = asRecord(meta.payload) ?? asRecord(meta.meta) ?? asRecord(meta.data) ?? {};
 
@@ -58,9 +81,22 @@ export function portalNotificationHref(n: PortalNotification): string | null {
     meta.quotation_id,
     meta.quotationId,
     nested.quotation_id,
+    nested.quotationId,
   );
-  const entityType = pickString(meta.entity_type, meta.entityType, nested.entity_type).toUpperCase();
-  const entityId = pickString(n.entityId, meta.entity_id, meta.entityId, nested.entity_id);
+  const entityType = pickString(
+    meta.entity_type,
+    meta.entityType,
+    nested.entity_type,
+    nested.entityType,
+  ).toUpperCase();
+  const entityId = pickString(
+    n.entityId,
+    meta.entity_id,
+    meta.entityId,
+    meta.resource_id,
+    nested.entity_id,
+    nested.entityId,
+  );
 
   if (type === 'DOCUMENT_READY') {
     if (jobId) return `/portal/shipments/${jobId}`;

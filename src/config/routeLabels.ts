@@ -45,11 +45,15 @@ export const ROUTE_LABELS: Record<string, string> = {
   notifications: 'Notifications',
   profile:       'My Profile',
 
-  // ── Jobs ─────────────────────────────────────────────────────────────
+  // ── Jobs / departments ───────────────────────────────────────────────
   jobs:          'Jobs',
+  departments:   'Departments',
   'air-export':  'Air Export',
+  'air-import':  'Air Import',
   'sea-export':  'Sea Export',
   'sea-import':  'Sea Import',
+  'road-freight': 'Road Freight',
+  'customs-clearance': 'Customs Clearance',
   new:           'New',
   overdue:       'Overdue',
 
