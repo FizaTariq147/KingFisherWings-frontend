@@ -17,7 +17,7 @@ interface SectionProps {
 
 function Section({ title, description, enabled, onToggle, children }: SectionProps) {
   return (
-    <div className="bg-white rounded-xl border border-[var(--color-neutral-200)] overflow-hidden">
+    <div className="bg-white rounded-xl overflow-hidden">
       <div className="flex items-start justify-between px-5 py-4 border-b border-[var(--color-neutral-100)]">
         <div className="flex-1 min-w-0 mr-4">
           <p className="text-sm font-semibold text-[var(--color-neutral-900)]">{title}</p>
@@ -184,7 +184,7 @@ export function LoginSecurityForm({ userId, userName }: LoginSecurityFormProps) 
       </Section>
 
       {/* Multi-login */}
-      <div className="bg-white rounded-xl border border-[var(--color-neutral-200)] px-5 py-4 flex items-start justify-between gap-4">
+      <div className="bg-white rounded-xl px-5 py-4 flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-[var(--color-neutral-900)]">
             Allow simultaneous logins

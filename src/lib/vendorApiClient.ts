@@ -6,6 +6,7 @@ import { useVendorAuthStore } from '@/features/vendor-auth/store/vendorAuthStore
 import { normalizeVendorTokenPair } from '@/features/vendor-auth/utils/normalizeVendorAuth';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
 import { matchesAnyApiPath } from '@/lib/apiPath';
+import { AUTH_THROTTLE_USER_MESSAGE } from '@/features/auth/utils/authThrottleMessage';
 import { notifyAxiosError } from '@/lib/toastNotify';
 
 export interface VendorApiEnvelope<T, M = undefined> {
@@ -27,6 +28,7 @@ export class VendorApiError extends Error {
 const GENERIC_AXIOS_STATUS = /^Request failed with status code \d+$/i;
 
 function statusFallback(status: number): string {
+  if (status === 429) return AUTH_THROTTLE_USER_MESSAGE;
   if (status === 403) {
     return (
       'Access denied. Check workspace slug and password, confirm this is a vendor portal account (not customer portal ' +
@@ -54,6 +56,7 @@ function normalizeVendorFallback(status: number, fallback: string): string {
 }
 
 async function resolveVendorErrorMessage(err: AxiosError, fallback: string): Promise<string> {
+  if (err.response?.status === 429) return AUTH_THROTTLE_USER_MESSAGE;
   const data = err.response?.data;
   if (data instanceof Blob) {
     try {
@@ -98,6 +101,7 @@ const VENDOR_AUTH_BOOTSTRAP = [
   VENDOR_AUTH_API.login,
   VENDOR_AUTH_API.refresh,
   VENDOR_AUTH_API.acceptInvite,
+  VENDOR_AUTH_API.forgotPassword,
 ] as const;
 
 function isVendorAuthBootstrap(url?: string): boolean {

@@ -57,6 +57,7 @@ export function useReviewPaymentProof(invoiceId: string, kind: 'invoice' | 'purc
   const invalidate = () => {
     if (kind === 'purchase-invoice') {
       void qc.invalidateQueries({ queryKey: paymentProofKeys.purchaseInvoice(invoiceId) });
+      void qc.invalidateQueries({ queryKey: purchaseInvoiceKeys.paymentProofs(invoiceId) });
       void qc.invalidateQueries({ queryKey: purchaseInvoiceKeys.detail(invoiceId) });
       void qc.invalidateQueries({ queryKey: purchaseInvoiceKeys.all });
     } else {

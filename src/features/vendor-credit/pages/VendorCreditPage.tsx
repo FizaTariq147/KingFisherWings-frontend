@@ -109,9 +109,19 @@ export default function VendorCreditPage() {
               {statement.data?.openingBalance != null ? (
                 <span>Opening {formatVendorMoney(statement.data.openingBalance)}</span>
               ) : null}
-              {statement.data?.closingBalance != null ? (
+              {statement.data?.totalInvoiced != null ? (
+                <span>Invoiced {formatVendorMoney(statement.data.totalInvoiced)}</span>
+              ) : null}
+              {statement.data?.totalPaid != null ? (
+                <span>Paid {formatVendorMoney(statement.data.totalPaid)}</span>
+              ) : null}
+              {statement.data?.totalRemaining != null ? (
                 <span className="font-semibold text-[var(--color-neutral-800)]">
-                  Open balance {formatVendorMoney(statement.data.closingBalance)}
+                  Remaining {formatVendorMoney(statement.data.totalRemaining)}
+                </span>
+              ) : statement.data?.closingBalance != null ? (
+                <span className="font-semibold text-[var(--color-neutral-800)]">
+                  Remaining {formatVendorMoney(statement.data.closingBalance)}
                 </span>
               ) : null}
               {statement.data?.composedFromLedgers ? (

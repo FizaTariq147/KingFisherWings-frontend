@@ -42,7 +42,7 @@ export default function PendingQuotationsWidget() {
   return (
     <Link
       to="/quotations/all"
-      className="block rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 hover:border-[var(--color-primary-300)] transition-colors"
+      className="block rounded-xl bg-white p-5 hover:bg-[var(--color-neutral-50)] transition-colors"
     >
       <div className="flex items-center gap-2 mb-3">
         <div

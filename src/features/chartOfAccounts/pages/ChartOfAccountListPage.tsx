@@ -79,8 +79,8 @@ export default function ChartOfAccountListPage() {
       const created = await seed.mutateAsync();
       setActionMessage(
         created.length
-          ? `Seeded ${created.length} starter account(s).`
-          : 'Seed completed (COA may already exist).',
+          ? `Added ${created.length} missing starter account(s). Existing accounts were left unchanged.`
+          : 'Starter Chart of Accounts is already complete — no missing defaults to add.',
       );
       refetch();
     } catch (err) {

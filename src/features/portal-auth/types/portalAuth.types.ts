@@ -46,6 +46,12 @@ export interface PortalChangePasswordDto {
   new_password: string;
 }
 
+/** POST /portal/auth/forgot-password — emails a temporary password. */
+export interface PortalForgotPasswordDto {
+  tenant_slug: string;
+  email: string;
+}
+
 export interface PortalLoginResult {
   user: PortalUser;
   accessToken: string;

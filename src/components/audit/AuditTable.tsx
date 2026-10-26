@@ -185,7 +185,7 @@ export function AuditTable({ data, onPage }: AuditTableProps) {
   const COLS = ['Timestamp', 'User', 'Action', 'Module / Record', 'IP Address', 'Changes']
 
   return (
-    <div className="bg-white rounded-xl border border-[var(--color-neutral-200)] overflow-hidden">
+    <div className="bg-white rounded-xl overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Download, Mail } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
@@ -13,6 +13,8 @@ import {
   PortalPanel,
   PortalStatCard,
 } from '@/features/portal-auth/components/portal-ui';
+import { PaymentProofList } from '@/features/payment-proofs/components/PaymentProofPanels';
+import { adjustInvoiceAmountsWithProofs } from '@/features/payment-proofs/utils/adjustInvoiceAmountsWithProofs';
 import {
   formatShareEmailSuccess,
   ShareEmailModal,
@@ -25,9 +27,12 @@ import {
   vendorInvoicePdfErrorMessage,
 } from '@/features/vendor-shared/vendorUnavailable';
 import {
+  useDownloadVendorInvoicePaymentProof,
   usePostVendorInvoice,
   useSendVendorInvoiceEmail,
   useVendorInvoice,
+  useVendorInvoicePaymentProofs,
+  useVendorInvoicePaymentStatus,
   useVendorInvoicePdfBlob,
 } from '../hooks/useVendorInvoices';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
@@ -36,6 +41,15 @@ export default function VendorInvoiceDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError, error, refetch } = useVendorInvoice(id);
+  const {
+    data: proofs = [],
+    isLoading: proofsLoading,
+    isError: proofsError,
+    error: proofsLoadError,
+    refetch: refetchProofs,
+  } = useVendorInvoicePaymentProofs(id);
+  const paymentStatus = useVendorInvoicePaymentStatus(id);
+  const downloadProof = useDownloadVendorInvoicePaymentProof();
   const pdfBlob = useVendorInvoicePdfBlob();
   const postInvoice = usePostVendorInvoice();
   const sendInvoiceEmail = useSendVendorInvoiceEmail();
@@ -43,10 +57,38 @@ export default function VendorInvoiceDetailPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [emailMessage, setEmailMessage] = useState<string | null>(null);
+  const [proofDownloadError, setProofDownloadError] = useState<string | null>(null);
+  const [downloadingProofId, setDownloadingProofId] = useState<string | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
   const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
   const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
   const [pdfReadyFileName, setPdfReadyFileName] = useState('invoice.pdf');
+
+  const amounts = useMemo(() => {
+    if (!data) {
+      return adjustInvoiceAmountsWithProofs({}, proofs);
+    }
+    const statusFromPayment =
+      paymentStatus.data?.status ||
+      data.status;
+    const paidFromPayment =
+      paymentStatus.data?.paidAmount != null
+        ? paymentStatus.data.paidAmount
+        : data.paidAmount;
+    const outstandingFromPayment =
+      paymentStatus.data?.outstandingAmount != null
+        ? paymentStatus.data.outstandingAmount
+        : data.outstandingBalance;
+    return adjustInvoiceAmountsWithProofs(
+      {
+        totalAmount: data.totalAmount,
+        paidAmount: paidFromPayment,
+        outstandingBalance: outstandingFromPayment,
+        status: statusFromPayment,
+      },
+      proofs,
+    );
+  }, [data, proofs, paymentStatus.data]);
 
   const openInvoicePdf = (invoiceId: string, name: string, pdfUrl?: string) => {
     setPdfError(null);
@@ -77,8 +119,11 @@ export default function VendorInvoiceDetailPage() {
     );
   }
 
-  const statusUpper = String(data.status || '').trim().toUpperCase();
-  const canPost = statusUpper === 'DRAFT' || statusUpper === 'SUBMITTED' || statusUpper === '';
+  const displayStatus = amounts.displayStatus;
+  const rawStatusUpper = String(data.status || '').trim().toUpperCase();
+  // Gate post on API workflow status, not remittance-derived display status.
+  const canPost =
+    rawStatusUpper === 'DRAFT' || rawStatusUpper === 'SUBMITTED' || rawStatusUpper === '';
   const emailPending = sendInvoiceEmail.isPending;
 
   const onShare = async (dto: ShareEmailDto) => {
@@ -94,8 +139,11 @@ export default function VendorInvoiceDetailPage() {
       .mutateAsync(data)
       .then(() => {
         setActionMessage(
-          'Invoice submitted. It appears under Purchase Invoices as a draft for your forwarder to post, then they can record payment proofs.',
+          'Invoice submitted. It appears under Purchase Invoices as a draft for your forwarder to post. Remittance proofs they upload will appear here.',
         );
+        void refetch();
+        void refetchProofs();
+        void paymentStatus.refetch();
       })
       .catch((err) => {
         setActionError(vendorErrorMessage(err, 'Could not post invoice.'));
@@ -119,7 +167,9 @@ export default function VendorInvoiceDetailPage() {
         }
         actions={
           <>
-            {data.status ? <Badge variant="info">{data.status.replaceAll('_', ' ')}</Badge> : null}
+            {displayStatus ? (
+              <Badge variant="info">{displayStatus.replaceAll('_', ' ')}</Badge>
+            ) : null}
             {canPost ? (
               <Button
                 type="button"
@@ -180,8 +230,8 @@ export default function VendorInvoiceDetailPage() {
         </p>
       ) : canPost && !data.pdfUrl ? (
         <p className="text-sm text-[var(--color-neutral-500)]">
-          Post this invoice so your forwarder can process it under Purchase Invoices. Payment proofs
-          are recorded on the admin side.
+          Post this invoice so your forwarder can process it under Purchase Invoices. Remittance
+          proofs they upload will appear on this page.
         </p>
       ) : null}
       {emailMessage ? (
@@ -189,18 +239,34 @@ export default function VendorInvoiceDetailPage() {
           {emailMessage}
         </p>
       ) : null}
+      {proofDownloadError ? (
+        <p className="text-sm text-[var(--color-danger-600)]" role="alert">
+          {proofDownloadError}
+        </p>
+      ) : null}
 
       <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Total" value={formatVendorMoney(data.totalAmount, data.currencyCode)} />
+          <PortalStatCard
+            label="Total"
+            value={formatVendorMoney(amounts.totalAmount ?? data.totalAmount, data.currencyCode)}
+          />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Paid" value={formatVendorMoney(data.paidAmount, data.currencyCode)} />
+          <PortalStatCard
+            label="Paid"
+            value={formatVendorMoney(amounts.paidAmount, data.currencyCode)}
+            hint={
+              amounts.includesPendingProofs
+                ? `Incl. ${formatVendorMoney(amounts.pendingProofAmount, data.currencyCode)} pending proof`
+                : undefined
+            }
+          />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
           <PortalStatCard
             label="Balance due"
-            value={formatVendorMoney(data.outstandingBalance, data.currencyCode)}
+            value={formatVendorMoney(amounts.remainingAmount, data.currencyCode)}
           />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
@@ -237,6 +303,63 @@ export default function VendorInvoiceDetailPage() {
             ))}
           </PortalAnimatedList>
         )}
+      </PortalPanel>
+
+      <PortalPanel padded className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">Payment proofs</h2>
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() => {
+              void refetch();
+              void refetchProofs();
+              void paymentStatus.refetch();
+            }}
+          >
+            Refresh
+          </Button>
+        </div>
+        {proofsLoading ? (
+          <p className="text-sm text-[var(--color-neutral-400)]">Loading payment proofs…</p>
+        ) : proofsError ? (
+          <div className="space-y-2">
+            <p className="text-sm text-[var(--color-danger-600)]" role="alert">
+              {vendorErrorMessage(proofsLoadError, 'Could not load payment proofs.')}
+            </p>
+            <Button type="button" size="sm" variant="secondary" onClick={() => void refetchProofs()}>
+              Retry
+            </Button>
+          </div>
+        ) : (
+          <PaymentProofList
+            proofs={proofs}
+            viewer="vendor"
+            downloadingProofId={downloadingProofId}
+            onDownload={(proof) => {
+              setProofDownloadError(null);
+              setDownloadingProofId(proof.id);
+              void downloadProof
+                .mutateAsync({
+                  invoiceId: id,
+                  proof,
+                  fileName: proof.fileName || proof.reference || 'payment-proof',
+                })
+                .catch((err) => {
+                  setProofDownloadError(
+                    vendorErrorMessage(err, 'Could not download payment proof.'),
+                  );
+                })
+                .finally(() => setDownloadingProofId(null));
+            }}
+          />
+        )}
+        {amounts.includesPendingProofs ? (
+          <p className="text-xs text-[var(--color-neutral-500)]">
+            Paid includes remittance proof(s) still awaiting finance review.
+          </p>
+        ) : null}
       </PortalPanel>
 
       <ShareEmailModal

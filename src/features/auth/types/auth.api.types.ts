@@ -109,3 +109,16 @@ export interface AcceptInviteDto {
   first_name?: string;
   last_name?: string;
 }
+
+/** POST /auth/forgot-password — ForgotPasswordDto (staff email reset link) */
+export interface ForgotPasswordDto {
+  tenant_slug: string;
+  email: string;
+}
+
+/** POST /auth/reset-password — PublicResetPasswordDto */
+export interface PublicResetPasswordDto {
+  token: string;
+  new_password: string;
+  confirm_password: string;
+}

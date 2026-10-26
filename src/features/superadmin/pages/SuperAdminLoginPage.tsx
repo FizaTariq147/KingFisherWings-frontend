@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { isAxiosError } from 'axios';
 import { ApiError } from '../../../lib/superAdminApiClient';
 import { useAuthStore } from '@/store/authStore';
+import { withAuthThrottleMessage } from '@/features/auth/utils/authThrottleMessage';
 import { safeInternalPath } from '@/lib/safeInternalPath';
 import { superAdminAuthService } from '../services/superAdminAuth.service';
 import { useSuperAdminAuthStore } from '../store/superAdminAuthStore';
@@ -35,25 +36,25 @@ interface LocationState {
 }
 
 function authErrorMessage(error: unknown, fallback: string): string {
-  if (error instanceof ApiError && error.message.trim()) return error.message;
-  if (isAxiosError(error)) {
+  let detail = fallback;
+  if (error instanceof ApiError && error.message.trim()) detail = error.message;
+  else if (isAxiosError(error)) {
     const data = error.response?.data;
     if (data && typeof data === 'object' && 'message' in data) {
       const message = (data as { message?: string | string[] }).message;
-      if (Array.isArray(message) && message.length) return message.map(String).join('; ');
-      if (typeof message === 'string' && message.trim()) return message;
+      if (Array.isArray(message) && message.length) detail = message.map(String).join('; ');
+      else if (typeof message === 'string' && message.trim()) detail = message;
+    } else if (error.response?.status === 401) {
+      detail = 'Invalid credentials. Check email and password.';
     }
-    if (error.response?.status === 401) {
-      return 'Invalid credentials. Check email and password.';
-    }
-  }
-  if (error instanceof Error && error.message.trim()) {
+  } else if (error instanceof Error && error.message.trim()) {
     if (/status code 401/i.test(error.message)) {
-      return 'Invalid credentials. Check email and password.';
+      detail = 'Invalid credentials. Check email and password.';
+    } else {
+      detail = error.message;
     }
-    return error.message;
   }
-  return fallback;
+  return withAuthThrottleMessage(error, detail);
 }
 
 export default function SuperAdminLoginPage(): JSX.Element {

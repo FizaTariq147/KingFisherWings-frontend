@@ -25,6 +25,7 @@ import { VENDOR_INVOICE_STATUSES } from '../api/vendorInvoices.api';
 import {
   useExportVendorInvoicesCsv,
   useSubmitVendorInvoice,
+  useVendorInvoiceDisplayRows,
   useVendorInvoiceOpenItems,
   useVendorInvoicePdfBlob,
   useVendorInvoiceSummary,
@@ -76,7 +77,8 @@ export default function VendorInvoicesPage() {
   const pdfBlob = useVendorInvoicePdfBlob();
   const exportCsv = useExportVendorInvoicesCsv();
   const submit = useSubmitVendorInvoice();
-  const items = active.data?.items ?? [];
+  const rawItems = active.data?.items ?? [];
+  const items = useVendorInvoiceDisplayRows(rawItems);
   const meta = active.data?.meta;
   const { isLoading, isError, error, refetch, isFetching } = active;
 
@@ -134,21 +136,46 @@ export default function VendorInvoicesPage() {
 
       <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Total" value={summary.data?.total ?? (summary.isLoading ? '…' : 0)} Icon={FileText} />
+          <PortalStatCard
+            label="Invoices"
+            value={summary.data?.total ?? (summary.isLoading ? '…' : 0)}
+            hint="Count"
+            Icon={FileText}
+          />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
           <PortalStatCard
             label="Outstanding"
-            value={summary.data?.outstanding ?? (summary.isLoading ? '…' : 0)}
+            value={
+              summary.isLoading
+                ? '…'
+                : formatVendorMoney(summary.data?.outstanding ?? 0, summary.data?.currencyCode)
+            }
           />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
-          <PortalStatCard label="Overdue" value={summary.data?.overdue ?? (summary.isLoading ? '…' : 0)} />
+          <PortalStatCard
+            label="Overdue"
+            value={
+              summary.isLoading
+                ? '…'
+                : formatVendorMoney(summary.data?.overdue ?? 0, summary.data?.currencyCode)
+            }
+          />
         </PortalAnimatedGridItem>
         <PortalAnimatedGridItem>
           <PortalStatCard
             label="Paid"
-            value={summary.data?.paid ?? (summary.isLoading ? '…' : 0)}
+            value={
+              summary.isLoading
+                ? '…'
+                : formatVendorMoney(summary.data?.paid ?? 0, summary.data?.currencyCode)
+            }
+            hint={
+              summary.data?.paidCount != null
+                ? `${summary.data.paidCount} paid invoice(s)`
+                : undefined
+            }
             tone="accent"
           />
         </PortalAnimatedGridItem>
@@ -161,8 +188,8 @@ export default function VendorInvoicesPage() {
             After you accept a cost offer, a draft invoice is created automatically — open it and
             submit when ready (it stays Draft until your forwarder posts it). You can also submit a
             new invoice here (currency, total, optional PDF).
-            It appears under Purchase Invoices for your forwarder; payment proofs are recorded on
-            the admin side.
+            It appears under Purchase Invoices for your forwarder. Remittance proofs they upload
+            show on that invoice here.
           </p>
         </div>
         {submitError ? (
@@ -355,7 +382,7 @@ export default function VendorInvoicesPage() {
                   </div>
                   <div className="mt-0.5 text-xs tabular-nums text-[var(--color-neutral-600)]">
                     {[
-                      formatVendorMoney(inv.totalAmount, inv.currencyCode)
+                      inv.totalAmount != null
                         ? `Total ${formatVendorMoney(inv.totalAmount, inv.currencyCode)}`
                         : null,
                       inv.paidAmount != null

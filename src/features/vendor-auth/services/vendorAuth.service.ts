@@ -3,6 +3,7 @@ import { VENDOR_AUTH_API } from '../api/vendorAuth.api';
 import type {
   VendorAcceptInviteDto,
   VendorChangePasswordDto,
+  VendorForgotPasswordDto,
   VendorLoginDto,
   VendorLoginResult,
   VendorUser,
@@ -67,6 +68,14 @@ export const vendorAuthService = {
     await vendorApiClient.post(VENDOR_AUTH_API.changePassword, {
       current_password: dto.current_password,
       new_password: dto.new_password,
+    });
+  },
+
+  /** POST /vendor/auth/forgot-password — emails a temporary password when account exists. */
+  async forgotPassword(dto: VendorForgotPasswordDto): Promise<void> {
+    await vendorApiClient.post(VENDOR_AUTH_API.forgotPassword, {
+      tenant_slug: dto.tenant_slug.trim(),
+      email: dto.email.trim().toLowerCase(),
     });
   },
 

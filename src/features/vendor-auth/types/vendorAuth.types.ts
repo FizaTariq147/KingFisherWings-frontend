@@ -29,6 +29,12 @@ export interface VendorChangePasswordDto {
   new_password: string;
 }
 
+/** POST /vendor/auth/forgot-password — emails a temporary password. */
+export interface VendorForgotPasswordDto {
+  tenant_slug: string;
+  email: string;
+}
+
 export interface VendorLoginDto {
   tenant_slug: string;
   email: string;

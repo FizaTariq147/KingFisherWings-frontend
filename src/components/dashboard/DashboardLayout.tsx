@@ -6,7 +6,7 @@ import { WidgetSettingsPanel } from './WidgetSettingsPanel'
 
 function WidgetSkeleton() {
   return (
-    <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 animate-pulse">
+    <div className="rounded-xl bg-white p-5 animate-pulse">
       <div className="h-3 w-24 bg-[var(--color-neutral-100)] rounded mb-4" />
       <div className="h-8 w-16 bg-[var(--color-neutral-100)] rounded" />
     </div>

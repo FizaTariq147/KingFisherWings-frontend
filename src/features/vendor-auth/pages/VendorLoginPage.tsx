@@ -14,6 +14,7 @@ import {
   popupLabelClass,
   popupSubmitClass,
 } from '@/features/auth/components/LoginPopupFrame'
+import { withAuthThrottleMessage } from '@/features/auth/utils/authThrottleMessage';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
 import { vendorErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import { safeInternalPath } from '@/lib/safeInternalPath';
@@ -71,6 +72,12 @@ export default function VendorLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   /** Explicit option when signing in with an admin-issued temporary password. */
   const [setNewPasswordAfterLogin, setSetNewPasswordAfterLogin] = useState(false);
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotSlug, setForgotSlug] = useState('');
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotErr, setForgotErr] = useState<string | null>(null);
+  const [forgotSending, setForgotSending] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -121,14 +128,13 @@ export default function VendorLoginPage() {
       navigate(safeInternalPath(from, { prefix: '/vendor', fallback: '/vendor' }), { replace: true });
     },
     onError: (error: unknown) => {
-      form.setError('root', {
-        message:
-          error instanceof VendorApiError
-            ? vendorErrorMessage(error, 'Login failed. Try again.')
-            : error instanceof Error
-              ? error.message
-              : 'Login failed. Try again.',
-      });
+      const raw =
+        error instanceof VendorApiError
+          ? vendorErrorMessage(error, 'Login failed. Try again.')
+          : error instanceof Error
+            ? error.message
+            : 'Login failed. Try again.';
+      form.setError('root', { message: withAuthThrottleMessage(error, raw) });
     },
   });
 
@@ -143,16 +149,52 @@ export default function VendorLoginPage() {
       navigate('/vendor/login', { replace: true });
     },
     onError: (error: unknown) => {
-      inviteForm.setError('root', {
-        message:
-          error instanceof VendorApiError
-            ? vendorErrorMessage(error, 'Could not accept invite.')
-            : error instanceof Error
-              ? error.message
-              : 'Could not accept invite.',
-      });
+      const raw =
+        error instanceof VendorApiError
+          ? vendorErrorMessage(error, 'Could not accept invite.')
+          : error instanceof Error
+            ? error.message
+            : 'Could not accept invite.';
+      inviteForm.setError('root', { message: withAuthThrottleMessage(error, raw) });
     },
   });
+
+  const openForgot = () => {
+    setForgotSlug(form.getValues('tenant_slug') || '');
+    setForgotEmail(form.getValues('email') || '');
+    setForgotErr(null);
+    setForgotSent(false);
+    setForgotOpen(true);
+  };
+
+  const handleForgotSend = async () => {
+    const tenant_slug = forgotSlug.trim();
+    const email = forgotEmail.trim().toLowerCase();
+    if (tenant_slug.length < 2) {
+      setForgotErr('Workspace username is required.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setForgotErr('Enter a valid email address.');
+      return;
+    }
+    setForgotErr(null);
+    setForgotSending(true);
+    try {
+      await vendorAuthService.forgotPassword({ tenant_slug, email });
+      setForgotSent(true);
+    } catch (error) {
+      const raw =
+        error instanceof VendorApiError
+          ? vendorErrorMessage(error, 'Could not send temporary password.')
+          : error instanceof Error
+            ? error.message
+            : 'Could not send temporary password.';
+      setForgotErr(withAuthThrottleMessage(error, raw));
+    } finally {
+      setForgotSending(false);
+    }
+  };
 
   if (ready && accessToken) {
     const mustChange = Boolean(useVendorAuthStore.getState().user?.mustChangePassword);
@@ -163,6 +205,74 @@ export default function VendorLoginPage() {
 
   return (
     <AuthLandingShell onAdminClick={() => navigate('/login?admin=1')} videoOnly>
+      {forgotOpen ? (
+        <LoginPopupFrame title="Forgot password" onClose={() => setForgotOpen(false)}>
+          {forgotSent ? (
+            <div className="space-y-3">
+              <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-3 text-sm text-emerald-800">
+                If an account exists, a temporary password has been emailed. Sign in with it, then
+                set a new password.
+              </div>
+              <button
+                type="button"
+                className={popupSubmitClass}
+                style={{ background: '#0A2942' }}
+                onClick={() => setForgotOpen(false)}
+              >
+                Back to sign in
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-3.5">
+              <p className="text-xs text-slate-500">
+                We email a temporary password. After signing in you must set a new password.
+              </p>
+              <div>
+                <label htmlFor="vendor_forgot_slug" className={popupLabelClass}>
+                  Username
+                </label>
+                <input
+                  id="vendor_forgot_slug"
+                  className={popupInputClass}
+                  value={forgotSlug}
+                  disabled={forgotSending}
+                  onChange={(e) => setForgotSlug(e.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="vendor_forgot_email" className={popupLabelClass}>
+                  Email
+                </label>
+                <input
+                  id="vendor_forgot_email"
+                  type="email"
+                  className={popupInputClass}
+                  value={forgotEmail}
+                  disabled={forgotSending}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') void handleForgotSend();
+                  }}
+                />
+              </div>
+              {forgotErr ? (
+                <p className="text-xs text-red-600" role="alert">
+                  {forgotErr}
+                </p>
+              ) : null}
+              <button
+                type="button"
+                disabled={forgotSending}
+                className={popupSubmitClass}
+                style={{ background: '#0A2942' }}
+                onClick={() => void handleForgotSend()}
+              >
+                {forgotSending ? 'Sending…' : 'Email temporary password'}
+              </button>
+            </div>
+          )}
+        </LoginPopupFrame>
+      ) : (
       <LoginPopupFrame
         title={inviteToken ? 'Accept invite' : 'Vendor Portal Sign In'}
         onClose={closeToHub}
@@ -290,6 +400,13 @@ export default function VendorLoginPage() {
               {form.formState.errors.password && (
                 <p className="mt-1 text-xs text-red-600">{form.formState.errors.password.message}</p>
               )}
+              <button
+                type="button"
+                onClick={openForgot}
+                className="mt-1 ml-auto block text-[12px] font-medium text-blue-600 hover:underline"
+              >
+                Forgot password?
+              </button>
             </div>
             <label className="flex items-start gap-2 text-xs text-slate-600 leading-snug">
               <input
@@ -313,6 +430,7 @@ export default function VendorLoginPage() {
           </form>
         )}
       </LoginPopupFrame>
+      )}
     </AuthLandingShell>
   );
 }

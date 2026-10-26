@@ -161,8 +161,9 @@ export function StaffPurchaseInvoicePaymentProofPanel({
   return (
     <div className="space-y-4">
       <p className="text-xs text-[var(--color-neutral-500)]">
-        Upload remittance proof for this vendor purchase invoice, then approve or reject.
-        Approve posts a GL payment — pick the bank account when using bank transfer.
+        Vendor portal and staff remittance proofs for this purchase invoice appear here. Open or
+        download the file, then approve or reject. Approve posts a GL payment — pick the bank
+        account when using bank transfer.
       </p>
       {likelyNeedsPost ? (
         <p className="text-xs text-[var(--color-warning-700,#a16207)]">
@@ -407,7 +408,7 @@ function ProofRow({
   const showBank = canApprove && needsBankAccount(paymentMethod);
 
   return (
-    <div className="space-y-2 rounded-md border border-[var(--color-neutral-200)] px-3 py-3 text-sm">
+    <div className="space-y-2 rounded-md bg-[var(--color-neutral-50)] px-3 py-3 text-sm shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="min-w-0">
           <p className="font-medium">{proof.fileName || proof.reference || proof.id}</p>
@@ -427,7 +428,7 @@ function ProofRow({
               {proof.status.replaceAll('_', ' ')}
             </Badge>
           ) : null}
-          <PaymentProofOpenButton proof={proof} viewer="staff" />
+          <PaymentProofOpenButton proof={proof} viewer="staff" showDownload />
         </div>
       </div>
       {proof.notes ? (

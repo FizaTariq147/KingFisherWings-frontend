@@ -10,6 +10,7 @@ import {
   sessionIdFromAccessToken,
 } from '@/lib/tenantFromAuth'
 import { withGatewayRetry } from '@/lib/wakeApi'
+import { AUTH_THROTTLE_USER_MESSAGE } from '@/features/auth/utils/authThrottleMessage'
 import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore'
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore'
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache'
@@ -53,6 +54,8 @@ function extractErrorMessage(err: unknown): string {
   const status = axiosErr.response?.status
   const data = axiosErr.response?.data
 
+  if (status === 429) return AUTH_THROTTLE_USER_MESSAGE
+
   if (status === 502 || status === 504) {
     return 'The API gateway timed out (502). The Render backend may still be waking — wait ~30 seconds and try again (login will auto-retry).'
   }
@@ -64,7 +67,7 @@ function extractErrorMessage(err: unknown): string {
       if (typeof msg === 'string' && msg.toLowerCase().includes('locked'))
         return 'Your account has been locked due to too many failed attempts. Please contact your administrator.'
       if (typeof msg === 'string' && (msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('credentials')))
-        return 'Incorrect credentials. Staff / User: POST /auth/login needs slug + email + password. Tenant Admin: POST /auth/tenant-login needs slug + password only. SuperAdmin: /superadmin/login.'
+        return 'Incorrect credentials. Check workspace username, email (staff), and password, then try again.'
       if (typeof msg === 'string' && (msg.toLowerCase().includes('outside') || msg.toLowerCase().includes('hours')))
         return 'Login is not permitted outside your configured office hours.'
       if (typeof msg === 'string' && msg.toLowerCase().includes('ip'))
@@ -76,7 +79,6 @@ function extractErrorMessage(err: unknown): string {
     if (status === 403) {
       return 'You do not have permission to access this workspace.'
     }
-    if (status === 429) return 'Too many login attempts. Please wait a moment before trying again.'
     if (status === 503 || status === 0)
       return 'Unable to reach the server. Please check your connection.'
 

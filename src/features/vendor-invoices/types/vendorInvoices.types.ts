@@ -43,11 +43,20 @@ export interface VendorInvoiceDetail extends VendorInvoiceListItem {
 }
 
 export interface VendorInvoiceSummary {
+  /** Invoice count (not a money total). */
   total: number;
+  /** Total outstanding / balance due across invoices (money). */
   outstanding: number;
+  /** Overdue amount when API provides it; otherwise overdue count. */
   overdue: number;
+  /** Total paid amount across invoices (money). */
   paid: number;
+  /** Count of PAID invoices when API provides it separately. */
+  paidCount?: number;
+  currencyCode?: string;
   byStatus: Record<string, number>;
+  /** True when `paid` came from an explicit amount field on the summary payload. */
+  paidFromApiAmount?: boolean;
 }
 
 export interface VendorInvoiceListResult {
@@ -63,4 +72,12 @@ export interface VendorInvoiceSubmitDto {
   reference?: string;
   remarks?: string;
   file?: File;
+}
+
+/** GET /vendor/invoices/{id}/payment-status */
+export interface VendorInvoicePaymentStatus {
+  status?: string;
+  paidAmount?: number;
+  outstandingAmount?: number;
+  raw?: Record<string, unknown>;
 }
