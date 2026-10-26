@@ -16,15 +16,30 @@ import { safeDownloadFilename } from '@/features/vendor-shared/normalize';
 import { postVendorWithOptionalFile } from '@/features/vendor-shared/vendorMultipart';
 import { vendorInvoicePdfErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import { postShareEmail, type ShareEmailDto, type ShareEmailResult } from '@/features/shared/share-email';
+import {
+  asRecord,
+  pickNumber,
+  pickString,
+  unwrapData,
+} from '@/features/portal-shared/normalize';
+import type { PaymentProof } from '@/features/payment-proofs/types/paymentProof.types';
+import { normalizePaymentProofList } from '@/features/payment-proofs/utils/normalizePaymentProof';
+import {
+  downloadPaymentProofFile,
+} from '@/features/payment-proofs/utils/openPaymentProofFile';
 import { VENDOR_INVOICES_API } from '../api/vendorInvoices.api';
 import type {
   VendorInvoiceDetail,
+  VendorInvoiceListItem,
   VendorInvoiceListParams,
   VendorInvoiceListResult,
+  VendorInvoicePaymentStatus,
   VendorInvoiceSubmitDto,
   VendorInvoiceSummary,
 } from '../types/vendorInvoices.types';
+import { vendorPaymentsService } from '@/features/vendor-payments/services/vendorPayments.service';
 import {
+  aggregateInvoiceMoney,
   normalizeInvoiceDetail,
   normalizeInvoiceList,
   normalizeInvoiceListItem,
@@ -55,12 +70,65 @@ async function fetchPdfFromUrl(
   return { blob: result.blob, fileName: result.filename };
 }
 
+async function listAllInvoiceItems(
+  list: (page: number, limit: number) => Promise<{ items: VendorInvoiceListItem[]; meta: { totalPages: number } }>,
+): Promise<VendorInvoiceListItem[]> {
+  const all: VendorInvoiceListItem[] = [];
+  let page = 1;
+  let totalPages = 1;
+  const limit = 100;
+  while (page <= totalPages && page <= 50) {
+    const result = await list(page, limit);
+    all.push(...result.items);
+    totalPages = Math.max(1, result.meta.totalPages || 1);
+    if (!result.items.length) break;
+    page += 1;
+  }
+  return all;
+}
+
 export const vendorInvoicesService = {
   async summary(period?: ApiPeriodQuery): Promise<VendorInvoiceSummary> {
     const res = await vendorApiClient.get(VENDOR_INVOICES_API.summary, {
       params: periodQueryParams(period),
     });
-    return normalizeInvoiceSummary(res.data);
+    const base = normalizeInvoiceSummary(res.data);
+
+    // When summary omits paid/outstanding money, derive from invoice rows + payments summary.
+    const needsPaidEnrichment = !base.paidFromApiAmount && !(base.paid > 0);
+    const needsOutstandingEnrichment = !(base.outstanding > 0);
+    if (!needsPaidEnrichment && !needsOutstandingEnrichment) return base;
+
+    const [invoiceItems, paymentsSummary] = await Promise.all([
+      listAllInvoiceItems((page, limit) => this.list({ page, limit })).catch(
+        () => [] as VendorInvoiceListItem[],
+      ),
+      vendorPaymentsService.summary().catch(() => null),
+    ]);
+    const aggregated = aggregateInvoiceMoney(invoiceItems);
+    const paidFromPayments = paymentsSummary?.totalPaidYtd;
+    const paid =
+      base.paidFromApiAmount && base.paid > 0
+        ? base.paid
+        : aggregated.paid > 0
+          ? aggregated.paid
+          : paidFromPayments != null && paidFromPayments > 0
+            ? paidFromPayments
+            : base.paid;
+    const outstanding =
+      base.outstanding > 0
+        ? base.outstanding
+        : aggregated.outstanding > 0
+          ? aggregated.outstanding
+          : paymentsSummary?.totalOutstanding ?? base.outstanding;
+
+    return {
+      ...base,
+      paid,
+      outstanding,
+      currencyCode: base.currencyCode || aggregated.currencyCode || paymentsSummary?.currencyCode,
+      paidFromApiAmount: base.paidFromApiAmount || aggregated.paid > 0 || Boolean(paidFromPayments),
+    };
   },
 
   async list(params: VendorInvoiceListParams = {}): Promise<VendorInvoiceListResult> {
@@ -88,6 +156,54 @@ export const vendorInvoicesService = {
     const detail = normalizeInvoiceDetail(res.data);
     if (!detail) throw new VendorApiError('Invoice not found.', 404);
     return detail;
+  },
+
+  /** GET /vendor/invoices/{id}/payment-proofs — includes admin-uploaded remittance proofs. */
+  async listPaymentProofs(invoiceId: string): Promise<PaymentProof[]> {
+    const res = await vendorApiClient.get(VENDOR_INVOICES_API.paymentProofs(invoiceId));
+    return normalizePaymentProofList(res.data);
+  },
+
+  /** GET /vendor/invoices/{id}/payment-status — paid / outstanding from finance. */
+  async paymentStatus(invoiceId: string): Promise<VendorInvoicePaymentStatus> {
+    try {
+      const res = await vendorApiClient.get(VENDOR_INVOICES_API.paymentStatus(invoiceId), {
+        skipErrorToast: true,
+      });
+      const r = asRecord(unwrapData(res.data)) ?? asRecord(res.data) ?? {};
+      return {
+        status:
+          pickString(r.status, r.payment_status, r.paymentStatus, r.invoice_status) || undefined,
+        paidAmount: pickNumber(r.paid_amount, r.paidAmount, r.amount_paid, r.paid),
+        outstandingAmount: pickNumber(
+          r.outstanding_amount,
+          r.outstandingAmount,
+          r.balance_due,
+          r.balanceDue,
+          r.outstanding_balance,
+          r.outstandingBalance,
+        ),
+        raw: r,
+      };
+    } catch (err) {
+      const status = err instanceof VendorApiError ? err.status : 0;
+      // Detail + proofs remain source of truth when payment-status is unavailable.
+      if (status === 404 || status === 501 || status === 403) return {};
+      throw err;
+    }
+  },
+
+  async downloadPaymentProof(
+    invoiceId: string,
+    proof: PaymentProof,
+    fileName?: string,
+  ): Promise<void> {
+    await downloadPaymentProofFile(
+      proof.fileUrl || '',
+      'vendor',
+      fileName || proof.fileName || proof.reference || 'payment-proof',
+      { proofId: proof.id, invoiceId },
+    );
   },
 
   async getPdfBlob(

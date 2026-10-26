@@ -125,7 +125,7 @@ function formatOpenError(error: unknown, fallback: string): Error {
     const msg = error.message.trim();
     if (/^request failed with status code\s*500$/i.test(msg) || /internal server error/i.test(msg)) {
       return new Error(
-        'Could not open payment proof (HTTP 500). The file may be missing in storage — ask backend to check GET /payment-proofs/{id}/file.',
+        'Could not open payment proof. The file may be missing in storage — retry or contact support.',
       );
     }
     if (msg === 'EXTERNAL_PAYMENT_PROOF_URL') {

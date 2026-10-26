@@ -3,6 +3,7 @@ import { PORTAL_AUTH_API } from '../api/portalAuth.api';
 import type {
   PortalAcceptInviteDto,
   PortalChangePasswordDto,
+  PortalForgotPasswordDto,
   PortalLoginDto,
   PortalLoginResult,
   PortalUser,
@@ -70,6 +71,14 @@ export const portalAuthService = {
     await portalApiClient.post(PORTAL_AUTH_API.changePassword, {
       current_password: dto.current_password,
       new_password: dto.new_password,
+    });
+  },
+
+  /** POST /portal/auth/forgot-password — emails a temporary password when account exists. */
+  async forgotPassword(dto: PortalForgotPasswordDto): Promise<void> {
+    await portalApiClient.post(PORTAL_AUTH_API.forgotPassword, {
+      tenant_slug: dto.tenant_slug.trim(),
+      email: dto.email.trim().toLowerCase(),
     });
   },
 

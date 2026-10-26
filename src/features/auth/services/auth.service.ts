@@ -8,8 +8,10 @@ import type {
   AuthMeResponse,
   AuthTokenPair,
   ChangePasswordDto,
+  ForgotPasswordDto,
   InviteUserDto,
   LoginDto,
+  PublicResetPasswordDto,
   RefreshTokenDto,
   TenantChangePasswordDto,
   TenantLoginDto,
@@ -282,6 +284,31 @@ export const authService = {
     if (dto.first_name?.trim()) body.first_name = dto.first_name.trim();
     if (dto.last_name?.trim()) body.last_name = dto.last_name.trim();
     await axiosInstance.post(AUTH_API.acceptInvite, body, { withCredentials: false });
+  },
+
+  /** AuthController_forgotPassword — public; emails reset link when account exists */
+  async forgotPassword(dto: ForgotPasswordDto): Promise<void> {
+    await axiosInstance.post(
+      AUTH_API.forgotPassword,
+      {
+        tenant_slug: normalizeTenantSlugInput(dto.tenant_slug),
+        email: dto.email.trim().toLowerCase(),
+      },
+      { withCredentials: false, skipErrorToast: true },
+    );
+  },
+
+  /** AuthController_resetPassword — public; set password from emailed token */
+  async resetPassword(dto: PublicResetPasswordDto): Promise<void> {
+    await axiosInstance.post(
+      AUTH_API.resetPassword,
+      {
+        token: dto.token.trim(),
+        new_password: dto.new_password,
+        confirm_password: dto.confirm_password,
+      },
+      { withCredentials: false, skipErrorToast: true },
+    );
   },
 
   /** AuthController_tenantChangePassword — Tenant Admin workspace password */

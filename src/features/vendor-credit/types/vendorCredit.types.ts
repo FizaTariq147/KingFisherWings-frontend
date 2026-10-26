@@ -28,6 +28,12 @@ export interface VendorStatementResult {
   invoiceCount?: number;
   advancesUnallocated?: number;
   truncated?: boolean;
+  /** Sum of invoice totals (API or composed from ledger invoices). */
+  totalInvoiced?: number;
+  /** Sum of amounts paid against invoices / remittances. */
+  totalPaid?: number;
+  /** Remaining open AP balance (same idea as closing / outstanding). */
+  totalRemaining?: number;
   /** True when lines were built from invoices/payments/credit notes. */
   composedFromLedgers?: boolean;
   lines: VendorStatementLine[];

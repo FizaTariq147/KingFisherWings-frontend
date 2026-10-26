@@ -10,6 +10,7 @@ import { VendorApiError } from '@/lib/vendorApiClient';
 import { useApplyTheme } from '@/hooks/useApplyTheme';
 import { AuthLandingShell } from '@/features/auth/components/AuthLandingShell';
 import { LoginPopupFrame } from '@/features/auth/components/LoginPopupFrame';
+import { withAuthThrottleMessage } from '@/features/auth/utils/authThrottleMessage';
 import { VENDOR_CHANGE_PASSWORD_PATH } from '../api/vendorAuth.api';
 import { vendorAuthService } from '../services/vendorAuth.service';
 import { useVendorAuthStore } from '../store/vendorAuthStore';
@@ -36,7 +37,6 @@ function extractErrorMessage(error: unknown): string {
     if (error.status === 404) {
       return 'Set new password is not available on the server yet. Ask your forwarder to enable vendor password change, or try again later.';
     }
-    if (error.message.trim()) return error.message;
   }
   const ax = error as {
     response?: { status?: number; data?: { message?: string | string[]; error?: string } };
@@ -45,12 +45,16 @@ function extractErrorMessage(error: unknown): string {
   if (ax.response?.status === 404) {
     return 'Set new password is not available on the server yet. Ask your forwarder to enable vendor password change, or try again later.';
   }
-  const msg = ax.response?.data?.message;
-  if (Array.isArray(msg) && msg[0]) return String(msg[0]);
-  if (typeof msg === 'string' && msg.trim()) return msg;
-  if (typeof ax.response?.data?.error === 'string') return ax.response.data.error;
-  if (error instanceof Error && error.message) return error.message;
-  return 'Could not change password. Please try again.';
+  let detail = 'Could not change password. Please try again.';
+  if (error instanceof VendorApiError && error.message.trim()) detail = error.message;
+  else {
+    const msg = ax.response?.data?.message;
+    if (Array.isArray(msg) && msg[0]) detail = String(msg[0]);
+    else if (typeof msg === 'string' && msg.trim()) detail = msg;
+    else if (typeof ax.response?.data?.error === 'string') detail = ax.response.data.error;
+    else if (error instanceof Error && error.message) detail = error.message;
+  }
+  return withAuthThrottleMessage(error, detail);
 }
 
 /**

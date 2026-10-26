@@ -14,6 +14,18 @@ import type {
   VendorInvoiceSummary,
 } from '../types/vendorInvoices.types';
 
+/** Prefer money-named fields; avoid treating paid_count as a currency amount. */
+function pickMoneyAmount(
+  data: Record<string, unknown>,
+  keys: string[],
+): number | undefined {
+  for (const key of keys) {
+    const n = pickNumber(data[key]);
+    if (n !== undefined) return n;
+  }
+  return undefined;
+}
+
 export function normalizeInvoiceSummary(raw: unknown): VendorInvoiceSummary {
   const data = asRecord(unwrapData(raw)) ?? asRecord(raw) ?? {};
   const byStatusRaw = asRecord(data.by_status) ?? asRecord(data.byStatus) ?? {};
@@ -23,12 +35,72 @@ export function normalizeInvoiceSummary(raw: unknown): VendorInvoiceSummary {
     if (n !== undefined) byStatus[k] = n;
   }
   const sum = Object.values(byStatus).reduce((s, n) => s + n, 0);
+
+  const paidCount = pickNumber(data.paid_count, data.paidCount);
+  const paidFromAmountFields = pickMoneyAmount(data, [
+    'paid_amount',
+    'paidAmount',
+    'total_paid',
+    'totalPaid',
+    'total_paid_amount',
+    'totalPaidAmount',
+    'amount_paid',
+    'amountPaid',
+    'paid_total',
+    'paidTotal',
+    'paid_sum',
+    'paidSum',
+  ]);
+  // Bare `paid` is often a count — skip when it matches paid_count / by_status.PAID.
+  const paidBare = pickNumber(data.paid);
+  const paidBareLooksLikeCount =
+    paidBare != null &&
+    (paidBare === paidCount ||
+      (Number.isInteger(paidBare) &&
+        (paidBare === byStatus.PAID || paidBare === byStatus.paid)));
+  const paid = paidFromAmountFields ?? (paidBareLooksLikeCount ? undefined : paidBare) ?? 0;
+
+  const outstanding =
+    pickMoneyAmount(data, [
+      'outstanding',
+      'outstanding_total',
+      'outstandingTotal',
+      'outstanding_amount',
+      'outstandingAmount',
+      'outstanding_balance',
+      'outstandingBalance',
+      'amount_outstanding',
+      'amountOutstanding',
+      'balance_due',
+      'balanceDue',
+      'total_outstanding',
+      'totalOutstanding',
+      'open_balance',
+      'openBalance',
+    ]) ?? 0;
+
+  const overdue =
+    pickMoneyAmount(data, [
+      'overdue_amount',
+      'overdueAmount',
+      'overdue_total',
+      'overdueTotal',
+      'overdue',
+    ]) ??
+    pickNumber(data.overdue_count, data.overdueCount) ??
+    0;
+
   return {
-    total: pickNumber(data.total, data.count) ?? sum,
-    outstanding: pickNumber(data.outstanding, data.outstanding_total, data.outstandingTotal) ?? 0,
-    overdue: pickNumber(data.overdue, data.overdue_count, data.overdueCount) ?? 0,
-    paid: pickNumber(data.paid, data.paid_count, data.paidCount) ?? 0,
+    total: pickNumber(data.total, data.count, data.invoices_total, data.invoicesTotal) ?? sum,
+    outstanding,
+    overdue,
+    paid: paid ?? 0,
+    paidCount: paidCount ?? undefined,
+    currencyCode:
+      pickString(data.currency_code, data.currencyCode, data.currency) || undefined,
     byStatus,
+    /** True when summary paid came from an explicit amount field (not inferred). */
+    paidFromApiAmount: paidFromAmountFields != null,
   };
 }
 
@@ -139,15 +211,40 @@ export function normalizeInvoiceDetail(raw: unknown): VendorInvoiceDetail | null
   const linesRaw = Array.isArray(data.lines) ? data.lines : [];
   return {
     ...base,
-    subtotal: pickNumber(data.subtotal),
-    taxTotal: pickNumber(data.tax_total, data.taxTotal),
+    subtotal: pickNumber(data.subtotal, data.sub_total, data.net_amount),
+    taxTotal: pickNumber(data.tax_total, data.taxTotal, data.vat_total, data.vatTotal),
     remarks: pickString(data.remarks, data.notes) || undefined,
     pdfUrl: pickInvoicePdfUrl(data),
-    partyName:
-      pickString(data.party_name, data.partyName, data.vendor_name, data.vendorName) || undefined,
-    partyEmail: pickString(data.party_email, data.partyEmail, data.email) || undefined,
-    partyPhone: pickString(data.party_phone, data.partyPhone, data.phone) || undefined,
+    partyName: pickString(data.party_name, data.partyName, data.vendor_name) || undefined,
+    partyEmail: pickString(data.party_email, data.partyEmail, data.vendor_email) || undefined,
+    partyPhone: pickString(data.party_phone, data.partyPhone, data.vendor_phone) || undefined,
     vatRate: pickNumber(data.vat_rate, data.vatRate),
     lines: linesRaw.map(normalizeLine).filter((l): l is VendorInvoiceLine => Boolean(l)),
   };
+}
+
+/** Sum paid / outstanding from invoice rows (API-driven; no hardcoded totals). */
+export function aggregateInvoiceMoney(items: VendorInvoiceListItem[]): {
+  paid: number;
+  outstanding: number;
+  currencyCode?: string;
+} {
+  let paid = 0;
+  let outstanding = 0;
+  let currencyCode: string | undefined;
+  for (const inv of items) {
+    if (inv.paidAmount != null && Number.isFinite(inv.paidAmount)) paid += inv.paidAmount;
+    if (inv.outstandingBalance != null && Number.isFinite(inv.outstandingBalance)) {
+      outstanding += inv.outstandingBalance;
+    } else if (
+      inv.totalAmount != null &&
+      Number.isFinite(inv.totalAmount) &&
+      (inv.paidAmount == null || inv.paidAmount === 0)
+    ) {
+      // Open invoice with no explicit balance — treat full total as outstanding.
+      outstanding += inv.totalAmount;
+    }
+    if (!currencyCode && inv.currencyCode) currencyCode = inv.currencyCode;
+  }
+  return { paid, outstanding, currencyCode };
 }

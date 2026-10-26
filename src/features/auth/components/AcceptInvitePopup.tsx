@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { authService } from '@/features/auth/services/auth.service'
+import { withAuthThrottleMessage } from '@/features/auth/utils/authThrottleMessage'
 import { softPasswordField } from '@/lib/validation'
 import { LoginPopupFrame, popupInputClass, popupLabelClass, popupSubmitClass } from './LoginPopupFrame'
 
@@ -56,9 +57,12 @@ export function AcceptInvitePopup({
     } catch (error) {
       const ax = error as { response?: { data?: { message?: string | string[] } }; message?: string }
       const msg = ax.response?.data?.message
-      setApiErr(
-        Array.isArray(msg) ? String(msg[0]) : typeof msg === 'string' && msg.trim() ? msg : ax.message || 'Could not accept invite.',
-      )
+      const detail = Array.isArray(msg)
+        ? String(msg[0])
+        : typeof msg === 'string' && msg.trim()
+          ? msg
+          : ax.message || 'Could not accept invite.'
+      setApiErr(withAuthThrottleMessage(error, detail))
     } finally {
       setSubmitting(false)
     }

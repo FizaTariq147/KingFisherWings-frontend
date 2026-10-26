@@ -79,7 +79,7 @@ export function AuditFilters({ current, onChange }: AuditFiltersProps) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-wrap items-end gap-3 p-4 bg-white rounded-xl border border-[var(--color-neutral-200)]"
+      className="flex flex-wrap items-end gap-3 p-4 bg-white rounded-xl"
     >
       {/* Search */}
       <div className="flex flex-col gap-1 min-w-[180px] flex-1">

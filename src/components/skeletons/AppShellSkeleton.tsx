@@ -84,7 +84,7 @@ export function PageContentSkeleton() {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="bg-white rounded-xl border border-[var(--color-neutral-200)] p-5 flex flex-col gap-3"
+            className="bg-white rounded-xl p-5 flex flex-col gap-3"
           >
             <div className="flex items-center gap-2">
               <SkeletonBlock className="w-7 h-7 rounded-lg" />
@@ -96,7 +96,7 @@ export function PageContentSkeleton() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-[var(--color-neutral-200)] overflow-hidden">
+      <div className="bg-white rounded-xl overflow-hidden">
         {/* Table header */}
         <div className="flex gap-8 px-4 py-3 border-b border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)]">
           {[80, 120, 64, 96, 80].map((w, i) => (

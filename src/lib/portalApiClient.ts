@@ -6,6 +6,7 @@ import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQuery
 import { useVerificationGateStore } from '@/features/party-verification/store/verificationGateStore';
 import { isVerificationGateMessage } from '@/features/party-verification/utils/normalizePartyVerification';
 import { matchesAnyApiPath } from '@/lib/apiPath';
+import { AUTH_THROTTLE_USER_MESSAGE } from '@/features/auth/utils/authThrottleMessage';
 import { notifyAxiosError } from '@/lib/toastNotify';
 
 export interface ApiEnvelope<T, M = undefined> {
@@ -55,6 +56,7 @@ function formatApiErrorMessage(data: unknown, fallback: string): string {
 }
 
 async function resolvePortalErrorMessage(err: AxiosError, fallback: string): Promise<string> {
+  if (err.response?.status === 429) return AUTH_THROTTLE_USER_MESSAGE;
   const data = err.response?.data;
   if (data instanceof Blob) {
     try {
@@ -101,6 +103,7 @@ const PORTAL_AUTH_BOOTSTRAP = [
   PORTAL_AUTH_API.login,
   PORTAL_AUTH_API.refresh,
   PORTAL_AUTH_API.acceptInvite,
+  PORTAL_AUTH_API.forgotPassword,
 ] as const;
 
 function isPortalAuthBootstrap(url?: string): boolean {

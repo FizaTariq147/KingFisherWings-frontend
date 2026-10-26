@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { AlertCircle, Eye, EyeOff, Loader2, Lock, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { authService } from '@/features/auth/services/auth.service'
+import { withAuthThrottleMessage } from '@/features/auth/utils/authThrottleMessage'
 import {
   getErpHomePath,
   isTenantUserManagerRole,
@@ -40,11 +41,12 @@ function extractErrorMessage(error: unknown): string {
     message?: string
   }
   const msg = ax.response?.data?.message
-  if (Array.isArray(msg) && msg[0]) return String(msg[0])
-  if (typeof msg === 'string' && msg.trim()) return msg
-  if (typeof ax.response?.data?.error === 'string') return ax.response.data.error
-  if (error instanceof Error && error.message) return error.message
-  return 'Could not change password. Please try again.'
+  let detail = 'Could not change password. Please try again.'
+  if (Array.isArray(msg) && msg[0]) detail = String(msg[0])
+  else if (typeof msg === 'string' && msg.trim()) detail = msg
+  else if (typeof ax.response?.data?.error === 'string') detail = ax.response.data.error
+  else if (error instanceof Error && error.message) detail = error.message
+  return withAuthThrottleMessage(error, detail)
 }
 
 /**

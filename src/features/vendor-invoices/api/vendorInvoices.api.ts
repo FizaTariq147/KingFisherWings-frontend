@@ -7,6 +7,13 @@ export const VENDOR_INVOICES_API = {
   detail: (id: string) => `/vendor/invoices/${encodeURIComponent(id)}`,
   pdf: (id: string) => `/vendor/invoices/${encodeURIComponent(id)}/pdf`,
   sendEmail: (id: string) => `/vendor/invoices/${encodeURIComponent(id)}/send-email`,
+  /** Remittance proofs recorded by staff (or vendor) for this PI. */
+  paymentProofs: (id: string) =>
+    `/vendor/invoices/${encodeURIComponent(id)}/payment-proofs`,
+  paymentStatus: (id: string) =>
+    `/vendor/invoices/${encodeURIComponent(id)}/payment-status`,
+  sendProofEmail: (invoiceId: string, proofId: string) =>
+    `/vendor/invoices/${encodeURIComponent(invoiceId)}/payment-proofs/${encodeURIComponent(proofId)}/send-email`,
 } as const;
 
 export const VENDOR_INVOICE_STATUSES = [

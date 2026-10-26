@@ -64,6 +64,10 @@ export async function composeVendorStatementFromLedgers(
   const raw: RawLine[] = [];
   const seen = new Set<string>();
 
+  let invoicesTotal = 0;
+  let invoicesPaid = 0;
+  let invoicesRemaining = 0;
+
   for (const inv of invoiceItems) {
     const amount = inv.totalAmount ?? inv.outstandingBalance;
     if (amount == null) continue;
@@ -71,6 +75,16 @@ export async function composeVendorStatementFromLedgers(
     const id = `invoice:${inv.id}`;
     if (seen.has(id)) continue;
     seen.add(id);
+
+    const paid = inv.paidAmount != null && Number.isFinite(inv.paidAmount) ? inv.paidAmount : 0;
+    const remaining =
+      inv.outstandingBalance != null && Number.isFinite(inv.outstandingBalance)
+        ? inv.outstandingBalance
+        : Math.max(0, amount - paid);
+    invoicesTotal += amount;
+    invoicesPaid += paid;
+    invoicesRemaining += remaining;
+
     raw.push({
       id,
       date: inv.invoiceDate || inv.dueDate,
@@ -79,7 +93,8 @@ export async function composeVendorStatementFromLedgers(
       description: [
         inv.status ? `Status ${inv.status.replaceAll('_', ' ')}` : null,
         inv.dueDate ? `Due ${inv.dueDate}` : null,
-        inv.outstandingBalance != null ? `Open ${inv.outstandingBalance}` : null,
+        `Paid ${paid}`,
+        `Remaining ${remaining}`,
       ]
         .filter(Boolean)
         .join(' · ') || undefined,
@@ -185,11 +200,26 @@ export async function composeVendorStatementFromLedgers(
     };
   }
 
+  const paymentsCredited = paymentItems.reduce(
+    (sum, pay) => sum + (pay.amount != null && Number.isFinite(pay.amount) ? pay.amount : 0),
+    0,
+  );
+  const totalPaid = Math.max(invoicesPaid, paymentsCredited);
+  const totalRemaining =
+    summary.closingBalance != null
+      ? summary.closingBalance
+      : invoicesRemaining > 0
+        ? invoicesRemaining
+        : closingBalance;
+
   return {
     ...summary,
     asOf: asOf || summary.asOf,
     closingBalance,
     invoiceCount: summary.invoiceCount ?? invoiceItems.length,
+    totalInvoiced: summary.totalInvoiced ?? (invoicesTotal > 0 ? invoicesTotal : undefined),
+    totalPaid: summary.totalPaid ?? (totalPaid > 0 ? totalPaid : undefined),
+    totalRemaining: summary.totalRemaining ?? totalRemaining ?? undefined,
     lines,
     composedFromLedgers: true,
   };

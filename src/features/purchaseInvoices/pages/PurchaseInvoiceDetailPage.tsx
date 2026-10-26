@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/Table';
 import { InvoiceStatusBadge } from '@/features/invoices/components/InvoiceStatusBadge';
 import { StaffPurchaseInvoicePaymentProofPanel } from '@/features/payment-proofs/components/StaffPurchaseInvoicePaymentProofPanel';
+import { adjustInvoiceAmountsWithProofs } from '@/features/payment-proofs/utils/adjustInvoiceAmountsWithProofs';
 import { PURCHASE_INVOICE_ROUTE_PREFIX } from '../api/purchaseInvoice.api';
 import {
   PURCHASE_INVOICE_STATUS_LABELS,
@@ -21,6 +22,7 @@ import {
 import {
   usePostPurchaseInvoice,
   usePurchaseInvoice,
+  usePurchaseInvoicePaymentProofs,
 } from '../hooks/usePurchaseInvoices';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { purchaseInvoiceDisplayNumber } from '../utils/normalizePurchaseInvoice';
@@ -38,10 +40,28 @@ export default function PurchaseInvoiceDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { data: invoice, isLoading, isError, error, refetch } = usePurchaseInvoice(id);
+  const { data: proofs = [] } = usePurchaseInvoicePaymentProofs(id);
   const post = usePostPurchaseInvoice(id);
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
+
+  const amounts = useMemo(() => {
+    if (!invoice) return null;
+    return adjustInvoiceAmountsWithProofs(
+      {
+        totalAmount:
+          invoice.total_amount != null ? Number(invoice.total_amount) : undefined,
+        paidAmount: invoice.paid_amount != null ? Number(invoice.paid_amount) : undefined,
+        outstandingBalance:
+          invoice.outstanding_balance != null
+            ? Number(invoice.outstanding_balance)
+            : undefined,
+        status: invoice.status,
+      },
+      proofs,
+    );
+  }, [invoice, proofs]);
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -60,8 +80,17 @@ export default function PurchaseInvoiceDetailPage() {
   }
 
   const lines = invoice.lines ?? [];
+  const displayStatus = amounts?.displayStatus || invoice.status;
   const canPost = invoice.status === 'DRAFT' || invoice.status === 'SUBMITTED';
   const editable = invoice.status === 'DRAFT';
+  const displayPaid =
+    amounts != null ? amounts.paidAmount : invoice.paid_amount != null ? Number(invoice.paid_amount) : undefined;
+  const displayBalance =
+    amounts != null
+      ? amounts.remainingAmount
+      : invoice.outstanding_balance != null
+        ? Number(invoice.outstanding_balance)
+        : undefined;
 
   const run = async (fn: () => Promise<unknown>, successMsg?: string) => {
     setActionError(null);
@@ -140,15 +169,19 @@ export default function PurchaseInvoiceDetailPage() {
               invoice.invoice_type
             : invoice.party_name
         }
-        statusLabel={PURCHASE_INVOICE_STATUS_LABELS[invoice.status] ?? invoice.status}
+        statusLabel={
+          PURCHASE_INVOICE_STATUS_LABELS[
+            displayStatus as keyof typeof PURCHASE_INVOICE_STATUS_LABELS
+          ] ?? displayStatus
+        }
         statusTone={
-          invoice.status === 'PAID'
+          displayStatus === 'PAID'
             ? 'emerald'
-            : invoice.status === 'CANCELLED' || invoice.status === 'VOID'
+            : displayStatus === 'CANCELLED' || displayStatus === 'VOID'
               ? 'rose'
-              : invoice.status === 'SENT' ||
-                  invoice.status === 'PARTIALLY_PAID' ||
-                  invoice.status === 'SUBMITTED'
+              : displayStatus === 'SENT' ||
+                  displayStatus === 'PARTIALLY_PAID' ||
+                  displayStatus === 'SUBMITTED'
                 ? 'amber'
                 : 'slate'
         }
@@ -163,7 +196,7 @@ export default function PurchaseInvoiceDetailPage() {
             content: (
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <InvoiceStatusBadge status={invoice.status} />
+                  <InvoiceStatusBadge status={displayStatus} />
                 </div>
                 <Card>
                   <CardHeader>
@@ -191,19 +224,29 @@ export default function PurchaseInvoiceDetailPage() {
                     <Field
                       label="Paid"
                       value={
-                        invoice.paid_amount != null
-                          ? `${invoice.currency_code} ${invoice.paid_amount}`
+                        displayPaid != null
+                          ? `${invoice.currency_code} ${displayPaid}`
                           : undefined
                       }
                     />
                     <Field
                       label="Balance due"
                       value={
-                        invoice.outstanding_balance != null
-                          ? `${invoice.currency_code} ${invoice.outstanding_balance}`
+                        displayBalance != null
+                          ? `${invoice.currency_code} ${displayBalance}`
                           : undefined
                       }
                     />
+                    {amounts?.includesPendingProofs ? (
+                      <Field
+                        label="Pending proofs"
+                        value={
+                          amounts.pendingProofAmount != null
+                            ? `${invoice.currency_code} ${amounts.pendingProofAmount}`
+                            : undefined
+                        }
+                      />
+                    ) : null}
                     <Field label="Remarks" value={invoice.remarks} />
                     <Field label="Internal notes" value={invoice.internal_notes} />
                   </dl>
@@ -258,8 +301,8 @@ export default function PurchaseInvoiceDetailPage() {
                     currencyCode={invoice.currency_code}
                     invoiceStatus={invoice.status}
                     remainingAmount={
-                      invoice.outstanding_balance != null
-                        ? Number(invoice.outstanding_balance)
+                      displayBalance != null
+                        ? displayBalance
                         : invoice.total_amount != null
                           ? Number(invoice.total_amount)
                           : undefined

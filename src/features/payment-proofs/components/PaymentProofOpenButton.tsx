@@ -20,6 +20,8 @@ type PaymentProofOpenButtonProps = {
   size?: 'sm' | 'md';
   /** Portal scoped file path needs the invoice id. */
   invoiceId?: string;
+  /** Show an explicit Download control next to Open (purchase-invoice / staff review). */
+  showDownload?: boolean;
 };
 
 /**
@@ -31,9 +33,11 @@ export function PaymentProofOpenButton({
   viewer,
   size = 'sm',
   invoiceId,
+  showDownload = false,
 }: PaymentProofOpenButtonProps) {
   const pdfViewer = usePdfViewer();
   const [pending, setPending] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [imageTitle, setImageTitle] = useState('Payment proof');
@@ -115,17 +119,42 @@ export function PaymentProofOpenButton({
     }
   };
 
+  const download = async () => {
+    setError(null);
+    setDownloading(true);
+    try {
+      await downloadPaymentProofFile(url, viewer, displayName, fetchOpts);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not download file.');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <span className="inline-flex flex-col items-end gap-0.5">
-      <Button
-        type="button"
-        size={size}
-        variant="secondary"
-        disabled={pending || pdfViewer.loading}
-        onClick={() => void open()}
-      >
-        {pending || pdfViewer.loading ? 'Opening…' : 'Open'}
-      </Button>
+      <span className="inline-flex flex-wrap items-center justify-end gap-2">
+        <Button
+          type="button"
+          size={size}
+          variant="secondary"
+          disabled={pending || pdfViewer.loading || downloading}
+          onClick={() => void open()}
+        >
+          {pending || pdfViewer.loading ? 'Opening…' : 'Open'}
+        </Button>
+        {showDownload ? (
+          <Button
+            type="button"
+            size={size}
+            variant="secondary"
+            disabled={pending || downloading || pdfViewer.loading}
+            onClick={() => void download()}
+          >
+            {downloading ? 'Downloading…' : 'Download'}
+          </Button>
+        ) : null}
+      </span>
       {error ? (
         <span className="max-w-[14rem] text-right text-[10px] text-[var(--color-danger-600)]">
           {error}

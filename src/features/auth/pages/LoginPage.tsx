@@ -7,7 +7,9 @@ import {
   Eye, EyeOff, Loader2, AlertCircle,
 } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
+import { authService } from '@/features/auth/services/auth.service'
 import { erpPostAuthPath } from '@/features/auth/utils/postLoginPath'
+import { withAuthThrottleMessage } from '@/features/auth/utils/authThrottleMessage'
 import { stripSensitiveSearchParams } from '@/lib/stripSensitiveSearchParams'
 import { wakeApi } from '@/lib/wakeApi'
 import { AuthLandingShell } from '@/features/auth/components/AuthLandingShell'
@@ -63,10 +65,12 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [agreedTouched, setAgreedTouched] = useState(false)
 
   const [forgotOpen, setForgotOpen]     = useState(false)
+  const [forgotSlug, setForgotSlug]     = useState('')
   const [forgotEmail, setForgotEmail]   = useState('')
   const [forgotErr, setForgotErr]       = useState<string | null>(null)
   const [forgotSending, setForgotSending] = useState(false)
   const [forgotSent, setForgotSent]     = useState(false)
+  const forgotSlugRef = useRef<HTMLInputElement>(null)
   const forgotInputRef = useRef<HTMLInputElement>(null)
 
   const schema = loginMode === 'staff' ? staffSchema : tenantAdminSchema
@@ -95,16 +99,21 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
     if (!open) {
       reset(); setApiErr(null); setStatusMsg(null); setShowPw(false); setAgreed(false); setAgreedTouched(false)
       setLoginMode('tenant_admin')
-      setForgotOpen(false); setForgotEmail(''); setForgotErr(null); setForgotSent(false)
+      setForgotOpen(false); setForgotSlug(''); setForgotEmail(''); setForgotErr(null); setForgotSent(false)
     }
   }, [open, reset])
 
   useEffect(() => {
     if (forgotOpen) {
-      setForgotEmail(''); setForgotErr(null); setForgotSent(false)
-      setTimeout(() => forgotInputRef.current?.focus(), 80)
+      const currentSlug = (watch('tenant_slug') || '').trim()
+      const currentEmail = (watch('email') || '').trim()
+      setForgotSlug(currentSlug)
+      setForgotEmail(loginMode === 'staff' ? currentEmail : '')
+      setForgotErr(null)
+      setForgotSent(false)
+      setTimeout(() => (currentSlug ? forgotInputRef : forgotSlugRef).current?.focus(), 80)
     }
-  }, [forgotOpen])
+  }, [forgotOpen]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!open) return
@@ -170,11 +179,33 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   }
 
   const handleForgotSend = async () => {
-    setForgotErr(
-      'Password reset is not available through the current API. Contact your Tenant Admin or platform support.',
-    )
-    setForgotSending(false)
-    setForgotSent(false)
+    const tenant_slug = forgotSlug.trim()
+    const email = forgotEmail.trim().toLowerCase()
+    if (tenant_slug.length < 2) {
+      setForgotErr('Workspace username is required.')
+      return
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setForgotErr('Enter a valid staff email address.')
+      return
+    }
+    setForgotErr(null)
+    setForgotSending(true)
+    try {
+      await authService.forgotPassword({ tenant_slug, email })
+      setForgotSent(true)
+    } catch (err) {
+      const ax = err as { response?: { data?: { message?: string | string[] } }; message?: string }
+      const msg = ax.response?.data?.message
+      const detail = Array.isArray(msg)
+        ? String(msg[0] || '')
+        : typeof msg === 'string'
+          ? msg
+          : ax.message || 'Could not send reset email.'
+      setForgotErr(withAuthThrottleMessage(err, detail))
+    } finally {
+      setForgotSending(false)
+    }
   }
 
   if (!open) return null
@@ -347,16 +378,33 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
         <LoginPopupFrame title="Forgot Password" onClose={() => setForgotOpen(false)}>
           {forgotSent ? (
             <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-3 text-[12.5px] text-emerald-700">
-              If an account exists for that email, a reset link has been sent.
+              If an account exists for that email, a reset link has been sent. Open the link to set a
+              new password, then sign in.
             </div>
           ) : (
             <>
-              <label htmlFor="kf-forgot-email" className={popupLabelClass}>Email</label>
+              <p className="mb-2 text-[12px] text-slate-500">
+                Staff password reset emails a link. Company Admin passwords are managed separately —
+                contact platform support if you need that reset.
+              </p>
+              <label htmlFor="kf-forgot-slug" className={popupLabelClass}>Workspace username</label>
+              <input
+                id="kf-forgot-slug"
+                ref={forgotSlugRef}
+                type="text"
+                autoComplete="organization"
+                placeholder="username"
+                value={forgotSlug}
+                disabled={forgotSending}
+                onChange={(e) => setForgotSlug(e.target.value)}
+                className={popupInputClass}
+              />
+              <label htmlFor="kf-forgot-email" className={`${popupLabelClass} mt-2.5`}>Email</label>
               <input
                 id="kf-forgot-email"
                 ref={forgotInputRef}
                 type="email"
-                placeholder="Email as username"
+                placeholder="staff email"
                 value={forgotEmail}
                 disabled={forgotSending}
                 onChange={(e) => setForgotEmail(e.target.value)}
@@ -375,7 +423,7 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
                 className={`${popupSubmitClass} mt-4`}
                 style={{ background: NAVY }}
               >
-                {forgotSending ? 'Sending…' : 'Send'}
+                {forgotSending ? 'Sending…' : 'Send reset link'}
               </button>
             </>
           )}

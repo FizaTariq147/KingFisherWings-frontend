@@ -12,6 +12,10 @@ export const AUTH_API = {
   revokeSession: (sessionId: string) => `/auth/sessions/${sessionId}/revoke`,
   changePassword: '/auth/change-password',
   tenantChangePassword: '/auth/tenant/change-password',
+  /** AuthController_forgotPassword — public; emails reset link (staff) */
+  forgotPassword: '/auth/forgot-password',
+  /** AuthController_resetPassword — public; redeem emailed reset token */
+  resetPassword: '/auth/reset-password',
   /** AuthController_invite — send accept-invite email for an INVITED user */
   invite: '/auth/invite',
   /** AuthController_acceptInvite — public; set password from invite token */
