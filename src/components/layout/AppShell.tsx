@@ -10,8 +10,10 @@ import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAu
 import { OnboardingSteps } from '@/features/platform/components/OnboardingSteps';
 import { AppMotionStyles, AppPageTransition } from '@/components/motion';
 import { NotificationToastWatcher } from '@/components/toast';
+import { AppNavigateBridge } from '@/components/routing/AppNavigateBridge';
 import { useNotificationUnreadCount } from '@/features/notifications/hooks/useNotifications';
 import { notificationsService } from '@/features/notifications/services/notifications.service';
+import { notificationHref } from '@/features/notifications/utils/notificationLink';
 
 export function AppShell({ title }: { title: string }) {
   useApplyTheme();
@@ -34,6 +36,7 @@ export function AppShell({ title }: { title: string }) {
     return {
       title: item.title || 'Admin notification',
       message: item.body || item.title || undefined,
+      href: item.linkPath || notificationHref(item),
     };
   }, []);
 
@@ -62,6 +65,7 @@ export function AppShell({ title }: { title: string }) {
 
   return (
     <div className="flex h-[100dvh] bg-[var(--color-neutral-50)] overflow-hidden">
+      <AppNavigateBridge />
       <AppMotionStyles />
       {!isSuperAdminArea ? (
         <NotificationToastWatcher

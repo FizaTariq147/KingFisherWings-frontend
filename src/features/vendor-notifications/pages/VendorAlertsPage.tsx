@@ -15,6 +15,7 @@ import {
 import {
   useMarkAllVendorNotificationsRead,
   useMarkVendorNotificationRead,
+  useOpenVendorNotification,
   useVendorNotificationUnreadCount,
   useVendorNotifications,
 } from '../hooks/useVendorNotifications';
@@ -22,6 +23,7 @@ import {
   vendorNotificationHref,
   vendorNotificationTypeLabel,
 } from '../utils/vendorNotificationLink';
+import { toast } from '@/store/toastStore';
 
 export default function VendorAlertsPage() {
   const navigate = useNavigate();
@@ -35,9 +37,29 @@ export default function VendorAlertsPage() {
   const unread = useVendorNotificationUnreadCount();
   const markRead = useMarkVendorNotificationRead();
   const markAll = useMarkAllVendorNotificationsRead();
+  const openNotification = useOpenVendorNotification();
   const items = data?.items ?? [];
   const meta = data?.meta;
   const fromAggregate = Boolean(data?.sourcedFromAggregate);
+
+  const handleOpen = async (id: string, fallbackHref: string | null) => {
+    try {
+      const opened = await openNotification.mutateAsync(id);
+      const path = opened.linkPath
+        ? vendorNotificationHref({
+            id,
+            title: opened.title || '',
+            linkPath: opened.linkPath,
+            href: opened.linkPath,
+          })
+        : fallbackHref;
+      if (path) navigate(path);
+      else toast.info('No linked screen for this alert.', { title: 'Alerts' });
+    } catch {
+      if (fallbackHref) navigate(fallbackHref);
+      else toast.info('Could not open this alert.', { title: 'Alerts' });
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -109,10 +131,8 @@ export default function VendorAlertsPage() {
                   <button
                     type="button"
                     className="min-w-0 flex-1 text-left"
-                    onClick={() => {
-                      if (!n.isRead) void markRead.mutateAsync(n.id);
-                      if (href) navigate(href);
-                    }}
+                    disabled={openNotification.isPending}
+                    onClick={() => void handleOpen(n.id, href)}
                   >
                     <div className="flex flex-wrap items-center gap-2">
                       <div className="text-sm font-semibold">{n.title}</div>

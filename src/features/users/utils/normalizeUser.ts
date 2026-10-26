@@ -31,11 +31,30 @@ const BOOLEAN_DEFAULTS: Pick<
   can_see_job_pnl: false,
 };
 
+function normalizeVisibleJobTypes(raw: unknown): string[] | null | undefined {
+  if (raw === null) return null;
+  if (!Array.isArray(raw)) return undefined;
+  const list = raw
+    .map((v) => (typeof v === 'string' ? v.trim() : ''))
+    .filter(Boolean);
+  return list;
+}
+
 export function normalizeUser(raw: Record<string, unknown>): User {
   const deletedAt =
     (typeof raw.deleted_at === 'string' && raw.deleted_at) ||
     (typeof raw.deletedAt === 'string' && raw.deletedAt) ||
     (raw.is_deleted === true || raw.isDeleted === true ? new Date().toISOString() : null);
+
+  const visibleJobTypes = normalizeVisibleJobTypes(
+    raw.visible_job_types ?? raw.visibleJobTypes,
+  );
+  const unrestrictedOps =
+    typeof raw.unrestricted_ops === 'boolean'
+      ? raw.unrestricted_ops
+      : typeof raw.unrestrictedOps === 'boolean'
+        ? raw.unrestrictedOps
+        : undefined;
 
   return {
     ...BOOLEAN_DEFAULTS,
@@ -49,6 +68,8 @@ export function normalizeUser(raw: Record<string, unknown>): User {
     max_concurrent_sessions:
       typeof raw.max_concurrent_sessions === 'number' ? raw.max_concurrent_sessions : 3,
     deleted_at: deletedAt,
+    ...(visibleJobTypes !== undefined ? { visible_job_types: visibleJobTypes } : {}),
+    ...(unrestrictedOps !== undefined ? { unrestricted_ops: unrestrictedOps } : {}),
   };
 }
 

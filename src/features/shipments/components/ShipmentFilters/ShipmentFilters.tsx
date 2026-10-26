@@ -286,5 +286,13 @@ export function useShipmentFilterDraft(initialLimit = DEFAULT_SHIPMENT_PAGE_SIZE
     setApplied(draft);
   };
 
-  return { draft, setDraft, applied, submit };
+  const applyPatch = (partial: Partial<ShipmentFilterDraft>) => {
+    setDraft((prev) => {
+      const next = { ...prev, ...partial };
+      setApplied(next);
+      return next;
+    });
+  };
+
+  return { draft, setDraft, applied, submit, applyPatch };
 }

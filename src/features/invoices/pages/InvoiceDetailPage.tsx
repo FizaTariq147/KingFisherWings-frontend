@@ -12,7 +12,9 @@ import { StaffPaymentProofReviewPanel } from '@/features/payment-proofs/componen
 import { useInvoicePaymentProofs } from '@/features/payment-proofs/hooks/usePaymentProofs';
 import { adjustInvoiceAmountsWithProofs } from '@/features/payment-proofs/utils/adjustInvoiceAmountsWithProofs';
 import { InvoiceOnlinePaymentsPanel } from '@/features/online-payments/components/InvoiceOnlinePaymentsPanel';
+import { OpsContinuumRail } from '@/features/ops-activity';
 import { InvoiceEmailModal } from '../components/InvoiceEmailModal';
+import { InvoiceHistoryPanel } from '../components/InvoiceHistoryPanel';
 import { InvoiceLinesEditor } from '../components/InvoiceLinesEditor';
 import { InvoiceStatusBadge } from '../components/InvoiceStatusBadge';
 import {
@@ -279,6 +281,16 @@ export default function InvoiceDetailPage() {
 
   return (
     <>
+      <OpsContinuumRail
+        entityType="INVOICE"
+        entityId={invoice.id}
+        pathHints={invoice.path_hints ?? ['ops_continuum']}
+        opsContinuum={invoice.ops_continuum}
+        links={{
+          jobId: invoice.job_id,
+          invoiceId: invoice.id,
+        }}
+      />
       {actionError && (
         <div
           role="alert"
@@ -307,6 +319,7 @@ export default function InvoiceDetailPage() {
       )}
 
       <DetailPageTemplate
+        reserveContinuumRail
         title={invoiceNumber}
         subtitle={
           invoice.invoice_type
@@ -413,6 +426,20 @@ export default function InvoiceDetailPage() {
                   editable={editable}
                 />
               </div>
+            ),
+          },
+          {
+            key: 'history',
+            label: 'History',
+            content: (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Change history</CardTitle>
+                </CardHeader>
+                <div className="p-4 pt-0">
+                  <InvoiceHistoryPanel invoiceId={id} />
+                </div>
+              </Card>
             ),
           },
         ]}

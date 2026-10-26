@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
+import { Heart } from 'lucide-react';
 import { useFavouritesList, useFavouritesMutations } from '@/features/favourites/hooks/useFavourites';
 import type { UserFavourite } from '@/features/favourites/services/favourites.service';
+import { FAVOURITES_PANEL_SURFACE_CLASS } from '@/features/favourites/constants/favouritesChrome';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
-import { Button } from '@/components/ui/Button';
-import { DashCard, DashCardHeader, DashEmpty, DashSkeleton } from './DashCard';
+import { cn } from '@/lib/utils';
+import { DashCard, DashSkeleton } from './DashCard';
 
 const KIND_ORDER = ['report', 'quotation', 'job', 'shipment', 'enquiry'] as const;
 
@@ -77,41 +79,47 @@ export function FavouritesPanel() {
   const groups = groupFavourites(query.data ?? []);
 
   return (
-    <DashCard>
-      <DashCardHeader
-        title="Favorites"
-        subtitle="Starred reports, quotations, jobs, shipments, and enquiries"
-        action={
-          <Button
-            type="button"
-            size="sm"
-            variant="secondary"
-            disabled={query.isFetching}
-            onClick={() => void query.refetch()}
-          >
-            Refresh
-          </Button>
-        }
-      />
+    <DashCard className={cn(FAVOURITES_PANEL_SURFACE_CLASS)}>
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <Heart size={16} className="shrink-0 fill-current text-white" aria-hidden />
+            <h3 className="text-sm font-semibold text-white">Favorites</h3>
+          </div>
+          <p className="mt-0.5 text-[11px] text-white/85">
+            Starred reports, quotations, jobs, shipments, and enquiries
+          </p>
+        </div>
+        <button
+          type="button"
+          className="shrink-0 rounded border border-white/40 bg-white/15 px-2.5 py-1 text-[12px] font-medium text-white transition-colors hover:bg-white/25 disabled:opacity-50"
+          disabled={query.isFetching}
+          onClick={() => void query.refetch()}
+        >
+          Refresh
+        </button>
+      </div>
       {query.isLoading ? (
         <div className="space-y-2">
-          <DashSkeleton className="h-10" />
-          <DashSkeleton className="h-10" />
+          <DashSkeleton className="h-10 bg-white/20" />
+          <DashSkeleton className="h-10 bg-white/20" />
         </div>
       ) : query.isError ? (
-        <DashEmpty>Unable to load favorites.</DashEmpty>
+        <p className="rounded-xl bg-white/10 px-3 py-6 text-center text-sm text-white/90">
+          Unable to load favorites.
+        </p>
       ) : groups.length === 0 ? (
-        <DashEmpty>
-          No favorites yet. Use the star on a report, quotation, job, shipment, or enquiry.
-        </DashEmpty>
+        <p className="rounded-xl bg-white/10 px-3 py-6 text-center text-sm text-white/90">
+          No favorites yet. Use the heart on a report, quotation, job, shipment, or enquiry.
+        </p>
       ) : (
         <div className="space-y-4">
           {groups.map((group) => (
             <div key={group.key}>
-              <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-400)]">
+              <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-white/70">
                 {group.label}
               </p>
-              <ul className="divide-y divide-[var(--color-neutral-100)] rounded-lg border border-[var(--color-neutral-200)]">
+              <ul className="divide-y divide-white/15 rounded-lg border border-white/25 bg-white/10">
                 {group.items.map((fav) => {
                   const href = favouriteHref(fav);
                   const label = fav.label?.trim() || fav.target_key;
@@ -123,18 +131,16 @@ export function FavouritesPanel() {
                       {href ? (
                         <Link
                           to={href}
-                          className="min-w-0 truncate font-medium text-[var(--color-neutral-800)] hover:underline"
+                          className="min-w-0 truncate font-medium text-white hover:underline"
                         >
                           {label}
                         </Link>
                       ) : (
-                        <span className="min-w-0 truncate font-medium text-[var(--color-neutral-800)]">
-                          {label}
-                        </span>
+                        <span className="min-w-0 truncate font-medium text-white">{label}</span>
                       )}
                       <button
                         type="button"
-                        className="shrink-0 text-[11px] text-[var(--color-neutral-400)] hover:text-[var(--color-danger-700)]"
+                        className="shrink-0 text-[11px] text-white/70 hover:text-white"
                         disabled={remove.isPending}
                         onClick={() => void remove.mutateAsync(fav.id)}
                         title="Remove favorite"

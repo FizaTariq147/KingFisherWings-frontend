@@ -122,6 +122,7 @@ import JobCreatePage from '../features/jobs/pages/JobCreatePage'
 import JobDetailPage from '../features/jobs/pages/JobDetailPage'
 import JobEditPage from '../features/jobs/pages/JobEditPage'
 import JobBarcodeScanPage from '../features/jobs/pages/JobBarcodeScanPage'
+import DepartmentHubPage from '../features/jobs/pages/DepartmentHubPage'
 import CustomsClearanceHubPage from '../features/customs-clearance/pages/CustomsClearanceHubPage'
 import HsValidatePage from '../features/customs-clearance/pages/HsValidatePage'
 import PortalCcJobsPage from '../features/portal-cc/pages/PortalCcJobsPage'
@@ -395,6 +396,15 @@ export const router = createBrowserRouter([
               { path: ':id', element: <PortalQuoteDetailPage /> },
             ],
           },
+          /* BE notification link_path may use /portal/quotations/:id */
+          {
+            path: 'quotations',
+            children: [
+              { index: true, element: <Navigate to="/portal/quotes" replace /> },
+              { path: ':id/edit', element: <PortalBookPage /> },
+              { path: ':id', element: <PortalQuoteDetailPage /> },
+            ],
+          },
           { path: 'invoices', element: <PortalInvoicesPage /> },
           { path: 'invoices/:id', element: <PortalInvoiceDetailPage /> },
           { path: 'credit-notes', element: <PortalCreditNotesPage /> },
@@ -429,6 +439,9 @@ export const router = createBrowserRouter([
           { path: 'verification', element: <VendorVerificationPage /> },
           { path: 'jobs', element: <VendorJobsPage /> },
           { path: 'jobs/:id', element: <VendorJobDetailPage /> },
+          /* BE notification link_path may use /vendor/job-offers/:id */
+          { path: 'job-offers', element: <Navigate to="/vendor/jobs" replace /> },
+          { path: 'job-offers/:id', element: <VendorJobDetailPage /> },
           { path: 'invoices', element: <VendorInvoicesPage /> },
           { path: 'invoices/:id', element: <VendorInvoiceDetailPage /> },
           { path: 'payments', element: <VendorPaymentsPage /> },
@@ -522,12 +535,17 @@ export const router = createBrowserRouter([
               />
             ),
             children: [
+              { path: '/departments/:deptKey', element: <DepartmentHubPage /> },
               { path: '/jobs/new', element: <JobCreatePage /> },
               { path: '/jobs/barcode-scan', element: <JobBarcodeScanPage /> },
               { path: '/jobs/air-export', element: <JobListPage /> },
               { path: '/jobs/air-export/new', element: <JobCreatePage /> },
               { path: '/jobs/air-export/:id/edit', element: <JobEditPage /> },
               { path: '/jobs/air-export/:id', element: <JobDetailPage /> },
+              { path: '/jobs/air-import', element: <JobListPage /> },
+              { path: '/jobs/air-import/new', element: <JobCreatePage /> },
+              { path: '/jobs/air-import/:id/edit', element: <JobEditPage /> },
+              { path: '/jobs/air-import/:id', element: <JobDetailPage /> },
               { path: '/jobs/sea-export', element: <JobListPage /> },
               { path: '/jobs/sea-export/new', element: <JobCreatePage /> },
               { path: '/jobs/sea-export/:id/edit', element: <JobEditPage /> },

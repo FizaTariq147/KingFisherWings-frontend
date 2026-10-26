@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
-import { Plus, Search, ChevronDown, Heart } from 'lucide-react';
+import { Plus, Search, ChevronDown } from 'lucide-react';
 
+
+import { FavouritesChromeButton } from '@/features/favourites/components/FavouritesChromeButton';
 export default function SalesBudgetPage() {
   const [rows, setRows] = useState('10');
   return (
@@ -58,10 +60,7 @@ export default function SalesBudgetPage() {
 
       {/* Floating Favorites button */}
       <div className="mt-4">
-        <button className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
-          <Heart size={14} />
-          Favorites
-        </button>
+        <FavouritesChromeButton />
       </div>
     </div>
   );

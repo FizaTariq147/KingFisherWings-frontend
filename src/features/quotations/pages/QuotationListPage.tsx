@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { appType, listShell } from '@/lib/erpTypography';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Plus, RefreshCw, TimerReset } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { EmptyState, ErrorState } from '@/components/erp';
+import { departmentByKey } from '@/features/jobs/config/departmentNav';
 import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
 import {
   QuotationFilters,
@@ -13,6 +14,7 @@ import {
 import { QuotationTable } from '../components/QuotationTable';
 import {
   DEFAULT_QUOTATION_PAGE_SIZE,
+  type JobType,
   type LostReason,
 } from '../constants/quotation.constants';
 import { useQuotationLifecycleMutations } from '../hooks/useQuotationActions';
@@ -24,6 +26,8 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 export default function QuotationListPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const dept = departmentByKey(searchParams.get('dept'));
   const [page, setPage] = useState(1);
   const [pendingActionId, setPendingActionId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -31,9 +35,19 @@ export default function QuotationListPage() {
   const { confirm, requestConfirm, closeConfirm } = useQuotationConfirmState();
   const lifecycle = useQuotationLifecycleMutations();
   const expireDue = useExpireDueQuotations();
-  const { draft, setDraft, applied, submit } = useQuotationFilterDraft(
+  const { draft, setDraft, applied, submit, applyPatch } = useQuotationFilterDraft(
     DEFAULT_QUOTATION_PAGE_SIZE,
   );
+
+  useEffect(() => {
+    const jobType = !dept
+      ? 'all'
+      : dept.jobTypes.length === 1
+        ? (dept.primaryType as JobType)
+        : 'all';
+    applyPatch({ jobType });
+    setPage(1);
+  }, [dept?.key]); // eslint-disable-line react-hooks/exhaustive-deps -- sync from ?dept=
 
   const listParams = useMemo(
     () => quotationFilterDraftToListParams(applied, page),
@@ -45,7 +59,12 @@ export default function QuotationListPage() {
   }, [applied]);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuotations(listParams);
-  const quotations = data?.quotations ?? [];
+  const quotations = useMemo(() => {
+    const rows = data?.quotations ?? [];
+    if (!dept || dept.jobTypes.length <= 1) return rows;
+    const allowed = new Set(dept.jobTypes.map(String));
+    return rows.filter((q) => q.job_type && allowed.has(String(q.job_type)));
+  }, [data?.quotations, dept]);
   const meta = data?.meta;
   const runAction = async (q: Quotation, action: () => Promise<unknown>) => {
     setActionError(null);
@@ -111,9 +130,13 @@ export default function QuotationListPage() {
             >
               ← Back to Quotations
             </button>
-            <h2 className={`${appType.pageTitle} mt-0.5`}>Quotations</h2>
+            <h2 className={`${appType.pageTitle} mt-0.5`}>
+              {dept ? `${dept.label} · Quotations` : 'Quotations'}
+            </h2>
             <p className={appType.pageSubtitle}>
-              Create a new quotation or open an existing one from the list.
+              {dept
+                ? `Quotations for ${dept.label}.`
+                : 'Create a new quotation or open an existing one from the list.'}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">

@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { PageBackLink } from '@/components/ui/PageBackLink';
-import { Plus, Search, ChevronDown, Maximize2, ArrowUpDown, Pencil, Heart } from 'lucide-react';
+import { Plus, Search, ChevronDown, Maximize2, ArrowUpDown, Pencil } from 'lucide-react';
+
+import { FavouritesChromeButton } from '@/features/favourites/components/FavouritesChromeButton';
 import { appType, listShell } from '@/lib/erpTypography';
 import { SelectInput } from '../../components/widgets/FilterField';
 import { hrService } from '../../features/hr/services/hr.service';
@@ -274,10 +276,7 @@ export default function EmployeesListPage() {
       </div>
 
       <div className="mt-4">
-        <button type="button" className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
-          <Heart size={14} />
-          Favorites
-        </button>
+        <FavouritesChromeButton />
       </div>
     </div>
   );

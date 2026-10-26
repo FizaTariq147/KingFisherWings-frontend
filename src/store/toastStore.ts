@@ -9,6 +9,8 @@ export interface ToastItem {
   variant: ToastVariant;
   durationMs: number;
   createdAt: number;
+  /** Optional in-app path — toast body becomes clickable. */
+  href?: string | null;
 }
 
 export interface ToastInput {
@@ -18,6 +20,8 @@ export interface ToastInput {
   durationMs?: number;
   /** Skip if the same title+message was pushed within this window (ms). */
   dedupeMs?: number;
+  /** Optional in-app path — toast body becomes clickable. */
+  href?: string | null;
 }
 
 const DEFAULT_DURATION: Record<ToastVariant, number> = {
@@ -70,6 +74,11 @@ export const useToastStore = create<ToastStore>((set, get) => ({
     if (last != null && now - last < dedupeMs) return null;
     recentKeys.set(key, now);
 
+    const href =
+      typeof input.href === 'string' && input.href.trim().startsWith('/')
+        ? input.href.trim()
+        : null;
+
     const item: ToastItem = {
       id: makeId(),
       title,
@@ -77,6 +86,7 @@ export const useToastStore = create<ToastStore>((set, get) => ({
       variant,
       durationMs: input.durationMs ?? DEFAULT_DURATION[variant],
       createdAt: now,
+      href,
     };
 
     const next = [...get().toasts, item];

@@ -3,7 +3,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
-import { Upload, Search, Heart } from 'lucide-react';
+import { Upload, Search } from 'lucide-react';
+
+import { FavouritesChromeButton } from '@/features/favourites/components/FavouritesChromeButton';
 import { hrService } from '../../features/hr/services/hr.service';
 import { SALARY_COMPONENT_CODES, labelEnum } from '../../features/hr/constants/hr.constants';
 import {
@@ -173,10 +175,7 @@ export default function SalaryLedgerPage() {
       </div>
 
       <div className="mt-4">
-        <button type="button" className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
-          <Heart size={14} />
-          Favorites
-        </button>
+        <FavouritesChromeButton />
       </div>
 
       <Modal

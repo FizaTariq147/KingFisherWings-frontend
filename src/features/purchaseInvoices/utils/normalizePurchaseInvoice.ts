@@ -1,4 +1,5 @@
 import { isUuid } from '@/lib/isUuid';
+import { pickDetailHints } from '@/features/shared/continuum';
 import {
   PURCHASE_INVOICE_STATUSES,
   PURCHASE_INVOICE_TYPES,
@@ -107,6 +108,7 @@ export function normalizePurchaseInvoice(raw: unknown): PurchaseInvoice | null {
   const id = str(r.id);
   if (!id || !isUuid(id)) return null;
   const party_id = str(r.party_id) ?? '';
+  const hints = pickDetailHints(r);
   return {
     id,
     invoice_number: str(r.invoice_number) ?? str(r.invoice_no) ?? str(r.number),
@@ -144,6 +146,8 @@ export function normalizePurchaseInvoice(raw: unknown): PurchaseInvoice | null {
     updated_at: str(r.updated_at),
     created_by: str(r.created_by),
     lines: normalizePurchaseInvoiceLines(r.lines ?? r.invoice_lines),
+    path_hints: hints.path_hints,
+    ops_continuum: hints.ops_continuum,
   };
 }
 

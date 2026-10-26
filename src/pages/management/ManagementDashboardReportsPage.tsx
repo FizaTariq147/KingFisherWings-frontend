@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ReportsPageBackLink } from '@/features/reports/components/ReportsPageBackLink';
-import { Search, ChevronDown, Heart, Users, BarChart2, ClipboardList, PieChart as PieChartIcon, Headphones, FileText, DollarSign, CreditCard, RotateCw, ListChecks } from 'lucide-react';
+import { Search, ChevronDown, Users, BarChart2, ClipboardList, PieChart as PieChartIcon, Headphones, FileText, DollarSign, CreditCard, RotateCw, ListChecks } from 'lucide-react';
+
+import { FavouritesChromeButton } from '@/features/favourites/components/FavouritesChromeButton';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useManagementReport } from '@/features/management/hooks/useManagement';
 import type { ManagementReportId } from '@/features/management/api/management.api';
@@ -395,10 +397,7 @@ export default function ManagementDashboardReportsPage() {
 
       {/* Floating Favorites button */}
       <div className="mt-4">
-        <button type="button" className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity">
-          <Heart size={14} />
-          Favorites
-        </button>
+        <FavouritesChromeButton />
       </div>
     </div>
   );

@@ -54,6 +54,13 @@ export interface User extends UserFlags, UserVisibility, UserSecurity {
   status: UserStatus;
   role_ids?: string[];
   permission_ids?: string[];
+  /**
+   * Job types visible from the ops permission matrix.
+   * `null` = unrestricted (no ops matrix grants / legacy role-only).
+   */
+  visible_job_types?: string[] | null;
+  /** True when the user has no ops matrix codes (legacy role-only / unrestricted). */
+  unrestricted_ops?: boolean;
   email_verified?: boolean;
   must_change_password?: boolean;
   last_login_at?: string | null;

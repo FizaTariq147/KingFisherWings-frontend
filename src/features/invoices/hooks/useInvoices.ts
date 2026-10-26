@@ -13,6 +13,7 @@ export const invoiceKeys = {
   list: (params: InvoiceListParams) => [...invoiceKeys.all, 'list', params] as const,
   overdue: () => [...invoiceKeys.all, 'overdue'] as const,
   detail: (id: string) => [...invoiceKeys.all, 'detail', id] as const,
+  history: (id: string) => [...invoiceKeys.all, 'history', id] as const,
   pdf: (id: string) => [...invoiceKeys.all, 'pdf', id] as const,
 };
 
@@ -33,6 +34,16 @@ export function useInvoice(id: string) {
     queryKey: invoiceKeys.detail(id),
     queryFn: () => invoiceService.getById(id),
     enabled: Boolean(accessToken) && isUuid(id),
+  });
+}
+
+export function useInvoiceHistory(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: invoiceKeys.history(id),
+    queryFn: () => invoiceService.getHistory(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+    staleTime: 30_000,
   });
 }
 

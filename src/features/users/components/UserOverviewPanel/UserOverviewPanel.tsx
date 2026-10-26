@@ -53,6 +53,18 @@ export function UserOverviewPanel({ user }: UserOverviewPanelProps) {
           <DetailRow label="Role" value={formatUserRole(user.role)} />
           <DetailRow label="Role IDs" value={formatList(user.role_ids)} />
           <DetailRow label="Permission IDs" value={formatList(user.permission_ids)} />
+          <DetailRow
+            label="Ops scope"
+            value={
+              user.unrestricted_ops
+                ? 'Unrestricted (no ops matrix grants)'
+                : user.visible_job_types === null
+                  ? 'Unrestricted'
+                  : user.visible_job_types?.length
+                    ? user.visible_job_types.join(', ')
+                    : '—'
+            }
+          />
         </dl>
       </Card>
 

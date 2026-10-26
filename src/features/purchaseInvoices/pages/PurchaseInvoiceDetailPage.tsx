@@ -11,6 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/Table';
 import { InvoiceStatusBadge } from '@/features/invoices/components/InvoiceStatusBadge';
+import { OpsContinuumRail } from '@/features/ops-activity';
 import { StaffPurchaseInvoicePaymentProofPanel } from '@/features/payment-proofs/components/StaffPurchaseInvoicePaymentProofPanel';
 import { adjustInvoiceAmountsWithProofs } from '@/features/payment-proofs/utils/adjustInvoiceAmountsWithProofs';
 import { PURCHASE_INVOICE_ROUTE_PREFIX } from '../api/purchaseInvoice.api';
@@ -161,7 +162,18 @@ export default function PurchaseInvoiceDetailPage() {
         </div>
       ) : null}
 
+      <OpsContinuumRail
+        entityType="PURCHASE_INVOICE"
+        entityId={invoice.id}
+        pathHints={invoice.path_hints ?? ['ops_continuum']}
+        opsContinuum={invoice.ops_continuum}
+        links={{
+          jobId: invoice.job_id,
+          purchaseInvoiceId: invoice.id,
+        }}
+      />
       <DetailPageTemplate
+        reserveContinuumRail
         title={purchaseInvoiceDisplayNumber(invoice)}
         subtitle={
           invoice.invoice_type

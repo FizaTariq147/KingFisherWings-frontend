@@ -148,6 +148,7 @@ export const DEFAULT_JOB_PAGE_SIZE = 20;
 
 export type JobSegmentKey =
   | 'air-export'
+  | 'air-import'
   | 'sea-export'
   | 'sea-import'
   | 'customs-clearance'
@@ -167,8 +168,15 @@ export const JOB_SEGMENTS: Record<
     label: 'Air Export',
     routePrefix: '/jobs/air-export',
     permission: 'menu_jobs_air_export',
-    jobTypes: ['AIR_EXPORT', 'AIR_IMPORT'],
+    jobTypes: ['AIR_EXPORT'],
     defaultCreateType: 'AIR_EXPORT',
+  },
+  'air-import': {
+    label: 'Air Import',
+    routePrefix: '/jobs/air-import',
+    permission: 'menu_jobs_air_export',
+    jobTypes: ['AIR_IMPORT'],
+    defaultCreateType: 'AIR_IMPORT',
   },
   'sea-export': {
     label: 'Sea Export',

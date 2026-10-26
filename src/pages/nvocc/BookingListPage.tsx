@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
-import { Heart } from 'lucide-react';
+import { FavouritesChromeButton } from '@/features/favourites/components/FavouritesChromeButton';
 import { FilterField, SelectInput, TextInput } from '../../components/widgets/FilterField';
 import { NVOCC_CARGO_TYPES } from '@/features/nvocc/constants/nvocc.constants';
 import { useNvoccBookings } from '@/features/nvocc/hooks/useNvocc';
@@ -309,13 +309,7 @@ export default function BookingListPage() {
       </div>
 
       <div className="mt-4">
-        <button
-          type="button"
-          className="flex items-center gap-1.5 bg-purple-700 hover:opacity-90 text-white text-sm px-4 py-2 rounded transition-opacity"
-        >
-          <Heart size={14} />
-          Favorites
-        </button>
+        <FavouritesChromeButton />
       </div>
     </div>
   );

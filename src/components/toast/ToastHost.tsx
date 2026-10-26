@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlertCircle, AlertTriangle, Bell, CheckCircle2, Info, X } from 'lucide-react';
 import { toast, useToastStore, type ToastItem, type ToastVariant } from '@/store/toastStore';
+import { appNavigate } from '@/lib/appNavigate';
 import { cn } from '@/lib/utils';
 
 const VARIANT_META: Record<
@@ -43,6 +44,7 @@ function ToastCard({ item }: { item: ToastItem }) {
   const [progress, setProgress] = useState(1);
   const remainingRef = useRef(item.durationMs);
   const lastTickRef = useRef<number | null>(null);
+  const href = item.href?.trim() || null;
 
   useEffect(() => {
     let raf = 0;
@@ -93,14 +95,35 @@ function ToastCard({ item }: { item: ToastItem }) {
         >
           <Icon size={16} strokeWidth={2.2} aria-hidden />
         </span>
-        <div className="min-w-0 flex-1 pt-0.5">
-          <p className="truncate text-[13px] font-semibold text-[var(--color-neutral-900)]">
-            {item.title}
-          </p>
-          <p className="mt-0.5 whitespace-pre-wrap break-words text-[12.5px] leading-relaxed text-[var(--color-neutral-600)]">
-            {item.message}
-          </p>
-        </div>
+        {href ? (
+          <button
+            type="button"
+            className="min-w-0 flex-1 pt-0.5 text-left"
+            onClick={() => {
+              dismiss(item.id);
+              appNavigate(href);
+            }}
+          >
+            <p className="truncate text-[13px] font-semibold text-[var(--color-neutral-900)]">
+              {item.title}
+            </p>
+            <p className="mt-0.5 whitespace-pre-wrap break-words text-[12.5px] leading-relaxed text-[var(--color-neutral-600)]">
+              {item.message}
+            </p>
+            <p className="mt-1 text-[11px] font-medium text-[var(--color-primary-600)]">
+              Open related item
+            </p>
+          </button>
+        ) : (
+          <div className="min-w-0 flex-1 pt-0.5">
+            <p className="truncate text-[13px] font-semibold text-[var(--color-neutral-900)]">
+              {item.title}
+            </p>
+            <p className="mt-0.5 whitespace-pre-wrap break-words text-[12.5px] leading-relaxed text-[var(--color-neutral-600)]">
+              {item.message}
+            </p>
+          </div>
+        )}
         <button
           type="button"
           aria-label="Dismiss"
@@ -168,12 +191,15 @@ function writeStoredBaseline(surface: string, count: number): void {
 async function resolveNotificationToastCopy(
   title: string,
   delta: number,
-  fetchLatest?: () => Promise<{ title?: string; message?: string } | null | undefined>,
-): Promise<{ toastTitle: string; toastMessage: string }> {
+  fetchLatest?: () => Promise<
+    { title?: string; message?: string; href?: string | null } | null | undefined
+  >,
+): Promise<{ toastTitle: string; toastMessage: string; href?: string | null }> {
   const fallbackMessage =
     delta === 1 ? 'You have a new notification.' : `You have ${delta} new notifications.`;
   let toastTitle = title;
   let toastMessage = fallbackMessage;
+  let href: string | null | undefined;
 
   if (!fetchLatest) return { toastTitle, toastMessage };
 
@@ -181,6 +207,7 @@ async function resolveNotificationToastCopy(
     const latest = await fetchLatest();
     const latestTitle = latest?.title?.trim();
     const latestBody = latest?.message?.trim();
+    href = latest?.href?.trim() || null;
     // Prefer real inbox notification title + body in the toast.
     if (latestTitle && latestBody) {
       toastTitle = latestTitle;
@@ -195,7 +222,7 @@ async function resolveNotificationToastCopy(
     /* keep generic fallback */
   }
 
-  return { toastTitle, toastMessage };
+  return { toastTitle, toastMessage, href };
 }
 
 /**
@@ -214,7 +241,9 @@ export function NotificationToastWatcher({
   /** Isolate admin / portal / vendor baselines. */
   storageKey?: string;
   /** When unread rises, fetch the newest unread notification for toast copy. */
-  fetchLatest?: () => Promise<{ title?: string; message?: string } | null | undefined>;
+  fetchLatest?: () => Promise<
+    { title?: string; message?: string; href?: string | null } | null | undefined
+  >;
 }) {
   const prevRef = useRef<number | null>(null);
   const toastingRef = useRef(false);
@@ -226,7 +255,7 @@ export function NotificationToastWatcher({
       if (toastingRef.current) return;
       toastingRef.current = true;
       void (async () => {
-        const { toastTitle, toastMessage } = await resolveNotificationToastCopy(
+        const { toastTitle, toastMessage, href } = await resolveNotificationToastCopy(
           title,
           delta,
           fetchLatest,
@@ -235,6 +264,7 @@ export function NotificationToastWatcher({
           title: toastTitle,
           dedupeMs: 4000,
           durationMs: 9000,
+          href: href || undefined,
         });
         toastingRef.current = false;
       })().catch(() => {

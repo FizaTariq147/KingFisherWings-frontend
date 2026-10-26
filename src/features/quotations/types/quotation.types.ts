@@ -58,6 +58,10 @@ export interface QuotationStatusHistoryEntry {
   comments?: string;
   created_at?: string;
   created_by?: string;
+  /** Enriched actor display name from BE. */
+  changed_by_name?: string;
+  performed_by_name?: string;
+  actor?: { id?: string; name?: string } | string;
 }
 
 export interface QuotationApproval {

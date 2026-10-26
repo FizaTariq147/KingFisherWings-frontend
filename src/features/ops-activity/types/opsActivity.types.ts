@@ -1,5 +1,11 @@
-/** Staff ops continuum entity types (OpenAPI). */
-export type OpsEntityType = 'ENQUIRY' | 'QUOTATION' | 'SHIPMENT' | 'JOB';
+/** Staff ops continuum entity types (OpenAPI — free-string path param). */
+export type OpsEntityType =
+  | 'ENQUIRY'
+  | 'QUOTATION'
+  | 'SHIPMENT'
+  | 'JOB'
+  | 'INVOICE'
+  | 'PURCHASE_INVOICE';
 
 export type OpsContinuumTab =
   | 'comments'

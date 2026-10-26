@@ -58,6 +58,8 @@ export interface PurchaseInvoice {
   updated_at?: string;
   created_by?: string;
   lines?: PurchaseInvoiceLine[];
+  path_hints?: string[];
+  ops_continuum?: Record<string, unknown>;
 }
 
 export type CreatePurchaseInvoiceDto = CreatePurchaseInvoiceFormValues;

@@ -22,6 +22,7 @@ import {
 } from '@/features/users/constants/userPermissions'
 import {
   hasMatrixModuleAccess,
+  menuKeysFromMatrixPermissions,
   type MatrixAccessLevel,
 } from '@/features/users/utils/matrixPermissionAccess'
 import {
@@ -339,13 +340,23 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
   const fromJwt = permissionsFromAccessToken(accessToken)
   const fromStaffFlags = menuKeysFromStaffAccess(record)
   const matrixFromMe = extractMePermissionMatrix(record)
+  const matrixMenuBridge = menuKeysFromMatrixPermissions([
+    ...fromMe,
+    ...fromJwt,
+    ...matrixFromMe.keys,
+  ])
   const isTenantAdmin =
     isTenantUserManagerRole(role.slug) || isTenantUserManagerRole(role.name)
 
-  // Staff: Tenant Admin functional/visibility flags own `menu_*` when present on /auth/me.
-  // JWT role menus must not re-open Finance/Ops the admin turned off.
+  // Staff: Tenant Admin functional/visibility flags own coarse `menu_*` when present on
+  // /auth/me, but matrix grants (operations_air_export.see → menu_jobs_*) still open routes.
+  // JWT role menus alone must not re-open Finance/Ops the admin turned off.
   const permissions = mergeStaffPermissions({
-    fromMe: [...fromMe, ...normalizePermissionKeys(matrixFromMe.keys)],
+    fromMe: [
+      ...fromMe,
+      ...normalizePermissionKeys(matrixFromMe.keys),
+      ...matrixMenuBridge,
+    ],
     fromJwt,
     fromStaffFlags,
     staffFlagsPresent: hasStaffAccessFlags(record),

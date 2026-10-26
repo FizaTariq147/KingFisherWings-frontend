@@ -13,6 +13,8 @@ import {
   normalizeInvoiceLine,
   normalizeInvoices,
 } from '../utils/normalizeInvoice';
+import { normalizeInvoiceHistory } from '../utils/normalizeInvoiceHistory';
+import type { InvoiceHistoryEntry } from '../types/invoice.types';
 import {
   prepareInvoiceLinePayload,
   prepareInvoicePayload,
@@ -159,6 +161,19 @@ export const invoiceService = {
       const invoice = normalizeInvoice(unwrapEntity(res.data));
       if (!invoice) throw new Error('Invoice not found.');
       return invoice;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /invoices/:id/history — AuditLog timeline with actor names. */
+  async getHistory(id: string): Promise<InvoiceHistoryEntry[]> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<unknown>(INVOICE_API.history(id)),
+      );
+      return normalizeInvoiceHistory(res.data);
     } catch (error) {
       throw formatAxiosError(error);
     }

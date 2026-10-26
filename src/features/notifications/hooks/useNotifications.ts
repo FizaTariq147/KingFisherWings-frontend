@@ -32,7 +32,9 @@ export function useMarkNotificationRead() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => notificationsService.markRead(id),
-    onSuccess: () => { void qc.invalidateQueries({ queryKey: notificationKeys.all }); },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: notificationKeys.all });
+    },
   });
 }
 
@@ -40,6 +42,18 @@ export function useMarkAllNotificationsRead() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: () => notificationsService.markAllRead(),
-    onSuccess: () => { void qc.invalidateQueries({ queryKey: notificationKeys.all }); },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: notificationKeys.all });
+    },
+  });
+}
+
+export function useOpenNotification() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => notificationsService.open(id),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: notificationKeys.all });
+    },
   });
 }

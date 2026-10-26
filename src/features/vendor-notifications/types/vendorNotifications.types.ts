@@ -22,7 +22,10 @@ export interface VendorNotification {
   isRead?: boolean;
   type?: string;
   kind?: VendorAlertKind;
+  /** API-resolved vendor path (prefer over client heuristics). */
+  linkPath?: string | null;
   href?: string | null;
+  entityType?: string;
   jobId?: string;
   invoiceId?: string;
   entityId?: string;
@@ -32,9 +35,16 @@ export interface VendorNotification {
 export interface VendorNotificationListResult {
   items: VendorNotification[];
   meta: VendorPaginationMeta;
-  /**
-   * Always true on current backend — alerts are composed from quotes / disputes /
-   * payment-requests / open invoices (no dedicated notifications API in Swagger).
-   */
+  /** True when alerts were composed from quotes/disputes/PRs/open invoices. */
   sourcedFromAggregate?: boolean;
+}
+
+export interface VendorNotificationOpenResult {
+  id: string;
+  linkPath: string | null;
+  entityType?: string;
+  entityId?: string;
+  isRead?: boolean;
+  title?: string;
+  message?: string;
 }

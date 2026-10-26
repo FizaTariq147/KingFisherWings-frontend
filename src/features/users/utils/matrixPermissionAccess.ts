@@ -6,11 +6,156 @@
  * - submodule `module`  → `{module}_module.{see|read|write}`  e.g. `wms_module.see`
  * - other submodules    → `{module}_{submodule}.{see|read|write}` e.g. `operations_air_export.write`
  * - classic bridge      → `{module}.view` / `{module}.manage` / action packs
+ * - route menus         → `menu_jobs_air_export`, `menu_quotations`, …
  *
  * No FE catalog of modules is hardcoded — callers pass the module key from the API tree.
  */
 
+import type { PermissionKey } from '@/types/auth.types';
+
 export type MatrixAccessLevel = 'see' | 'read' | 'write';
+
+const GRANT_FLAGS = new Set(['see', 'read', 'write', 'view', 'manage']);
+
+function addOpsJobMenus(keys: Set<PermissionKey>, sub: string) {
+  if (!sub || sub === 'module') {
+    keys.add('menu_jobs_air_export');
+    keys.add('menu_jobs_sea_export');
+    keys.add('menu_jobs_sea_import');
+    keys.add('menu_documentation');
+    return;
+  }
+  if (sub.includes('air')) keys.add('menu_jobs_air_export');
+  if (sub.includes('sea_export') || sub.includes('fcl_export') || sub.includes('lcl_export')) {
+    keys.add('menu_jobs_sea_export');
+  }
+  if (sub.includes('sea_import') || sub.includes('fcl_import') || sub.includes('lcl_import')) {
+    keys.add('menu_jobs_sea_import');
+  }
+  // road_freight / land / courier / customs share the ops job route group
+  if (
+    sub.includes('road') ||
+    sub.includes('land') ||
+    sub.includes('courier') ||
+    sub.includes('customs')
+  ) {
+    keys.add('menu_jobs_air_export');
+    keys.add('menu_jobs_sea_export');
+    keys.add('menu_jobs_sea_import');
+  }
+  if (sub.includes('doc')) keys.add('menu_documentation');
+}
+
+/**
+ * Map matrix / classic JWT permission keys onto sidebar `menu_*` route guards.
+ * Needed so Tenant Admin matrix grants open pages even when coarse staff flags
+ * (is_operations, …) are off — ProtectedRoute still checks menu_* keys.
+ */
+export function menuKeysFromMatrixPermissions(
+  permissions: readonly string[],
+): PermissionKey[] {
+  const keys = new Set<PermissionKey>();
+
+  for (const raw of permissions) {
+    if (typeof raw !== 'string' || !raw.trim()) continue;
+    const key = raw.trim().toLowerCase();
+
+    if (key.startsWith('menu_')) {
+      keys.add(key as PermissionKey);
+      continue;
+    }
+
+    const dot = key.lastIndexOf('.');
+    if (dot <= 0) continue;
+    const prefix = key.slice(0, dot);
+    const flag = key.slice(dot + 1);
+    if (!GRANT_FLAGS.has(flag)) continue;
+
+    if (prefix === 'operations' || prefix === 'operations_module') {
+      addOpsJobMenus(keys, 'module');
+      continue;
+    }
+    if (prefix.startsWith('operations_')) {
+      addOpsJobMenus(keys, prefix.slice('operations_'.length));
+      continue;
+    }
+
+    if (prefix === 'nvocc' || prefix === 'nvocc_module' || prefix.startsWith('nvocc_')) {
+      keys.add('menu_nvocc');
+      continue;
+    }
+    if (
+      prefix === 'quotations' ||
+      prefix === 'quotations_module' ||
+      prefix.startsWith('quotations_')
+    ) {
+      keys.add('menu_quotations');
+      continue;
+    }
+    if (prefix === 'sales' || prefix === 'sales_module' || prefix.startsWith('sales_')) {
+      keys.add('menu_sales');
+      // CRM enquiries often live under sales; quotations tile hubs need both.
+      if (prefix.includes('enquir') || prefix.includes('quotation') || prefix === 'sales_module') {
+        keys.add('menu_quotations');
+      }
+      continue;
+    }
+    if (prefix === 'crm' || prefix === 'crm_module' || prefix.startsWith('crm_')) {
+      keys.add('menu_sales');
+      continue;
+    }
+    if (prefix === 'finance' || prefix === 'finance_module' || prefix.startsWith('finance_')) {
+      keys.add('menu_finance');
+      continue;
+    }
+    if (prefix === 'accounts' || prefix === 'accounts_module' || prefix.startsWith('accounts_')) {
+      keys.add('menu_accounts');
+      continue;
+    }
+    if (
+      prefix === 'documentation' ||
+      prefix === 'documentation_module' ||
+      prefix.startsWith('documentation_')
+    ) {
+      keys.add('menu_documentation');
+      continue;
+    }
+    if (
+      prefix === 'customers' ||
+      prefix === 'customers_module' ||
+      prefix.startsWith('customers_') ||
+      prefix === 'support' ||
+      prefix === 'support_module'
+    ) {
+      keys.add('menu_customers');
+      continue;
+    }
+    if (prefix === 'vendors' || prefix === 'vendors_module' || prefix.startsWith('vendors_')) {
+      keys.add('menu_vendors');
+      continue;
+    }
+    if (prefix === 'reports' || prefix === 'reports_module' || prefix.startsWith('reports_')) {
+      keys.add('menu_reports');
+      continue;
+    }
+    if (
+      prefix === 'admin' ||
+      prefix === 'admin_module' ||
+      prefix === 'management' ||
+      prefix === 'management_module' ||
+      prefix.startsWith('admin_') ||
+      prefix.startsWith('management_')
+    ) {
+      keys.add('menu_management');
+      continue;
+    }
+    if (prefix === 'warehouse' || prefix === 'wms' || prefix === 'wms_module' || prefix.startsWith('wms_')) {
+      keys.add('menu_warehouse');
+    }
+  }
+
+  return [...keys];
+}
 
 function levelsAtLeast(level: MatrixAccessLevel): MatrixAccessLevel[] {
   if (level === 'write') return ['write'];

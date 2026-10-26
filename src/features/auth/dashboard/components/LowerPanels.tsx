@@ -21,6 +21,9 @@ import {
   type ReportPeriod,
 } from '../utils/reportsHubPaths';
 import type { AppNotification } from '@/features/notifications/types/notifications.types';
+import { useOpenNotification } from '@/features/notifications/hooks/useNotifications';
+import { notificationHref } from '@/features/notifications/utils/notificationLink';
+import { toast } from '@/store/toastStore';
 import { relativeTime } from '../utils/dashboardFormat';
 import { cn } from '@/lib/utils';
 import { DASHBOARD_KPI_THEMES } from '@/lib/dashboardKpiThemes';
@@ -103,16 +106,35 @@ export function LiveActivityPanel({
   isLoading: boolean;
   isError: boolean;
 }) {
+  const navigate = useNavigate();
+  const openNotification = useOpenNotification();
+
+  const handleOpen = async (n: AppNotification) => {
+    const fallback = notificationHref(n);
+    try {
+      const opened = await openNotification.mutateAsync(n.id);
+      const path = opened.linkPath || fallback;
+      if (path) navigate(path);
+      else toast.info('No linked screen for this notification.', { title: 'Notifications' });
+    } catch {
+      if (fallback) navigate(fallback);
+      else toast.info('Could not open this notification.', { title: 'Notifications' });
+    }
+  };
+
   return (
     <DashCard>
       <DashCardHeader
         title="Live activity"
         subtitle="Staff notifications"
         action={
-          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-success-500)]">
+          <Link
+            to="/notifications"
+            className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-success-500)] hover:underline"
+          >
             <span className="h-1.5 w-1.5 rounded-full bg-current" />
             Notifications
-          </span>
+          </Link>
         }
       />
       {isLoading ? (
@@ -126,22 +148,32 @@ export function LiveActivityPanel({
         <DashEmpty>No recent notifications.</DashEmpty>
       ) : (
         <ul className="space-y-3">
-          {items.slice(0, 6).map((n) => (
-            <li key={n.id} className="flex items-start gap-2">
-              <span
-                className={`mt-1 h-2 w-2 shrink-0 rounded-full ${n.isRead ? 'bg-[var(--color-neutral-300)]' : 'bg-[var(--color-secondary)]'}`}
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-sm text-[var(--color-neutral-800)]">{n.title}</p>
-                {n.body ? (
-                  <p className="truncate text-[11px] text-[var(--color-neutral-400)]">{n.body}</p>
-                ) : null}
-              </div>
-              <span className="shrink-0 text-[10px] text-[var(--color-neutral-400)]">
-                {relativeTime(n.createdAt)}
-              </span>
-            </li>
-          ))}
+          {items.slice(0, 6).map((n) => {
+            const clickable = Boolean(notificationHref(n) || n.linkPath || n.id);
+            return (
+              <li key={n.id}>
+                <button
+                  type="button"
+                  disabled={!clickable || openNotification.isPending}
+                  onClick={() => void handleOpen(n)}
+                  className="flex w-full items-start gap-2 rounded-lg text-left transition-colors hover:bg-[var(--color-neutral-50)] disabled:cursor-default"
+                >
+                  <span
+                    className={`mt-1 h-2 w-2 shrink-0 rounded-full ${n.isRead ? 'bg-[var(--color-neutral-300)]' : 'bg-[var(--color-secondary)]'}`}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm text-[var(--color-neutral-800)]">{n.title}</p>
+                    {n.body ? (
+                      <p className="truncate text-[11px] text-[var(--color-neutral-400)]">{n.body}</p>
+                    ) : null}
+                  </div>
+                  <span className="shrink-0 text-[10px] text-[var(--color-neutral-400)]">
+                    {relativeTime(n.createdAt)}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
         </ul>
       )}
     </DashCard>
