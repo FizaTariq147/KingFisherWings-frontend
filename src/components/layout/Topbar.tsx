@@ -41,7 +41,7 @@ export function Topbar({ onLogout }: TopbarProps) {
   const isSuperAdminArea =
     location.pathname.startsWith('/superadmin') && !location.pathname.includes('/login');
 
-  const unread = useNotificationUnreadCount();
+  const unread = useNotificationUnreadCount(isAuthenticated && !isSuperAdminArea);
   const notificationCount = unread.data ?? 0;
 
   const canChangePassword = isAuthenticated && Boolean(user) && !isSuperAdminArea;

@@ -17,14 +17,15 @@ export function useNotifications(params: NotificationListParams) {
   });
 }
 
-export function useNotificationUnreadCount() {
+export function useNotificationUnreadCount(enabled = true) {
   return useQuery({
     queryKey: notificationKeys.unread(),
     queryFn: () => notificationsService.unreadCount(),
+    enabled,
     staleTime: 15_000,
     placeholderData: keepPreviousData,
-    refetchInterval: 30_000,
-    refetchOnWindowFocus: true,
+    refetchInterval: enabled ? 30_000 : false,
+    refetchOnWindowFocus: enabled,
   });
 }
 
