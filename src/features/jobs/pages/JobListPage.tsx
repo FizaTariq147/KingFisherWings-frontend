@@ -3,6 +3,7 @@ import { appType, listShell } from '@/lib/erpTypography';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { PageBackLink } from '@/components/ui/PageBackLink';
 import { EmptyState, ErrorState } from '@/components/erp';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import {
@@ -74,6 +75,7 @@ export default function JobListPage() {
 
   return (
     <div className={listShell.page}>
+      <PageBackLink to="/dashboard" label="Back" />
       <div className={listShell.card}>
         <div className={listShell.header}>
           <div className="min-w-0">

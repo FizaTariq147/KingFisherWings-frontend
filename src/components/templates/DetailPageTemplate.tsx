@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { erpForm } from '@/lib/erpForm';
 import { appType } from '@/lib/erpTypography';
+import { smartGoBack } from '@/lib/navigation/returnNavigation';
 import { cn } from '@/lib/utils';
 
 export interface DetailTab {
@@ -63,9 +64,12 @@ interface DetailPageTemplateProps {
   toolbar?: ReactNode;
   toolbarLabel?: string;
   sidebar?: ReactNode;
-  /** Explicit back handler (module list). Preferred when provided. */
+  /**
+   * Optional back handler. Prefer omitting — chrome Back uses history /
+   * `state.from`, then `backTo` as fallback (so Dashboard → Jobs → Back works).
+   */
   onBack?: () => void;
-  /** Explicit back path when `onBack` is not set. */
+  /** Fallback path when there is no previous screen (module list). */
   backTo?: string;
   backLabel?: string;
   /** When true, also show chrome Back button in the top-right action row (Fresa). */
@@ -166,6 +170,8 @@ export function DetailPageTemplate({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- keyed by tab key list, not content identity
   }, [tabKeys, defaultTab]);
 
+  const location = useLocation();
+
   const chromeActions = useMemo(() => {
     const list = [...(actions ?? [])];
     const hasBack = list.some((a) => resolveChromeVariant(a.label, a.variant) === 'back');
@@ -175,22 +181,26 @@ export function DetailPageTemplate({
         variant: 'back',
         icon: <ArrowLeft />,
         onClick: () => {
-          if (onBack) onBack();
-          else if (backTo) navigate(backTo);
+          // History / return-state first; `backTo` only when this is a cold entry.
+          if (!backTo && onBack) {
+            onBack();
+            return;
+          }
+          smartGoBack(navigate, location, backTo || '/dashboard');
         },
       });
     }
     return list.sort(
       (a, b) => chromeSortKey(a.label, a.variant) - chromeSortKey(b.label, b.variant),
     );
-  }, [actions, showChromeBack, onBack, backTo, navigate]);
+  }, [actions, showChromeBack, onBack, backTo, navigate, location]);
 
   return (
     <div
       className={`space-y-2.5 bg-[var(--fresa-page-bg,#F4F6F9)] -mx-1 px-1 pb-4 ${className}`.trim()}
     >
       {!hidePageBackLink ? (
-        <PageBackLink to={backTo} label={backLabel} onClick={onBack} className="mb-1" />
+        <PageBackLink to={backTo} label={backLabel} className="mb-1" />
       ) : null}
 
       {/* Header chrome */}

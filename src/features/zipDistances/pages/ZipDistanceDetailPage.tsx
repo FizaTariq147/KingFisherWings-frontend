@@ -81,7 +81,7 @@ export default function ZipDistanceDetailPage() {
         subtitle={`${item.distance} ${item.unit}`}
         statusLabel={active ? 'Active' : 'Inactive'}
         statusTone={active ? 'emerald' : 'slate'}
-        onBack={() => navigate(ZIP_DISTANCE_ROUTE_PREFIX)}
+        backTo={ZIP_DISTANCE_ROUTE_PREFIX}
         backLabel="Zip Distance Master"
         actions={[
           {

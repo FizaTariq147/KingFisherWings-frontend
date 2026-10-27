@@ -275,7 +275,7 @@ export default function TenantDetailPage() {
         subtitle={`${tenant.code} · ${formatTenantSlug(tenant.slug)} · ${tenant.company_name || 'No company name'}`}
         statusLabel={isDeleted ? 'Deleted' : tenant.is_active ? 'Active' : 'Inactive'}
         statusTone={statusTone}
-        onBack={() => navigate('/superadmin/tenants')}
+        backTo={'/superadmin/tenants'}
         backLabel="Back to tenants"
         actions={actions}
         actionsDisabled={pendingAction}

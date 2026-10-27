@@ -665,7 +665,7 @@ export default function JobDetailPage() {
         defaultTab={defaultTab}
         actions={headerActions}
         actionsDisabled={pending || actions.cancel.isPending || actions.close.isPending}
-        onBack={() => navigate(prefix)}
+        backTo={prefix}
         backLabel={`${segmentLabel} jobs`}
         banner={
           (actionError || costingWarningMessage || actionMessage) ? (

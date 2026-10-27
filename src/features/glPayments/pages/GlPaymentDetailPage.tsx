@@ -187,7 +187,7 @@ export default function GlPaymentDetailPage() {
               ? 'rose'
               : 'slate'
         }
-        onBack={() => navigate(GL_PAYMENT_ROUTE_PREFIX)}
+        backTo={GL_PAYMENT_ROUTE_PREFIX}
         backLabel="Payments (AR/AP)"
         actions={headerActions}
         actionsDisabled={pending}

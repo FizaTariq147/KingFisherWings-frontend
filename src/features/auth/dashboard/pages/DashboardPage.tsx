@@ -109,9 +109,52 @@ export function DashboardPage() {
 
   const topCustomerRows = useMemo(() => {
     const primary = topCustomers.data?.rows ?? [];
+    const secondary = customerRevenue.data?.rows ?? [];
     if (primary.length) return primary;
-    return customerRevenue.data?.rows ?? [];
-  }, [topCustomers.data?.rows, customerRevenue.data?.rows]);
+    if (secondary.length) return secondary;
+
+    // Live fallback: roll up recent invoices by party (avoids hardcoded Customer 1/2/3).
+    const invoices = invoicesQuery.data?.invoices ?? [];
+    const byParty = new Map<
+      string,
+      { customer_name: string; party_id: string; revenue: number; jobs: number }
+    >();
+    for (const inv of invoices) {
+      const partyId = String(inv.party_id || '').trim();
+      const name = String(inv.party_name || '').trim();
+      if (!partyId && !name) continue;
+      const key = partyId || name;
+      const prev = byParty.get(key);
+      const amount = Number(inv.total_amount ?? 0) || 0;
+      if (prev) {
+        prev.revenue += amount;
+        prev.jobs += 1;
+        if (!prev.customer_name && name) prev.customer_name = name;
+      } else {
+        byParty.set(key, {
+          party_id: partyId,
+          customer_name: name || partyId,
+          revenue: amount,
+          jobs: 1,
+        });
+      }
+    }
+    return [...byParty.values()]
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 5)
+      .map((row) => ({
+        customer_name: row.customer_name,
+        party_id: row.party_id,
+        customer_id: row.party_id,
+        revenue: row.revenue,
+        amount: row.revenue,
+        jobs: row.jobs,
+      }));
+  }, [
+    topCustomers.data?.rows,
+    customerRevenue.data?.rows,
+    invoicesQuery.data?.invoices,
+  ]);
   const followUps = useCrmFollowUps({ page: 1, limit: 10, from: today, to: today });
   const patchFollowUp = usePatchCrmFollowUp();
   const notifications = useNotifications({ page: 1, limit: 8 });

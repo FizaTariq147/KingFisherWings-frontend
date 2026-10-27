@@ -57,14 +57,56 @@ export function normalizeCrmReportRows(raw: unknown): Record<string, unknown>[] 
     const asObj = asRecord(value);
     if (asObj && !Array.isArray(value)) {
       const entries = Object.entries(asObj);
-      if (
-        entries.length > 0 &&
-        entries.every(([, v]) => typeof v === 'number' || typeof v === 'string' || v == null)
-      ) {
+      if (!entries.length) continue;
+      const allScalar = entries.every(
+        ([, v]) => typeof v === 'number' || typeof v === 'string' || v == null,
+      );
+      if (allScalar) {
         return entries.map(([label, valueCell]) => ({
           label,
+          customer: label,
+          customer_id: label,
           value: valueCell ?? 0,
+          amount: valueCell ?? 0,
+          revenue: valueCell ?? 0,
         }));
+      }
+      // Nested objects e.g. { [partyId]: { name, revenue, jobs } }
+      const allObjects = entries.every(([, v]) => Boolean(asRecord(v)));
+      if (allObjects) {
+        return entries.map(([key, cell]) => {
+          const row = asRecord(cell) ?? {};
+          const name = pickString(
+            row.customer_name,
+            row.customer,
+            row.name,
+            row.party_name,
+            row.company_name,
+            row.label,
+          );
+          const amount =
+            pickNumber(
+              row.revenue,
+              row.amount,
+              row.total,
+              row.sales,
+              row.value,
+              row.gross_revenue,
+            ) ?? 0;
+          const jobs = pickNumber(row.jobs, row.job_count, row.count, row.shipments, row.volume);
+          return {
+            ...row,
+            label: name || key,
+            customer: name || key,
+            customer_name: name || undefined,
+            customer_id: pickString(row.customer_id, row.party_id, row.id) || key,
+            party_id: pickString(row.party_id, row.customer_id, row.id) || key,
+            revenue: amount,
+            amount,
+            value: amount,
+            ...(jobs != null ? { jobs, job_count: jobs } : {}),
+          };
+        });
       }
     }
   }

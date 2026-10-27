@@ -108,7 +108,7 @@ export default function ChartOfAccountDetailPage() {
         subtitle={`${ACCOUNT_GROUP_LABELS[account.account_group]} · ${ACCOUNT_TYPE_LABELS[account.account_type]}`}
         statusLabel={active ? 'Active' : 'Inactive'}
         statusTone={active ? 'emerald' : 'slate'}
-        onBack={() => navigate(CHART_OF_ACCOUNT_ROUTE_PREFIX)}
+        backTo={CHART_OF_ACCOUNT_ROUTE_PREFIX}
         backLabel="Chart of Accounts"
         actionsDisabled={pending}
         actions={[

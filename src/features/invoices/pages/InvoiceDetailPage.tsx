@@ -339,7 +339,7 @@ export default function InvoiceDetailPage() {
                 ? 'amber'
                 : 'slate'
         }
-        onBack={() => navigate(INVOICE_ROUTE_PREFIX)}
+        backTo={INVOICE_ROUTE_PREFIX}
         backLabel="Invoices"
         actions={headerActions}
         actionsDisabled={pending}

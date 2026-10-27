@@ -93,7 +93,7 @@ export default function TariffDetailPage() {
         }
         statusLabel={active ? 'Active' : 'Inactive'}
         statusTone={active ? 'emerald' : 'slate'}
-        onBack={() => navigate(TARIFF_ROUTE_PREFIX)}
+        backTo={TARIFF_ROUTE_PREFIX}
         backLabel="Online Tariff Master"
         actions={[
           {

@@ -1,5 +1,11 @@
 import { useCallback, useMemo } from 'react';
-import { useLocation, useNavigate, type NavigateOptions } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate,
+  type Location,
+  type NavigateFunction,
+  type NavigateOptions,
+} from 'react-router-dom';
 
 /** Router location.state used when opening create/edit from list or detail. */
 export type LocationReturnState = {
@@ -8,6 +14,11 @@ export type LocationReturnState = {
 
 function isSafeAppPath(path: unknown): path is string {
   return typeof path === 'string' && path.startsWith('/') && !path.startsWith('//');
+}
+
+function sameAppPath(a: string, b: string): boolean {
+  const norm = (p: string) => p.replace(/\/+$/, '') || '/';
+  return norm(a) === norm(b);
 }
 
 /** Current pathname + search for use as `state.from` when opening another route. */
@@ -42,9 +53,46 @@ export function navigateWithReturn(
 }
 
 /**
+ * App-wide back navigation:
+ * 1) explicit `location.state.from` (when set by navigateWithReturn)
+ * 2) browser history (−1) when the user actually came from another in-app screen
+ * 3) module fallback path (list / dashboard)
+ *
+ * Avoids `navigate(fallback)` when history exists — that was stacking the list
+ * again so Back from the list reopened the detail page.
+ */
+export function smartGoBack(
+  navigate: NavigateFunction,
+  location: Pick<Location, 'pathname' | 'search' | 'state' | 'key'>,
+  fallback = '/dashboard',
+  opts?: { replace?: boolean },
+): void {
+  const replace = opts?.replace ?? false;
+  const from = getReturnPath(location, '');
+  const here = `${location.pathname}${location.search ?? ''}`;
+
+  if (from && !sameAppPath(from, here)) {
+    navigate(from, { replace });
+    return;
+  }
+
+  // React Router sets key to "default" on the first entry in a tab.
+  if (location.key !== 'default') {
+    navigate(-1);
+    return;
+  }
+
+  if (typeof window !== 'undefined' && window.history.length > 1) {
+    navigate(-1);
+    return;
+  }
+
+  navigate(fallback || '/dashboard', { replace: true });
+}
+
+/**
  * Shared back/cancel helper for edit & create forms.
- * Prefer `location.state.from`; fall back to an explicit module path (usually detail).
- * Default `replace: true` so Back on the destination does not reopen the form.
+ * Prefer previous screen (state.from / history); fall back to module path.
  */
 export function useReturnNavigation(fallback: string) {
   const navigate = useNavigate();
@@ -56,9 +104,11 @@ export function useReturnNavigation(fallback: string) {
 
   const goBack = useCallback(
     (opts?: { replace?: boolean }) => {
-      navigate(returnPath, { replace: opts?.replace ?? true });
+      smartGoBack(navigate, location, fallback, {
+        replace: opts?.replace ?? true,
+      });
     },
-    [navigate, returnPath],
+    [navigate, location, fallback],
   );
 
   return { returnPath, goBack, location };

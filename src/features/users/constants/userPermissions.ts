@@ -254,7 +254,11 @@ export function resolveAuthRoleSlug(role: unknown): string {
   return '';
 }
 
-/** ERP home path by panel: Tenant Admin → Users; User/Customer → ops dashboard. */
-export function getErpHomePath(roleSlug?: string | null): string {
-  return isTenantUserManagerRole(roleSlug) ? '/admin/users' : '/dashboard';
+/**
+ * ERP home after login / change-password.
+ * All tenant roles (including Tenant Admin) land on the ops dashboard —
+ * Users admin is reached from the sidebar, not as the post-login home.
+ */
+export function getErpHomePath(_roleSlug?: string | null): string {
+  return '/dashboard';
 }
