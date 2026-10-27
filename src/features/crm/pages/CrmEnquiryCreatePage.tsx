@@ -83,8 +83,8 @@ export default function CrmEnquiryCreatePage() {
   const values = watch();
   const serviceType = values.service_type;
   const isFcl = serviceType === 'SEA_FCL_EXPORT' || serviceType === 'SEA_FCL_IMPORT';
-  const isAir = serviceType === 'AIR_EXPORT' || serviceType === 'AIR_IMPORT';
-  const placeKind = isAir ? 'airports' : 'ports';
+  // Quote/job FKs are ports-master UUIDs (AIR = ports with mode=AIR), not airports table.
+  const placeKind = 'ports' as const;
   const { data: containerTypes = [] } = useMasterOptions(
     'container-types',
     MASTER_PATHS['container-types'],
